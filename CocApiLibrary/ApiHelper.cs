@@ -61,7 +61,7 @@ namespace CocApiLibrary
 
 
 
-        public async Task<T> GetResponse<T>(ClashOfClans cocApi, string encodedUrl, bool allowCachedItem = true) where T : class, new()
+        public async Task<T> GetResponse<T>(CocApi cocApi, string encodedUrl, bool allowCachedItem = true) where T : class, new()
         {
             T? result = null;
 
@@ -131,7 +131,7 @@ namespace CocApiLibrary
             return default;
         }
 
-        private async Task<T> GetWebResponse<T>(ClashOfClans cocApi, string encodedUrl) where T : new()
+        private async Task<T> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : new()
         {
             TokenObject token = await GetToken(encodedUrl);
 

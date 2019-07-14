@@ -10,7 +10,7 @@ using CocApiLibrary.Exceptions;
 namespace CocApiLibrary
 {
     public delegate void IsAvailableChangedEventHandler(bool isAvailable);
-    public class ClashOfClans
+    public class CocApi
     {
         private readonly ApiHelper apiHelper;
         private bool _isAvailable = true;
@@ -45,7 +45,7 @@ namespace CocApiLibrary
 
 
 
-        public ClashOfClans(IEnumerable<string> tokens, int tokenTimeOutInMilliseconds, int timeToWaitForWebRequests, VerbosityType verbosityType)
+        public CocApi(IEnumerable<string> tokens, int tokenTimeOutInMilliseconds, int timeToWaitForWebRequests, VerbosityType verbosityType)
         {
             try
             {

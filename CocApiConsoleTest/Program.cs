@@ -17,7 +17,7 @@ namespace ClashOfClansConsoleTest
                 File.ReadAllText(@"E:\Desktop\token.txt")
             };
 
-            ClashOfClans cocApi = new ClashOfClans(tokens, 3000, 60000, Enums.VerbosityType.None);
+            CocApi cocApi = new CocApi(tokens, 3000, 60000, Enums.VerbosityType.None);
 
             //var clan = await cocApi.GetClanAsync("#a");
 

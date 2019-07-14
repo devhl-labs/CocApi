@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CocApiLibrary
 {
-    public static class CocExtensions
+    public static class Extensions
     {
         public const string PopDirecitonalFormatting = "\u202C";
         public const string LeftToRightEmbedding = "\u202A";
