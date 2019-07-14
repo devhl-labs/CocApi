@@ -38,6 +38,7 @@ namespace ClashOfClansConsoleTest
             //Console.WriteLine(currentwar.PreparationStartTime.ToDateTime());
 
             Console.WriteLine("");
+
         }
     }
 }
