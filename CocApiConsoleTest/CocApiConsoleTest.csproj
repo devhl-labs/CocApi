@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CocApiCoreLibrary\CocApiCoreLibrary.csproj" />
+    <ProjectReference Include="..\CocApiLibrary\CocApiLibrary.csproj" />
   </ItemGroup>
 
 </Project>

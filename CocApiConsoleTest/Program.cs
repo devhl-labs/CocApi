@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using CocApiLibrary;
-using CocApiLibrary.Models;
+using CocApiStandardLibrary;
+using CocApiStandardLibrary.Models;
 
 namespace ClashOfClansConsoleTest
 {

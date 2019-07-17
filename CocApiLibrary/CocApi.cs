@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System;
 using System.Timers;
 using CocApiStandardLibrary.Exceptions;
+using System.Text.Json;
 
 namespace CocApiStandardLibrary
 {
