@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CocApiLibrary.Models
+namespace CocApiStandardLibrary.Models
 {
     public class ResponseMessage
     {

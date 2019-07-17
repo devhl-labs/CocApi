@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
+using static CocApiStandardLibrary.Enums;
 
-namespace CocApiLibrary.Models
+namespace CocApiStandardLibrary.Models
 {
     public partial class ClanAPIModel
     {

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using CocApiLibrary.Models;
+using CocApiStandardLibrary.Models;
 
-namespace CocApiLibrary
+namespace CocApiStandardLibrary
 {
-    internal class StoredItem
+    public class StoredItem
     {
         public DateTime DateTimeUTC { get; }
         public object DownloadedItem { get; }

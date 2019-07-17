@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
-using static CocApiLibrary.Enums;
+using static CocApiStandardLibrary.Enums;
 
 
-namespace CocApiLibrary
+namespace CocApiStandardLibrary
 {
     internal class TokenObject
     {

@@ -7,13 +7,15 @@
 	<Authors>devhl</Authors>
 	<Product />
 	<Description>This is a library that will return respsonses from developer.clashofclans.com</Description>
+	<Version>0.0.1</Version>
+	<AssemblyVersion>0.0.1.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.6.0-preview8.19360.4" />
-    <PackageReference Include="System.Text.Json" Version="4.6.0-preview6.19303.8" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.0.1" />
+    <PackageReference Include="System.Text.Json" Version="4.6.0-preview8.19365.2" />
   </ItemGroup>
 
 </Project>

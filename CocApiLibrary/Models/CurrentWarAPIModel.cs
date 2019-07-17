@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
+using static CocApiStandardLibrary.Enums;
 
-namespace CocApiLibrary.Models
+namespace CocApiStandardLibrary.Models
 {
     public class CurrentWarAPIModel
     {
@@ -23,6 +24,9 @@ namespace CocApiLibrary.Models
                 EndTimeUTC = _endTime.ToDateTime();
             }
         }
+
+
+
 
         public DateTime EndTimeUTC { get; set; }
 

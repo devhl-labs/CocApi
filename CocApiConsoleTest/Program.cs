@@ -14,7 +14,7 @@ namespace ClashOfClansConsoleTest
         {
             IList<string> tokens = new List<string>
             {
-                File.ReadAllText(@"E:\Desktop\token.txt")
+                //File.ReadAllText(@"E:\Desktop\token.txt")
             };
 
             CocApi cocApi = new CocApi(tokens, 3000, 60000, Enums.VerbosityType.None);
@@ -23,7 +23,7 @@ namespace ClashOfClansConsoleTest
 
             //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
-            var clan = await cocApi.GetClanAsync("#8J82PV0C");
+            //var clan = await cocApi.GetClanAsync("#8J82PV0C");
 
             //var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
 
@@ -36,6 +36,8 @@ namespace ClashOfClansConsoleTest
             //await cocApi.GetWarLogAsync("#8J82PV0C");
 
             //Console.WriteLine(currentwar.PreparationStartTime.ToDateTime());
+
+            cocApi.TestAsync();
 
             Console.WriteLine("");
 

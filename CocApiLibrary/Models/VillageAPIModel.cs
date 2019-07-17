@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using CocApiLibrary.Models;
+using CocApiStandardLibrary.Models;
 
-namespace CocApiLibrary
+namespace CocApiStandardLibrary
 {
     public class VillageAPIModel
     {

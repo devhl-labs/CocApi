@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CocApiLibrary.Models;
+using CocApiStandardLibrary.Models;
 
-namespace CocApiLibrary.Exceptions
+namespace CocApiStandardLibrary.Exceptions
 {
     [Serializable]
     public class CocApiException : Exception

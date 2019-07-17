@@ -1,13 +1,13 @@
-﻿using CocApiLibrary.Models;
-using static CocApiLibrary.Enums;
+﻿using CocApiStandardLibrary.Models;
+using static CocApiStandardLibrary.Enums;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
 using System.Timers;
-using CocApiLibrary.Exceptions;
+using CocApiStandardLibrary.Exceptions;
 
-namespace CocApiLibrary
+namespace CocApiStandardLibrary
 {
     public delegate void IsAvailableChangedEventHandler(bool isAvailable);
     public class CocApi
@@ -65,6 +65,21 @@ namespace CocApiLibrary
                 throw new CocApiException(e.Message, e);
             }
         }
+
+
+
+
+
+        public CurrentWarAPIModel TestAsync()
+        {
+            string json = $"{{\"MyAttribute\": 0}}";
+
+            CurrentWarAPIModel myObject = JsonSerializer.Deserialize<CurrentWarAPIModel>(json);
+
+            return myObject;
+        }
+
+
 
 
 

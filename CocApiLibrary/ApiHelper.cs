@@ -6,16 +6,16 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using static CocApiLibrary.Enums;
-using CocApiLibrary.Models;
+using static CocApiStandardLibrary.Enums;
+using CocApiStandardLibrary.Models;
 using System.Text.Json.Serialization;
 using System.IO;
 using System.Diagnostics;
-using CocApiLibrary.Exceptions;
+using CocApiStandardLibrary.Exceptions;
 using System.Text.Json;
 using System.Reflection.Emit;
 
-namespace CocApiLibrary
+namespace CocApiStandardLibrary
 {
     internal class ApiHelper
     {
@@ -153,7 +153,7 @@ namespace CocApiLibrary
             {
                 cocApi.IsAvailable = true;
 
-                T result = JsonSerializer.Parse<T>(responseText, options); 
+                T result = JsonSerializer.Deserialize<T>(responseText, options); 
 
                 StoredItem cachedItem = new StoredItem(result, stopwatch);
 
@@ -172,7 +172,7 @@ namespace CocApiLibrary
                     token.IsRateLimited = true;
                 }
 
-                ResponseMessage ex = JsonSerializer.Parse<ResponseMessage>(responseText, options);
+                ResponseMessage ex = JsonSerializer.Deserialize<ResponseMessage>(responseText, options);
 
                 throw new ServerResponseException(ex, response.StatusCode);
             }

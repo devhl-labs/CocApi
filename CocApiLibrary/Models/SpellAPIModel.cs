@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Models
+namespace CocApiStandardLibrary.Models
 {
     public class SpellModel
     {
