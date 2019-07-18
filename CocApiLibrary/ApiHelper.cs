@@ -14,6 +14,7 @@ using System.Diagnostics;
 using CocApiStandardLibrary.Exceptions;
 using System.Text.Json;
 using System.Reflection.Emit;
+using CocApiLibrary;
 
 namespace CocApiStandardLibrary
 {
@@ -51,10 +52,7 @@ namespace CocApiStandardLibrary
                 _tokenObjects.Add(tokenObject);
             }
 
-            //todo uncomment this once System.Text.Json gets fixed
-            //and then make values get deserialized into enums
-            //options.Converters.Add(new JsonStringEnumConverter());
-
+            options.Converters.Add(new JsonStringEnumConverter());
         }
 
 

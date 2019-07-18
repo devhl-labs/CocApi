@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿using CocApiLibrary.Converters;
+using System.Text.Json.Serialization;
+using static CocApiStandardLibrary.Enums;
 
 namespace CocApiStandardLibrary.Models
 {
@@ -8,7 +10,8 @@ namespace CocApiStandardLibrary.Models
 
         public string Name { get; set; } = string.Empty;
 
-        public string Role { get; set; } = string.Empty;
+        [JsonConverter(typeof(RoleConverter))]
+        public Role Role { get; set; }
 
         public int ExpLevel { get; set; }
 

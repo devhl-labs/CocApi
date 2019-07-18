@@ -25,7 +25,7 @@ namespace CocApiStandardLibrary
             {
                 Expires = currentWarAPIModel.StartTimeUTC;
 
-                if (currentWarAPIModel.StateEnum == Enums.State.inWar)
+                if (currentWarAPIModel.State == Enums.State.InWar)
                 {
                     Expires = DateTime.UtcNow.AddSeconds(15);
                 }

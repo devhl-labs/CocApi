@@ -14,30 +14,28 @@ namespace ClashOfClansConsoleTest
         {
             IList<string> tokens = new List<string>
             {
-                //File.ReadAllText(@"E:\Desktop\token.txt")
+                File.ReadAllText(@"E:\Desktop\token.txt")
             };
 
             CocApi cocApi = new CocApi(tokens, 3000, 60000, Enums.VerbosityType.None);
 
             //var clan = await cocApi.GetClanAsync("#a");
 
-            //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
+            var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
-            //var clan = await cocApi.GetClanAsync("#8J82PV0C");
+            var clan = await cocApi.GetClanAsync("#8J82PV0C");
 
-            //var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
+            var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
 
-            //var leaguegroup = await cocApi.GetLeagueGroupAsync("#929YJPYJ");
+            //var leaguegroup = await cocApi.GetLeagueGroupAsync("#8J82PV0C");
 
-            //await cocApi.GetClansAsync("t");
+            var clans = await cocApi.GetClansAsync("the");
 
-            //await cocApi.GetLeagueWarAsync("#2PC9VR9P0");
+            await cocApi.GetLeagueWarAsync("#2PC9VR9P0");
 
-            //await cocApi.GetWarLogAsync("#8J82PV0C");
+            var wars = await cocApi.GetWarLogAsync("#8J82PV0C");
 
             //Console.WriteLine(currentwar.PreparationStartTime.ToDateTime());
-
-            cocApi.TestAsync();
 
             Console.WriteLine("");
 

@@ -27,22 +27,6 @@ namespace CocApiStandardLibrary.Models
 
         public int RequiredTrophies { get; set; }
 
-        private string _warFrequencyString = string.Empty;
-
-        [JsonPropertyName("warFrequency")]
-        public string WarFrequencyString
-        {
-            get { return _warFrequencyString; }
-
-            set {
-                _warFrequencyString = value;
-                if (Enum.TryParse(_warFrequencyString, out WarFrequency warFrequency))
-                {
-                    WarFrequencyEnum = warFrequency;
-                }
-            }
-        }
-
         public int WarWinStreak { get; set; }
 
         public int WarWins { get; set; }
@@ -57,12 +41,7 @@ namespace CocApiStandardLibrary.Models
 
         public IEnumerable<MemberListAPIModel>? MemberList { get; set; }
 
-
-
-
-
-        [JsonIgnore]
-        public WarFrequency WarFrequencyEnum { get; set; }
+        public WarFrequency WarFrequency { get; set; }
 
 
 

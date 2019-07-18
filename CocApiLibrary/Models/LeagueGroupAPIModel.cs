@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using static CocApiStandardLibrary.Enums;
 
 namespace CocApiStandardLibrary.Models
 {
     public class LeagueGroupAPIModel
     {
-        public string State { get; set; } = string.Empty;
+        public State State { get; set; }
 
         public string Season { get; set; } = string.Empty;
 

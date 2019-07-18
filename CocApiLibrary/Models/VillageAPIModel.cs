@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using CocApiLibrary.Converters;
 using CocApiStandardLibrary.Models;
+using static CocApiStandardLibrary.Enums;
 
 namespace CocApiStandardLibrary
 {
@@ -48,7 +50,8 @@ namespace CocApiStandardLibrary
 
         public int VersusBattleWins { get; set; }
 
-        public string Role { get; set; } = string.Empty;
+        [JsonConverter(typeof(RoleConverter))]
+        public Role Role { get; set; }
 
         public int Donations { get; set; }
 
@@ -64,7 +67,7 @@ namespace CocApiStandardLibrary
 
         public IEnumerable<TroopAPIModel>? Troops { get; set; }
 
-        public IEnumerable<HeroAPIModel>? Heroes { get; set; }
+        public IEnumerable<TroopAPIModel>? Heroes { get; set; }
 
         public IEnumerable<SpellModel>? Spells { get; set; }
     }

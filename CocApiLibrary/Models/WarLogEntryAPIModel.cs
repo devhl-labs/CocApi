@@ -1,15 +1,14 @@
-﻿using System;
+﻿using CocApiLibrary.Converters;
+using System;
 using System.Text.Json.Serialization;
+using static CocApiStandardLibrary.Enums;
 
 namespace CocApiStandardLibrary.Models
 {
     public class WarLogEntryModel
     {
-
-        private string _endTime = string.Empty;
-
-        public string Result { get; set; } = string.Empty;
-
+        [JsonConverter(typeof(ResultConverter))]
+        public Result Result { get; set; }
 
         public int TeamSize { get; set; }
 
@@ -17,18 +16,14 @@ namespace CocApiStandardLibrary.Models
 
         public WarClanAPIModel? Opponent { get; set; }
 
+        [JsonPropertyName("endTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUTC { get; set; }
 
-        public string EndTime
-        {
-            get { return _endTime; }
-            set
-            {
-                _endTime = value;
 
-                EndTimeUTC = _endTime.ToDateTime();
-            }
-        }
+
+
+
 
 
         internal void Process()

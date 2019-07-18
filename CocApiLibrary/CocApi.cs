@@ -71,17 +71,6 @@ namespace CocApiStandardLibrary
 
 
 
-        public CurrentWarAPIModel TestAsync()
-        {
-            string json = $"{{\"MyAttribute\": 0}}";
-
-            CurrentWarAPIModel myObject = JsonSerializer.Deserialize<CurrentWarAPIModel>(json);
-
-            return myObject;
-        }
-
-
-
 
 
 

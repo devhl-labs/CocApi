@@ -8,23 +8,35 @@ namespace CocApiStandardLibrary
 {
     public class Enums
     {
-        public enum WarFrequency
+        public enum WarFrequency : int
         {
             [EnumMember(Value = "unknown")]
             unknown = 0,
-            [EnumMember(Value = "always")]
-            always = 1,
-            [EnumMember(Value = "moreThanOncePerWeek")]
-            moreThanOncePerWeek = 2,
-            [EnumMember(Value = "oncePerWeek")]
-            oncePerWeek = 3,
-            [EnumMember(Value = "lessThanOncePerWeek")]
-            lessThanOncePerWeek = 4,
             [EnumMember(Value = "never")]
-            never = 5
+            never = 10,
+            [EnumMember(Value = "lessThanOncePerWeek")]
+            lessThanOncePerWeek = 20,
+            [EnumMember(Value = "oncePerWeek")]
+            oncePerWeek = 30,
+            [EnumMember(Value = "moreThanOncePerWeek")]
+            moreThanOncePerWeek = 40,
+            [EnumMember(Value = "always")]
+            always = 50
         }
 
-        public enum VerbosityType
+        public enum Role : int
+        {
+            [EnumMember(Value = "member")]
+            member = 0,
+            [EnumMember(Value = "admin")]
+            elder = 10,
+            [EnumMember(Value = "coLeader")]
+            coleader = 20,
+            [EnumMember(Value = "leader")]
+            leader = 30
+        }
+
+        public enum VerbosityType : int
         {
             None = 0,
             PreemptiveRateLimits = 1,
@@ -34,14 +46,25 @@ namespace CocApiStandardLibrary
         public enum State : int
         {
             [EnumMember(Value = "notInWar")]
-            notInWar = 0,
+            NotInWar = 0,
             [EnumMember(Value = "preparation")]
-            preparation = 1,
+            Preparation = 10,
             [EnumMember(Value = "inWar")]
-            inWar = 2,
+            InWar = 20,
             [EnumMember(Value = "warEnded")]
-            warEnded = 3
+            WarEnded = 30
         }
+
+        public enum Result : int
+        {
+            undetermined = 0,
+            win = 1,
+            lose = 2,
+            draw = 3
+
+        }
+
+
 
     }
 }

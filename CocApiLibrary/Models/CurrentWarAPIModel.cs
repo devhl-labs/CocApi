@@ -1,6 +1,6 @@
-﻿using System;
+﻿using CocApiLibrary.Converters;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.Json.Serialization;
 using static CocApiStandardLibrary.Enums;
@@ -9,67 +9,17 @@ namespace CocApiStandardLibrary.Models
 {
     public class CurrentWarAPIModel
     {
-        private string _endTime = string.Empty;
-
-        private string _preparationStartTime = string.Empty;
-
-        private string _startTime = string.Empty;
-        public string EndTime
-        {
-            get { return _endTime; }
-            set
-            {
-                _endTime = value;
-
-                EndTimeUTC = _endTime.ToDateTime();
-            }
-        }
-
-
-
-
+        [JsonPropertyName("endTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUTC { get; set; }
 
-        public string PreparationStartTime
-        {
-            get { return _preparationStartTime; }
-            set
-            {
-                _preparationStartTime = value;
-
-                PreparationStartTimeUTC = _preparationStartTime.ToDateTime();
-            }
-        }
-
+        [JsonPropertyName("preparationStartTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime PreparationStartTimeUTC { get; set; }
 
-        public string StartTime
-        {
-            get { return _startTime; }
-            set
-            {
-                _startTime = value;
-
-                StartTimeUTC = _startTime.ToDateTime();
-            }
-        }
-
+        [JsonPropertyName("startTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime StartTimeUTC { get; set; }
-
-        private string _stateString = string.Empty;
-
-        [JsonPropertyName("State")]
-        public string StateString
-        {
-            get { return _stateString; }
-            set {
-                _stateString = value;
-                if(Enum.TryParse(_stateString, out State state))
-                {
-                    StateEnum = state;
-                }
-            }
-        }
 
         public int TeamSize { get; set; }
 
@@ -101,16 +51,20 @@ namespace CocApiStandardLibrary.Models
             }
         }
 
+        public State State { get; set; }
+
+
+
+
 
 
         [JsonIgnore]
         public IList<WarClanAPIModel> Clans { get; set; } = new List<WarClanAPIModel>();
 
         [JsonIgnore]
-        public IList<AttackAPIModel> AttackList { get; set; } = new List<AttackAPIModel>();
+        public IList<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
 
-        [JsonIgnore]
-        public State StateEnum { get; set; }
+
 
 
 
@@ -131,11 +85,11 @@ namespace CocApiStandardLibrary.Models
                 {
                     member.ClanTag = clan.Tag;
 
-                    if (AttackList != null)
+                    if (Attacks != null)
                     {
                         foreach (AttackAPIModel attack in member.Attacks)
                         {
-                            AttackList.Add(attack);
+                            Attacks.Add(attack);
 
                             MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
 
@@ -149,7 +103,7 @@ namespace CocApiStandardLibrary.Models
                 }
             }
 
-            AttackList = AttackList.OrderBy(x => x.Order).ToList();
+            Attacks = Attacks.OrderBy(x => x.Order).ToList();
 
             foreach (WarClanAPIModel clan in Clans)
             {
