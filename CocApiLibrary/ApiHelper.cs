@@ -6,17 +6,17 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using static CocApiStandardLibrary.Enums;
-using CocApiStandardLibrary.Models;
+using static CocApiLibrary.Enums;
+using CocApiLibrary.Models;
 using System.Text.Json.Serialization;
 using System.IO;
 using System.Diagnostics;
-using CocApiStandardLibrary.Exceptions;
+using CocApiLibrary.Exceptions;
 using System.Text.Json;
 using System.Reflection.Emit;
 using CocApiLibrary;
 
-namespace CocApiStandardLibrary
+namespace CocApiLibrary
 {
     internal class ApiHelper
     {
@@ -113,7 +113,7 @@ namespace CocApiStandardLibrary
             }
         }
 
-        private T GetStoredItem<T>(string encodedUrl) where T : class, new()
+        private T? GetStoredItem<T>(string encodedUrl) where T : class, new()
         {
             var cachedItemKVP = _cachedItems.Where(c => c.Key == encodedUrl).OrderByDescending(c => c.Value.DateTimeUTC).FirstOrDefault();
 
@@ -151,13 +151,19 @@ namespace CocApiStandardLibrary
             {
                 cocApi.IsAvailable = true;
 
-                T result = JsonSerializer.Deserialize<T>(responseText, options); 
+                if(JsonSerializer.Deserialize<T>(responseText, options) is T result)
+                {
+                    StoredItem cachedItem = new StoredItem(result, stopwatch);
 
-                StoredItem cachedItem = new StoredItem(result, stopwatch);
+                    _cachedItems.TryAdd(encodedUrl, cachedItem);
 
-                _cachedItems.TryAdd(encodedUrl, cachedItem);
+                    return (T)cachedItem.DownloadedItem;
+                }
+                else
+                {
+                    throw new CocApiException("The response could not be parsed.");
+                }
 
-                return (T)cachedItem.DownloadedItem;
             }
             else
             {
@@ -170,7 +176,7 @@ namespace CocApiStandardLibrary
                     token.IsRateLimited = true;
                 }
 
-                ResponseMessage ex = JsonSerializer.Deserialize<ResponseMessage>(responseText, options);
+                ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, options);
 
                 throw new ServerResponseException(ex, response.StatusCode);
             }

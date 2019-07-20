@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public class ResponseMessage
+    public class ResponseMessageAPIModel
     {
         public string Reason { get; set; } = string.Empty;
         public string Message { get; set; } = string.Empty;

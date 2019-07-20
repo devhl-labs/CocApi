@@ -1,9 +1,9 @@
 ﻿using CocApiLibrary.Converters;
 using System;
 using System.Text.Json.Serialization;
-using static CocApiStandardLibrary.Enums;
+using static CocApiLibrary.Enums;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
     public class WarLogEntryModel
     {
@@ -20,16 +20,5 @@ namespace CocApiStandardLibrary.Models
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUTC { get; set; }
 
-
-
-
-
-
-
-        internal void Process()
-        {
-            Clan?.Process();
-            Opponent?.Process();
-        }
     }
 }

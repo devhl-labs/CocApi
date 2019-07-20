@@ -1,14 +1,14 @@
-﻿using CocApiStandardLibrary.Models;
-using static CocApiStandardLibrary.Enums;
+﻿using CocApiLibrary.Models;
+using static CocApiLibrary.Enums;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
 using System.Timers;
-using CocApiStandardLibrary.Exceptions;
+using CocApiLibrary.Exceptions;
 using System.Text.Json;
 
-namespace CocApiStandardLibrary
+namespace CocApiLibrary
 {
     public delegate void IsAvailableChangedEventHandler(bool isAvailable);
     public class CocApi

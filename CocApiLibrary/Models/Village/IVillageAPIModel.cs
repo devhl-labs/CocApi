@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
     public interface IVillageAPIModel
     {
         string Tag { get; }
-        string ClanTag { get; }
+        string Name { get; }
     }
 }

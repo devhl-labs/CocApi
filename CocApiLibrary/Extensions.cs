@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CocApiStandardLibrary
+namespace CocApiLibrary
 {
     public static class Extensions
     {

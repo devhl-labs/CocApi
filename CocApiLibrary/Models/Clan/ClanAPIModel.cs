@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
-using static CocApiStandardLibrary.Enums;
+using static CocApiLibrary.Enums;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public partial class ClanAPIModel
+    public partial class ClanAPIModel : IClanAPIModel
     {
         public string Tag { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;
+
+        public BadgeUrlModel? BadgeUrls { get; set; }
+
+        public int ClanLevel { get; set; }
+
+        public IEnumerable<MemberListAPIModel>? Members { get; set; }
+
+
+
 
         public string Type { get; set; } = string.Empty;
 
@@ -17,9 +25,7 @@ namespace CocApiStandardLibrary.Models
 
         public LocationModel? Location { get; set; }
 
-        public BadgeUrlModel? BadgeUrls { get; set; }
 
-        public int ClanLevel { get; set; }
 
         public int ClanPoints { get; set; }
 
@@ -37,23 +43,9 @@ namespace CocApiStandardLibrary.Models
 
         public bool IsWarLogPublic { get; set; }
 
-        public int Members { get; set; }
-
-        public IEnumerable<MemberListAPIModel>? MemberList { get; set; }
+        public int MemberCount { get; set; }
 
         public WarFrequency WarFrequency { get; set; }
 
-
-
-
-
-
-        internal void Process()
-        {
-            MemberList?.ForEach(memberListAPIModel =>
-            {
-                memberListAPIModel.ClanTag = Tag;
-            });
-        }
     }
 }

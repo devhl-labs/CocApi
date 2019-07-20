@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using CocApiLibrary.Converters;
-using CocApiStandardLibrary.Models;
-using static CocApiStandardLibrary.Enums;
+using CocApiLibrary.Models;
+using static CocApiLibrary.Enums;
 
-namespace CocApiStandardLibrary
+namespace CocApiLibrary
 {
-    public class VillageAPIModel
+    public class VillageAPIModel : IVillageAPIModel
     {
         
         private string _tag = string.Empty;

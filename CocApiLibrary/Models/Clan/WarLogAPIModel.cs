@@ -1,19 +1,20 @@
-﻿using System.Collections.Generic;
+﻿using CocApiLibrary.Models;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public class WarLogModel
+    public class WarLogModel : IProcess
     {
         public IEnumerable<WarLogEntryModel>? Items { get; set; }
 
         public PagingAPIModel? Paging { get; set; }
 
-        internal void Process()
+        void IProcess.Process()
         {
             Items?.ForEach(item =>
             {
-                item.Process();
+                if (item is IProcess process) process.Process();
             });
         }
     }

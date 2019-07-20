@@ -1,8 +1,8 @@
 ﻿using CocApiLibrary.Converters;
 using System.Text.Json.Serialization;
-using static CocApiStandardLibrary.Enums;
+using static CocApiLibrary.Enums;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
     public class MemberListAPIModel : IVillageAPIModel
     {
@@ -28,7 +28,5 @@ namespace CocApiStandardLibrary.Models
         public int Donations { get; set; }
 
         public int DonationsReceived { get; set; }
-        
-        public string ClanTag { get; set; } = string.Empty;
     }
 }

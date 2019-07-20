@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
     public class LeagueAPIModel
     {
@@ -8,7 +8,7 @@ namespace CocApiStandardLibrary.Models
 
         public string Name { get; set; } = string.Empty;
 
-        public IconUrlsModel? IconUrls { get; set; }
+        public IconUrlsAPIModel? IconUrls { get; set; }
 
     }
 }

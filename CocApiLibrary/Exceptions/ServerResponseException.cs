@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using CocApiStandardLibrary.Models;
+using CocApiLibrary.Models;
 
-namespace CocApiStandardLibrary.Exceptions
+namespace CocApiLibrary.Exceptions
 {
     [Serializable]
     public class ServerResponseException : Exception
@@ -13,7 +13,7 @@ namespace CocApiStandardLibrary.Exceptions
         public readonly System.Net.HttpStatusCode HttpStatusCode;
 
 
-        public ServerResponseException(ResponseMessage responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage.Reason)
+        public ServerResponseException(ResponseMessageAPIModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage.Reason)
         {
             Reason = responseMessage.Reason;
             HttpStatusCode = httpStatusCode;

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public class IconUrlsModel
+    public class IconUrlsAPIModel
     {
         public string Small { get; set; } = string.Empty;
 

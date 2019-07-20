@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
-using static CocApiStandardLibrary.Enums;
+using static CocApiLibrary.Enums;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public class CurrentWarAPIModel
+    public class CurrentWarAPIModel : IProcess
     {
         [JsonPropertyName("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
@@ -64,14 +64,15 @@ namespace CocApiStandardLibrary.Models
         [JsonIgnore]
         public IList<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
 
+        [JsonIgnore]
+        public Result Result { get; set; }  //todo update this when appropriate
 
 
 
 
 
 
-
-        internal void Process()
+        void IProcess.Process()
         {
             Clans = Clans.OrderBy(x => x.Tag).ToList();
 
@@ -83,15 +84,13 @@ namespace CocApiStandardLibrary.Models
                 }
                 foreach (MemberAPIModel member in clan.Members)
                 {
-                    member.ClanTag = clan.Tag;
-
-                    if (Attacks != null)
+                    if (member.Attacks != null)
                     {
                         foreach (AttackAPIModel attack in member.Attacks)
                         {
                             Attacks.Add(attack);
 
-                            MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
+                            MemberAPIModel defendingBase =(MemberAPIModel) Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
 
                             defendingBase.Defenses.Add(attack);
 
@@ -119,8 +118,6 @@ namespace CocApiStandardLibrary.Models
 
                 foreach (MemberAPIModel member in clan.Members)
                 {
-                    member.ClanTag = clan.Tag;
-
                     member.Attacks = member.Attacks.OrderBy(x => x.Order).ToList();
                     member.Defenses = member.Defenses.OrderBy(x => x.Order).ToList();
                 }

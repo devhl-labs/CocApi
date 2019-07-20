@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
     public class MemberAPIModel : IVillageAPIModel
     {
@@ -18,8 +18,6 @@ namespace CocApiStandardLibrary.Models
         public BestOpponentAttackAPIModel? BestOpponentAttack { get; set; }
 
         public IEnumerable<AttackAPIModel>? Attacks { get; set; }
-
-        public string ClanTag { get; set; } = string.Empty;
 
 
 

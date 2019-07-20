@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using static CocApiStandardLibrary.Enums;
+using static CocApiLibrary.Enums;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
     public class LeagueGroupAPIModel
     {

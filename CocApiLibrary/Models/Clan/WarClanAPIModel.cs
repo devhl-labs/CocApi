@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public class WarClanAPIModel
+    public class WarClanAPIModel : IClanAPIModel
     {
         public string Tag { get; set; } = string.Empty;
 
@@ -12,6 +12,12 @@ namespace CocApiStandardLibrary.Models
         public BadgeUrlModel? BadgeUrls { get; set; }
 
         public int ClanLevel { get; set; }
+
+        public IEnumerable<MemberAPIModel>? Members { get; set; }
+
+
+
+
 
         [JsonPropertyName("attacks")]
         public int AttackCount { get; set; }
@@ -22,7 +28,7 @@ namespace CocApiStandardLibrary.Models
 
         public decimal DestructionPercentage { get; set; }
 
-        public IEnumerable<MemberAPIModel>? Members { get; set; }
+
 
 
 
@@ -33,20 +39,6 @@ namespace CocApiStandardLibrary.Models
 
         [JsonIgnore]
         public IList<AttackAPIModel> DefensesList { get; set; } = new List<AttackAPIModel>();
-
-
-
-
-
-
-
-        internal void Process()
-        {
-            Members?.ForEach(member =>
-            {
-                member.ClanTag = Tag;
-            });
-        }
     }
 
 

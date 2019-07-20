@@ -1,10 +1,10 @@
-﻿using CocApiStandardLibrary;
+﻿using CocApiLibrary;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static CocApiStandardLibrary.Enums;
+using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Converters
 {

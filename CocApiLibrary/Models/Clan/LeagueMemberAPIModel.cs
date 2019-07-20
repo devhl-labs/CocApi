@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CocApiStandardLibrary.Models
+namespace CocApiLibrary.Models
 {
-    public class LeagueMemberAPIModel
+    public class LeagueMemberAPIModel : IVillageAPIModel
     {
         public string Tag { get; set; } = string.Empty;
 

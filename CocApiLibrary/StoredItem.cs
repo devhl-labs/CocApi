@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using CocApiStandardLibrary.Models;
+using CocApiLibrary.Models;
 
-namespace CocApiStandardLibrary
+namespace CocApiLibrary
 {
     public class StoredItem
     {

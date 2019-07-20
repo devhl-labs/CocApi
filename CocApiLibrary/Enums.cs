@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 
-namespace CocApiStandardLibrary
+namespace CocApiLibrary
 {
     public class Enums
     {
