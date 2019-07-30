@@ -149,7 +149,7 @@ namespace CocApiLibrary.Models
                         {
                             Attacks.Add(attack);
 
-                            MemberAPIModel defendingBase =(MemberAPIModel) Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
+                            MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
 
                             defendingBase.Defenses.Add(attack);
 

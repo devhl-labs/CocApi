@@ -33,6 +33,23 @@ namespace CocApiLibrary
                 {
                     Expires = DateTime.UtcNow.AddSeconds(15);
                 }
+                else if (currentWarAPIModel.State == Enums.State.WarEnded)
+                {
+                    Expires = DateTime.UtcNow.AddDays(5);
+                }
+            }
+            else if(downloadedItem is LeagueWarAPIModel leagueWarAPIModel)
+            {
+                Expires = leagueWarAPIModel.StartTimeUTC;
+
+                if (leagueWarAPIModel.State == Enums.State.InWar)
+                {
+                    Expires = DateTime.UtcNow.AddSeconds(15);
+                }
+                else if(leagueWarAPIModel.State == Enums.State.WarEnded)
+                {
+                    Expires = DateTime.UtcNow.AddDays(5);
+                }
             }
 
             if (downloadedItem is LeagueGroupAPIModel)
