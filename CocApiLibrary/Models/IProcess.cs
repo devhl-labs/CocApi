@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CocApiLibrary.Models
 {
-    internal interface IProcess
-    {
-        void Process();
+    //internal interface IProcess
+    //{
+    //    void Process(CocApi cocApi);
 
-    }
+    //}
 }

@@ -19,9 +19,11 @@ namespace ClashOfClansConsoleTest
 
             CocApi cocApi = new CocApi(tokens, 3000, 60000, Enums.VerbosityType.None);
 
-            //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
+            var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
             //var clan = await cocApi.GetClanAsync("#8J82PV0C");
+
+            var clan2 = await cocApi.GetClanAsync("#2C8V29YJ");
 
             var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
 
@@ -29,12 +31,11 @@ namespace ClashOfClansConsoleTest
 
             //var clans = await cocApi.GetClansAsync("the");
 
-            //await cocApi.GetLeagueWarAsync("#2PC9VR9P0");
+            var leaguewar = await cocApi.GetLeagueWarAsync("#2PC9VR9P0");
 
-            //var wars = await cocApi.GetWarLogAsync("#8J82PV0C");
+            var wars = await cocApi.GetWarLogAsync("#8J82PV0C");
 
             Console.WriteLine("");
-
         }
     }
 }

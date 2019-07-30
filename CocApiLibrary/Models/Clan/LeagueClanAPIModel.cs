@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class LeagueClanAPIModel
+    public class LeagueClanAPIModel : IClanAPIModel
     {
         public string Tag { get; set; } = string.Empty;
 

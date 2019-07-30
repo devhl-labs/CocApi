@@ -1,10 +1,18 @@
-﻿using System;
+﻿using CocApiLibrary.Exceptions;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public partial class ClanAPIModel : IClanAPIModel
+    public class ClanAPIModel : IClanAPIModel
     {
         public string Tag { get; set; } = string.Empty;
 
@@ -14,6 +22,7 @@ namespace CocApiLibrary.Models
 
         public int ClanLevel { get; set; }
 
+        [JsonPropertyName("memberList")]
         public IEnumerable<MemberListAPIModel>? Members { get; set; }
 
 
@@ -43,9 +52,14 @@ namespace CocApiLibrary.Models
 
         public bool IsWarLogPublic { get; set; }
 
+        [JsonPropertyName("members")]
         public int MemberCount { get; set; }
 
         public WarFrequency WarFrequency { get; set; }
 
+
+
+        [JsonIgnore]
+        public ConcurrentDictionary<string, CurrentWarAPIModel> Wars { get; set; } = new ConcurrentDictionary<string, CurrentWarAPIModel>();
     }
 }

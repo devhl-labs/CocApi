@@ -11,29 +11,30 @@ namespace CocApiLibrary
         public enum WarFrequency : int
         {
             [EnumMember(Value = "unknown")]
-            unknown = 0,
+            Unknown = 0,
             [EnumMember(Value = "never")]
-            never = 10,
+            Never = 10,
             [EnumMember(Value = "lessThanOncePerWeek")]
-            lessThanOncePerWeek = 20,
+            LessThanOncePerWeek = 20,
             [EnumMember(Value = "oncePerWeek")]
-            oncePerWeek = 30,
+            OncePerWeek = 30,
             [EnumMember(Value = "moreThanOncePerWeek")]
-            moreThanOncePerWeek = 40,
+            MoreThanOncePerWeek = 40,
             [EnumMember(Value = "always")]
-            always = 50
+            Always = 50
         }
 
         public enum Role : int
         {
+            Unknown = 0,
             [EnumMember(Value = "member")]
-            member = 0,
+            Member = 10,
             [EnumMember(Value = "admin")]
-            elder = 10,
+            Elder = 20,
             [EnumMember(Value = "coLeader")]
-            coleader = 20,
+            Coleader = 30,
             [EnumMember(Value = "leader")]
-            leader = 30
+            Leader = 40
         }
 
         public enum VerbosityType : int
@@ -57,13 +58,21 @@ namespace CocApiLibrary
 
         public enum Result : int
         {
-            undetermined = 0,
-            win = 1,
-            lose = 2,
-            draw = 3
-
+            Undetermined = 0,
+            [EnumMember(Value = "win")]
+            Win = 1,
+            [EnumMember(Value = "lose")]
+            Lose = 2,
+            [EnumMember(Value = "draw")]
+            Draw = 3
         }
 
+        public enum WarType : int
+        {
+            Random = 0,
+            Friendly = 1,
+            SCCWL = 2
+        }
 
 
     }

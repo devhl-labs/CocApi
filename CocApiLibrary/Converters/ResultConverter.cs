@@ -14,17 +14,17 @@ namespace CocApiLibrary.Converters
         {
             string result = reader.GetString();
 
-            if (string.IsNullOrEmpty(result)) return Result.undetermined;
+            if (string.IsNullOrEmpty(result)) return Result.Undetermined;
 
             result = result.ToLower();
 
-            if (result == "win") return Result.win;
+            if (result == "win") return Result.Win;
 
-            if (result == "lose") return Result.lose;
+            if (result == "lose") return Result.Lose;
 
-            if (result == "draw") return Result.draw;
+            if (result == "draw") return Result.Draw;
 
-            if (result == "undetermined") return Result.undetermined;
+            if (result == "undetermined") return Result.Undetermined;
 
             throw new Exception($"{result} is not a supported role.");      
         }

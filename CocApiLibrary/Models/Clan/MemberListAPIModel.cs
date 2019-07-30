@@ -11,7 +11,7 @@ namespace CocApiLibrary.Models
         public string Name { get; set; } = string.Empty;
 
         [JsonConverter(typeof(RoleConverter))]
-        public Role Role { get; set; }
+        public Role Role { get; set; } = Role.Unknown;
 
         public int ExpLevel { get; set; }
 

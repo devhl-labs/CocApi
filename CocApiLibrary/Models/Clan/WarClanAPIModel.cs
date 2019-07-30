@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
@@ -35,10 +36,13 @@ namespace CocApiLibrary.Models
 
 
         [JsonIgnore]
-        public IList<AttackAPIModel> AttacksList { get; set; } = new List<AttackAPIModel>();
+        public IList<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
 
         [JsonIgnore]
-        public IList<AttackAPIModel> DefensesList { get; set; } = new List<AttackAPIModel>();
+        public IList<AttackAPIModel> Defenses { get; set; } = new List<AttackAPIModel>();
+
+        [JsonIgnore]
+        public Result Result { get; set; }
     }
 
 

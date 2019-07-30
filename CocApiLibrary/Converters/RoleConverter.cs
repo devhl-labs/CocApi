@@ -14,13 +14,15 @@ namespace CocApiLibrary.Converters
         {
             string role = reader.GetString().ToLower();
 
-            if (role == "leader") return Role.leader;
+            if (string.IsNullOrEmpty(role)) return Role.Unknown;
 
-            if (role == "coleader") return Role.coleader;
+            if (role == "leader") return Role.Leader;
 
-            if (role == "admin") return Role.elder;
+            if (role == "coleader") return Role.Coleader;
 
-            if (role == "member") return Role.member;
+            if (role == "admin") return Role.Elder;
+
+            if (role == "member") return Role.Member;
 
             throw new Exception($"{role} is not a supported role.");      
         }

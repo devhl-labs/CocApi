@@ -15,6 +15,7 @@ using CocApiLibrary.Exceptions;
 using System.Text.Json;
 using System.Reflection.Emit;
 using CocApiLibrary;
+using CocApiLibrary.Converters;
 
 namespace CocApiLibrary
 {
@@ -53,13 +54,17 @@ namespace CocApiLibrary
             }
 
             options.Converters.Add(new JsonStringEnumConverter());
+
+            options.Converters.Add(new ResultConverter());
+
+            options.Converters.Add(new RoleConverter());
         }
 
 
 
 
 
-        public async Task<T> GetResponse<T>(CocApi cocApi, string encodedUrl, bool allowCachedItem = true) where T : class, new()
+        public async Task<T?> GetResponse<T>(CocApi cocApi, string encodedUrl, bool allowCachedItem = true) where T : class, new()
         {
             T? result = null;
 
@@ -119,17 +124,17 @@ namespace CocApiLibrary
 
             if (cachedItemKVP.Value != null && cachedItemKVP.Value.Expires > DateTime.UtcNow)
             {
-                return (T)cachedItemKVP.Value.DownloadedItem;
+                return cachedItemKVP.Value as T;
             }
             else if (cachedItemKVP.Value != null)
             {
-                _cachedItems.TryRemove(cachedItemKVP.Key, out StoredItem value);
+                _cachedItems.TryRemove(cachedItemKVP.Key, out _);
             }
 
             return default;
         }
 
-        private async Task<T> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : new()
+        private async Task<T?> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : class, new()
         {
             TokenObject token = await GetToken(encodedUrl);
 
@@ -151,13 +156,13 @@ namespace CocApiLibrary
             {
                 cocApi.IsAvailable = true;
 
-                if(JsonSerializer.Deserialize<T>(responseText, options) is T result)
+                if (JsonSerializer.Deserialize<T>(responseText, options) is T result)
                 {
-                    StoredItem cachedItem = new StoredItem(result, stopwatch);
+                    StoredItem cachedItem = new StoredItem(result, stopwatch, encodedUrl);
 
                     _cachedItems.TryAdd(encodedUrl, cachedItem);
 
-                    return (T)cachedItem.DownloadedItem;
+                    return cachedItem.DownloadedItem as T;
                 }
                 else
                 {
@@ -171,7 +176,7 @@ namespace CocApiLibrary
                 {
                     cocApi.IsAvailable = false;
                 }
-                else if (response.StatusCode == (System.Net.HttpStatusCode) 429) //custom response for rate limited
+                else if (response.StatusCode == (System.Net.HttpStatusCode)429) //custom response for rate limited
                 {
                     token.IsRateLimited = true;
                 }

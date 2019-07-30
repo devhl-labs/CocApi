@@ -1,25 +1,31 @@
 ﻿using CocApiLibrary.Models;
 using static CocApiLibrary.Enums;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System;
 using System.Timers;
 using CocApiLibrary.Exceptions;
 using System.Text.Json;
+using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace CocApiLibrary
 {
     public delegate void IsAvailableChangedEventHandler(bool isAvailable);
+
     public class CocApi
     {
-        private readonly ApiHelper apiHelper;
         private bool _isAvailable = true;
-        private readonly Timer _testConnection = new Timer();
-        private readonly Timer _timer;
+        private readonly Timer _testConnection = new System.Timers.Timer();
+        private readonly System.Timers.Timer _timer;
+        private readonly ApiHelper _apiHelper;
 
         public event IsAvailableChangedEventHandler IsAvailableChanged;
+
+        public static readonly Regex ValidTagCharacters = new Regex(@"^#[PYLQGRJCUV0289]+$");
+
         public DateTime NextTimerResetUTC { get; private set; }
+
 
         public bool IsAvailable
         {
@@ -45,26 +51,17 @@ namespace CocApiLibrary
 
 
 
-
         public CocApi(IEnumerable<string> tokens, int tokenTimeOutInMilliseconds, int timeToWaitForWebRequests, VerbosityType verbosityType)
         {
-            try
-            {
-                apiHelper = new ApiHelper(timeToWaitForWebRequests, verbosityType, tokens, tokenTimeOutInMilliseconds);
+            _apiHelper = new ApiHelper(timeToWaitForWebRequests, verbosityType, tokens, tokenTimeOutInMilliseconds);
 
-                _timer = new Timer();
-                _timer.Elapsed += TimerElapsed;
-                //_timer.Interval = 10000;
-                //_timer.Interval = 600000;
-                _timer.Interval = 1800000; //30 minutes
-                _timer.AutoReset = true;
-                _timer.Enabled = true;
-                NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
-            }
-            catch (Exception e)
-            {
-                throw new CocApiException(e.Message, e);
-            }
+            _timer = new Timer();
+            _timer.Elapsed += TimerElapsed;
+            _timer.Interval = 1800000; //30 minutes
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+
+            NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);            
         }
 
 
@@ -75,7 +72,7 @@ namespace CocApiLibrary
 
 
 
-        public async Task<ClanAPIModel> GetClanAsync(string clanTag, bool allowCachedItem = true)
+        public async Task<ClanAPIModel?> GetClanAsync(string clanTag, bool allowCachedItem = true)
         {
             try
             {
@@ -83,7 +80,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                return await apiHelper.GetResponse<ClanAPIModel>(this, url, allowCachedItem);
+                return await _apiHelper.GetResponse<ClanAPIModel>(this, url, allowCachedItem);
             }
             catch (Exception e)
             {
@@ -91,7 +88,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<ClanSearchModel> GetClansAsync(string? clanName = null
+        public async Task<ClanSearchModel?> GetClansAsync(string? clanName = null
                                                         , WarFrequency? warFrequency = null
                                                         , int? locationID = null
                                                         , int? minMembers = null
@@ -154,10 +151,12 @@ namespace CocApiLibrary
 
                 if (url.EndsWith("&"))
                 {
-                    url = url.Substring(0, url.Length - 1);
+                    url = url[0..^1];
                 }
 
-                return await apiHelper.GetResponse<ClanSearchModel>(this, url);
+                //return (await _webResponse.GetWebResponse<ClanSearchModel>(this, url)).DownloadedItem;
+
+                return await _apiHelper.GetResponse<ClanSearchModel>(this, url, true);
             }
             catch (Exception e)
             {
@@ -165,7 +164,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<CurrentWarAPIModel> GetCurrentWarAsync(string clanTag)
+        public async Task<CurrentWarAPIModel?> GetCurrentWarAsync(string clanTag)
         {
             try
             {
@@ -173,7 +172,14 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
-                return await apiHelper.GetResponse<CurrentWarAPIModel>(this, url);
+                CurrentWarAPIModel? currentWarAPIModel = await _apiHelper.GetResponse<CurrentWarAPIModel>(this, url, true);
+
+                if(currentWarAPIModel != null)
+                {
+                    currentWarAPIModel.Process();
+                }
+
+                return currentWarAPIModel;
             }
             catch (Exception e)
             {
@@ -182,7 +188,7 @@ namespace CocApiLibrary
 
         }
 
-        public async Task<LeagueGroupAPIModel> GetLeagueGroupAsync(string clanTag)
+        public async Task<LeagueGroupAPIModel?> GetLeagueGroupAsync(string clanTag)
         {
             try
             {
@@ -190,7 +196,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar/leaguegroup";
 
-                return await apiHelper.GetResponse<LeagueGroupAPIModel>(this, url);
+                return await _apiHelper.GetResponse<LeagueGroupAPIModel>(this, url);
             }
             catch (Exception e)
             {
@@ -199,7 +205,7 @@ namespace CocApiLibrary
 
         }
 
-        public async Task<CurrentWarAPIModel> GetLeagueWarAsync(string warTag)
+        public async Task<LeagueWarAPIModel?> GetLeagueWarAsync(string warTag)
         {
             try
             {
@@ -207,7 +213,16 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                return await apiHelper.GetResponse<CurrentWarAPIModel>(this, url);
+                LeagueWarAPIModel? leagueWar = await _apiHelper.GetResponse<LeagueWarAPIModel>(this, url);
+
+                if(leagueWar != null)
+                {
+                    leagueWar.Process();
+
+                    leagueWar.WarTag = warTag;
+                }
+
+                return leagueWar;
             }
             catch (Exception e)
             {
@@ -216,7 +231,7 @@ namespace CocApiLibrary
 
         }
 
-        public async Task<VillageAPIModel> GetVillageAsync(string villageTag)
+        public async Task<VillageAPIModel?> GetVillageAsync(string villageTag)
         {
             try
             {
@@ -224,7 +239,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                return await apiHelper.GetResponse<VillageAPIModel>(this, url);
+                return await _apiHelper.GetResponse<VillageAPIModel>(this, url);
             }
             catch (Exception e)
             {
@@ -232,7 +247,7 @@ namespace CocApiLibrary
             }            
         }
 
-        public async Task<WarLogModel> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null)
+        public async Task<WarLogModel?> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null)
         {
             try
             {
@@ -259,15 +274,15 @@ namespace CocApiLibrary
 
                 if (url.EndsWith("&"))
                 {
-                    url = url.Substring(0, url.Length - 1);
+                    url = url[0..^1];
                 }
 
                 if (url.EndsWith("?"))
                 {
-                    url = url.Substring(0, url.Length - 1);
+                    url = url[0..^1];
                 }
 
-                return await apiHelper.GetResponse<WarLogModel>(this, url);
+                return await _apiHelper.GetResponse<WarLogModel>(this, url);
             }
             catch (Exception e)
             {
@@ -277,7 +292,9 @@ namespace CocApiLibrary
 
         public string GetTokenStatus()
         {
-            return apiHelper.GetTokenStatus();
+            //return _webResponse.GetTokenStatus();
+
+            return _apiHelper.GetTokenStatus();
         }
 
         public bool IsValidTag(string tag)
@@ -287,19 +304,20 @@ namespace CocApiLibrary
                 return false;
             }
 
-            if (!tag.StartsWith("#"))
-            {
-                return false;
-            }
+            //if (!tag.StartsWith("#"))
+            //{
+            //    return false;
+            //}
 
             if(tag == "#0")
             {
                 return false;
             }
 
-            return true;
+            return ValidTagCharacters.IsMatch(tag);
         }
 
+        
 
 
 
@@ -332,6 +350,8 @@ namespace CocApiLibrary
         {
             NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
         }
+
+ 
 
     }
 }

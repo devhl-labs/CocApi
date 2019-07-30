@@ -11,13 +11,17 @@ namespace CocApiLibrary
         public DateTime Expires { get; }
         public TimeSpan TimeToDownload { get; }
 
-        public StoredItem(object downloadedItem, Stopwatch stopwatch)
+        public string EncodedUrl { get; }
+
+        public StoredItem(object downloadedItem, Stopwatch stopwatch, string encodedUrl)
         {
             TimeToDownload = stopwatch.Elapsed;
 
             DateTimeUTC = DateTime.UtcNow;
 
             DownloadedItem = downloadedItem;
+
+            EncodedUrl = encodedUrl;
 
             Expires = DateTime.UtcNow.AddMinutes(5);
 
@@ -35,6 +39,15 @@ namespace CocApiLibrary
             {
                 Expires = DateTime.UtcNow.AddMinutes(5);
             }
+        }
+
+        public bool IsExpired()
+        {
+            if(DateTime.UtcNow > Expires)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

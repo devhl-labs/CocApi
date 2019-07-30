@@ -51,7 +51,7 @@ namespace CocApiLibrary
         public int VersusBattleWins { get; set; }
 
         [JsonConverter(typeof(RoleConverter))]
-        public Role Role { get; set; }
+        public Role Role { get; set; } = Role.Unknown;
 
         public int Donations { get; set; }
 
