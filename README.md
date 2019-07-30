@@ -1,6 +1,6 @@
 # CocApi
 This library will provide responses from developer.clashofclans.com\
-This is a rewrite of the class library Minion Bot uses.  It is a work in progress.  It uses .NET Standard 2.1 which is still in preview.\  
+This is a rewrite of the class library Minion Bot uses.  It is a work in progress.  It uses .NET Standard 2.1 which is still in preview.
 ## Custom things this library provides:
 -current war has Clans object.  This is both clans sorted alphabetically by tag\
 -Clans objects contain Attacks and Defenses that is copied from the members attacks collection\
