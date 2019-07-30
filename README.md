@@ -8,7 +8,7 @@ This is a rewrite of the class library Minion Bot uses.  It is a work in progres
 -WarType is set based on the length of prep day\
 -WarTag is added to the current war for league wars\
 -tags now reference a regular expression\
--results are stored in memory.  Wont requery the API until the results expire\\
+-results are stored in memory.  Wont requery the API until the results expire\
 ## Future Upgrades:
 -Clan and Opponent objects in current war will go away, use Clans instead\
 -setters will be internal\
