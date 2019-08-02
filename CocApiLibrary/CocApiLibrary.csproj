@@ -6,9 +6,13 @@
 	<Nullable>enable</Nullable>
 	<Authors>devhl</Authors>
 	<Product />
-	<Description>This is a library that will return respsonses from developer.clashofclans.com</Description>
+	<Description>This is a Clash of Clans library that will return respsonses from developer.clashofclans.com</Description>
 	<Version>0.0.1</Version>
 	<AssemblyVersion>0.0.1.0</AssemblyVersion>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
+	<PackageId>CocApiLibrary</PackageId>
+	<Copyright>2019</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
