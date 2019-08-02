@@ -35,6 +35,8 @@ namespace ClashOfClansConsoleTest
 
             //var wars = await cocApi.GetWarLogAsync("#8J82PV0C");
 
+            //test
+
             Console.WriteLine("");
         }
     }
