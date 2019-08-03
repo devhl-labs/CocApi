@@ -18,8 +18,5 @@ namespace CocApiLibrary.Exceptions
             Reason = responseMessage.Reason;
             HttpStatusCode = httpStatusCode;
         }
-
-
-
     }
 }

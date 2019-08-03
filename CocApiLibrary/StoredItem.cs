@@ -6,10 +6,10 @@ namespace CocApiLibrary
 {
     public class StoredItem
     {
-        public DateTime DateTimeUTC { get; }
-        public object DownloadedItem { get; }
-        public DateTime Expires { get; }
-        public TimeSpan TimeToDownload { get; }
+        public DateTime DateTimeUTC { get; set; }
+        public object DownloadedItem { get; set; }
+        public DateTime Expires { get; set; }
+        public TimeSpan TimeToDownload { get; set; }
 
         public string EncodedUrl { get; }
 
@@ -23,7 +23,7 @@ namespace CocApiLibrary
 
             EncodedUrl = encodedUrl;
 
-            Expires = DateTime.UtcNow.AddMinutes(5);
+            Expires = DateTime.UtcNow.AddSeconds(30);
 
             if (downloadedItem is CurrentWarAPIModel currentWarAPIModel)
             {

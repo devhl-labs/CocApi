@@ -8,10 +8,17 @@ using CocApiLibrary.Exceptions;
 using System.Text.Json;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
+using System.Linq;
+using AutoMapper;
 
 namespace CocApiLibrary
 {
     public delegate void IsAvailableChangedEventHandler(bool isAvailable);
+
+    public delegate void ClanChangedEventHandler(ClanAPIModel clanAPIModel);
+
+    public delegate void MembersJoinedEventHandler(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels);
 
     public class CocApi
     {
@@ -19,8 +26,13 @@ namespace CocApiLibrary
         private readonly Timer _testConnection = new System.Timers.Timer();
         private readonly System.Timers.Timer _timer;
         private readonly ApiHelper _apiHelper;
-
+        private readonly ConcurrentDictionary<string, IClanAPIModel> _clan = new ConcurrentDictionary<string, IClanAPIModel>();
+        private readonly List<ClanStore> _clanStores = new List<ClanStore>();
+        internal readonly ConcurrentDictionary<string, StoredItem> clans = new ConcurrentDictionary<string, StoredItem>();
+        internal IMapper Mapper;
         public event IsAvailableChangedEventHandler IsAvailableChanged;
+        public event ClanChangedEventHandler ClanChanged;
+        public event MembersJoinedEventHandler MembersJoined;
 
         public static readonly Regex ValidTagCharacters = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
@@ -49,10 +61,20 @@ namespace CocApiLibrary
         }
 
 
+        public void ClanChangedMethod(ClanAPIModel clanAPIModel)
+        {
+            ClanChanged(clanAPIModel);
+        }
 
+        public void MembersJoinedEvent(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels)
+        {
+            MembersJoined(clanAPIModel, memberListAPIModels);
+        }
 
         public CocApi(IEnumerable<string> tokens, int tokenTimeOutInMilliseconds, int timeToWaitForWebRequests, VerbosityType verbosityType)
         {
+            WebResponse.Initialize(timeToWaitForWebRequests, verbosityType, tokens, tokenTimeOutInMilliseconds);
+
             _apiHelper = new ApiHelper(timeToWaitForWebRequests, verbosityType, tokens, tokenTimeOutInMilliseconds);
 
             _timer = new Timer();
@@ -61,16 +83,49 @@ namespace CocApiLibrary
             _timer.AutoReset = true;
             _timer.Enabled = true;
 
-            NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);            
+            NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ClanAPIModel, ClanAPIModel>().ForMember(x => x.Members, opt => opt.Ignore()).ForMember(x => x.Wars, opt => opt.Ignore());
+            });
+            Mapper = config.CreateMapper();
+            
         }
 
 
 
 
 
+        public void Monitor(bool enabled)
+        {
+            foreach(ClanStore clanStore in _clanStores)
+            {
+                clanStore.Update(enabled);
+            }
+        }
 
+        public void MonitorClans(IEnumerable<string> clanTags, int numOfUpdaters)
+        {
+            if (numOfUpdaters < 1)
+            {
+                return;
+            }
 
+            for (int i = 0; i < numOfUpdaters; i++)
+            {
+                ClanStore clanStore = new ClanStore(this, Mapper);
+                _clanStores.Add(clanStore);
+            }
 
+            int j = 0;
+
+            foreach (string clanTag in clanTags)
+            {
+                _clanStores.ElementAt(j).clanStrings.Add(clanTag);
+                j++;
+                if (j >= numOfUpdaters) { j = 0; }
+            }
+        }
 
         public async Task<ClanAPIModel?> GetClanAsync(string clanTag, bool allowCachedItem = true)
         {
@@ -80,7 +135,13 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                return await _apiHelper.GetResponse<ClanAPIModel>(this, url, allowCachedItem);
+                //return await _apiHelper.GetResponse<ClanAPIModel>(this, url, allowCachedItem);
+
+
+                clans.TryGetValue(clanTag, out var clanAPIModel);
+                (clanAPIModel.DownloadedItem as ClanAPIModel).Process(this);
+                return clanAPIModel.DownloadedItem as ClanAPIModel;
+                
             }
             catch (Exception e)
             {
@@ -351,6 +412,7 @@ namespace CocApiLibrary
             NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
         }
 
+        
  
 
     }

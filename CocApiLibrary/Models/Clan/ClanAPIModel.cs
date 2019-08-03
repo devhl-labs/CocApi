@@ -14,16 +14,42 @@ namespace CocApiLibrary.Models
 {
     public class ClanAPIModel : IClanAPIModel
     {
+        private CocApi? _cocApi;
+
+        public void Process(CocApi cocApi)
+        {
+            _cocApi = cocApi;
+        }
+
         public string Tag { get; set; } = string.Empty;
 
-        public string Name { get; set; } = string.Empty;
+        //public string Name { get; set; } = string.Empty;
+
+        private string _name = string.Empty;
+
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if(_name != value)
+                {
+                    _name = value;
+                    if(_cocApi != null)
+                    {
+                        _cocApi.ClanChangedMethod(this);
+                    }
+                }
+            }
+        }
+
 
         public BadgeUrlModel? BadgeUrls { get; set; }
 
         public int ClanLevel { get; set; }
 
         [JsonPropertyName("memberList")]
-        public IEnumerable<MemberListAPIModel>? Members { get; set; }
+        public IList<MemberListAPIModel>? Members { get; set; }
 
 
 

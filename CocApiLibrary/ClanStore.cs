@@ -1,91 +1,171 @@
-﻿//this was an attempt to have the api polling loop occur in the library and fire events when changes are noticed
-//this could be a future update
+﻿using AutoMapper;
+using CocApiLibrary.Exceptions;
+using CocApiLibrary.Models;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace CocApiLibrary
+{
+    internal class ClanStore
+    {
+        internal readonly List<string> clanStrings = new List<string>();
+        internal readonly IMapper _mapper;
+        private readonly CocApi _cocApi;
+        private bool _update = false;
+
+        public ClanStore(CocApi cocApi, IMapper mapper)
+        {
+            _cocApi = cocApi;
+            _mapper = mapper;
+        }
 
 
 
-//using CocApiLibrary.Exceptions;
-//using CocApiLibrary.Models;
-//using System.Collections.Concurrent;
-//using System.Threading.Tasks;
+        public async Task<ClanAPIModel?> GetOrDownloadAsync(string clanTag, string encodedUrl)
+        { 
+            _cocApi.clans.TryGetValue(clanTag, out StoredItem storedClan);
 
-//namespace CocApiLibrary
-//{
-//    internal class ClanStore
-//    {
-//        internal readonly ConcurrentDictionary<string, StoredItem<ClanAPIModel>> clans = new ConcurrentDictionary<string, StoredItem<ClanAPIModel>>();
-//        private readonly WebResponse _webResponse;
-//        private readonly CocApi _cocApi;
-//        private bool _update = false;
+            if (storedClan != null && !storedClan.IsExpired())
+            {
+                return storedClan.DownloadedItem as ClanAPIModel;
+            }
 
-//        public ClanStore(WebResponse webResponse, CocApi cocApi)
-//        {
-//            _webResponse = webResponse;
-//            _cocApi = cocApi;
-//        }
+            var result = await WebResponse.GetWebResponse<ClanAPIModel>(_cocApi, encodedUrl);
 
-//        public async Task<ClanAPIModel> GetOrDownloadAsync(string clanTag, string encodedUrl)
-//        {
-//            clans.TryGetValue(clanTag, out StoredItem<ClanAPIModel> storedClan);
+            StoredItem downloadedClan = new StoredItem(result.Item2, result.Item1, encodedUrl);
 
-//            if (storedClan != null && !storedClan.IsExpired())
-//            {
-//                return storedClan.DownloadedItem;
-//            }
+            if (downloadedClan == null && storedClan != null)
+            {
+                return storedClan.DownloadedItem as ClanAPIModel;
+            }
 
-//            StoredItem<ClanAPIModel> downloadedClan = await _webResponse.GetWebResponse<ClanAPIModel>(_cocApi, encodedUrl);
+            if (downloadedClan != null)
+            {
+                if (storedClan != null)
+                {
+                    _cocApi.clans.TryRemove((storedClan.DownloadedItem as ClanAPIModel).Tag, out _);
+                }
 
-//            if (downloadedClan == null && storedClan != null)
-//            {
-//                return storedClan.DownloadedItem;
-//            }
+                _cocApi.clans.TryAdd((downloadedClan.DownloadedItem as ClanAPIModel).Tag, downloadedClan);
 
-//            if (downloadedClan != null)
-//            {
-//                if (storedClan != null)
-//                {
-//                    clans.TryRemove(storedClan.DownloadedItem.Tag, out _);
-//                }
+                return downloadedClan.DownloadedItem as ClanAPIModel;
+            }
+            else if (storedClan != null) //return the expired item
+            {
+                return storedClan.DownloadedItem as ClanAPIModel;
+            }
+            else
+            {
+                throw new CocApiException("No matching results found.");
+            }
+        }
 
-//                clans.TryAdd(downloadedClan.DownloadedItem.Tag, downloadedClan);
+        public void Update(bool update)
+        {
+            _update = update;
 
-//                return downloadedClan.DownloadedItem;
-//            }
-//            else if (storedClan != null) //return the expired item
-//            {
-//                return storedClan.DownloadedItem;
-//            }
-//            else
-//            {
-//                throw new CocApiException("No matching results found.");
-//            }
-//        }
+            Task.Run(async () =>
+            {
+                await Update();
+            });
+        }
 
-//        public void Update(bool update)
-//        {
-//            _update = update;
+        private async Task Update()
+        {
+            while (_update)
+            {
+                for (int i = 0; i < clanStrings.Count; i++)
+                {
+                    //System.Console.WriteLine($"downloading war {clanStrings[i]}");
 
-//            Task.Run(async () =>
-//            {
-//                await Update();
-//            });
-//        }
+                    _cocApi.clans.TryGetValue(clanStrings[i], out StoredItem clanKVP);
 
-//        private async Task Update()
-//        {
-//            while (_update)
-//            {
-//                foreach(var clanKVP in clans)
-//                {
-//                    System.Console.WriteLine($"downloading war {clanKVP.Key}");
+                    if (clanKVP == null)
+                    {
+                        string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanStrings[i])}";
 
-//                    await clanKVP.Value.DownloadedItem.DownloadCurrentWarAsync();
+                        Tuple<System.Diagnostics.Stopwatch, ClanAPIModel> download;
 
-//                    if (!_update)
-//                    {
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
+                        try
+                        {
+                            download = await WebResponse.GetWebResponse<ClanAPIModel>(_cocApi, url);
+                        }
+                        catch (NotFoundException)
+                        {
+                            clanStrings.RemoveAt(i);
+
+                            i -= 1;
+
+                            break;
+                        }
+                        catch
+                        {
+                            throw;
+                        }
+
+                        StoredItem storedItem = new StoredItem(download.Item2, download.Item1, url);
+
+                        if (_cocApi.clans.TryAdd(clanStrings[i], storedItem))
+                        {
+                            clanKVP = storedItem;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
+                    //begin updating the clan!
+                    await UpdateClan(clanKVP);
+
+                    await Task.Delay(100);
+
+                    if (!_update)
+                    {
+                        break;
+                    }
+                }                      
+            }
+        }
+
+        private async Task UpdateClan(StoredItem clanKVP)
+        {
+            if (!clanKVP.IsExpired())
+            {
+                return;
+            }
+
+            System.Console.WriteLine($"updating clan");
+
+            var download = await WebResponse.GetWebResponse<ClanAPIModel>(_cocApi, clanKVP.EncodedUrl);
+
+            _mapper.Map<ClanAPIModel, ClanAPIModel>(download.Item2, clanKVP.DownloadedItem as ClanAPIModel);
+
+            List<MemberListAPIModel> newMembers = new List<MemberListAPIModel>();
+
+            foreach(MemberListAPIModel member in download.Item2.Members)
+            {
+                if(!(clanKVP.DownloadedItem as ClanAPIModel).Members.Any(m => m.Tag == member.Tag))
+                {
+                    newMembers.Add(member);
+
+                    (clanKVP.DownloadedItem as ClanAPIModel).Members.Add(member);
+                }
+            }
+
+            if(newMembers.Count() > 0)
+            {
+                _cocApi.MembersJoinedEvent((clanKVP.DownloadedItem as ClanAPIModel), newMembers);
+            }
+
+            clanKVP.DateTimeUTC = DateTime.UtcNow;
+
+            clanKVP.TimeToDownload = download.Item1.Elapsed;
+
+            clanKVP.Expires = DateTime.UtcNow.AddMinutes(1);
+        }
+    }
+}
