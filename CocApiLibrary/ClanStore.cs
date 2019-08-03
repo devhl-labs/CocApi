@@ -79,8 +79,6 @@ namespace CocApiLibrary
             {
                 for (int i = 0; i < clanStrings.Count; i++)
                 {
-                    //System.Console.WriteLine($"downloading war {clanStrings[i]}");
-
                     _cocApi.clans.TryGetValue(clanStrings[i], out StoredItem clanKVP);
 
                     if (clanKVP == null)
