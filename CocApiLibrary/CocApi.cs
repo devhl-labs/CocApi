@@ -20,19 +20,38 @@ namespace CocApiLibrary
 
     public delegate void MembersJoinedEventHandler(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels);
 
+    public delegate void MembersLeftEventHandler(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels);
+
+    public delegate void ClanBadgeUrlChangedEventHandler(ClanAPIModel clan);
+
+    public delegate void ClanLocationChangedEventHandler(ClanAPIModel clanAPIModel);
+
+    public delegate void NewWarEventHandler(CurrentWarAPIModel currentWarAPIModel);
+
+    public delegate void CurrentWarChangedEventHandler(CurrentWarAPIModel currentWarAPIModel);
+
+    public delegate void NewAttacksEventHandler(CurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels);
+
     public class CocApi
     {
         private bool _isAvailable = true;
         private readonly Timer _testConnection = new System.Timers.Timer();
         private readonly System.Timers.Timer _timer;
         private readonly ApiHelper _apiHelper;
-        private readonly ConcurrentDictionary<string, IClanAPIModel> _clan = new ConcurrentDictionary<string, IClanAPIModel>();
+        //private readonly ConcurrentDictionary<string, IClanAPIModel> _clan = new ConcurrentDictionary<string, IClanAPIModel>();
         private readonly List<ClanStore> _clanStores = new List<ClanStore>();
-        internal readonly ConcurrentDictionary<string, StoredItem> clans = new ConcurrentDictionary<string, StoredItem>();
+        internal readonly ConcurrentDictionary<string, StoredItem2<ClanAPIModel>> clans = new ConcurrentDictionary<string, StoredItem2<ClanAPIModel>>();
+        internal readonly ConcurrentDictionary<string, StoredItem2<CurrentWarAPIModel>> wars = new ConcurrentDictionary<string, StoredItem2<CurrentWarAPIModel>>();
         internal IMapper Mapper;
         public event IsAvailableChangedEventHandler IsAvailableChanged;
         public event ClanChangedEventHandler ClanChanged;
         public event MembersJoinedEventHandler MembersJoined;
+        public event MembersLeftEventHandler MembersLeft;
+        public event ClanBadgeUrlChangedEventHandler ClanBadgeUrlChanged;
+        public event ClanLocationChangedEventHandler ClanLocationChanged;
+        public event NewWarEventHandler NewWar;
+        public event CurrentWarChangedEventHandler WarChanged;
+        public event NewAttacksEventHandler NewAttacks;
 
         public static readonly Regex ValidTagCharacters = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
@@ -60,15 +79,53 @@ namespace CocApiLibrary
             }
         }
 
+        internal void NewAttacksEvent(CurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels)
+        {
+            if(attackAPIModels.Count() > 0)
+            {
+                NewAttacks(currentWarAPIModel, attackAPIModels);
+            }
+        }
 
-        public void ClanChangedMethod(ClanAPIModel clanAPIModel)
+        internal void CurrentWarChangedEvent(CurrentWarAPIModel currentWarAPIModel)
+        {
+            WarChanged(currentWarAPIModel);
+        }
+
+        internal void NewWarEvent(CurrentWarAPIModel currentWarAPIModel)
+        {
+            NewWar(currentWarAPIModel);
+        }
+
+        internal void MembersLeftEvent(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels)
+        {
+            if(memberListAPIModels.Count() > 0)
+            {
+                MembersLeft(clanAPIModel, memberListAPIModels);
+            }            
+        }
+
+        internal void ClanLocationChangedEvent(ClanAPIModel clanAPIModel)
+        {
+            ClanLocationChanged(clanAPIModel);
+        }
+
+        internal void ClanBadgeUrlChangedEvent(ClanAPIModel clanAPIModel)
+        {
+            ClanBadgeUrlChanged(clanAPIModel);
+        }
+
+        internal void ClanChangedEvent(ClanAPIModel clanAPIModel)
         {
             ClanChanged(clanAPIModel);
         }
 
-        public void MembersJoinedEvent(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels)
+        internal void MembersJoinedEvent(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels)
         {
-            MembersJoined(clanAPIModel, memberListAPIModels);
+            if(memberListAPIModels.Count() > 0)
+            {
+                MembersJoined(clanAPIModel, memberListAPIModels);
+            }
         }
 
         public CocApi(IEnumerable<string> tokens, int tokenTimeOutInMilliseconds, int timeToWaitForWebRequests, VerbosityType verbosityType)
@@ -86,7 +143,11 @@ namespace CocApiLibrary
             NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<ClanAPIModel, ClanAPIModel>().ForMember(x => x.Members, opt => opt.Ignore()).ForMember(x => x.Wars, opt => opt.Ignore());
+                cfg.CreateMap<ClanAPIModel, ClanAPIModel>().Ignore(c => c.BadgeUrls!).Ignore(c => c.Location!).Ignore(c => c.Members!).Ignore(c => c.Wars);
+                cfg.CreateMap<BadgeUrlModel, BadgeUrlModel>();
+                cfg.CreateMap<LocationModel, LocationModel>();
+                cfg.CreateMap<CurrentWarAPIModel, CurrentWarAPIModel>().Ignore(c => c.Attacks);
+
             });
             Mapper = config.CreateMapper();
             

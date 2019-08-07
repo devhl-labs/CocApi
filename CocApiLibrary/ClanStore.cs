@@ -26,7 +26,7 @@ namespace CocApiLibrary
 
         public async Task<ClanAPIModel?> GetOrDownloadAsync(string clanTag, string encodedUrl)
         { 
-            _cocApi.clans.TryGetValue(clanTag, out StoredItem storedClan);
+            _cocApi.clans.TryGetValue(clanTag, out StoredItem2<ClanAPIModel> storedClan);
 
             if (storedClan != null && !storedClan.IsExpired())
             {
@@ -35,7 +35,7 @@ namespace CocApiLibrary
 
             var result = await WebResponse.GetWebResponse<ClanAPIModel>(_cocApi, encodedUrl);
 
-            StoredItem downloadedClan = new StoredItem(result.Item2, result.Item1, encodedUrl);
+            StoredItem2<ClanAPIModel> downloadedClan = new StoredItem2<ClanAPIModel>(result, encodedUrl);
 
             if (downloadedClan == null && storedClan != null)
             {
@@ -79,13 +79,13 @@ namespace CocApiLibrary
             {
                 for (int i = 0; i < clanStrings.Count; i++)
                 {
-                    _cocApi.clans.TryGetValue(clanStrings[i], out StoredItem clanKVP);
+                    _cocApi.clans.TryGetValue(clanStrings[i], out StoredItem2<ClanAPIModel> clanKVP);
 
                     if (clanKVP == null)
                     {
                         string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanStrings[i])}";
 
-                        Tuple<System.Diagnostics.Stopwatch, ClanAPIModel> download;
+                        ClanAPIModel download;
 
                         try
                         {
@@ -104,7 +104,7 @@ namespace CocApiLibrary
                             throw;
                         }
 
-                        StoredItem storedItem = new StoredItem(download.Item2, download.Item1, url);
+                        StoredItem2<ClanAPIModel> storedItem = new StoredItem2<ClanAPIModel>(download, url);
 
                         if (_cocApi.clans.TryAdd(clanStrings[i], storedItem))
                         {
@@ -116,8 +116,9 @@ namespace CocApiLibrary
                         }
                     }
 
-                    //begin updating the clan!
                     await UpdateClan(clanKVP);
+
+                    //await UpdateWar(clanKVP);
 
                     await Task.Delay(100);
 
@@ -129,41 +130,163 @@ namespace CocApiLibrary
             }
         }
 
-        private async Task UpdateClan(StoredItem clanKVP)
+
+        private async Task UpdateClan(StoredItem2<ClanAPIModel> clanKVP)
         {
             if (!clanKVP.IsExpired())
             {
                 return;
             }
 
-            System.Console.WriteLine($"updating clan");
+            System.Console.WriteLine($"updating clan {clanKVP.DownloadedItem.Tag}");
 
-            var download = await WebResponse.GetWebResponse<ClanAPIModel>(_cocApi, clanKVP.EncodedUrl);
+            ClanAPIModel download = await WebResponse.GetWebResponse<ClanAPIModel>(_cocApi, clanKVP.EncodedUrl);
 
-            _mapper.Map<ClanAPIModel, ClanAPIModel>(download.Item2, clanKVP.DownloadedItem as ClanAPIModel);
+            _mapper.Map<ClanAPIModel, ClanAPIModel>(download, clanKVP.DownloadedItem as ClanAPIModel);
 
-            List<MemberListAPIModel> newMembers = new List<MemberListAPIModel>();
+            _mapper.Map<BadgeUrlModel, BadgeUrlModel>(download.BadgeUrls!, clanKVP.DownloadedItem.BadgeUrls!);
 
-            foreach(MemberListAPIModel member in download.Item2.Members)
-            {
-                if(!(clanKVP.DownloadedItem as ClanAPIModel).Members.Any(m => m.Tag == member.Tag))
-                {
-                    newMembers.Add(member);
+            _mapper.Map<LocationModel, LocationModel>(download.Location!, clanKVP.DownloadedItem.Location!);
 
-                    (clanKVP.DownloadedItem as ClanAPIModel).Members.Add(member);
-                }
-            }
+            clanKVP.DownloadedItem.BadgeUrls?.Process(_cocApi, clanKVP.DownloadedItem);     //should not be needed, just incase it gets nulled at some point
 
-            if(newMembers.Count() > 0)
-            {
-                _cocApi.MembersJoinedEvent((clanKVP.DownloadedItem as ClanAPIModel), newMembers);
-            }
+            clanKVP.DownloadedItem.Location?.Process(_cocApi, clanKVP.DownloadedItem);      //should not be needed, just incase it gets nulled at some point
+
+            clanKVP.DownloadedItem!.FireEvent();
+
+            clanKVP.DownloadedItem!.BadgeUrls?.FireEvent();
+
+            clanKVP.DownloadedItem!.Location?.FireEvent();
+
+            MembersLeft(download, clanKVP.DownloadedItem!);
+
+            MembersJoined(download, clanKVP.DownloadedItem!);
 
             clanKVP.DateTimeUTC = DateTime.UtcNow;
 
-            clanKVP.TimeToDownload = download.Item1.Elapsed;
+            clanKVP.Expires = DateTime.UtcNow.AddMinutes(1);  //todo
 
-            clanKVP.Expires = DateTime.UtcNow.AddMinutes(1);
+            StoredItem2<CurrentWarAPIModel> storedWar = await GetOrDownloadCurrentWarAsync(clanKVP.DownloadedItem);
+
+
+        }
+
+        private async Task<StoredItem2<CurrentWarAPIModel>> GetOrDownloadCurrentWarAsync(ClanAPIModel clanAPIModel)
+        {
+            _cocApi.wars.TryGetValue(clanAPIModel.Tag, out var warKVP);
+
+            CurrentWarAPIModel currentWarAPIModel;
+
+            string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanAPIModel.Tag)}/currentwar";
+
+            if(warKVP == null || warKVP.IsExpired())
+            {
+                try
+                {
+                    currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(_cocApi, url);
+                }
+                catch (ForbiddenException)
+                {
+                    if(warKVP != null)
+                    {
+                        url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(warKVP.DownloadedItem.Clans.First(c => c.Tag != clanAPIModel.Tag).Tag)}/currentwar";
+
+                        currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(_cocApi, url);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+            }
+
+            return warKVP;
+
+            //StoredItem2<CurrentWarAPIModel> warKVP = new StoredItem2<CurrentWarAPIModel>(currentWarAPIModel, url);
+        }
+
+        private void MembersJoined(ClanAPIModel downloadedClan, ClanAPIModel storedClan)
+        {
+            List<MemberListAPIModel> newMembers = new List<MemberListAPIModel>();
+
+            if(downloadedClan.Members == null)
+            {
+                return;
+            }
+
+            if(storedClan.Members == null)
+            {
+                storedClan.Members = new List<MemberListAPIModel>();
+            }
+
+            foreach (MemberListAPIModel member in downloadedClan.Members)
+            {
+                if (!storedClan.Members.Any(m => m.Tag == member.Tag))
+                {
+                    newMembers.Add(member);
+
+                    storedClan.Members.Add(member);
+                }
+            }
+
+            _cocApi.MembersJoinedEvent(storedClan, newMembers);
+        }
+
+        private void MembersLeft(ClanAPIModel downloadedClan, ClanAPIModel storedClan)
+        {
+            List<MemberListAPIModel> leftMembers = new List<MemberListAPIModel>();
+
+            if(storedClan.Members == null)
+            {
+                return;
+            }
+
+            foreach (MemberListAPIModel member in storedClan.Members)
+            {
+                if (!downloadedClan.Members.Any(m => m.Tag == member.Tag))
+                {
+                    leftMembers.Add(member);
+                }
+            }
+
+            _cocApi.MembersLeftEvent(storedClan, leftMembers);
+        }
+
+
+        private void UpdateWar(ClanAPIModel storedClan, CurrentWarAPIModel downloadedWar)
+        {
+            storedClan.Wars.TryGetValue(downloadedWar.WarID, out CurrentWarAPIModel storedWar);
+
+            if(storedWar == null)
+            {
+                storedClan.Wars.TryAdd(downloadedWar.WarID, downloadedWar);
+
+                _cocApi.NewWarEvent(downloadedWar);
+
+                storedClan.Wars.TryGetValue(downloadedWar.WarID, out storedWar);
+            }
+
+            _mapper.Map<CurrentWarAPIModel, CurrentWarAPIModel>(downloadedWar, storedWar);
+
+            storedWar.FireEvent();
+
+            List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
+
+            foreach (AttackAPIModel attackAPIModel in downloadedWar.Attacks)
+            {
+                if(!storedWar.Attacks.Any(a => a.Order == attackAPIModel.Order))
+                {
+                    newAttacks.Add(attackAPIModel);
+
+                    storedWar.Attacks.Add(attackAPIModel);
+                }
+            }
+
+            _cocApi.NewAttacksEvent(storedWar, newAttacks);
         }
     }
 }

@@ -56,15 +56,45 @@ namespace ClashOfClansConsoleTest
 
             cocApi.MembersJoined += CocApi_MembersJoined;
 
-            clan.BadgeUrls.Large = "test";
+            cocApi.ClanBadgeUrlChanged += CocApi_ClanBadgeUrlChanged;
 
-            clan.Name = "test";
+            cocApi.ClanLocationChanged += CocApi_ClanLocationChanged;
 
-            clan.Members = new List<MemberListAPIModel>();
+            cocApi.NewAttacks += CocApi_NewAttacks;
 
-            Console.WriteLine("");
+            //clan.BadgeUrls = null;
+
+            //clan.BadgeUrls.Large = "test";
+
+            //clan.BadgeUrls.Medium = "test";
+
+            //clan.Location.Name = "test";
+
+            //clan.BadgeUrls = new BadgeUrlModel
+            //{
+            //    Large = "test"
+            //};
+
+            //clan.Name = "test";
+
+            //clan.Members = new List<MemberListAPIModel>();
 
             await Task.Delay(-1);
+        }
+
+        private static void CocApi_NewAttacks(CurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels)
+        {
+            Console.WriteLine($"new attacks: {attackAPIModels.Count()}");
+        }
+
+        private static void CocApi_ClanLocationChanged(ClanAPIModel clanAPIModel)
+        {
+            Console.WriteLine("location changed");
+        }
+
+        private static void CocApi_ClanBadgeUrlChanged(ClanAPIModel clan)
+        {
+            Console.WriteLine("badge changed");
         }
 
         private static void CocApi_MembersJoined(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels)

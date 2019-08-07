@@ -4,18 +4,18 @@ using CocApiLibrary.Models;
 
 namespace CocApiLibrary
 {
-    public class StoredItem
+    public class StoredItem2<T>
     {
         public DateTime DateTimeUTC { get; set; }
-        public object DownloadedItem { get; set; }
+        public T DownloadedItem { get; set; }
         public DateTime Expires { get; set; }
-        public TimeSpan TimeToDownload { get; set; }
+        //public TimeSpan TimeToDownload { get; set; }
 
         public string EncodedUrl { get; }
 
-        public StoredItem(object downloadedItem, Stopwatch stopwatch, string encodedUrl)
+        public StoredItem2(T downloadedItem, string encodedUrl)
         {
-            TimeToDownload = stopwatch.Elapsed;
+            //TimeToDownload = stopwatch.Elapsed;
 
             DateTimeUTC = DateTime.UtcNow;
 

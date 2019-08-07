@@ -13,11 +13,14 @@ using System.Text.Json.Serialization;
 using System.Diagnostics;
 using CocApiLibrary.Exceptions;
 using System.Text.Json;
+using System.Collections.Concurrent;
 
 namespace CocApiLibrary
 {
     internal static class WebResponse
     {
+        public static ConcurrentBag<WebResponseTimer> Timers = new ConcurrentBag<CocApiLibrary.WebResponseTimer>();
+
 
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
@@ -25,6 +28,7 @@ namespace CocApiLibrary
         private static int _timeToWaitForWebRequest;
         private static VerbosityType _verbosityType;
         private static int counter = 0;
+
 
         private static readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
@@ -93,7 +97,7 @@ namespace CocApiLibrary
         }
 
 
-        internal static async Task<Tuple<Stopwatch, T>> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : new()
+        internal static async Task<T> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : new()
         {
             TokenObject token = await GetToken(encodedUrl);
 
@@ -119,7 +123,13 @@ namespace CocApiLibrary
 
                 if (result != null)
                 {
-                    return new Tuple<Stopwatch, T>(stopwatch, result);
+                    WebResponseTimer webResponseTimer = new WebResponseTimer(result, stopwatch.Elapsed);
+
+                    Timers.Add(webResponseTimer);
+
+                    return result;
+
+                    //return new Tuple<Stopwatch, T>(stopwatch, result);
                 }
                 else
                 {
@@ -131,23 +141,45 @@ namespace CocApiLibrary
             {
                 ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, options);
 
-                if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError || response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable) //500 or 503
+                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //400
+                {
+                    throw new BadRequestException(ex, response.StatusCode);
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden) //403
+                {
+                    throw new ForbiddenException(ex, response.StatusCode);
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) //404
+                {
+                    throw new NotFoundException(ex, response.StatusCode);
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) //429
+                {
+                    token.IsRateLimited = true;
+
+                    throw new TooManyRequestsException(ex, response.StatusCode);
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //500
+                {
+                    throw new ServerUnavailableException(ex, response.StatusCode);
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway) //502
+                {
+                    throw new BadGateWayException(ex, response.StatusCode);
+                }
+
+                else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //503
                 {
                     cocApi.IsAvailable = false;
 
                     throw new ServerUnavailableException(ex, response.StatusCode);
                 }
-                else if (response.StatusCode == (System.Net.HttpStatusCode)429) //custom response for rate limited
-                {
-                    token.IsRateLimited = true;
-
-                    throw new TokenTimeOutException(ex, response.StatusCode);
-                }
-                else if (response.StatusCode == (System.Net.HttpStatusCode)404)
-                {
-                    throw new NotFoundException(ex, response.StatusCode);
-                }
-
+                               
                 throw new ServerResponseException(ex, response.StatusCode);
             }
         }

@@ -9,17 +9,79 @@ namespace CocApiLibrary.Models
 {
     public class CurrentWarAPIModel
     {
+        private CocApi? _cocApi;
+        private bool _changed = false;
+
+        public void Process(CocApi cocApi)
+        {
+            _cocApi = cocApi;
+        }
+
+        internal void FireEvent()
+        {
+            if (_changed && _cocApi != null)
+            {
+                _changed = false;
+                _cocApi.CurrentWarChangedEvent(this);
+            }
+        }
+
+
+
+        private DateTime _endTimeUTC;
+
         [JsonPropertyName("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime EndTimeUTC { get; set; }
+        public DateTime EndTimeUTC
+        {
+            get
+            {
+                return _endTimeUTC;
+            }
+        
+            set
+            {
+        	if(_endTimeUTC != value)
+        	{
+        		_endTimeUTC = value;
+        	
+        		if(_cocApi != null)
+        		{
+        			_changed = true;
+        		}
+        	}
+            }
+        }
 
         [JsonPropertyName("preparationStartTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime PreparationStartTimeUTC { get; set; }
 
+
+        private DateTime _startTimeUTC;
+
         [JsonPropertyName("startTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime StartTimeUTC { get; set; }
+        public DateTime StartTimeUTC
+        {
+            get
+            {
+                return _startTimeUTC;
+            }
+        
+            set
+            {
+        	if(_startTimeUTC != value)
+        	{
+        		_startTimeUTC = value;
+        	
+        		if(_cocApi != null)
+        		{
+        			_changed = true;
+        		}
+        	}
+            }
+        }
 
         public int TeamSize { get; set; }
 
@@ -51,7 +113,28 @@ namespace CocApiLibrary.Models
             }
         }
 
-        public State State { get; set; }
+        private State _state;
+        
+        public State State
+        {
+            get
+            {
+                return _state;
+            }
+        
+            set
+            {
+        	if(_state != value)
+        	{
+        		_state = value;
+        	
+        		if(_cocApi != null)
+        		{
+        			_changed = true;
+        		}
+        	}
+            }
+        }
 
 
 
