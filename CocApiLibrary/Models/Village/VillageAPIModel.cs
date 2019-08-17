@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using CocApiLibrary.Converters;
 using CocApiLibrary.Models;
@@ -6,7 +7,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary
 {
-    public class VillageAPIModel : IVillageAPIModel
+    public class VillageAPIModel : IVillageAPIModel, IDownloadable
     {
         
         private string _tag = string.Empty;
@@ -70,5 +71,20 @@ namespace CocApiLibrary
         public IEnumerable<TroopAPIModel>? Heroes { get; set; }
 
         public IEnumerable<SpellModel>? Spells { get; set; }
+
+        public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
+
+        public DateTime Expires { get; internal set; }
+
+        public string EncodedUrl { get; internal set; } = string.Empty;
+
+        public bool IsExpired()
+        {
+            if (DateTime.UtcNow > Expires)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -64,7 +64,7 @@ namespace CocApiLibrary
 
 
 
-        public async Task<T?> GetResponse<T>(CocApi cocApi, string encodedUrl, bool allowCachedItem = true) where T : class, new()
+        public async Task<T> GetResponse<T>(CocApi cocApi, string encodedUrl, bool allowCachedItem = true) where T : class, new()
         {
             T? result = null;
 
@@ -76,6 +76,11 @@ namespace CocApiLibrary
             if (result == null)
             {
                 result = await GetWebResponse<T>(cocApi, encodedUrl);
+            }
+
+            if(result == null)
+            {
+                throw new CocApiException($"The item {encodedUrl} was not found.");
             }
 
             return result;

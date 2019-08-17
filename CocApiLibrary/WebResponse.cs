@@ -19,8 +19,9 @@ namespace CocApiLibrary
 {
     internal static class WebResponse
     {
-        public static ConcurrentBag<WebResponseTimer> Timers = new ConcurrentBag<CocApiLibrary.WebResponseTimer>();
+        //public static ConcurrentBag<WebResponseTimer> Timers = new ConcurrentBag<CocApiLibrary.WebResponseTimer>();
 
+        //private static Dictionary<string, IDownloadable> downloadables = new Dictionary<string, IDownloadable>();
 
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
@@ -97,9 +98,9 @@ namespace CocApiLibrary
         }
 
 
-        internal static async Task<T> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : new()
+        internal static async Task<T> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : class, IDownloadable, new()
         {
-            TokenObject token = await GetToken(encodedUrl);
+            TokenObject token = await GetToken(encodedUrl); //race condition exists here, the token rate limiting flag is set later in this routine
 
             ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
@@ -123,13 +124,20 @@ namespace CocApiLibrary
 
                 if (result != null)
                 {
-                    WebResponseTimer webResponseTimer = new WebResponseTimer(result, stopwatch.Elapsed);
+                    //WebResponseTimer webResponseTimer = new WebResponseTimer(result, stopwatch.Elapsed);
 
-                    Timers.Add(webResponseTimer);
+                    if(result is IInitialize process)
+                    {
+                        process.Initialize();
+                    }
+
+                    //result.SetExpiration();
+
+                    SetIDownloadableProperties(result, encodedUrl);
+
+                    //downloadables.AddOrUpdate(encodedUrl, result);                  
 
                     return result;
-
-                    //return new Tuple<Stopwatch, T>(stopwatch, result);
                 }
                 else
                 {
@@ -181,6 +189,46 @@ namespace CocApiLibrary
                 }
                                
                 throw new ServerResponseException(ex, response.StatusCode);
+            }
+        }
+
+        private static void SetIDownloadableProperties<T>(T result, string encodedURL) where T : class, IDownloadable, new()
+        {
+            switch (result)
+            {
+                case LeagueWarAPIModel leagueWarAPIModel:
+                    leagueWarAPIModel.Expires = DateTime.UtcNow.AddSeconds(15);
+                    leagueWarAPIModel.EncodedUrl = encodedURL;
+                    break;
+
+                case CurrentWarAPIModel currentWar:
+                    currentWar.Expires = DateTime.UtcNow.AddSeconds(15);
+                    currentWar.EncodedUrl = encodedURL;
+                    break;
+
+                case LeagueGroupAPIModel leagueGroupAPIModel:
+                    leagueGroupAPIModel.Expires = DateTime.UtcNow.AddSeconds(15);
+                    leagueGroupAPIModel.EncodedUrl = encodedURL;
+                    break;
+
+                case ClanAPIModel clanAPIModel:
+                    clanAPIModel.Expires = DateTime.UtcNow.AddSeconds(15);
+                    clanAPIModel.EncodedUrl = encodedURL;
+                    break;
+
+                case VillageAPIModel villageAPIModel:
+                    villageAPIModel.Expires = DateTime.UtcNow.AddHours(1);
+                    villageAPIModel.EncodedUrl = encodedURL;
+                    break;
+
+                case WarLogAPIModel warLogAPIModel:
+                    warLogAPIModel.Expires = DateTime.UtcNow.AddHours(1);
+                    warLogAPIModel.EncodedUrl = encodedURL;
+                    break;
+
+                default:
+                    throw new CocApiException($"Unhandled Type");
+
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CocApiLibrary;
+using CocApiLibrary.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -74,6 +75,37 @@ namespace CocApiLibrary
             map.ForMember(selector, config => config.Ignore());
             return map;
         }
+
+
+
+
+
+        public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : new()
+        {
+            if (!dict.TryGetValue(key, out TValue val))
+            {
+                val = new TValue();
+
+                dict.TryAdd(key, val);
+            }
+
+            return val;
+        }
+
+        public static IDictionary<TKey, TValue> AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+        {
+            if (dictionary.ContainsKey(key))
+            {
+                dictionary[key] = value;
+            }
+            else
+            {
+                dictionary.TryAdd(key, value);
+            }
+
+            return dictionary;
+        }
+
 
 
 

@@ -56,6 +56,12 @@ namespace CocApiLibrary
             WarEnded = 30
         }
 
+        public enum LeagueState : int
+        {
+            [EnumMember(Value ="ended")]
+            Ended = 1 //todo add the other states for league groups
+        }
+
         public enum Result : int
         {
             Undetermined = 0,

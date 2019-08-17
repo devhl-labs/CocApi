@@ -4,28 +4,28 @@ namespace CocApiLibrary.Models
 {
     public class LocationModel
     {
-        private CocApi? _cocApi;
-        private ClanAPIModel? _clanApiModel;
+        //private CocApi? _cocApi;
+        //private ClanAPIModel? _clanApiModel;
 
-        private bool _changed = false;
+        //private bool _changed = false;
 
-        internal void Process(CocApi cocApi, ClanAPIModel clanApiModel)
-        {
-            if(_cocApi == null || _clanApiModel == null)
-            {
-                _cocApi = cocApi;
-                _clanApiModel = clanApiModel;
-            }
-        }
+        //internal void Process(CocApi cocApi, ClanAPIModel clanApiModel)
+        //{
+        //    if(_cocApi == null || _clanApiModel == null)
+        //    {
+        //        _cocApi = cocApi;
+        //        _clanApiModel = clanApiModel;
+        //    }
+        //}
 
-        internal void FireEvent()
-        {
-            if (_changed && _cocApi != null && _clanApiModel != null)
-            {
-                _changed = false;
-                _cocApi.ClanLocationChangedEvent(_clanApiModel);
-            }
-        }
+        //internal void FireEvent()
+        //{
+        //    if (_changed && _cocApi != null && _clanApiModel != null)
+        //    {
+        //        _changed = false;
+        //        _cocApi.ClanLocationChangedEvent(_clanApiModel);
+        //    }
+        //}
 
 
 
@@ -44,10 +44,10 @@ namespace CocApiLibrary.Models
         	{
         		_id = value;
         	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
+        		//if(_cocApi != null)
+        		//{
+        		//	_changed = true;
+        		//}
         	}
             }
         }
@@ -67,10 +67,10 @@ namespace CocApiLibrary.Models
         	{
         		_name = value;
         	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
+        		//if(_cocApi != null)
+        		//{
+        		//	_changed = true;
+        		//}
         	}
             }
         }
@@ -90,10 +90,10 @@ namespace CocApiLibrary.Models
         	{
         		_isCountry = value;
         	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
+        		//if(_cocApi != null)
+        		//{
+        		//	_changed = true;
+        		//}
         	}
             }
         }
@@ -118,10 +118,10 @@ namespace CocApiLibrary.Models
         	{
         		_countryCode = value;
         	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
+        		//if(_cocApi != null)
+        		//{
+        		//	_changed = true;
+        		//}
         	}
             }
         }

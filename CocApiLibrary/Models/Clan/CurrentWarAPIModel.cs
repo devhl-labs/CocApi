@@ -1,4 +1,5 @@
 ﻿using CocApiLibrary.Converters;
+using CocApiLibrary.Models.Clan;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,24 +8,24 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class CurrentWarAPIModel
+    public class CurrentWarAPIModel : IDownloadable, IInitialize, ICurrentWarAPIModel
     {
-        private CocApi? _cocApi;
-        private bool _changed = false;
+        //private CocApi? _cocApi;
+        //private bool _changed = false;
 
-        public void Process(CocApi cocApi)
-        {
-            _cocApi = cocApi;
-        }
+        //public void Process(CocApi cocApi)
+        //{
+        //    _cocApi = cocApi;
+        //}
 
-        internal void FireEvent()
-        {
-            if (_changed && _cocApi != null)
-            {
-                _changed = false;
-                _cocApi.CurrentWarChangedEvent(this);
-            }
-        }
+        //internal void FireEvent()
+        //{
+        //    if (_changed && _cocApi != null)
+        //    {
+        //        _changed = false;
+        //        //_cocApi.CurrentWarChangedEvent(this);
+        //    }
+        //}
 
 
 
@@ -38,18 +39,25 @@ namespace CocApiLibrary.Models
             {
                 return _endTimeUTC;
             }
-        
+
             set
             {
-        	if(_endTimeUTC != value)
-        	{
-        		_endTimeUTC = value;
-        	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
-        	}
+                if (_endTimeUTC != value)
+                {
+                    _endTimeUTC = value;
+
+                    WarEndingSoonUTC = _endTimeUTC.AddHours(-1);
+
+                    if (DateTime.UtcNow > WarEndingSoonUTC)
+                    {
+                        Flags.WarEndingSoon = true;
+                    }
+
+                    //if(_cocApi != null)
+                    //{
+                    // _changed = true;
+                    //}
+                }
             }
         }
 
@@ -68,18 +76,25 @@ namespace CocApiLibrary.Models
             {
                 return _startTimeUTC;
             }
-        
+
             set
             {
-        	if(_startTimeUTC != value)
-        	{
-        		_startTimeUTC = value;
-        	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
-        	}
+                if (_startTimeUTC != value)
+                {
+                    _startTimeUTC = value;
+
+                    WarStartingSoonUTC = _startTimeUTC.AddHours(-1);
+
+                    if (DateTime.UtcNow > WarStartingSoonUTC)
+                    {
+                        Flags.WarStartingSoon = true;
+                    }
+
+                    //      if (_cocApi != null)
+                    //{
+                    // _changed = true;
+                    //}
+                }
             }
         }
 
@@ -90,7 +105,8 @@ namespace CocApiLibrary.Models
         public WarClanAPIModel? Clan
         {
             get { return _clan; }
-            set {
+            set
+            {
                 _clan = value;
                 if (Clan != null)
                 {
@@ -104,7 +120,8 @@ namespace CocApiLibrary.Models
         public WarClanAPIModel? Opponent
         {
             get { return _opponent; }
-            set {
+            set
+            {
                 _opponent = value;
                 if (Opponent != null)
                 {
@@ -114,25 +131,25 @@ namespace CocApiLibrary.Models
         }
 
         private State _state;
-        
+
         public State State
         {
             get
             {
                 return _state;
             }
-        
+
             set
             {
-        	if(_state != value)
-        	{
-        		_state = value;
-        	
-        		if(_cocApi != null)
-        		{
-        			_changed = true;
-        		}
-        	}
+                if (_state != value)
+                {
+                    _state = value;
+
+                    //if(_cocApi != null)
+                    //{
+                    //	_changed = true;
+                    //}
+                }
             }
         }
 
@@ -146,7 +163,7 @@ namespace CocApiLibrary.Models
         public IList<WarClanAPIModel> Clans { get; set; } = new List<WarClanAPIModel>();
 
         [JsonIgnore]
-        public IList<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
+        public IDictionary<int, AttackAPIModel> Attacks { get; set; } = new Dictionary<int, AttackAPIModel>();
 
         /// <summary>
         /// This amalgamation is a composite key of the preparation start time and clan tags.
@@ -157,14 +174,42 @@ namespace CocApiLibrary.Models
         [JsonIgnore]
         public WarType WarType { get; set; } = WarType.Random;
 
+        [JsonIgnore]
+        public DateTime WarEndingSoonUTC { get; internal set; }
+
+        [JsonIgnore]
+        public DateTime WarStartingSoonUTC { get; internal set; }
+
+        //[JsonIgnore]
+        //public bool WarEndingSoon { get; internal set; } = false;
+
+        //[JsonIgnore]
+        //public bool WarStartingSoon { get; internal set; } = false;
+
+        [JsonIgnore]
+        public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
 
 
 
 
 
+        public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
 
-        internal void Process()
+        public DateTime Expires { get; internal set; }
+
+        public string EncodedUrl { get; internal set; } = string.Empty;
+
+        //public void SetExpiration()
+        //{
+        //    DateTimeUTC = DateTime.UtcNow;
+
+        //    Expires = DateTime.UtcNow.AddSeconds(15);
+        //}
+
+        public void Initialize()
         {
+            //_cocApi = cocApi;
+
             Clans = Clans.OrderBy(x => x.Tag).ToList();
 
             WarID = $"{PreparationStartTimeUTC};{Clans[0].Tag};{Clans[1].Tag}";
@@ -190,12 +235,12 @@ namespace CocApiLibrary.Models
             {
                 if (Clans[0].Stars == Clans[1].Stars)
                 {
-                    if(Clans[0].DestructionPercentage == Clans[1].DestructionPercentage)
+                    if (Clans[0].DestructionPercentage == Clans[1].DestructionPercentage)
                     {
                         Clans[0].Result = Result.Draw;
                         Clans[1].Result = Result.Draw;
                     }
-                    else if(Clans[0].DestructionPercentage > Clans[1].DestructionPercentage)
+                    else if (Clans[0].DestructionPercentage > Clans[1].DestructionPercentage)
                     {
                         Clans[0].Result = Result.Win;
                         Clans[1].Result = Result.Lose;
@@ -206,7 +251,7 @@ namespace CocApiLibrary.Models
                         Clans[1].Result = Result.Win;
                     }
                 }
-                else if(Clans[0].Stars > Clans[1].Stars)
+                else if (Clans[0].Stars > Clans[1].Stars)
                 {
                     Clans[0].Result = Result.Win;
                     Clans[1].Result = Result.Lose;
@@ -230,7 +275,7 @@ namespace CocApiLibrary.Models
                     {
                         foreach (AttackAPIModel attack in member.Attacks)
                         {
-                            Attacks.Add(attack);
+                            Attacks.TryAdd(attack.Order, attack);
 
                             MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
 
@@ -244,7 +289,7 @@ namespace CocApiLibrary.Models
                 }
             }
 
-            Attacks = Attacks.OrderBy(x => x.Order).ToList();
+            //Attacks = Attacks.OrderBy(x => x.Order).ToList();
 
             foreach (WarClanAPIModel clan in Clans)
             {
@@ -267,11 +312,22 @@ namespace CocApiLibrary.Models
         }
 
         public bool WarIsOverOrAllAttacksUsed()
-        { 
+        {
+            if (State == State.NotInWar) return true;
+
             if (State == State.WarEnded) return true;
 
             if (Clans[0].Members.All(m => m.Attacks?.Count() == 2) && Clans[1].Members.All(m => m.Attacks?.Count() == 2)) return true;
 
+            return false;
+        }
+
+        public bool IsExpired()
+        {
+            if (DateTime.UtcNow > Expires)
+            {
+                return true;
+            }
             return false;
         }
     }

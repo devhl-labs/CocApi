@@ -5,37 +5,37 @@ namespace CocApiLibrary.Models
 {
     public class BadgeUrlModel
     {
-        private CocApi? _cocApi;
-        private ClanAPIModel? _clanApiModel;
+        //private CocApi? _cocApi;
+        //private ClanAPIModel? _clanApiModel;
 
-        private bool _changed = false;
+        //private bool _changed = false;
 
-        internal void Process(CocApi cocApi, ClanAPIModel clanApiModel)
-        {
-            if(_cocApi == null || _clanApiModel == null)
-            {
-                _cocApi = cocApi;
-                _clanApiModel = clanApiModel;
-            }
-        }
+        //internal void Process(CocApi cocApi, ClanAPIModel clanApiModel)
+        //{
+        //    if(_cocApi == null || _clanApiModel == null)
+        //    {
+        //        _cocApi = cocApi;
+        //        _clanApiModel = clanApiModel;
+        //    }
+        //}
 
-        internal bool IsProcessed()
-        {
-            if(_cocApi == null || _clanApiModel == null)
-            {
-                return false;
-            }
-            return true;
-        }
+        //internal bool IsProcessed()
+        //{
+        //    if(_cocApi == null || _clanApiModel == null)
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
-        internal void FireEvent()
-        {
-            if (_changed && _cocApi != null && _clanApiModel != null)
-            {
-                _changed = false;
-                _cocApi.ClanBadgeUrlChangedEvent(_clanApiModel);
-            }
-        }
+        //internal void FireEvent()
+        //{
+        //    if (_changed && _cocApi != null && _clanApiModel != null)
+        //    {
+        //        _changed = false;
+        //        _cocApi.ClanBadgeUrlChangedEvent(_clanApiModel);
+        //    }
+        //}
 
 
 
@@ -54,10 +54,10 @@ namespace CocApiLibrary.Models
         	    {
         		    _small = value;
         	
-        		    if(_cocApi != null && _clanApiModel  != null)
-        		    {
-                         _changed = true;
-        		    }
+        		    //if(_cocApi != null && _clanApiModel  != null)
+        		    //{
+              //           _changed = true;
+        		    //}
         	    }
             }
         }
@@ -77,10 +77,10 @@ namespace CocApiLibrary.Models
         	    {
         		    _large = value;
         	
-        		    if(_cocApi != null && _clanApiModel != null)
-        		    {
-                        _changed = true;
-        		    }
+        		    //if(_cocApi != null && _clanApiModel != null)
+        		    //{
+              //          _changed = true;
+        		    //}
         	    }
             }
         }
@@ -100,10 +100,10 @@ namespace CocApiLibrary.Models
         	    {
         		    _medium = value;
         	
-        		    if(_cocApi != null && _clanApiModel != null)
-        		    {
-                        _changed = true;
-        		    }
+        		    //if(_cocApi != null && _clanApiModel != null)
+        		    //{
+              //          _changed = true;
+        		    //}
         	    }
             }
         }
