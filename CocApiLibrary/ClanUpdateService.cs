@@ -11,10 +11,11 @@ namespace CocApiLibrary
 {
     internal class ClanUpdateService
     {
-        internal readonly List<string> clanStrings = new List<string>();
+        public readonly List<string> clanStrings = new List<string>();
+
         private readonly CocApi _cocApi;
         private bool _update = false;
-
+        
         public ClanUpdateService(CocApi cocApi)
         {
             _cocApi = cocApi;
@@ -42,17 +43,22 @@ namespace CocApiLibrary
 
                     storedClan.Update(_cocApi, downloadedClan);
 
-                    LeagueGroupAPIModel leagueGroupAPIModel = await _cocApi.GetLeagueGroupAsync(clanStrings[i]);
-
-                    foreach (var round in leagueGroupAPIModel.Rounds.Where(r => r != null))
+                    if (_cocApi.DownloadLeagueWars)
                     {
-                        foreach(var warTag in round.WarTags.Where(w => w != null))
-                        {
-                            ICurrentWarAPIModel leagueWar = await _cocApi.GetLeagueWarAsync(warTag, true, false);
+                        LeagueGroupAPIModel leagueGroupAPIModel = await _cocApi.GetLeagueGroupAsync(clanStrings[i], true, false);
 
-                            if (leagueWar.Clans.Any(c => c.Tag == storedClan.Tag)) continue;
+                        foreach (var round in leagueGroupAPIModel.Rounds.Where(r => r != null))
+                        {
+                            foreach(var warTag in round.WarTags.Where(w => w != null))
+                            {
+                                ICurrentWarAPIModel leagueWar = await _cocApi.GetLeagueWarAsync(warTag, true, false);
+
+                                if (leagueWar.Clans.Any(c => c.Tag == storedClan.Tag)) continue;
+                            }
                         }
                     }
+
+                    storedClan.AnnounceWars = true;
 
                     foreach (ICurrentWarAPIModel storedWar in storedClan.Wars.Values)
                     {
@@ -67,7 +73,31 @@ namespace CocApiLibrary
                             leagueWar.Update(_cocApi, storedClan, leagueWar);
                         }
                     }
-                    
+
+                    if (_cocApi.DownloadVillages)
+                    {
+                        foreach(var village in storedClan.Members.Where(m => m != null))
+                        {
+                            try  //there is an api bug where some villages in the clan do not appear in the village end point
+                            {
+                                VillageAPIModel storedVillage = await _cocApi.GetVillageAsync(village.Tag);
+
+                                VillageAPIModel downloadedVillage = await _cocApi.GetVillageAsync(village.Tag, true, false);
+
+                                storedVillage.Update(_cocApi, downloadedVillage);
+                            }
+                            catch (Exception)
+                            {
+                                
+                            }
+                        }
+
+                        if (!_update)
+                        {
+                            break;
+                        }
+                    }
+
                     await Task.Delay(100);
 
                     if (!_update)

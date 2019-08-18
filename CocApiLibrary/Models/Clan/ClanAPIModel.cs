@@ -425,7 +425,7 @@ namespace CocApiLibrary.Models
 
 
 
-
+        internal bool AnnounceWars { get; set; } = false;
 
         private readonly object _updateLock = new object();
 

@@ -200,12 +200,7 @@ namespace CocApiLibrary.Models
 
         public string EncodedUrl { get; internal set; } = string.Empty;
 
-        //public void SetExpiration()
-        //{
-        //    DateTimeUTC = DateTime.UtcNow;
 
-        //    Expires = DateTime.UtcNow.AddSeconds(15);
-        //}
 
         public void Initialize()
         {

@@ -73,6 +73,10 @@ namespace ClashOfClansConsoleTest
 
             cocApi.Monitor(true);
 
+            //await Task.Delay(10000);
+
+            cocApi.DownloadLeagueWars = true;
+
             await Task.Delay(-1);
         }
 
@@ -81,7 +85,7 @@ namespace ClashOfClansConsoleTest
             Console.WriteLine($"War is accessible changed:{currentWarAPIModel.Flags.WarIsAccessible}");
         }
 
-        private static void CocApi_NewWar(ClanAPIModel oldClan, ICurrentWarAPIModel currentWarAPIModel)
+        private static void CocApi_NewWar(ICurrentWarAPIModel currentWarAPIModel)
         {
             Console.WriteLine($"New War: {currentWarAPIModel.WarID}");
         }

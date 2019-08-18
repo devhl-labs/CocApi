@@ -20,7 +20,7 @@ namespace CocApiLibrary
     public delegate void MembersLeftEventHandler(ClanAPIModel oldClan, List<MemberListAPIModel> memberListAPIModels);
     public delegate void ClanBadgeUrlChangedEventHandler(ClanAPIModel oldClan, ClanAPIModel newClan);
     public delegate void ClanLocationChangedEventHandler(ClanAPIModel oldClan, ClanAPIModel newClan);
-    public delegate void NewWarEventHandler(ClanAPIModel oldClan, ICurrentWarAPIModel currentWarAPIModel);
+    public delegate void NewWarEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarChangedEventHandler(ICurrentWarAPIModel oldWar, ICurrentWarAPIModel newWar);
     public delegate void NewAttacksEventHandler(ICurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels);
     public delegate void WarEndingSoonEventHandler(ICurrentWarAPIModel currentWarAPIModel);
@@ -29,6 +29,21 @@ namespace CocApiLibrary
     public delegate void ClanPointsChangedEventHandler(ClanAPIModel oldClan, int newClanPoints);
     public delegate void WarIsAccessibleChangedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarEndNotSeenEventHandler(ICurrentWarAPIModel currentWarAPIModel);
+    public delegate void VillageChangedEventHandler(VillageAPIModel oldVillage, VillageAPIModel newVillage);
+    public delegate void VillageDefenseWinsChangedEventHandler(VillageAPIModel oldVillage, int newDefenseWins);
+    public delegate void VillageDonationsChangedEventHandler(VillageAPIModel oldVillage, int newDonations);
+    public delegate void VillageDonationsReceivedChangedEventHandler(VillageAPIModel oldVillage, int newDonationsReceived);
+    public delegate void VillageExpLevelChangedEventHandler(VillageAPIModel oldVillage, int newExpLevel);
+    public delegate void VillageTrophiesChangedEventHandler(VillageAPIModel oldVillage, int newTrophies);
+    public delegate void VillageVersusBattleWinCountChangedEventHandler(VillageAPIModel oldVillage, int newVersusBattleWinCount);
+    public delegate void VillageVersusBattleWinsChangedEventHandler(VillageAPIModel oldVillage, int newVersusBattleWins);
+    public delegate void VillageVersusTrophiesChangedEventHandler(VillageAPIModel oldVillage, int newVersusTrophies);
+    public delegate void VillageLeagueChangedEventHandler(VillageAPIModel oldVillage, LeagueAPIModel? newLeague);
+    public delegate void VillageAchievementsChangedEventHandler(VillageAPIModel oldVillage, List<AchievementAPIModel> newAchievements);
+    public delegate void VillageTroopsChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newTroops);
+    public delegate void VillageHeroesChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newHeroes);
+    public delegate void VillageSpellsChangedEventHandler(VillageAPIModel oldVillage, List<SpellModel> newSpells);
+
 
     public class CocApi
     {
@@ -37,9 +52,10 @@ namespace CocApiLibrary
         private readonly System.Timers.Timer _timer;
         private readonly List<ClanUpdateService> _clanUpdateServices = new List<ClanUpdateService>();
 
-        internal readonly ConcurrentDictionary<string, ClanAPIModel> AllClans = new ConcurrentDictionary<string, ClanAPIModel>();
+        internal readonly Dictionary<string, ClanAPIModel> AllClans = new Dictionary<string, ClanAPIModel>();
         internal readonly Dictionary<string, ICurrentWarAPIModel> AllWars = new Dictionary<string, ICurrentWarAPIModel>();
-
+        internal readonly Dictionary<string, LeagueGroupAPIModel> AllLeagueGroups = new Dictionary<string, LeagueGroupAPIModel>();
+        internal readonly Dictionary<string, VillageAPIModel> AllVillages = new Dictionary<string, VillageAPIModel>();
 
         public event IsAvailableChangedEventHandler? IsAvailableChanged;
         public event ClanChangedEventHandler? ClanChanged;
@@ -56,8 +72,25 @@ namespace CocApiLibrary
         public event ClanPointsChangedEventHandler? ClanPointsChanged;
         public event WarIsAccessibleChangedEventHandler? WarIsAccessibleChanged;
         public event WarEndNotSeenEventHandler? WarEndNotSeen;
+        public event VillageChangedEventHandler? VillageChanged;
+        public event VillageDefenseWinsChangedEventHandler? VillageDefenseWinsChanged;
+        public event VillageDonationsChangedEventHandler? VillageDonationsChanged;
+        public event VillageDonationsChangedEventHandler? VillageDonationsReceivedChanged;
+        public event VillageExpLevelChangedEventHandler? VillageExpLevelChanged;
+        public event VillageTrophiesChangedEventHandler? VillageTrophiesChanged;
+        public event VillageVersusBattleWinCountChangedEventHandler? VillageVersusBattleWinCountChanged;
+        public event VillageVersusBattleWinsChangedEventHandler? VillageVersusBattleWinsChanged;
+        public event VillageVersusTrophiesChangedEventHandler? VillageVersusTrophiesChanged;
+        public event VillageLeagueChangedEventHandler? VillageLeagueChanged;
+        public event VillageAchievementsChangedEventHandler? VillageAchievementsChanged;
+        public event VillageTroopsChangedEventHandler? VillageTroopsChanged;
+        public event VillageHeroesChangedEventHandler? VillageHeroesChanged;
+        public event VillageSpellsChangedEventHandler? VillageSpellsChanged;
 
         public static readonly Regex ValidTagCharacters = new Regex(@"^#[PYLQGRJCUV0289]+$");
+
+        public bool DownloadLeagueWars = false;
+        public bool DownloadVillages = false;
 
         public DateTime NextTimerResetUTC { get; private set; }
         public bool IsAvailable
@@ -110,6 +143,75 @@ namespace CocApiLibrary
 
         }
 
+        internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<SpellModel> newSpells)
+        {
+            VillageSpellsChanged?.Invoke(oldVillage, newSpells);
+        }
+
+        internal void VillageHeroesChangedEvent(VillageAPIModel oldVillage, List<TroopAPIModel> newHeroes)
+        {
+            VillageHeroesChanged?.Invoke(oldVillage, newHeroes);
+        }
+
+        internal void VillageTroopsChangedEvent(VillageAPIModel oldVillage, List<TroopAPIModel> newTroops)
+        {
+            VillageTroopsChanged?.Invoke(oldVillage, newTroops);
+        }
+
+        internal void VillageAchievementsChangedEvent(VillageAPIModel oldVillage, List<AchievementAPIModel> newAchievements)
+        {
+            VillageAchievementsChanged?.Invoke(oldVillage, newAchievements);
+        }
+
+        internal void VillageLeagueChangedEvent(VillageAPIModel oldVillage, LeagueAPIModel? newLeague)
+        {
+            VillageLeagueChanged?.Invoke(oldVillage, newLeague);
+        }
+
+        internal void VillageVersusTrophiesChangedEvent(VillageAPIModel oldVillage, int newVersusTrophies)
+        {
+            VillageVersusTrophiesChanged?.Invoke(oldVillage, newVersusTrophies);
+        }
+
+        internal void VillageVersusBattleWinsChangedEvent(VillageAPIModel oldVillage, int newVersusBattleWins)
+        {
+            VillageVersusBattleWinsChanged?.Invoke(oldVillage, newVersusBattleWins);
+        }
+
+        internal void VillageVersusBattleWinCountChangedEvent(VillageAPIModel oldVillage, int newVersusBattleWinCount)
+        {
+            VillageVersusBattleWinCountChanged?.Invoke(oldVillage, newVersusBattleWinCount);
+        }
+
+        internal void VillageTrophiesChangedEvent(VillageAPIModel oldVillage, int newTrophies)
+        {
+            VillageTrophiesChanged?.Invoke(oldVillage, newTrophies);
+        }
+
+        internal void VillageExpLevelChangedEvent(VillageAPIModel oldVillage, int newExpLevel)
+        {
+            VillageExpLevelChanged?.Invoke(oldVillage, newExpLevel);
+        }
+
+        internal void VillageDonationsReceivedChangedEvent(VillageAPIModel oldVillage, int newDonationsReceived)
+        {
+            VillageDonationsReceivedChanged?.Invoke(oldVillage, newDonationsReceived);
+        }
+
+        internal void VillageDonationsChangedEvent(VillageAPIModel oldVillage, int newDonations)
+        {
+            VillageDonationsChanged?.Invoke(oldVillage, newDonations);
+        }
+
+        internal void VillageDefenseWinsChangedEvent(VillageAPIModel oldVillage, int newDefenseWinsChanged)
+        {
+            VillageDefenseWinsChanged?.Invoke(oldVillage, newDefenseWinsChanged);
+        }
+
+        internal void VillageChangedEvent(VillageAPIModel oldVillage, VillageAPIModel newVillage)
+        {
+            VillageChanged?.Invoke(oldVillage, newVillage);
+        }
 
         internal void WarEndNotSeenEvent(ICurrentWarAPIModel currentWarAPIModel)
         {
@@ -154,9 +256,9 @@ namespace CocApiLibrary
             WarChanged?.Invoke(oldWar, newWar);
         }
 
-        internal void NewWarEvent(ClanAPIModel newClan, ICurrentWarAPIModel currentWarAPIModel)
+        internal void NewWarEvent(ICurrentWarAPIModel currentWarAPIModel)
         {
-            NewWar?.Invoke(newClan, currentWarAPIModel);
+            NewWar?.Invoke(currentWarAPIModel);
         }
 
         internal void MembersLeftEvent(ClanAPIModel newClan, List<MemberListAPIModel> memberListAPIModels)
@@ -336,6 +438,8 @@ namespace CocApiLibrary
                     }
                 }
 
+                AnnounceNewWar(currentWarAPIModel);
+
                 return currentWarAPIModel;
             }
             catch (Exception e)
@@ -396,15 +500,30 @@ namespace CocApiLibrary
 
         }
 
-        public async Task<LeagueGroupAPIModel> GetLeagueGroupAsync(string clanTag) //todo add a store
+        public async Task<LeagueGroupAPIModel> GetLeagueGroupAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = true)
         {
             try
             {
                 ValidateTag(clanTag);
 
+                if(allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out LeagueGroupAPIModel leagueGroupAPIModel))
+                {
+                    if (allowExpiredItem || !leagueGroupAPIModel.IsExpired())
+                    {
+                        return leagueGroupAPIModel;
+                    }
+                }
+
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar/leaguegroup";
 
-                return await WebResponse.GetWebResponse<LeagueGroupAPIModel>(this, url);
+                leagueGroupAPIModel = await WebResponse.GetWebResponse<LeagueGroupAPIModel>(this, url);
+
+                foreach(var clan in leagueGroupAPIModel.Clans.Where(x => x != null))
+                {
+                    AllLeagueGroups.TryAdd(clan.Tag, leagueGroupAPIModel);
+                }
+
+                return leagueGroupAPIModel;
             }
             catch (Exception e)
             {
@@ -445,6 +564,8 @@ namespace CocApiLibrary
                     clanAPIModel.Wars.TryAdd(leagueWarAPIModel.WarID, leagueWarAPIModel);
                 }
 
+                AnnounceNewWar(leagueWarAPIModel);
+
                 return leagueWarAPIModel;
             }
             catch (Exception e)
@@ -454,15 +575,27 @@ namespace CocApiLibrary
 
         }
 
-        public async Task<VillageAPIModel> GetVillageAsync(string villageTag)  //todo add a store for this
+        public async Task<VillageAPIModel> GetVillageAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = true)
         {
             try
             {
                 ValidateTag(villageTag);
 
+                if(allowStoredItem && AllVillages.TryGetValue(villageTag, out VillageAPIModel villageAPIModel))
+                {
+                    if(allowExpiredItem || !villageAPIModel.IsExpired())
+                    {
+                        return villageAPIModel;
+                    }
+                }
+
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                return await WebResponse.GetWebResponse<VillageAPIModel>(this, url);
+                villageAPIModel = await WebResponse.GetWebResponse<VillageAPIModel>(this, url);
+
+                AllVillages.TryAdd(villageAPIModel.Tag, villageAPIModel);
+
+                return villageAPIModel;
             }
             catch (Exception e)
             {
@@ -581,7 +714,31 @@ namespace CocApiLibrary
             return ValidTagCharacters.IsMatch(tag);
         }
 
-        
+        private void AnnounceNewWar(ICurrentWarAPIModel currentWarAPIModel)
+        {
+            if(currentWarAPIModel.State == State.NotInWar || currentWarAPIModel.State == State.WarEnded)
+            {
+                return;
+            }
+
+            if (AllClans.TryGetValue(currentWarAPIModel.Clans[0].Tag, out ClanAPIModel clanAPIModel))
+            {
+                if (clanAPIModel.AnnounceWars)
+                {
+                    NewWarEvent(currentWarAPIModel);
+                }
+            }
+            else
+            {
+                if (AllClans.TryGetValue(currentWarAPIModel.Clans[1].Tag, out clanAPIModel))
+                {
+                    if (clanAPIModel.AnnounceWars)
+                    {
+                        NewWarEvent(currentWarAPIModel);
+                    }
+                }
+            }
+        }
 
 
 
