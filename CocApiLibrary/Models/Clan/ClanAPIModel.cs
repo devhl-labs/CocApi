@@ -444,6 +444,10 @@ namespace CocApiLibrary.Models
                 MembersLeftTry(cocApi, downloadedClan);
 
                 MembersJoinedTry(cocApi, downloadedClan);
+
+                DateTimeUTC = downloadedClan.DateTimeUTC;
+
+                Expires = downloadedClan.Expires;
             }
         }
 
@@ -547,9 +551,6 @@ namespace CocApiLibrary.Models
                     WarLosses = downloadedClan.WarLosses;
                     WarTies = downloadedClan.WarWins;
                     WarWinStreak = downloadedClan.WarWinStreak;
-
-                    DateTimeUTC = downloadedClan.DateTimeUTC;
-                    Expires = downloadedClan.Expires;
                 }
             }
             catch (Exception)

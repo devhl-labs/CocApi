@@ -126,6 +126,8 @@ namespace CocApiLibrary
                 UpdateVillageSpells(cocApi, downloadedVillage);
 
                 DateTimeUTC = downloadedVillage.DateTimeUTC;
+
+                Expires = downloadedVillage.Expires;
             }
         }
         

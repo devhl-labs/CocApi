@@ -332,7 +332,7 @@ namespace CocApiLibrary.Models
 
         private readonly object _updateLock = new object();
 
-        internal void Update(CocApi cocApi, ClanAPIModel storedClan, ICurrentWarAPIModel? downloadedWar)
+        internal void Update(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
             lock (_updateLock)
             {
@@ -341,6 +341,13 @@ namespace CocApiLibrary.Models
                 UpdateWar(cocApi, downloadedWar);
 
                 UpdateAttacks(cocApi, downloadedWar);
+
+                if(downloadedWar != null && downloadedWar.WarID == WarID)
+                {
+                    Expires = downloadedWar.Expires;
+
+                    DateTimeUTC = downloadedWar.DateTimeUTC;
+                }
             }
         }
 
