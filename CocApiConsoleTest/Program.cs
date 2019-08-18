@@ -18,7 +18,17 @@ namespace ClashOfClansConsoleTest
                 File.ReadAllText(@"E:\Desktop\token.txt")
             };
 
-            CocApi cocApi = new CocApi(tokens, 3000, 60000, Enums.VerbosityType.None);
+            //Configuration configuration = new Configuration();
+
+            //configuration.NumberOfUpdaters = 1;
+
+            //configuration.TimeToWaitForWebRequests = 6000;
+
+            //configuration.TokenTimeOutMilliseconds = 3000;
+
+           
+
+            CocApi cocApi = new CocApi(tokens);
 
             //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
@@ -69,11 +79,21 @@ namespace ClashOfClansConsoleTest
                 //, "#8RJJ0C0Y"
             };
 
-            cocApi.Monitor(clans, 1);
+            cocApi.UpdateClans(clans);
 
-            cocApi.Monitor(true);
+            cocApi.BeginUpdatingClans();
 
-            //await Task.Delay(10000);
+            await Task.Delay(10000);
+
+            //await cocApi.StopUpdatingClans();
+
+            //cocApi.DownloadLeagueWars = true;
+
+            await Task.Delay(10000);
+
+            cocApi.UpdateClan("#2C8V29YJ");
+
+            await Task.Delay(10000);
 
             cocApi.DownloadLeagueWars = true;
 

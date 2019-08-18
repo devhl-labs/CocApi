@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Concurrent;
 using System.Linq;
 using AutoMapper;
+//using System.Threading;
 
 namespace CocApiLibrary
 {
@@ -56,6 +57,7 @@ namespace CocApiLibrary
         internal readonly Dictionary<string, ICurrentWarAPIModel> AllWars = new Dictionary<string, ICurrentWarAPIModel>();
         internal readonly Dictionary<string, LeagueGroupAPIModel> AllLeagueGroups = new Dictionary<string, LeagueGroupAPIModel>();
         internal readonly Dictionary<string, VillageAPIModel> AllVillages = new Dictionary<string, VillageAPIModel>();
+        internal readonly Configuration _cfg = new Configuration();
 
         public event IsAvailableChangedEventHandler? IsAvailableChanged;
         public event ClanChangedEventHandler? ClanChanged;
@@ -117,11 +119,14 @@ namespace CocApiLibrary
 
 
 
-        public CocApi(IEnumerable<string> tokens, int tokenTimeOutInMilliseconds, int timeToWaitForWebRequests, VerbosityType verbosityType)
+        public CocApi(IEnumerable<string> tokens, Configuration? cfg = null)
         {
-            WebResponse.Initialize(timeToWaitForWebRequests, verbosityType, tokens, tokenTimeOutInMilliseconds);
+            if(cfg != null)
+            {
+                _cfg = cfg;
+            }
 
-            //_apiHelper = new ApiHelper(timeToWaitForWebRequests, verbosityType, tokens, tokenTimeOutInMilliseconds);
+            WebResponse.Initialize(_cfg, tokens);
 
             _timer = new Timer();
             _timer.Elapsed += TimerElapsed;
@@ -131,16 +136,7 @@ namespace CocApiLibrary
 
             NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
 
-            //var config = new MapperConfiguration(cfg =>
-            //{
-            //    cfg.CreateMap<ClanAPIModel, ClanAPIModel>().Ignore(c => c.BadgeUrls!).Ignore(c => c.Location!).Ignore(c => c.Members!).Ignore(c => c.Wars);
-            //    cfg.CreateMap<BadgeUrlModel, BadgeUrlModel>();
-            //    cfg.CreateMap<LocationModel, LocationModel>();
-            //    cfg.CreateMap<CurrentWarAPIModel, CurrentWarAPIModel>().Ignore(c => c.Attacks);
-
-            //});
-            //Mapper = config.CreateMapper();
-
+            CreateUpdaters();
         }
 
         internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<SpellModel> newSpells)
@@ -434,11 +430,12 @@ namespace CocApiLibrary
                     {
                         ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag);
 
-                        clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
+                        if(clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel))
+                        {
+                            AnnounceNewWar(clanTag, currentWarAPIModel);
+                        }
                     }
-                }
-
-                AnnounceNewWar(currentWarAPIModel);
+                }               
 
                 return currentWarAPIModel;
             }
@@ -508,7 +505,7 @@ namespace CocApiLibrary
 
                 if(allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out LeagueGroupAPIModel leagueGroupAPIModel))
                 {
-                    if (allowExpiredItem || !leagueGroupAPIModel.IsExpired())
+                    if (leagueGroupAPIModel.State == LeagueState.Ended || allowExpiredItem || !leagueGroupAPIModel.IsExpired())
                     {
                         return leagueGroupAPIModel;
                     }
@@ -555,7 +552,10 @@ namespace CocApiLibrary
 
                 leagueWarAPIModel.WarTag = warTag;
 
-                AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel);
+                if(AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel))
+                {
+                    AnnounceNewWar(leagueWarAPIModel.Clans.First().Tag, leagueWarAPIModel);  //prob doesn't matter what tag we use.  Small chance of a race condition when bot start though
+                }
 
                 foreach (var clan in leagueWarAPIModel.Clans)
                 {
@@ -563,8 +563,6 @@ namespace CocApiLibrary
 
                     clanAPIModel.Wars.TryAdd(leagueWarAPIModel.WarID, leagueWarAPIModel);
                 }
-
-                AnnounceNewWar(leagueWarAPIModel);
 
                 return leagueWarAPIModel;
             }
@@ -650,38 +648,79 @@ namespace CocApiLibrary
 
 
 
-        public void Monitor(bool enabled)
+        public void BeginUpdatingClans()
         {
-            foreach (ClanUpdateService clanStore in _clanUpdateServices)
+            foreach (ClanUpdateService clanUpdateService in _clanUpdateServices)
             {
-                clanStore.Update(enabled);
+                clanUpdateService.BeginUpdatingClans();
             }
         }
 
-        public void Monitor(IEnumerable<string> clanTags, int numOfUpdaters)
+        public async Task StopUpdatingClans()
         {
-            if (numOfUpdaters < 1)
+            var tasks = new List<Task>();
+                       
+            foreach(ClanUpdateService clanUpdateService in _clanUpdateServices)
             {
-                return;
+                tasks.Add(clanUpdateService.StopUpdatingClans());
             }
 
-            for (int i = 0; i < numOfUpdaters; i++)
-            {
-                ClanUpdateService clanStore = new ClanUpdateService(this);
-                _clanUpdateServices.Add(clanStore);
-            }
+            Task t = Task.WhenAll(tasks);
 
+            await t;
+        }
+
+        public void UpdateClans(IEnumerable<string> clanTags)
+        {
             int j = 0;
 
             foreach (string clanTag in clanTags)
             {
+                try
+                {
+                    ValidateTag(clanTag);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+
                 _clanUpdateServices.ElementAt(j).clanStrings.Add(clanTag);
                 j++;
-                if (j >= numOfUpdaters) { j = 0; }
+                if (j >= _cfg.NumberOfUpdaters) { j = 0; }
             }
         }
 
+        public void UpdateClan(string clanTag)
+        {
+            try
+            {
+                ValidateTag(clanTag);
+            }
+            catch (Exception)
+            {
 
+                throw;
+            }
+
+            ClanUpdateService clanUpdateService = _clanUpdateServices.OrderBy(c => c.clanStrings.Count()).FirstOrDefault();
+
+            clanUpdateService.clanStrings.Add(clanTag);
+        }
+
+        private void CreateUpdaters()
+        {
+            if (_cfg.NumberOfUpdaters < 1)
+            {
+                return;
+            }
+
+            for (int i = 0; i < _cfg.NumberOfUpdaters; i++)
+            {
+                ClanUpdateService clanStore = new ClanUpdateService(this);
+                _clanUpdateServices.Add(clanStore);
+            }
+        }
 
 
 
@@ -714,28 +753,18 @@ namespace CocApiLibrary
             return ValidTagCharacters.IsMatch(tag);
         }
 
-        private void AnnounceNewWar(ICurrentWarAPIModel currentWarAPIModel)
+        private void AnnounceNewWar(string clanTag, ICurrentWarAPIModel currentWarAPIModel)
         {
             if(currentWarAPIModel.State == State.NotInWar || currentWarAPIModel.State == State.WarEnded)
             {
                 return;
             }
 
-            if (AllClans.TryGetValue(currentWarAPIModel.Clans[0].Tag, out ClanAPIModel clanAPIModel))
+            if (AllClans.TryGetValue(clanTag, out ClanAPIModel clanAPIModel))
             {
                 if (clanAPIModel.AnnounceWars)
                 {
                     NewWarEvent(currentWarAPIModel);
-                }
-            }
-            else
-            {
-                if (AllClans.TryGetValue(currentWarAPIModel.Clans[1].Tag, out clanAPIModel))
-                {
-                    if (clanAPIModel.AnnounceWars)
-                    {
-                        NewWarEvent(currentWarAPIModel);
-                    }
                 }
             }
         }

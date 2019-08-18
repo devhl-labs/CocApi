@@ -19,30 +19,28 @@ namespace CocApiLibrary
 {
     internal static class WebResponse
     {
-        //public static ConcurrentBag<WebResponseTimer> Timers = new ConcurrentBag<CocApiLibrary.WebResponseTimer>();
-
-        //private static Dictionary<string, IDownloadable> downloadables = new Dictionary<string, IDownloadable>();
-
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
         private static readonly HttpClient ApiClient = new HttpClient();
-        private static int _timeToWaitForWebRequest;
-        private static VerbosityType _verbosityType;
+        //private static int _timeToWaitForWebRequest;
+        //private static VerbosityType _verbosityType;
         private static int counter = 0;
-
+        private static Configuration _cfg = new Configuration();
 
         private static readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
 
-        public static void Initialize(int timeToWaitForWebRequests, VerbosityType verbosityType, IEnumerable<string> tokens, int tokenTimeOutInMilliseconds)
+        public static void Initialize(Configuration cfg, IEnumerable<string> tokens)
         {
-            _timeToWaitForWebRequest = timeToWaitForWebRequests;
+            _cfg = cfg;
 
-            _verbosityType = verbosityType;
+            //_timeToWaitForWebRequest = timeToWaitForWebRequests;
 
-            _verbosityType = verbosityType;
+            //_verbosityType = verbosityType;
+
+            //_verbosityType = verbosityType;
 
             ApiClient.DefaultRequestHeaders.Accept.Clear();
 
@@ -50,7 +48,7 @@ namespace CocApiLibrary
 
             foreach (string token in tokens)
             {
-                TokenObject tokenObject = new TokenObject(token, tokenTimeOutInMilliseconds, verbosityType);
+                TokenObject tokenObject = new TokenObject(token, _cfg.TokenTimeOutMilliseconds, cfg.Verbosity);
 
                 _tokenObjects.Add(tokenObject);
             }
@@ -77,7 +75,7 @@ namespace CocApiLibrary
             await _semaphoreSlim.WaitAsync();
             try
             {
-                if (_verbosityType == VerbosityType.Verbose)
+                if (_cfg.Verbosity == VerbosityType.Verbose)
                 {
                     Console.WriteLine($"counter: {counter};  {url}");
                 }
@@ -104,7 +102,7 @@ namespace CocApiLibrary
 
             ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
-            using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(_timeToWaitForWebRequest);
+            using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
 
             Stopwatch stopwatch = new Stopwatch();
 
