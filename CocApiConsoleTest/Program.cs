@@ -59,6 +59,8 @@ namespace ClashOfClansConsoleTest
 
             cocApi.NewWar += CocApi_NewWar;
 
+            cocApi.WarIsAccessibleChanged += CocApi_WarIsAccessibleChanged;
+
             List<string> clans = new List<string>
             {
                 "#8J82PV0C"
@@ -72,6 +74,11 @@ namespace ClashOfClansConsoleTest
             cocApi.Monitor(true);
 
             await Task.Delay(-1);
+        }
+
+        private static void CocApi_WarIsAccessibleChanged(ICurrentWarAPIModel currentWarAPIModel)
+        {
+            Console.WriteLine($"War is accessible changed:{currentWarAPIModel.Flags.WarIsAccessible}");
         }
 
         private static void CocApi_NewWar(ClanAPIModel oldClan, ICurrentWarAPIModel currentWarAPIModel)

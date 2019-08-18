@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
@@ -329,6 +330,95 @@ namespace CocApiLibrary.Models
                 return true;
             }
             return false;
+        }
+
+
+
+
+        private readonly object _updateLock = new object();
+
+        internal void Update(CocApi cocApi, ClanAPIModel storedClan, ICurrentWarAPIModel? downloadedWar)
+        {
+            lock (_updateLock)
+            {
+                SendWarNotifications(cocApi, downloadedWar);
+
+                UpdateWar(cocApi, downloadedWar);
+
+                UpdateAttacks(cocApi, downloadedWar);
+            }
+        }
+
+        private void SendWarNotifications(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
+        {
+            if (downloadedWar == null && Flags.WarIsAccessible)
+            {
+                Flags.WarIsAccessible = false;
+
+                cocApi.WarIsAccessibleChangedEvent(this);
+            }
+            else if (downloadedWar != null && Flags.WarIsAccessible == false)
+            {
+                cocApi.WarIsAccessibleChangedEvent(this);
+            }
+
+            if (!Flags.WarStartingSoon && DateTime.UtcNow > WarStartingSoonUTC)
+            {
+                cocApi.WarStartingSoonEvent(this);
+
+                Flags.WarEndingSoon = true;
+            }
+
+            if (!Flags.WarEndingSoon && DateTime.UtcNow > WarEndingSoonUTC)
+            {
+                cocApi.WarEndingSoonEvent(this);
+
+                Flags.WarEndingSoon = true;
+            }
+
+            if (downloadedWar == null && EndTimeUTC < DateTime.UtcNow && Flags.WarEndNotSeen)
+            {
+                Flags.WarEndNotSeen = true;
+
+                cocApi.WarEndNotSeenEvent(this);
+            }
+        }
+
+        private void UpdateWar(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
+        {
+            if(downloadedWar == null) return;
+            
+            if (EndTimeUTC != downloadedWar.EndTimeUTC ||
+                StartTimeUTC != downloadedWar.StartTimeUTC ||
+                State != downloadedWar.State
+            )
+            {
+                cocApi.WarChangedEvent(this, downloadedWar);
+
+                EndTimeUTC = downloadedWar.EndTimeUTC;
+                StartTimeUTC = downloadedWar.StartTimeUTC;
+                State = downloadedWar.State;
+            }
+        }
+
+        private void UpdateAttacks(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
+        {
+            if (downloadedWar == null) return;
+
+            List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
+
+            foreach (AttackAPIModel attack in downloadedWar.Attacks.Values)
+            {
+                if (Attacks.TryAdd(attack.Order, attack))
+                {
+                    newAttacks.Add(attack); //todo there are more lists that contain attacks
+                }
+            }
+
+            if (newAttacks.Count() > 0)
+            {
+                cocApi.NewAttacksEvent(this, newAttacks);
+            }
         }
     }
 }

@@ -27,19 +27,19 @@ namespace CocApiLibrary
     public delegate void WarStartingSoonEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void ClanVersusPointsChangedEventHandler(ClanAPIModel oldClan, int newClanVersusPoints);
     public delegate void ClanPointsChangedEventHandler(ClanAPIModel oldClan, int newClanPoints);
+    public delegate void WarIsAccessibleChangedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
+    public delegate void WarEndNotSeenEventHandler(ICurrentWarAPIModel currentWarAPIModel);
 
     public class CocApi
     {
         private bool _isAvailable = true;
         private readonly Timer _testConnection = new System.Timers.Timer();
         private readonly System.Timers.Timer _timer;
-        //private readonly ApiHelper _apiHelper;
-        private readonly List<ClanStore> _clanStores = new List<ClanStore>();
+        private readonly List<ClanUpdateService> _clanUpdateServices = new List<ClanUpdateService>();
 
         internal readonly ConcurrentDictionary<string, ClanAPIModel> AllClans = new ConcurrentDictionary<string, ClanAPIModel>();
-        internal readonly Dictionary<string, ICurrentWarAPIModel> AllLeagueWars = new Dictionary<string, ICurrentWarAPIModel>();
+        internal readonly Dictionary<string, ICurrentWarAPIModel> AllWars = new Dictionary<string, ICurrentWarAPIModel>();
 
-        //internal IMapper Mapper;
 
         public event IsAvailableChangedEventHandler? IsAvailableChanged;
         public event ClanChangedEventHandler? ClanChanged;
@@ -54,6 +54,8 @@ namespace CocApiLibrary
         public event WarStartingSoonEventHandler? WarStartingSoon;
         public event ClanVersusPointsChangedEventHandler? ClanVersusPointsChanged;
         public event ClanPointsChangedEventHandler? ClanPointsChanged;
+        public event WarIsAccessibleChangedEventHandler? WarIsAccessibleChanged;
+        public event WarEndNotSeenEventHandler? WarEndNotSeen;
 
         public static readonly Regex ValidTagCharacters = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
@@ -109,7 +111,15 @@ namespace CocApiLibrary
         }
 
 
+        internal void WarEndNotSeenEvent(ICurrentWarAPIModel currentWarAPIModel)
+        {
+            WarEndNotSeen?.Invoke(currentWarAPIModel);
+        }
 
+        internal void WarIsAccessibleChangedEvent(ICurrentWarAPIModel currentWarAPIModel)
+        {
+            WarIsAccessibleChanged?.Invoke(currentWarAPIModel);
+        }
 
         internal void ClanPointsChangedEvent(ClanAPIModel oldClan, int newClanPoints)
         {
@@ -293,7 +303,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<ICurrentWarAPIModel> GetWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = true)
+        public async Task<ICurrentWarAPIModel> GetCurrentWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = true)
         {
             try
             {
@@ -303,43 +313,81 @@ namespace CocApiLibrary
                 {
                     if(AllClans.TryGetValue(clanTag, out var clan))
                     {
-                        ICurrentWarAPIModel? war = clan.Wars.OrderBy(w => w.Value.PreparationStartTimeUTC).FirstOrDefault(w => w.Value.EndTimeUTC > DateTime.UtcNow).Value;
-
-                        if (war != null && (allowExpiredItem || !war.IsExpired()))
+                        if (clan.Wars.Where(w => w.Value is CurrentWarAPIModel).OrderBy(w => w.Value.PreparationStartTimeUTC).FirstOrDefault(w => w.Value.EndTimeUTC > DateTime.UtcNow).Value is CurrentWarAPIModel war && (allowExpiredItem || !war.IsExpired()))
                         {
                             return war;
                         }
                     }
                 }
 
-                try
-                {
-                    string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
+                string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
                     
-                    CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(this, url);
+                CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(this, url);
 
-                    //if (currentWarAPIModel.State != State.NotInWar)
-                    //{
-                    //    AllLeagueWars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
-                    //}
-
-                    return currentWarAPIModel;
-                }
-                catch (ForbiddenException)
+                if (currentWarAPIModel.State != State.NotInWar)
                 {
-                    if(AllClans.TryGetValue(clanTag, out ClanAPIModel clanAPIModel))
+                    AllWars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
+
+                    foreach (var clan in currentWarAPIModel.Clans)
                     {
-                        if(clanAPIModel.Wars != null)
-                        {
-                            foreach(CurrentWarAPIModel currentWarAPIModel in clanAPIModel.Wars.Values)
-                            {
-                                currentWarAPIModel.Clans.First(c => c.Tag == clanTag).WarIsAccessible = false; //todo make an event for both being false
-                            }
-                        }
+                        ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag);
+
+                        clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
+                    }
+                }
+
+                return currentWarAPIModel;
+            }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
+            }
+
+        }
+
+        public async Task<ICurrentWarAPIModel?> GetCurrentWarAsync(ICurrentWarAPIModel storedWar)
+        {
+            try
+            {
+                if (AllWars.TryGetValue(storedWar.WarID, out ICurrentWarAPIModel war))
+                {
+                    if (!war.IsExpired()) return war;
+                }
+
+                ICurrentWarAPIModel? currentWarAPIModel = null;
+
+                if (storedWar is LeagueWarAPIModel leagueWar)
+                {
+                    try
+                    {
+                        currentWarAPIModel = await GetLeagueWarAsync(leagueWar.WarTag, true, false);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        currentWarAPIModel = await GetCurrentWarAsync(storedWar.Clans[0].Tag, true, false);
+                    }
+                    catch (Exception)
+                    {
                     }
 
-                    throw;
+                    if (currentWarAPIModel?.WarID != storedWar.WarID)
+                    {
+                        currentWarAPIModel = await GetCurrentWarAsync(storedWar.Clans[1].Tag, true, false);
+                    }
                 }
+
+                if(currentWarAPIModel?.WarID == storedWar.WarID)
+                {
+                    return currentWarAPIModel;
+                }
+
+                return null;
             }
             catch (Exception e)
             {
@@ -373,7 +421,7 @@ namespace CocApiLibrary
 
                 if (allowStoredItem)
                 {
-                    if(AllLeagueWars.TryGetValue(warTag, out ICurrentWarAPIModel currentWarAPIModel))
+                    if(AllWars.TryGetValue(warTag, out ICurrentWarAPIModel currentWarAPIModel))
                     {
                         if(allowExpiredItem || !currentWarAPIModel.IsExpired())
                         {
@@ -384,15 +432,20 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                LeagueWarAPIModel leagueWar = await WebResponse.GetWebResponse<LeagueWarAPIModel>(this, url);
+                LeagueWarAPIModel leagueWarAPIModel = await WebResponse.GetWebResponse<LeagueWarAPIModel>(this, url);
 
-                leagueWar.WarTag = warTag;
+                leagueWarAPIModel.WarTag = warTag;
 
-                AllLeagueWars.TryAdd(leagueWar.WarTag, leagueWar);
+                AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel);
 
-                //AllLeagueWars.TryAdd(leagueWar.WarID, leagueWar);
+                foreach (var clan in leagueWarAPIModel.Clans)
+                {
+                    ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag);
 
-                return leagueWar;
+                    clanAPIModel.Wars.TryAdd(leagueWarAPIModel.WarID, leagueWarAPIModel);
+                }
+
+                return leagueWarAPIModel;
             }
             catch (Exception e)
             {
@@ -466,7 +519,7 @@ namespace CocApiLibrary
 
         public void Monitor(bool enabled)
         {
-            foreach (ClanStore clanStore in _clanStores)
+            foreach (ClanUpdateService clanStore in _clanUpdateServices)
             {
                 clanStore.Update(enabled);
             }
@@ -481,15 +534,15 @@ namespace CocApiLibrary
 
             for (int i = 0; i < numOfUpdaters; i++)
             {
-                ClanStore clanStore = new ClanStore(this);
-                _clanStores.Add(clanStore);
+                ClanUpdateService clanStore = new ClanUpdateService(this);
+                _clanUpdateServices.Add(clanStore);
             }
 
             int j = 0;
 
             foreach (string clanTag in clanTags)
             {
-                _clanStores.ElementAt(j).clanStrings.Add(clanTag);
+                _clanUpdateServices.ElementAt(j).clanStrings.Add(clanTag);
                 j++;
                 if (j >= numOfUpdaters) { j = 0; }
             }

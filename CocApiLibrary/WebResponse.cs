@@ -133,9 +133,7 @@ namespace CocApiLibrary
 
                     //result.SetExpiration();
 
-                    SetIDownloadableProperties(result, encodedUrl);
-
-                    //downloadables.AddOrUpdate(encodedUrl, result);                  
+                    SetIDownloadableProperties(result, encodedUrl);         
 
                     return result;
                 }
@@ -197,22 +195,46 @@ namespace CocApiLibrary
             switch (result)
             {
                 case LeagueWarAPIModel leagueWarAPIModel:
-                    leagueWarAPIModel.Expires = DateTime.UtcNow.AddSeconds(15);
+                    if(leagueWarAPIModel.State == State.WarEnded)
+                    {
+                        leagueWarAPIModel.Expires = DateTime.UtcNow.AddYears(1);
+                    }
+                    else
+                    {
+                        leagueWarAPIModel.Expires = DateTime.UtcNow.AddMinutes(2);
+                    }
+
                     leagueWarAPIModel.EncodedUrl = encodedURL;
                     break;
 
                 case CurrentWarAPIModel currentWar:
-                    currentWar.Expires = DateTime.UtcNow.AddSeconds(15);
+                    if(currentWar.State == State.WarEnded)
+                    {
+                        currentWar.Expires = DateTime.UtcNow.AddYears(1);
+                    }
+                    else
+                    {
+                        currentWar.Expires = DateTime.UtcNow.AddSeconds(15);
+                    }
+                    
                     currentWar.EncodedUrl = encodedURL;
                     break;
 
                 case LeagueGroupAPIModel leagueGroupAPIModel:
-                    leagueGroupAPIModel.Expires = DateTime.UtcNow.AddSeconds(15);
+                    if(leagueGroupAPIModel.State == LeagueState.Ended)
+                    {
+                        leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(6);
+                    }
+                    else
+                    {
+                        leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(1);
+                    }
+                    
                     leagueGroupAPIModel.EncodedUrl = encodedURL;
                     break;
 
                 case ClanAPIModel clanAPIModel:
-                    clanAPIModel.Expires = DateTime.UtcNow.AddSeconds(15);
+                    clanAPIModel.Expires = DateTime.UtcNow.AddMinutes(5);
                     clanAPIModel.EncodedUrl = encodedURL;
                     break;
 

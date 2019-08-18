@@ -25,5 +25,7 @@ namespace CocApiLibrary.Models
         Enums.WarType WarType { get; set; }
 
         bool WarIsOverOrAllAttacksUsed();
+
+
     }
 }

@@ -13,8 +13,11 @@ namespace CocApiLibrary.Models.Clan
         [JsonIgnore]
         public bool WarStartingSoon { get; internal set; } = false;
 
+        [JsonIgnore]
+        public bool WarIsAccessible { get; internal set; } = true;
 
-
+        [JsonIgnore]
+        public bool WarEndNotSeen { get; internal set; } = false;
 
 
     }

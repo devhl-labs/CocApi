@@ -44,8 +44,8 @@ namespace CocApiLibrary.Models
         [JsonIgnore]
         public Result Result { get; set; }
 
-        [JsonIgnore]
-        public bool? WarIsAccessible { get; internal set; } = null;
+        //[JsonIgnore]
+        //public bool? WarIsAccessible { get; internal set; } = null;
 
     }
 }

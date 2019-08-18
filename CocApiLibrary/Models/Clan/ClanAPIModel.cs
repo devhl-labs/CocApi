@@ -14,37 +14,37 @@ namespace CocApiLibrary.Models
 {
     public class ClanAPIModel : IClanAPIModel, IDownloadable
     {
-        private CocApi? _cocApi;
-        private bool _changed = false;
+        //private CocApi? _cocApi;
+        //private bool _changed = false;
 
-        public void Process(CocApi cocApi)
-        {
-            _cocApi = cocApi;
+        //public void Process(CocApi cocApi)
+        //{
+        //    //_cocApi = cocApi;
 
-            //if (BadgeUrls != null)
-            //{
-            //    BadgeUrls.Process(_cocApi, this);
-            //}
+        //    //if (BadgeUrls != null)
+        //    //{
+        //    //    BadgeUrls.Process(_cocApi, this);
+        //    //}
 
-            //if (Location != null)
-            //{
-            //    Location.Process(_cocApi, this);
-            //}
-        }
+        //    //if (Location != null)
+        //    //{
+        //    //    Location.Process(_cocApi, this);
+        //    //}
+        //}
 
-        internal void FireEvent()
-        {
-            if (_changed && _cocApi != null)
-            {
-                _changed = false;
-                //_cocApi.ClanChangedEvent(this);
-            }
-        }
+        //internal void FireEvent()
+        //{
+        //    if (_changed && _cocApi != null)
+        //    {
+        //        _changed = false;
+        //        //_cocApi.ClanChangedEvent(this);
+        //    }
+        //}
 
-        public void SetExpiration()
-        {
-            throw new NotImplementedException();
-        }
+        //public void SetExpiration()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
         private string _tag = string.Empty;
         
@@ -76,10 +76,10 @@ namespace CocApiLibrary.Models
                 if (_name != value)
                 {
                     _name = value;
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -126,10 +126,10 @@ namespace CocApiLibrary.Models
                 {
                     _clanLevel = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -155,10 +155,10 @@ namespace CocApiLibrary.Models
                 {
                     _type = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -178,10 +178,10 @@ namespace CocApiLibrary.Models
                 {
                     _description = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -205,10 +205,10 @@ namespace CocApiLibrary.Models
                 {
                     _clanPoints = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -228,10 +228,10 @@ namespace CocApiLibrary.Models
                 {
                     _clanVersusPoints = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -251,10 +251,10 @@ namespace CocApiLibrary.Models
                 {
                     _requiredTrophies = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -274,10 +274,10 @@ namespace CocApiLibrary.Models
                 {
                     _warWinStreak = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -297,10 +297,10 @@ namespace CocApiLibrary.Models
                 {
                     _warWins = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -320,10 +320,10 @@ namespace CocApiLibrary.Models
                 {
                     _warTies = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -343,10 +343,10 @@ namespace CocApiLibrary.Models
                 {
                     _warLosses = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -366,10 +366,10 @@ namespace CocApiLibrary.Models
                 {
                     _isWarLogPublic = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -392,10 +392,10 @@ namespace CocApiLibrary.Models
                 {
                     _warFrequency = value;
 
-                    if (_cocApi != null)
-                    {
-                        _changed = true;
-                    }
+                    //if (_cocApi != null)
+                    //{
+                    //    _changed = true;
+                    //}
                 }
             }
         }
@@ -403,7 +403,7 @@ namespace CocApiLibrary.Models
 
 
         [JsonIgnore]
-        public Dictionary<string, ICurrentWarAPIModel>? Wars { get; set; } = null;
+        public Dictionary<string, ICurrentWarAPIModel> Wars { get; set; } = new Dictionary<string, ICurrentWarAPIModel>();
 
 
 
@@ -423,43 +423,206 @@ namespace CocApiLibrary.Models
             return false;
         }
 
-        //void IExpires.SetExpiration()
-        //{
-        //    DateTimeUTC = DateTime.UtcNow;
 
-        //    Expires = DateTime.UtcNow.AddSeconds(15);
 
-        //    //if (this is LeagueWarAPIModel leagueWarAPIModel)
-        //    //{
-        //    //    Expires = leagueWarAPIModel.StartTimeUTC;
 
-        //    //    if (leagueWarAPIModel.State == Enums.State.InWar)
-        //    //    {
-        //    //        Expires = DateTime.UtcNow.AddSeconds(15);
-        //    //    }
-        //    //    else if (leagueWarAPIModel.State == Enums.State.WarEnded)
-        //    //    {
-        //    //        Expires = DateTime.UtcNow.AddDays(5);
-        //    //    }
-        //    //}
-        //    //else if (this is CurrentWarAPIModel currentWarAPIModel)
-        //    //{
-        //    //    Expires = currentWarAPIModel.StartTimeUTC;
 
-        //    //    if (currentWarAPIModel.State == Enums.State.InWar)
-        //    //    {
-        //    //        Expires = DateTime.UtcNow.AddSeconds(15);
-        //    //    }
-        //    //    else if (currentWarAPIModel.State == Enums.State.WarEnded)
-        //    //    {
-        //    //        Expires = DateTime.UtcNow.AddDays(5);
-        //    //    }
-        //    //}
+        private readonly object _updateLock = new object();
 
-        //    //if (this is LeagueGroupAPIModel)
-        //    //{
-        //    //    Expires = DateTime.UtcNow.AddMinutes(5);
-        //    //}
-        //}
+        internal void Update(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            lock (_updateLock)
+            {
+                Console.WriteLine($"Updating {Tag}");
+
+                UpdateClanTry(cocApi, downloadedClan);
+
+                UpdateBadgeTry(cocApi, downloadedClan);
+
+                UpdateLocationTry(cocApi, downloadedClan);
+
+                MembersLeftTry(cocApi, downloadedClan);
+
+                MembersJoinedTry(cocApi, downloadedClan);
+            }
+        }
+
+
+
+
+
+
+
+        private void UpdateLocationTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                if (Location == null && downloadedClan.Location != null)
+                {
+                    cocApi.ClanLocationChangedEvent(this, downloadedClan);
+                    return;
+                }
+
+                if (Location?.CountryCode != downloadedClan.Location?.CountryCode ||
+                    Location?.Id != downloadedClan.Location?.Id ||
+                    Location?.IsCountry != downloadedClan.Location?.IsCountry ||
+                    Location?.Name != downloadedClan.Location?.Name)
+                {
+                    cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
+
+                    Location = downloadedClan.Location;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void UpdateBadgeTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                if (BadgeUrls == null && downloadedClan.BadgeUrls != null)
+                {
+                    cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
+                    return;
+                }
+
+                if (BadgeUrls?.Large != downloadedClan.BadgeUrls?.Large ||
+                    BadgeUrls?.Medium != downloadedClan.BadgeUrls?.Medium ||
+                    BadgeUrls?.Small != downloadedClan.BadgeUrls?.Small)
+                {
+                    cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
+
+                    BadgeUrls = downloadedClan.BadgeUrls;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void UpdateClanTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                if (ClanPoints != downloadedClan.ClanPoints)
+                {
+                    cocApi.ClanPointsChangedEvent(this, downloadedClan.ClanPoints);
+
+                    ClanPoints = downloadedClan.ClanPoints;
+                }
+
+                if (ClanVersusPoints != downloadedClan.ClanVersusPoints)
+                {
+                    cocApi.ClanVersusPointsChangedEvent(this, downloadedClan.ClanVersusPoints);
+
+                    ClanVersusPoints = downloadedClan.ClanVersusPoints;
+                }
+
+                if (ClanLevel != downloadedClan.ClanLevel ||
+                    Description != downloadedClan.Description ||
+                    IsWarLogPublic != downloadedClan.IsWarLogPublic ||
+                    MemberCount != downloadedClan.MemberCount ||
+                    Name != downloadedClan.Name ||
+                    RequiredTrophies != downloadedClan.RequiredTrophies ||
+                    Type != downloadedClan.Type ||
+                    WarFrequency != downloadedClan.WarFrequency ||
+                    WarLosses != downloadedClan.WarLosses ||
+                    WarTies != downloadedClan.WarTies ||
+                    WarWins != downloadedClan.WarWins ||
+                    WarWinStreak != downloadedClan.WarWinStreak
+                )
+                {
+                    cocApi.ClanChangedEvent(this, downloadedClan);
+
+                    ClanLevel = downloadedClan.ClanLevel;
+                    Description = downloadedClan.Description;
+                    IsWarLogPublic = downloadedClan.IsWarLogPublic;
+                    MemberCount = downloadedClan.MemberCount;
+                    Name = downloadedClan.Name;
+                    RequiredTrophies = downloadedClan.RequiredTrophies;
+                    Type = downloadedClan.Type;
+                    WarFrequency = downloadedClan.WarFrequency;
+                    WarLosses = downloadedClan.WarLosses;
+                    WarTies = downloadedClan.WarWins;
+                    WarWinStreak = downloadedClan.WarWinStreak;
+
+                    DateTimeUTC = downloadedClan.DateTimeUTC;
+                    Expires = downloadedClan.Expires;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void MembersJoinedTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                List<MemberListAPIModel> newMembers = new List<MemberListAPIModel>();
+
+                if (downloadedClan.Members == null)
+                {
+                    return;
+                }
+
+                if (Members == null)
+                {
+                    Members = new List<MemberListAPIModel>();
+                }
+
+                foreach (MemberListAPIModel member in downloadedClan.Members)
+                {
+                    if (!Members.Any(m => m.Tag == member.Tag))
+                    {
+                        newMembers.Add(member);
+
+                        Members.Add(member);
+                    }
+                }
+
+                cocApi.MembersJoinedEvent(this, newMembers);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void MembersLeftTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                List<MemberListAPIModel> leftMembers = new List<MemberListAPIModel>();
+
+                if (Members == null)
+                {
+                    return;
+                }
+
+                foreach (MemberListAPIModel member in Members)
+                {
+                    if (!downloadedClan.Members.Any(m => m.Tag == member.Tag))
+                    {
+                        leftMembers.Add(member);
+                    }
+                }
+
+                foreach (MemberListAPIModel member in leftMembers)
+                {
+                    Members.Remove(member);
+                }
+
+                cocApi.MembersLeftEvent(this, leftMembers);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+
+
+
     }
 }
