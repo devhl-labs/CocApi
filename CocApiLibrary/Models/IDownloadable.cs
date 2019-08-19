@@ -13,7 +13,5 @@ namespace CocApiLibrary.Models
         string EncodedUrl { get; }
 
         bool IsExpired();
-
-        //void SetExpiration();
     }
 }

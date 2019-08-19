@@ -22,8 +22,6 @@ namespace CocApiLibrary
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
         private static readonly HttpClient ApiClient = new HttpClient();
-        //private static int _timeToWaitForWebRequest;
-        //private static VerbosityType _verbosityType;
         private static int counter = 0;
         private static Configuration _cfg = new Configuration();
 
@@ -35,12 +33,6 @@ namespace CocApiLibrary
         public static void Initialize(Configuration cfg, IEnumerable<string> tokens)
         {
             _cfg = cfg;
-
-            //_timeToWaitForWebRequest = timeToWaitForWebRequests;
-
-            //_verbosityType = verbosityType;
-
-            //_verbosityType = verbosityType;
 
             ApiClient.DefaultRequestHeaders.Accept.Clear();
 
@@ -129,8 +121,6 @@ namespace CocApiLibrary
                         process.Initialize();
                     }
 
-                    //result.SetExpiration();
-
                     SetIDownloadableProperties(result, encodedUrl);         
 
                     return result;
@@ -199,7 +189,7 @@ namespace CocApiLibrary
                     }
                     else
                     {
-                        leagueWarAPIModel.Expires = DateTime.UtcNow.AddMinutes(2);
+                        leagueWarAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueWarAPIModelTimeToLive);
                     }
 
                     leagueWarAPIModel.EncodedUrl = encodedURL;
@@ -212,7 +202,7 @@ namespace CocApiLibrary
                     }
                     else
                     {
-                        currentWar.Expires = DateTime.UtcNow.AddSeconds(15);
+                        currentWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarAPIModelTimeToLive);
                     }
                     
                     currentWar.EncodedUrl = encodedURL;
@@ -225,24 +215,24 @@ namespace CocApiLibrary
                     }
                     else
                     {
-                        leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(1);
+                        leagueGroupAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupAPIModelTimeToLive);
                     }
                     
                     leagueGroupAPIModel.EncodedUrl = encodedURL;
                     break;
 
                 case ClanAPIModel clanAPIModel:
-                    clanAPIModel.Expires = DateTime.UtcNow.AddMinutes(5);
+                    clanAPIModel.Expires = DateTime.UtcNow.Add(_cfg.ClanAPIModelTimeToLive);
                     clanAPIModel.EncodedUrl = encodedURL;
                     break;
 
                 case VillageAPIModel villageAPIModel:
-                    villageAPIModel.Expires = DateTime.UtcNow.AddHours(1);
+                    villageAPIModel.Expires = DateTime.UtcNow.Add(_cfg.VillageAPIModelTimeToLive);
                     villageAPIModel.EncodedUrl = encodedURL;
                     break;
 
                 case WarLogAPIModel warLogAPIModel:
-                    warLogAPIModel.Expires = DateTime.UtcNow.AddHours(1);
+                    warLogAPIModel.Expires = DateTime.UtcNow.Add(_cfg.WarLogAPIModelTimeToLive);
                     warLogAPIModel.EncodedUrl = encodedURL;
                     break;
 

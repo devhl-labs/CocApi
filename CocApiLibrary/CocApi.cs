@@ -43,7 +43,7 @@ namespace CocApiLibrary
     public delegate void VillageAchievementsChangedEventHandler(VillageAPIModel oldVillage, List<AchievementAPIModel> newAchievements);
     public delegate void VillageTroopsChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newTroops);
     public delegate void VillageHeroesChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newHeroes);
-    public delegate void VillageSpellsChangedEventHandler(VillageAPIModel oldVillage, List<SpellModel> newSpells);
+    public delegate void VillageSpellsChangedEventHandler(VillageAPIModel oldVillage, List<SpellAPIModel> newSpells);
 
 
     public class CocApi
@@ -139,7 +139,7 @@ namespace CocApiLibrary
             CreateUpdaters();
         }
 
-        internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<SpellModel> newSpells)
+        internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<SpellAPIModel> newSpells)
         {
             VillageSpellsChanged?.Invoke(oldVillage, newSpells);
         }

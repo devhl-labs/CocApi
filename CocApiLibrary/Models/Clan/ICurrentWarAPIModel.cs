@@ -9,10 +9,7 @@ namespace CocApiLibrary.Models
         IDictionary<int, AttackAPIModel> Attacks { get; set; }
         WarClanAPIModel? Clan { get; set; }
         IList<WarClanAPIModel> Clans { get; set; }
-        //DateTime DateTimeUTC { get; }
-        //string EncodedUrl { get; }
         DateTime EndTimeUTC { get; set; }
-        //DateTime Expires { get; }
         CurrentWarFlags Flags { get; }
         WarClanAPIModel? Opponent { get; set; }
         DateTime PreparationStartTimeUTC { get; set; }

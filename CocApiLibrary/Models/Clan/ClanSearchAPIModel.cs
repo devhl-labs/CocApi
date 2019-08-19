@@ -18,12 +18,11 @@ namespace CocApiLibrary.Models
 
         public bool IsExpired()
         {
-            throw new NotImplementedException();
-        }
-
-        public void SetExpiration()
-        {
-            throw new NotImplementedException();
+            if (DateTime.UtcNow > Expires)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

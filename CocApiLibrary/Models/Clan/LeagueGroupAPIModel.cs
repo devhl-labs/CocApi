@@ -29,12 +29,5 @@ namespace CocApiLibrary.Models
             }
             return false;
         }
-
-        //public void SetExpiration()
-        //{
-        //    DateTimeUTC = DateTime.UtcNow;
-
-        //    Expires = DateTime.UtcNow.AddMinutes(15);
-        //}
     }
 }

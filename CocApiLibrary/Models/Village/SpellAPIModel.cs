@@ -2,7 +2,7 @@
 
 namespace CocApiLibrary.Models
 {
-    public class SpellModel
+    public class SpellAPIModel
     {
         public string Name { get; set; } = string.Empty;
 

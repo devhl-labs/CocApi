@@ -71,7 +71,7 @@ namespace CocApiLibrary
 
         public IEnumerable<TroopAPIModel>? Heroes { get; set; }
 
-        public IEnumerable<SpellModel>? Spells { get; set; }
+        public IEnumerable<SpellAPIModel>? Spells { get; set; }
 
         public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
 
@@ -133,11 +133,11 @@ namespace CocApiLibrary
         
         private void UpdateVillageSpells(CocApi cocApi, VillageAPIModel downloadedVillage)
         {
-            List<SpellModel> newSpells = new List<SpellModel>();
+            List<SpellAPIModel> newSpells = new List<SpellAPIModel>();
 
-            foreach(SpellModel spell in downloadedVillage.Spells.Where(s => s != null))
+            foreach(SpellAPIModel spell in downloadedVillage.Spells.Where(s => s != null))
             {
-                SpellModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
+                SpellAPIModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
 
                 if(oldSpell == null || oldSpell.Level < spell.Level)
                 {

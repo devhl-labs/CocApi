@@ -1,8 +1,5 @@
-﻿using AutoMapper;
-using CocApiLibrary.Exceptions;
-using CocApiLibrary.Models;
+﻿using CocApiLibrary.Models;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,47 +35,50 @@ namespace CocApiLibrary
 
             _isUpdating = true;
 
-            if (_update)
+            Task.Run(async () =>
             {
-                Task.Run(async () =>
+                while (_update)
                 {
-                    while (_update)
+                    for (int i = 0; i < clanStrings.Count; i++)
                     {
-                        for (int i = 0; i < clanStrings.Count; i++)
+                        await UpdateClanTryAsync(clanStrings[i]);
+
+                        await Task.Delay(100);
+
+                        if (!_update)
                         {
-                            await UpdateClanTryAsync(clanStrings[i]);
-
-                            await Task.Delay(100);
-
-                            if (!_update)
-                            {
-                                break;
-                            }
+                            break;
                         }
                     }
+                }
 
-                    _isUpdating = false;
-                });
-            }
+                _isUpdating = false;
+            });
         }
 
         private async Task UpdateClanTryAsync(string clanString)
         {
-            ClanAPIModel storedClan = await _cocApi.GetClanAsync(clanString);
+            try
+            {
+                ClanAPIModel storedClan = await _cocApi.GetClanAsync(clanString);
 
-            ClanAPIModel downloadedClan = await _cocApi.GetClanAsync(clanString, true, false);
+                ClanAPIModel downloadedClan = await _cocApi.GetClanAsync(clanString, true, false);
 
-            storedClan.Update(_cocApi, downloadedClan);
+                storedClan.Update(_cocApi, downloadedClan);
 
-            await DownloadLeagueWarsTryAsync(storedClan);
+                await DownloadLeagueWarsTryAsync(storedClan);
 
-            await _cocApi.GetCurrentWarAsync(storedClan.Tag);
+                await _cocApi.GetCurrentWarAsync(storedClan.Tag);
 
-            storedClan.AnnounceWars = true;  //we have tried to download all wars at least once, announce future wars
+                storedClan.AnnounceWars = true;  //we have tried to download all wars at least once, announce future wars
 
-            await UpdateWarsTryAsync(storedClan);
+                await UpdateWarsTryAsync(storedClan);
 
-            await UpdateVillagesTryAsync(storedClan);
+                await UpdateVillagesTryAsync(storedClan);
+            }
+            catch (Exception)
+            {
+            }
         }
 
 
