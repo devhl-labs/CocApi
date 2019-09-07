@@ -135,7 +135,7 @@ namespace CocApiLibrary
         {
             List<SpellAPIModel> newSpells = new List<SpellAPIModel>();
 
-            foreach(SpellAPIModel spell in downloadedVillage.Spells.Where(s => s != null))
+            foreach(SpellAPIModel spell in downloadedVillage.Spells.EmptyIfNull())
             {
                 SpellAPIModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
 
@@ -157,7 +157,7 @@ namespace CocApiLibrary
         {
             List<TroopAPIModel> newTroops = new List<TroopAPIModel>();
 
-            foreach (TroopAPIModel troop in downloadedVillage.Heroes.Where(t => t != null))
+            foreach (TroopAPIModel troop in downloadedVillage.Heroes.EmptyIfNull())
             {
                 TroopAPIModel? oldTroop = Heroes.FirstOrDefault(t => t.Name == troop.Name);
 
@@ -180,7 +180,7 @@ namespace CocApiLibrary
         {
             List<TroopAPIModel> newTroops = new List<TroopAPIModel>();
             
-            foreach(TroopAPIModel troop in downloadedVillage.Troops.Where(t => t != null))
+            foreach(TroopAPIModel troop in downloadedVillage.Troops.EmptyIfNull())
             {
                 TroopAPIModel? oldTroop = Troops.FirstOrDefault(t => t.Name == troop.Name);
 
@@ -203,7 +203,7 @@ namespace CocApiLibrary
         {
             List<AchievementAPIModel> newAchievements = new List<AchievementAPIModel>();
 
-            foreach(AchievementAPIModel achievement in downloadedVillage.Achievements.Where(a => a != null))
+            foreach(AchievementAPIModel achievement in downloadedVillage.Achievements.EmptyIfNull())
             {
                 if(achievement.Value > achievement.Target)
                 {

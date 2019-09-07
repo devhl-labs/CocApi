@@ -58,8 +58,11 @@ namespace CocApiLibrary
         internal readonly Dictionary<string, ICurrentWarAPIModel> AllWars = new Dictionary<string, ICurrentWarAPIModel>();
         internal readonly Dictionary<string, LeagueGroupAPIModel> AllLeagueGroups = new Dictionary<string, LeagueGroupAPIModel>();
         internal readonly Dictionary<string, VillageAPIModel> AllVillages = new Dictionary<string, VillageAPIModel>();
-        internal readonly Configuration _cfg = new Configuration();
+        internal readonly CocApiConfiguration _cfg = new CocApiConfiguration();
 
+        /// <summary>
+        /// Fires if you query the API during an outage.  When the API comes back up this boolean will be set to true automatically.  If this boolean is false, you may still try to query the API if you wish.
+        /// </summary>
         public event IsAvailableChangedEventHandler? IsAvailableChanged;
         public event ClanChangedEventHandler? ClanChanged;
         public event MembersJoinedEventHandler? MembersJoined;
@@ -73,6 +76,10 @@ namespace CocApiLibrary
         public event WarStartingSoonEventHandler? WarStartingSoon;
         public event ClanVersusPointsChangedEventHandler? ClanVersusPointsChanged;
         public event ClanPointsChangedEventHandler? ClanPointsChanged;
+
+        /// <summary>
+        /// Fires if the war cannot be found from either clanTags or warTags.  Private war logs can also fire this.
+        /// </summary>
         public event WarIsAccessibleChangedEventHandler? WarIsAccessibleChanged;
         public event WarEndNotSeenEventHandler? WarEndNotSeen;
         public event VillageChangedEventHandler? VillageChanged;
@@ -127,7 +134,7 @@ namespace CocApiLibrary
             _timer = new Timer();
         }
 
-        public CocApi(IEnumerable<string> tokens, Configuration? cfg = null, Func<LogMessage, Task>? logger = null)
+        public CocApi(IEnumerable<string> tokens, CocApiConfiguration? cfg = null, Func<LogMessage, Task>? logger = null)
         {
             Logger = logger ?? (_ => Task.CompletedTask);
 
@@ -148,6 +155,10 @@ namespace CocApiLibrary
 
             CreateUpdaters();
         }
+
+
+
+
 
         internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<SpellAPIModel> newSpells)
         {
@@ -304,23 +315,7 @@ namespace CocApiLibrary
 
 
 
-        private Exception GetException(Exception e)
-        {
-            return e switch
-            {
-                BadGateWayException badGateWay => badGateWay,
-                BadRequestException badRequestException => badRequestException,
-                ForbiddenException forbiddenException => forbiddenException,
-                InternalServerErrorException internalServerErrorException => internalServerErrorException,
-                NotFoundException notFoundExceptionn => notFoundExceptionn,
-                ServerUnavailableException serverUnavailableException => serverUnavailableException,
-                TooManyRequestsException tooManyRequestsException => tooManyRequestsException,
 
-                ServerResponseException serverResponseException => serverResponseException,
-                CocApiException cocApiException => cocApiException,
-                _ => new CocApiException(e.Message, e),
-            };
-        }
 
         public async Task<ClanAPIModel> GetClanAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = true)
         {
@@ -341,7 +336,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                ClanAPIModel downloadedClan = await WebResponse.GetWebResponse<ClanAPIModel>(url);
+                ClanAPIModel downloadedClan = await WebResponse.GetWebResponse<ClanAPIModel>(EndPoint.Clan, url);
 
                 AllClans.TryAdd(downloadedClan.Tag, downloadedClan);
 
@@ -420,7 +415,7 @@ namespace CocApiLibrary
                     url = url[0..^1];
                 }
 
-                return await WebResponse.GetWebResponse<ClanSearchModel>(url);
+                return await WebResponse.GetWebResponse<ClanSearchModel>(EndPoint.Clans, url);
             }
             catch (Exception e)
             {
@@ -448,7 +443,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
                     
-                CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(url);
+                CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(EndPoint.CurrentWar, url);
 
                 if (currentWarAPIModel.State != WarState.NotInWar)
                 {
@@ -470,9 +465,7 @@ namespace CocApiLibrary
             catch (Exception e)
             {
                 throw GetException(e);
-                //throw new CocApiException(e.Message, e);
             }
-
         }
 
         public async Task<ICurrentWarAPIModel?> GetCurrentWarAsync(ICurrentWarAPIModel storedWar)
@@ -522,7 +515,6 @@ namespace CocApiLibrary
             catch (Exception e)
             {
                 throw GetException(e);
-                //throw new CocApiException(e.Message, e);
             }
 
         }
@@ -535,7 +527,7 @@ namespace CocApiLibrary
 
                 if(allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out LeagueGroupAPIModel leagueGroupAPIModel))
                 {
-                    if (leagueGroupAPIModel.State == LeagueState.LeagueWarsEnded || allowExpiredItem || !leagueGroupAPIModel.IsExpired())
+                    if (leagueGroupAPIModel.State == LeagueState.WarsEnded || allowExpiredItem || !leagueGroupAPIModel.IsExpired())
                     {
                         return leagueGroupAPIModel;
                     }
@@ -543,11 +535,22 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar/leaguegroup";
 
-                leagueGroupAPIModel = await WebResponse.GetWebResponse<LeagueGroupAPIModel>(url);
+                leagueGroupAPIModel = await WebResponse.GetWebResponse<LeagueGroupAPIModel>(EndPoint.LeagueGroup, url);
 
-                foreach(var clan in leagueGroupAPIModel.Clans.Where(x => x != null))
+                foreach(var clan in leagueGroupAPIModel.Clans.EmptyIfNull())
                 {
-                    AllLeagueGroups.TryAdd(clan.Tag, leagueGroupAPIModel);
+                    if (AllLeagueGroups.TryGetValue(clan.Tag, out LeagueGroupAPIModel storedLeagueGroupAPIModel))
+                    {
+                        //the league group already exists.  Lets check if the existing one is from last month
+                        if(leagueGroupAPIModel.Season != storedLeagueGroupAPIModel.Season && leagueGroupAPIModel.State != LeagueState.WarsEnded)
+                        {
+                            storedLeagueGroupAPIModel = leagueGroupAPIModel;
+                        }
+                    }
+                    else
+                    {
+                        AllLeagueGroups.TryAdd(clan.Tag, leagueGroupAPIModel);
+                    }
                 }
 
                 return leagueGroupAPIModel;
@@ -555,9 +558,7 @@ namespace CocApiLibrary
             catch (Exception e)
             {
                 throw GetException(e);
-                //throw new CocApiException(e.Message, e);
             }
-
         }
 
         public async Task<ICurrentWarAPIModel> GetLeagueWarAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = true)
@@ -579,7 +580,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                LeagueWarAPIModel leagueWarAPIModel = await WebResponse.GetWebResponse<LeagueWarAPIModel>(url);
+                LeagueWarAPIModel leagueWarAPIModel = await WebResponse.GetWebResponse<LeagueWarAPIModel>(EndPoint.LeagueWar, url);
 
                 leagueWarAPIModel.WarTag = warTag;
 
@@ -600,9 +601,7 @@ namespace CocApiLibrary
             catch (Exception e)
             {
                 throw GetException(e);
-                //throw new CocApiException(e.Message, e);
             }
-
         }
 
         public async Task<VillageAPIModel> GetVillageAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = true)
@@ -621,7 +620,7 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                villageAPIModel = await WebResponse.GetWebResponse<VillageAPIModel>(url);
+                villageAPIModel = await WebResponse.GetWebResponse<VillageAPIModel>(EndPoint.Village, url);
 
                 AllVillages.TryAdd(villageAPIModel.Tag, villageAPIModel);
 
@@ -630,7 +629,6 @@ namespace CocApiLibrary
             catch (Exception e)
             {
                 throw GetException(e);
-                //throw new CocApiException(e.Message, e);
             }
         }
 
@@ -669,19 +667,20 @@ namespace CocApiLibrary
                     url = url[0..^1];
                 }
 
-                return await WebResponse.GetWebResponse<WarLogAPIModel>(url);
+                return await WebResponse.GetWebResponse<WarLogAPIModel>(EndPoint.WarLog, url);
             }
             catch (Exception e)
             {
                 throw GetException(e);
-                //throw new CocApiException(e.Message, e);
             }
         }
 
 
 
 
-
+        /// <summary>
+        /// Poll the API and fire off events when a change is noticed.
+        /// </summary>
         public void BeginUpdatingClans()
         {
             foreach (UpdateService clanUpdateService in _clanUpdateServices)
@@ -690,6 +689,10 @@ namespace CocApiLibrary
             }
         }
 
+        /// <summary>
+        /// Stop polling the API.  Events will not fire.
+        /// </summary>
+        /// <returns></returns>
         public async Task StopUpdatingClans()
         {
             var tasks = new List<Task>();
@@ -704,11 +707,121 @@ namespace CocApiLibrary
             await t;
         }
 
+        /// <summary>
+        /// Establish the clans that you would like to poll for updates.  You still must run BeginUpdatingClans() when ready.
+        /// </summary>
+        /// <param name="clanTags"></param>
         public void WatchClans(IEnumerable<string> clanTags)
         {
-            int j = 0;
+            try
+            {
+                int j = 0;
 
-            foreach (string clanTag in clanTags)
+                foreach (string clanTag in clanTags)
+                {
+                    try
+                    {
+                        ValidateTag(clanTag);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+
+                    _clanUpdateServices.ElementAt(j).clanStrings.Add(clanTag);
+
+                    j++;
+
+                    if (j >= _cfg.NumberOfUpdaters) { j = 0; }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
+            }
+        }
+
+        /// <summary>
+        /// Load this library's stored objects with objects from your database.  You must still run WatchClans to establish which clans you want to keep updated.
+        /// </summary>
+        /// <param name="clans"></param>
+        /// <param name="wars"></param>
+        /// <param name="leagueGroups"></param>
+        /// <param name="villages"></param>
+        public void LoadFromDatabase(IEnumerable<ClanAPIModel> clans, IEnumerable<CurrentWarAPIModel> wars, IEnumerable<LeagueGroupAPIModel> leagueGroups, IEnumerable<VillageAPIModel> villages)
+        {
+            try
+            {
+                foreach (ClanAPIModel clan in clans)
+                {
+                    clan.AnnounceWars = true;
+
+                    AllClans.TryAdd(clan.Tag, clan);
+                }
+
+                foreach (CurrentWarAPIModel war in wars)
+                {
+                    if (war is LeagueWarAPIModel leagueWar)
+                    {
+                        leagueWar.Initialize();
+
+                        AllWars.TryAdd(leagueWar.WarTag, leagueWar);
+                    }
+                    else
+                    {
+                        war.Initialize();
+                    }
+
+                    AllWars.TryAdd(war.WarID, war);
+
+                    foreach (WarClanAPIModel warClan in war.Clans)
+                    {
+                        if (AllClans.TryGetValue(warClan.Tag, out ClanAPIModel clan))
+                        {
+                            if (clan.Wars == null) clan.Wars = new Dictionary<string, ICurrentWarAPIModel>();
+
+                            clan.Wars.TryAdd(war.WarID, war);
+                        }
+                    }
+                }
+
+                foreach (LeagueGroupAPIModel leagueGroup in leagueGroups)
+                {
+                    foreach (LeagueClanAPIModel leagueClan in leagueGroup.Clans.EmptyIfNull())
+                    {
+                        if (AllLeagueGroups.TryGetValue(leagueClan.Tag, out LeagueGroupAPIModel storedLeagueGroupAPIModel))
+                        {
+                            //the league group already exists.  Lets check if the existing one is from last month
+                            if (leagueGroup.Season != storedLeagueGroupAPIModel.Season && leagueGroup.State != LeagueState.WarsEnded)
+                            {
+                                storedLeagueGroupAPIModel = leagueGroup;
+                            }
+                        }
+                        else
+                        {
+                            AllLeagueGroups.TryAdd(leagueClan.Tag, leagueGroup);
+                        }
+                    }
+                }
+
+                foreach (VillageAPIModel village in villages)
+                {
+                    AllVillages.TryAdd(village.Tag, village);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
+            }
+        }
+
+        /// <summary>
+        /// Begin watching a new clan.  This is to add new clans to be watched after your program has started.
+        /// </summary>
+        /// <param name="clanTag"></param>
+        public void UpdateClan(string clanTag)
+        {
+            try
             {
                 try
                 {
@@ -716,68 +829,33 @@ namespace CocApiLibrary
                 }
                 catch (Exception)
                 {
-                    continue;
+
+                    throw;
                 }
 
-                _clanUpdateServices.ElementAt(j).clanStrings.Add(clanTag);
-                j++;
-                if (j >= _cfg.NumberOfUpdaters) { j = 0; }
+                UpdateService clanUpdateService = _clanUpdateServices.OrderBy(c => c.clanStrings.Count()).FirstOrDefault();
+
+                clanUpdateService.clanStrings.Add(clanTag);
+            }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
             }
         }
 
-        public void UpdateClan(string clanTag)
-        {
-            try
-            {
-                ValidateTag(clanTag);
-            }
-            catch (Exception)
-            {
+        public string GetTokenStatus() => WebResponse.GetTokenStatus();
 
-                throw;
-            }
-
-            UpdateService clanUpdateService = _clanUpdateServices.OrderBy(c => c.clanStrings.Count()).FirstOrDefault();
-
-            clanUpdateService.clanStrings.Add(clanTag);
-        }
-
-        private void CreateUpdaters()
-        {
-            if (_cfg.NumberOfUpdaters < 1)
-            {
-                return;
-            }
-
-            for (int i = 0; i < _cfg.NumberOfUpdaters; i++)
-            {
-                UpdateService clanStore = new UpdateService(this);
-                _clanUpdateServices.Add(clanStore);
-            }
-        }
-
-
-
-
-
-        public string GetTokenStatus()
-        {
-            return WebResponse.GetTokenStatus();
-
-            //return _apiHelper.GetTokenStatus();
-        }
-
+        /// <summary>
+        /// Check if a string appears to be a SuperCell tag.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <returns></returns>
         public bool IsValidTag(string tag)
         {
             if (string.IsNullOrEmpty(tag))
             {
                 return false;
             }
-
-            //if (!tag.StartsWith("#"))
-            //{
-            //    return false;
-            //}
 
             if(tag == "#0")
             {
@@ -787,32 +865,43 @@ namespace CocApiLibrary
             return ValidTagCharacters.IsMatch(tag);
         }
 
+        /// <summary>
+        /// Use this to get statistics on how long the API takes to respond for diffent EndPoints.
+        /// </summary>
+        /// <returns></returns>
+        public List<WebResponseTimer> GetTimers() => WebResponse.GetTimers();
+
+
+
+
+
+
+
+
+
+
         private void AnnounceNewWar(string clanTag, ICurrentWarAPIModel currentWarAPIModel)
         {
-            if(currentWarAPIModel.State == WarState.NotInWar || currentWarAPIModel.State == WarState.WarEnded)
+            try
             {
-                return;
-            }
-
-            if (AllClans.TryGetValue(clanTag, out ClanAPIModel clanAPIModel))
-            {
-                if (clanAPIModel.AnnounceWars)
+                if (currentWarAPIModel.State == WarState.NotInWar || currentWarAPIModel.State == WarState.WarEnded)
                 {
-                    NewWarEvent(currentWarAPIModel);
+                    return;
+                }
+
+                if (AllClans.TryGetValue(clanTag, out ClanAPIModel clanAPIModel))
+                {
+                    if (clanAPIModel.AnnounceWars)
+                    {
+                        NewWarEvent(currentWarAPIModel);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
+            }
         }
-
-
-
-
-
-
-
-
-
-
-
 
         private void ValidateTag(string tag)
         {
@@ -826,7 +915,7 @@ namespace CocApiLibrary
         {
             var _ = Task.Run(async () =>
             {
-                await GetClanAsync("#929YJPYJ");
+                await GetClanAsync("#929YJPYJ", false, false);
             });
         }
 
@@ -835,8 +924,45 @@ namespace CocApiLibrary
             NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
         }
 
-        
- 
+        internal Exception GetException(Exception e)
+        {
+            return e switch
+            {
+                BadGateWayException badGateWay => badGateWay,
+                BadRequestException badRequestException => badRequestException,
+                ForbiddenException forbiddenException => forbiddenException,
+                GatewayTimeoutException  gatewayTimeoutException => gatewayTimeoutException,
+                InternalServerErrorException internalServerErrorException => internalServerErrorException,
+                NotFoundException notFoundExceptionn => notFoundExceptionn,
+                ServiceUnavailableException serverUnavailableException => serverUnavailableException,
+                TooManyRequestsException tooManyRequestsException => tooManyRequestsException,
 
+                ServerResponseException serverResponseException => serverResponseException,
+                ServerTookTooLongToRespondException serverTookTooLongToRespondException => serverTookTooLongToRespondException,
+                CocApiException cocApiException => cocApiException,
+                _ => new CocApiException(e.Message, e),
+            };
+        }
+
+        private void CreateUpdaters()
+        {
+            try
+            {
+                if (_cfg.NumberOfUpdaters < 1)
+                {
+                    return;
+                }
+
+                for (int i = 0; i < _cfg.NumberOfUpdaters; i++)
+                {
+                    UpdateService clanStore = new UpdateService(this);
+                    _clanUpdateServices.Add(clanStore);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
+            }
+        }
     }
 }

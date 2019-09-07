@@ -25,16 +25,17 @@ namespace CocApiLibrary
         private static CocApi _cocApi = new CocApi();
         private const string Source = nameof(WebResponse);
 
-
-        //private static int counter = 0;
-        private static Configuration _cfg = new Configuration();
+        
+        private static CocApiConfiguration _cfg = new CocApiConfiguration();
 
         private static readonly JsonSerializerOptions options = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
 
-        public static void Initialize(CocApi cocApi, Configuration cfg, IEnumerable<string> tokens)
+        public static List<WebResponseTimer> WebResponseTimers { get; } = new List<WebResponseTimer>();
+
+        public static void Initialize(CocApi cocApi, CocApiConfiguration cfg, IEnumerable<string> tokens)
         {
             _cocApi = cocApi;
 
@@ -46,7 +47,7 @@ namespace CocApiLibrary
 
             foreach (string token in tokens)
             {
-                TokenObject tokenObject = new TokenObject(cocApi, token, _cfg.TokenTimeOutMilliseconds);
+                TokenObject tokenObject = new TokenObject(cocApi, token, _cfg.TokenTimeOut);
 
                 _tokenObjects.Add(tokenObject);
             }
@@ -94,8 +95,12 @@ namespace CocApiLibrary
         }
 
 
-        internal static async Task<T> GetWebResponse<T>(string encodedUrl) where T : class, IDownloadable, new()
+        internal static List<WebResponseTimer> GetTimers() => WebResponseTimers;
+
+        internal static async Task<T> GetWebResponse<T>(EndPoint endPoint, string encodedUrl) where T : class, IDownloadable, new()
         {
+            Stopwatch stopwatch = new Stopwatch();
+
             try
             {
                 _ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, Source, encodedUrl));
@@ -106,12 +111,10 @@ namespace CocApiLibrary
 
                 using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
 
-                Stopwatch stopwatch = new Stopwatch();
-
                 stopwatch.Start();
 
                 using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cancellationTokenSource.Token);
-
+                
                 stopwatch.Stop();
 
                 string responseText = response.Content.ReadAsStringAsync().Result;
@@ -124,7 +127,7 @@ namespace CocApiLibrary
 
                     if (result != null)
                     {
-                        //WebResponseTimer webResponseTimer = new WebResponseTimer(result, stopwatch.Elapsed);
+                        WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
 
                         if (result is IInitialize process)
                         {
@@ -144,6 +147,8 @@ namespace CocApiLibrary
                 else
                 {
                     ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, options);
+
+                    WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
 
                     if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //400
                     {
@@ -169,19 +174,28 @@ namespace CocApiLibrary
 
                     else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //500
                     {
-                        throw new ServerUnavailableException(ex, response.StatusCode);
+                        throw new InternalServerErrorException(ex, response.StatusCode);
                     }
 
                     else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway) //502
                     {
+                        _cocApi.IsAvailable = false;
+
                         throw new BadGateWayException(ex, response.StatusCode);
                     }
 
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //503
+                    else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable) //503
                     {
                         _cocApi.IsAvailable = false;
 
-                        throw new ServerUnavailableException(ex, response.StatusCode);
+                        throw new ServiceUnavailableException(ex, response.StatusCode);
+                    }
+
+                    else if(response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)  //504
+                    {
+                        _cocApi.IsAvailable = false;
+
+                        throw new GatewayTimeoutException(ex, response.StatusCode);
                     }
 
                     throw new ServerResponseException(ex, response.StatusCode);
@@ -189,8 +203,19 @@ namespace CocApiLibrary
             }
             catch (Exception e)
             {
+                stopwatch.Stop();
+
+                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
+
                 _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, Source, $"Error retrieving {encodedUrl}", e));
-                throw;
+
+
+                if(e.Message == "A task was canceled.")
+                {
+                    throw new ServerTookTooLongToRespondException(e.Message, e);
+                }
+
+                throw _cocApi.GetException(e);
             }
         }
 
@@ -225,7 +250,7 @@ namespace CocApiLibrary
                     break;
 
                 case LeagueGroupAPIModel leagueGroupAPIModel:
-                    if(leagueGroupAPIModel.State == LeagueState.LeagueWarsEnded)
+                    if(leagueGroupAPIModel.State == LeagueState.WarsEnded)
                     {
                         leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(6);
                     }
@@ -254,7 +279,6 @@ namespace CocApiLibrary
 
                 default:
                     throw new CocApiException($"Unhandled Type");
-
             }
         }
     }

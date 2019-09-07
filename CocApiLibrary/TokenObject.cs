@@ -14,11 +14,11 @@ namespace CocApiLibrary
         private bool _isRateLimited = false;
         private readonly Timer _clearRateLimitTimer = new Timer();
         internal readonly string Token;
-        private readonly int _tokenTimeOut;
+        private readonly TimeSpan _tokenTimeOut;
         //private readonly VerbosityType _verbosityType;
         private readonly CocApi _cocApi;
 
-        public DateTime LastUsedUTC { get; private set; } = DateTime.UtcNow;
+        public DateTime LastUsedUTC { get; private set; } = DateTime.UtcNow.AddSeconds(-30);  //so it does not rate limit when the program starts
 
         public bool IsRateLimited
         {
@@ -30,9 +30,11 @@ namespace CocApiLibrary
             set
             {
                 _isRateLimited = value;
+
                 if (value)
                 {
                     _clearRateLimitTimer.Start();
+
                     _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, nameof(TokenObject), "Token is rate limited"));
                 }
             }
@@ -43,7 +45,7 @@ namespace CocApiLibrary
 
 
 
-        public TokenObject(CocApi cocApi, string token, int tokenTimeOut)
+        public TokenObject(CocApi cocApi, string token, TimeSpan tokenTimeOut)
         {
             _cocApi = cocApi; 
             Token = token;
@@ -61,7 +63,7 @@ namespace CocApiLibrary
 
             bool notified = false;
 
-            while (timeSpan.TotalMilliseconds < _tokenTimeOut)
+            while (timeSpan.TotalMilliseconds < _tokenTimeOut.TotalMilliseconds)
             {
                 await Task.Delay(50);
 

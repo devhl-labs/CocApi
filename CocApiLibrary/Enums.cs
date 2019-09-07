@@ -57,10 +57,7 @@ namespace CocApiLibrary
             [EnumMember(Value = "inWar")]
             InWar = 30,
             [EnumMember(Value = "warEnded")]
-            WarEnded = 40,
-            [EnumMember(Value = "ended")]
-            LeagueWarsEnded = 50
-            
+            WarEnded = 40            
         }
 
         public enum LeagueState : int
@@ -71,12 +68,10 @@ namespace CocApiLibrary
             NotInWar = 10,
             [EnumMember(Value = "preparation")]
             Preparation = 20,
-            [EnumMember(Value = "inwar")]
+            [EnumMember(Value = "inWar")]
             InWar = 30,
-            [EnumMember(Value = "warEnded")]
-            WarEnded = 40,
             [EnumMember(Value = "ended")]
-            LeagueWarsEnded = 50
+            WarsEnded = 50
 
         }
 
@@ -94,54 +89,70 @@ namespace CocApiLibrary
 
         public enum WarType : int
         {
+            [EnumMember(Value = "Random")]
             Random = 0,
+            [EnumMember(Value = "Friendly")]
             Friendly = 1,
+            [EnumMember(Value = "SCCWL")]
             SCCWL = 2
         }
 
         public enum ClanType : int
         {
+            [EnumMember(Value = "InviteOnly")]
             InviteOnly = 0,
+            [EnumMember(Value = "Closed")]
             Closed = 1,
+            [EnumMember(Value = "Open")]
             Open = 2
         }
 
         public enum Village : int
         {
+            [EnumMember(Value = "Home")]
             Home = 0,
+            [EnumMember(Value = "BuilderBase")]
             BuilderBase = 1
         }
     }
-
-    //
-    // Summary:
-    //     Specifies the severity of the log message.
+    
     public enum LogSeverity
     {
-        //
-        // Summary:
-        //     Logs that contain the most severe level of error. This type of error indicate
-        //     that immediate attention may be required.
+        /// <summary>
+        /// This type of error indicate that immediate attention may be required.
+        /// </summary>
         Critical = 0,
-        //
-        // Summary:
-        //     Logs that highlight when the flow of execution is stopped due to a failure.
+        /// <summary>
+        /// Logs that highlight when the flow of execution is stopped due to a failure.
+        /// </summary>   
         Error = 1,
-        //
-        // Summary:
-        //     Logs that highlight an abnormal activity in the flow of execution.
+        /// <summary>
+        /// Logs that highlight an abnormal activity in the flow of execution.
+        /// </summary>
         Warning = 2,
-        //
-        // Summary:
-        //     Logs that track the general flow of the application.
+        /// <summary>
+        /// Logs that track the general flow of the application.
+        /// </summary>
         Info = 3,
-        //
-        // Summary:
-        //     Logs that are used for interactive investigation during development.
-        Verbose = 4,
-        //
-        // Summary:
-        //     Logs that contain the most detailed messages.
+        /// <summary>
+        /// Logs that are used for interactive investigation during development.
+        /// </summary>
+        Verbose = 4,   
+        /// <summary>
+        /// Logs that contain the most detailed messages.
+        /// </summary>
         Debug = 5
+    }
+
+    public enum EndPoint
+    {
+        Clan,
+        Clans,
+        Village,
+        CurrentWar,
+        LeagueGroup,
+        LeagueWar,
+        WarLog
+
     }
 }

@@ -37,6 +37,10 @@ namespace ClashOfClansConsoleTest
 
             //ILogger logger = new Logger<Program>()
 
+            //CocApiConfiguration cocApiConfiguration = new CocApiConfiguration();
+
+            //cocApiConfiguration.TimeToWaitForWebRequests = 1;
+
             CocApi cocApi = new CocApi(tokens, logger: LogMessages);
 
             var village = await cocApi.GetVillageAsync("#20LRPJG2U");

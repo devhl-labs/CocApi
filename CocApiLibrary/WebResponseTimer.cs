@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace CocApiLibrary
 {
-    internal class WebResponseTimer
+    public class WebResponseTimer
     {
-        public readonly object DownloadedItrem;
+        public readonly EndPoint EndPoint;
         public readonly TimeSpan TimeSpan;
         public readonly DateTime DateTimeUTCCreated = DateTime.UtcNow;
+        public readonly HttpStatusCode? HttpStatusCode;
 
-
-        public WebResponseTimer(object downloadedObject, TimeSpan timeSpan)
+        public WebResponseTimer(EndPoint endPoint, TimeSpan timeSpan, HttpStatusCode? httpStatusCode = null)
         {
-            DownloadedItrem = downloadedObject;
+            EndPoint = endPoint;
             TimeSpan = timeSpan;
-
+            HttpStatusCode = httpStatusCode;
         }
 
     }
