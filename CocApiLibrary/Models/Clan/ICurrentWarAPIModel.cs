@@ -6,7 +6,7 @@ namespace CocApiLibrary.Models
 {
     public interface ICurrentWarAPIModel : IDownloadable
     {
-        IDictionary<int, AttackAPIModel> Attacks { get; set; }
+        List<AttackAPIModel> Attacks { get; set; }
         WarClanAPIModel? Clan { get; set; }
         IList<WarClanAPIModel> Clans { get; set; }
         DateTime EndTimeUTC { get; set; }
@@ -14,7 +14,7 @@ namespace CocApiLibrary.Models
         WarClanAPIModel? Opponent { get; set; }
         DateTime PreparationStartTimeUTC { get; set; }
         DateTime StartTimeUTC { get; set; }
-        Enums.State State { get; set; }
+        Enums.WarState State { get; set; }
         int TeamSize { get; set; }
         DateTime WarEndingSoonUTC { get; }
         string WarID { get; set; }

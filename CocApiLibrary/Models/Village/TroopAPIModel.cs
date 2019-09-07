@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
@@ -10,6 +11,6 @@ namespace CocApiLibrary.Models
 
         public int MaxLevel { get; set; }
 
-        public string Village { get; set; } = string.Empty;
+        public Village Village { get; set; }
     }
 }

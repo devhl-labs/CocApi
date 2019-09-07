@@ -13,17 +13,18 @@ namespace CocApiLibrary.Models
 
         public int MapPosition { get; set; }
 
-        public int OpponentAttacks { get; set; }
+        //[JsonPropertyName("OpponentAttacks")]
+        //public int DefenseCount { get; set; }
 
-        public BestOpponentAttackAPIModel? BestOpponentAttack { get; set; }
+        //public AttackAPIModel? BestOpponentAttack { get; set; }
 
-        public IEnumerable<AttackAPIModel>? Attacks { get; set; }
-
-
-
+        public IList<AttackAPIModel>? Attacks { get; set; }
 
 
-        [JsonIgnore]
-        public IList<AttackAPIModel> Defenses { get; set; } = new List<AttackAPIModel>();
+
+
+
+        //[JsonIgnore]
+        //public IList<AttackAPIModel> Defenses { get; set; } = new List<AttackAPIModel>();
     }
 }

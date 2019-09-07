@@ -6,12 +6,17 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CocApiLibrary;
 using CocApiLibrary.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace ClashOfClansConsoleTest
 {
     class Program
     {
-        static async Task Main(string[] args)
+        private static readonly object logLock = new object();
+
+        public static async Task Main(string[] args)
         {
             IList<string> tokens = new List<string>
             {
@@ -26,19 +31,23 @@ namespace ClashOfClansConsoleTest
 
             //configuration.TokenTimeOutMilliseconds = 3000;
 
-           
+            //CreateHostBuilder
 
-            CocApi cocApi = new CocApi(tokens);
+            //ILoggerFactory loggerFactory = new loggerf
 
-            //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
+            //ILogger logger = new Logger<Program>()
 
-            ////var clan = await cocApi.GetClanAsync("#8J82PV0C");
+            CocApi cocApi = new CocApi(tokens, logger: LogMessages);
 
-            //var clan2 = await cocApi.GetClanAsync("#2C8V29YJ");
+            var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
-            //var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
+            //var clan = await cocApi.GetClanAsync("#8J82PV0C");
 
-            ////var leaguegroup = await cocApi.GetLeagueGroupAsync("#8J82PV0C");
+            var clan2 = await cocApi.GetClanAsync("#2C8V29YJ");
+
+            var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
+
+            var leaguegroup = await cocApi.GetLeagueGroupAsync("#8J82PV0C");
 
             ////var clans = await cocApi.GetClansAsync("the");
 
@@ -74,30 +83,99 @@ namespace ClashOfClansConsoleTest
             List<string> clans = new List<string>
             {
                 "#8J82PV0C"
-                //, "#2C8V29YJ"
-                //, "#22VCPLR98"
-                //, "#8RJJ0C0Y"
+                , "#2C8V29YJ"
+                , "#22VCPLR98"
+                , "#8RJJ0C0Y"
             };
 
-            cocApi.UpdateClans(clans);
+            cocApi.WatchClans(clans);
 
             cocApi.BeginUpdatingClans();
 
-            await Task.Delay(10000);
+            //await Task.Delay(10000);
 
-            //await cocApi.StopUpdatingClans();
-
-            //cocApi.DownloadLeagueWars = true;
-
-            await Task.Delay(10000);
-
-            cocApi.UpdateClan("#2C8V29YJ");
-
-            await Task.Delay(10000);
+            ////await cocApi.StopUpdatingClans();
 
             cocApi.DownloadLeagueWars = true;
 
+            cocApi.DownloadVillages = true;
+
+            //await Task.Delay(10000);
+
+            //cocApi.UpdateClan("#2C8V29YJ");
+
+            //await Task.Delay(10000);
+
+            //cocApi.DownloadLeagueWars = true;
+
             await Task.Delay(-1);
+        }
+
+        //public static IHostBuilder CreateHostBuilder(string[] args)
+        //{
+        //    return Host.CreateDefaultBuilder(args).ConfigureHostConfiguration(webBuilder =>
+        //    {
+        //        webBuilder.UseStartup<Program>();
+        //    });
+        //}
+
+
+        public static Task LogMessages(LogMessage logMessage)
+        {
+            lock (logLock)
+            {
+                PrintLogTitle(logMessage);
+
+                Console.WriteLine(logMessage.ToString());
+            }
+            //Console.WriteLine(logMessage.Message);
+
+            return Task.CompletedTask;
+        }
+
+        private static void ResetConsoleColor()
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.Gray;
+        }
+
+        private static void PrintLogTitle(LogMessage logMessage)
+        {
+            switch (logMessage.Severity)
+            {
+                case LogSeverity.Critical:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write("[crit] ");
+                    break;
+                case LogSeverity.Debug:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write("[dbug] ");
+                    break;
+                case LogSeverity.Error:
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.BackgroundColor = ConsoleColor.DarkRed;
+                    Console.Write("[err ]");
+                    break;
+                case LogSeverity.Info:
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write("[info] ");
+                    break;
+                case LogSeverity.Verbose:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write("[verb] ");
+                    break;
+                case LogSeverity.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.Write("[warn] ");
+                    break;
+            }
+
+            ResetConsoleColor();
         }
 
         private static void CocApi_WarIsAccessibleChanged(ICurrentWarAPIModel currentWarAPIModel)

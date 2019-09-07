@@ -35,11 +35,11 @@ namespace CocApiLibrary.Models
 
 
 
-        [JsonIgnore]
-        public IList<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
+        //[JsonIgnore]
+        //public IList<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
 
-        [JsonIgnore]
-        public IList<AttackAPIModel> Defenses { get; set; } = new List<AttackAPIModel>();
+        //[JsonIgnore]
+        //public IList<AttackAPIModel> Defenses { get; set; } = new List<AttackAPIModel>();
 
         [JsonIgnore]
         public Result Result { get; set; }

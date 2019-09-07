@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
@@ -16,6 +17,6 @@ namespace CocApiLibrary.Models
 
         public string CompletionInfo { get; set; } = string.Empty;
 
-        public string Village { get; set; } = string.Empty;
+        public Village Village { get; set; }
     }
 }

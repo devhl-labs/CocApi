@@ -1,14 +1,9 @@
-﻿using CocApiLibrary.Exceptions;
-using System;
-using System.Collections.Concurrent;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using static CocApiLibrary.Enums;
+using Microsoft.Extensions.Logging;
 
 namespace CocApiLibrary.Models
 {
@@ -43,7 +38,7 @@ namespace CocApiLibrary.Models
         [JsonPropertyName("memberList")]
         public IList<MemberListAPIModel>? Members { get; set; }
 
-        public string Type { get; set; } = string.Empty;
+        public ClanType Type { get; set; }
 
         public string Description { get; set; } = string.Empty;
 
@@ -109,8 +104,6 @@ namespace CocApiLibrary.Models
         {
             lock (_updateLock)
             {
-                Console.WriteLine($"Updating {Tag}");
-
                 UpdateClanTry(cocApi, downloadedClan);
 
                 UpdateBadgeTry(cocApi, downloadedClan);

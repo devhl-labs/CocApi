@@ -13,5 +13,12 @@ namespace CocApiLibrary.Models
         public int DestructionPercentage { get; set; }
 
         public int Order { get; set; }
+
+
+
+
+
+        [JsonIgnore]
+        public bool Fresh { get; set; } = false;
     }
 }

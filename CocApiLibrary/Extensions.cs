@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
 using CocApiLibrary;
 using CocApiLibrary.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -70,11 +71,11 @@ namespace CocApiLibrary
         }
 
 
-        public static IMappingExpression<TSource, TDestination> Ignore<TSource, TDestination>(this IMappingExpression<TSource, TDestination> map, Expression<Func<TDestination, object>> selector)
-        {
-            map.ForMember(selector, config => config.Ignore());
-            return map;
-        }
+        //public static IMappingExpression<TSource, TDestination> Ignore<TSource, TDestination>(this IMappingExpression<TSource, TDestination> map, Expression<Func<TDestination, object>> selector)
+        //{
+        //    map.ForMember(selector, config => config.Ignore());
+        //    return map;
+        //}
 
 
 
@@ -106,8 +107,7 @@ namespace CocApiLibrary
             return dictionary;
         }
 
-
-
+        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
 
     }
 }

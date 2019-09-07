@@ -22,7 +22,11 @@ namespace CocApiLibrary
         private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
         private static readonly HttpClient ApiClient = new HttpClient();
-        private static int counter = 0;
+        private static CocApi _cocApi = new CocApi();
+        private const string Source = nameof(WebResponse);
+
+
+        //private static int counter = 0;
         private static Configuration _cfg = new Configuration();
 
         private static readonly JsonSerializerOptions options = new JsonSerializerOptions
@@ -30,8 +34,10 @@ namespace CocApiLibrary
             PropertyNameCaseInsensitive = true
         };
 
-        public static void Initialize(Configuration cfg, IEnumerable<string> tokens)
+        public static void Initialize(CocApi cocApi, Configuration cfg, IEnumerable<string> tokens)
         {
+            _cocApi = cocApi;
+
             _cfg = cfg;
 
             ApiClient.DefaultRequestHeaders.Accept.Clear();
@@ -40,7 +46,7 @@ namespace CocApiLibrary
 
             foreach (string token in tokens)
             {
-                TokenObject tokenObject = new TokenObject(token, _cfg.TokenTimeOutMilliseconds, cfg.Verbosity);
+                TokenObject tokenObject = new TokenObject(cocApi, token, _cfg.TokenTimeOutMilliseconds);
 
                 _tokenObjects.Add(tokenObject);
             }
@@ -67,12 +73,12 @@ namespace CocApiLibrary
             await _semaphoreSlim.WaitAsync();
             try
             {
-                if (_cfg.Verbosity == VerbosityType.Verbose)
-                {
-                    Console.WriteLine($"counter: {counter};  {url}");
-                }
+                //if (_cfg.Verbosity == VerbosityType.Verbose)
+                //{
+                //    Console.WriteLine($"counter: {counter};  {url}");
+                //}
 
-                counter++;
+                //counter++;
 
                 while (_tokenObjects.All(x => x.IsRateLimited))
                 {
@@ -88,93 +94,103 @@ namespace CocApiLibrary
         }
 
 
-        internal static async Task<T> GetWebResponse<T>(CocApi cocApi, string encodedUrl) where T : class, IDownloadable, new()
+        internal static async Task<T> GetWebResponse<T>(string encodedUrl) where T : class, IDownloadable, new()
         {
-            TokenObject token = await GetToken(encodedUrl); //race condition exists here, the token rate limiting flag is set later in this routine
-
-            ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-
-            using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
-
-            Stopwatch stopwatch = new Stopwatch();
-
-            stopwatch.Start();
-
-            using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cancellationTokenSource.Token);
-
-            stopwatch.Stop();
-
-            string responseText = response.Content.ReadAsStringAsync().Result;
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                cocApi.IsAvailable = true;
+                _ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, Source, encodedUrl));
 
-                T result = JsonSerializer.Deserialize<T>(responseText, options);
+                TokenObject token = await GetToken(encodedUrl); //race condition exists here, the token rate limiting flag is set later in this routine
 
-                if (result != null)
+                ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+
+                using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
+
+                Stopwatch stopwatch = new Stopwatch();
+
+                stopwatch.Start();
+
+                using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cancellationTokenSource.Token);
+
+                stopwatch.Stop();
+
+                string responseText = response.Content.ReadAsStringAsync().Result;
+
+                if (response.IsSuccessStatusCode)
                 {
-                    //WebResponseTimer webResponseTimer = new WebResponseTimer(result, stopwatch.Elapsed);
+                    _cocApi.IsAvailable = true;
 
-                    if(result is IInitialize process)
+                    T result = JsonSerializer.Deserialize<T>(responseText, options);
+
+                    if (result != null)
                     {
-                        process.Initialize();
+                        //WebResponseTimer webResponseTimer = new WebResponseTimer(result, stopwatch.Elapsed);
+
+                        if (result is IInitialize process)
+                        {
+                            process.Initialize();
+                        }
+
+                        SetIDownloadableProperties(result, encodedUrl);
+
+                        return result;
+                    }
+                    else
+                    {
+                        throw new CocApiException("The response could not be parsed.");
                     }
 
-                    SetIDownloadableProperties(result, encodedUrl);         
-
-                    return result;
                 }
                 else
                 {
-                    throw new CocApiException("The response could not be parsed.");
-                }
+                    ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, options);
 
+                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //400
+                    {
+                        throw new BadRequestException(ex, response.StatusCode);
+                    }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden) //403
+                    {
+                        throw new ForbiddenException(ex, response.StatusCode);
+                    }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) //404
+                    {
+                        throw new NotFoundException(ex, response.StatusCode);
+                    }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) //429
+                    {
+                        token.IsRateLimited = true;
+
+                        throw new TooManyRequestsException(ex, response.StatusCode);
+                    }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //500
+                    {
+                        throw new ServerUnavailableException(ex, response.StatusCode);
+                    }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway) //502
+                    {
+                        throw new BadGateWayException(ex, response.StatusCode);
+                    }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //503
+                    {
+                        _cocApi.IsAvailable = false;
+
+                        throw new ServerUnavailableException(ex, response.StatusCode);
+                    }
+
+                    throw new ServerResponseException(ex, response.StatusCode);
+                }
             }
-            else
+            catch (Exception e)
             {
-                ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, options);
-
-                if (response.StatusCode == System.Net.HttpStatusCode.BadRequest) //400
-                {
-                    throw new BadRequestException(ex, response.StatusCode);
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden) //403
-                {
-                    throw new ForbiddenException(ex, response.StatusCode);
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) //404
-                {
-                    throw new NotFoundException(ex, response.StatusCode);
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) //429
-                {
-                    token.IsRateLimited = true;
-
-                    throw new TooManyRequestsException(ex, response.StatusCode);
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //500
-                {
-                    throw new ServerUnavailableException(ex, response.StatusCode);
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway) //502
-                {
-                    throw new BadGateWayException(ex, response.StatusCode);
-                }
-
-                else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //503
-                {
-                    cocApi.IsAvailable = false;
-
-                    throw new ServerUnavailableException(ex, response.StatusCode);
-                }
-                               
-                throw new ServerResponseException(ex, response.StatusCode);
+                _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, Source, $"Error retrieving {encodedUrl}", e));
+                throw;
             }
         }
 
@@ -183,7 +199,7 @@ namespace CocApiLibrary
             switch (result)
             {
                 case LeagueWarAPIModel leagueWarAPIModel:
-                    if(leagueWarAPIModel.State == State.WarEnded)
+                    if(leagueWarAPIModel.State == WarState.WarEnded)
                     {
                         leagueWarAPIModel.Expires = DateTime.UtcNow.AddYears(1);
                     }
@@ -196,7 +212,7 @@ namespace CocApiLibrary
                     break;
 
                 case CurrentWarAPIModel currentWar:
-                    if(currentWar.State == State.WarEnded)
+                    if(currentWar.State == WarState.WarEnded)
                     {
                         currentWar.Expires = DateTime.UtcNow.AddYears(1);
                     }
@@ -209,7 +225,7 @@ namespace CocApiLibrary
                     break;
 
                 case LeagueGroupAPIModel leagueGroupAPIModel:
-                    if(leagueGroupAPIModel.State == LeagueState.Ended)
+                    if(leagueGroupAPIModel.State == LeagueState.LeagueWarsEnded)
                     {
                         leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(6);
                     }

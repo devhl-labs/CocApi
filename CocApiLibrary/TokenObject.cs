@@ -12,11 +12,11 @@ namespace CocApiLibrary
     internal class TokenObject
     {
         private bool _isRateLimited = false;
-        private Timer _clearRateLimitTimer = new Timer();
+        private readonly Timer _clearRateLimitTimer = new Timer();
         internal readonly string Token;
         private readonly int _tokenTimeOut;
-        private readonly VerbosityType _verbosityType;
-
+        //private readonly VerbosityType _verbosityType;
+        private readonly CocApi _cocApi;
 
         public DateTime LastUsedUTC { get; private set; } = DateTime.UtcNow;
 
@@ -33,10 +33,7 @@ namespace CocApiLibrary
                 if (value)
                 {
                     _clearRateLimitTimer.Start();
-                    //if(_verbosityType > VerbosityType.None)
-                    //{
-                    Console.WriteLine("CocAPI Token is Rate Limited");
-                    //}
+                    _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, nameof(TokenObject), "Token is rate limited"));
                 }
             }
         }
@@ -46,11 +43,12 @@ namespace CocApiLibrary
 
 
 
-        public TokenObject(string token, int tokenTimeOut, VerbosityType verbosityType)
+        public TokenObject(CocApi cocApi, string token, int tokenTimeOut)
         {
+            _cocApi = cocApi; 
             Token = token;
             _tokenTimeOut = tokenTimeOut;
-            _verbosityType = verbosityType;
+            //_verbosityType = verbosityType;
 
             _clearRateLimitTimer.AutoReset = false;
             _clearRateLimitTimer.Interval = 5000;
@@ -67,9 +65,9 @@ namespace CocApiLibrary
             {
                 await Task.Delay(50);
 
-                if (!notified && _verbosityType >= VerbosityType.PreemptiveRateLimits)
+                if (!notified)
                 {
-                    Console.WriteLine($"CoC API preemptive rate limiting {url}");
+                    _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, nameof(TokenObject), "Preemptive rate limit"));
                     notified = true;
                 }
 

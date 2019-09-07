@@ -131,9 +131,9 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private State _state;
+        private WarState _state;
 
-        public State State
+        public WarState State
         {
             get
             {
@@ -164,7 +164,7 @@ namespace CocApiLibrary.Models
         public IList<WarClanAPIModel> Clans { get; set; } = new List<WarClanAPIModel>();
 
         [JsonIgnore]
-        public IDictionary<int, AttackAPIModel> Attacks { get; set; } = new Dictionary<int, AttackAPIModel>();
+        public List<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
 
         /// <summary>
         /// This amalgamation is a composite key of the preparation start time and clan tags.
@@ -204,8 +204,6 @@ namespace CocApiLibrary.Models
 
         public void Initialize()
         {
-            //_cocApi = cocApi;
-
             Clans = Clans.OrderBy(x => x.Tag).ToList();
 
             WarID = $"{PreparationStartTimeUTC};{Clans[0].Tag};{Clans[1].Tag}";
@@ -261,57 +259,56 @@ namespace CocApiLibrary.Models
 
             foreach (WarClanAPIModel clan in Clans)
             {
-                if (clan.Members == null)
-                {
-                    continue;
-                }
-                foreach (MemberAPIModel member in clan.Members)
+                foreach (MemberAPIModel member in clan.Members.EmptyIfNull())
                 {
                     if (member.Attacks != null)
                     {
-                        foreach (AttackAPIModel attack in member.Attacks)
+                        member.Attacks.OrderBy(a => a.Order).First().Fresh = true;
+                    }
+
+                    foreach (AttackAPIModel attack in member.Attacks.EmptyIfNull())
+                    {
+                        //Attacks.TryAdd(attack.Order, attack);
+
+                        if(!Attacks.Any(a => a.Order == attack.Order))
                         {
-                            Attacks.TryAdd(attack.Order, attack);
-
-                            MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
-
-                            defendingBase.Defenses.Add(attack);
-
-                            clan.Attacks.Add(attack);
-
-                            Clans.First(x => x.Tag != clan.Tag).Defenses.Add(attack);
+                            Attacks.Add(attack);
                         }
+
+                        //MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
+
+                        //defendingBase.Defenses.Add(attack);
                     }
                 }
             }
 
-            //Attacks = Attacks.OrderBy(x => x.Order).ToList();
+            Attacks = Attacks.OrderBy(a => a.Order).ToList();
 
             foreach (WarClanAPIModel clan in Clans)
             {
-                clan.Attacks = clan.Attacks.OrderBy(x => x.Order).ToList();
-                clan.Defenses = clan.Defenses.OrderBy(x => x.Order).ToList();
+                clan.DefenseCount = 0;
 
-                clan.DefenseCount = clan.Defenses.Count();
-
-                if (clan.Members == null)
+                foreach (AttackAPIModel attack in Attacks)
                 {
-                    continue;
+                    if(clan.Members.Any(m => m.Tag == attack.DefenderTag))
+                    {
+                        clan.DefenseCount++;
+                    }
                 }
 
-                foreach (MemberAPIModel member in clan.Members)
-                {
-                    member.Attacks = member.Attacks?.OrderBy(x => x.Order).ToList();
-                    member.Defenses = member.Defenses.OrderBy(x => x.Order).ToList();
-                }
+                //foreach (MemberAPIModel member in clan.Members.EmptyIfNull())
+                //{
+                //    member.Attacks = member.Attacks?.OrderBy(x => x.Order).ToList();
+                //    member.Defenses = member.Defenses.OrderBy(x => x.Order).ToList();
+                //}
             }
         }
 
         public bool WarIsOverOrAllAttacksUsed()
         {
-            if (State == State.NotInWar) return true;
+            if (State == WarState.NotInWar) return true;
 
-            if (State == State.WarEnded) return true;
+            if (State == WarState.WarEnded) return true;
 
             if (Clans[0].Members.All(m => m.Attacks?.Count() == 2) && Clans[1].Members.All(m => m.Attacks?.Count() == 2)) return true;
 
@@ -409,18 +406,43 @@ namespace CocApiLibrary.Models
 
             List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
 
-            foreach (AttackAPIModel attack in downloadedWar.Attacks.Values)
-            {
-                if (Attacks.TryAdd(attack.Order, attack))
+            foreach (AttackAPIModel attack in downloadedWar.Attacks)
+            {                
+                if(!Attacks.Any(a => a.Order == attack.Order))
                 {
-                    newAttacks.Add(attack); //todo there are more lists that contain attacks
+                    Attacks.Add(attack);
                 }
             }
 
-            if (newAttacks.Count() > 0)
+            foreach(WarClanAPIModel clan in Clans)
             {
-                cocApi.NewAttacksEvent(this, newAttacks);
+                foreach(MemberAPIModel member in clan.Members.EmptyIfNull())
+                {
+                    //AttackAPIModel? bestOpponentAttack = Attacks.Where(a => a.DefenderTag == member.Tag).OrderByDescending(a => a.Stars).ThenByDescending(a => a.DestructionPercentage).ThenBy(a => a.Order).FirstOrDefault();
+
+                    //if(bestOpponentAttack != null)
+                    //{
+                    //    member.BestOpponentAttack = bestOpponentAttack;
+                    //}
+
+                    //member.DefenseCount = Attacks.Count(a => a.DefenderTag == member.Tag);
+
+                    foreach(AttackAPIModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == member.Tag))
+                    {
+                        if(!member.Attacks.Any(a => a.Order == downloadedAttack.Order))
+                        {
+                            if(member.Attacks == null)
+                            {
+                                member.Attacks = new List<AttackAPIModel>();
+                            }
+
+                            member.Attacks.Add(downloadedAttack);
+                        }
+                    }
+                }
             }
+
+            cocApi.NewAttacksEvent(this, newAttacks);
         }
     }
 }
