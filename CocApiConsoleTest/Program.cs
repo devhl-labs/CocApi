@@ -23,23 +23,12 @@ namespace ClashOfClansConsoleTest
                 File.ReadAllText(@"E:\Desktop\token.txt")
             };
 
-            //Configuration configuration = new Configuration();
+            CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
+            {
+                NumberOfUpdaters = 1,
 
-            //configuration.NumberOfUpdaters = 1;
-
-            //configuration.TimeToWaitForWebRequests = 6000;
-
-            //configuration.TokenTimeOutMilliseconds = 3000;
-
-            //CreateHostBuilder
-
-            //ILoggerFactory loggerFactory = new loggerf
-
-            //ILogger logger = new Logger<Program>()
-
-            //CocApiConfiguration cocApiConfiguration = new CocApiConfiguration();
-
-            //cocApiConfiguration.TimeToWaitForWebRequests = 1;
+                TimeToWaitForWebRequests = new TimeSpan(0, 0, 0, 0, 1)
+            };
 
             CocApi cocApi = new CocApi(tokens, logger: LogMessages);
 
@@ -96,10 +85,6 @@ namespace ClashOfClansConsoleTest
 
             cocApi.BeginUpdatingClans();
 
-            //await Task.Delay(10000);
-
-            ////await cocApi.StopUpdatingClans();
-
             cocApi.DownloadLeagueWars = true;
 
             cocApi.DownloadVillages = true;
@@ -112,16 +97,10 @@ namespace ClashOfClansConsoleTest
 
             //cocApi.DownloadLeagueWars = true;
 
+            await cocApi.DisposeAsync();
+
             await Task.Delay(-1);
         }
-
-        //public static IHostBuilder CreateHostBuilder(string[] args)
-        //{
-        //    return Host.CreateDefaultBuilder(args).ConfigureHostConfiguration(webBuilder =>
-        //    {
-        //        webBuilder.UseStartup<Program>();
-        //    });
-        //}
 
 
         public static Task LogMessages(LogMessage logMessage)
@@ -132,7 +111,6 @@ namespace ClashOfClansConsoleTest
 
                 Console.WriteLine(logMessage.ToString());
             }
-            //Console.WriteLine(logMessage.Message);
 
             return Task.CompletedTask;
         }

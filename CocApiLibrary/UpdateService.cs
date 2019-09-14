@@ -126,7 +126,7 @@ namespace CocApiLibrary
         {
             try
             {
-                if (_cocApi.DownloadLeagueWars)
+                if (_cocApi.DownloadLeagueWars && storedClan.DownloadLeagueWars)
                 {
                     LeagueGroupAPIModel? leagueGroupAPIModel = null;
 
@@ -154,7 +154,7 @@ namespace CocApiLibrary
 
                                 if (leagueWar.Clans.Any(c => c.Tag == storedClan.Tag)) continue;
 
-                                if (!_continueUpdatingObjects || !_cocApi.DownloadLeagueWars)
+                                if (!_continueUpdatingObjects || !_cocApi.DownloadLeagueWars || !storedClan.DownloadLeagueWars)
                                 {
                                     return;
                                 }
@@ -173,7 +173,7 @@ namespace CocApiLibrary
         {
             try
             {
-                if (_cocApi.DownloadVillages)
+                if (_cocApi.DownloadVillages && storedClan.DownloadVillages)
                 {
                     foreach (var village in storedClan.Members.EmptyIfNull())
                     {
@@ -189,13 +189,13 @@ namespace CocApiLibrary
                         }
                         catch (Exception)
                         {
-                            //there is a bug in the api where some villages do not appear in the player end point
+                            //there is a bug in the api where some villages that appear in the clan members list do not appear in the player end point
                             continue;
                         }
 
                         storedVillage.Update(_cocApi, downloadedVillage);
 
-                        if (!_continueUpdatingObjects || !_cocApi.DownloadVillages)
+                        if (!_continueUpdatingObjects || !_cocApi.DownloadVillages || !storedClan.DownloadVillages)
                         {
                             return;
                         }

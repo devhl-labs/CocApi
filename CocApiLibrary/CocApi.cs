@@ -1,18 +1,13 @@
-﻿using CocApiLibrary.Models;
-using static CocApiLibrary.Enums;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System;
 using System.Timers;
-using CocApiLibrary.Exceptions;
-using System.Text.Json;
-using System.ComponentModel;
 using System.Text.RegularExpressions;
-using System.Collections.Concurrent;
 using System.Linq;
-using Microsoft.Extensions.Logging;
-//using AutoMapper;
-//using System.Threading;
+
+using CocApiLibrary.Models;
+using CocApiLibrary.Exceptions;
+using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary
 {
@@ -47,11 +42,10 @@ namespace CocApiLibrary
     public delegate void VillageSpellsChangedEventHandler(VillageAPIModel oldVillage, List<SpellAPIModel> newSpells);
 
 
-    public class CocApi
+    public class CocApi : IAsyncDisposable
     {
-        private bool _isAvailable = true;
-        private readonly Timer _testConnection = new System.Timers.Timer();
-        private readonly System.Timers.Timer _timer;
+        private bool? _isAvailable;
+        private Timer TestConnection { get; } = new Timer();
         private readonly List<UpdateService> _clanUpdateServices = new List<UpdateService>();
 
         internal readonly Dictionary<string, ClanAPIModel> AllClans = new Dictionary<string, ClanAPIModel>();
@@ -61,7 +55,9 @@ namespace CocApiLibrary
         internal readonly CocApiConfiguration _cfg = new CocApiConfiguration();
 
         /// <summary>
-        /// Fires if you query the API during an outage.  When the API comes back up this boolean will be set to true automatically.  If this boolean is false, you may still try to query the API if you wish.
+        /// Fires if you query the API during an outage.  
+        /// The API will be polled every five seconds to see when service is restored. 
+        /// If the service is not available, you may still try to query the API if you wish.
         /// </summary>
         public event IsAvailableChangedEventHandler? IsAvailableChanged;
         public event ClanChangedEventHandler? ClanChanged;
@@ -101,27 +97,32 @@ namespace CocApiLibrary
 
         public readonly Func<LogMessage, Task> Logger;
 
-
+        /// <summary>
+        /// Controls whether any clan will be able to download league wars.
+        /// </summary>
         public bool DownloadLeagueWars = false;
+
+        /// <summary>
+        /// Controls whether any clan will be able to download village members.
+        /// </summary>
         public bool DownloadVillages = false;
 
-        public DateTime NextTimerResetUTC { get; private set; }
-        public bool IsAvailable
+        public bool? IsAvailable
         {
             get { return _isAvailable; }
             internal set
             {
-                if (_isAvailable != value)
+                if (_isAvailable != value && value != null)
                 {
                     _isAvailable = value;
-                    IsAvailableChanged?.Invoke(value);
+                    IsAvailableChanged?.Invoke(value.Value);
 
-                    if (!_isAvailable)
+                    if (_isAvailable == false)
                     {
-                        _testConnection.Interval = 6000;
-                        _testConnection.Elapsed += TestConnection_Elapsed;
-                        _testConnection.AutoReset = true;
-                        _testConnection.Enabled = true;
+                        TestConnection.Interval = 5000;
+                        TestConnection.Elapsed += TestConnection_Elapsed;
+                        TestConnection.AutoReset = true;
+                        TestConnection.Enabled = true;
                     }
                 }
             }
@@ -131,7 +132,6 @@ namespace CocApiLibrary
         internal CocApi()
         {
             Logger = _ => Task.CompletedTask;
-            _timer = new Timer();
         }
 
         public CocApi(IEnumerable<string> tokens, CocApiConfiguration? cfg = null, Func<LogMessage, Task>? logger = null)
@@ -144,14 +144,6 @@ namespace CocApiLibrary
             }
 
             WebResponse.Initialize(this, _cfg, tokens);
-
-            _timer = new Timer();
-            _timer.Elapsed += TimerElapsed;
-            _timer.Interval = 1800000; //30 minutes
-            _timer.AutoReset = true;
-            _timer.Enabled = true;
-
-            NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
 
             CreateUpdaters();
         }
@@ -866,12 +858,23 @@ namespace CocApiLibrary
         }
 
         /// <summary>
-        /// Use this to get statistics on how long the API takes to respond for diffent EndPoints.
+        /// Use this to get statistics on how long the API takes to respond for diffent and points.
         /// </summary>
         /// <returns></returns>
         public List<WebResponseTimer> GetTimers() => WebResponse.GetTimers();
 
+        /// <summary>
+        /// This will call  StopUpdatingClans and then dispose the HttpClient
+        /// </summary>
+        /// <returns></returns>
+        public async ValueTask DisposeAsync()
+        {
+            await StopUpdatingClans();
 
+            WebResponse.ApiClient.Dispose();
+
+            WebResponse.SemaphoreSlim.Dispose();
+        }
 
 
 
@@ -915,13 +918,15 @@ namespace CocApiLibrary
         {
             var _ = Task.Run(async () =>
             {
-                await GetClanAsync("#929YJPYJ", false, false);
+                try
+                {
+                    await GetClanAsync("#929YJPYJ", false, false);
+                    TestConnection.Stop();
+                }
+                catch (Exception)
+                {
+                }
             });
-        }
-
-        private void TimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            NextTimerResetUTC = DateTime.UtcNow.AddMilliseconds(_timer.Interval);
         }
 
         internal Exception GetException(Exception e)
@@ -964,5 +969,7 @@ namespace CocApiLibrary
                 throw new CocApiException(e.Message, e);
             }
         }
+
+
     }
 }

@@ -19,9 +19,9 @@ namespace CocApiLibrary
 {
     internal static class WebResponse
     {
-        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+        internal static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
-        private static readonly HttpClient ApiClient = new HttpClient();
+        internal static readonly HttpClient ApiClient = new HttpClient();
         private static CocApi _cocApi = new CocApi();
         private const string Source = nameof(WebResponse);
 
@@ -71,16 +71,9 @@ namespace CocApiLibrary
 
         private static async Task<TokenObject> GetToken(string url)
         {
-            await _semaphoreSlim.WaitAsync();
+            await SemaphoreSlim.WaitAsync();
             try
             {
-                //if (_cfg.Verbosity == VerbosityType.Verbose)
-                //{
-                //    Console.WriteLine($"counter: {counter};  {url}");
-                //}
-
-                //counter++;
-
                 while (_tokenObjects.All(x => x.IsRateLimited))
                 {
                     await Task.Delay(100);
@@ -90,7 +83,7 @@ namespace CocApiLibrary
             }
             finally
             {
-                _semaphoreSlim.Release();
+                SemaphoreSlim.Release();
             }
         }
 
@@ -209,8 +202,7 @@ namespace CocApiLibrary
 
                 _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, Source, $"Error retrieving {encodedUrl}", e));
 
-
-                if(e.Message == "A task was canceled.")
+                if(e is TaskCanceledException taskCanceledException)
                 {
                     throw new ServerTookTooLongToRespondException(e.Message, e);
                 }

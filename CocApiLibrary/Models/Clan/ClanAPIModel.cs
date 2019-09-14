@@ -9,6 +9,16 @@ namespace CocApiLibrary.Models
 {
     public class ClanAPIModel : IClanAPIModel, IDownloadable
     {
+        /// <summary>
+        /// Controls whether this clan will download village members.
+        /// </summary>
+        public bool DownloadVillages { get; set; } = true;
+
+        /// <summary>
+        /// Controls whether this clan will download league wars.
+        /// </summary>
+        public bool DownloadLeagueWars { get; set; } = true;
+
         private string _tag = string.Empty;
         
         public string Tag
