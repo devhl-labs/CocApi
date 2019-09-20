@@ -69,17 +69,18 @@ namespace CocApiLibrary
 
 
 
-        private static async Task<TokenObject> GetToken(string url)
+        private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
         {
             await SemaphoreSlim.WaitAsync();
+
             try
             {
                 while (_tokenObjects.All(x => x.IsRateLimited))
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(50);
                 }
 
-                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUTC).FirstOrDefault().GetToken(url);
+                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUTC).FirstOrDefault().GetTokenAsync(endPoint, url);
             }
             finally
             {
@@ -98,7 +99,7 @@ namespace CocApiLibrary
             {
                 _ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, Source, encodedUrl));
 
-                TokenObject token = await GetToken(encodedUrl); //race condition exists here, the token rate limiting flag is set later in this routine
+                TokenObject token = await GetTokenAsync(endPoint, encodedUrl); //race condition exists here, the token rate limiting flag is set later in this routine
 
                 ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 

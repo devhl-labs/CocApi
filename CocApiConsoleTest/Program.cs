@@ -18,19 +18,16 @@ namespace ClashOfClansConsoleTest
 
         public static async Task Main(string[] args)
         {
-            IList<string> tokens = new List<string>
-            {
-                File.ReadAllText(@"E:\Desktop\token.txt")
-            };
-
             CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
             {
                 NumberOfUpdaters = 1,
 
-                TimeToWaitForWebRequests = new TimeSpan(0, 0, 0, 0, 1)
+                TimeToWaitForWebRequests = new TimeSpan(0, 0, 0, 10, 0)
             };
 
-            CocApi cocApi = new CocApi(tokens, logger: LogMessages);
+            cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
+
+            CocApi cocApi = new CocApi(cocApiConfiguration, logger: LogMessages);
 
             var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
@@ -85,7 +82,7 @@ namespace ClashOfClansConsoleTest
 
             cocApi.BeginUpdatingClans();
 
-            cocApi.DownloadLeagueWars = true;
+            //cocApi.DownloadLeagueWars = DownloadLeagueWars.True;
 
             cocApi.DownloadVillages = true;
 

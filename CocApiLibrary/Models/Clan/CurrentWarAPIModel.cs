@@ -11,25 +11,6 @@ namespace CocApiLibrary.Models
 {
     public class CurrentWarAPIModel : IDownloadable, IInitialize, ICurrentWarAPIModel
     {
-        //private CocApi? _cocApi;
-        //private bool _changed = false;
-
-        //public void Process(CocApi cocApi)
-        //{
-        //    _cocApi = cocApi;
-        //}
-
-        //internal void FireEvent()
-        //{
-        //    if (_changed && _cocApi != null)
-        //    {
-        //        _changed = false;
-        //        //_cocApi.CurrentWarChangedEvent(this);
-        //    }
-        //}
-
-
-
         private DateTime _endTimeUTC;
 
         [JsonPropertyName("endTime")]
@@ -53,11 +34,6 @@ namespace CocApiLibrary.Models
                     {
                         Flags.WarEndingSoon = true;
                     }
-
-                    //if(_cocApi != null)
-                    //{
-                    // _changed = true;
-                    //}
                 }
             }
         }
@@ -90,11 +66,6 @@ namespace CocApiLibrary.Models
                     {
                         Flags.WarStartingSoon = true;
                     }
-
-                    //      if (_cocApi != null)
-                    //{
-                    // _changed = true;
-                    //}
                 }
             }
         }
@@ -145,11 +116,6 @@ namespace CocApiLibrary.Models
                 if (_state != value)
                 {
                     _state = value;
-
-                    //if(_cocApi != null)
-                    //{
-                    //	_changed = true;
-                    //}
                 }
             }
         }
@@ -180,12 +146,6 @@ namespace CocApiLibrary.Models
 
         [JsonIgnore]
         public DateTime WarStartingSoonUTC { get; internal set; }
-
-        //[JsonIgnore]
-        //public bool WarEndingSoon { get; internal set; } = false;
-
-        //[JsonIgnore]
-        //public bool WarStartingSoon { get; internal set; } = false;
 
         [JsonIgnore]
         public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
@@ -321,6 +281,7 @@ namespace CocApiLibrary.Models
             {
                 return true;
             }
+
             return false;
         }
 
@@ -339,7 +300,7 @@ namespace CocApiLibrary.Models
 
                 UpdateAttacks(cocApi, downloadedWar);
 
-                if(downloadedWar != null && downloadedWar.WarID == WarID)
+                if(downloadedWar?.WarID == WarID)
                 {
                     Expires = downloadedWar.Expires;
 
@@ -358,24 +319,26 @@ namespace CocApiLibrary.Models
             }
             else if (downloadedWar != null && Flags.WarIsAccessible == false)
             {
+                Flags.WarIsAccessible = true;
+
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
 
-            if (!Flags.WarStartingSoon && DateTime.UtcNow > WarStartingSoonUTC)
+            if (!Flags.WarStartingSoon && State == WarState.Preparation && DateTime.UtcNow > WarStartingSoonUTC)
             {
                 cocApi.WarStartingSoonEvent(this);
 
                 Flags.WarEndingSoon = true;
             }
 
-            if (!Flags.WarEndingSoon && DateTime.UtcNow > WarEndingSoonUTC)
+            if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUTC)
             {
                 cocApi.WarEndingSoonEvent(this);
 
                 Flags.WarEndingSoon = true;
             }
 
-            if (downloadedWar == null && EndTimeUTC < DateTime.UtcNow && Flags.WarEndNotSeen)
+            if (!Flags.WarEndNotSeen && downloadedWar == null && EndTimeUTC < DateTime.UtcNow)
             {
                 Flags.WarEndNotSeen = true;
 
@@ -385,7 +348,7 @@ namespace CocApiLibrary.Models
 
         private void UpdateWar(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if(downloadedWar == null) return;
+            if(downloadedWar == null || downloadedWar?.WarID != WarID) return;
             
             if (EndTimeUTC != downloadedWar.EndTimeUTC ||
                 StartTimeUTC != downloadedWar.StartTimeUTC ||
@@ -402,7 +365,7 @@ namespace CocApiLibrary.Models
 
         private void UpdateAttacks(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if (downloadedWar == null) return;
+            if (downloadedWar== null || downloadedWar.WarID != WarID) return;
 
             List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
 

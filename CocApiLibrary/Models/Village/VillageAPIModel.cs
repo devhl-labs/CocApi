@@ -226,12 +226,8 @@ namespace CocApiLibrary
 
         private void UpdateVillageLeague(CocApi cocApi, VillageAPIModel downloadedVillage)
         {
-            if(downloadedVillage.League == null)
-            {
-                return;
-            }
-
-            if(League?.Id != downloadedVillage.League?.Id)
+            if(League == null && downloadedVillage.League != null ||
+                League?.Id != downloadedVillage.League?.Id)
             {
                 cocApi.VillageLeagueChangedEvent(this, downloadedVillage.League);
 

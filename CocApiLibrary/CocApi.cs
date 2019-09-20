@@ -74,9 +74,13 @@ namespace CocApiLibrary
         public event ClanPointsChangedEventHandler? ClanPointsChanged;
 
         /// <summary>
-        /// Fires if the war cannot be found from either clanTags or warTags.  Private war logs can also fire this.
+        /// Fires if the war cannot be found from either clanTags or warTag.  Private war logs can also fire this.
         /// </summary>
         public event WarIsAccessibleChangedEventHandler? WarIsAccessibleChanged;
+        /// <summary>
+        /// Fires when the war is not accessible and the end time has passed.  
+        /// This war may still become available if one of the clans does not spin and opens their war log.
+        /// </summary>
         public event WarEndNotSeenEventHandler? WarEndNotSeen;
         public event VillageChangedEventHandler? VillageChanged;
         public event VillageDefenseWinsChangedEventHandler? VillageDefenseWinsChanged;
@@ -99,8 +103,9 @@ namespace CocApiLibrary
 
         /// <summary>
         /// Controls whether any clan will be able to download league wars.
+        /// Set it to Auto to only download on the first week of the month.
         /// </summary>
-        public bool DownloadLeagueWars = false;
+        public DownloadLeagueWars DownloadLeagueWars = DownloadLeagueWars.False;
 
         /// <summary>
         /// Controls whether any clan will be able to download village members.
@@ -134,7 +139,7 @@ namespace CocApiLibrary
             Logger = _ => Task.CompletedTask;
         }
 
-        public CocApi(IEnumerable<string> tokens, CocApiConfiguration? cfg = null, Func<LogMessage, Task>? logger = null)
+        public CocApi(CocApiConfiguration cfg, Func<LogMessage, Task>? logger = null)
         {
             Logger = logger ?? (_ => Task.CompletedTask);
 
@@ -143,7 +148,12 @@ namespace CocApiLibrary
                 _cfg = cfg;
             }
 
-            WebResponse.Initialize(this, _cfg, tokens);
+            if(cfg == null || cfg.Tokens.Count() == 0)
+            {
+                throw new CocApiException("You did not provide any tokens to access the SC API.");
+            }
+
+            WebResponse.Initialize(this, _cfg, cfg.Tokens);
 
             CreateUpdaters();
         }
@@ -491,13 +501,13 @@ namespace CocApiLibrary
                     {
                     }
 
-                    if (currentWarAPIModel?.WarID != storedWar.WarID)
+                    if (currentWarAPIModel != null && currentWarAPIModel.WarID != storedWar.WarID)
                     {
                         currentWarAPIModel = await GetCurrentWarAsync(storedWar.Clans[1].Tag, true, false);
                     }
                 }
 
-                if(currentWarAPIModel?.WarID == storedWar.WarID)
+                if(currentWarAPIModel != null && currentWarAPIModel.WarID == storedWar.WarID)
                 {
                     return currentWarAPIModel;
                 }
@@ -563,7 +573,7 @@ namespace CocApiLibrary
                 {
                     if(AllWars.TryGetValue(warTag, out ICurrentWarAPIModel currentWarAPIModel))
                     {
-                        if(allowExpiredItem || !currentWarAPIModel.IsExpired())
+                        if(allowExpiredItem || currentWarAPIModel.State == WarState.WarEnded || !currentWarAPIModel.IsExpired())
                         {
                             return currentWarAPIModel;
                         }
@@ -876,7 +886,35 @@ namespace CocApiLibrary
             WebResponse.SemaphoreSlim.Dispose();
         }
 
+        /// <summary>
+        /// Determines whether CWL should be downloading.
+        /// When DownloadLeagueWars is set to Auto, this returns true during the first week of the month
+        /// and the first three hours of day 8.  This is just to give you time to complete the downloads.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsDownloadingLeagueWars()
+        {
+            if (DownloadLeagueWars == DownloadLeagueWars.False) return false;
 
+            if (DownloadLeagueWars == DownloadLeagueWars.True) return true;
+
+            if (DownloadLeagueWars == DownloadLeagueWars.Auto)
+            {
+                int day = DateTime.UtcNow.Day;
+
+                if (day > 0 && day < 8)
+                {
+                    return true;
+                }
+
+                if (day == 8 && DateTime.UtcNow.Hour < 3)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
 
 

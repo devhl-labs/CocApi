@@ -20,13 +20,13 @@ namespace CocApiLibrary
 
         /// <summary>
         /// Discord markup characters are stripped out
-        /// Includes * _ ~ and `
+        /// Includes *_~~`|| also {space} and >{space}
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>
         public static string DiscordSafe(this String str)
         {
-            return str.Replace("*", "").Replace("_", "").Replace("~", "").Replace("`", "");
+            return str.Replace("*", "").Replace("_", "").Replace("~~", "").Replace("`", "").Replace("||", "").Replace("> ", "");
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace CocApiLibrary
         /// <returns></returns>
         public static DateTime ToDateTime(this string str)
         {
-            DateTime result = DateTime.ParseExact(str.Replace(".000Z", "").Replace("T", " "), "yyyyMMdd HHmmss", null);
+            DateTime result = DateTime.ParseExact(str, "yyyyMMdd'T'HHmmss.fff'Z'", null);
 
             result = DateTime.SpecifyKind(result, DateTimeKind.Utc);
 
@@ -71,41 +71,12 @@ namespace CocApiLibrary
         }
 
 
-        //public static IMappingExpression<TSource, TDestination> Ignore<TSource, TDestination>(this IMappingExpression<TSource, TDestination> map, Expression<Func<TDestination, object>> selector)
-        //{
-        //    map.ForMember(selector, config => config.Ignore());
-        //    return map;
-        //}
 
 
 
 
 
-        public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key) where TValue : new()
-        {
-            if (!dict.TryGetValue(key, out TValue val))
-            {
-                val = new TValue();
 
-                dict.TryAdd(key, val);
-            }
-
-            return val;
-        }
-
-        public static IDictionary<TKey, TValue> AddOrUpdate<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
-        {
-            if (dictionary.ContainsKey(key))
-            {
-                dictionary[key] = value;
-            }
-            else
-            {
-                dictionary.TryAdd(key, value);
-            }
-
-            return dictionary;
-        }
 
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
 

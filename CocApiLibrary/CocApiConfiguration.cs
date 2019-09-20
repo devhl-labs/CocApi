@@ -7,12 +7,14 @@ namespace CocApiLibrary
 {
     public class CocApiConfiguration
     {
+        public IList<string> Tokens = new List<string>();
+
         public int NumberOfUpdaters { get; set; } = 1;
 
         public VerbosityType Verbosity { get; set; } = VerbosityType.None;
 
 
-        public TimeSpan TokenTimeOut { get; set; } = new TimeSpan(0, 0, 4);
+        public TimeSpan TokenTimeOut { get; set; } = new TimeSpan(0, 0, 3);
 
         public TimeSpan TimeToWaitForWebRequests { get; set; } = new TimeSpan(0, 0, 10);
 

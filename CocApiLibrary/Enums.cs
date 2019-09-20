@@ -155,4 +155,11 @@ namespace CocApiLibrary
         WarLog
 
     }
+
+    public enum DownloadLeagueWars
+    {
+        False = 0,
+        True = 1,
+        Auto = 2
+    }
 }

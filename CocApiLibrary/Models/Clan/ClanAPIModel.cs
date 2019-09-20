@@ -105,7 +105,10 @@ namespace CocApiLibrary.Models
         }
 
 
-
+        /// <summary>
+        /// This is a flag used to prevent all wars from being announced on startup. 
+        /// It is set to true after all wars have been downloaded at least once for this clan.
+        /// </summary>
         internal bool AnnounceWars { get; set; } = false;
 
         private readonly object _updateLock = new object();
@@ -146,7 +149,8 @@ namespace CocApiLibrary.Models
                     return;
                 }
 
-                if (Location?.CountryCode != downloadedClan.Location?.CountryCode ||
+                if (Location == null && downloadedClan.Location != null ||
+                    Location?.CountryCode != downloadedClan.Location?.CountryCode ||
                     Location?.Id != downloadedClan.Location?.Id ||
                     Location?.IsCountry != downloadedClan.Location?.IsCountry ||
                     Location?.Name != downloadedClan.Location?.Name)
@@ -171,7 +175,8 @@ namespace CocApiLibrary.Models
                     return;
                 }
 
-                if (BadgeUrls?.Large != downloadedClan.BadgeUrls?.Large ||
+                if (BadgeUrls == null && downloadedClan.BadgeUrls != null |
+                    BadgeUrls?.Large != downloadedClan.BadgeUrls?.Large ||
                     BadgeUrls?.Medium != downloadedClan.BadgeUrls?.Medium ||
                     BadgeUrls?.Small != downloadedClan.BadgeUrls?.Small)
                 {
