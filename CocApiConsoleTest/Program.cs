@@ -73,9 +73,9 @@ namespace ClashOfClansConsoleTest
             List<string> clans = new List<string>
             {
                 "#8J82PV0C"
-                , "#2C8V29YJ"
-                , "#22VCPLR98"
-                , "#8RJJ0C0Y"
+                //, "#2C8V29YJ"
+                //, "#22VCPLR98"
+                //, "#8RJJ0C0Y"
             };
 
             cocApi.WatchClans(clans);
@@ -94,7 +94,7 @@ namespace ClashOfClansConsoleTest
 
             //cocApi.DownloadLeagueWars = true;
 
-            await cocApi.DisposeAsync();
+            //await cocApi.DisposeAsync();
 
             await Task.Delay(-1);
         }

@@ -221,28 +221,29 @@ namespace CocApiLibrary.Models
             {
                 foreach (MemberAPIModel member in clan.Members.EmptyIfNull())
                 {
-                    if (member.Attacks != null)
-                    {
-                        member.Attacks.OrderBy(a => a.Order).First().Fresh = true;
-                    }
-
                     foreach (AttackAPIModel attack in member.Attacks.EmptyIfNull())
                     {
-                        //Attacks.TryAdd(attack.Order, attack);
-
-                        if(!Attacks.Any(a => a.Order == attack.Order))
+                        if (!Attacks.Any(a => a.Order == attack.Order))
                         {
                             Attacks.Add(attack);
                         }
-
-                        //MemberAPIModel defendingBase = Clans.First(x => x.Tag != clan.Tag).Members.First(x => x.Tag == attack.DefenderTag);
-
-                        //defendingBase.Defenses.Add(attack);
                     }
                 }
             }
 
             Attacks = Attacks.OrderBy(a => a.Order).ToList();
+
+            var attacksByDefenderTag = Attacks.GroupBy(a => a.DefenderTag);
+            
+            foreach(var defendingVillage in attacksByDefenderTag)
+            {
+                foreach(var attack in defendingVillage.OrderBy(d => d.Order))
+                {
+                    attack.Fresh = true;
+
+                    break;
+                }
+            }
 
             foreach (WarClanAPIModel clan in Clans)
             {
@@ -250,17 +251,11 @@ namespace CocApiLibrary.Models
 
                 foreach (AttackAPIModel attack in Attacks)
                 {
-                    if(clan.Members.Any(m => m.Tag == attack.DefenderTag))
+                    if (clan.Members.Any(m => m.Tag == attack.DefenderTag))
                     {
                         clan.DefenseCount++;
                     }
                 }
-
-                //foreach (MemberAPIModel member in clan.Members.EmptyIfNull())
-                //{
-                //    member.Attacks = member.Attacks?.OrderBy(x => x.Order).ToList();
-                //    member.Defenses = member.Defenses.OrderBy(x => x.Order).ToList();
-                //}
             }
         }
 
@@ -300,7 +295,7 @@ namespace CocApiLibrary.Models
 
                 UpdateAttacks(cocApi, downloadedWar);
 
-                if(downloadedWar?.WarID == WarID)
+                if (downloadedWar?.WarID == WarID)
                 {
                     Expires = downloadedWar.Expires;
 
@@ -311,13 +306,13 @@ namespace CocApiLibrary.Models
 
         private void SendWarNotifications(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if (downloadedWar == null && Flags.WarIsAccessible)
+            if (Flags.WarIsAccessible && (downloadedWar == null || downloadedWar.WarID != WarID))
             {
                 Flags.WarIsAccessible = false;
 
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
-            else if (downloadedWar != null && Flags.WarIsAccessible == false)
+            else if (!Flags.WarIsAccessible &&  (downloadedWar != null && downloadedWar.WarID == WarID))
             {
                 Flags.WarIsAccessible = true;
 
@@ -344,11 +339,13 @@ namespace CocApiLibrary.Models
 
                 cocApi.WarEndNotSeenEvent(this);
             }
+
+            //todo add events for war started, war ended, war attacks not seen, war attacks missed
         }
 
         private void UpdateWar(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if(downloadedWar == null || downloadedWar?.WarID != WarID) return;
+            if (downloadedWar == null || downloadedWar.WarID != WarID) return;
             
             if (EndTimeUTC != downloadedWar.EndTimeUTC ||
                 StartTimeUTC != downloadedWar.StartTimeUTC ||
@@ -365,13 +362,13 @@ namespace CocApiLibrary.Models
 
         private void UpdateAttacks(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if (downloadedWar== null || downloadedWar.WarID != WarID) return;
+            if (downloadedWar == null || downloadedWar.WarID != WarID) return;
 
             List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
 
             foreach (AttackAPIModel attack in downloadedWar.Attacks)
             {                
-                if(!Attacks.Any(a => a.Order == attack.Order))
+                if (!Attacks.Any(a => a.Order == attack.Order))
                 {
                     Attacks.Add(attack);
                 }
@@ -383,7 +380,7 @@ namespace CocApiLibrary.Models
                 {
                     //AttackAPIModel? bestOpponentAttack = Attacks.Where(a => a.DefenderTag == member.Tag).OrderByDescending(a => a.Stars).ThenByDescending(a => a.DestructionPercentage).ThenBy(a => a.Order).FirstOrDefault();
 
-                    //if(bestOpponentAttack != null)
+                    //if (bestOpponentAttack != null)
                     //{
                     //    member.BestOpponentAttack = bestOpponentAttack;
                     //}
@@ -392,9 +389,9 @@ namespace CocApiLibrary.Models
 
                     foreach(AttackAPIModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == member.Tag))
                     {
-                        if(!member.Attacks.Any(a => a.Order == downloadedAttack.Order))
+                        if (!member.Attacks.Any(a => a.Order == downloadedAttack.Order))
                         {
-                            if(member.Attacks == null)
+                            if (member.Attacks == null)
                             {
                                 member.Attacks = new List<AttackAPIModel>();
                             }

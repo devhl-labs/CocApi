@@ -30,7 +30,7 @@ namespace CocApiLibrary.Models
         
             set
             {
-        	    if(_tag != value)
+        	    if (_tag != value)
         	    {
         		    _tag = value;
         	        

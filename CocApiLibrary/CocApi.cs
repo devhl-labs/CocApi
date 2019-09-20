@@ -143,12 +143,12 @@ namespace CocApiLibrary
         {
             Logger = logger ?? (_ => Task.CompletedTask);
 
-            if(cfg != null)
+            if (cfg != null)
             {
                 _cfg = cfg;
             }
 
-            if(cfg == null || cfg.Tokens.Count() == 0)
+            if (cfg == null || cfg.Tokens.Count() == 0)
             {
                 throw new CocApiException("You did not provide any tokens to access the SC API.");
             }
@@ -264,7 +264,7 @@ namespace CocApiLibrary
 
         internal void NewAttacksEvent(ICurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels)
         {
-            if(attackAPIModels.Count() > 0)
+            if (attackAPIModels.Count() > 0)
             {
                 NewAttacks?.Invoke(currentWarAPIModel, attackAPIModels);
             }
@@ -282,7 +282,7 @@ namespace CocApiLibrary
 
         internal void MembersLeftEvent(ClanAPIModel newClan, List<MemberListAPIModel> memberListAPIModels)
         {
-            if(memberListAPIModels.Count() > 0)
+            if (memberListAPIModels.Count() > 0)
             {
                 MembersLeft?.Invoke(newClan, memberListAPIModels);
             }            
@@ -305,7 +305,7 @@ namespace CocApiLibrary
 
         internal void MembersJoinedEvent(ClanAPIModel newClan, List<MemberListAPIModel> memberListAPIModels)
         {
-            if(memberListAPIModels.Count() > 0)
+            if (memberListAPIModels.Count() > 0)
             {
                 MembersJoined?.Invoke(newClan, memberListAPIModels);
             }
@@ -327,9 +327,9 @@ namespace CocApiLibrary
 
                 if (allowStoredItem)
                 {
-                    if(AllClans.TryGetValue(clanTag, out ClanAPIModel storedClan))
+                    if (AllClans.TryGetValue(clanTag, out ClanAPIModel storedClan))
                     {
-                        if(!storedClan.IsExpired() || allowExpiredItem)
+                        if (!storedClan.IsExpired() || allowExpiredItem)
                         {
                             return storedClan;
                         }
@@ -434,9 +434,17 @@ namespace CocApiLibrary
 
                 if (allowStoredItem)
                 {
-                    if(AllClans.TryGetValue(clanTag, out var clan))
+                    if (AllWars.TryGetValue(clanTag, out var war))
                     {
-                        if (clan.Wars.Where(w => w.Value is CurrentWarAPIModel).OrderBy(w => w.Value.PreparationStartTimeUTC).FirstOrDefault(w => w.Value.EndTimeUTC > DateTime.UtcNow).Value is CurrentWarAPIModel war && (allowExpiredItem || !war.IsExpired()))
+                        if (!war.IsExpired() || allowExpiredItem)
+                        {
+                            return war;
+                        }
+                    }
+
+                    if (AllClans.TryGetValue(clanTag, out var clan))
+                    {
+                        if (clan.Wars.OrderBy(w => w.Value.PreparationStartTimeUTC).FirstOrDefault(w => w.Value.EndTimeUTC > DateTime.UtcNow && w.Value is CurrentWarAPIModel).Value is CurrentWarAPIModel war && (allowExpiredItem || !war.IsExpired()))
                         {
                             return war;
                         }
@@ -447,7 +455,11 @@ namespace CocApiLibrary
                     
                 CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(EndPoint.CurrentWar, url);
 
-                if (currentWarAPIModel.State != WarState.NotInWar)
+                if (currentWarAPIModel.State == WarState.NotInWar)
+                {
+                    AllWars.TryAdd(clanTag, currentWarAPIModel);
+                }
+                else
                 {
                     AllWars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
 
@@ -455,12 +467,12 @@ namespace CocApiLibrary
                     {
                         ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag);
 
-                        if(clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel))
+                        if (clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel))
                         {
                             AnnounceNewWar(clanTag, currentWarAPIModel);
                         }
                     }
-                }               
+                }
 
                 return currentWarAPIModel;
             }
@@ -476,7 +488,7 @@ namespace CocApiLibrary
             {
                 if (AllWars.TryGetValue(storedWar.WarID, out ICurrentWarAPIModel war))
                 {
-                    if (!war.IsExpired()) return war;
+                    if (war.State == WarState.WarEnded || !war.IsExpired()) return war;
                 }
 
                 ICurrentWarAPIModel? currentWarAPIModel = null;
@@ -507,7 +519,7 @@ namespace CocApiLibrary
                     }
                 }
 
-                if(currentWarAPIModel != null && currentWarAPIModel.WarID == storedWar.WarID)
+                if (currentWarAPIModel != null && currentWarAPIModel.WarID == storedWar.WarID)
                 {
                     return currentWarAPIModel;
                 }
@@ -527,9 +539,9 @@ namespace CocApiLibrary
             {
                 ValidateTag(clanTag);
 
-                if(allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out LeagueGroupAPIModel leagueGroupAPIModel))
+                if (allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out LeagueGroupAPIModel leagueGroupAPIModel))
                 {
-                    if (leagueGroupAPIModel.State == LeagueState.WarsEnded || allowExpiredItem || !leagueGroupAPIModel.IsExpired())
+                    if (allowExpiredItem || !leagueGroupAPIModel.IsExpired())
                     {
                         return leagueGroupAPIModel;
                     }
@@ -544,7 +556,7 @@ namespace CocApiLibrary
                     if (AllLeagueGroups.TryGetValue(clan.Tag, out LeagueGroupAPIModel storedLeagueGroupAPIModel))
                     {
                         //the league group already exists.  Lets check if the existing one is from last month
-                        if(leagueGroupAPIModel.Season != storedLeagueGroupAPIModel.Season && leagueGroupAPIModel.State != LeagueState.WarsEnded)
+                        if (leagueGroupAPIModel.Season != storedLeagueGroupAPIModel.Season && leagueGroupAPIModel.State != LeagueState.WarsEnded)
                         {
                             storedLeagueGroupAPIModel = leagueGroupAPIModel;
                         }
@@ -571,9 +583,9 @@ namespace CocApiLibrary
 
                 if (allowStoredItem)
                 {
-                    if(AllWars.TryGetValue(warTag, out ICurrentWarAPIModel currentWarAPIModel))
+                    if (AllWars.TryGetValue(warTag, out ICurrentWarAPIModel currentWarAPIModel))
                     {
-                        if(allowExpiredItem || currentWarAPIModel.State == WarState.WarEnded || !currentWarAPIModel.IsExpired())
+                        if (allowExpiredItem || currentWarAPIModel.State == WarState.WarEnded || !currentWarAPIModel.IsExpired())
                         {
                             return currentWarAPIModel;
                         }
@@ -586,7 +598,7 @@ namespace CocApiLibrary
 
                 leagueWarAPIModel.WarTag = warTag;
 
-                if(AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel))
+                if (AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel))
                 {
                     AnnounceNewWar(leagueWarAPIModel.Clans.First().Tag, leagueWarAPIModel);  //prob doesn't matter what tag we use.  Small chance of a race condition when bot start though
                 }
@@ -612,9 +624,9 @@ namespace CocApiLibrary
             {
                 ValidateTag(villageTag);
 
-                if(allowStoredItem && AllVillages.TryGetValue(villageTag, out VillageAPIModel villageAPIModel))
+                if (allowStoredItem && AllVillages.TryGetValue(villageTag, out VillageAPIModel villageAPIModel))
                 {
-                    if(allowExpiredItem || !villageAPIModel.IsExpired())
+                    if (allowExpiredItem || !villageAPIModel.IsExpired())
                     {
                         return villageAPIModel;
                     }
@@ -744,13 +756,15 @@ namespace CocApiLibrary
         }
 
         /// <summary>
-        /// Load this library's stored objects with objects from your database.  You must still run WatchClans to establish which clans you want to keep updated.
+        /// Load this library's stored objects with objects from your database.  
+        /// You must still run WatchClans to establish which clans you want to keep updated.
+        /// Running this will enable the program to fire events for actions that occured while the program was not running.
         /// </summary>
         /// <param name="clans"></param>
-        /// <param name="wars"></param>
+        /// <param name="wars">Enumeration of both league wars and currentwars.  Include all of this month's CWL wars to avoid false new war notifications.</param>
         /// <param name="leagueGroups"></param>
         /// <param name="villages"></param>
-        public void LoadFromDatabase(IEnumerable<ClanAPIModel> clans, IEnumerable<CurrentWarAPIModel> wars, IEnumerable<LeagueGroupAPIModel> leagueGroups, IEnumerable<VillageAPIModel> villages)
+        public void LoadFromDatabase(IEnumerable<ClanAPIModel> clans, IEnumerable<ICurrentWarAPIModel> wars, IEnumerable<LeagueGroupAPIModel> leagueGroups, IEnumerable<VillageAPIModel> villages)
         {
             try
             {
@@ -761,18 +775,18 @@ namespace CocApiLibrary
                     AllClans.TryAdd(clan.Tag, clan);
                 }
 
-                foreach (CurrentWarAPIModel war in wars)
+                foreach (CurrentWarAPIModel war in wars.Where(w => w.State != WarState.NotInWar))
                 {
                     if (war is LeagueWarAPIModel leagueWar)
                     {
-                        leagueWar.Initialize();
+                        //leagueWar.Initialize();  //todo should i be initializing the saved object?
 
                         AllWars.TryAdd(leagueWar.WarTag, leagueWar);
                     }
-                    else
-                    {
-                        war.Initialize();
-                    }
+                    //else
+                    //{
+                    //    war.Initialize();
+                    //}
 
                     AllWars.TryAdd(war.WarID, war);
 
@@ -859,7 +873,7 @@ namespace CocApiLibrary
                 return false;
             }
 
-            if(tag == "#0")
+            if (tag == "#0")
             {
                 return false;
             }

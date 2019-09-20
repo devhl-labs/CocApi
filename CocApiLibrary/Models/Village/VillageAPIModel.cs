@@ -139,13 +139,13 @@ namespace CocApiLibrary
             {
                 SpellAPIModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
 
-                if(oldSpell == null || oldSpell.Level < spell.Level)
+                if (oldSpell == null || oldSpell.Level < spell.Level)
                 {
                     newSpells.Add(spell);
                 }
             }
 
-            if(newSpells.Count() > 0)
+            if (newSpells.Count() > 0)
             {
                 cocApi.VillageSpellsChangedEvent(this, newSpells);
 
@@ -168,7 +168,7 @@ namespace CocApiLibrary
 
             }
 
-            if(newTroops.Count() > 0)
+            if (newTroops.Count() > 0)
             {
                 cocApi.VillageHeroesChangedEvent(this, newTroops);
 
@@ -191,7 +191,7 @@ namespace CocApiLibrary
 
             }
 
-            if(newTroops.Count() > 0)
+            if (newTroops.Count() > 0)
             {
                 cocApi.VillageTroopsChangedEvent(this, newTroops);
 
@@ -205,18 +205,18 @@ namespace CocApiLibrary
 
             foreach(AchievementAPIModel achievement in downloadedVillage.Achievements.EmptyIfNull())
             {
-                if(achievement.Value > achievement.Target)
+                if (achievement.Value > achievement.Target)
                 {
                     AchievementAPIModel oldAchievement = Achievements.FirstOrDefault(a => a.Name == achievement.Name);
 
-                    if(oldAchievement == null || oldAchievement.Value < oldAchievement.Target)
+                    if (oldAchievement == null || oldAchievement.Value < oldAchievement.Target)
                     {
                         newAchievements.Add(achievement);
                     }
                 }
             }
 
-            if(newAchievements.Count() > 0)
+            if (newAchievements.Count() > 0)
             {
                 cocApi.VillageAchievementsChangedEvent(this, newAchievements);
 
@@ -226,7 +226,7 @@ namespace CocApiLibrary
 
         private void UpdateVillageLeague(CocApi cocApi, VillageAPIModel downloadedVillage)
         {
-            if(League == null && downloadedVillage.League != null ||
+            if (League == null && downloadedVillage.League != null ||
                 League?.Id != downloadedVillage.League?.Id)
             {
                 cocApi.VillageLeagueChangedEvent(this, downloadedVillage.League);
@@ -237,7 +237,7 @@ namespace CocApiLibrary
 
         private void UpdateVillage(CocApi cocApi, VillageAPIModel downloadedVillage)
         {
-            if(downloadedVillage.AttackWins != AttackWins ||
+            if (downloadedVillage.AttackWins != AttackWins ||
                 downloadedVillage.BestTrophies != BestTrophies ||
                 downloadedVillage.BestVersusTrophies != BestVersusTrophies ||
                 downloadedVillage.BuilderHallLevel != BuilderHallLevel ||

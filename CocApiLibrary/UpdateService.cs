@@ -144,7 +144,7 @@ namespace CocApiLibrary
                         throw;
                     }
 
-                    if(leagueGroupAPIModel != null)
+                    if (leagueGroupAPIModel != null)
                     {
                         List<Task> tasks = new List<Task>();
 

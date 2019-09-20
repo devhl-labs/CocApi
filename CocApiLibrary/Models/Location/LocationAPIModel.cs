@@ -11,7 +11,7 @@ namespace CocApiLibrary.Models
 
         //internal void Process(CocApi cocApi, ClanAPIModel clanApiModel)
         //{
-        //    if(_cocApi == null || _clanApiModel == null)
+        //    if (_cocApi == null || _clanApiModel == null)
         //    {
         //        _cocApi = cocApi;
         //        _clanApiModel = clanApiModel;
@@ -40,11 +40,11 @@ namespace CocApiLibrary.Models
         
             set
             {
-        	if(_id != value)
+        	if (_id != value)
         	{
         		_id = value;
         	
-        		//if(_cocApi != null)
+        		//if (_cocApi != null)
         		//{
         		//	_changed = true;
         		//}
@@ -63,11 +63,11 @@ namespace CocApiLibrary.Models
         
             set
             {
-        	if(_name != value)
+        	if (_name != value)
         	{
         		_name = value;
         	
-        		//if(_cocApi != null)
+        		//if (_cocApi != null)
         		//{
         		//	_changed = true;
         		//}
@@ -86,11 +86,11 @@ namespace CocApiLibrary.Models
         
             set
             {
-        	if(_isCountry != value)
+        	if (_isCountry != value)
         	{
         		_isCountry = value;
         	
-        		//if(_cocApi != null)
+        		//if (_cocApi != null)
         		//{
         		//	_changed = true;
         		//}
@@ -114,11 +114,11 @@ namespace CocApiLibrary.Models
         
             set
             {
-        	if(_countryCode != value)
+        	if (_countryCode != value)
         	{
         		_countryCode = value;
         	
-        		//if(_cocApi != null)
+        		//if (_cocApi != null)
         		//{
         		//	_changed = true;
         		//}

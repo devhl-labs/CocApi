@@ -185,7 +185,7 @@ namespace CocApiLibrary
                         throw new ServiceUnavailableException(ex, response.StatusCode);
                     }
 
-                    else if(response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)  //504
+                    else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)  //504
                     {
                         _cocApi.IsAvailable = false;
 
@@ -203,7 +203,7 @@ namespace CocApiLibrary
 
                 _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, Source, $"Error retrieving {encodedUrl}", e));
 
-                if(e is TaskCanceledException taskCanceledException)
+                if (e is TaskCanceledException taskCanceledException)
                 {
                     throw new ServerTookTooLongToRespondException(e.Message, e);
                 }
@@ -217,7 +217,7 @@ namespace CocApiLibrary
             switch (result)
             {
                 case LeagueWarAPIModel leagueWarAPIModel:
-                    if(leagueWarAPIModel.State == WarState.WarEnded)
+                    if (leagueWarAPIModel.State == WarState.WarEnded)
                     {
                         leagueWarAPIModel.Expires = DateTime.UtcNow.AddYears(1);
                     }
@@ -230,7 +230,7 @@ namespace CocApiLibrary
                     break;
 
                 case CurrentWarAPIModel currentWar:
-                    if(currentWar.State == WarState.WarEnded)
+                    if (currentWar.State == WarState.WarEnded)
                     {
                         currentWar.Expires = DateTime.UtcNow.AddYears(1);
                     }
@@ -243,7 +243,7 @@ namespace CocApiLibrary
                     break;
 
                 case LeagueGroupAPIModel leagueGroupAPIModel:
-                    if(leagueGroupAPIModel.State == LeagueState.WarsEnded)
+                    if (leagueGroupAPIModel.State == LeagueState.WarsEnded)
                     {
                         leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(6);
                     }
