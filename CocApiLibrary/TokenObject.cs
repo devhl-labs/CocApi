@@ -14,9 +14,10 @@ namespace CocApiLibrary
     {
         private bool _isRateLimited = false;
         private readonly System.Timers.Timer _clearRateLimitTimer = new System.Timers.Timer();
-        internal readonly string Token;
         private readonly TimeSpan _tokenTimeOut;
         private readonly CocApi _cocApi;
+
+        public string Token { get; }
 
         public DateTime LastUsedUTC { get; private set; } = DateTime.UtcNow.AddSeconds(-30);  //so it does not preemptive rate limit when the program starts
 

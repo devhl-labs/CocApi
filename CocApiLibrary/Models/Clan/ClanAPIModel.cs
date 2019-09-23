@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using static CocApiLibrary.Enums;
-using Microsoft.Extensions.Logging;
 
 namespace CocApiLibrary.Models
 {

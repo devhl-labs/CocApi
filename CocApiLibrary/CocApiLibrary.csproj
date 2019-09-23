@@ -7,8 +7,8 @@
 	  <Authors>devhl</Authors>
 	  <Product />
 	  <Description>This is a Clash of Clans library that will return respsonses from developer.clashofclans.com</Description>
-	  <Version>0.1.0-alpha</Version>
-	  <AssemblyVersion>0.1.0.0</AssemblyVersion>
+	  <Version>0.2.0-alpha</Version>
+	  <AssemblyVersion>0.2.0.0</AssemblyVersion>
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
 	  <PackageId>CocApiLibrary</PackageId>
@@ -26,11 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0-rc1.19456.10" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="5.0.0-alpha1.19468.14" />
-    <PackageReference Include="System.Text.Json" Version="5.0.0-alpha1.19468.14" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="5.0.0-alpha1.19473.2" />
+    <PackageReference Include="System.Text.Json" Version="5.0.0-alpha1.19473.2" />
   </ItemGroup>
 
 </Project>

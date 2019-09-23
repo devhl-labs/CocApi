@@ -7,7 +7,7 @@ namespace CocApiLibrary
 {
     public class CocApiConfiguration
     {
-        public IList<string> Tokens = new List<string>();
+        public IList<string> Tokens { get; set; } = new List<string>();
 
         public int NumberOfUpdaters { get; set; } = 1;
 

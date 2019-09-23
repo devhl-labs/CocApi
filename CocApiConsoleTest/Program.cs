@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CocApiLibrary;
 using CocApiLibrary.Models;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 
 namespace ClashOfClansConsoleTest
 {
@@ -27,17 +23,23 @@ namespace ClashOfClansConsoleTest
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
 
-            CocApi cocApi = new CocApi(cocApiConfiguration, logger: LogMessages);
+            using CocApi cocApi = new CocApi(cocApiConfiguration, logger: LogMessages)
+            {
 
-            var village = await cocApi.GetVillageAsync("#20LRPJG2U");
+                DownloadLeagueWars = DownloadLeagueWars.False,
+
+                DownloadVillages = true
+            };
+
+            //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
 
             //var clan = await cocApi.GetClanAsync("#8J82PV0C");
 
-            var clan2 = await cocApi.GetClanAsync("#2C8V29YJ");
+            //var clan2 = await cocApi.GetClanAsync("#2C8V29YJ");
 
-            var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
+            //var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
 
-            var leaguegroup = await cocApi.GetLeagueGroupAsync("#8J82PV0C");
+            //var leaguegroup = await cocApi.GetLeagueGroupAsync("#8J82PV0C");
 
             ////var clans = await cocApi.GetClansAsync("the");
 
@@ -70,33 +72,29 @@ namespace ClashOfClansConsoleTest
 
             cocApi.WarIsAccessibleChanged += CocApi_WarIsAccessibleChanged;
 
+
             List<string> clans = new List<string>
             {
-                "#8J82PV0C"
-                //, "#2C8V29YJ"
-                //, "#22VCPLR98"
-                //, "#8RJJ0C0Y"
+                "#8J82PV0C",
+                "#2C8V29YJ",
+                "#22VCPLR98",
+                "#8RJJ0C0Y"
             };
 
             cocApi.WatchClans(clans);
 
             cocApi.BeginUpdatingClans();
 
-            //cocApi.DownloadLeagueWars = DownloadLeagueWars.True;
 
-            cocApi.DownloadVillages = true;
 
-            //await Task.Delay(10000);
+            Console.WriteLine("Press ESC to stop");
 
-            //cocApi.UpdateClan("#2C8V29YJ");
+            while (!Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
+            {
+                _ = LogMessages(new LogMessage(LogSeverity.Info, "Program.cs", "Quiting, please wait..."));
 
-            //await Task.Delay(10000);
-
-            //cocApi.DownloadLeagueWars = true;
-
-            //await cocApi.DisposeAsync();
-
-            await Task.Delay(-1);
+                break;
+            }
         }
 
 
@@ -104,6 +102,8 @@ namespace ClashOfClansConsoleTest
         {
             lock (logLock)
             {
+                if (logMessage.Source == "TokenObject") return Task.CompletedTask;
+
                 PrintLogTitle(logMessage);
 
                 Console.WriteLine(logMessage.ToString());

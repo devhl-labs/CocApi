@@ -7,10 +7,10 @@ namespace CocApiLibrary
 {
     public class WebResponseTimer
     {
-        public readonly EndPoint EndPoint;
-        public readonly TimeSpan TimeSpan;
-        public readonly DateTime DateTimeCreatedUTC = DateTime.UtcNow;
-        public readonly HttpStatusCode? HttpStatusCode;
+        public EndPoint EndPoint { get; }
+        public TimeSpan TimeSpan { get; }
+        public DateTime DateTimeCreatedUTC { get; } = DateTime.UtcNow;
+        public HttpStatusCode? HttpStatusCode { get; }
 
         public WebResponseTimer(EndPoint endPoint, TimeSpan timeSpan, HttpStatusCode? httpStatusCode = null)
         {

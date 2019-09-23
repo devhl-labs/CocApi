@@ -19,19 +19,21 @@ namespace CocApiLibrary
 {
     internal static class WebResponse
     {
-        internal static readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
-        private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
-        internal static readonly HttpClient ApiClient = new HttpClient();
+        public static SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
+        public static HttpClient ApiClient { get; } = new HttpClient();
+
+        private const string _source = nameof(WebResponse);
+        private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();        
         private static CocApi _cocApi = new CocApi();
-        private const string Source = nameof(WebResponse);
-
-        
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
-
-        private static readonly JsonSerializerOptions options = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
+
+
+
+
 
         public static List<WebResponseTimer> WebResponseTimers { get; } = new List<WebResponseTimer>();
 
@@ -52,7 +54,7 @@ namespace CocApiLibrary
                 _tokenObjects.Add(tokenObject);
             }
 
-            options.Converters.Add(new JsonStringEnumConverter());
+            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
 
@@ -91,23 +93,25 @@ namespace CocApiLibrary
 
         internal static List<WebResponseTimer> GetTimers() => WebResponseTimers;
 
-        internal static async Task<T> GetWebResponse<T>(EndPoint endPoint, string encodedUrl) where T : class, IDownloadable, new()
+        internal static async Task<T> GetWebResponse<T>(EndPoint endPoint, string encodedUrl, CancellationTokenSource? cancellationTokenSource = null) where T : class, IDownloadable, new()
         {
             Stopwatch stopwatch = new Stopwatch();
 
             try
             {
-                _ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, Source, encodedUrl));
+                _ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, _source, encodedUrl));
 
-                TokenObject token = await GetTokenAsync(endPoint, encodedUrl); //race condition exists here, the token rate limiting flag is set later in this routine
+                TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
+
+                using CancellationTokenSource cts = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
+
+                cancellationTokenSource?.Token.Register(() => cts?.Cancel());
 
                 ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
-                using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
-
                 stopwatch.Start();
 
-                using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cancellationTokenSource.Token);
+                using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cts.Token);
                 
                 stopwatch.Stop();
 
@@ -117,7 +121,7 @@ namespace CocApiLibrary
                 {
                     _cocApi.IsAvailable = true;
 
-                    T result = JsonSerializer.Deserialize<T>(responseText, options);
+                    T result = JsonSerializer.Deserialize<T>(responseText, _jsonSerializerOptions);
 
                     if (result != null)
                     {
@@ -140,7 +144,7 @@ namespace CocApiLibrary
                 }
                 else
                 {
-                    ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, options);
+                    ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, _jsonSerializerOptions);
 
                     WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
 
@@ -201,7 +205,7 @@ namespace CocApiLibrary
 
                 WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
 
-                _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, Source, $"Error retrieving {encodedUrl}", e));
+                _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, _source, $"Error retrieving {encodedUrl}", e));
 
                 if (e is TaskCanceledException taskCanceledException)
                 {
