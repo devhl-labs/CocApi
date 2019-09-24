@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApiLibrary;
 using CocApiLibrary.Models;
@@ -13,7 +14,7 @@ namespace ClashOfClansConsoleTest
         private static readonly object logLock = new object();
 
         public static async Task Main(string[] args)
-        {
+        {         
             CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
             {
                 NumberOfUpdaters = 1,
@@ -31,7 +32,18 @@ namespace ClashOfClansConsoleTest
                 DownloadVillages = true
             };
 
-            //var village = await cocApi.GetVillageAsync("#20LRPJG2U");
+
+
+            //using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            //var village = await cocApi.GetVillageAsync("#20LRPJG2U", cancellationTokenSource: cancellationTokenSource);
+
+            //await Task.Delay(2);
+
+            //cancellationTokenSource.Cancel();
+
+
+
 
             //var clan = await cocApi.GetClanAsync("#8J82PV0C");
 
@@ -95,6 +107,12 @@ namespace ClashOfClansConsoleTest
 
                 break;
             }
+
+            //just to remove the warnings
+
+            if (args.Count() > 0) { };
+
+            await Task.Delay(1);
         }
 
 

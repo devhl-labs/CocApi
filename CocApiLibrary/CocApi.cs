@@ -340,7 +340,12 @@ namespace CocApiLibrary
 
 
 
-        public async Task<ClanAPIModel> GetClanAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false)
+
+
+
+
+
+        public async Task<ClanAPIModel> GetClanAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
             try
             {
@@ -359,11 +364,13 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
-                ClanAPIModel downloadedClan = await WebResponse.GetWebResponse<ClanAPIModel>(EndPoint.Clan, url, cancellationTokenSource);
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                _cancellationTokenSources.Remove(cancellationTokenSource);
+                ClanAPIModel downloadedClan = await WebResponse.GetWebResponse<ClanAPIModel>(EndPoint.Clan, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
 
                 if (!AllClans.TryAdd(downloadedClan.Tag, downloadedClan) && !_updateServices.Any(c => c.ClanStrings.Any(t => t == downloadedClan.Tag)))
                 {
@@ -379,88 +386,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<ClanSearchModel> GetClansAsync(string? clanName = null
-                                                        , WarFrequency? warFrequency = null
-                                                        , int? locationID = null
-                                                        , int? minMembers = null
-                                                        , int? maxMembers = null
-                                                        , int? minClanPoints = null
-                                                        , int? minClanLevel = null
-                                                        , int? limit = null
-                                                        , int? after = null
-                                                        , int? before = null)
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(clanName) && clanName.Length < 3)
-                {
-                    throw new ArgumentException("The clan name must be longer than three characters.");
-                }
-
-                string url = $"https://api.clashofclans.com/v1/clans?";
-
-                if (clanName != null)
-                {
-                    url = $"{url}name={Uri.EscapeDataString(clanName)}&";
-                }
-                if (warFrequency != null)
-                {
-                    url = $"{url}warFrequency={warFrequency.ToString()}&";
-                }
-                if (locationID != null)
-                {
-                    url = $"{url}locationId={locationID}&";
-                }
-                if (minMembers != null)
-                {
-                    url = $"{url}minMembers={minMembers}&";
-                }
-                if (maxMembers != null)
-                {
-                    url = $"{url}maxMembers={maxMembers}&";
-                }
-                if (minClanPoints != null)
-                {
-                    url = $"{url}minClanPoints={minClanPoints}&";
-                }
-                if (minClanLevel != null)
-                {
-                    url = $"{url}minClanLevel={minClanLevel}&";
-                }
-                if (limit != null)
-                {
-                    url = $"{url}limit={limit}&";
-                }
-                if (after != null)
-                {
-                    url = $"{url}after={after}&";
-                }
-                if (before != null)
-                {
-                    url = $"{url}before={before}&";
-                }
-
-                if (url.EndsWith("&"))
-                {
-                    url = url[0..^1];
-                }
-
-
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
-
-                var result = await WebResponse.GetWebResponse<ClanSearchModel>(EndPoint.Clans, url, cancellationTokenSource);
-
-                _cancellationTokenSources.Remove(cancellationTokenSource);
-
-                return result;
-            }
-            catch (Exception e)
-            {
-                throw GetException(e);
-            }
-        }
-
-        public async Task<ICurrentWarAPIModel> GetCurrentWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false)
+        public async Task<ICurrentWarAPIModel> GetCurrentWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
             try
             {
@@ -487,11 +413,13 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
-                CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(EndPoint.CurrentWar, url, cancellationTokenSource);
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                _cancellationTokenSources.Remove(cancellationTokenSource);
+                CurrentWarAPIModel currentWarAPIModel = await WebResponse.GetWebResponse<CurrentWarAPIModel>(EndPoint.CurrentWar, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
 
                 if (currentWarAPIModel.State == WarState.NotInWar || !_updateServices.Any(c => c.ClanStrings.Any(t => t == clanTag))) 
                 {
@@ -572,7 +500,7 @@ namespace CocApiLibrary
 
         }
 
-        public async Task<LeagueGroupAPIModel> GetLeagueGroupAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false)
+        public async Task<LeagueGroupAPIModel> GetLeagueGroupAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
             try
             {
@@ -588,11 +516,13 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar/leaguegroup";
 
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
-                leagueGroupAPIModel = await WebResponse.GetWebResponse<LeagueGroupAPIModel>(EndPoint.LeagueGroup, url, cancellationTokenSource);
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                _cancellationTokenSources.Remove(cancellationTokenSource);
+                leagueGroupAPIModel = await WebResponse.GetWebResponse<LeagueGroupAPIModel>(EndPoint.LeagueGroup, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
 
                 foreach(var clan in leagueGroupAPIModel.Clans.EmptyIfNull())
                 {
@@ -617,7 +547,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<ICurrentWarAPIModel> GetLeagueWarAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false)
+        public async Task<ICurrentWarAPIModel> GetLeagueWarAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
             try
             {
@@ -636,11 +566,13 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
-                LeagueWarAPIModel leagueWarAPIModel = await WebResponse.GetWebResponse<LeagueWarAPIModel>(EndPoint.LeagueWar, url, cancellationTokenSource);
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                _cancellationTokenSources.Remove(cancellationTokenSource);
+                LeagueWarAPIModel leagueWarAPIModel = await WebResponse.GetWebResponse<LeagueWarAPIModel>(EndPoint.LeagueWar, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
 
                 leagueWarAPIModel.WarTag = warTag;
 
@@ -673,7 +605,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<VillageAPIModel> GetVillageAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false)
+        public async Task<VillageAPIModel> GetVillageAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
             try
             {
@@ -689,11 +621,13 @@ namespace CocApiLibrary
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
-                villageAPIModel = await WebResponse.GetWebResponse<VillageAPIModel>(EndPoint.Village, url, cancellationTokenSource);
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                _cancellationTokenSources.Remove(cancellationTokenSource);
+                villageAPIModel = await WebResponse.GetWebResponse<VillageAPIModel>(EndPoint.Village, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
 
                 if (!AllVillages.TryAdd(villageAPIModel.Tag, villageAPIModel))
                 {
@@ -711,7 +645,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<WarLogAPIModel> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null)
+        public async Task<WarLogAPIModel> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationTokenSource? cancellationTokenSource = null)
         {
             try
             {
@@ -746,11 +680,13 @@ namespace CocApiLibrary
                     url = url[0..^1];
                 }
 
-                using CancellationTokenSource cancellationTokenSource = GetCancellationTokenSource();
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
-                var result = await WebResponse.GetWebResponse<WarLogAPIModel>(EndPoint.WarLog, url, cancellationTokenSource);
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                _cancellationTokenSources.Remove(cancellationTokenSource);
+                var result = await WebResponse.GetWebResponse<WarLogAPIModel>(EndPoint.WarLog, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
 
                 return result;
             }
@@ -759,6 +695,95 @@ namespace CocApiLibrary
                 throw GetException(e);
             }
         }
+
+        public async Task<ClanSearchModel> GetClansAsync(string? clanName = null
+                                                        , WarFrequency? warFrequency = null
+                                                        , int? locationID = null
+                                                        , int? minMembers = null
+                                                        , int? maxMembers = null
+                                                        , int? minClanPoints = null
+                                                        , int? minClanLevel = null
+                                                        , int? limit = null
+                                                        , int? after = null
+                                                        , int? before = null
+                                                        , CancellationTokenSource? cancellationTokenSource = null)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(clanName) && clanName.Length < 3)
+                {
+                    throw new ArgumentException("The clan name must be longer than three characters.");
+                }
+
+                string url = $"https://api.clashofclans.com/v1/clans?";
+
+                if (clanName != null)
+                {
+                    url = $"{url}name={Uri.EscapeDataString(clanName)}&";
+                }
+                if (warFrequency != null)
+                {
+                    url = $"{url}warFrequency={warFrequency.ToString()}&";
+                }
+                if (locationID != null)
+                {
+                    url = $"{url}locationId={locationID}&";
+                }
+                if (minMembers != null)
+                {
+                    url = $"{url}minMembers={minMembers}&";
+                }
+                if (maxMembers != null)
+                {
+                    url = $"{url}maxMembers={maxMembers}&";
+                }
+                if (minClanPoints != null)
+                {
+                    url = $"{url}minClanPoints={minClanPoints}&";
+                }
+                if (minClanLevel != null)
+                {
+                    url = $"{url}minClanLevel={minClanLevel}&";
+                }
+                if (limit != null)
+                {
+                    url = $"{url}limit={limit}&";
+                }
+                if (after != null)
+                {
+                    url = $"{url}after={after}&";
+                }
+                if (before != null)
+                {
+                    url = $"{url}before={before}&";
+                }
+
+                if (url.EndsWith("&"))
+                {
+                    url = url[0..^1];
+                }
+
+
+                using CancellationTokenSource cts = GetCancellationTokenSource();
+
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
+
+                var result = await WebResponse.GetWebResponse<ClanSearchModel>(EndPoint.Clans, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+                throw GetException(e);
+            }
+        }
+
+
+
+
+
 
 
 
@@ -778,7 +803,7 @@ namespace CocApiLibrary
         /// Stop polling the API.  Events will not fire.  This could take some time to finish if updating villages or league wars.
         /// </summary>
         /// <returns></returns>
-        public async Task StopUpdatingClans()
+        public async Task StopUpdatingClansAsync()
         {
             var tasks = new List<Task>();
                        
@@ -907,7 +932,7 @@ namespace CocApiLibrary
         /// Begin watching a new clan.  This is to add new clans to be watched after your program has started.
         /// </summary>
         /// <param name="clanTag"></param>
-        public void UpdateClan(string clanTag)
+        public void WatchClan(string clanTag)
         {
             try
             {
