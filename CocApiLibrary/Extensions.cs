@@ -18,6 +18,7 @@ namespace CocApiLibrary
         public const string LeftToRightIsolate = "\u2066";
         public const string PopDirectionalIsolate = "\u2069";
 
+
         /// <summary>
         /// Discord markup characters are stripped out
         /// Includes *_~~`|| also {space} and >{space}

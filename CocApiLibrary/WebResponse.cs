@@ -14,6 +14,7 @@ using System.Diagnostics;
 using CocApiLibrary.Exceptions;
 using System.Text.Json;
 using System.Collections.Concurrent;
+using Microsoft.Extensions.Logging;
 
 namespace CocApiLibrary
 {
@@ -99,7 +100,9 @@ namespace CocApiLibrary
 
             try
             {
-                _ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, _source, encodedUrl));
+                //_ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, _source, encodedUrl));
+
+                _cocApi.Logger?.LogDebug("{source}: Getting web response from {encodedUrl}", _source, encodedUrl);
 
                 TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
 
@@ -205,7 +208,9 @@ namespace CocApiLibrary
 
                 WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
 
-                _ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, _source, $"Error retrieving {encodedUrl}", e));
+                //_ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, _source, $"Error retrieving {encodedUrl}", e));
+
+                _cocApi.Logger?.LogWarning("{source}: Error retrieving {encodedUrl}", _source, encodedUrl);
 
                 if (e is TaskCanceledException taskCanceledException)
                 {

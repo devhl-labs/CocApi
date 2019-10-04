@@ -6,15 +6,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApiLibrary;
 using CocApiLibrary.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace ClashOfClansConsoleTest
 {
     class Program
     {
-        private static readonly object logLock = new object();
+        private static IServiceProvider _serviceProvider;
+
 
         public static async Task Main(string[] args)
-        {         
+        {
+            _serviceProvider = ConfigureServices();
+
+            LogService logService = _serviceProvider.GetRequiredService<LogService>();
+
             CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
             {
                 NumberOfUpdaters = 1,
@@ -24,45 +31,13 @@ namespace ClashOfClansConsoleTest
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
 
-            using CocApi cocApi = new CocApi(cocApiConfiguration, logger: LogMessages)
+            using CocApi cocApi = new CocApi(cocApiConfiguration, logService)
             {
 
-                DownloadLeagueWars = DownloadLeagueWars.False,
+                DownloadLeagueWars = DownloadLeagueWars.Auto,
 
-                DownloadVillages = true
+                DownloadVillages = false
             };
-
-
-
-            //using CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            //var village = await cocApi.GetVillageAsync("#20LRPJG2U", cancellationTokenSource: cancellationTokenSource);
-
-            //await Task.Delay(2);
-
-            //cancellationTokenSource.Cancel();
-
-
-
-
-            //var clan = await cocApi.GetClanAsync("#8J82PV0C");
-
-            //var clan2 = await cocApi.GetClanAsync("#2C8V29YJ");
-
-            //var currentwar = await cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
-
-            //var leaguegroup = await cocApi.GetLeagueGroupAsync("#8J82PV0C");
-
-            ////var clans = await cocApi.GetClansAsync("the");
-
-            //var leaguewar = await cocApi.GetLeagueWarAsync("#2PC9VR9P0");
-
-            //var wars = await cocApi.GetWarLogAsync("#8J82PV0C");
-
-            //var test = await cocApi.GetClansAsync("a");
-
-
-
 
             cocApi.ClanChanged += CocApi_ClanChanged;
 
@@ -84,13 +59,15 @@ namespace ClashOfClansConsoleTest
 
             cocApi.WarIsAccessibleChanged += CocApi_WarIsAccessibleChanged;
 
+            cocApi.LeagueGroupTeamSizeChangeDetected += CocApi_LeagueSizeChangeDetected;
 
             List<string> clans = new List<string>
             {
-                "#8J82PV0C",
-                "#2C8V29YJ",
-                "#22VCPLR98",
-                "#8RJJ0C0Y"
+                //"#8J82PV0C",  // FYSB Unbuckled
+                //"#2C8V29YJ",  // Зеленоград
+                //"#22VCPLR98", // LostMeta Power
+                //"#8RJJ0C0Y"   // Rising Asylum
+                "#22G0JJR8"     // FYSB
             };
 
             cocApi.WatchClans(clans);
@@ -103,7 +80,7 @@ namespace ClashOfClansConsoleTest
 
             while (!Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape)
             {
-                _ = LogMessages(new LogMessage(LogSeverity.Info, "Program.cs", "Quiting, please wait..."));
+                logService.LogInformation("{program}: Quiting, please wait...", "Program.cs");
 
                 break;
             }
@@ -116,63 +93,15 @@ namespace ClashOfClansConsoleTest
         }
 
 
-        public static Task LogMessages(LogMessage logMessage)
+
+
+
+
+        private static IServiceProvider ConfigureServices()
         {
-            lock (logLock)
-            {
-                if (logMessage.Source == "TokenObject") return Task.CompletedTask;
-
-                PrintLogTitle(logMessage);
-
-                Console.WriteLine(logMessage.ToString());
-            }
-
-            return Task.CompletedTask;
-        }
-
-        private static void ResetConsoleColor()
-        {
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
-
-        private static void PrintLogTitle(LogMessage logMessage)
-        {
-            switch (logMessage.Severity)
-            {
-                case LogSeverity.Critical:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write("[crit] ");
-                    break;
-                case LogSeverity.Debug:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write("[dbug] ");
-                    break;
-                case LogSeverity.Error:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.BackgroundColor = ConsoleColor.DarkRed;
-                    Console.Write("[err ]");
-                    break;
-                case LogSeverity.Info:
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write("[info] ");
-                    break;
-                case LogSeverity.Verbose:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write("[verb] ");
-                    break;
-                case LogSeverity.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write("[warn] ");
-                    break;
-            }
-
-            ResetConsoleColor();
+            return new ServiceCollection()
+                .AddSingleton<LogService>()
+                .BuildServiceProvider();
         }
 
         private static void CocApi_WarIsAccessibleChanged(ICurrentWarAPIModel currentWarAPIModel)
@@ -223,6 +152,11 @@ namespace ClashOfClansConsoleTest
         private static void CocApi_IsAvailableChanged(bool isAvailable)
         {
             Console.WriteLine($"CocApi isAvailable: {isAvailable}");
+        }
+
+        private static void CocApi_LeagueSizeChangeDetected(LeagueGroupAPIModel leagueGroupAPIModel)
+        {
+            Console.WriteLine($"League Size changed: {leagueGroupAPIModel.TeamSize}");
         }
     }
 }

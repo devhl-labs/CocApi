@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace CocApiLibrary
 {
@@ -37,13 +32,6 @@ namespace CocApiLibrary
             Coleader = 30,
             [EnumMember(Value = "leader")]
             Leader = 40
-        }
-
-        public enum VerbosityType : int
-        {
-            None = 0,
-            PreemptiveRateLimits = 1,
-            Verbose = 2
         }
 
         public enum WarState : int
@@ -115,34 +103,7 @@ namespace CocApiLibrary
             BuilderBase = 1
         }
     }
-    
-    public enum LogSeverity
-    {
-        /// <summary>
-        /// This type of error indicate that immediate attention may be required.
-        /// </summary>
-        Critical = 0,
-        /// <summary>
-        /// Logs that highlight when the flow of execution is stopped due to a failure.
-        /// </summary>   
-        Error = 1,
-        /// <summary>
-        /// Logs that highlight an abnormal activity in the flow of execution.
-        /// </summary>
-        Warning = 2,
-        /// <summary>
-        /// Logs that track the general flow of the application.
-        /// </summary>
-        Info = 3,
-        /// <summary>
-        /// Logs that are used for interactive investigation during development.
-        /// </summary>
-        Verbose = 4,   
-        /// <summary>
-        /// Logs that contain the most detailed messages.
-        /// </summary>
-        Debug = 5
-    }
+
 
     public enum EndPoint
     {
@@ -158,8 +119,17 @@ namespace CocApiLibrary
 
     public enum DownloadLeagueWars
     {
+        /// <summary>
+        /// False will never download league wars.
+        /// </summary>
         False = 0,
+        /// <summary>
+        /// True will download league wars always.
+        /// </summary>
         True = 1,
+        /// <summary>
+        /// Auto will download league wars only during the beginning of the month.
+        /// </summary>
         Auto = 2
     }
 }

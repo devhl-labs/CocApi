@@ -9,6 +9,7 @@ using CocApiLibrary.Models;
 using CocApiLibrary.Exceptions;
 using static CocApiLibrary.Enums;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace CocApiLibrary
 {
@@ -44,6 +45,7 @@ namespace CocApiLibrary
     public delegate void WarStartedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarEndedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarEndSeenEventHandler(ICurrentWarAPIModel currentWarAPIModel);
+    public delegate void LeagueGroupTeamSizeChangeDetectedEventHandler(LeagueGroupAPIModel leagueGroupAPIModel);
 
     public class CocApi : IDisposable
     {
@@ -103,10 +105,13 @@ namespace CocApiLibrary
         public event WarStartedEventHandler? WarStarted;
         public event WarEndedEventHandler? WarEnded;
         public event WarEndSeenEventHandler? WarEndSeen;
+        public event LeagueGroupTeamSizeChangeDetectedEventHandler? LeagueGroupTeamSizeChangeDetected;
 
         public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
-        public Func<LogMessage, Task> Logger { get; }
+        //public Func<LogMessage, Task> Logger { get; }
+        public ILogger? Logger { get; set; }
+
 
         /// <summary>
         /// Controls whether any clan will be able to download league wars.
@@ -145,12 +150,14 @@ namespace CocApiLibrary
 
         internal CocApi()
         {
-            Logger = _ => Task.CompletedTask;
+            //Logger = _ => Task.CompletedTask;
         }
 
-        public CocApi(CocApiConfiguration cfg, Func<LogMessage, Task>? logger = null)
+        public CocApi(CocApiConfiguration cfg, ILogger? logger) // Func<LogMessage, Task>? logger = null)
         {
-            Logger = logger ?? (_ => Task.CompletedTask);
+            //Logger = logger ?? (_ => Task.CompletedTask);
+            Logger = logger;
+
 
             if (cfg != null)
             {
@@ -167,6 +174,11 @@ namespace CocApiLibrary
             CreateUpdaters();
         }
 
+
+        internal void LeagueGroupTeamSizeChangeDetectedEvent(LeagueGroupAPIModel leagueGroupAPIModel)
+        {
+            LeagueGroupTeamSizeChangeDetected?.Invoke(leagueGroupAPIModel);
+        }
 
         internal void WarEndSeenEvent(ICurrentWarAPIModel currentWarAPIModel)
         {
@@ -372,10 +384,13 @@ namespace CocApiLibrary
 
                 _cancellationTokenSources.Remove(cts);
 
-                if (!AllClans.TryAdd(downloadedClan.Tag, downloadedClan) && !_updateServices.Any(c => c.ClanStrings.Any(t => t == downloadedClan.Tag)))
+                if (CocApiConfiguration.CacheHttpResponses)
                 {
-                    //clan is not watched so lets update it in the dictionary
-                    AllClans[clanTag] = downloadedClan;
+                    if (!AllClans.TryAdd(downloadedClan.Tag, downloadedClan) && !_updateServices.Any(c => c.ClanStrings.Any(t => t == downloadedClan.Tag)))
+                    {
+                        //clan is not watched so lets update it in the dictionary
+                        AllClans[clanTag] = downloadedClan;
+                    }
                 }
 
                 return downloadedClan;
@@ -404,7 +419,9 @@ namespace CocApiLibrary
 
                     if (AllClans.TryGetValue(clanTag, out var clan))
                     {
-                        if (clan.Wars.OrderBy(w => w.Value.PreparationStartTimeUTC).FirstOrDefault(w => w.Value.EndTimeUTC > DateTime.UtcNow && w.Value is CurrentWarAPIModel).Value is CurrentWarAPIModel warFromAllClans && (allowExpiredItem || !warFromAllClans.IsExpired()))
+                        ICurrentWarAPIModel? warFromAllClans = clan.Wars.OrderBy(w => w.Value.PreparationStartTimeUTC).FirstOrDefault().Value;
+
+                        if (warFromAllClans != null && (allowExpiredItem || !warFromAllClans.IsExpired()))
                         {
                             return warFromAllClans;
                         }
@@ -421,22 +438,25 @@ namespace CocApiLibrary
 
                 _cancellationTokenSources.Remove(cts);
 
-                if (currentWarAPIModel.State == WarState.NotInWar || !_updateServices.Any(c => c.ClanStrings.Any(t => t == clanTag))) 
+                if(CocApiConfiguration.CacheHttpResponses)
                 {
-                    //update the stored war if it is not in war or the clan is not being watched
-                    AllWars[clanTag] = currentWarAPIModel;
-                }
-                else
-                {
-                    if (AllWars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel))
+                    if (currentWarAPIModel.State == WarState.NotInWar || !_updateServices.Any(c => c.ClanStrings.Any(t => t == clanTag))) 
                     {
-                        currentWarAPIModel.AnnounceNewWar(this);
-
-                        foreach (var clan in currentWarAPIModel.Clans)
+                        //update the stored war if it is not in war or the clan is not being watched
+                        AllWars[clanTag] = currentWarAPIModel;
+                    }
+                    else
+                    {
+                        if (AllWars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel))
                         {
-                            ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag, allowExpiredItem: true);
+                            currentWarAPIModel.AnnounceNewWar(this);
 
-                            clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
+                            foreach (var clan in currentWarAPIModel.Clans)
+                            {
+                                ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag, allowExpiredItem: true);
+
+                                clanAPIModel.Wars.TryAdd(currentWarAPIModel.WarID, currentWarAPIModel);
+                            }
                         }
                     }
                 }
@@ -524,16 +544,19 @@ namespace CocApiLibrary
 
                 _cancellationTokenSources.Remove(cts);
 
-                foreach(var clan in leagueGroupAPIModel.Clans.EmptyIfNull())
+                if (CocApiConfiguration.CacheHttpResponses)
                 {
-                    if (!AllLeagueGroups.TryAdd(clan.Tag, leagueGroupAPIModel))
+                    foreach(var clan in leagueGroupAPIModel.Clans.EmptyIfNull())
                     {
-                        if (AllLeagueGroups.TryGetValue(clan.Tag, out LeagueGroupAPIModel storedLeagueGroupAPIModel))
+                        if (!AllLeagueGroups.TryAdd(clan.Tag, leagueGroupAPIModel))
                         {
-                            //the league group already exists.  Lets check if the existing one is from last month
-                            if (leagueGroupAPIModel.Season != storedLeagueGroupAPIModel.Season && storedLeagueGroupAPIModel.State == LeagueState.WarsEnded)
+                            if (AllLeagueGroups.TryGetValue(clan.Tag, out LeagueGroupAPIModel storedLeagueGroupAPIModel))
                             {
-                                AllLeagueGroups[clan.Tag] = leagueGroupAPIModel;
+                                //the league group already exists.  Lets check if the existing one is from last month
+                                if (leagueGroupAPIModel.Season > storedLeagueGroupAPIModel.Season)
+                                {
+                                    AllLeagueGroups[clan.Tag] = leagueGroupAPIModel;
+                                }
                             }
                         }
                     }
@@ -576,24 +599,27 @@ namespace CocApiLibrary
 
                 leagueWarAPIModel.WarTag = warTag;
 
-                if (AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel))
+                if (CocApiConfiguration.CacheHttpResponses)
                 {
-                    leagueWarAPIModel.AnnounceNewWar(this);
-                }
-                else if (!_updateServices.Any(c => c.ClanStrings.Any(t => t == leagueWarAPIModel.Clans[0].Tag || t == leagueWarAPIModel.Clans[1].Tag)))
-                {
-                    //it already exists but neither clan is being watched, lets update the cache
-                    AllWars[warTag] = leagueWarAPIModel;
-                }
-
-                foreach (var clan in leagueWarAPIModel.Clans)
-                {
-                    ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag, allowExpiredItem: true);
-
-                    if (!clanAPIModel.Wars.TryAdd(leagueWarAPIModel.WarID, leagueWarAPIModel) && !_updateServices.Any(c => c.ClanStrings.Any(t => t == clanAPIModel.Tag)))
+                    if (AllWars.TryAdd(leagueWarAPIModel.WarTag, leagueWarAPIModel))
                     {
-                        //the war exists in the stored clan but the clan is not being watched so lets update the cache
-                        clanAPIModel.Wars[leagueWarAPIModel.WarID] = leagueWarAPIModel;
+                        leagueWarAPIModel.AnnounceNewWar(this);
+                    }
+                    else if (!_updateServices.Any(c => c.ClanStrings.Any(t => t == leagueWarAPIModel.Clans[0].Tag || t == leagueWarAPIModel.Clans[1].Tag)))
+                    {
+                        //it already exists but neither clan is being watched, lets update the cache
+                        AllWars[warTag] = leagueWarAPIModel;
+                    }
+
+                    foreach (var clan in leagueWarAPIModel.Clans)
+                    {
+                        ClanAPIModel clanAPIModel = await GetClanAsync(clan.Tag, allowExpiredItem: true);
+
+                        if (!clanAPIModel.Wars.TryAdd(leagueWarAPIModel.WarID, leagueWarAPIModel) && !_updateServices.Any(c => c.ClanStrings.Any(t => t == clanAPIModel.Tag)))
+                        {
+                            //the war exists in the stored clan but the clan is not being watched so lets update the cache
+                            clanAPIModel.Wars[leagueWarAPIModel.WarID] = leagueWarAPIModel;
+                        }
                     }
                 }
 
@@ -629,11 +655,14 @@ namespace CocApiLibrary
 
                 _cancellationTokenSources.Remove(cts);
 
-                if (!AllVillages.TryAdd(villageAPIModel.Tag, villageAPIModel))
+                if (CocApiConfiguration.CacheHttpResponses)
                 {
-                    if (villageAPIModel.Clan == null || !_updateServices.Any(c => c.ClanStrings.Any(t => t == villageAPIModel.Clan.Tag)))
+                    if (!AllVillages.TryAdd(villageAPIModel.Tag, villageAPIModel))
                     {
-                        AllVillages[villageTag] = villageAPIModel;
+                        if (villageAPIModel.Clan == null || !_updateServices.Any(c => c.ClanStrings.Any(t => t == villageAPIModel.Clan.Tag)))
+                        {
+                            AllVillages[villageTag] = villageAPIModel;
+                        }
                     }
                 }
 
@@ -788,6 +817,176 @@ namespace CocApiLibrary
 
 
 
+
+
+        /// <summary>
+        /// Returns null if the clanTag is not found.  This will not throw a <see cref="NotFoundException"/>.
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <param name="allowStoredItem"></param>
+        /// <param name="allowExpiredItem"></param>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<ClanAPIModel?> GetClanOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        {
+            ClanAPIModel? result = null;
+
+            try
+            {
+                result = await GetClanAsync(clanTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+            }
+            catch (NotFoundException)
+            {
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns null if the war log is private.  This will not throw a <see cref="ForbiddenException"/> nor <see cref="NotFoundException"/>.
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <param name="allowStoredItem"></param>
+        /// <param name="allowExpiredItem"></param>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<ICurrentWarAPIModel?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        {
+            ICurrentWarAPIModel? result = null;
+
+            try
+            {
+                result = await GetCurrentWarAsync(clanTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+            }
+            catch (ForbiddenException) { }
+            catch (NotFoundException) { }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns null if the clan is not in a clan is not found to be in a league.  This will not throw a <see cref="NotFoundException"/>.
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <param name="allowStoredItem"></param>
+        /// <param name="allowExpiredItem"></param>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<LeagueGroupAPIModel?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        {
+            LeagueGroupAPIModel? result = null;
+
+            try
+            {
+                result = await GetLeagueGroupAsync(clanTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+            }
+            catch (NotFoundException) { }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns null if the warTag is not found.  This will not throw a <see cref="NotFoundException"/>.
+        /// </summary>
+        /// <param name="warTag"></param>
+        /// <param name="allowStoredItem"></param>
+        /// <param name="allowExpiredItem"></param>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<ICurrentWarAPIModel?> GetLeagueWarOrDefaultAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        {
+            ICurrentWarAPIModel? result = null;
+
+            try
+            {
+                result = await GetLeagueWarAsync(warTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+            }
+            catch (NotFoundException) { }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns null if the villageTag is not found.  This will not throw a <see cref="NotFoundException"/>.
+        /// </summary>
+        /// <param name="villageTag"></param>
+        /// <param name="allowStoredItem"></param>
+        /// <param name="allowExpiredItem"></param>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<VillageAPIModel?> GetVillageOrDefaultAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        {
+            VillageAPIModel? result = null;
+
+            try
+            {
+                result = await GetVillageAsync(villageTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+            }
+            catch (NotFoundException) { }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Returns null if the clan is not in a clan is not found to be in a league.  This will not throw a <see cref="ForbiddenException"/> nor a <see cref="NotFoundException"/>.
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<WarLogAPIModel?> GetWarLogOrDefaultAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationTokenSource? cancellationTokenSource = null)
+        {
+            WarLogAPIModel? result = null;
+
+            try
+            {
+                result = await GetWarLogAsync(clanTag, limit, after, before, cancellationTokenSource);
+            }
+            catch (ForbiddenException) { }
+            catch (NotFoundException) { }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
+
+
+
+
+
+
+
+
+
         /// <summary>
         /// Poll the API and fire off events when a change is noticed.
         /// </summary>
@@ -818,7 +1017,7 @@ namespace CocApiLibrary
         }
 
         /// <summary>
-        /// Establish the clans that you would like to poll for updates.  You still must run BeginUpdatingClans when ready.
+        /// Establish the clans that you would like to poll for updates.  Run this when your program starts.  After running this, run <see cref="BeginUpdatingClans"/>.  Watching a large number of clans will take a lot of memory.  If you watch clans, you should have caching enabled.
         /// </summary>
         /// <param name="clanTags"></param>
         public void WatchClans(IEnumerable<string> clanTags)
@@ -835,7 +1034,6 @@ namespace CocApiLibrary
                     }
                     catch (Exception)
                     {
-                        _ = Logger.Invoke(new LogMessage(LogSeverity.Warning, _source, $"Invalid clantag: {clanTag}"));
                         continue;
                     }
 
@@ -1074,6 +1272,8 @@ namespace CocApiLibrary
         {
             if (!IsValidTag(tag))
             {
+                Logger.LogWarning(LoggingEvents.InvalidTag, "{source}: The provided tag is not valid {tag}", _source, tag);
+
                 throw new ArgumentException("Tags must not be null nor empty and must start with a #.");
             }
         }
