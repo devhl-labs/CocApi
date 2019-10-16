@@ -40,9 +40,9 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
 	</ItemGroup>
 
 	<ItemGroup>
-    
+		
 		<None Include="MinionsCard.png" Pack="true" PackagePath="">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 
 	</ItemGroup>

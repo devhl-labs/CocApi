@@ -46,6 +46,10 @@ namespace CocApiLibrary
     public delegate void WarEndedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarEndSeenEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void LeagueGroupTeamSizeChangeDetectedEventHandler(LeagueGroupAPIModel leagueGroupAPIModel);
+    public delegate void ClanLabelsRemovedEventHandler(ClanAPIModel newClanAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
+    public delegate void ClanLabelsAddedEventHandler(ClanAPIModel newClanAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
+    public delegate void VillageLabelsRemovedEventHandler(VillageAPIModel newVillageAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
+    public delegate void VillageLabelsAddedEventHandler(VillageAPIModel newVillageAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
 
     public class CocApi : IDisposable
     {
@@ -58,7 +62,7 @@ namespace CocApiLibrary
         internal Dictionary<string, ICurrentWarAPIModel> AllWars { get; } = new Dictionary<string, ICurrentWarAPIModel>();
         internal Dictionary<string, LeagueGroupAPIModel> AllLeagueGroups { get; } = new Dictionary<string, LeagueGroupAPIModel>();
         internal Dictionary<string, VillageAPIModel> AllVillages { get; } = new Dictionary<string, VillageAPIModel>();
-        internal CocApiConfiguration CocApiConfiguration { get; } = new CocApiConfiguration();
+        internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
 
         /// <summary>
         /// Fires if you query the API during an outage.  
@@ -106,10 +110,13 @@ namespace CocApiLibrary
         public event WarEndedEventHandler? WarEnded;
         public event WarEndSeenEventHandler? WarEndSeen;
         public event LeagueGroupTeamSizeChangeDetectedEventHandler? LeagueGroupTeamSizeChangeDetected;
+        public event ClanLabelsAddedEventHandler? ClanLabelsAdded;
+        public event ClanLabelsRemovedEventHandler? ClanLabelsRemoved;
+        public event VillageLabelsAddedEventHandler? VillageLabelsAdded;
+        public event VillageLabelsRemovedEventHandler? VillageLabelsRemoved;
 
         public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
-        //public Func<LogMessage, Task> Logger { get; }
         public ILogger? Logger { get; set; }
 
 
@@ -148,16 +155,11 @@ namespace CocApiLibrary
 
         private const string _source = nameof(CocApiConfiguration);
 
-        internal CocApi()
-        {
-            //Logger = _ => Task.CompletedTask;
-        }
+        private bool _isInitialized = false;
 
-        public CocApi(CocApiConfiguration cfg, ILogger? logger) // Func<LogMessage, Task>? logger = null)
-        {
-            //Logger = logger ?? (_ => Task.CompletedTask);
+        public void Initialize(CocApiConfiguration cfg, ILogger? logger)
+        {            
             Logger = logger;
-
 
             if (cfg != null)
             {
@@ -172,8 +174,41 @@ namespace CocApiLibrary
             WebResponse.Initialize(this, CocApiConfiguration, cfg.Tokens);
 
             CreateUpdaters();
+
+            _isInitialized = true;
         }
 
+        internal void VillageLabelsRemovedEvent(VillageAPIModel newVillage, IEnumerable<LabelAPIModel> labelAPIModels)
+        {
+            if (labelAPIModels != null && labelAPIModels.Count() > 0)
+            {
+                VillageLabelsRemoved?.Invoke(newVillage, labelAPIModels);
+            }
+        }
+
+        internal void VillageLabelsAddedEvent(VillageAPIModel newVillage, IEnumerable<LabelAPIModel> labelAPIModels)
+        {
+            if (labelAPIModels != null && labelAPIModels.Count() > 0)
+            {
+                VillageLabelsAdded?.Invoke(newVillage, labelAPIModels);
+            }
+        }
+
+        internal void ClanLabelsRemovedEvent(ClanAPIModel newClan, IEnumerable<LabelAPIModel> labelAPIModels)
+        {
+            if(labelAPIModels != null && labelAPIModels.Count() > 0)
+            {
+                ClanLabelsRemoved?.Invoke(newClan, labelAPIModels);
+            }
+        }
+
+        internal void ClanLabelsAddedEvent(ClanAPIModel newClan, IEnumerable<LabelAPIModel> labelAPIModels)
+        {
+            if (labelAPIModels != null && labelAPIModels.Count() > 0)
+            {
+                ClanLabelsAdded?.Invoke(newClan, labelAPIModels);
+            }
+        }
 
         internal void LeagueGroupTeamSizeChangeDetectedEvent(LeagueGroupAPIModel leagueGroupAPIModel)
         {
@@ -359,6 +394,8 @@ namespace CocApiLibrary
 
         public async Task<ClanAPIModel> GetClanAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             try
             {
                 ValidateTag(clanTag);
@@ -403,6 +440,8 @@ namespace CocApiLibrary
 
         public async Task<ICurrentWarAPIModel> GetCurrentWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             try
             {
                 ValidateTag(clanTag);
@@ -471,6 +510,8 @@ namespace CocApiLibrary
 
         public async Task<ICurrentWarAPIModel?> GetCurrentWarAsync(ICurrentWarAPIModel storedWar)
         {
+            VerifyInitialization();
+
             try
             {
                 if (AllWars.TryGetValue(storedWar.WarID, out ICurrentWarAPIModel war))
@@ -522,6 +563,8 @@ namespace CocApiLibrary
 
         public async Task<LeagueGroupAPIModel> GetLeagueGroupAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             try
             {
                 ValidateTag(clanTag);
@@ -572,6 +615,8 @@ namespace CocApiLibrary
 
         public async Task<ICurrentWarAPIModel> GetLeagueWarAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             try
             {
                 ValidateTag(warTag);
@@ -633,6 +678,8 @@ namespace CocApiLibrary
 
         public async Task<VillageAPIModel> GetVillageAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             try
             {
                 ValidateTag(villageTag);
@@ -676,6 +723,8 @@ namespace CocApiLibrary
 
         public async Task<WarLogAPIModel> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             try
             {
                 ValidateTag(clanTag);
@@ -829,6 +878,8 @@ namespace CocApiLibrary
         /// <returns></returns>
         public async Task<ClanAPIModel?> GetClanOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             ClanAPIModel? result = null;
 
             try
@@ -857,6 +908,8 @@ namespace CocApiLibrary
         /// <returns></returns>
         public async Task<ICurrentWarAPIModel?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             ICurrentWarAPIModel? result = null;
 
             try
@@ -884,6 +937,8 @@ namespace CocApiLibrary
         /// <returns></returns>
         public async Task<LeagueGroupAPIModel?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             LeagueGroupAPIModel? result = null;
 
             try
@@ -910,6 +965,8 @@ namespace CocApiLibrary
         /// <returns></returns>
         public async Task<ICurrentWarAPIModel?> GetLeagueWarOrDefaultAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             ICurrentWarAPIModel? result = null;
 
             try
@@ -936,6 +993,8 @@ namespace CocApiLibrary
         /// <returns></returns>
         public async Task<VillageAPIModel?> GetVillageOrDefaultAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             VillageAPIModel? result = null;
 
             try
@@ -963,6 +1022,8 @@ namespace CocApiLibrary
         /// <returns></returns>
         public async Task<WarLogAPIModel?> GetWarLogOrDefaultAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationTokenSource? cancellationTokenSource = null)
         {
+            VerifyInitialization();
+
             WarLogAPIModel? result = null;
 
             try
@@ -992,6 +1053,8 @@ namespace CocApiLibrary
         /// </summary>
         public void BeginUpdatingClans()
         {
+            VerifyInitialization();
+
             foreach (UpdateService clanUpdateService in _updateServices)
             {
                 clanUpdateService.BeginUpdatingClans();
@@ -1022,6 +1085,8 @@ namespace CocApiLibrary
         /// <param name="clanTags"></param>
         public void WatchClans(IEnumerable<string> clanTags)
         {
+            VerifyInitialization();
+
             try
             {
                 int j = 0;
@@ -1132,6 +1197,8 @@ namespace CocApiLibrary
         /// <param name="clanTag"></param>
         public void WatchClan(string clanTag)
         {
+            VerifyInitialization();
+
             try
             {
                 try
@@ -1198,12 +1265,12 @@ namespace CocApiLibrary
             {
                 int day = DateTime.UtcNow.Day;
 
-                if (day > 0 && day < 8)
+                if (day > 0 && day < 9)
                 {
                     return true;
                 }
 
-                if (day == 8 && DateTime.UtcNow.Hour < 3)
+                if (day == 9 && DateTime.UtcNow.Hour < 3)
                 {
                     return true;
                 }
@@ -1341,6 +1408,14 @@ namespace CocApiLibrary
             _cancellationTokenSources.Add(cancellationTokenSource);
 
             return cancellationTokenSource;
+        }
+
+        private void VerifyInitialization()
+        {
+            if (!_isInitialized || CocApiConfiguration.Tokens == null || CocApiConfiguration.Tokens.Count() == 0)
+            {
+                throw new CocApiException("The library is not initialized, or you did not provide SC API tokens.");
+            }
         }
     }
 }

@@ -344,7 +344,7 @@ namespace CocApiLibrary.Models
 
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
-            else if (!Flags.WarIsAccessible && (downloadedWar != null && downloadedWar.WarID == WarID))
+            else if (!Flags.WarIsAccessible && (downloadedWar?.WarID == WarID))
             {
                 Flags.WarIsAccessible = true;
 
@@ -386,7 +386,7 @@ namespace CocApiLibrary.Models
                 cocApi.WarEndedEvent(this);
             }
 
-            if (!Flags.WarEndSeen && State == WarState.InWar && downloadedWar != null && downloadedWar.State == WarState.WarEnded)
+            if (!Flags.WarEndSeen && State == WarState.InWar && downloadedWar?.State == WarState.WarEnded)
             {
                 Flags.WarEndSeen = true;
 

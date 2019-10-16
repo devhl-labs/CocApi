@@ -44,6 +44,8 @@ namespace CocApiLibrary.Models
 
         public int ClanLevel { get; set; }
 
+        public IEnumerable<LabelAPIModel>? Labels { get; set; }
+
         [JsonPropertyName("memberList")]
         public IList<MemberListAPIModel>? Members { get; set; }
 
@@ -118,6 +120,8 @@ namespace CocApiLibrary.Models
             {
                 UpdateClanTry(cocApi, downloadedClan);
 
+                UpdateLabelsTry(cocApi, downloadedClan);
+
                 UpdateBadgeTry(cocApi, downloadedClan);
 
                 UpdateLocationTry(cocApi, downloadedClan);
@@ -132,11 +136,57 @@ namespace CocApiLibrary.Models
             }
         }
 
+        private void UpdateLabelsTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                if (Labels == null && downloadedClan.Labels == null) return;
 
+                if (Labels != null && Labels.Count() > 0 && (downloadedClan.Labels == null || downloadedClan.Labels.Count() == 0))
+                {
+                    cocApi.ClanLabelsRemovedEvent(downloadedClan, Labels);
 
+                    Labels = downloadedClan.Labels;
+                }
+                else if ((Labels == null || Labels.Count() == 0) && downloadedClan.Labels != null && downloadedClan.Labels.Count() > 0)
+                {
+                    cocApi.ClanLabelsAddedEvent(downloadedClan, downloadedClan.Labels);
 
+                    Labels = downloadedClan.Labels;
+                }
+                else
+                {
+                    List<LabelAPIModel> added = new List<LabelAPIModel>();
 
+                    List<LabelAPIModel> removed = new List<LabelAPIModel>();
 
+                    foreach (LabelAPIModel labelAPIModel in Labels.EmptyIfNull())
+                    {
+                        if (!downloadedClan.Labels.Any(l => l.Id == labelAPIModel.Id))
+                        {
+                            removed.Add(labelAPIModel);
+                        }
+                    }
+
+                    foreach (LabelAPIModel labelAPIModel in downloadedClan.Labels.EmptyIfNull())
+                    {
+                        if (!Labels.Any(l => l.Id == labelAPIModel.Id))
+                        {
+                            added.Add(labelAPIModel);
+                        }
+                    }
+
+                    cocApi.ClanLabelsRemovedEvent(downloadedClan, removed);
+
+                    cocApi.ClanLabelsAddedEvent(downloadedClan, added);
+
+                    Labels = downloadedClan.Labels;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
 
         private void UpdateLocationTry(CocApi cocApi, ClanAPIModel downloadedClan)
         {

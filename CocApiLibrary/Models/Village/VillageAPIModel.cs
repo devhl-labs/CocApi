@@ -44,6 +44,8 @@ namespace CocApiLibrary
 
         public int DefenseWins { get; set; }
 
+        public LegendLeagueStatisticsAPIModel? LegendStatistics { get; set; }
+
         public int BuilderHallLevel { get; set; }
 
         public int VersusTrophies { get; set; }
@@ -59,7 +61,7 @@ namespace CocApiLibrary
 
         public int DonationsReceived { get; set; }
 
-        public ClanAPIModel? Clan { get; set; }
+        public SimpleClanAPIModel? Clan { get; set; }
 
         public LeagueAPIModel? League { get; set; }
 
@@ -70,6 +72,8 @@ namespace CocApiLibrary
         public IEnumerable<TroopAPIModel>? Troops { get; set; }
 
         public IEnumerable<TroopAPIModel>? Heroes { get; set; }
+
+        public IEnumerable<LabelAPIModel>? Labels { get; set; }
 
         public IEnumerable<SpellAPIModel>? Spells { get; set; }
 
@@ -99,6 +103,8 @@ namespace CocApiLibrary
             {
                 UpdateVillage(cocApi, downloadedVillage);
 
+                UpdateLabelsTryAsync(cocApi, downloadedVillage);
+
                 UpdateVillageDefenseWins(cocApi, downloadedVillage);
 
                 UpdateVillageDonations(cocApi, downloadedVillage);
@@ -125,12 +131,78 @@ namespace CocApiLibrary
 
                 UpdateVillageSpells(cocApi, downloadedVillage);
 
+                UpdateLegendLeagueStatistics(cocApi, downloadedVillage);
+
                 DateTimeUTC = downloadedVillage.DateTimeUTC;
 
                 Expires = downloadedVillage.Expires;
             }
         }
-        
+
+        private void UpdateLegendLeagueStatistics(CocApi cocApi, VillageAPIModel downloadedVillage)
+        {
+            try
+            {
+                //if (LegendStatistics == null && downloadedVillage.LegendStatistics != null ||
+                //    )
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void UpdateLabelsTryAsync(CocApi cocApi, VillageAPIModel downloadedVillage)
+        {
+            try
+            {
+                if (Labels == null && downloadedVillage.Labels == null) return;
+
+                if (Labels != null && Labels.Count() > 0 && (downloadedVillage.Labels == null || downloadedVillage.Labels.Count() == 0))
+                {
+                    cocApi.VillageLabelsRemovedEvent(downloadedVillage, Labels);
+
+                    Labels = downloadedVillage.Labels;
+                }
+                else if ((Labels == null || Labels.Count() == 0) && downloadedVillage.Labels != null && downloadedVillage.Labels.Count() > 0)
+                {
+                    cocApi.VillageLabelsAddedEvent(downloadedVillage, downloadedVillage.Labels);
+
+                    Labels = downloadedVillage.Labels;
+                }
+                else
+                {
+                    List<LabelAPIModel> added = new List<LabelAPIModel>();
+
+                    List<LabelAPIModel> removed = new List<LabelAPIModel>();
+
+                    foreach (LabelAPIModel labelAPIModel in Labels.EmptyIfNull())
+                    {
+                        if (!downloadedVillage.Labels.Any(l => l.Id == labelAPIModel.Id))
+                        {
+                            removed.Add(labelAPIModel);
+                        }
+                    }
+
+                    foreach (LabelAPIModel labelAPIModel in downloadedVillage.Labels.EmptyIfNull())
+                    {
+                        if (!Labels.Any(l => l.Id == labelAPIModel.Id))
+                        {
+                            added.Add(labelAPIModel);
+                        }
+                    }
+
+                    cocApi.VillageLabelsRemovedEvent(downloadedVillage, removed);
+
+                    cocApi.VillageLabelsAddedEvent(downloadedVillage, added);
+
+                    Labels = downloadedVillage.Labels;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
         private void UpdateVillageSpells(CocApi cocApi, VillageAPIModel downloadedVillage)
         {
             List<SpellAPIModel> newSpells = new List<SpellAPIModel>();

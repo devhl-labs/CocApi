@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace CocApiLibrary
@@ -77,6 +76,7 @@ namespace CocApiLibrary
             try
             {
                 _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Beginning to update clan: {clanTag}", _source, clanString);
+
 
                 ClanAPIModel storedClan = await _cocApi.GetClanAsync(clanString, allowStoredItem: true, allowExpiredItem: true);
 

@@ -100,8 +100,6 @@ namespace CocApiLibrary
 
             try
             {
-                //_ = _cocApi.Logger(new LogMessage(LogSeverity.Verbose, _source, encodedUrl));
-
                 _cocApi.Logger?.LogDebug("{source}: Getting web response from {encodedUrl}", _source, encodedUrl);
 
                 TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
@@ -208,9 +206,7 @@ namespace CocApiLibrary
 
                 WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
 
-                //_ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, _source, $"Error retrieving {encodedUrl}", e));
-
-                _cocApi.Logger?.LogWarning("{source}: Error retrieving {encodedUrl}", _source, encodedUrl);
+                _cocApi.Logger?.LogWarning("{source}: {message} {encodedUrl}", _source, e.Message, encodedUrl);
 
                 if (e is TaskCanceledException taskCanceledException)
                 {
