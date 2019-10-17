@@ -126,6 +126,12 @@ namespace CocApiLibrary.Models
 
                 UpdateLocationTry(cocApi, downloadedClan);
 
+                AnnounceDonations(cocApi, downloadedClan);
+
+                AnnounceMemberChangesTry(cocApi, downloadedClan);
+
+                UpdateMembersTry(downloadedClan);
+
                 MembersLeftTry(cocApi, downloadedClan);
 
                 MembersJoinedTry(cocApi, downloadedClan);
@@ -133,6 +139,115 @@ namespace CocApiLibrary.Models
                 DateTimeUTC = downloadedClan.DateTimeUTC;
 
                 Expires = downloadedClan.Expires;
+            }
+        }
+
+        private void AnnounceMemberChangesTry(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanges = new Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>>();
+
+                Dictionary<string, Tuple<MemberListAPIModel, Role>> roleChanges = new Dictionary<string, Tuple<MemberListAPIModel, Role>>();
+
+
+                foreach (MemberListAPIModel oldMember in Members.EmptyIfNull())
+                {
+                    MemberListAPIModel newMember = downloadedClan.Members.FirstOrDefault(m => m.Tag == oldMember.Tag);
+
+                    if (newMember == null) { continue; }
+
+                    if ((oldMember.League == null && newMember.League != null) || (oldMember.League != null && newMember.League != null && oldMember.League.Id != newMember.League.Id))
+                    {
+                        leagueChanges.Add(oldMember.Tag, Tuple.Create(oldMember, newMember));
+                    }
+                        
+                    if(oldMember.Name != newMember.Name)
+                    {
+                        cocApi.ClanMemberNameChangedEvent(oldMember, newMember.Name);
+                    }
+
+                    if (oldMember.Role != newMember.Role)
+                    {
+                        roleChanges.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.Role));
+                    }
+                }
+
+                cocApi.ClanMembersLeagueChangedEvent(leagueChanges);
+
+                cocApi.ClanMembersRoleChangedEvent(roleChanges);
+
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void UpdateMembersTry(ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                foreach (MemberListAPIModel oldMember in Members.EmptyIfNull())
+                {
+                    MemberListAPIModel newMember = downloadedClan.Members.FirstOrDefault(m => m.Tag == oldMember.Tag);
+
+                    if (newMember == null) { continue; }
+
+                    oldMember.League = newMember.League;
+
+                    oldMember.Name = newMember.Name;
+
+                    oldMember.Role = newMember.Role;
+
+                    oldMember.ExpLevel = newMember.ExpLevel;
+
+                    oldMember.ClanRank = newMember.ClanRank;
+
+                    oldMember.PreviousClanRank = newMember.PreviousClanRank;
+
+                    oldMember.Donations = newMember.Donations;
+
+                    oldMember.DonationsReceived = newMember.DonationsReceived;
+
+                    oldMember.Trophies = newMember.Trophies;
+
+                    oldMember.VersusTrophies = newMember.VersusTrophies;
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void AnnounceDonations(CocApi cocApi, ClanAPIModel downloadedClan)
+        {
+            try
+            {
+                Dictionary<string, Tuple<MemberListAPIModel, int>> receiving = new Dictionary<string, Tuple<MemberListAPIModel, int>>();
+
+                Dictionary<string, Tuple<MemberListAPIModel, int>> donating = new Dictionary<string, Tuple<MemberListAPIModel, int>>();
+
+                foreach(MemberListAPIModel oldMember in Members.EmptyIfNull())
+                {
+                    MemberListAPIModel? newMember = downloadedClan.Members.FirstOrDefault(m => m.Tag == oldMember.Tag);
+
+                    if (newMember == null) continue;
+
+                    if (oldMember.DonationsReceived != newMember.DonationsReceived && newMember.DonationsReceived != 0)
+                    {
+                        receiving.Add(Tag, Tuple.Create(oldMember, newMember.DonationsReceived));
+                    }
+
+                    if (oldMember.Donations != newMember.Donations && newMember.Donations != 0)
+                    {
+                        donating.Add(Tag, Tuple.Create(oldMember, newMember.Donations));
+                    }
+                }
+
+                cocApi.ClanDonationsEvent(receiving, donating);
+            }
+            catch (Exception)
+            {
             }
         }
 

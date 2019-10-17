@@ -50,6 +50,13 @@ namespace CocApiLibrary
     public delegate void ClanLabelsAddedEventHandler(ClanAPIModel newClanAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
     public delegate void VillageLabelsRemovedEventHandler(VillageAPIModel newVillageAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
     public delegate void VillageLabelsAddedEventHandler(VillageAPIModel newVillageAPIModel, IEnumerable<LabelAPIModel> labelAPIModels);
+    public delegate void VillageReachedLegendsLeagueEventHandler(VillageAPIModel villageAPIModel);
+    public delegate void ClanDonationsEventHandler(Dictionary<string, Tuple<MemberListAPIModel, int>> receivedDonations, Dictionary<string, Tuple<MemberListAPIModel, int>> gaveDonations);
+    public delegate void ClanMemberNameChanged(MemberListAPIModel oldMember, string newName);
+    public delegate void ClanMembersLeagueChanged(Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanged);
+    public delegate void ClanMembersRoleChanged(Dictionary<string, Tuple<MemberListAPIModel, Role>> roleChanges);
+
+
 
     public class CocApi : IDisposable
     {
@@ -114,6 +121,12 @@ namespace CocApiLibrary
         public event ClanLabelsRemovedEventHandler? ClanLabelsRemoved;
         public event VillageLabelsAddedEventHandler? VillageLabelsAdded;
         public event VillageLabelsRemovedEventHandler? VillageLabelsRemoved;
+        public event VillageReachedLegendsLeagueEventHandler? VillageReachedLegendsLeague;
+        public event ClanDonationsEventHandler? ClanDonations;
+        public event ClanMemberNameChanged? ClanMemberNameChanged;
+        public event ClanMembersLeagueChanged? ClanMembersLeagueChanged;
+        public event ClanMembersRoleChanged? ClanMembersRoleChanged;
+
 
         public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
@@ -176,6 +189,41 @@ namespace CocApiLibrary
             CreateUpdaters();
 
             _isInitialized = true;
+        }
+
+
+        internal void ClanMembersRoleChangedEvent(Dictionary<string, Tuple<MemberListAPIModel, Role>> roleChanges)
+        {
+            if (roleChanges.Count() > 0)
+            {
+                ClanMembersRoleChanged?.Invoke(roleChanges);
+            }
+        }
+
+        internal void ClanMembersLeagueChangedEvent(Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanged)
+        {
+            if (leagueChanged.Count() > 0)
+            {
+                ClanMembersLeagueChanged?.Invoke(leagueChanged);
+            }
+        }
+
+        internal void ClanMemberNameChangedEvent(MemberListAPIModel oldMember, string newName)
+        {
+            ClanMemberNameChanged?.Invoke(oldMember, newName);
+        }
+
+        internal void ClanDonationsEvent(Dictionary<string, Tuple<MemberListAPIModel, int>> receivedDonations, Dictionary<string, Tuple<MemberListAPIModel, int>> gaveDonations)
+        {
+            if(receivedDonations.Count() > 0 || gaveDonations.Count() > 0)
+            {
+                ClanDonations?.Invoke(receivedDonations, gaveDonations);
+            }
+        }
+
+        internal void VillageReachedLegendsLeagueEvent(VillageAPIModel villageAPIModel)
+        {
+            VillageReachedLegendsLeague?.Invoke(villageAPIModel);
         }
 
         internal void VillageLabelsRemovedEvent(VillageAPIModel newVillage, IEnumerable<LabelAPIModel> labelAPIModels)

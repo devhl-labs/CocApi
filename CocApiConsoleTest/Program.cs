@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 
 using CocApiLibrary;
 using System.Threading.Tasks;
+using CocApiLibrary.Models;
+using System.Linq;
 
 namespace CocApiConsoleTest
 {
@@ -29,9 +31,9 @@ namespace CocApiConsoleTest
 
             host.Services.GetRequiredService<EventHandler>();
 
-            var village = await _cocApi!.GetVillageAsync("#20PJ89JYU");
-
             host.Run();
+
+            await Task.Delay(1);
         }        
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -54,7 +56,7 @@ namespace CocApiConsoleTest
             {
                 NumberOfUpdaters = 1,
 
-                TimeToWaitForWebRequests = new TimeSpan(0, 0, 0, 10, 0)
+                TimeToWaitForWebRequests = new TimeSpan(0, 0, 0, 10, 0),
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
@@ -65,7 +67,7 @@ namespace CocApiConsoleTest
 
             _cocApi.DownloadLeagueWars = DownloadLeagueWars.Auto;
 
-            _cocApi.DownloadVillages = false;            
+            _cocApi.DownloadVillages = true;            
             
             List<string> clans = new List<string>
             {
@@ -73,8 +75,8 @@ namespace CocApiConsoleTest
                 //"#2C8V29YJ",  // Зеленоград
                 //"#22VCPLR98", // LostMeta Power
                 //"#8RJJ0C0Y"   // Rising Asylum
-                //"#22G0JJR8"   // FYSB
-                "#P989QU9P"     // Burlap Thongs
+                "#22G0JJR8"   // FYSB
+                //"#P989QU9P"     // Burlap Thongs
             };
 
             _cocApi.WatchClans(clans);

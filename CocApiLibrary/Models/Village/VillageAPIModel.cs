@@ -143,8 +143,14 @@ namespace CocApiLibrary
         {
             try
             {
-                //if (LegendStatistics == null && downloadedVillage.LegendStatistics != null ||
-                //    )
+                if (LegendStatistics == null && downloadedVillage.LegendStatistics == null) return;
+
+                if (LegendStatistics == null && downloadedVillage.LegendStatistics != null)
+                {
+                    cocApi.VillageReachedLegendsLeagueEvent(downloadedVillage);
+                }
+
+                LegendStatistics = downloadedVillage.LegendStatistics;
             }
             catch (Exception)
             {

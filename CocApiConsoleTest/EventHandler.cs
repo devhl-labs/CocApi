@@ -40,6 +40,34 @@ namespace CocApiConsoleTest
             _cocApi.WarIsAccessibleChanged += CocApi_WarIsAccessibleChanged;
 
             _cocApi.LeagueGroupTeamSizeChangeDetected += CocApi_LeagueSizeChangeDetected;
+
+            _cocApi.VillageReachedLegendsLeague += CocApi_VillageReachedLegendsLeague;
+
+            _cocApi.ClanMemberNameChanged += CocApi_ClanMemberNameChanged;
+
+            _cocApi.ClanMembersLeagueChanged += CocApi_ClanMembersLeagueChanged;
+
+            _cocApi.ClanMembersRoleChanged += CocApi_ClanMembersRoleChanged;
+        }
+
+        private void CocApi_ClanMembersRoleChanged(Dictionary<string, Tuple<MemberListAPIModel, Enums.Role>> roleChanges)
+        {
+            Console.WriteLine($"New role: {roleChanges.First().Value.Item2}");
+        }
+
+        private void CocApi_ClanMembersLeagueChanged(Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanged)
+        {
+            Console.WriteLine($"League changed {leagueChanged.First().Key}");
+        }
+
+        private void CocApi_ClanMemberNameChanged(MemberListAPIModel oldMember, string newName)
+        {
+            Console.WriteLine($"New name: {newName}");
+        }
+
+        private void CocApi_VillageReachedLegendsLeague(VillageAPIModel villageAPIModel)
+        {
+            Console.WriteLine($"Village reached legends: {villageAPIModel.Name}");
         }
 
         private void CocApi_WarIsAccessibleChanged(ICurrentWarAPIModel currentWarAPIModel)

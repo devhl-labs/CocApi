@@ -6,9 +6,12 @@
 		<Nullable>enable</Nullable>
 		<Authors>devhl</Authors>
 		<Product />
-		<Description>This is a Clash of Clans library that will return responses from developer.clashofclans.com</Description>
-		<Version>0.4.0-alpha</Version>
-		<AssemblyVersion>0.4.0.0</AssemblyVersion>
+		<Description>This is a Clash of Clans library that will return responses from developer.clashofclans.com
+
+https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
+Use this feed to get Reflection while this is in prerelease.</Description>
+		<Version>0.5.0-alpha</Version>
+		<AssemblyVersion>0.5.0.0</AssemblyVersion>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
 		<PackageId>CocApiLibrary</PackageId>
@@ -22,7 +25,7 @@
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</PackageReleaseNotes>
-		<FileVersion>0.4.0.0</FileVersion>
+		<FileVersion>0.5.0.0</FileVersion>
 		<ApplicationIcon />
 	</PropertyGroup>
 
