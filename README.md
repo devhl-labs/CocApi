@@ -2,7 +2,7 @@
 This .NET Standard 2.1 library will provide responses from developer.clashofclans.com\
 This is a rewrite of the class library Minion Bot uses.\
  
-##Test Program
+## Test Program
 The test program shows you how to set up the library.\
 The library can grab SC API objects on command.\
 It can also automatically keep these objects up to date via polling.\
