@@ -53,7 +53,7 @@ CocApi will not stop trying to update expired objects unless you tell it to in t
 When an outage is detected, it will poll the API every five seconds to see if the server is back up.
 
 ## Issues
-If you try to duplicate the test program in a fresh console application, ensure that your .csproj file starts with 
+If you try to duplicate the test program in a fresh console application, ensure that your .csproj file contains .Web as seen here:
 ```xml 
 <Project Sdk="Microsoft.NET.Sdk.Web">
 ```
