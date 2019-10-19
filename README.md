@@ -29,7 +29,7 @@ If your key is only used in CocApi, you can make the time spans much shorter.\
 The API allows about 10 requests a second per key.
 
 ## [ICurrentWarAPIModel](/CocApiLibrary/Models/War/ICurrentWarAPIModel.cs)
-This interface is implemented by [CurrentWarAPIModel](/Models/War/CurrentWarAPIModel.cs) and [LeagueWarAPIModel.](/Models/War/LeagueWarAPIModel.cs)\
+This interface is implemented by [CurrentWarAPIModel](/CocApiLibrary/Models/War/CurrentWarAPIModel.cs) and [LeagueWarAPIModel](/CocApiLibrary/Models/War/LeagueWarAPIModel.cs)\
 The only difference is LeagueWarAPIModel has a WarTag property, and the WarType enum will be SCCWL.\
 When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate type when necessary.
 
