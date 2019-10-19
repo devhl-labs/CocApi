@@ -59,4 +59,4 @@ If you try to duplicate the test program in a fresh console application, ensure 
 <Project Sdk="Microsoft.NET.Sdk.Web">
 ```
 If you have problems finding one of the required nuget packages, add https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json as a source.</br></br>
-If the objects update too slow or two fast, modify the properties of the CocApiConfiguration.  TokenObject rate limits are bad.  TokenObject preemptive rate limits are okay, though it does indicate the library is updating as fast as the TokenTimeOut allows.
+If the objects update too slow or two fast, modify the properties of the CocApiConfiguration.  TokenObject rate limits are bad.  TokenObject preemptive rate limits are okay, though it does indicate the library is updating as fast as the TokenTimeOut allows. 
