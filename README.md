@@ -11,6 +11,7 @@ You may optionally provide an ILogger to observe what the library is doing.\
 The test program will output the following:<br/><br/>
 ![Test Program console output](https://github.com/devhl-labs/CocApi/blob/controlsloop/CocApiConsoleTest/images/console.jpg)\
 If you choose to keep the objects up to date, the library will constantly write to the ILogger.
+Of course, the ILogger is in your program, so you can choose what to print.
 
 ## CocApi
 The CocApi class is the entry point to this library.\
