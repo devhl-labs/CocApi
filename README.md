@@ -1,5 +1,5 @@
 # CocApiLibrary
-This .NET Standard 2.1 library will provide responses from developer.clashofclans.com\
+This .NET Standard 2.1 library will provide responses from [developer.clashofclans.com](https://developer.clashofclans.com/#/)\
 This is a rewrite of the class library Minion Bot uses.
  
 ## [CocApiConsoleTest](/CocApiConsoleTest)
