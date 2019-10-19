@@ -38,7 +38,7 @@ This is an internal static class.\
 If it prints to the ILogger, that indicates that the library is polling the API.
 
 ## [UpdateService](/CocApiLibrary/UpdateService.cs)
-This is an internal class.  It is only public so it can inherit an abstract class.
+This is an internal class.  It is only public so it can inherit a public abstract class.
 If it prints to the ILogger, it is updating an object.  If the object being updated is not expired, it will not ask the WebResponse class to poll the API.
 
 ## [Extensions](/CocApiLibrary/Extensions.cs)
