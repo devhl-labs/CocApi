@@ -1,4 +1,4 @@
-# CocApi
+# CocApiLibrary
 This .NET Standard 2.1 library will provide responses from developer.clashofclans.com\
 This is a rewrite of the class library Minion Bot uses.
  
@@ -8,9 +8,14 @@ The library can grab SC API objects on command.\
 It can also automatically keep these objects up to date via polling.\
 When an object changes, it will fire an event which you can subscribe to.\
 You may optionally provide an ILogger to observe what the library is doing.\
-The test program will output the following:\
+The test program will output the following:\\
 ![Test Program console output](https://github.com/devhl-labs/CocApi/blob/controlsloop/CocApiConsoleTest/images/console.jpg)\
 If you choose to keep the objects up to date, the library will constantly write to the ILogger.
+
+## CocApi
+The CocApi class is the entry point to this library.\
+You likely want this class to be a singleton that lives for the life of your application.\
+This class is disposable, don't forget to call Dispose when you end your applicaiton.\
 
 
 ## Custom things this library provides:
