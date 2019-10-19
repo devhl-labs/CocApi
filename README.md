@@ -49,7 +49,7 @@ LeftToRight will force characters to display left to right.  This is especially 
 ToDateTime will convert SC API date time objects to C# DateTime, though the library already handles this when downloading your object.
 
 ## Outages
-When the API goes down, the IsAvaillableChanged event will fire.\
+When the API goes down, the IsAvailableChanged event will fire.\
 CocApi will not stop trying to update expired objects unless you tell it to in this event.\
 When an outage is detected, it will poll the API every five seconds to see if the server is back up.
 
