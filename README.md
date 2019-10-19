@@ -13,13 +13,13 @@ The test program will output the following:<br/><br/>
 If you choose to keep the objects up to date, the library will constantly write to the ILogger.\
 Of course, the ILogger is in your program, so you can choose what to print.
 
-## CocApi
+## [CocApi](/CocApiLibrary/CocApi.cs)
 The CocApi class is the entry point to this library.\
 You likely want this class to be a singleton that lives for the life of your application.\
 This class is disposable, don't forget to call Dispose when you end your applicaiton.\
 This program has the potential to consume a lot of memory.
 
-## CocApiConfiguration
+## [CocApiConfiguration](/CocApiLibrary/CocApiConfiguration.cs)
 Use this to configure the CocApi class.\
 This class can control how often your SC API token is used.\
 You can also control how long a downloaded object is considered good for.\
@@ -28,15 +28,12 @@ This is to avoid rate limiting your key.\
 If your key is only used in CocApi, you can make the time spans much shorter.\
 The API allows about 10 requests a second per key.
 
-## ICurrentWarAPIModel
-This interface is implemented by CurrentWarAPIModel and LeagueWarAPIModel.\
+## [ICurrentWarAPIModel](/Models/War/ICurrentWarAPIModel.cs)
+This interface is implemented by [CurrentWarAPIModel](/Models/War/CurrentWarAPIModel.cs) and [LeagueWarAPIModel.](/Models/War/LeagueWarAPIModel.cs)\
 The only difference is LeagueWarAPIModel has a WarTag property, and the WarType enum will be SCCWL.\
 When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate type when necessary.
 
-## UpdateService
-This is an internal class.  It is only public so it can inherit an abstract class.
-
-## Extensions
+## [Extensions](/CocApiLibrary/Extensions.cs)
 The static Extensions class contains some things that may be useful, especially for Discord Bots.\
 DiscordSafe will strip Discord markup characters from a given string.\
 LeftToRight will force characters to display left to right.  This is especially helpful while making tables.\
@@ -46,3 +43,6 @@ ToDateTime will convert SC API date time objects to C# DateTime, though the libr
 When the API goes down, the IsAvaillableChanged event will fire.\
 CocApi will not stop trying to update expired objects unless you tell it to in this event.\
 When an outage is detected, it will poll the API every five seconds to see if the server is back up.
+
+## UpdateService
+This is an internal class.  It is only public so it can inherit an abstract class.
