@@ -52,19 +52,5 @@ namespace CocApiLibrary
         }
 
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
-
-//#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
-//        public static async void Swallow(this Task task, ILogger? logger = null)
-//#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
-//        {
-//            try
-//            {
-//                await task;
-//            }
-//            catch (Exception ex)
-//            {
-//                logger?.LogWarning(ex, $"Error was swallowed: {ex.Message}");
-//            }
-//        }
     }
 }
