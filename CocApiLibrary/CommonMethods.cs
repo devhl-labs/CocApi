@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Linq.Expressions;
 
 namespace CocApiLibrary
 {
@@ -14,18 +16,23 @@ namespace CocApiLibrary
         /// Wraps an action in a try catch
         /// </summary>
         /// <param name="action"></param>
-        /// <param name="logger"></param>
-        public void Swallow(Action action, ILogger? logger = null)
+        public void Swallow(Action action, string methodName)
         {
             try
             {
-                logger ??= Logger;
-
                 action();
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                logger?.LogWarning(ex, $"Error was swallowed: {ex.Message}");
+                if (Logger == null)
+                {
+                    Console.WriteLine($"{methodName} {e.Message}");
+                }
+                else
+                {
+                    Logger?.LogWarning(LoggingEvents.SwallowedError, "{methodName} {exception}", methodName, e.Message);
+                }
+
             }
         }
 
@@ -33,10 +40,9 @@ namespace CocApiLibrary
         /// Wraps a task in a try catch
         /// </summary>
         /// <param name="task"></param>
-        /// <param name="message"></param>
-        /// <param name="args"></param>
+        /// <param name="methodName"></param>
         /// <returns></returns>
-        public async Task<Task> SwallowAsync(Task task, string message, params object[] args)
+        public async Task<Task> SwallowAsync(Task task, string methodName)
         {
             try
             {
@@ -48,11 +54,11 @@ namespace CocApiLibrary
             {
                 if (Logger == null)
                 {
-                    Console.WriteLine($"The ILogger is null.  Exception was swallowed: {e.Message}");
+                    Console.WriteLine($"{e.Message}");
                 }
                 else
                 {
-                    Logger.LogWarning(LoggingEvents.SwallowedError, e, message, args);
+                    Logger.LogWarning(LoggingEvents.SwallowedError, e, methodName);
                 }
 
                 return Task.CompletedTask;

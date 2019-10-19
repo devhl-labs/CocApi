@@ -104,37 +104,37 @@ namespace CocApiLibrary
             {
                 Logger = cocApi.Logger;
 
-                Swallow(() => UpdateVillage(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillage(cocApi, downloadedVillage), nameof(UpdateVillage));
 
-                Swallow(() => UpdateLabels(cocApi, downloadedVillage));
+                Swallow(() => UpdateLabels(cocApi, downloadedVillage), nameof(UpdateLabels));
 
-                Swallow(() => UpdateVillageDefenseWins(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageDefenseWins(cocApi, downloadedVillage), nameof(UpdateVillageDefenseWins));
 
                 //UpdateVillageDonations(cocApi, downloadedVillage);
 
                 //UpdateVillageDonationsReceived(cocApi, downloadedVillage);
 
-                Swallow(() => UpdateVillageExpLevel(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageExpLevel(cocApi, downloadedVillage), nameof(UpdateVillageExpLevel));
 
-                Swallow(() => UpdateVillageTrophies(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageTrophies(cocApi, downloadedVillage), nameof(UpdateVillageTrophies));
 
-                Swallow(() => UpdateVillageVersusBattleWinCount(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageVersusBattleWinCount(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWinCount));
 
-                Swallow(() => UpdateVillageVersusBattleWins(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageVersusBattleWins(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWins));
 
-                Swallow(() => UpdateVillageVersusTrophies(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageVersusTrophies(cocApi, downloadedVillage), nameof(UpdateVillageVersusTrophies));
 
                 //UpdateVillageLeague(cocApi, downloadedVillage);
 
-                Swallow(() => UpdateVillageAchievements(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageAchievements(cocApi, downloadedVillage), nameof(UpdateVillageAchievements));
 
-                Swallow(() => UpdateVillageTroops(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageTroops(cocApi, downloadedVillage), nameof(UpdateVillageTroops));
 
-                Swallow(() => UpdateVillageHeroes(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageHeroes(cocApi, downloadedVillage), nameof(UpdateVillageHeroes));
 
-                Swallow(() => UpdateVillageSpells(cocApi, downloadedVillage));
+                Swallow(() => UpdateVillageSpells(cocApi, downloadedVillage), nameof(UpdateVillageSpells));
 
-                Swallow(() => UpdateLegendLeagueStatistics(cocApi, downloadedVillage));
+                Swallow(() => UpdateLegendLeagueStatistics(cocApi, downloadedVillage), nameof(UpdateLegendLeagueStatistics));
 
                 DateTimeUTC = downloadedVillage.DateTimeUTC;
 

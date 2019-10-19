@@ -63,7 +63,7 @@ namespace CocApiLibrary
                     {
                         Task task = UpdateClanAsync(ClanStrings[i]);
 
-                        await SwallowAsync(task, "{source} UpdateClanAsync({clanString})", _source, ClanStrings[i]);
+                        await SwallowAsync(task, $"{nameof(UpdateClanAsync)}({ClanStrings[i]})");
 
                         await Task.Delay(100);
 
@@ -100,18 +100,18 @@ namespace CocApiLibrary
 
                 task = DownloadLeagueWarsAsync(storedClan, leagueGroupAPIModel);
 
-                await SwallowAsync(task, "{source} DownloadLeagueWarsAsync({clanString})", _source, clanString);
+                await SwallowAsync(task, $"{nameof(DownloadLeagueWarsAsync)}({ClanStrings})");
             }
                 
             storedClan.AnnounceWars = true;  //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
 
             task = UpdateWarsAsync(storedClan, leagueGroupAPIModel);
 
-            await SwallowAsync(task, "{source} UpdateWarsAsync({clanString})", _source, clanString);
+            await SwallowAsync(task, $"{nameof(UpdateWarsAsync)}({ClanStrings})");
 
             task = UpdateVillagesAsync(storedClan);
 
-            await SwallowAsync(task, "{source} UpdateVillagesAsync({clanString})", _source, clanString);
+            await SwallowAsync(task, $"{nameof(UpdateVillageAsync)}({clanString})");
         }
 
 

@@ -121,25 +121,25 @@ namespace CocApiLibrary.Models
         {
             lock (_updateLock)
             {
-                ILogger? logger = cocApi.Logger;
+                Logger = cocApi.Logger;
 
-                Swallow(() => UpdateClan(cocApi, downloadedClan), logger);
+                Swallow(() => UpdateClan(cocApi, downloadedClan), nameof(UpdateClan));
 
-                Swallow(() => UpdateLabels(cocApi, downloadedClan), logger);
+                Swallow(() => UpdateLabels(cocApi, downloadedClan), nameof(UpdateLabels));
 
-                Swallow(() => UpdateBadge(cocApi, downloadedClan), logger);
+                Swallow(() => UpdateBadge(cocApi, downloadedClan), nameof(UpdateBadge));
 
-                Swallow(() => UpdateLocation(cocApi, downloadedClan), logger);
+                Swallow(() => UpdateLocation(cocApi, downloadedClan), nameof(UpdateLocation));
 
-                Swallow(() => AnnounceDonations(cocApi, downloadedClan), logger);
+                Swallow(() => AnnounceDonations(cocApi, downloadedClan), nameof(AnnounceDonations));
 
-                Swallow(() => AnnounceMemberChanges(cocApi, downloadedClan), logger);
+                Swallow(() => AnnounceMemberChanges(cocApi, downloadedClan), nameof(AnnounceMemberChanges));
 
-                Swallow(() => UpdateMembers(downloadedClan), logger);
+                Swallow(() => UpdateMembers(downloadedClan), nameof(UpdateMembers));
 
-                Swallow(() => MembersLeft(cocApi, downloadedClan), logger);
+                Swallow(() => MembersLeft(cocApi, downloadedClan), nameof(MembersLeft));
 
-                Swallow(() => MembersJoined(cocApi, downloadedClan), logger);
+                Swallow(() => MembersJoined(cocApi, downloadedClan), nameof(MembersJoined));
 
                 DateTimeUTC = downloadedClan.DateTimeUTC;
 
@@ -224,14 +224,14 @@ namespace CocApiLibrary.Models
 
                 if (newMember == null) continue;
 
-                if (oldMember.DonationsReceived != newMember.DonationsReceived && newMember.DonationsReceived != 0)
+                if (oldMember.DonationsReceived < newMember.DonationsReceived)
                 {
-                    receiving.Add(Tag, Tuple.Create(oldMember, newMember.DonationsReceived));
+                    receiving.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.DonationsReceived));
                 }
 
-                if (oldMember.Donations != newMember.Donations && newMember.Donations != 0)
+                if (oldMember.Donations < newMember.Donations)
                 {
-                    donating.Add(Tag, Tuple.Create(oldMember, newMember.Donations));
+                    donating.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.Donations));
                 }
             }
 

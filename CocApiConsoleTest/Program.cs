@@ -63,9 +63,9 @@ namespace CocApiConsoleTest
 
             _cocApi.Initialize(cocApiConfiguration, serviceProvider.GetRequiredService<LogService>());
 
-            _cocApi.DownloadLeagueWars = DownloadLeagueWars.True;
+            _cocApi.DownloadLeagueWars = DownloadLeagueWars.Auto;
 
-            _cocApi.DownloadVillages = true;            
+            _cocApi.DownloadVillages = false;            
             
             List<string> clans = new List<string>
             {
