@@ -74,6 +74,9 @@ namespace CocApiLibrary.Models
 
         private WarClanAPIModel? _clan;
 
+        /// <summary>
+        /// Do not use this property.  Instead, use the Clans property.
+        /// </summary>
         public WarClanAPIModel? Clan
         {
             get { return _clan; }
@@ -89,6 +92,9 @@ namespace CocApiLibrary.Models
 
         private WarClanAPIModel? _opponent;
 
+        /// <summary>
+        /// Do not use this property.  Instead, use the Clans property.
+        /// </summary>
         public WarClanAPIModel? Opponent
         {
             get { return _opponent; }

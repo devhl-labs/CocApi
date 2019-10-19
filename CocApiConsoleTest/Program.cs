@@ -8,8 +8,6 @@ using Microsoft.Extensions.Logging;
 
 using CocApiLibrary;
 using System.Threading.Tasks;
-using CocApiLibrary.Models;
-using System.Linq;
 
 namespace CocApiConsoleTest
 {
