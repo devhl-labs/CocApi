@@ -1,6 +1,18 @@
 # CocApi
-This library will provide responses from developer.clashofclans.com\
-This is a rewrite of the class library Minion Bot uses.  It is a work in progress.  It uses .NET Standard 2.1 which is still in preview.
+This .NET Standard 2.1 library will provide responses from developer.clashofclans.com\
+This is a rewrite of the class library Minion Bot uses.
+ 
+##Test Program
+The test program shows you how to set up the library.\
+The library can grab SC API objects on command.\
+It can also automatically keep these objects up to date via polling.\
+When an object changes, it will fire an event which you can subscribe to.\
+You may optionally provide an ILogger to observe what the library is doing.\
+The test program will output the following:\
+![Test Program console output](https://github.com/devhl-labs/CocApi/blob/controlsloop/CocApiConsoleTest/images/console.jpg)
+
+
+
 ## Custom things this library provides:
 -current war has Clans object.  This is both clans sorted alphabetically by tag\
 -Clans objects contain Attacks and Defenses that is copied from the members attacks collection\
