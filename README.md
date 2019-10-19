@@ -37,6 +37,10 @@ When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate t
 This is an internal static class.\
 If it prints to the ILogger, that indicates that the library is polling the API.
 
+## [UpdateService](/CocApiLibrary/UpdateService.cs)
+This is an internal class.  It is only public so it can inherit an abstract class.
+If it prints to the ILogger, it is updating an object.  If the object being updated is not expired, it will not ask the WebResponse class to poll the API.
+
 ## [Extensions](/CocApiLibrary/Extensions.cs)
 The static Extensions class contains some things that may be useful, especially for Discord Bots.\
 DiscordSafe will strip Discord markup characters from a given string.\
@@ -47,7 +51,3 @@ ToDateTime will convert SC API date time objects to C# DateTime, though the libr
 When the API goes down, the IsAvaillableChanged event will fire.\
 CocApi will not stop trying to update expired objects unless you tell it to in this event.\
 When an outage is detected, it will poll the API every five seconds to see if the server is back up.
-
-## [UpdateService](/CocApiLibrary/UpdateService.cs)
-This is an internal class.  It is only public so it can inherit an abstract class.
-If it prints to the ILogger, it is updating an object.  If the object is not expired, it will not ask the WebResponse class to poll the API.
