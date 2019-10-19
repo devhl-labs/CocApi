@@ -134,6 +134,8 @@ namespace CocApiLibrary
 
                         SetIDownloadableProperties(result, encodedUrl);
 
+                        SetRelationalProperties(result);
+
                         return result;
                     }
                     else
@@ -214,6 +216,80 @@ namespace CocApiLibrary
 
                 throw _cocApi.GetException(e);
             }
+        }
+
+        private static void SetRelationalProperties<T>(T result) where T : class, IDownloadable, new()
+        {
+            if (result is ClanAPIModel clan)
+            {
+                if (clan.BadgeUrls != null) clan.BadgeUrls.Tag = clan.Tag;
+
+                if (clan.Members != null)
+                {
+                    foreach(var member in clan.Members)
+                    {
+                        member.ClanTag = clan.Tag;
+                    }
+                }
+            }
+
+
+            if (result is VillageAPIModel village)
+            {
+                if (village.LegendStatistics != null)
+                {
+                    village.LegendStatistics.Tag = village.Tag;
+
+                    if (village.LegendStatistics.BestSeason != null) village.LegendStatistics.BestSeason.Tag = village.Tag;
+
+                    if (village.LegendStatistics.CurrentSeason != null) village.LegendStatistics.CurrentSeason.Tag = village.Tag;
+
+                    if (village.LegendStatistics.PreviousSeason != null) village.LegendStatistics.PreviousSeason.Tag = village.Tag;
+
+                    if (village.LegendStatistics.PreviousVersusSeason != null) village.LegendStatistics.PreviousVersusSeason.Tag = village.Tag;
+                }
+
+                foreach(var spell in village.Spells.EmptyIfNull())
+                {
+                    spell.Tag = village.Tag;
+                }
+
+                foreach(var troop in village.Troops.EmptyIfNull())
+                {
+                    troop.Tag = village.Tag;
+                }                
+            }
+
+            if (result is LeagueGroupAPIModel group)
+            {
+                group.GroupID = $"{group.Season.ToString()}{group.Clans.OrderBy(c => c.Tag).First().Tag}";
+
+                foreach(var leagueClan in group.Clans.EmptyIfNull())
+                {
+                    leagueClan.GroupID = group.GroupID;
+
+                    foreach(var member in leagueClan.Members.EmptyIfNull())
+                    {
+                        member.ClanTag = leagueClan.Tag;
+                    }
+
+                    if (leagueClan.BadgeUrls != null) leagueClan.BadgeUrls.Tag = leagueClan.Tag;                    
+                }
+            }
+
+            if (result is CurrentWarAPIModel war)
+            {
+                foreach(var attack in war.Attacks.EmptyIfNull())
+                {
+                    attack.WarID = war.WarID;
+                }
+
+                foreach(var warClan in war.Clans)
+                {
+                    warClan.WarID = war.WarID;
+                }
+            }
+
         }
 
         private static void SetIDownloadableProperties<T>(T result, string encodedURL) where T : class, IDownloadable, new()

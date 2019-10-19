@@ -6,6 +6,8 @@ namespace CocApiLibrary
 {
     public class LegendLeagueStatisticsAPIModel
     {
+        public string Tag { get; set; } = string.Empty;
+
         public int LegendTrophies { get; set; }
 
         public LegendLeagueResultAPIModel? CurrentSeason { get; set; }

@@ -29,6 +29,12 @@ namespace CocApiLibrary.Models
         public int TeamSize { get; internal set; } = 15;
 
 
+        /// <summary>
+        /// This is the season and the first clan tag where the clans are sorted alphabetically.
+        /// </summary>
+        public string GroupID { get; internal set; } = string.Empty;
+
+
         public bool IsExpired()
         {
             if (DateTime.UtcNow > Expires)

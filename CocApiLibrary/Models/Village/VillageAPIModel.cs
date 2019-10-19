@@ -23,7 +23,7 @@ namespace CocApiLibrary
         
             set
             {
-                _tag = value.ToUpper();        	    
+                _tag = value.ToUpper();
             }
         }
 

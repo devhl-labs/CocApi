@@ -4,6 +4,8 @@ namespace CocApiLibrary.Models
 {
     public class LeagueMemberAPIModel : IVillageAPIModel
     {
+        public string ClanTag { get; set; } = string.Empty;
+
         public string Tag { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;

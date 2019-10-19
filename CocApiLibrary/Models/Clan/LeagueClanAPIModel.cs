@@ -5,6 +5,8 @@ namespace CocApiLibrary.Models
 {
     public class LeagueClanAPIModel : IClanAPIModel
     {
+        public string GroupID { get; internal set; } = string.Empty;
+
         public string Tag { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;

@@ -5,6 +5,8 @@ namespace CocApiLibrary.Models
 {
     public class AchievementAPIModel
     {
+        public string Tag { get; set; } = string.Empty;
+
         public string Name { get; set; } = string.Empty;
 
         public int Stars { get; set; }

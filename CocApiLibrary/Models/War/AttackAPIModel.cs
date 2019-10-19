@@ -4,6 +4,8 @@ namespace CocApiLibrary.Models
 {
     public class AttackAPIModel
     {
+        public string WarID { get; internal set; } = string.Empty;
+
         public string AttackerTag { get; set; } = string.Empty;
 
         public string DefenderTag { get; set; } = string.Empty;

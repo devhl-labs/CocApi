@@ -67,7 +67,7 @@ namespace CocApiConsoleTest
 
             _cocApi.DownloadLeagueWars = DownloadLeagueWars.True;
 
-            _cocApi.DownloadVillages = false;            
+            _cocApi.DownloadVillages = true;            
             
             List<string> clans = new List<string>
             {

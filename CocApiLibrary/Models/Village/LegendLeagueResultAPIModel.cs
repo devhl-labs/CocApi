@@ -8,6 +8,8 @@ namespace CocApiLibrary
 {
     public class LegendLeagueResultAPIModel
     {
+        public string Tag { get; set; } = string.Empty;
+
         public int Trophies { get; set; }
 
         [JsonConverter(typeof(LeagueSeasonConverter))]
