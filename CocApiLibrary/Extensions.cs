@@ -1,12 +1,8 @@
-﻿//using AutoMapper;
-using CocApiLibrary;
-using CocApiLibrary.Exceptions;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace CocApiLibrary
 {
@@ -18,6 +14,7 @@ namespace CocApiLibrary
         public const string LeftToRightIsolate = "\u2066";
         public const string PopDirectionalIsolate = "\u2069";
 
+        //public static ILogger? Logger { get; internal set; } = null;
 
         /// <summary>
         /// Discord markup characters are stripped out
@@ -54,32 +51,20 @@ namespace CocApiLibrary
             return result;
         }
 
-        /// <summary>
-        /// Checks if the collection is null then iterates the collection
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="self"></param>
-        /// <param name="action"></param>
-        public static void ForEach<T>(this IEnumerable<T> self, Action<T> action)
-        {
-            if (self != null)
-            {
-                foreach (var element in self)
-                {
-                    action(element);
-                }
-            }
-        }
-
-
-
-
-
-
-
-
-
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
 
+//#pragma warning disable RECS0165 // Asynchronous methods should return a Task instead of void
+//        public static async void Swallow(this Task task, ILogger? logger = null)
+//#pragma warning restore RECS0165 // Asynchronous methods should return a Task instead of void
+//        {
+//            try
+//            {
+//                await task;
+//            }
+//            catch (Exception ex)
+//            {
+//                logger?.LogWarning(ex, $"Error was swallowed: {ex.Message}");
+//            }
+//        }
     }
 }

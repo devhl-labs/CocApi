@@ -8,15 +8,20 @@ using System.Threading.Tasks;
 
 namespace CocApiLibrary
 {
-    internal class UpdateService
+    public class UpdateService : CommonMethods
     {
-        public List<string> ClanStrings { get; } = new List<string>();
+        internal List<string> ClanStrings { get; } = new List<string>();
 
         private readonly CocApi _cocApi;
+
         private bool _continueUpdatingObjects = false;
         private bool _objectsAreBeingUpdated = false;
-        private const string _source = nameof(UpdateService);
+        private readonly string _source = "UpdateService | ";
 
+        /// <summary>
+        /// This is an internal CocApiLibrary class that you do not need to instantiate.
+        /// </summary>
+        /// <param name="cocApi"></param>
         public UpdateService(CocApi cocApi)
         {
             _cocApi = cocApi;
@@ -26,7 +31,7 @@ namespace CocApiLibrary
         /// Stops updating objects.  This may take some time to complete as the executing updates finish.
         /// </summary>
         /// <returns></returns>
-        public async Task StopUpdatingClansAsync()
+        internal async Task StopUpdatingClansAsync()
         {
             _continueUpdatingObjects = false;
 
@@ -39,12 +44,12 @@ namespace CocApiLibrary
         /// <summary>
         /// Sets the flag to mark updates should stop.
         /// </summary>
-        public void StopUpdatingClans()
+        internal void StopUpdatingClans()
         {
             _continueUpdatingObjects = false;
         }
 
-        public void BeginUpdatingClans()
+        internal void BeginUpdatingClans()
         {
             _continueUpdatingObjects = true;
 
@@ -56,7 +61,9 @@ namespace CocApiLibrary
                 {
                     for (int i = 0; i < ClanStrings.Count; i++)
                     {
-                        await UpdateClanTryAsync(ClanStrings[i]);
+                        Task task = UpdateClanAsync(ClanStrings[i]);
+
+                        await SwallowAsync(task, "{source} UpdateClanAsync({clanString})", _source, ClanStrings[i]);
 
                         await Task.Delay(100);
 
@@ -71,120 +78,99 @@ namespace CocApiLibrary
             });
         }
 
-        private async Task UpdateClanTryAsync(string clanString)
+        private async Task UpdateClanAsync(string clanString)
         {
-            try
+            Task? task;
+
+            _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source} UpdateClanAsync({clanString})", _source, clanString);
+
+            ClanAPIModel storedClan = await _cocApi.GetClanAsync(clanString, allowStoredItem: true, allowExpiredItem: true);
+
+            ClanAPIModel downloadedClan = await _cocApi.GetClanAsync(clanString, allowStoredItem: true, allowExpiredItem: false);
+
+            storedClan.Update(_cocApi, downloadedClan);
+
+            ICurrentWarAPIModel? currentWarAPIModel = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.Tag, allowStoredItem: true, allowExpiredItem: false);
+
+            LeagueGroupAPIModel? leagueGroupAPIModel = null;
+
+            if (currentWarAPIModel?.State == Enums.WarState.NotInWar || currentWarAPIModel is LeagueWarAPIModel)
             {
-                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Beginning to update clan: {clanTag}", _source, clanString);
+                leagueGroupAPIModel = await DownloadLeagueGroupAsync(storedClan);
 
+                task = DownloadLeagueWarsAsync(storedClan, leagueGroupAPIModel);
 
-                ClanAPIModel storedClan = await _cocApi.GetClanAsync(clanString, allowStoredItem: true, allowExpiredItem: true);
-
-                ClanAPIModel downloadedClan = await _cocApi.GetClanAsync(clanString, allowStoredItem: true, allowExpiredItem: false);
-
-                storedClan.Update(_cocApi, downloadedClan);
-
-                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Beginning to download current war: {clanTag}", _source, clanString);
-
-                ICurrentWarAPIModel? currentWarAPIModel = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.Tag, allowStoredItem: true, allowExpiredItem: false);
-
-                LeagueGroupAPIModel? leagueGroupAPIModel = null;
-
-                if (currentWarAPIModel?.State == Enums.WarState.NotInWar || currentWarAPIModel is LeagueWarAPIModel)
-                {
-                    _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Begin downloading league wars: {clanTag}", _source, clanString);
-
-                    leagueGroupAPIModel = await DownloadLeagueGroupTryAsync(storedClan); 
-
-                    await DownloadLeagueWarsTryAsync(storedClan, leagueGroupAPIModel);
-                }
+                await SwallowAsync(task, "{source} DownloadLeagueWarsAsync({clanString})", _source, clanString);
+            }
                 
-                storedClan.AnnounceWars = true;  //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
+            storedClan.AnnounceWars = true;  //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
 
-                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Beginning to update wars {clanTag}", _source, clanString);
+            task = UpdateWarsAsync(storedClan, leagueGroupAPIModel);
 
-                await UpdateWarsTryAsync(storedClan, leagueGroupAPIModel);
+            await SwallowAsync(task, "{source} UpdateWarsAsync({clanString})", _source, clanString);
 
-                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Beginning to update villages {clanTag}", _source, clanString);
+            task = UpdateVillagesAsync(storedClan);
 
-                await UpdateVillagesTryAsync(storedClan);
-
-                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source}: Finished updating clan {clanTag}", _source, clanString);
-            }
-            catch (Exception e)
-            {
-                _cocApi.Logger?.LogWarning(e, "{source}: Error in UpdateClanTryAsync({clanTag}", _source, clanString);
-            }
+            await SwallowAsync(task, "{source} UpdateVillagesAsync({clanString})", _source, clanString);
         }
 
 
 
-        private async Task UpdateWarsTryAsync(ClanAPIModel storedClan, LeagueGroupAPIModel? leagueGroupAPIModel)
+        private async Task UpdateWarsAsync(ClanAPIModel storedClan, LeagueGroupAPIModel? leagueGroupAPIModel)
         {
-            try
-            {
-                foreach (ICurrentWarAPIModel storedWar in storedClan.Wars.Values)
-                {
-                    ICurrentWarAPIModel? downloadedWar = await _cocApi.GetCurrentWarAsync(storedWar);
+            _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source} UpdateWarsAsync({clanTag})", _source, storedClan.Tag);
 
-                    if (storedWar is LeagueWarAPIModel leagueWar)
-                    {
-                        leagueWar.Update(_cocApi, leagueWar, leagueGroupAPIModel);
-                    }
-                    else
-                    if (storedWar is CurrentWarAPIModel currentWar)
-                    {
-                        currentWar.Update(_cocApi, currentWar, null);
-                    } 
-                }
-            }
-            catch (Exception e)
+            foreach (ICurrentWarAPIModel storedWar in storedClan.Wars.Values)
             {
-                _cocApi.Logger?.LogWarning(e, "{source}: Error in UpdateClanTryAsync{clanTag}", _source, storedClan.Tag);
+                ICurrentWarAPIModel? downloadedWar = await _cocApi.GetCurrentWarAsync(storedWar);
+
+                if (storedWar is LeagueWarAPIModel leagueWar)
+                {
+                    leagueWar.Update(_cocApi, leagueWar, leagueGroupAPIModel);
+                }
+                else
+                if (storedWar is CurrentWarAPIModel currentWar)
+                {
+                    currentWar.Update(_cocApi, currentWar, null);
+                } 
             }
         }
 
-        private async Task<LeagueGroupAPIModel?> DownloadLeagueGroupTryAsync(ClanAPIModel storedClan)
+        private async Task<LeagueGroupAPIModel?> DownloadLeagueGroupAsync(ClanAPIModel storedClan)
         {
             LeagueGroupAPIModel? leagueGroupAPIModel = null;
 
             if (_cocApi.IsDownloadingLeagueWars() && storedClan.DownloadLeagueWars)
             {
+                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source} DownloadLeagueGroupAsync({clanTag})", _source, storedClan.Tag);
+                
                 try
                 {
                     leagueGroupAPIModel = await _cocApi.GetLeagueGroupAsync(storedClan.Tag, allowStoredItem: true, allowExpiredItem: false);
                 }
                 catch (Exception)
                 {
-                    _cocApi.Logger?.LogWarning("{source}: Error in DownloadLeagueGroupTryAsync{clanTag}", _source, storedClan.Tag);
                 }
             }
             return leagueGroupAPIModel;
         }
 
-        private async Task DownloadLeagueWarsTryAsync(ClanAPIModel storedClan, LeagueGroupAPIModel? leagueGroupAPIModel)
+        private async Task DownloadLeagueWarsAsync(ClanAPIModel storedClan, LeagueGroupAPIModel? leagueGroupAPIModel)
         {
-            try
+            if (_cocApi.IsDownloadingLeagueWars() && storedClan.DownloadLeagueWars && leagueGroupAPIModel != null)
             {
-                if (_cocApi.IsDownloadingLeagueWars() && storedClan.DownloadLeagueWars && leagueGroupAPIModel != null)
+                List<Task> tasks = new List<Task>();
+
+                foreach (var round in leagueGroupAPIModel.Rounds.EmptyIfNull())
                 {
-                    List<Task> tasks = new List<Task>();
-
-                    foreach (var round in leagueGroupAPIModel.Rounds.EmptyIfNull())
-                    {
-                        tasks.Add(DownloadRoundTryAsync(storedClan, round));
-                    }
-
-                    await Task.WhenAll(tasks);
+                    tasks.Add(DownloadRoundAsync(storedClan, round));
                 }
-            }
-            catch (Exception e)
-            {
-                _cocApi.Logger?.LogWarning(e, "{source}: Error in DownloadLeagueWarsTryAsync{clanTag}", _source, storedClan.Tag);
+
+                await Task.WhenAll(tasks);
             }
         }
 
-        private async Task DownloadRoundTryAsync(ClanAPIModel storedClan, RoundAPIModel round)
+        private async Task DownloadRoundAsync(ClanAPIModel storedClan, RoundAPIModel round)
         {
             foreach (var warTag in round.WarTags.EmptyIfNull().Where(w => w != "#0"))
             {
@@ -199,26 +185,20 @@ namespace CocApiLibrary
             }
         }
 
-        private async Task UpdateVillagesTryAsync(ClanAPIModel storedClan)
-        {          
-            try
+        private async Task UpdateVillagesAsync(ClanAPIModel storedClan)
+        {
+            if (_cocApi.DownloadVillages && storedClan.DownloadVillages)
             {
+                _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source} UpdateVillagesAsync({clanTag})", _source, storedClan.Tag);
 
-                if (_cocApi.DownloadVillages && storedClan.DownloadVillages)
+                List<Task> tasks = new List<Task>();
+
+                foreach (var village in storedClan.Members.EmptyIfNull())
                 {
-                    List<Task> tasks = new List<Task>();
-
-                    foreach (var village in storedClan.Members.EmptyIfNull())
-                    {
-                        tasks.Add(UpdateVillageAsync(village));
-                    }
-
-                    await Task.WhenAll(tasks);
+                    tasks.Add(UpdateVillageAsync(village));
                 }
-            }
-            catch (Exception e)
-            {
-                _cocApi.Logger?.LogWarning(e, "{source}: Error in UPdateVillagesTryAsync{clanTag}", _source, storedClan.Tag);
+
+                await Task.WhenAll(tasks);
             }
         }
 

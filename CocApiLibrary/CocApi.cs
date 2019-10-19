@@ -10,6 +10,8 @@ using CocApiLibrary.Exceptions;
 using static CocApiLibrary.Enums;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+
 
 namespace CocApiLibrary
 {
@@ -30,8 +32,8 @@ namespace CocApiLibrary
     public delegate void WarEndNotSeenEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void VillageChangedEventHandler(VillageAPIModel oldVillage, VillageAPIModel newVillage);
     public delegate void VillageDefenseWinsChangedEventHandler(VillageAPIModel oldVillage, int newDefenseWins);
-    public delegate void VillageDonationsChangedEventHandler(VillageAPIModel oldVillage, int newDonations);
-    public delegate void VillageDonationsReceivedChangedEventHandler(VillageAPIModel oldVillage, int newDonationsReceived);
+    //public delegate void VillageDonationsChangedEventHandler(VillageAPIModel oldVillage, int newDonations);
+    //public delegate void VillageDonationsReceivedChangedEventHandler(VillageAPIModel oldVillage, int newDonationsReceived);
     public delegate void VillageExpLevelChangedEventHandler(VillageAPIModel oldVillage, int newExpLevel);
     public delegate void VillageTrophiesChangedEventHandler(VillageAPIModel oldVillage, int newTrophies);
     public delegate void VillageVersusBattleWinCountChangedEventHandler(VillageAPIModel oldVillage, int newVersusBattleWinCount);
@@ -53,7 +55,7 @@ namespace CocApiLibrary
     public delegate void VillageReachedLegendsLeagueEventHandler(VillageAPIModel villageAPIModel);
     public delegate void ClanDonationsEventHandler(Dictionary<string, Tuple<MemberListAPIModel, int>> receivedDonations, Dictionary<string, Tuple<MemberListAPIModel, int>> gaveDonations);
     public delegate void ClanMemberNameChanged(MemberListAPIModel oldMember, string newName);
-    public delegate void ClanMembersLeagueChanged(Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanged);
+    public delegate void ClanMembersLeagueChanged(Dictionary<string, Tuple<MemberListAPIModel, LeagueAPIModel>> leagueChanged);
     public delegate void ClanMembersRoleChanged(Dictionary<string, Tuple<MemberListAPIModel, Role>> roleChanges);
 
 
@@ -77,12 +79,38 @@ namespace CocApiLibrary
         /// If the service is not available, you may still try to query the API if you wish.
         /// </summary>
         public event IsAvailableChangedEventHandler? IsAvailableChanged;
+        /// <summary>
+        /// Fires if the following properties change:
+        /// <list type="bullet">
+        ///    <item><description><see cref="ClanAPIModel.ClanLevel"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.Description"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.IsWarLogPublic"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.MemberCount"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.Name"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.RequiredTrophies"/>RequiredTrophies</description></item>
+        ///    <item><description><see cref="ClanAPIModel.Type"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.WarFrequency"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.WarLosses"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.WarTies"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.WarWins"/></description></item>
+        ///    <item><description><see cref="ClanAPIModel.WarWinStreak"/></description></item>
+        /// </list>
+        /// </summary>
         public event ClanChangedEventHandler? ClanChanged;
         public event MembersJoinedEventHandler? MembersJoined;
         public event MembersLeftEventHandler? MembersLeft;
         public event ClanBadgeUrlChangedEventHandler? ClanBadgeUrlChanged;
         public event ClanLocationChangedEventHandler? ClanLocationChanged;
         public event NewWarEventHandler? NewWar;
+        /// <summary>
+        /// Fires if the following properties change:
+        /// <list type="bullet">
+        ///     <item><description><see cref="ICurrentWarAPIModel.EndTimeUTC"/></description></item>
+        ///     <item><description><see cref="ICurrentWarAPIModel.StartTimeUTC"/></description></item>
+        ///     <item><description><see cref="ICurrentWarAPIModel.State"/></description></item>
+        /// 
+        /// </list>
+        /// </summary>
         public event WarChangedEventHandler? WarChanged;
         public event NewAttacksEventHandler? NewAttacks;
         public event WarEndingSoonEventHandler? WarEndingSoon;
@@ -99,10 +127,22 @@ namespace CocApiLibrary
         /// This war may still become available if one of the clans does not spin and opens their war log.
         /// </summary>
         public event WarEndNotSeenEventHandler? WarEndNotSeen;
+        /// <summary>
+        /// Fires if the following properties change:
+        /// <list type="bullet">
+        ///    <item><description><see cref="VillageAPIModel.AttackWins"/></description></item>
+        ///    <item><description><see cref="VillageAPIModel.BestTrophies"/></description></item>
+        ///    <item><description><see cref="VillageAPIModel.BestVersusTrophies"/></description></item>
+        ///    <item><description><see cref="VillageAPIModel.BuilderHallLevel"/></description></item>
+        ///    <item><description><see cref="VillageAPIModel.TownHallLevel"/></description></item>
+        ///    <item><description><see cref="VillageAPIModel.TownHallWeaponLevel"/></description></item>
+        ///    <item><description><see cref="VillageAPIModel.WarStars"/></description></item>
+        /// </list>
+        /// </summary>
         public event VillageChangedEventHandler? VillageChanged;
         public event VillageDefenseWinsChangedEventHandler? VillageDefenseWinsChanged;
-        public event VillageDonationsChangedEventHandler? VillageDonationsChanged;
-        public event VillageDonationsChangedEventHandler? VillageDonationsReceivedChanged;
+        //public event VillageDonationsChangedEventHandler? VillageDonationsChanged;
+        //public event VillageDonationsReceivedChangedEventHandler? VillageDonationsReceivedChanged;
         public event VillageExpLevelChangedEventHandler? VillageExpLevelChanged;
         public event VillageTrophiesChangedEventHandler? VillageTrophiesChanged;
         public event VillageVersusBattleWinCountChangedEventHandler? VillageVersusBattleWinCountChanged;
@@ -114,8 +154,17 @@ namespace CocApiLibrary
         public event VillageHeroesChangedEventHandler? VillageHeroesChanged;
         public event VillageSpellsChangedEventHandler? VillageSpellsChanged;
         public event WarStartedEventHandler? WarStarted;
+        /// <summary>
+        /// Fires when the <see cref="ICurrentWarAPIModel.EndTimeUTC"/> has elapsed.  The API may or may not show the war end when this event occurs.
+        /// </summary>
         public event WarEndedEventHandler? WarEnded;
+        /// <summary>
+        /// Fires when the API shows <see cref="ICurrentWarAPIModel.State"/> is <see cref="Enums.WarState.WarEnded"/>
+        /// </summary>
         public event WarEndSeenEventHandler? WarEndSeen;
+        /// <summary>
+        /// Fires when any clan in a league group has more than 15 attacks.
+        /// </summary>
         public event LeagueGroupTeamSizeChangeDetectedEventHandler? LeagueGroupTeamSizeChangeDetected;
         public event ClanLabelsAddedEventHandler? ClanLabelsAdded;
         public event ClanLabelsRemovedEventHandler? ClanLabelsRemoved;
@@ -166,10 +215,16 @@ namespace CocApiLibrary
         }
 
 
-        private const string _source = nameof(CocApiConfiguration);
+        private readonly string _source = "CocApi       | ";
 
         private bool _isInitialized = false;
 
+        /// <summary>
+        /// Initializes the CocApi library.  A configuration with SC API tokens is required.  A logger may also be provided.
+        /// </summary>
+        /// <param name="cfg"></param>
+        /// <param name="logger"></param>
+        /// <exception cref="CocApiException"></exception>
         public void Initialize(CocApiConfiguration cfg, ILogger? logger)
         {            
             Logger = logger;
@@ -200,7 +255,7 @@ namespace CocApiLibrary
             }
         }
 
-        internal void ClanMembersLeagueChangedEvent(Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanged)
+        internal void ClanMembersLeagueChangedEvent(Dictionary<string, Tuple<MemberListAPIModel, LeagueAPIModel>> leagueChanged)
         {
             if (leagueChanged.Count() > 0)
             {
@@ -215,7 +270,7 @@ namespace CocApiLibrary
 
         internal void ClanDonationsEvent(Dictionary<string, Tuple<MemberListAPIModel, int>> receivedDonations, Dictionary<string, Tuple<MemberListAPIModel, int>> gaveDonations)
         {
-            if(receivedDonations.Count() > 0 || gaveDonations.Count() > 0)
+            if (receivedDonations.Count() > 0 || gaveDonations.Count() > 0)
             {
                 ClanDonations?.Invoke(receivedDonations, gaveDonations);
             }
@@ -244,7 +299,7 @@ namespace CocApiLibrary
 
         internal void ClanLabelsRemovedEvent(ClanAPIModel newClan, IEnumerable<LabelAPIModel> labelAPIModels)
         {
-            if(labelAPIModels != null && labelAPIModels.Count() > 0)
+            if (labelAPIModels != null && labelAPIModels.Count() > 0)
             {
                 ClanLabelsRemoved?.Invoke(newClan, labelAPIModels);
             }
@@ -328,15 +383,15 @@ namespace CocApiLibrary
             VillageExpLevelChanged?.Invoke(oldVillage, newExpLevel);
         }
 
-        internal void VillageDonationsReceivedChangedEvent(VillageAPIModel oldVillage, int newDonationsReceived)
-        {
-            VillageDonationsReceivedChanged?.Invoke(oldVillage, newDonationsReceived);
-        }
+        //internal void VillageDonationsReceivedChangedEvent(VillageAPIModel oldVillage, int newDonationsReceived)
+        //{
+        //    VillageDonationsReceivedChanged?.Invoke(oldVillage, newDonationsReceived);
+        //}
 
-        internal void VillageDonationsChangedEvent(VillageAPIModel oldVillage, int newDonations)
-        {
-            VillageDonationsChanged?.Invoke(oldVillage, newDonations);
-        }
+        //internal void VillageDonationsChangedEvent(VillageAPIModel oldVillage, int newDonations)
+        //{
+        //    VillageDonationsChanged?.Invoke(oldVillage, newDonations);
+        //}
 
         internal void VillageDefenseWinsChangedEvent(VillageAPIModel oldVillage, int newDefenseWinsChanged)
         {
@@ -525,7 +580,7 @@ namespace CocApiLibrary
 
                 _cancellationTokenSources.Remove(cts);
 
-                if(CocApiConfiguration.CacheHttpResponses)
+                if (CocApiConfiguration.CacheHttpResponses)
                 {
                     if (currentWarAPIModel.State == WarState.NotInWar || !_updateServices.Any(c => c.ClanStrings.Any(t => t == clanTag))) 
                     {
@@ -1357,6 +1412,21 @@ namespace CocApiLibrary
             WebResponse.SemaphoreSlim.Dispose();
         }
 
+        /// <summary>
+        /// Check if a string appears to be a SuperCell tag.
+        /// </summary>
+        /// <param name="tag"></param>
+        /// <exception cref="ArgumentException"></exception>
+        public void ValidateTag(string tag)
+        {
+            if (!IsValidTag(tag))
+            {
+                Logger.LogWarning(LoggingEvents.InvalidTag, "{source} The provided tag is not valid {tag}", _source, tag);
+
+                throw new ArgumentException("Tags must not be null nor empty and must start with a #.");
+            }
+        }
+
 
 
 
@@ -1383,15 +1453,7 @@ namespace CocApiLibrary
         //    }
         //}
 
-        private void ValidateTag(string tag)
-        {
-            if (!IsValidTag(tag))
-            {
-                Logger.LogWarning(LoggingEvents.InvalidTag, "{source}: The provided tag is not valid {tag}", _source, tag);
 
-                throw new ArgumentException("Tags must not be null nor empty and must start with a #.");
-            }
-        }
 
         private void TestConnection_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -1439,8 +1501,11 @@ namespace CocApiLibrary
 
                 for (int i = 0; i < CocApiConfiguration.NumberOfUpdaters; i++)
                 {
-                    UpdateService clanStore = new UpdateService(this);
-                    _updateServices.Add(clanStore);
+                    UpdateService updateService = new UpdateService(this);
+
+                    updateService.Logger = Logger;
+
+                    _updateServices.Add(updateService);
                 }
             }
             catch (Exception e)

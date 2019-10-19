@@ -13,7 +13,7 @@ namespace CocApiLibrary.Converters
         {
             string date = reader.GetString();
 
-            if(date == null)
+            if (date == null)
             {
                 return null;
             }

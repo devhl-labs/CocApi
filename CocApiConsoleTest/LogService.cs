@@ -30,7 +30,16 @@ namespace CocApiConsoleTest
 
                 PrintLogTitle(logLevel);
 
-                Console.WriteLine(formatter.Invoke(state, exception));
+                Console.Write(DateTime.UtcNow.ToShortTimeString() + "  | ");
+
+                if (exception == null)
+                {
+                    Console.WriteLine(formatter.Invoke(state, exception!));
+                }
+                else
+                {
+                    Console.WriteLine(formatter.Invoke(state, exception) + " " + exception.Message);
+                }
             }
         }
 
@@ -45,12 +54,12 @@ namespace CocApiConsoleTest
             switch (logLevel)
             {
                 case LogLevel.Debug:
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.Write("[dbug] ");
                     break;
                 case LogLevel.Information:
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.Write("[info] ");
                     break;

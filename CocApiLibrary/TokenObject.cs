@@ -17,7 +17,7 @@ namespace CocApiLibrary
         private readonly System.Timers.Timer _clearRateLimitTimer = new System.Timers.Timer();
         private readonly TimeSpan _tokenTimeOut;
         private readonly CocApi _cocApi;
-        private const string _source = nameof(UpdateService);
+        private readonly string _source = "TokenObject   | ";
 
         public string Token { get; }
 
@@ -40,7 +40,7 @@ namespace CocApiLibrary
 
                     //_cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, nameof(TokenObject), "Token is rate limited"));
 
-                    _cocApi.Logger?.LogWarning(LoggingEvents.IsRateLimited, "{source}: Token is rate limited.", _source);
+                    _cocApi.Logger?.LogWarning(LoggingEvents.IsRateLimited, "{source} Token is rate limited.", _source);
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace CocApiLibrary
                 {
                     //_ = _cocApi.Logger.Invoke(new LogMessage(LogSeverity.Warning, nameof(TokenObject), $"Preemptive rate limit downloading {endPoint.ToString()}: {url}"));
 
-                    _cocApi.Logger?.LogDebug(LoggingEvents.IsPremptiveRateLimited, "{source}: Preemptive rate limit downloading {endpoint}", _source, endPoint.ToString());
+                    _cocApi.Logger?.LogDebug(LoggingEvents.IsPremptiveRateLimited, "{source} Preemptive rate limit downloading {endpoint}", _source, endPoint.ToString());
 
                     notified = true;
                 }

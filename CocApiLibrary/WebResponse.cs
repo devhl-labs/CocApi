@@ -23,7 +23,7 @@ namespace CocApiLibrary
         public static SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
         public static HttpClient ApiClient { get; } = new HttpClient();
 
-        private const string _source = nameof(WebResponse);
+        private readonly static string _source = "WebResponse   | ";
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();        
         private static CocApi _cocApi = new CocApi();
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
@@ -31,7 +31,6 @@ namespace CocApiLibrary
         {
             PropertyNameCaseInsensitive = true
         };
-
 
 
 
@@ -100,7 +99,7 @@ namespace CocApiLibrary
 
             try
             {
-                _cocApi.Logger?.LogDebug("{source}: Getting web response from {encodedUrl}", _source, encodedUrl);
+                _cocApi.Logger?.LogDebug("{source} {encodedUrl}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
 
                 TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
 
@@ -206,7 +205,7 @@ namespace CocApiLibrary
 
                 WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
 
-                _cocApi.Logger?.LogWarning("{source}: {message} {encodedUrl}", _source, e.Message, encodedUrl);
+                _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
 
                 if (e is TaskCanceledException taskCanceledException)
                 {

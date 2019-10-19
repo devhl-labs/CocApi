@@ -10,6 +10,6 @@ namespace CocApiLibrary.Models
 
         public int Id { get; set; }
 
-        public IconUrlsAPIModel? IconUrls { get; set; }
+        public LabelUrlAPIModel? IconUrls { get; set; }
     }
 }

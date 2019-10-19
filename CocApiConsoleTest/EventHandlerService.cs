@@ -4,16 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace CocApiConsoleTest
 {
-    public class EventHandler
+    public class EventHandlerService
     {
         private readonly LogService _logService;
 
         private readonly CocApi _cocApi;
 
-        public EventHandler(LogService logService, CocApi cocApi)
+        public EventHandlerService(LogService logService, CocApi cocApi)
         {
             _logService = logService;
 
@@ -45,84 +46,84 @@ namespace CocApiConsoleTest
 
             _cocApi.ClanMemberNameChanged += CocApi_ClanMemberNameChanged;
 
-            _cocApi.ClanMembersLeagueChanged += CocApi_ClanMembersLeagueChanged;
+            _cocApi.ClanMembersLeagueChanged += CocApi_ClanMembersLeagueChanged; ;
 
             _cocApi.ClanMembersRoleChanged += CocApi_ClanMembersRoleChanged;
         }
 
-        private void CocApi_ClanMembersRoleChanged(Dictionary<string, Tuple<MemberListAPIModel, Enums.Role>> roleChanges)
+        private void CocApi_ClanMembersLeagueChanged(Dictionary<string, Tuple<MemberListAPIModel, LeagueAPIModel>> leagueChanged)
         {
-            Console.WriteLine($"New role: {roleChanges.First().Value.Item2}");
+            _logService.LogInformation($"League changed {leagueChanged.First().Key}");
         }
 
-        private void CocApi_ClanMembersLeagueChanged(Dictionary<string, Tuple<MemberListAPIModel, MemberListAPIModel>> leagueChanged)
+        private void CocApi_ClanMembersRoleChanged(Dictionary<string, Tuple<MemberListAPIModel, Enums.Role>> roleChanges)
         {
-            Console.WriteLine($"League changed {leagueChanged.First().Key}");
+            _logService.LogInformation($"New role: {roleChanges.First().Value.Item2}");
         }
 
         private void CocApi_ClanMemberNameChanged(MemberListAPIModel oldMember, string newName)
         {
-            Console.WriteLine($"New name: {newName}");
+            _logService.LogInformation($"New name: {newName}");
         }
 
         private void CocApi_VillageReachedLegendsLeague(VillageAPIModel villageAPIModel)
         {
-            Console.WriteLine($"Village reached legends: {villageAPIModel.Name}");
+            _logService.LogInformation($"Village reached legends: {villageAPIModel.Name}");
         }
 
         private void CocApi_WarIsAccessibleChanged(ICurrentWarAPIModel currentWarAPIModel)
         {
-            Console.WriteLine($"War is accessible changed:{currentWarAPIModel.Flags.WarIsAccessible}");
+            _logService.LogInformation($"War is accessible changed:{currentWarAPIModel.Flags.WarIsAccessible}");
         }
 
         private void CocApi_NewWar(ICurrentWarAPIModel currentWarAPIModel)
         {
-            Console.WriteLine($"New War: {currentWarAPIModel.WarID}");
+            _logService.LogInformation($"New War: {currentWarAPIModel.WarID}");
         }
 
         private void CocApi_ClanVersusPointsChanged(ClanAPIModel oldClan, int newClanVersusPoints)
         {
-            Console.WriteLine($"{oldClan.Tag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
+            _logService.LogInformation($"{oldClan.Tag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
         }
 
         private void CocApi_ClanPointsChanged(ClanAPIModel oldClan, int newClanPoints)
         {
-            Console.WriteLine($"{oldClan.Tag} {oldClan.Name} new clan points: {newClanPoints}");
+            _logService.LogInformation($"{oldClan.Tag} {oldClan.Name} new clan points: {newClanPoints}");
         }
 
         private void CocApi_ClanLocationChanged(ClanAPIModel oldClan, ClanAPIModel newClan)
         {
-            Console.WriteLine(newClan.Location?.Name);
+            _logService.LogInformation(newClan.Location?.Name);
         }
 
         private void CocApi_ClanBadgeUrlChanged(ClanAPIModel oldClan, ClanAPIModel newClan)
         {
-            Console.WriteLine(newClan.BadgeUrls?.Large);
+            _logService.LogInformation(newClan.BadgeUrls?.Large);
         }
 
         private void CocApi_ClanChanged(ClanAPIModel oldClan, ClanAPIModel newClan)
         {
-            Console.WriteLine($"{oldClan.Tag} {oldClan.Name} changed.");
+            _logService.LogInformation($"{oldClan.Tag} {oldClan.Name} changed.");
         }
 
         private void CocApi_NewAttacks(ICurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels)
         {
-            Console.WriteLine($"new attacks: {attackAPIModels.Count()}");
+            _logService.LogInformation($"new attacks: {attackAPIModels.Count()}");
         }
 
         private void CocApi_MembersJoined(ClanAPIModel clanAPIModel, List<MemberListAPIModel> memberListAPIModels)
         {
-            Console.WriteLine($"{memberListAPIModels.Count()} members joined.");
+            _logService.LogInformation($"{memberListAPIModels.Count()} members joined.");
         }
 
         private void CocApi_IsAvailableChanged(bool isAvailable)
         {
-            Console.WriteLine($"CocApi isAvailable: {isAvailable}");
+            _logService.LogInformation($"CocApi isAvailable: {isAvailable}");
         }
 
         private void CocApi_LeagueSizeChangeDetected(LeagueGroupAPIModel leagueGroupAPIModel)
         {
-            Console.WriteLine($"League Size changed: {leagueGroupAPIModel.TeamSize}");
+            _logService.LogInformation($"League Size changed: {leagueGroupAPIModel.TeamSize}");
         }
 
 
