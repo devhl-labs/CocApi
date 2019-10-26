@@ -62,21 +62,21 @@ If you have problems finding one of the required nuget packages, add https://dot
 If the objects update too slow or two fast, modify the properties of the CocApiConfiguration.  TokenObject rate limits are bad.  TokenObject preemptive rate limits are okay, though it does indicate the library is updating as fast as the TokenTimeOut allows. 
 
 ## Entity Framework
-These classes should translate to working tables with little or no effort.  Paste the below code into your OnModelCreating
+These classes should translate to working tables with little or no effort.  Paste the below code into your OnModelCreating.
 
 ```csharp
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //composite keys
-            modelBuilder.Entity<ClanLabelAPIModel>().HasKey(p => new { p.Id,  p.ClanTag });
-            modelBuilder.Entity<AchievementAPIModel>().HasKey(p => new { p.Name, p.VillageTag });
-            modelBuilder.Entity<SpellAPIModel>().HasKey(p => new { p.Name, p.VillageTag });
-            modelBuilder.Entity<TroopAPIModel>().HasKey(p => new { p.Name, p.VillageTag, p.Village });
-            modelBuilder.Entity<LegendLeagueResultAPIModel>().HasKey(p => new { p.Id, p.VillageTag, p.Village });
-            modelBuilder.Entity<VillageLabelAPIModel>().HasKey(p => new { p.Id, p.VillageTag });
-            modelBuilder.Entity<AttackAPIModel>().HasKey(p => new { p.WarId, p.Order });
+protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    //composite keys
+    modelBuilder.Entity<ClanLabelAPIModel>().HasKey(p => new { p.Id,  p.ClanTag });
+    modelBuilder.Entity<AchievementAPIModel>().HasKey(p => new { p.Name, p.VillageTag });
+    modelBuilder.Entity<SpellAPIModel>().HasKey(p => new { p.Name, p.VillageTag });
+    modelBuilder.Entity<TroopAPIModel>().HasKey(p => new { p.Name, p.VillageTag, p.Village });
+    modelBuilder.Entity<LegendLeagueResultAPIModel>().HasKey(p => new { p.Id, p.VillageTag, p.Village });
+    modelBuilder.Entity<VillageLabelAPIModel>().HasKey(p => new { p.Id, p.VillageTag });
+    modelBuilder.Entity<AttackAPIModel>().HasKey(p => new { p.WarId, p.Order });
 
-            //define one-to-zero(or one) relationship between villages and legends league
-            modelBuilder.Entity<VillageAPIModel>().HasOne(p => p.LegendStatistics).WithOne(p => p!.Village!).HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag).OnDelete(DeleteBehavior.Restrict);
-        }
+    //define one-to-zero(or one) relationship between villages and legends league
+    modelBuilder.Entity<VillageAPIModel>().HasOne(p => p.LegendStatistics).WithOne(p => p!.Village!).HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag).OnDelete(DeleteBehavior.Restrict);
+}
 
