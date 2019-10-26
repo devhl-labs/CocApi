@@ -78,4 +78,5 @@ These classes should translate to working tables with little or no effort.  Past
 
             //define one-to-zero(or one) relationship between villages and legends league
             modelBuilder.Entity<VillageAPIModel>().HasOne(p => p.LegendStatistics).WithOne(p => p!.Village!).HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag).OnDelete(DeleteBehavior.Restrict);
-        }``` 
+        }
+
