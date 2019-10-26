@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CocApiLibrary
 {
-    public abstract class CommonMethods
+    public abstract class SwallowDelegates
     {
+        [NotMapped]
         public ILogger? Logger { get; set; }
 
         /// <summary>

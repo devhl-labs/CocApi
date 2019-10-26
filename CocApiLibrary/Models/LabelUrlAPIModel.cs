@@ -1,41 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CocApiLibrary.Models
 {
     public class LabelUrlAPIModel
     {
+        public int Id { get; set; }
 
-        string medium = string.Empty;
+        public string Name { get; set; } = string.Empty;
+
+        private string _medium = string.Empty;
             
         public string Medium
         {
             get
             {
-                return medium;
+                return _medium;
             }
             
             set
             {
-                MediumCorrected = GetCorrectedURL(value);
-                medium = value;
+                _medium = value;
+
+                MediumCorrected = GetCorrectedURL(_medium);
+                
+                //Id = _medium.Split("/").Last();
             }
         }
 
-        string small = string.Empty;
+        string _small = string.Empty;
             
         public string Small
         {
             get
             {
-                return small;
+                return _small;
             }
             
             set
             {
                 SmallCorrected = GetCorrectedURL(value);
-                small = value;
+                _small = value;
             }
         }
 

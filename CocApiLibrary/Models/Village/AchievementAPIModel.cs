@@ -1,13 +1,30 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
     public class AchievementAPIModel
     {
-        public string Tag { get; set; } = string.Empty;
+        [ForeignKey(nameof(VillageTag))]
+        public string VillageTag { get; set; } = string.Empty;
 
-        public string Name { get; set; } = string.Empty;
+        private string _name = string.Empty;
+        
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+        
+            set
+            {
+                _name = value;
+
+                UniquesNames();
+            }
+        }
 
         public int Stars { get; set; }
 
@@ -15,10 +32,33 @@ namespace CocApiLibrary.Models
 
         public int Target { get; set; }
 
-        public string Info { get; set; } = string.Empty;
+        private string _info = string.Empty;
+        
+        public string Info
+        {
+            get
+            {
+                return _info;
+            }
+        
+            set
+            {
+                _info = value;
+
+                UniquesNames();
+            }
+        }
 
         public string CompletionInfo { get; set; } = string.Empty;
 
-        public Village Village { get; set; }
+        public VillageType Village { get; set; }
+
+        private void UniquesNames()
+        {
+            if (Info == "Connect your account to Supercell ID for safe keeping.")
+            {
+                _name = "Keep your village safe2";
+            }
+        }
     }
 }

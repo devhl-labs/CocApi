@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -7,35 +8,38 @@ namespace CocApiLibrary.Models.Clan
 {
     public class CurrentWarFlags
     {
-        [JsonIgnore]
-        public bool WarEndingSoon { get; internal set; } = false;
+        [Key]
+        public string WarId { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public bool WarStartingSoon { get; internal set; } = false;
+        public bool WarEndingSoon { get; set; } = false;
 
         [JsonIgnore]
-        public bool WarIsAccessible { get; internal set; } = true;
+        public bool WarStartingSoon { get; set; } = false;
 
         [JsonIgnore]
-        public bool WarEndNotSeen { get; internal set; } = false;
+        public bool WarIsAccessible { get; set; } = true;
 
         [JsonIgnore]
-        public bool WarAnnounced { get; internal set; } = false;
+        public bool WarEndNotSeen { get; set; } = false;
+
+        [JsonIgnore]
+        public bool WarAnnounced { get; set; } = false;
 
 
         [JsonIgnore]
-        public bool WarStarted { get; internal set; } = false;
+        public bool WarStarted { get; set; } = false;
 
         [JsonIgnore]
-        public bool WarEnded { get; internal set; } = false;
+        public bool WarEnded { get; set; } = false;
 
         [JsonIgnore]
-        public bool AttacksNotSeen { get; internal set; } = false;
+        public bool AttacksNotSeen { get; set; } = false;
 
         [JsonIgnore]
-        public bool AttacksMissed { get; internal set; } = false;
+        public bool AttacksMissed { get; set; } = false;
 
         [JsonIgnore]
-        public bool WarEndSeen { get; internal set; } = false;
+        public bool WarEndSeen { get; set; } = false;
     }
 }

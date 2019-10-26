@@ -1,20 +1,17 @@
-﻿using System;
+﻿using CocApiLibrary.Exceptions;
+using CocApiLibrary.Models;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using static CocApiLibrary.Enums;
-using CocApiLibrary.Models;
-using System.Text.Json.Serialization;
-using System.Diagnostics;
-using CocApiLibrary.Exceptions;
-using System.Text.Json;
-using System.Collections.Concurrent;
-using Microsoft.Extensions.Logging;
 
 namespace CocApiLibrary
 {
@@ -24,16 +21,14 @@ namespace CocApiLibrary
         public static HttpClient ApiClient { get; } = new HttpClient();
 
         private readonly static string _source = "WebResponse   | ";
-        private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();        
+        private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
         private static CocApi _cocApi = new CocApi();
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
+
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
-
-
-
 
         public static List<WebResponseTimer> WebResponseTimers { get; } = new List<WebResponseTimer>();
 
@@ -57,19 +52,10 @@ namespace CocApiLibrary
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
-
         public static string GetTokenStatus()
         {
             return $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
         }
-
-
-
-
-
-
-
-
 
         private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
         {
@@ -82,14 +68,13 @@ namespace CocApiLibrary
                     await Task.Delay(50);
                 }
 
-                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUTC).FirstOrDefault().GetTokenAsync(endPoint, url);
+                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).FirstOrDefault().GetTokenAsync(endPoint, url);
             }
             finally
             {
                 SemaphoreSlim.Release();
             }
         }
-
 
         internal static List<WebResponseTimer> GetTimers() => WebResponseTimers;
 
@@ -112,7 +97,7 @@ namespace CocApiLibrary
                 stopwatch.Start();
 
                 using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cts.Token);
-                
+
                 stopwatch.Stop();
 
                 string responseText = response.Content.ReadAsStringAsync().Result;
@@ -142,7 +127,6 @@ namespace CocApiLibrary
                     {
                         throw new CocApiException("The response could not be parsed.");
                     }
-
                 }
                 else
                 {
@@ -154,43 +138,36 @@ namespace CocApiLibrary
                     {
                         throw new BadRequestException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden) //403
                     {
                         throw new ForbiddenException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) //404
                     {
                         throw new NotFoundException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests) //429
                     {
                         token.IsRateLimited = true;
 
                         throw new TooManyRequestsException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError) //500
                     {
                         throw new InternalServerErrorException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway) //502
                     {
                         _cocApi.IsAvailable = false;
 
                         throw new BadGateWayException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable) //503
                     {
                         _cocApi.IsAvailable = false;
 
                         throw new ServiceUnavailableException(ex, response.StatusCode);
                     }
-
                     else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)  //504
                     {
                         _cocApi.IsAvailable = false;
@@ -222,74 +199,108 @@ namespace CocApiLibrary
         {
             if (result is ClanAPIModel clan)
             {
-                if (clan.BadgeUrls != null) clan.BadgeUrls.Tag = clan.Tag;
+                //if (clan.BadgeUrls != null) clan.BadgeUrls.ClanTag = clan.ClanTag;
 
-                if (clan.Members != null)
+                if (clan.Villages != null)
                 {
-                    foreach(var member in clan.Members)
+                    foreach (var clanVillage in clan.Villages)
                     {
-                        member.ClanTag = clan.Tag;
+                        clanVillage.ClanTag = clan.ClanTag;
                     }
                 }
-            }
 
+                if (clan.BadgeUrls != null)
+                {
+                    clan.BadgeUrlsId = clan.BadgeUrls.Id;
+                }
+
+                if (clan.Location != null)
+                {
+                    clan.LocationId = clan.Location.Id;
+                }
+            }
 
             if (result is VillageAPIModel village)
             {
                 if (village.LegendStatistics != null)
                 {
-                    village.LegendStatistics.Tag = village.Tag;
+                    village.LegendStatistics.VillageTag = village.VillageTag;
 
-                    if (village.LegendStatistics.BestSeason != null) village.LegendStatistics.BestSeason.Tag = village.Tag;
+                    if (village.LegendStatistics.BestSeason != null) village.LegendStatistics.BestSeason.VillageTag = village.VillageTag;
 
-                    if (village.LegendStatistics.CurrentSeason != null) village.LegendStatistics.CurrentSeason.Tag = village.Tag;
+                    if (village.LegendStatistics.CurrentSeason != null) village.LegendStatistics.CurrentSeason.VillageTag = village.VillageTag;
 
-                    if (village.LegendStatistics.PreviousSeason != null) village.LegendStatistics.PreviousSeason.Tag = village.Tag;
+                    if (village.LegendStatistics.PreviousVersusSeason != null) village.LegendStatistics.PreviousVersusSeason.VillageTag = village.VillageTag;
 
-                    if (village.LegendStatistics.PreviousVersusSeason != null) village.LegendStatistics.PreviousVersusSeason.Tag = village.Tag;
+                    if (village.LegendStatistics.PreviousVersusSeason != null) village.LegendStatistics.PreviousVersusSeason.VillageTag = village.VillageTag;
                 }
 
-                foreach(var spell in village.Spells.EmptyIfNull())
+                foreach (var spell in village.Spells.EmptyIfNull())
                 {
-                    spell.Tag = village.Tag;
+                    spell.VillageTag = village.VillageTag;
                 }
 
-                foreach(var troop in village.Troops.EmptyIfNull())
+                foreach (var troop in village.Troops.EmptyIfNull())
                 {
-                    troop.Tag = village.Tag;
-                }                
+                    troop.VillageTag = village.VillageTag;
+                }
+
+                //if (village.Clan != null)
+                //{
+                //    if (village.Clan.BadgeUrls != null)
+                //    {
+                //        village.Clan.BadgeUrls.ClanTag = village.Clan.ClanTag;
+                //    }
+                //}
             }
 
             if (result is LeagueGroupAPIModel group)
             {
-                group.GroupID = $"{group.Season.ToString()}{group.Clans.OrderBy(c => c.Tag).First().Tag}";
+                group.GroupId = $"{group.Season.ToString()}{group.Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
 
-                foreach(var leagueClan in group.Clans.EmptyIfNull())
+                foreach (var leagueClan in group.Clans.EmptyIfNull())
                 {
-                    leagueClan.GroupID = group.GroupID;
+                    leagueClan.GroupId = group.GroupId;
 
-                    foreach(var member in leagueClan.Members.EmptyIfNull())
+                    foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
                     {
-                        member.ClanTag = leagueClan.Tag;
+                        leagueVillage.ClanTag = leagueClan.ClanTag;
                     }
 
-                    if (leagueClan.BadgeUrls != null) leagueClan.BadgeUrls.Tag = leagueClan.Tag;                    
+                    //if (leagueClan.BadgeUrls != null) leagueClan.BadgeUrls.ClanTag = leagueClan.ClanTag;
+                }
+
+                foreach(var round in group.Rounds.EmptyIfNull())
+                {
+                    round.RoundId = $"{group.Season.ToShortDateString()};{group.Clans.OrderBy(c => c.ClanTag).First().ClanTag};{group.Rounds!.IndexOf(round)}";
                 }
             }
 
             if (result is CurrentWarAPIModel war)
             {
-                foreach(var attack in war.Attacks.EmptyIfNull())
+                foreach (var attack in war.Attacks.EmptyIfNull())
                 {
-                    attack.WarID = war.WarID;
+                    attack.WarId = war.WarId;
+
+                    //attack.AttackId = $"{attack.WarID};{attack.Order}";
+                    //attack.AttackId = attack.Order.ToString();
                 }
 
-                foreach(var warClan in war.Clans)
+                foreach (var warClan in war.Clans)
                 {
-                    warClan.WarID = war.WarID;
+                    warClan.WarId = war.WarId;
+
+                    foreach(var warVillage in warClan.Villages.EmptyIfNull())
+                    {
+                        warVillage.WarClanId = warClan.WarClanId;
+                    }
+
+                    //if (warClan.BadgeUrls != null)
+                    //{
+                    //    warClan.BadgeUrls.ClanTag = warClan.ClanTag;
+                    //}
                 }
             }
-
         }
 
         private static void SetIDownloadableProperties<T>(T result, string encodedURL) where T : class, IDownloadable, new()
@@ -318,7 +329,7 @@ namespace CocApiLibrary
                     {
                         currentWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarAPIModelTimeToLive);
                     }
-                    
+
                     currentWar.EncodedUrl = encodedURL;
                     break;
 
@@ -331,7 +342,7 @@ namespace CocApiLibrary
                     {
                         leagueGroupAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupAPIModelTimeToLive);
                     }
-                    
+
                     leagueGroupAPIModel.EncodedUrl = encodedURL;
                     break;
 
@@ -356,5 +367,3 @@ namespace CocApiLibrary
         }
     }
 }
-
-

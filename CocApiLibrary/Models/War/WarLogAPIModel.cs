@@ -1,6 +1,7 @@
 ﻿using CocApiLibrary.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
@@ -11,7 +12,7 @@ namespace CocApiLibrary.Models
 
         public PagingAPIModel? Paging { get; set; }
 
-        public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
+        public DateTime DateTimeUtc { get; internal set; } = DateTime.UtcNow;
 
         public DateTime Expires { get; internal set; }
 

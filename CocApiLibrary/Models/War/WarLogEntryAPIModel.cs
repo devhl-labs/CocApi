@@ -18,7 +18,7 @@ namespace CocApiLibrary.Models
 
         [JsonPropertyName("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime EndTimeUTC { get; set; }
+        public DateTime EndTimeUtc { get; set; }
 
     }
 }

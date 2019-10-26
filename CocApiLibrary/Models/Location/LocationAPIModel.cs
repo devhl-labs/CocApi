@@ -2,7 +2,7 @@
 
 namespace CocApiLibrary.Models
 {
-    public class LocationModel
+    public class LocationAPIModel
     {
         public int Id { get; set; }
 

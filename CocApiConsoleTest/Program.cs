@@ -27,6 +27,8 @@ namespace CocApiConsoleTest
 
             InitializeCocApi(host.Services);
 
+            var clan = await _cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
+
             host.Services.GetRequiredService<EventHandlerService>();
 
             host.Run();
@@ -63,9 +65,9 @@ namespace CocApiConsoleTest
 
             _cocApi.Initialize(cocApiConfiguration, serviceProvider.GetRequiredService<LogService>());
 
-            _cocApi.DownloadLeagueWars = DownloadLeagueWars.Auto;
+            _cocApi.DownloadLeagueWars = DownloadLeagueWars.True;
 
-            _cocApi.DownloadVillages = false;            
+            _cocApi.DownloadVillages = true;            
             
             List<string> clans = new List<string>
             {
@@ -77,7 +79,7 @@ namespace CocApiConsoleTest
                 "#P989QU9P",   // Burlap Thongs
             };
 
-            _cocApi.WatchClans(clans);
+            //_cocApi.WatchClans(clans);
 
             _cocApi.BeginUpdatingClans();
 

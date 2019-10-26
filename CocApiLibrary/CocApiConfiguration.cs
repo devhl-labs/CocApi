@@ -6,7 +6,7 @@ using CocApiLibrary.Exceptions;
 
 namespace CocApiLibrary
 {
-    public class CocApiConfiguration
+    public sealed class CocApiConfiguration
     {
         /// <summary>
         /// List of tokens used to query the SC API

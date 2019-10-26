@@ -2,6 +2,8 @@
 using CocApiLibrary.Models.Clan;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -11,26 +13,26 @@ namespace CocApiLibrary.Models
 {
     public class CurrentWarAPIModel : IDownloadable, IInitialize, ICurrentWarAPIModel
     {
-        private DateTime _endTimeUTC;
+        private DateTime _endTimeUtc;
 
         [JsonPropertyName("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime EndTimeUTC
+        public DateTime EndTimeUtc
         {
             get
             {
-                return _endTimeUTC;
+                return _endTimeUtc;
             }
 
             set
             {
-                if (_endTimeUTC != value)
+                if (_endTimeUtc != value)
                 {
-                    _endTimeUTC = value;
+                    _endTimeUtc = value;
 
-                    WarEndingSoonUTC = _endTimeUTC.AddHours(-1);
+                    WarEndingSoonUtc = _endTimeUtc.AddHours(-1);
 
-                    if (DateTime.UtcNow > WarEndingSoonUTC)
+                    if (DateTime.UtcNow > WarEndingSoonUtc)
                     {
                         Flags.WarEndingSoon = true;
                     }
@@ -40,29 +42,29 @@ namespace CocApiLibrary.Models
 
         [JsonPropertyName("preparationStartTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime PreparationStartTimeUTC { get; set; }
+        public DateTime PreparationStartTimeUtc { get; set; }
 
 
-        private DateTime _startTimeUTC;
+        private DateTime _startTimeUtc;
 
         [JsonPropertyName("startTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime StartTimeUTC
+        public DateTime StartTimeUtc
         {
             get
             {
-                return _startTimeUTC;
+                return _startTimeUtc;
             }
 
             set
             {
-                if (_startTimeUTC != value)
+                if (_startTimeUtc != value)
                 {
-                    _startTimeUTC = value;
+                    _startTimeUtc = value;
 
-                    WarStartingSoonUTC = _startTimeUTC.AddHours(-1);
+                    WarStartingSoonUtc = _startTimeUtc.AddHours(-1);
 
-                    if (DateTime.UtcNow > WarStartingSoonUTC)
+                    if (DateTime.UtcNow > WarStartingSoonUtc)
                     {
                         Flags.WarStartingSoon = true;
                     }
@@ -77,6 +79,7 @@ namespace CocApiLibrary.Models
         /// <summary>
         /// Do not use this property.  Instead, use the Clans property.
         /// </summary>
+        [NotMapped]
         public WarClanAPIModel? Clan
         {
             get { return _clan; }
@@ -95,6 +98,7 @@ namespace CocApiLibrary.Models
         /// <summary>
         /// Do not use this property.  Instead, use the Clans property.
         /// </summary>
+        [NotMapped]
         public WarClanAPIModel? Opponent
         {
             get { return _opponent; }
@@ -132,49 +136,54 @@ namespace CocApiLibrary.Models
 
 
 
-        [JsonIgnore]
-        public IList<WarClanAPIModel> Clans { get; set; } = new List<WarClanAPIModel>();
 
         [JsonIgnore]
-        public List<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
+        [ForeignKey(nameof(WarId))]
+        
+        public virtual IList<WarClanAPIModel> Clans { get; set; } = new List<WarClanAPIModel>();
 
-        /// <summary>
-        /// This amalgamation is a composite key of the preparation start time and clan tags in alphabetical order.
-        /// </summary>
         [JsonIgnore]
-        public string WarID { get; set; } = string.Empty;
+        [ForeignKey(nameof(WarId))]
+        public virtual List<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
+
+        [JsonIgnore]
+        [Key]
+        public string WarId { get; set; } = string.Empty;
 
         [JsonIgnore]
         public WarType WarType { get; set; } = WarType.Random;
 
         [JsonIgnore]
-        public DateTime WarEndingSoonUTC { get; internal set; }
+        public DateTime WarEndingSoonUtc { get; set; }
 
         [JsonIgnore]
-        public DateTime WarStartingSoonUTC { get; internal set; }
+        public DateTime WarStartingSoonUtc { get; set; }
 
         [JsonIgnore]
-        public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
+        [ForeignKey(nameof(WarId))]
+        public virtual CurrentWarFlags Flags { get; set; } = new CurrentWarFlags();
 
 
 
+        public DateTime DateTimeUtc { get; set; } = DateTime.UtcNow;
 
+        public DateTime Expires { get; set; }
 
-        public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
-
-        public DateTime Expires { get; internal set; }
-
-        public string EncodedUrl { get; internal set; } = string.Empty;
+        public string EncodedUrl { get; set; } = string.Empty;
 
 
 
         public void Initialize()
         {
-            Clans = Clans.OrderBy(x => x.Tag).ToList();
+            Clans = Clans.OrderBy(x => x.ClanTag).ToList();
 
-            WarID = $"{PreparationStartTimeUTC};{Clans[0].Tag};{Clans[1].Tag}";
+            WarId = $"{PreparationStartTimeUtc};{Clans[0].ClanTag}";
 
-            TimeSpan timeSpan = StartTimeUTC - PreparationStartTimeUTC;
+            //ClanTag1 = Clans.First().ClanTag;
+
+            Flags.WarId = WarId;
+
+            TimeSpan timeSpan = StartTimeUtc - PreparationStartTimeUtc;
 
             if (timeSpan.TotalHours == 24
                 || timeSpan.TotalHours == 20
@@ -225,9 +234,9 @@ namespace CocApiLibrary.Models
 
             foreach (WarClanAPIModel clan in Clans)
             {
-                foreach (MemberAPIModel member in clan.Members.EmptyIfNull())
+                foreach (WarVillageAPIModel warVillage in clan.Villages.EmptyIfNull())
                 {
-                    foreach (AttackAPIModel attack in member.Attacks.EmptyIfNull())
+                    foreach (AttackAPIModel attack in warVillage.Attacks.EmptyIfNull())
                     {
                         if (!Attacks.Any(a => a.Order == attack.Order))
                         {
@@ -250,19 +259,19 @@ namespace CocApiLibrary.Models
             {
                 foreach(var clan in Clans)
                 {
-                    MemberAPIModel? attacker = clan.Members.FirstOrDefault(m => m.Tag == attack.AttackerTag);
+                    WarVillageAPIModel? attacker = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.AttackerTag);
 
-                    if (attacker != null) attack.AttackerClanTag = clan.Tag;
+                    if (attacker != null) attack.AttackerClanTag = clan.ClanTag;
 
-                    MemberAPIModel? defender = clan.Members.FirstOrDefault(m => m.Tag == attack.DefenderTag);
+                    WarVillageAPIModel? defender = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.DefenderTag);
 
-                    if (defender != null) attack.DefenderClanTag = clan.Tag;
+                    if (defender != null) attack.DefenderClanTag = clan.ClanTag;
                 }
             }
 
             foreach (WarClanAPIModel clan in Clans)
             {
-                clan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == clan.Tag);
+                clan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == clan.ClanTag);
             }
 
         }
@@ -273,7 +282,7 @@ namespace CocApiLibrary.Models
 
             if (State == WarState.WarEnded) return true;
 
-            if (Clans[0].Members.All(m => m.Attacks?.Count() == 2) && Clans[1].Members.All(m => m.Attacks?.Count() == 2)) return true;
+            if (Clans[0].Villages.All(m => m.Attacks?.Count() == 2) && Clans[1].Villages.All(m => m.Attacks?.Count() == 2)) return true;
 
             return false;
         }
@@ -307,11 +316,11 @@ namespace CocApiLibrary.Models
 
                 UpdateLeagueTeamSize(cocApi, leagueGroupAPIModel);
 
-                if (downloadedWar?.WarID == WarID)
+                if (downloadedWar?.WarId == WarId)
                 {
                     Expires = downloadedWar.Expires;
 
-                    DateTimeUTC = downloadedWar.DateTimeUTC;
+                    DateTimeUtc = downloadedWar.DateTimeUtc;
                 }
             }
         }
@@ -326,7 +335,7 @@ namespace CocApiLibrary.Models
                 
                 foreach(var clan in Clans)
                 {
-                    if (cocApi.AllClans.TryGetValue(clan.Tag, out ClanAPIModel storedClan))
+                    if (cocApi.AllClans.TryGetValue(clan.ClanTag, out ClanAPIModel storedClan))
                     {
                         //we only announce wars if this flag is false to avoid spamming new war events when the program starts.
                         if (storedClan.AnnounceWars)
@@ -344,48 +353,48 @@ namespace CocApiLibrary.Models
 
         private void SendWarNotifications(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if (Flags.WarIsAccessible && (downloadedWar == null || downloadedWar.WarID != WarID))
+            if (Flags.WarIsAccessible && (downloadedWar == null || downloadedWar.WarId != WarId))
             {
                 Flags.WarIsAccessible = false;
 
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
-            else if (!Flags.WarIsAccessible && (downloadedWar?.WarID == WarID))
+            else if (!Flags.WarIsAccessible && (downloadedWar?.WarId == WarId))
             {
                 Flags.WarIsAccessible = true;
 
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
 
-            if (!Flags.WarStartingSoon && State == WarState.Preparation && DateTime.UtcNow > WarStartingSoonUTC)
+            if (!Flags.WarStartingSoon && State == WarState.Preparation && DateTime.UtcNow > WarStartingSoonUtc)
             {
                 cocApi.WarStartingSoonEvent(this);
 
                 Flags.WarEndingSoon = true;
             }
 
-            if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUTC)
+            if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUtc)
             {
                 cocApi.WarEndingSoonEvent(this);
 
                 Flags.WarEndingSoon = true;
             }
 
-            if (!Flags.WarEndNotSeen && (downloadedWar == null || WarID != downloadedWar.WarID) && EndTimeUTC < DateTime.UtcNow)
+            if (!Flags.WarEndNotSeen && (downloadedWar == null || WarId != downloadedWar.WarId) && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEndNotSeen = true;
 
                 cocApi.WarEndNotSeenEvent(this);
             }
 
-            if (!Flags.WarStarted && StartTimeUTC < DateTime.UtcNow)
+            if (!Flags.WarStarted && StartTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarStarted = true;
 
                 cocApi.WarStartedEvent(this);
             }
 
-            if (!Flags.WarEnded && EndTimeUTC < DateTime.UtcNow)
+            if (!Flags.WarEnded && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEnded = true;
 
@@ -402,33 +411,33 @@ namespace CocApiLibrary.Models
 
         private void UpdateWar(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if (downloadedWar == null || downloadedWar.WarID != WarID) return;
+            if (downloadedWar == null || downloadedWar.WarId != WarId) return;
             
             foreach(var clan in Clans)
             {
-                clan.BadgeUrls = downloadedWar.Clans.First(c => c.Tag == clan.Tag).BadgeUrls;
+                clan.BadgeUrls = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).BadgeUrls;
 
-                clan.ClanLevel = downloadedWar.Clans.First(c => c.Tag == clan.Tag).ClanLevel;
+                clan.ClanLevel = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).ClanLevel;
 
-                clan.Name = downloadedWar.Clans.First(c => c.Tag == clan.Tag).Name;
+                clan.Name = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Name;
             }
 
-            if (EndTimeUTC != downloadedWar.EndTimeUTC ||
-                StartTimeUTC != downloadedWar.StartTimeUTC ||
+            if (EndTimeUtc != downloadedWar.EndTimeUtc ||
+                StartTimeUtc != downloadedWar.StartTimeUtc ||
                 State != downloadedWar.State
             )
             {
                 cocApi.WarChangedEvent(this, downloadedWar);
 
-                EndTimeUTC = downloadedWar.EndTimeUTC;
-                StartTimeUTC = downloadedWar.StartTimeUTC;
+                EndTimeUtc = downloadedWar.EndTimeUtc;
+                StartTimeUtc = downloadedWar.StartTimeUtc;
                 State = downloadedWar.State;
             }
         }
 
         private void UpdateAttacks(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
         {
-            if (downloadedWar == null || downloadedWar.WarID != WarID) return;
+            if (downloadedWar == null || downloadedWar.WarId != WarId) return;
 
             List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
 
@@ -442,18 +451,18 @@ namespace CocApiLibrary.Models
 
             foreach(WarClanAPIModel clan in Clans)
             {
-                foreach(MemberAPIModel member in clan.Members.EmptyIfNull())
+                foreach(WarVillageAPIModel warVillage in clan.Villages.EmptyIfNull())
                 {
-                    foreach(AttackAPIModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == member.Tag))
+                    foreach(AttackAPIModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag))
                     {
-                        if (!member.Attacks.Any(a => a.Order == downloadedAttack.Order))
+                        if (!warVillage.Attacks.Any(a => a.Order == downloadedAttack.Order))
                         {
-                            if (member.Attacks == null)
+                            if (warVillage.Attacks == null)
                             {
-                                member.Attacks = new List<AttackAPIModel>();
+                                warVillage.Attacks = new List<AttackAPIModel>();
                             }
 
-                            member.Attacks.Add(downloadedAttack);
+                            warVillage.Attacks.Add(downloadedAttack);
                         }
                     }
                 }
@@ -461,13 +470,13 @@ namespace CocApiLibrary.Models
 
             foreach (var clan in Clans)
             {
-                clan.AttackCount = downloadedWar.Clans.First(c => c.Tag == clan.Tag).AttackCount;
+                clan.AttackCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).AttackCount;
 
-                clan.DefenseCount = downloadedWar.Clans.First(c => c.Tag == clan.Tag).DefenseCount;
+                clan.DefenseCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DefenseCount;
 
-                clan.DestructionPercentage = downloadedWar.Clans.First(c => c.Tag == clan.Tag).DestructionPercentage;
+                clan.DestructionPercentage = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DestructionPercentage;
 
-                clan.Stars = downloadedWar.Clans.First(c => c.Tag == clan.Tag).Stars;
+                clan.Stars = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Stars;
             }
 
             cocApi.NewAttacksEvent(this, newAttacks);

@@ -1,10 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Collections;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
     public class AttackAPIModel
     {
-        public string WarID { get; internal set; } = string.Empty;
+        public DateTime PreparationStartTimeUtc { get; set; }
+
+        public string WarId { get; set; } = string.Empty;
 
         public string AttackerTag { get; set; } = string.Empty;
 
@@ -15,7 +20,6 @@ namespace CocApiLibrary.Models
         public int DestructionPercentage { get; set; }
 
         public int Order { get; set; }
-
 
 
 

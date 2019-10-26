@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using CocApiLibrary.Converters;
@@ -9,25 +11,51 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary
 {
-    public class VillageAPIModel : CommonMethods, IVillageAPIModel, IDownloadable
+    public class VillageAPIModel : SwallowDelegates, IVillageAPIModel, IDownloadable
     {
-        
-        private string _tag = string.Empty;
-        
-        public string Tag
+        // IVillageAPIModel
+        [Key]
+        [JsonPropertyName("Tag")]
+        public string VillageTag
         {
             get
             {
-                return _tag;
+                return _villageTag;
             }
-        
+
             set
             {
-                _tag = value.ToUpper();
+                _villageTag = value.ToUpper();
+
+                SetRelationalProperties();
             }
         }
 
         public string Name { get; set; } = string.Empty;
+
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        private string _clanTag;
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+        public string ClanTag
+        {
+            get
+            {
+                return _clanTag;
+            }
+
+            set
+            {
+                _clanTag = value;
+
+                SetRelationalProperties();
+            }
+        }
+
+
+
+
+        private string _villageTag = string.Empty;
 
         public int TownHallLevel { get; set; }
 
@@ -45,7 +73,8 @@ namespace CocApiLibrary
 
         public int DefenseWins { get; set; }
 
-        public LegendLeagueStatisticsAPIModel? LegendStatistics { get; set; }
+        [ForeignKey(nameof(VillageTag))]
+        public virtual LegendLeagueStatisticsAPIModel? LegendStatistics { get; set; }
 
         public int BuilderHallLevel { get; set; }
 
@@ -62,23 +91,160 @@ namespace CocApiLibrary
 
         public int DonationsReceived { get; set; }
 
-        public SimpleClanAPIModel? Clan { get; set; }
 
-        public LeagueAPIModel? League { get; set; }
+        private SimpleClanAPIModel? _clan;
 
-        public IEnumerable<AchievementAPIModel>? Achievements { get; set; }
+
+        [ForeignKey(nameof(ClanTag))]
+        [NotMapped]
+        public SimpleClanAPIModel? Clan
+        {
+            get
+            {
+                return _clan;
+            }
+        
+            set
+            {
+                _clan = value;
+
+                SetRelationalProperties();
+            }
+        }
+
+        private LeagueAPIModel? _league;
+
+        public virtual LeagueAPIModel? League
+        {
+            get
+            {
+                return _league;
+            }
+        
+            set
+            {
+                _league = value;
+
+                if (_league != null)
+                {
+                    LeagueId = _league.Id;
+                }
+            }
+        }
+
+        public int LeagueId { get; set; }
+
+        private IEnumerable<AchievementAPIModel>? _achievements;
+
+        [ForeignKey(nameof(VillageTag))]
+        public virtual IEnumerable<AchievementAPIModel>? Achievements
+        {
+            get
+            {
+                return _achievements;
+            }
+        
+            set
+            {
+                _achievements = value;
+
+                SetRelationalProperties();
+            }
+        }
 
         public int VersusBattleWinCount { get; set; }
 
-        public IEnumerable<TroopAPIModel>? Troops { get; set; }
 
-        public IEnumerable<TroopAPIModel>? Heroes { get; set; }
+        private IEnumerable<TroopAPIModel>? _troops;
+        
+        [NotMapped]
+        public virtual IEnumerable<TroopAPIModel>? Troops
+        {
+            get
+            {
+                return _troops;
+            }
+        
+            set
+            {
+                _troops = value;
 
-        public IEnumerable<LabelAPIModel>? Labels { get; set; }
+                foreach(var troop in Troops.EmptyIfNull())
+                {
+                    AllTroops.Add(troop);
+                }
 
-        public IEnumerable<SpellAPIModel>? Spells { get; set; }
+                SetRelationalProperties();
+            }
+        }
 
-        public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
+
+        private IEnumerable<TroopAPIModel>? _heroes;
+        
+        [NotMapped]
+        public virtual IEnumerable<TroopAPIModel>? Heroes
+        {
+            get
+            {
+                return _heroes;
+            }
+        
+            set
+            {
+                _heroes = value;
+
+                foreach(var hero in Heroes.EmptyIfNull())
+                {
+                    hero.IsHero = true;
+
+                    AllTroops.Add(hero);
+                }
+
+                SetRelationalProperties();
+            }
+        }
+
+        [ForeignKey(nameof(VillageTag))]
+        public virtual IList<TroopAPIModel> AllTroops { get; set; } = new List<TroopAPIModel>();
+
+        private IEnumerable<VillageLabelAPIModel>? _labels;
+
+        [ForeignKey("VillageTag")]
+        public virtual IEnumerable<VillageLabelAPIModel>? Labels
+        {
+            get
+            {
+                return _labels;
+            }
+        
+            set
+            {
+                _labels = value;
+
+                SetRelationalProperties();
+            }
+        }
+
+
+        private IEnumerable<SpellAPIModel>? _spells;
+
+        [ForeignKey(nameof(VillageTag))]
+        public virtual IEnumerable<SpellAPIModel>? Spells
+        {
+            get
+            {
+                return _spells;
+            }
+        
+            set
+            {
+                _spells = value;
+
+                SetRelationalProperties();
+            }
+        }
+
+        public DateTime DateTimeUtc { get; internal set; } = DateTime.UtcNow;
 
         public DateTime Expires { get; internal set; }
 
@@ -136,7 +302,7 @@ namespace CocApiLibrary
 
                 Swallow(() => UpdateLegendLeagueStatistics(cocApi, downloadedVillage), nameof(UpdateLegendLeagueStatistics));
 
-                DateTimeUTC = downloadedVillage.DateTimeUTC;
+                DateTimeUtc = downloadedVillage.DateTimeUtc;
 
                 Expires = downloadedVillage.Expires;
             }
@@ -172,11 +338,11 @@ namespace CocApiLibrary
             }
             else
             {
-                List<LabelAPIModel> added = new List<LabelAPIModel>();
+                List<VillageLabelAPIModel> added = new List<VillageLabelAPIModel>();
 
-                List<LabelAPIModel> removed = new List<LabelAPIModel>();
+                List<VillageLabelAPIModel> removed = new List<VillageLabelAPIModel>();
 
-                foreach (LabelAPIModel labelAPIModel in Labels.EmptyIfNull())
+                foreach (VillageLabelAPIModel labelAPIModel in Labels.EmptyIfNull())
                 {
                     if (!downloadedVillage.Labels.Any(l => l.Id == labelAPIModel.Id))
                     {
@@ -184,7 +350,7 @@ namespace CocApiLibrary
                     }
                 }
 
-                foreach (LabelAPIModel labelAPIModel in downloadedVillage.Labels.EmptyIfNull())
+                foreach (VillageLabelAPIModel labelAPIModel in downloadedVillage.Labels.EmptyIfNull())
                 {
                     if (!Labels.Any(l => l.Id == labelAPIModel.Id))
                     {
@@ -423,12 +589,53 @@ namespace CocApiLibrary
             }
         }
 
+        private void SetRelationalProperties()
+        {
+            if (_villageTag != null && Labels != null)
+            {
+                foreach(var label in Labels)
+                {
+                    label.VillageTag = VillageTag;
+                }
+            }
 
+            if (_clan != null)
+            {
+                _clanTag = _clan.ClanTag;
+            }
 
+            if (_villageTag != null && _achievements != null)
+            {
+                foreach(var achievement in _achievements)
+                {
+                    achievement.VillageTag = VillageTag;
+                }
+            }      
+            
+            if (_villageTag != null && _troops != null)
+            {
+                foreach(var troop in _troops)
+                {
+                    troop.VillageTag = _villageTag;
+                }
+            }
 
+            if (_villageTag != null && _spells != null)
+            {
+                foreach(var spell in _spells)
+                {
+                    spell.VillageTag = _villageTag;
+                }
+            }
 
-
-
-
+            if (_villageTag != null && _heroes != null)
+            {
+                foreach(var hero in _heroes)
+                {
+                    hero.VillageTag = _villageTag;
+                }
+            }
+                
+        }
     }
 }

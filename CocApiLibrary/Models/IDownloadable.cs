@@ -6,7 +6,7 @@ namespace CocApiLibrary.Models
 {
     public interface IDownloadable
     {
-        DateTime DateTimeUTC { get; }
+        DateTime DateTimeUtc { get; }
 
         DateTime Expires { get; }
 

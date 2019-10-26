@@ -1,11 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
     public class TroopAPIModel
     {
-        public string Tag { get; set; } = string.Empty;
+        public string VillageTag { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;
 
@@ -13,6 +14,8 @@ namespace CocApiLibrary.Models
 
         public int MaxLevel { get; set; }
 
-        public Village Village { get; set; }
+        public VillageType Village { get; set; }
+
+        public bool IsHero { get; set; }   
     }
 }

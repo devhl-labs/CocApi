@@ -35,6 +35,7 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.0-preview1.19506.2" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.0-preview1.19506.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.0-preview1.19506.1" />
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />

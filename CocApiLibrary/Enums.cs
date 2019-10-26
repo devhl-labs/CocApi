@@ -85,7 +85,7 @@ namespace CocApiLibrary
             SCCWL = 2
         }
 
-        public enum ClanType : int
+        public enum RecruitmentType : int
         {
             [EnumMember(Value = "InviteOnly")]
             InviteOnly = 0,
@@ -95,7 +95,7 @@ namespace CocApiLibrary
             Open = 2
         }
 
-        public enum Village : int
+        public enum VillageType : int
         {
             [EnumMember(Value = "Home")]
             Home = 0,

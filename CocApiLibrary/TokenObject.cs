@@ -11,7 +11,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary
 {
-    internal class TokenObject
+    internal sealed class TokenObject
     {
         private bool _isRateLimited = false;
         private readonly System.Timers.Timer _clearRateLimitTimer = new System.Timers.Timer();
@@ -21,7 +21,7 @@ namespace CocApiLibrary
 
         public string Token { get; }
 
-        public DateTime LastUsedUTC { get; private set; } = DateTime.UtcNow.AddSeconds(-30);  //so it does not preemptive rate limit when the program starts
+        public DateTime LastUsedUtc { get; private set; } = DateTime.UtcNow.AddSeconds(-30);  //so it does not preemptive rate limit when the program starts
 
         public bool IsRateLimited
         {
@@ -61,7 +61,7 @@ namespace CocApiLibrary
 
         public async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
         {
-            TimeSpan timeSpan = DateTime.UtcNow - LastUsedUTC;
+            TimeSpan timeSpan = DateTime.UtcNow - LastUsedUtc;
 
             bool notified = false;
 
@@ -78,10 +78,10 @@ namespace CocApiLibrary
                     notified = true;
                 }
 
-                timeSpan = DateTime.UtcNow - LastUsedUTC;
+                timeSpan = DateTime.UtcNow - LastUsedUtc;
             }
 
-            LastUsedUTC = DateTime.UtcNow;
+            LastUsedUtc = DateTime.UtcNow;
 
             return this;
         }

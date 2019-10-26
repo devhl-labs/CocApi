@@ -9,7 +9,7 @@ namespace CocApiLibrary
     {
         public EndPoint EndPoint { get; }
         public TimeSpan TimeSpan { get; }
-        public DateTime DateTimeCreatedUTC { get; } = DateTime.UtcNow;
+        public DateTime DateTimeCreatedUtc { get; } = DateTime.UtcNow;
         public HttpStatusCode? HttpStatusCode { get; }
 
         public WebResponseTimer(EndPoint endPoint, TimeSpan timeSpan, HttpStatusCode? httpStatusCode = null)

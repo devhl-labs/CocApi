@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
 using static CocApiLibrary.Enums;
@@ -9,21 +11,12 @@ using static CocApiLibrary.Extensions;
 
 namespace CocApiLibrary.Models
 {
-    public class ClanAPIModel : CommonMethods, IClanAPIModel, IDownloadable
+    public class ClanAPIModel : SwallowDelegates, IClanAPIModel, IDownloadable
     {
-        /// <summary>
-        /// Controls whether this clan will download village members.
-        /// </summary>
-        public bool DownloadVillages { get; set; } = true;
-
-        /// <summary>
-        /// Controls whether this clan will download league wars.
-        /// </summary>
-        public bool DownloadLeagueWars { get; set; } = true;
-
-        private string _tag = string.Empty;
-        
-        public string Tag
+        // IClanAPIModel
+        [Key]
+        [JsonPropertyName("Tag")]
+        public string ClanTag
         {
             get
             {
@@ -37,26 +30,67 @@ namespace CocApiLibrary.Models
         		    _tag = value;
         	        
                     EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(_tag)}";
+
+                    SetRelationalProperties();
                 }
             }
         }
 
         public string Name { get; set; } = string.Empty;
 
-        public BadgeUrlModel? BadgeUrls { get; set; }
+        //[NotMapped]
+        public virtual BadgeUrlModel? BadgeUrls { get; set; }
 
         public int ClanLevel { get; set; }
 
-        public IEnumerable<LabelAPIModel>? Labels { get; set; }
+        public virtual LocationAPIModel? Location { get; set; }
+
+        private IEnumerable<ClanLabelAPIModel>? _labels;
+
+        [ForeignKey(nameof(ClanTag))]
+        public virtual IEnumerable<ClanLabelAPIModel>? Labels
+        {
+            get
+            {
+                return _labels;
+            }
+
+            set
+            {
+                _labels = value;
+
+                SetRelationalProperties();
+            }
+        }
+
+
+
+        public string? BadgeUrlsId { get; set; } = string.Empty;
+
+        public int? LocationId { get; set; }                     
+
+        /// <summary>
+        /// Controls whether this clan will download villages.
+        /// </summary>
+        public bool DownloadVillages { get; set; } = true;
+
+        /// <summary>
+        /// Controls whether this clan will download league wars.
+        /// </summary>
+        public bool DownloadLeagueWars { get; set; } = true;
+
+        private string _tag = string.Empty;
 
         [JsonPropertyName("memberList")]
-        public IList<MemberListAPIModel>? Members { get; set; }
+        [ForeignKey(nameof(ClanTag))]
+        public virtual IList<ClanVillageAPIModel>? Villages { get; set; }
 
-        public ClanType Type { get; set; }
+        [JsonPropertyName("type")]
+        public RecruitmentType Recruitment { get; set; }
 
         public string Description { get; set; } = string.Empty;
 
-        public LocationModel? Location { get; set; }
+
 
         public int ClanPoints { get; set; }
 
@@ -75,7 +109,7 @@ namespace CocApiLibrary.Models
         public bool IsWarLogPublic { get; set; } = false;
 
         [JsonPropertyName("members")]
-        public int MemberCount { get; set; }
+        public int VillageCount { get; set; }
 
         public WarFrequency WarFrequency { get; set; }
 
@@ -86,6 +120,7 @@ namespace CocApiLibrary.Models
 
 
         [JsonIgnore]
+        [NotMapped]
         public Dictionary<string, ICurrentWarAPIModel> Wars { get; set; } = new Dictionary<string, ICurrentWarAPIModel>();
 
 
@@ -93,11 +128,11 @@ namespace CocApiLibrary.Models
 
 
 
-        public DateTime DateTimeUTC { get; internal set; } = DateTime.UtcNow;
+        public DateTime DateTimeUtc { get; set; } = DateTime.UtcNow;
 
-        public DateTime Expires { get; internal set; }
+        public DateTime Expires { get; set; }
 
-        public string EncodedUrl { get; internal set; } = string.Empty;
+        public string EncodedUrl { get; set; } = string.Empty;
 
         public bool IsExpired()
         {
@@ -133,105 +168,105 @@ namespace CocApiLibrary.Models
 
                 Swallow(() => AnnounceDonations(cocApi, downloadedClan), nameof(AnnounceDonations));
 
-                Swallow(() => AnnounceMemberChanges(cocApi, downloadedClan), nameof(AnnounceMemberChanges));
+                Swallow(() => AnnounceVillageChanges(cocApi, downloadedClan), nameof(AnnounceVillageChanges));
 
-                Swallow(() => UpdateMembers(downloadedClan), nameof(UpdateMembers));
+                Swallow(() => UpdateVillages(downloadedClan), nameof(UpdateVillages));
 
-                Swallow(() => MembersLeft(cocApi, downloadedClan), nameof(MembersLeft));
+                Swallow(() => VillagesLeft(cocApi, downloadedClan), nameof(VillagesLeft));
 
-                Swallow(() => MembersJoined(cocApi, downloadedClan), nameof(MembersJoined));
+                Swallow(() => VillagesJoined(cocApi, downloadedClan), nameof(VillagesJoined));
 
-                DateTimeUTC = downloadedClan.DateTimeUTC;
+                DateTimeUtc = downloadedClan.DateTimeUtc;
 
                 Expires = downloadedClan.Expires;
             }
         }
 
-        private void AnnounceMemberChanges(CocApi cocApi, ClanAPIModel downloadedClan)
+        private void AnnounceVillageChanges(CocApi cocApi, ClanAPIModel downloadedClan)
         {
-            Dictionary<string, Tuple<MemberListAPIModel, LeagueAPIModel>> leagueChanges = new Dictionary<string, Tuple<MemberListAPIModel, LeagueAPIModel>>();
+            Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>> leagueChanges = new Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>>();
 
-            Dictionary<string, Tuple<MemberListAPIModel, Role>> roleChanges = new Dictionary<string, Tuple<MemberListAPIModel, Role>>();
+            Dictionary<string, Tuple<ClanVillageAPIModel, Role>> roleChanges = new Dictionary<string, Tuple<ClanVillageAPIModel, Role>>();
 
 
-            foreach (MemberListAPIModel oldMember in Members.EmptyIfNull())
+            foreach (ClanVillageAPIModel oldClanVillage in Villages.EmptyIfNull())
             {
-                MemberListAPIModel newMember = downloadedClan.Members.FirstOrDefault(m => m.Tag == oldMember.Tag);
+                ClanVillageAPIModel newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
-                if (newMember == null) { continue; }
+                if (newClanVillage == null) { continue; }
 
-                if ((oldMember.League == null && newMember.League != null) || (oldMember.League != null && newMember.League != null && oldMember.League.Id != newMember.League.Id))
+                if ((oldClanVillage.League == null && newClanVillage.League != null) || (oldClanVillage.League != null && newClanVillage.League != null && oldClanVillage.League.Id != newClanVillage.League.Id))
                 {
-                    leagueChanges.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.League));
+                    leagueChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.League));
                 }
                         
-                if (oldMember.Name != newMember.Name)
+                if (oldClanVillage.Name != newClanVillage.Name)
                 {
-                    cocApi.ClanMemberNameChangedEvent(oldMember, newMember.Name);
+                    cocApi.ClanVillageNameChangedEvent(oldClanVillage, newClanVillage.Name);
                 }
 
-                if (oldMember.Role != newMember.Role)
+                if (oldClanVillage.Role != newClanVillage.Role)
                 {
-                    roleChanges.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.Role));
+                    roleChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Role));
                 }
             }
 
-            cocApi.ClanMembersLeagueChangedEvent(leagueChanges);
+            cocApi.ClanVillagesLeagueChangedEvent(leagueChanges);
 
-            cocApi.ClanMembersRoleChangedEvent(roleChanges);
+            cocApi.ClanVillagesRoleChangedEvent(roleChanges);
         }
 
-        private void UpdateMembers(ClanAPIModel downloadedClan)
+        private void UpdateVillages(ClanAPIModel downloadedClan)
         {
-            foreach (MemberListAPIModel oldMember in Members.EmptyIfNull())
+            foreach (ClanVillageAPIModel oldClanVillage in Villages.EmptyIfNull())
             {
-                MemberListAPIModel newMember = downloadedClan.Members.FirstOrDefault(m => m.Tag == oldMember.Tag);
+                ClanVillageAPIModel newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
-                if (newMember == null) { continue; }
+                if (newClanVillage == null) { continue; }
 
-                oldMember.League = newMember.League;
+                oldClanVillage.League = newClanVillage.League;
 
-                oldMember.Name = newMember.Name;
+                oldClanVillage.Name = newClanVillage.Name;
 
-                oldMember.Role = newMember.Role;
+                oldClanVillage.Role = newClanVillage.Role;
 
-                oldMember.ExpLevel = newMember.ExpLevel;
+                oldClanVillage.ExpLevel = newClanVillage.ExpLevel;
 
-                oldMember.ClanRank = newMember.ClanRank;
+                oldClanVillage.ClanRank = newClanVillage.ClanRank;
 
-                oldMember.PreviousClanRank = newMember.PreviousClanRank;
+                oldClanVillage.PreviousClanRank = newClanVillage.PreviousClanRank;
 
-                oldMember.Donations = newMember.Donations;
+                oldClanVillage.Donations = newClanVillage.Donations;
 
-                oldMember.DonationsReceived = newMember.DonationsReceived;
+                oldClanVillage.DonationsReceived = newClanVillage.DonationsReceived;
 
-                oldMember.Trophies = newMember.Trophies;
+                oldClanVillage.Trophies = newClanVillage.Trophies;
 
-                oldMember.VersusTrophies = newMember.VersusTrophies;
+                oldClanVillage.VersusTrophies = newClanVillage.VersusTrophies;
             }
 
         }
 
         private void AnnounceDonations(CocApi cocApi, ClanAPIModel downloadedClan)
         {
-            Dictionary<string, Tuple<MemberListAPIModel, int>> receiving = new Dictionary<string, Tuple<MemberListAPIModel, int>>();
+            Dictionary<string, Tuple<ClanVillageAPIModel, int>> receiving = new Dictionary<string, Tuple<ClanVillageAPIModel, int>>();
 
-            Dictionary<string, Tuple<MemberListAPIModel, int>> donating = new Dictionary<string, Tuple<MemberListAPIModel, int>>();
+            Dictionary<string, Tuple<ClanVillageAPIModel, int>> donating = new Dictionary<string, Tuple<ClanVillageAPIModel, int>>();
 
-            foreach(MemberListAPIModel oldMember in Members.EmptyIfNull())
+            foreach(ClanVillageAPIModel oldClanVillage in Villages.EmptyIfNull())
             {
-                MemberListAPIModel? newMember = downloadedClan.Members.FirstOrDefault(m => m.Tag == oldMember.Tag);
+                ClanVillageAPIModel? newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
-                if (newMember == null) continue;
+                if (newClanVillage == null) continue;
 
-                if (oldMember.DonationsReceived < newMember.DonationsReceived)
+                if (oldClanVillage.DonationsReceived < newClanVillage.DonationsReceived)
                 {
-                    receiving.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.DonationsReceived));
+                    receiving.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.DonationsReceived));
                 }
 
-                if (oldMember.Donations < newMember.Donations)
+                if (oldClanVillage.Donations < newClanVillage.Donations)
                 {
-                    donating.Add(oldMember.Tag, Tuple.Create(oldMember, newMember.Donations));
+                    donating.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Donations));
                 }
             }
 
@@ -257,11 +292,11 @@ namespace CocApiLibrary.Models
             }
             else
             {
-                List<LabelAPIModel> added = new List<LabelAPIModel>();
+                List<ClanLabelAPIModel> added = new List<ClanLabelAPIModel>();
 
-                List<LabelAPIModel> removed = new List<LabelAPIModel>();
+                List<ClanLabelAPIModel> removed = new List<ClanLabelAPIModel>();
 
-                foreach (LabelAPIModel labelAPIModel in Labels.EmptyIfNull())
+                foreach (ClanLabelAPIModel labelAPIModel in Labels.EmptyIfNull())
                 {
                     if (!downloadedClan.Labels.Any(l => l.Id == labelAPIModel.Id))
                     {
@@ -269,7 +304,7 @@ namespace CocApiLibrary.Models
                     }
                 }
 
-                foreach (LabelAPIModel labelAPIModel in downloadedClan.Labels.EmptyIfNull())
+                foreach (ClanLabelAPIModel labelAPIModel in downloadedClan.Labels.EmptyIfNull())
                 {
                     if (!Labels.Any(l => l.Id == labelAPIModel.Id))
                     {
@@ -344,10 +379,10 @@ namespace CocApiLibrary.Models
             if (ClanLevel != downloadedClan.ClanLevel ||
                 Description != downloadedClan.Description ||
                 IsWarLogPublic != downloadedClan.IsWarLogPublic ||
-                MemberCount != downloadedClan.MemberCount ||
+                VillageCount != downloadedClan.VillageCount ||
                 Name != downloadedClan.Name ||
                 RequiredTrophies != downloadedClan.RequiredTrophies ||
-                Type != downloadedClan.Type ||
+                Recruitment != downloadedClan.Recruitment ||
                 WarFrequency != downloadedClan.WarFrequency ||
                 WarLosses != downloadedClan.WarLosses ||
                 WarTies != downloadedClan.WarTies ||
@@ -360,10 +395,10 @@ namespace CocApiLibrary.Models
                 ClanLevel = downloadedClan.ClanLevel;
                 Description = downloadedClan.Description;
                 IsWarLogPublic = downloadedClan.IsWarLogPublic;
-                MemberCount = downloadedClan.MemberCount;
+                VillageCount = downloadedClan.VillageCount;
                 Name = downloadedClan.Name;
                 RequiredTrophies = downloadedClan.RequiredTrophies;
-                Type = downloadedClan.Type;
+                Recruitment = downloadedClan.Recruitment;
                 WarFrequency = downloadedClan.WarFrequency;
                 WarLosses = downloadedClan.WarLosses;
                 WarTies = downloadedClan.WarWins;
@@ -371,56 +406,67 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private void MembersJoined(CocApi cocApi, ClanAPIModel downloadedClan)
+        private void VillagesJoined(CocApi cocApi, ClanAPIModel downloadedClan)
         {
-            List<MemberListAPIModel> newMembers = new List<MemberListAPIModel>();
+            List<ClanVillageAPIModel> newVillages = new List<ClanVillageAPIModel>();
 
-            if (downloadedClan.Members == null)
+            if (downloadedClan.Villages == null)
             {
                 return;
             }
 
-            if (Members == null)
+            if (Villages == null)
             {
-                Members = new List<MemberListAPIModel>();
+                Villages = new List<ClanVillageAPIModel>();
             }
 
-            foreach (MemberListAPIModel member in downloadedClan.Members)
+            foreach (ClanVillageAPIModel clanVillage in downloadedClan.Villages)
             {
-                if (!Members.Any(m => m.Tag == member.Tag))
+                if (!Villages.Any(m => m.VillageTag == clanVillage.VillageTag))
                 {
-                    newMembers.Add(member);
+                    newVillages.Add(clanVillage);
 
-                    Members.Add(member);
+                    Villages.Add(clanVillage);
                 }
             }
 
-            cocApi.MembersJoinedEvent(this, newMembers);
+            cocApi.VillagesJoinedEvent(this, newVillages);
         }
 
-        private void MembersLeft(CocApi cocApi, ClanAPIModel downloadedClan)
+        private void VillagesLeft(CocApi cocApi, ClanAPIModel downloadedClan)
         {
-            List<MemberListAPIModel> leftMembers = new List<MemberListAPIModel>();
+            List<ClanVillageAPIModel> leftVillages = new List<ClanVillageAPIModel>();
 
-            if (Members == null)
+            if (Villages == null)
             {
                 return;
             }
 
-            foreach (MemberListAPIModel member in Members)
+            foreach (ClanVillageAPIModel clanVillage in Villages)
             {
-                if (!downloadedClan.Members.Any(m => m.Tag == member.Tag))
+                if (!downloadedClan.Villages.Any(m => m.VillageTag == clanVillage.VillageTag))
                 {
-                    leftMembers.Add(member);
+                    leftVillages.Add(clanVillage);
                 }
             }
 
-            foreach (MemberListAPIModel member in leftMembers)
+            foreach (ClanVillageAPIModel clanVillage in leftVillages)
             {
-                Members.Remove(member);
+                Villages.Remove(clanVillage);
             }
 
-            cocApi.MembersLeftEvent(this, leftMembers);
+            cocApi.VillagesLeftEvent(this, leftVillages);
+        }
+
+        private void SetRelationalProperties()
+        {
+            if (ClanTag != null && Labels != null)
+            {
+                foreach(var label in Labels)
+                {
+                    label.ClanTag = ClanTag;
+                }
+            }
         }
     }
 }
