@@ -77,6 +77,10 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
     modelBuilder.Entity<AttackAPIModel>().HasKey(p => new { p.WarId, p.Order });
 
     //define one-to-zero(or one) relationship between villages and legends league
-    modelBuilder.Entity<VillageAPIModel>().HasOne(p => p.LegendStatistics).WithOne(p => p!.Village!).HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag).OnDelete(DeleteBehavior.Restrict);
+    modelBuilder.Entity<VillageAPIModel>()
+                .HasOne(p => p.LegendStatistics)
+                .WithOne(p => p!.Village!)
+                .HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag)
+                .OnDelete(DeleteBehavior.Restrict);
 }
 
