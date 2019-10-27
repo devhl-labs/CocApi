@@ -36,7 +36,7 @@ namespace CocApiLibrary.Models
 
         [JsonPropertyName("IconUrls")]
         [ForeignKey(nameof(Id))]
-        public virtual LabelUrlAPIModel? ImageUrl
+        public virtual LabelUrlAPIModel? LabelUrl
         {
             get
             {
@@ -53,17 +53,22 @@ namespace CocApiLibrary.Models
 
         private void SetRelationalProperties()
         {
-            if (Name != null && ImageUrl != null)
+            if (!string.IsNullOrEmpty(Name) && LabelUrl != null)
             {
-                ImageUrl.Name = Name;
+                LabelUrl.Name = Name;
+            }
+
+            if (LabelUrl != null && LabelUrl.Name != null && string.IsNullOrEmpty(Name))
+            {
+                Name = LabelUrl.Name;
             }
 
 
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            if (Id != null && ImageUrl != null)
+            if (Id != null && LabelUrl != null)
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             {
-                ImageUrl.Id = Id;
+                LabelUrl.Id = Id;
             }
         }
     }

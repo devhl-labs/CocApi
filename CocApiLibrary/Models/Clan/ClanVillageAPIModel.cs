@@ -31,6 +31,9 @@ namespace CocApiLibrary.Models
 
         private LeagueAPIModel? _league;
 
+        /// <summary>
+        /// All leagues with the same Id will be the same instance
+        /// </summary>
         [ForeignKey(nameof(LeagueId))]
         public virtual LeagueAPIModel? League
         {

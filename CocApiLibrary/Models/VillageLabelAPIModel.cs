@@ -53,7 +53,7 @@ namespace CocApiLibrary.Models
 
         private void SetRelationalProperties()
         {
-            if (Name != null && ImageUrl != null)
+            if (!string.IsNullOrEmpty(Name) && ImageUrl != null)
             {
                 ImageUrl.Name = Name;
             }

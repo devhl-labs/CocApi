@@ -15,8 +15,8 @@ namespace CocApiLibrary.Models
         private LeagueIconUrlAPIModel? _iconUrl;
         
         [JsonPropertyName("IconUrls")]
-        [ForeignKey(nameof(IconUrlId))]
-        public virtual LeagueIconUrlAPIModel? IconUrl
+        [ForeignKey(nameof(LeagueIconUrlId))]
+        public virtual LeagueIconUrlAPIModel? LeagueIconUrl
         {
             get
             {
@@ -29,15 +29,15 @@ namespace CocApiLibrary.Models
 
                 if (_iconUrl != null)
                 {
-                    IconUrlId = _iconUrl.Id;
+                    LeagueIconUrlId = _iconUrl.Id;
                 }
                 else
                 {
-                    IconUrlId = null;
+                    LeagueIconUrlId = null;
                 }
             }
         }
 
-        public string? IconUrlId { get; set; } = string.Empty;
+        public string? LeagueIconUrlId { get; set; } = string.Empty;
     }
 }

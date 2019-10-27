@@ -1,5 +1,4 @@
 ﻿using CocApiLibrary.Converters;
-using CocApiLibrary.Models.Clan;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -161,7 +160,7 @@ namespace CocApiLibrary.Models
 
         [JsonIgnore]
         [ForeignKey(nameof(WarId))]
-        public virtual CurrentWarFlags Flags { get; set; } = new CurrentWarFlags();
+        public virtual CurrentWarFlagsModel Flags { get; set; } = new CurrentWarFlagsModel();
 
 
 

@@ -114,6 +114,7 @@ namespace CocApiLibrary
 
         private LeagueAPIModel? _league;
 
+        [NotMapped]
         public virtual LeagueAPIModel? League
         {
             get

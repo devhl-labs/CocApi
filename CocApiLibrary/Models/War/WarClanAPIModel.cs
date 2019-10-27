@@ -74,6 +74,7 @@ namespace CocApiLibrary.Models
         private IEnumerable<WarVillageAPIModel>? _villages;
 
         [ForeignKey(nameof(WarClanId))]
+        [JsonPropertyName("members")]
         public virtual IEnumerable<WarVillageAPIModel>? Villages
         {
             get

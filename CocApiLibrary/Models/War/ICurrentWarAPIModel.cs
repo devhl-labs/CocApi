@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using CocApiLibrary.Models.Clan;
 
 namespace CocApiLibrary.Models
 {
@@ -10,7 +9,7 @@ namespace CocApiLibrary.Models
         WarClanAPIModel? Clan { get; set; }
         IList<WarClanAPIModel> Clans { get; set; }
         DateTime EndTimeUtc { get; set; }
-        CurrentWarFlags Flags { get; }
+        CurrentWarFlagsModel Flags { get; }
         WarClanAPIModel? Opponent { get; set; }
         DateTime PreparationStartTimeUtc { get; set; }
         DateTime StartTimeUtc { get; set; }

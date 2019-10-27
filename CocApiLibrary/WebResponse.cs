@@ -199,15 +199,16 @@ namespace CocApiLibrary
         {
             if (result is ClanAPIModel clan)
             {
-                //if (clan.BadgeUrls != null) clan.BadgeUrls.ClanTag = clan.ClanTag;
-
-                if (clan.Villages != null)
+                foreach (var clanVillage in clan.Villages.EmptyIfNull())
                 {
-                    foreach (var clanVillage in clan.Villages)
+                    clanVillage.ClanTag = clan.ClanTag;
+
+                    // make all occurances of the same league be the same instance for the benefit of ef
+                    if (clanVillage.League != null)
                     {
-                        clanVillage.ClanTag = clan.ClanTag;
+                        clanVillage.League = clan.Villages.First(v => v.LeagueId == clanVillage.League.Id).League;
                     }
-                }
+                }                
 
                 if (clan.BadgeUrls != null)
                 {
@@ -244,14 +245,6 @@ namespace CocApiLibrary
                 {
                     troop.VillageTag = village.VillageTag;
                 }
-
-                //if (village.Clan != null)
-                //{
-                //    if (village.Clan.BadgeUrls != null)
-                //    {
-                //        village.Clan.BadgeUrls.ClanTag = village.Clan.ClanTag;
-                //    }
-                //}
             }
 
             if (result is LeagueGroupAPIModel group)
@@ -266,8 +259,6 @@ namespace CocApiLibrary
                     {
                         leagueVillage.ClanTag = leagueClan.ClanTag;
                     }
-
-                    //if (leagueClan.BadgeUrls != null) leagueClan.BadgeUrls.ClanTag = leagueClan.ClanTag;
                 }
 
                 foreach(var round in group.Rounds.EmptyIfNull())
@@ -281,9 +272,6 @@ namespace CocApiLibrary
                 foreach (var attack in war.Attacks.EmptyIfNull())
                 {
                     attack.WarId = war.WarId;
-
-                    //attack.AttackId = $"{attack.WarID};{attack.Order}";
-                    //attack.AttackId = attack.Order.ToString();
                 }
 
                 foreach (var warClan in war.Clans)
@@ -293,12 +281,11 @@ namespace CocApiLibrary
                     foreach(var warVillage in warClan.Villages.EmptyIfNull())
                     {
                         warVillage.WarClanId = warClan.WarClanId;
-                    }
 
-                    //if (warClan.BadgeUrls != null)
-                    //{
-                    //    warClan.BadgeUrls.ClanTag = warClan.ClanTag;
-                    //}
+                        warVillage.ClanTag = warClan.ClanTag;
+
+                        warVillage.WarId = war.WarId;
+                    }
                 }
             }
         }

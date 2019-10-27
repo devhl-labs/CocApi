@@ -82,5 +82,11 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
                 .WithOne(p => p!.Village!)
                 .HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag)
                 .OnDelete(DeleteBehavior.Restrict);
+
+    //define one-to-one relationship between current war and flags
+    modelBuilder.Entity<CurrentWarAPIModel>()
+        .HasOne(p => p.Flags)
+        .WithOne(p => p.CurrentWarAPIModel)
+        .HasForeignKey<CurrentWarFlagsModel>(p => p.WarId);
 }
 

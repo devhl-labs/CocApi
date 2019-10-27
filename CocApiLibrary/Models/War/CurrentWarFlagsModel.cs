@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Models.Clan
+namespace CocApiLibrary.Models
 {
-    public class CurrentWarFlags
+    public class CurrentWarFlagsModel
     {
         [Key]
         public string WarId { get; set; } = string.Empty;
@@ -41,5 +41,8 @@ namespace CocApiLibrary.Models.Clan
 
         [JsonIgnore]
         public bool WarEndSeen { get; set; } = false;
+
+        [JsonIgnore]
+        public virtual CurrentWarAPIModel? CurrentWarAPIModel { get; set; }
     }
 }

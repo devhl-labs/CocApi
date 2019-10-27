@@ -25,12 +25,44 @@ namespace CocApiLibrary.Models
             {
                 _medium = value;
 
-                Id = _medium.Split("/").Last();
+                Id = SetId(_medium);
             }
         }
 
-        public string Small { get; set; } = string.Empty;
+        private string _small = string.Empty;
+        
+        public string Small
+        {
+            get
+            {
+                return _small;
+            }
+        
+            set
+            {
+                _small = value;
 
-        public string Tiny { get; set; } = string.Empty;
+                Id = SetId(_small);
+            }
+        }
+
+        private string _tiny = string.Empty;
+        
+        public string Tiny
+        {
+            get
+            {
+                return _tiny;
+            }
+        
+            set
+            {
+                _tiny = value;
+
+                Id = SetId(_tiny);
+            }
+        }
+
+        private string SetId(string str) => str.Split("/").Last();       
     }
 }

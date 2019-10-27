@@ -36,22 +36,25 @@ namespace CocApiLibrary.Models
 
 
 
+
+
+
         [Key]
-        public string WarMemberId { get; set; } = string.Empty;
+        public string WarVillageId { get; set; } = string.Empty;
 
         public int TownhallLevel { get; set; }
 
         public int MapPosition { get; set; }
 
         private string _warClanId = string.Empty;
-        
+
         public string WarClanId
         {
             get
             {
                 return _warClanId;
             }
-        
+
             set
             {
                 _warClanId = value;
@@ -63,14 +66,29 @@ namespace CocApiLibrary.Models
         [NotMapped]
         public IList<AttackAPIModel>? Attacks { get; set; }
 
+        private string _warId = string.Empty;
+        
+        public string WarId
+        {
+            get
+            {
+                return _warId;
+            }
+        
+            set
+            {
+                _warId = value;
 
+                SetRelationalProperties();
+            }
+        }
 
 
         private void SetRelationalProperties()
         {
-            if (_warClanId != null && _villageTag != null)
+            if (_warId != null && _villageTag != null)
             {
-                WarMemberId = $"{_warClanId};{_villageTag}";
+                WarVillageId = $"{_warId};{_villageTag}";
             }
         }
     }
