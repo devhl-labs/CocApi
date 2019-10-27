@@ -39,7 +39,7 @@ namespace CocApiLibrary
     public delegate void VillageVersusBattleWinCountChangedEventHandler(VillageAPIModel oldVillage, int newVersusBattleWinCount);
     public delegate void VillageVersusBattleWinsChangedEventHandler(VillageAPIModel oldVillage, int newVersusBattleWins);
     public delegate void VillageVersusTrophiesChangedEventHandler(VillageAPIModel oldVillage, int newVersusTrophies);
-    public delegate void VillageLeagueChangedEventHandler(VillageAPIModel oldVillage, LeagueAPIModel? newLeague);
+    public delegate void VillageLeagueChangedEventHandler(VillageAPIModel oldVillage, VillageLeagueAPIModel? newLeague);
     public delegate void VillageAchievementsChangedEventHandler(VillageAPIModel oldVillage, List<AchievementAPIModel> newAchievements);
     public delegate void VillageTroopsChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newTroops);
     public delegate void VillageHeroesChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newHeroes);
@@ -55,7 +55,7 @@ namespace CocApiLibrary
     public delegate void VillageReachedLegendsLeagueEventHandler(VillageAPIModel villageAPIModel);
     public delegate void ClanDonationsEventHandler(Dictionary<string, Tuple<ClanVillageAPIModel, int>> receivedDonations, Dictionary<string, Tuple<ClanVillageAPIModel, int>> gaveDonations);
     public delegate void ClanVillageNameChanged(ClanVillageAPIModel oldVillage, string newName);
-    public delegate void ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>> leagueChanged);
+    public delegate void ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageAPIModel, VillageLeagueAPIModel>> leagueChanged);
     public delegate void ClanVillagesRoleChanged(Dictionary<string, Tuple<ClanVillageAPIModel, Role>> roleChanges);
 
 
@@ -255,7 +255,7 @@ namespace CocApiLibrary
             }
         }
 
-        internal void ClanVillagesLeagueChangedEvent(Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>> leagueChanged)
+        internal void ClanVillagesLeagueChangedEvent(Dictionary<string, Tuple<ClanVillageAPIModel, VillageLeagueAPIModel>> leagueChanged)
         {
             if (leagueChanged.Count() > 0)
             {
@@ -353,7 +353,7 @@ namespace CocApiLibrary
             VillageAchievementsChanged?.Invoke(oldVillage, newAchievements);
         }
 
-        internal void VillageLeagueChangedEvent(VillageAPIModel oldVillage, LeagueAPIModel? newLeague)
+        internal void VillageLeagueChangedEvent(VillageAPIModel oldVillage, VillageLeagueAPIModel? newLeague)
         {
             VillageLeagueChanged?.Invoke(oldVillage, newLeague);
         }

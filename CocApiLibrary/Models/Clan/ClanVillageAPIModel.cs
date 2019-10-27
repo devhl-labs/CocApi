@@ -29,13 +29,13 @@ namespace CocApiLibrary.Models
 
         public int ExpLevel { get; set; }
 
-        private LeagueAPIModel? _league;
+        private VillageLeagueAPIModel? _league;
 
         /// <summary>
         /// All leagues with the same Id will be the same instance
         /// </summary>
         [ForeignKey(nameof(LeagueId))]
-        public virtual LeagueAPIModel? League
+        public virtual VillageLeagueAPIModel? League
         {
             get
             {

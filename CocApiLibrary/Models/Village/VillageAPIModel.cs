@@ -112,10 +112,10 @@ namespace CocApiLibrary
             }
         }
 
-        private LeagueAPIModel? _league;
+        private VillageLeagueAPIModel? _league;
 
         [NotMapped]
-        public virtual LeagueAPIModel? League
+        public virtual VillageLeagueAPIModel? League
         {
             get
             {

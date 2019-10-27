@@ -184,7 +184,7 @@ namespace CocApiLibrary.Models
 
         private void AnnounceVillageChanges(CocApi cocApi, ClanAPIModel downloadedClan)
         {
-            Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>> leagueChanges = new Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>>();
+            Dictionary<string, Tuple<ClanVillageAPIModel, VillageLeagueAPIModel>> leagueChanges = new Dictionary<string, Tuple<ClanVillageAPIModel, VillageLeagueAPIModel>>();
 
             Dictionary<string, Tuple<ClanVillageAPIModel, Role>> roleChanges = new Dictionary<string, Tuple<ClanVillageAPIModel, Role>>();
 

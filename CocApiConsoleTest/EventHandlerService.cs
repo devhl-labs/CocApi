@@ -51,7 +51,7 @@ namespace CocApiConsoleTest
             _cocApi.ClanVillagesRoleChanged += CocApi_ClanVillagesRoleChanged;
         }
 
-        private void CocApi_ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageAPIModel, LeagueAPIModel>> leagueChanged)
+        private void CocApi_ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageAPIModel, VillageLeagueAPIModel>> leagueChanged)
         {
             _logService.LogInformation($"League changed {leagueChanged.First().Key}");
         }
