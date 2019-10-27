@@ -52,9 +52,32 @@ namespace CocApiConsoleTest
         {
             CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
             {
-                NumberOfUpdaters = 1,
+                /*
+                 *  These times are rather conservative incase the key you provide is 
+                 *  used elsewhere.  In production you can make these whatever you want
+                 *  You will certainly want the TokenTimeOut to be much faster,
+                 *  perhaps half a second.
+                 *  
+                 *  Strongly recommend you print some things to your ILogger
+                 *  so you can get warned of preemptive rate limits and rate limits.
+                 *  
+                 *  Preemptive rate limits are okay but tell you that you maxing out your TokenTimeOut
+                 *  Rate Limits are bad!  They indicate SC is throttling your token.
+                 *  
+                 *  Preemptive rate limits come from the TokenObject
+                 *  Rate Limits are actual errors that come from WebResponse
+                 */
 
-                TimeToWaitForWebRequests = new TimeSpan(0, 0, 0, 10, 0),
+                CacheHttpResponses = true,
+                ClanAPIModelTimeToLive = TimeSpan.FromMinutes(10),
+                CurrentWarAPIModelTimeToLive = TimeSpan.FromSeconds(15),
+                LeagueGroupAPIModelTimeToLive = TimeSpan.FromHours(1),
+                LeagueWarAPIModelTimeToLive = TimeSpan.FromSeconds(15),
+                TokenTimeOut = TimeSpan.FromSeconds(3),
+                VillageAPIModelTimeToLive = TimeSpan.FromHours(1),
+                WarLogAPIModelTimeToLive = TimeSpan.FromHours(1),
+                NumberOfUpdaters = 1,
+                TimeToWaitForWebRequests = TimeSpan.FromSeconds(10),                
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
