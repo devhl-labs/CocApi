@@ -61,11 +61,12 @@ namespace CocApiConsoleTest
                  *  Strongly recommend you print some things to your ILogger
                  *  so you can get warned of preemptive rate limits and rate limits.
                  *  
-                 *  Preemptive rate limits are okay but tell you that you maxing out your TokenTimeOut
+                 *  Preemptive rate limits are okay but tell you that you maxing out your TokenTimeOut.
                  *  Rate Limits are bad!  They indicate SC is throttling your token.
+                 *  Preemptive rate limits are not the same as rate limits.
                  *  
-                 *  Preemptive rate limits come from the TokenObject
-                 *  Rate Limits are actual errors that come from WebResponse
+                 *  Preemptive rate limits come from the TokenObject.
+                 *  Rate Limits are actual errors that come from WebResponse.
                  */
 
                 CacheHttpResponses = true,
