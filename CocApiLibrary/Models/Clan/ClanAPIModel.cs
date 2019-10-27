@@ -460,9 +460,9 @@ namespace CocApiLibrary.Models
 
         private void SetRelationalProperties()
         {
-            if (ClanTag != null && Labels != null)
+            if (!string.IsNullOrEmpty(ClanTag) && _labels != null)
             {
-                foreach(var label in Labels)
+                foreach(var label in _labels)
                 {
                     label.ClanTag = ClanTag;
                 }

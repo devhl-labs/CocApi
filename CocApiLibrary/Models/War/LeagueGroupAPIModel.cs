@@ -89,14 +89,6 @@ namespace CocApiLibrary.Models
                 _groupId = $"{_season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
             }
 
-            //if (_season != null && Clans?.Count() > 0 && Rounds != null)
-            //{
-            //    foreach (var round in Rounds)
-            //    {
-            //        round.RoundId = $"{_season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds.IndexOf(round)}";
-            //    }
-            //}
-
             if (Clans?.Count() > 0 && _season != null)
             {
                 foreach (var clan in Clans)

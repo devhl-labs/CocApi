@@ -592,11 +592,11 @@ namespace CocApiLibrary
 
         private void SetRelationalProperties()
         {
-            if (_villageTag != null && Labels != null)
+            if (!string.IsNullOrEmpty(_villageTag) && _labels != null)
             {
-                foreach(var label in Labels)
+                foreach(var label in _labels)
                 {
-                    label.VillageTag = VillageTag;
+                    label.VillageTag = _villageTag;
                 }
             }
 
@@ -605,15 +605,15 @@ namespace CocApiLibrary
                 _clanTag = _clan.ClanTag;
             }
 
-            if (_villageTag != null && _achievements != null)
+            if (!string.IsNullOrEmpty(_villageTag) && _achievements != null)
             {
                 foreach(var achievement in _achievements)
                 {
-                    achievement.VillageTag = VillageTag;
+                    achievement.VillageTag = _villageTag;
                 }
             }      
             
-            if (_villageTag != null && _troops != null)
+            if (!string.IsNullOrEmpty(_villageTag) && _troops != null)
             {
                 foreach(var troop in _troops)
                 {
@@ -621,7 +621,7 @@ namespace CocApiLibrary
                 }
             }
 
-            if (_villageTag != null && _spells != null)
+            if (!string.IsNullOrEmpty(_villageTag) && _spells != null)
             {
                 foreach(var spell in _spells)
                 {
@@ -629,7 +629,7 @@ namespace CocApiLibrary
                 }
             }
 
-            if (_villageTag != null && _heroes != null)
+            if (!string.IsNullOrEmpty(_villageTag) && _heroes != null)
             {
                 foreach(var hero in _heroes)
                 {

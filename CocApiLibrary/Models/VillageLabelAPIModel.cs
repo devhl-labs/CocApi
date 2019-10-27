@@ -53,9 +53,9 @@ namespace CocApiLibrary.Models
 
         private void SetRelationalProperties()
         {
-            if (!string.IsNullOrEmpty(Name) && ImageUrl != null)
+            if (!string.IsNullOrEmpty(_name) && ImageUrl != null)
             {
-                ImageUrl.Name = Name;
+                ImageUrl.Name = _name;
             }
 
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'

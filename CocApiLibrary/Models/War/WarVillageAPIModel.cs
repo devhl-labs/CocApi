@@ -86,7 +86,7 @@ namespace CocApiLibrary.Models
 
         private void SetRelationalProperties()
         {
-            if (_warId != null && _villageTag != null)
+            if (!string.IsNullOrEmpty(_warId) && !string.IsNullOrEmpty(_villageTag))
             {
                 WarVillageId = $"{_warId};{_villageTag}";
             }

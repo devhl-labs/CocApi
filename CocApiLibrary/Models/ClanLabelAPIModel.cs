@@ -55,12 +55,12 @@ namespace CocApiLibrary.Models
         {
             if (!string.IsNullOrEmpty(Name) && LabelUrl != null)
             {
-                LabelUrl.Name = Name;
+                LabelUrl.Name = _name;
             }
 
-            if (LabelUrl != null && LabelUrl.Name != null && string.IsNullOrEmpty(Name))
+            if (LabelUrl != null && !string.IsNullOrEmpty(LabelUrl.Name) && string.IsNullOrEmpty(Name))
             {
-                Name = LabelUrl.Name;
+                _name = LabelUrl.Name;
             }
 
 
