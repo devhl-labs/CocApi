@@ -27,8 +27,6 @@ namespace CocApiConsoleTest
 
             InitializeCocApi(host.Services);
 
-            var clan = await _cocApi.GetCurrentWarAsync("#8RJJ0C0Y");
-
             host.Services.GetRequiredService<EventHandlerService>();
 
             host.Run();
@@ -79,7 +77,7 @@ namespace CocApiConsoleTest
                 "#P989QU9P",   // Burlap Thongs
             };
 
-            //_cocApi.WatchClans(clans);
+            _cocApi.WatchClans(clans);
 
             _cocApi.BeginUpdatingClans();
 
