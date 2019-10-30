@@ -5,11 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class BadgeUrlModel
+    public class ClanBadgeUrlModel
     {
-        //[Key]
-        //public string ClanTag { get; set; } = string.Empty;
-
         public string Id { get; set; } = string.Empty;
 
         private string _small = string.Empty;

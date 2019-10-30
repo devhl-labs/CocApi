@@ -43,7 +43,7 @@ namespace CocApiLibrary
     public delegate void VillageAchievementsChangedEventHandler(VillageAPIModel oldVillage, List<AchievementAPIModel> newAchievements);
     public delegate void VillageTroopsChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newTroops);
     public delegate void VillageHeroesChangedEventHandler(VillageAPIModel oldVillage, List<TroopAPIModel> newHeroes);
-    public delegate void VillageSpellsChangedEventHandler(VillageAPIModel oldVillage, List<SpellAPIModel> newSpells);
+    public delegate void VillageSpellsChangedEventHandler(VillageAPIModel oldVillage, List<VillageSpellAPIModel> newSpells);
     public delegate void WarStartedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarEndedEventHandler(ICurrentWarAPIModel currentWarAPIModel);
     public delegate void WarEndSeenEventHandler(ICurrentWarAPIModel currentWarAPIModel);
@@ -333,7 +333,7 @@ namespace CocApiLibrary
             WarStarted?.Invoke(currentWarAPIModel);
         }
 
-        internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<SpellAPIModel> newSpells)
+        internal void VillageSpellsChangedEvent(VillageAPIModel oldVillage, List<VillageSpellAPIModel> newSpells)
         {
             VillageSpellsChanged?.Invoke(oldVillage, newSpells);
         }
@@ -877,7 +877,7 @@ namespace CocApiLibrary
             }
         }
 
-        public async Task<ClanSearchModel> GetClansAsync(string? clanName = null
+        public async Task<ClanSearchAPIModel> GetClansAsync(string? clanName = null
                                                         , WarFrequency? warFrequency = null
                                                         , int? locationId = null
                                                         , int? minVillages = null
@@ -949,7 +949,7 @@ namespace CocApiLibrary
 
                 cancellationTokenSource?.Token.Register(() => cts.Cancel());
 
-                var result = await WebResponse.GetWebResponse<ClanSearchModel>(EndPoint.Clans, url, cts);
+                var result = await WebResponse.GetWebResponse<ClanSearchAPIModel>(EndPoint.Clans, url, cts);
 
                 _cancellationTokenSources.Remove(cts);
 
@@ -961,9 +961,56 @@ namespace CocApiLibrary
             }
         }
 
+        public async Task<VillageLeagueSearchAPIModel> GetLeaguesAsync(CancellationTokenSource? cancellationTokenSource = null)
+        {
+            VerifyInitialization();
 
+            try
+            {
+                string url = $"https://api.clashofclans.com/v1/leagues?limit=500";
 
+                using CancellationTokenSource cts = GetCancellationTokenSource();
 
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
+
+                var result = await WebResponse.GetWebResponse<VillageLeagueSearchAPIModel>(EndPoint.VillageLeagues, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+
+                throw GetException(e);
+            }
+        }
+
+        public async Task<LocationSearchAPIModel> GetLocations(CancellationTokenSource? cancellationTokenSource = null)
+        {
+            VerifyInitialization();
+
+            try
+            {
+                string url = $"https://api.clashofclans.com/v1/locations?limit=10000";
+
+                using CancellationTokenSource cts = GetCancellationTokenSource();
+
+                cancellationTokenSource?.Token.Register(() => cts.Cancel());
+
+                var result = await WebResponse.GetWebResponse<LocationSearchAPIModel>(EndPoint.Locations, url, cts);
+
+                _cancellationTokenSources.Remove(cts);
+
+                return result;
+            }
+            catch (Exception e)
+            {
+
+                throw GetException(e);
+            }
+
+        }
 
 
 

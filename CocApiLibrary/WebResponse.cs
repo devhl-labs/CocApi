@@ -199,25 +199,14 @@ namespace CocApiLibrary
         {
             if (result is ClanAPIModel clan)
             {
-                foreach (var clanVillage in clan.Villages.EmptyIfNull())
-                {
-                    clanVillage.ClanTag = clan.ClanTag;
+                SetRelationalProperties(clan);
+            }
 
-                    // make all occurances of the same league be the same instance for the benefit of ef
-                    if (clanVillage.League != null)
-                    {
-                        clanVillage.League = clan.Villages.First(v => v.LeagueId == clanVillage.League.Id).League;
-                    }
-                }                
-
-                if (clan.BadgeUrls != null)
+            if (result is ClanSearchAPIModel clanSearch)
+            {
+                foreach(var clanItem in clanSearch.Items.EmptyIfNull())
                 {
-                    clan.BadgeUrlsId = clan.BadgeUrls.Id;
-                }
-
-                if (clan.Location != null)
-                {
-                    clan.LocationId = clan.Location.Id;
+                    SetRelationalProperties(clanItem);
                 }
             }
 
@@ -241,9 +230,32 @@ namespace CocApiLibrary
                     spell.VillageTag = village.VillageTag;
                 }
 
-                foreach (var troop in village.Troops.EmptyIfNull())
+                foreach(var hero in village.Heroes.EmptyIfNull())
                 {
+                    village.AllTroops.Add(hero);
+
+                    hero.VillageTag = village.VillageTag;
+
+                    hero.IsHero = true;
+                }
+
+                foreach(var troop in village.Troops.EmptyIfNull())
+                {
+                    village.AllTroops.Add(troop);
+
                     troop.VillageTag = village.VillageTag;
+
+                    troop.IsHero = false;
+                }
+
+                foreach(var achievement in village.Achievements.EmptyIfNull())
+                {
+                    achievement.VillageTag = village.VillageTag;
+                }
+
+                foreach(var label in village.Labels.EmptyIfNull())
+                {
+                    label.VillageTag = village.VillageTag;
                 }
             }
 
@@ -287,6 +299,30 @@ namespace CocApiLibrary
                         warVillage.WarId = war.WarId;
                     }
                 }
+            }
+        }
+
+        private static void SetRelationalProperties(ClanAPIModel clan)
+        {
+            foreach (var clanVillage in clan.Villages.EmptyIfNull())
+            {
+                clanVillage.ClanTag = clan.ClanTag;
+
+                // make all occurances of the same league be the same instance for the benefit of ef
+                if (clanVillage.League != null)
+                {
+                    clanVillage.League = clan.Villages.First(v => v.LeagueId == clanVillage.League.Id).League;
+                }
+            }
+
+            if (clan.BadgeUrls != null)
+            {
+                clan.BadgeUrlsId = clan.BadgeUrls.Id;
+            }
+
+            if (clan.Location != null)
+            {
+                clan.LocationId = clan.Location.Id;
             }
         }
 
@@ -347,6 +383,22 @@ namespace CocApiLibrary
                     warLogAPIModel.Expires = DateTime.UtcNow.Add(_cfg.WarLogAPIModelTimeToLive);
                     warLogAPIModel.EncodedUrl = encodedURL;
                     break;
+
+                case ClanSearchAPIModel clanSearchModel:
+                    clanSearchModel.Expires = DateTime.UtcNow.Add(_cfg.ClanSearchAPIModelTimeToLive);
+                    clanSearchModel.EncodedUrl = encodedURL;
+                    break;
+
+                case VillageLeagueSearchAPIModel villageLeagueSearchModel:
+                    villageLeagueSearchModel.Expires = DateTime.UtcNow.Add(_cfg.VillageLeagueSearchAPIModelTimeToLive);
+                    villageLeagueSearchModel.EncodedUrl = encodedURL;
+                    break;
+
+                case LocationSearchAPIModel locationSearchAPIModel:
+                    locationSearchAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LocationSearchAPIModelTimeToLive);
+                    locationSearchAPIModel.EncodedUrl = encodedURL;
+                    break;
+
 
                 default:
                     throw new CocApiException($"Unhandled Type");

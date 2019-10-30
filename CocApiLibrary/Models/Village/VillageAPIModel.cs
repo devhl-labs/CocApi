@@ -26,8 +26,6 @@ namespace CocApiLibrary
             set
             {
                 _villageTag = value.ToUpper();
-
-                SetRelationalProperties();
             }
         }
 
@@ -112,6 +110,7 @@ namespace CocApiLibrary
             }
         }
 
+
         private VillageLeagueAPIModel? _league;
 
         [NotMapped]
@@ -148,8 +147,6 @@ namespace CocApiLibrary
             set
             {
                 _achievements = value;
-
-                SetRelationalProperties();
             }
         }
 
@@ -170,12 +167,12 @@ namespace CocApiLibrary
             {
                 _troops = value;
 
-                foreach(var troop in Troops.EmptyIfNull())
-                {
-                    AllTroops.Add(troop);
-                }
+                //foreach(var troop in Troops.EmptyIfNull())
+                //{
+                //    AllTroops.Add(troop);
+                //}
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
@@ -194,14 +191,14 @@ namespace CocApiLibrary
             {
                 _heroes = value;
 
-                foreach(var hero in Heroes.EmptyIfNull())
-                {
-                    hero.IsHero = true;
+                //foreach(var hero in Heroes.EmptyIfNull())
+                //{
+                //    hero.IsHero = true;
 
-                    AllTroops.Add(hero);
-                }
+                //    AllTroops.Add(hero);
+                //}
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
@@ -222,15 +219,15 @@ namespace CocApiLibrary
             {
                 _labels = value;
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
 
-        private IEnumerable<SpellAPIModel>? _spells;
+        private IEnumerable<VillageSpellAPIModel>? _spells;
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual IEnumerable<SpellAPIModel>? Spells
+        public virtual IEnumerable<VillageSpellAPIModel>? Spells
         {
             get
             {
@@ -241,7 +238,7 @@ namespace CocApiLibrary
             {
                 _spells = value;
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
@@ -369,11 +366,11 @@ namespace CocApiLibrary
 
         private void UpdateVillageSpells(CocApi cocApi, VillageAPIModel downloadedVillage)
         {
-            List<SpellAPIModel> newSpells = new List<SpellAPIModel>();
+            List<VillageSpellAPIModel> newSpells = new List<VillageSpellAPIModel>();
 
-            foreach(SpellAPIModel spell in downloadedVillage.Spells.EmptyIfNull())
+            foreach(VillageSpellAPIModel spell in downloadedVillage.Spells.EmptyIfNull())
             {
-                SpellAPIModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
+                VillageSpellAPIModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
 
                 if (oldSpell == null || oldSpell.Level < spell.Level)
                 {
@@ -592,51 +589,10 @@ namespace CocApiLibrary
 
         private void SetRelationalProperties()
         {
-            if (!string.IsNullOrEmpty(_villageTag) && _labels != null)
-            {
-                foreach(var label in _labels)
-                {
-                    label.VillageTag = _villageTag;
-                }
-            }
-
             if (_clan != null)
             {
                 _clanTag = _clan.ClanTag;
-            }
-
-            if (!string.IsNullOrEmpty(_villageTag) && _achievements != null)
-            {
-                foreach(var achievement in _achievements)
-                {
-                    achievement.VillageTag = _villageTag;
-                }
-            }      
-            
-            if (!string.IsNullOrEmpty(_villageTag) && _troops != null)
-            {
-                foreach(var troop in _troops)
-                {
-                    troop.VillageTag = _villageTag;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(_villageTag) && _spells != null)
-            {
-                foreach(var spell in _spells)
-                {
-                    spell.VillageTag = _villageTag;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(_villageTag) && _heroes != null)
-            {
-                foreach(var hero in _heroes)
-                {
-                    hero.VillageTag = _villageTag;
-                }
-            }
-                
+            }                
         }
     }
 }

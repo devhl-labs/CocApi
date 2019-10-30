@@ -18,6 +18,6 @@ namespace CocApiLibrary.Models
 
         public string Name { get; set; } = string.Empty;
 
-        public BadgeUrlModel? BadgeUrls { get; set; }
+        public ClanBadgeUrlModel? BadgeUrls { get; set; }
     }
 }

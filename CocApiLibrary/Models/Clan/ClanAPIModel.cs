@@ -39,7 +39,7 @@ namespace CocApiLibrary.Models
         public string Name { get; set; } = string.Empty;
 
         //[NotMapped]
-        public virtual BadgeUrlModel? BadgeUrls { get; set; }
+        public virtual ClanBadgeUrlModel? BadgeUrls { get; set; }
 
         public int ClanLevel { get; set; }
 

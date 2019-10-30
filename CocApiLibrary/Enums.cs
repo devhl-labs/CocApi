@@ -97,10 +97,12 @@ namespace CocApiLibrary
 
         public enum VillageType : int
         {
+            [EnumMember(Value = "Unknown")]
+            Unknown = 0,
             [EnumMember(Value = "Home")]
-            Home = 0,
+            Home = 1,
             [EnumMember(Value = "BuilderBase")]
-            BuilderBase = 1
+            BuilderBase = 2
         }
     }
 
@@ -113,7 +115,9 @@ namespace CocApiLibrary
         CurrentWar,
         LeagueGroup,
         LeagueWar,
-        WarLog
+        WarLog,
+        VillageLeagues,
+        Locations
 
     }
 

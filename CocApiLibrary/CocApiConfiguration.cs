@@ -66,5 +66,27 @@ namespace CocApiLibrary
         /// </summary>
         public TimeSpan WarLogAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// This end point is not cached, so do not spam it.  
+        /// Each request will query the server.
+        /// </summary>
+        public TimeSpan ClanSearchAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+
+
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// This end point is not cached, so do not spam it.  
+        /// Each request will query the server.
+        /// </summary>
+        public TimeSpan VillageLeagueSearchAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// This end point is not cached, so do not spam it.  
+        /// Each request will query the server.
+        /// </summary>
+        public TimeSpan LocationSearchAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+
     }
 }

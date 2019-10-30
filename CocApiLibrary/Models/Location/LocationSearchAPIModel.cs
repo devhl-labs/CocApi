@@ -5,9 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class ClanSearchAPIModel : IDownloadable
+    public class LocationSearchAPIModel : IDownloadable
     {
-        public IEnumerable<ClanAPIModel>? Items { get; set; }
+        public IEnumerable<LocationAPIModel>? Items { get; set; }
 
         public PagingAPIModel? Paging { get; set; }
 
