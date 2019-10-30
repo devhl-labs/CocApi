@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class VillageLeagueIconUrlAPIModel
+    public class VillageLeagueIconUrlApiModel
     {
         [Key]
         public string Id { get; set; } = string.Empty;

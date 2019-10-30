@@ -8,7 +8,7 @@ namespace CocApiLibrary.Exceptions
     [Serializable]
     public class ForbiddenException : ServerResponseException
     {
-        public ForbiddenException(ResponseMessageAPIModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public ForbiddenException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

@@ -8,7 +8,7 @@ namespace CocApiLibrary.Exceptions
     [Serializable]
     public class ServiceUnavailableException : ServerResponseException
     {
-        public ServiceUnavailableException(ResponseMessageAPIModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public ServiceUnavailableException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

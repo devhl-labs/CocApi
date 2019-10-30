@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class ClanLabelAPIModel
+    public class ClanLabelApiModel
     {
         public string ClanTag { get; set; } = string.Empty;
 
@@ -32,11 +32,11 @@ namespace CocApiLibrary.Models
 
 
 
-        private LabelUrlAPIModel? _imageUrl;
+        private LabelUrlApiModel? _imageUrl;
 
         [JsonPropertyName("IconUrls")]
         [ForeignKey(nameof(Id))]
-        public virtual LabelUrlAPIModel? LabelUrl
+        public virtual LabelUrlApiModel? LabelUrl
         {
             get
             {

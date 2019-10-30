@@ -2,7 +2,7 @@
 
 namespace CocApiLibrary.Models
 {
-    public interface IVillageAPIModel
+    public interface IVillageApiModel
     {
         string VillageTag { get; set; }
 

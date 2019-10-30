@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CocApiLibrary.Models
 {
-    public interface IClanAPIModel
+    public interface IClanApiModel
     {
         string ClanTag { get; }
 

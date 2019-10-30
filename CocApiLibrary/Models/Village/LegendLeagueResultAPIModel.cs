@@ -8,7 +8,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary
 {
-    public class LegendLeagueResultAPIModel
+    public class LegendLeagueResultApiModel
     {
         public string VillageTag { get; set; } = string.Empty;
 

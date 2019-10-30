@@ -12,9 +12,9 @@ namespace CocApiLibrary.Models
 
         public int TeamSize { get; set; }
 
-        public WarClanAPIModel? Clan { get; set; }
+        public WarClanApiModel? Clan { get; set; }
 
-        public WarClanAPIModel? Opponent { get; set; }
+        public WarClanApiModel? Opponent { get; set; }
 
         [JsonPropertyName("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]

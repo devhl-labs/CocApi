@@ -11,9 +11,9 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary
 {
-    public class VillageAPIModel : SwallowDelegates, IVillageAPIModel, IDownloadable
+    public class VillageApiModel : SwallowDelegates, IVillageApiModel, IDownloadable
     {
-        // IVillageAPIModel
+        // IVillageApiModel
         [Key]
         [JsonPropertyName("Tag")]
         public string VillageTag
@@ -72,7 +72,7 @@ namespace CocApiLibrary
         public int DefenseWins { get; set; }
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual LegendLeagueStatisticsAPIModel? LegendStatistics { get; set; }
+        public virtual LegendLeagueStatisticsApiModel? LegendStatistics { get; set; }
 
         public int BuilderHallLevel { get; set; }
 
@@ -90,12 +90,12 @@ namespace CocApiLibrary
         public int DonationsReceived { get; set; }
 
 
-        private SimpleClanAPIModel? _clan;
+        private SimpleClanApiModel? _clan;
 
 
         [ForeignKey(nameof(ClanTag))]
         [NotMapped]
-        public SimpleClanAPIModel? Clan
+        public SimpleClanApiModel? Clan
         {
             get
             {
@@ -111,10 +111,10 @@ namespace CocApiLibrary
         }
 
 
-        private VillageLeagueAPIModel? _league;
+        private VillageLeagueApiModel? _league;
 
         [NotMapped]
-        public virtual VillageLeagueAPIModel? League
+        public virtual VillageLeagueApiModel? League
         {
             get
             {
@@ -134,10 +134,10 @@ namespace CocApiLibrary
 
         public int LeagueId { get; set; }
 
-        private IEnumerable<AchievementAPIModel>? _achievements;
+        private IEnumerable<AchievementApiModel>? _achievements;
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual IEnumerable<AchievementAPIModel>? Achievements
+        public virtual IEnumerable<AchievementApiModel>? Achievements
         {
             get
             {
@@ -153,10 +153,10 @@ namespace CocApiLibrary
         public int VersusBattleWinCount { get; set; }
 
 
-        private IEnumerable<TroopAPIModel>? _troops;
+        private IEnumerable<TroopApiModel>? _troops;
         
         [NotMapped]
-        public virtual IEnumerable<TroopAPIModel>? Troops
+        public virtual IEnumerable<TroopApiModel>? Troops
         {
             get
             {
@@ -177,10 +177,10 @@ namespace CocApiLibrary
         }
 
 
-        private IEnumerable<TroopAPIModel>? _heroes;
+        private IEnumerable<TroopApiModel>? _heroes;
         
         [NotMapped]
-        public virtual IEnumerable<TroopAPIModel>? Heroes
+        public virtual IEnumerable<TroopApiModel>? Heroes
         {
             get
             {
@@ -203,12 +203,12 @@ namespace CocApiLibrary
         }
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual IList<TroopAPIModel> AllTroops { get; set; } = new List<TroopAPIModel>();
+        public virtual IList<TroopApiModel> AllTroops { get; set; } = new List<TroopApiModel>();
 
-        private IEnumerable<VillageLabelAPIModel>? _labels;
+        private IEnumerable<VillageLabelApiModel>? _labels;
 
         [ForeignKey("VillageTag")]
-        public virtual IEnumerable<VillageLabelAPIModel>? Labels
+        public virtual IEnumerable<VillageLabelApiModel>? Labels
         {
             get
             {
@@ -224,10 +224,10 @@ namespace CocApiLibrary
         }
 
 
-        private IEnumerable<VillageSpellAPIModel>? _spells;
+        private IEnumerable<VillageSpellApiModel>? _spells;
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual IEnumerable<VillageSpellAPIModel>? Spells
+        public virtual IEnumerable<VillageSpellApiModel>? Spells
         {
             get
             {
@@ -262,7 +262,7 @@ namespace CocApiLibrary
 
         private readonly object _updateLock = new object();
 
-        internal void Update(CocApi cocApi, VillageAPIModel downloadedVillage)
+        internal void Update(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             lock (_updateLock)
             {
@@ -306,7 +306,7 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateLegendLeagueStatistics(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateLegendLeagueStatistics(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (LegendStatistics == null && downloadedVillage.LegendStatistics == null) return;
 
@@ -318,7 +318,7 @@ namespace CocApiLibrary
             LegendStatistics = downloadedVillage.LegendStatistics;
         }
 
-        private void UpdateLabels(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateLabels(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (Labels == null && downloadedVillage.Labels == null) return;
 
@@ -336,23 +336,23 @@ namespace CocApiLibrary
             }
             else
             {
-                List<VillageLabelAPIModel> added = new List<VillageLabelAPIModel>();
+                List<VillageLabelApiModel> added = new List<VillageLabelApiModel>();
 
-                List<VillageLabelAPIModel> removed = new List<VillageLabelAPIModel>();
+                List<VillageLabelApiModel> removed = new List<VillageLabelApiModel>();
 
-                foreach (VillageLabelAPIModel labelAPIModel in Labels.EmptyIfNull())
+                foreach (VillageLabelApiModel labelApiModel in Labels.EmptyIfNull())
                 {
-                    if (!downloadedVillage.Labels.Any(l => l.Id == labelAPIModel.Id))
+                    if (!downloadedVillage.Labels.Any(l => l.Id == labelApiModel.Id))
                     {
-                        removed.Add(labelAPIModel);
+                        removed.Add(labelApiModel);
                     }
                 }
 
-                foreach (VillageLabelAPIModel labelAPIModel in downloadedVillage.Labels.EmptyIfNull())
+                foreach (VillageLabelApiModel labelApiModel in downloadedVillage.Labels.EmptyIfNull())
                 {
-                    if (!Labels.Any(l => l.Id == labelAPIModel.Id))
+                    if (!Labels.Any(l => l.Id == labelApiModel.Id))
                     {
-                        added.Add(labelAPIModel);
+                        added.Add(labelApiModel);
                     }
                 }
 
@@ -364,13 +364,13 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageSpells(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageSpells(CocApi cocApi, VillageApiModel downloadedVillage)
         {
-            List<VillageSpellAPIModel> newSpells = new List<VillageSpellAPIModel>();
+            List<VillageSpellApiModel> newSpells = new List<VillageSpellApiModel>();
 
-            foreach(VillageSpellAPIModel spell in downloadedVillage.Spells.EmptyIfNull())
+            foreach(VillageSpellApiModel spell in downloadedVillage.Spells.EmptyIfNull())
             {
-                VillageSpellAPIModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
+                VillageSpellApiModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
 
                 if (oldSpell == null || oldSpell.Level < spell.Level)
                 {
@@ -386,13 +386,13 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageHeroes(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageHeroes(CocApi cocApi, VillageApiModel downloadedVillage)
         {
-            List<TroopAPIModel> newTroops = new List<TroopAPIModel>();
+            List<TroopApiModel> newTroops = new List<TroopApiModel>();
 
-            foreach (TroopAPIModel troop in downloadedVillage.Heroes.EmptyIfNull())
+            foreach (TroopApiModel troop in downloadedVillage.Heroes.EmptyIfNull())
             {
-                TroopAPIModel? oldTroop = Heroes.FirstOrDefault(t => t.Name == troop.Name);
+                TroopApiModel? oldTroop = Heroes.FirstOrDefault(t => t.Name == troop.Name);
 
                 if (oldTroop == null || oldTroop.Level < troop.Level)
                 {
@@ -409,13 +409,13 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageTroops(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageTroops(CocApi cocApi, VillageApiModel downloadedVillage)
         {
-            List<TroopAPIModel> newTroops = new List<TroopAPIModel>();
+            List<TroopApiModel> newTroops = new List<TroopApiModel>();
             
-            foreach(TroopAPIModel troop in downloadedVillage.Troops.EmptyIfNull())
+            foreach(TroopApiModel troop in downloadedVillage.Troops.EmptyIfNull())
             {
-                TroopAPIModel? oldTroop = Troops.FirstOrDefault(t => t.Name == troop.Name);
+                TroopApiModel? oldTroop = Troops.FirstOrDefault(t => t.Name == troop.Name);
 
                 if (oldTroop == null || oldTroop.Level < troop.Level)
                 {
@@ -432,15 +432,15 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageAchievements(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageAchievements(CocApi cocApi, VillageApiModel downloadedVillage)
         {
-            List<AchievementAPIModel> newAchievements = new List<AchievementAPIModel>();
+            List<AchievementApiModel> newAchievements = new List<AchievementApiModel>();
 
-            foreach(AchievementAPIModel achievement in downloadedVillage.Achievements.EmptyIfNull())
+            foreach(AchievementApiModel achievement in downloadedVillage.Achievements.EmptyIfNull())
             {
                 if (achievement.Value > achievement.Target)
                 {
-                    AchievementAPIModel oldAchievement = Achievements.FirstOrDefault(a => a.Name == achievement.Name);
+                    AchievementApiModel oldAchievement = Achievements.FirstOrDefault(a => a.Name == achievement.Name);
 
                     if (oldAchievement == null || oldAchievement.Value < oldAchievement.Target)
                     {
@@ -457,7 +457,7 @@ namespace CocApiLibrary
             }            
         }
 
-        //private void UpdateVillageLeague(CocApi cocApi, VillageAPIModel downloadedVillage)
+        //private void UpdateVillageLeague(CocApi cocApi, VillageApiModel downloadedVillage)
         //{
         //    if (League == null && downloadedVillage.League != null ||
         //        League?.Id != downloadedVillage.League?.Id)
@@ -468,7 +468,7 @@ namespace CocApiLibrary
         //    }
         //}
 
-        private void UpdateVillage(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillage(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.AttackWins != AttackWins ||
                 downloadedVillage.BestTrophies != BestTrophies ||
@@ -503,7 +503,7 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageDefenseWins(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageDefenseWins(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.DefenseWins != DefenseWins)
             {
@@ -513,7 +513,7 @@ namespace CocApiLibrary
             }
         }
 
-        //private void UpdateVillageDonations(CocApi cocApi, VillageAPIModel downloadedVillage)
+        //private void UpdateVillageDonations(CocApi cocApi, VillageApiModel downloadedVillage)
         //{
         //    if (
         //        downloadedVillage.Donations != Donations
@@ -525,7 +525,7 @@ namespace CocApiLibrary
         //    }
         //}
 
-        //private void UpdateVillageDonationsReceived(CocApi cocApi, VillageAPIModel downloadedVillage)
+        //private void UpdateVillageDonationsReceived(CocApi cocApi, VillageApiModel downloadedVillage)
         //{
         //    if (
         //        downloadedVillage.DonationsReceived != DonationsReceived
@@ -537,7 +537,7 @@ namespace CocApiLibrary
         //    }
         //}
 
-        private void UpdateVillageExpLevel(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageExpLevel(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.ExpLevel != ExpLevel)
             {
@@ -547,7 +547,7 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageTrophies(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageTrophies(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.Trophies != Trophies)
             {
@@ -557,7 +557,7 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageVersusBattleWinCount(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageVersusBattleWinCount(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.VersusBattleWinCount != VersusBattleWinCount)
             {
@@ -567,7 +567,7 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageVersusBattleWins(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageVersusBattleWins(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.VersusBattleWins != VersusBattleWins)
             {
@@ -577,7 +577,7 @@ namespace CocApiLibrary
             }
         }
 
-        private void UpdateVillageVersusTrophies(CocApi cocApi, VillageAPIModel downloadedVillage)
+        private void UpdateVillageVersusTrophies(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.VersusTrophies != VersusTrophies)
             {

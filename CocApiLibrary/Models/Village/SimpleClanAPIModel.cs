@@ -7,9 +7,9 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class SimpleClanAPIModel : IClanAPIModel
+    public class SimpleClanApiModel : IClanApiModel
     {
-        // IClanAPIModel
+        // IClanApiModel
         [Key]
         [JsonPropertyName("Tag")]
         public string ClanTag { get; set; } = string.Empty;

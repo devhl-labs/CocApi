@@ -65,44 +65,50 @@ namespace CocApiLibrary
 
         public enum Result : int
         {
+            [EnumMember(Value = "unknown")]
+            Unknown = 0,
             [EnumMember(Value = "undetermined")]
-            Undetermined = 0,
+            Undetermined = 10,
             [EnumMember(Value = "win")]
-            Win = 1,
+            Win = 20,
             [EnumMember(Value = "lose")]
-            Lose = 2,
+            Lose = 30,
             [EnumMember(Value = "draw")]
-            Draw = 3
+            Draw = 40
         }
 
         public enum WarType : int
         {
+            [EnumMember(Value = "unknown")]
+            Unknown = 0,
             [EnumMember(Value = "Random")]
-            Random = 0,
+            Random = 10,
             [EnumMember(Value = "Friendly")]
-            Friendly = 1,
+            Friendly = 20,
             [EnumMember(Value = "SCCWL")]
-            SCCWL = 2
+            SCCWL = 30
         }
 
         public enum RecruitmentType : int
         {
+            [EnumMember(Value = "unknown")]
+            Unknown = 0,
             [EnumMember(Value = "InviteOnly")]
-            InviteOnly = 0,
+            InviteOnly = 10,
             [EnumMember(Value = "Closed")]
-            Closed = 1,
+            Closed = 20,
             [EnumMember(Value = "Open")]
-            Open = 2
+            Open = 30
         }
 
         public enum VillageType : int
         {
-            [EnumMember(Value = "Unknown")]
+            [EnumMember(Value = "unknown")]
             Unknown = 0,
             [EnumMember(Value = "Home")]
-            Home = 1,
+            Home = 10,
             [EnumMember(Value = "BuilderBase")]
-            BuilderBase = 2
+            BuilderBase = 20
         }
     }
 
@@ -118,7 +124,6 @@ namespace CocApiLibrary
         WarLog,
         VillageLeagues,
         Locations
-
     }
 
     public enum DownloadLeagueWars

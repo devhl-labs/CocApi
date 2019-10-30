@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class RoundAPIModel
+    public class RoundApiModel
     {
         //public IEnumerable<string>? WarTags { get; set; }
         [Key]

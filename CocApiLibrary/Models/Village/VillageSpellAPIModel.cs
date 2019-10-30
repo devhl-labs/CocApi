@@ -5,7 +5,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class VillageSpellAPIModel
+    public class VillageSpellApiModel
     {
         [ForeignKey(nameof(VillageTag))]
         public string VillageTag { get; set; } = string.Empty;

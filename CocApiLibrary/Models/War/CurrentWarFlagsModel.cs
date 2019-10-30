@@ -43,6 +43,6 @@ namespace CocApiLibrary.Models
         public bool WarEndSeen { get; set; } = false;
 
         [JsonIgnore]
-        public virtual CurrentWarAPIModel? CurrentWarAPIModel { get; set; }
+        public virtual CurrentWarApiModel? CurrentWarApiModel { get; set; }
     }
 }

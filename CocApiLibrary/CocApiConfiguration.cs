@@ -9,7 +9,7 @@ namespace CocApiLibrary
     public sealed class CocApiConfiguration
     {
         /// <summary>
-        /// List of tokens used to query the SC API
+        /// List of tokens used to query the SC Api
         /// </summary>
         public IList<string> Tokens { get; set; } = new List<string>();
 
@@ -20,7 +20,7 @@ namespace CocApiLibrary
         public int NumberOfUpdaters { get; set; } = 1;
 
         /// <summary>
-        /// Defines how quickly a SC API token may be reused.  Default is 3 seconds for testing purposes.  
+        /// Defines how quickly a SC Api token may be reused.  Default is 3 seconds for testing purposes.  
         /// </summary>
         public TimeSpan TokenTimeOut { get; set; } = new TimeSpan(0, 0, 3);
 
@@ -39,54 +39,54 @@ namespace CocApiLibrary
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan LeagueWarAPIModelTimeToLive { get; set; } = new TimeSpan(0, 5, 0);
+        public TimeSpan LeagueWarApiModelTimeToLive { get; set; } = new TimeSpan(0, 5, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan CurrentWarAPIModelTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+        public TimeSpan CurrentWarApiModelTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan LeagueGroupAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan LeagueGroupApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan ClanAPIModelTimeToLive { get; set; } = new TimeSpan(0, 10, 0);
+        public TimeSpan ClanApiModelTimeToLive { get; set; } = new TimeSpan(0, 10, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan VillageAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan VillageApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan WarLogAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
-        /// <summary>
-        /// Defines how long to wait before an HTTP request is considered expired.
-        /// This end point is not cached, so do not spam it.  
-        /// Each request will query the server.
-        /// </summary>
-        public TimeSpan ClanSearchAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
+        public TimeSpan WarLogApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// This end point is not cached, so do not spam it.  
         /// Each request will query the server.
         /// </summary>
-        public TimeSpan VillageLeagueSearchAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan ClanSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// This end point is not cached, so do not spam it.  
         /// Each request will query the server.
         /// </summary>
-        public TimeSpan LocationSearchAPIModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan VillageLeagueSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// This end point is not cached, so do not spam it.  
+        /// Each request will query the server.
+        /// </summary>
+        public TimeSpan LocationSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
     }
 }

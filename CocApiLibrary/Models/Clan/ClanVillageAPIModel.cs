@@ -6,9 +6,9 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class ClanVillageAPIModel : IVillageAPIModel
+    public class ClanVillageApiModel : IVillageApiModel
     {
-        // IVillageAPIModel
+        // IVillageApiModel
         [Key]
         [JsonPropertyName("Tag")]
         public string VillageTag { get; set; } = string.Empty;
@@ -29,13 +29,13 @@ namespace CocApiLibrary.Models
 
         public int ExpLevel { get; set; }
 
-        private VillageLeagueAPIModel? _league;
+        private VillageLeagueApiModel? _league;
 
         /// <summary>
         /// All leagues with the same Id will be the same instance
         /// </summary>
         [ForeignKey(nameof(LeagueId))]
-        public virtual VillageLeagueAPIModel? League
+        public virtual VillageLeagueApiModel? League
         {
             get
             {

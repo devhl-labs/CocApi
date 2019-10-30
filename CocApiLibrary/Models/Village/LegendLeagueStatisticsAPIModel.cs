@@ -7,34 +7,34 @@ using System.Text;
 
 namespace CocApiLibrary
 {
-    public class LegendLeagueStatisticsAPIModel
+    public class LegendLeagueStatisticsApiModel
     {
         [Key]
         public string VillageTag { get; set; } = string.Empty;
 
-        public virtual VillageAPIModel? Village { get; set; } 
+        public virtual VillageApiModel? Village { get; set; } 
 
         public int LegendTrophies { get; set; }
 
 
-        private LegendLeagueResultAPIModel? _bestSeason;
+        private LegendLeagueResultApiModel? _bestSeason;
 
-        private LegendLeagueResultAPIModel? _previousVersusSeason;
+        private LegendLeagueResultApiModel? _previousVersusSeason;
 
-        private LegendLeagueResultAPIModel? _bestVersusSeason;
+        private LegendLeagueResultApiModel? _bestVersusSeason;
 
-        private LegendLeagueResultAPIModel? _currentSeason;
+        private LegendLeagueResultApiModel? _currentSeason;
 
-        private LegendLeagueResultAPIModel? _previousSeason;
+        private LegendLeagueResultApiModel? _previousSeason;
 
-        private LegendLeagueResultAPIModel? _currentVersusSeason;
+        private LegendLeagueResultApiModel? _currentVersusSeason;
 
 
 
 
 
         [NotMapped]        
-        public LegendLeagueResultAPIModel? BestSeason
+        public LegendLeagueResultApiModel? BestSeason
         {
             get
             {
@@ -57,7 +57,7 @@ namespace CocApiLibrary
         } 
 
         [NotMapped]       
-        public LegendLeagueResultAPIModel? PreviousVersusSeason
+        public LegendLeagueResultApiModel? PreviousVersusSeason
         {
             get
             {
@@ -81,7 +81,7 @@ namespace CocApiLibrary
         }
 
         [NotMapped]        
-        public LegendLeagueResultAPIModel? CurrentSeason
+        public LegendLeagueResultApiModel? CurrentSeason
         {
             get
             {
@@ -103,7 +103,7 @@ namespace CocApiLibrary
         }
 
         [NotMapped]
-        public LegendLeagueResultAPIModel? CurrentVersusSeason
+        public LegendLeagueResultApiModel? CurrentVersusSeason
         {
             get
             {
@@ -127,7 +127,7 @@ namespace CocApiLibrary
         }
 
         [NotMapped]
-        public LegendLeagueResultAPIModel? BestVersusSeason
+        public LegendLeagueResultApiModel? BestVersusSeason
         {
             get
             {
@@ -151,7 +151,7 @@ namespace CocApiLibrary
         }
 
         [NotMapped]
-        public LegendLeagueResultAPIModel? PreviousSeason
+        public LegendLeagueResultApiModel? PreviousSeason
         {
             get
             {
@@ -178,6 +178,6 @@ namespace CocApiLibrary
 
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual IList<LegendLeagueResultAPIModel> LegendLeagueStatistics { get; set; } = new List<LegendLeagueResultAPIModel>();
+        public virtual IList<LegendLeagueResultApiModel> LegendLeagueStatistics { get; set; } = new List<LegendLeagueResultApiModel>();
     }
 }

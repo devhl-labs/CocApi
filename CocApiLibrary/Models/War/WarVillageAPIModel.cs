@@ -6,9 +6,9 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class WarVillageAPIModel : IVillageAPIModel
+    public class WarVillageApiModel : IVillageApiModel
     {
-        // IVillageAPIModel
+        // IVillageApiModel
 
         private string _villageTag = string.Empty;
 
@@ -64,7 +64,7 @@ namespace CocApiLibrary.Models
         }
 
         [NotMapped]
-        public IList<AttackAPIModel>? Attacks { get; set; }
+        public IList<AttackApiModel>? Attacks { get; set; }
 
         private string _warId = string.Empty;
         

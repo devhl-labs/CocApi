@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace CocApiLibrary.Models
 {
-    public interface ICurrentWarAPIModel : IDownloadable
+    public interface ICurrentWarApiModel : IDownloadable
     {
-        List<AttackAPIModel> Attacks { get; set; }
-        WarClanAPIModel? Clan { get; set; }
-        IList<WarClanAPIModel> Clans { get; set; }
+        List<AttackApiModel> Attacks { get; set; }
+        WarClanApiModel? Clan { get; set; }
+        IList<WarClanApiModel> Clans { get; set; }
         DateTime EndTimeUtc { get; set; }
         CurrentWarFlagsModel Flags { get; }
-        WarClanAPIModel? Opponent { get; set; }
+        WarClanApiModel? Opponent { get; set; }
         DateTime PreparationStartTimeUtc { get; set; }
         DateTime StartTimeUtc { get; set; }
         Enums.WarState State { get; set; }

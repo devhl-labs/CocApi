@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class VillageLeagueAPIModel
+    public class VillageLeagueApiModel
     {
         [Key]
         public int Id { get; set; }
@@ -12,11 +12,11 @@ namespace CocApiLibrary.Models
         public string Name { get; set; } = string.Empty;
 
 
-        private VillageLeagueIconUrlAPIModel? _iconUrl;
+        private VillageLeagueIconUrlApiModel? _iconUrl;
         
         [JsonPropertyName("IconUrls")]
         [ForeignKey(nameof(LeagueIconUrlId))]
-        public virtual VillageLeagueIconUrlAPIModel? LeagueIconUrl
+        public virtual VillageLeagueIconUrlApiModel? LeagueIconUrl
         {
             get
             {

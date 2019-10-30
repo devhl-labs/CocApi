@@ -8,7 +8,7 @@ namespace CocApiLibrary.Exceptions
     [Serializable]
     public class BadRequestException : ServerResponseException
     {
-        public BadRequestException(ResponseMessageAPIModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public BadRequestException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

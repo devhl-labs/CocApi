@@ -8,7 +8,7 @@ namespace CocApiLibrary.Exceptions
     [Serializable]
     public class InternalServerErrorException : ServerResponseException
     {
-        public InternalServerErrorException(ResponseMessageAPIModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public InternalServerErrorException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

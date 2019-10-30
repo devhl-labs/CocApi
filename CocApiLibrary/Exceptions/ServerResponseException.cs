@@ -13,7 +13,7 @@ namespace CocApiLibrary.Exceptions
         public readonly System.Net.HttpStatusCode HttpStatusCode;
 
 
-        public ServerResponseException(ResponseMessageAPIModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage.Reason)
+        public ServerResponseException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage.Reason)
         {
             Reason = responseMessage.Reason;
             HttpStatusCode = httpStatusCode;

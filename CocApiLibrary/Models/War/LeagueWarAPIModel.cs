@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CocApiLibrary.Models
 {
-    public class LeagueWarAPIModel : CurrentWarAPIModel, IInitialize, ICurrentWarAPIModel
+    public class LeagueWarApiModel : CurrentWarApiModel, IInitialize, ICurrentWarApiModel
     {
 
         public string WarTag { get; set; } = string.Empty;

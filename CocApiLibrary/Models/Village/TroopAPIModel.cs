@@ -4,7 +4,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class TroopAPIModel
+    public class TroopApiModel
     {
         public string VillageTag { get; set; } = string.Empty;
 

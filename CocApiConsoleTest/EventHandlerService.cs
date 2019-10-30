@@ -51,69 +51,69 @@ namespace CocApiConsoleTest
             _cocApi.ClanVillagesRoleChanged += CocApi_ClanVillagesRoleChanged;
         }
 
-        private void CocApi_ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageAPIModel, VillageLeagueAPIModel>> leagueChanged)
+        private void CocApi_ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged)
         {
             _logService.LogInformation($"League changed {leagueChanged.First().Key}");
         }
 
-        private void CocApi_ClanVillagesRoleChanged(Dictionary<string, Tuple<ClanVillageAPIModel, Enums.Role>> roleChanges)
+        private void CocApi_ClanVillagesRoleChanged(Dictionary<string, Tuple<ClanVillageApiModel, Enums.Role>> roleChanges)
         {
             _logService.LogInformation($"New role: {roleChanges.First().Value.Item2}");
         }
 
-        private void CocApi_ClanVillageNameChanged(ClanVillageAPIModel oldMember, string newName)
+        private void CocApi_ClanVillageNameChanged(ClanVillageApiModel oldMember, string newName)
         {
             _logService.LogInformation($"New name: {newName}");
         }
 
-        private void CocApi_VillageReachedLegendsLeague(VillageAPIModel villageAPIModel)
+        private void CocApi_VillageReachedLegendsLeague(VillageApiModel villageApiModel)
         {
-            _logService.LogInformation($"Village reached legends: {villageAPIModel.Name}");
+            _logService.LogInformation($"Village reached legends: {villageApiModel.Name}");
         }
 
-        private void CocApi_WarIsAccessibleChanged(ICurrentWarAPIModel currentWarAPIModel)
+        private void CocApi_WarIsAccessibleChanged(ICurrentWarApiModel currentWarApiModel)
         {
-            _logService.LogInformation($"War is accessible changed:{currentWarAPIModel.Flags.WarIsAccessible}");
+            _logService.LogInformation($"War is accessible changed:{currentWarApiModel.Flags.WarIsAccessible}");
         }
 
-        private void CocApi_NewWar(ICurrentWarAPIModel currentWarAPIModel)
+        private void CocApi_NewWar(ICurrentWarApiModel currentWarApiModel)
         {
-            _logService.LogInformation($"New War: {currentWarAPIModel.WarId}");
+            _logService.LogInformation($"New War: {currentWarApiModel.WarId}");
         }
 
-        private void CocApi_ClanVersusPointsChanged(ClanAPIModel oldClan, int newClanVersusPoints)
+        private void CocApi_ClanVersusPointsChanged(ClanApiModel oldClan, int newClanVersusPoints)
         {
             _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
         }
 
-        private void CocApi_ClanPointsChanged(ClanAPIModel oldClan, int newClanPoints)
+        private void CocApi_ClanPointsChanged(ClanApiModel oldClan, int newClanPoints)
         {
             _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} new clan points: {newClanPoints}");
         }
 
-        private void CocApi_ClanLocationChanged(ClanAPIModel oldClan, ClanAPIModel newClan)
+        private void CocApi_ClanLocationChanged(ClanApiModel oldClan, ClanApiModel newClan)
         {
             _logService.LogInformation(newClan.Location?.Name);
         }
 
-        private void CocApi_ClanBadgeUrlChanged(ClanAPIModel oldClan, ClanAPIModel newClan)
+        private void CocApi_ClanBadgeUrlChanged(ClanApiModel oldClan, ClanApiModel newClan)
         {
             _logService.LogInformation(newClan.BadgeUrls?.Large);
         }
 
-        private void CocApi_ClanChanged(ClanAPIModel oldClan, ClanAPIModel newClan)
+        private void CocApi_ClanChanged(ClanApiModel oldClan, ClanApiModel newClan)
         {
             _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} changed.");
         }
 
-        private void CocApi_NewAttacks(ICurrentWarAPIModel currentWarAPIModel, List<AttackAPIModel> attackAPIModels)
+        private void CocApi_NewAttacks(ICurrentWarApiModel currentWarApiModel, List<AttackApiModel> attackApiModels)
         {
-            _logService.LogInformation($"new attacks: {attackAPIModels.Count()}");
+            _logService.LogInformation($"new attacks: {attackApiModels.Count()}");
         }
 
-        private void CocApi_MembersJoined(ClanAPIModel clanAPIModel, List<ClanVillageAPIModel> memberListAPIModels)
+        private void CocApi_MembersJoined(ClanApiModel clanApiModel, List<ClanVillageApiModel> memberListApiModels)
         {
-            _logService.LogInformation($"{memberListAPIModels.Count()} members joined.");
+            _logService.LogInformation($"{memberListApiModels.Count()} members joined.");
         }
 
         private void CocApi_IsAvailableChanged(bool isAvailable)
@@ -121,9 +121,9 @@ namespace CocApiConsoleTest
             _logService.LogInformation($"CocApi isAvailable: {isAvailable}");
         }
 
-        private void CocApi_LeagueSizeChangeDetected(LeagueGroupAPIModel leagueGroupAPIModel)
+        private void CocApi_LeagueSizeChangeDetected(LeagueGroupApiModel leagueGroupApiModel)
         {
-            _logService.LogInformation($"League Size changed: {leagueGroupAPIModel.TeamSize}");
+            _logService.LogInformation($"League Size changed: {leagueGroupApiModel.TeamSize}");
         }
 
 

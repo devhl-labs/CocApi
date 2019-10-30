@@ -10,7 +10,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class CurrentWarAPIModel : IDownloadable, IInitialize, ICurrentWarAPIModel
+    public class CurrentWarApiModel : IDownloadable, IInitialize, ICurrentWarApiModel
     {
         private DateTime _endTimeUtc;
 
@@ -73,13 +73,13 @@ namespace CocApiLibrary.Models
 
         public int TeamSize { get; set; }
 
-        private WarClanAPIModel? _clan;
+        private WarClanApiModel? _clan;
 
         /// <summary>
         /// Do not use this property.  Instead, use the Clans property.
         /// </summary>
         [NotMapped]
-        public WarClanAPIModel? Clan
+        public WarClanApiModel? Clan
         {
             get { return _clan; }
             set
@@ -92,13 +92,13 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private WarClanAPIModel? _opponent;
+        private WarClanApiModel? _opponent;
 
         /// <summary>
         /// Do not use this property.  Instead, use the Clans property.
         /// </summary>
         [NotMapped]
-        public WarClanAPIModel? Opponent
+        public WarClanApiModel? Opponent
         {
             get { return _opponent; }
             set
@@ -139,11 +139,11 @@ namespace CocApiLibrary.Models
         [JsonIgnore]
         [ForeignKey(nameof(WarId))]
         
-        public virtual IList<WarClanAPIModel> Clans { get; set; } = new List<WarClanAPIModel>();
+        public virtual IList<WarClanApiModel> Clans { get; set; } = new List<WarClanApiModel>();
 
         [JsonIgnore]
         [ForeignKey(nameof(WarId))]
-        public virtual List<AttackAPIModel> Attacks { get; set; } = new List<AttackAPIModel>();
+        public virtual List<AttackApiModel> Attacks { get; set; } = new List<AttackApiModel>();
 
         [JsonIgnore]
         [Key]
@@ -231,11 +231,11 @@ namespace CocApiLibrary.Models
                 }
             }
 
-            foreach (WarClanAPIModel clan in Clans)
+            foreach (WarClanApiModel clan in Clans)
             {
-                foreach (WarVillageAPIModel warVillage in clan.Villages.EmptyIfNull())
+                foreach (WarVillageApiModel warVillage in clan.Villages.EmptyIfNull())
                 {
-                    foreach (AttackAPIModel attack in warVillage.Attacks.EmptyIfNull())
+                    foreach (AttackApiModel attack in warVillage.Attacks.EmptyIfNull())
                     {
                         if (!Attacks.Any(a => a.Order == attack.Order))
                         {
@@ -258,17 +258,17 @@ namespace CocApiLibrary.Models
             {
                 foreach(var clan in Clans)
                 {
-                    WarVillageAPIModel? attacker = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.AttackerTag);
+                    WarVillageApiModel? attacker = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.AttackerTag);
 
                     if (attacker != null) attack.AttackerClanTag = clan.ClanTag;
 
-                    WarVillageAPIModel? defender = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.DefenderTag);
+                    WarVillageApiModel? defender = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.DefenderTag);
 
                     if (defender != null) attack.DefenderClanTag = clan.ClanTag;
                 }
             }
 
-            foreach (WarClanAPIModel clan in Clans)
+            foreach (WarClanApiModel clan in Clans)
             {
                 clan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == clan.ClanTag);
             }
@@ -303,7 +303,7 @@ namespace CocApiLibrary.Models
 
         private readonly object _newWarLock = new object();
 
-        internal void Update(CocApi cocApi, ICurrentWarAPIModel? downloadedWar, LeagueGroupAPIModel? leagueGroupAPIModel)
+        internal void Update(CocApi cocApi, ICurrentWarApiModel? downloadedWar, LeagueGroupApiModel? leagueGroupApiModel)
         {
             lock (_updateLock)
             {
@@ -313,7 +313,7 @@ namespace CocApiLibrary.Models
 
                 UpdateAttacks(cocApi, downloadedWar);
 
-                UpdateLeagueTeamSize(cocApi, leagueGroupAPIModel);
+                UpdateLeagueTeamSize(cocApi, leagueGroupApiModel);
 
                 if (downloadedWar?.WarId == WarId)
                 {
@@ -334,7 +334,7 @@ namespace CocApiLibrary.Models
                 
                 foreach(var clan in Clans)
                 {
-                    if (cocApi.AllClans.TryGetValue(clan.ClanTag, out ClanAPIModel storedClan))
+                    if (cocApi.AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
                     {
                         //we only announce wars if this flag is false to avoid spamming new war events when the program starts.
                         if (storedClan.AnnounceWars)
@@ -350,7 +350,7 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private void SendWarNotifications(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
+        private void SendWarNotifications(CocApi cocApi, ICurrentWarApiModel? downloadedWar)
         {
             if (Flags.WarIsAccessible && (downloadedWar == null || downloadedWar.WarId != WarId))
             {
@@ -408,7 +408,7 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private void UpdateWar(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
+        private void UpdateWar(CocApi cocApi, ICurrentWarApiModel? downloadedWar)
         {
             if (downloadedWar == null || downloadedWar.WarId != WarId) return;
             
@@ -434,13 +434,13 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private void UpdateAttacks(CocApi cocApi, ICurrentWarAPIModel? downloadedWar)
+        private void UpdateAttacks(CocApi cocApi, ICurrentWarApiModel? downloadedWar)
         {
             if (downloadedWar == null || downloadedWar.WarId != WarId) return;
 
-            List<AttackAPIModel> newAttacks = new List<AttackAPIModel>();
+            List<AttackApiModel> newAttacks = new List<AttackApiModel>();
 
-            foreach (AttackAPIModel attack in downloadedWar.Attacks)
+            foreach (AttackApiModel attack in downloadedWar.Attacks)
             {                
                 if (!Attacks.Any(a => a.Order == attack.Order))
                 {
@@ -448,17 +448,17 @@ namespace CocApiLibrary.Models
                 }
             }
 
-            foreach(WarClanAPIModel clan in Clans)
+            foreach(WarClanApiModel clan in Clans)
             {
-                foreach(WarVillageAPIModel warVillage in clan.Villages.EmptyIfNull())
+                foreach(WarVillageApiModel warVillage in clan.Villages.EmptyIfNull())
                 {
-                    foreach(AttackAPIModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag))
+                    foreach(AttackApiModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag))
                     {
                         if (!warVillage.Attacks.Any(a => a.Order == downloadedAttack.Order))
                         {
                             if (warVillage.Attacks == null)
                             {
-                                warVillage.Attacks = new List<AttackAPIModel>();
+                                warVillage.Attacks = new List<AttackApiModel>();
                             }
 
                             warVillage.Attacks.Add(downloadedAttack);
@@ -481,17 +481,17 @@ namespace CocApiLibrary.Models
             cocApi.NewAttacksEvent(this, newAttacks);
         }
 
-        private void UpdateLeagueTeamSize(CocApi cocApi, LeagueGroupAPIModel? leagueGroupAPIModel)
+        private void UpdateLeagueTeamSize(CocApi cocApi, LeagueGroupApiModel? leagueGroupApiModel)
         {
-            if (leagueGroupAPIModel == null) return;
+            if (leagueGroupApiModel == null) return;
 
-            if (leagueGroupAPIModel.TeamSize > 15) return;
+            if (leagueGroupApiModel.TeamSize > 15) return;
 
             if (Clans.Any(c => c.AttackCount > 15))
             {
-                leagueGroupAPIModel.TeamSize = 30;
+                leagueGroupApiModel.TeamSize = 30;
 
-                cocApi.LeagueGroupTeamSizeChangeDetectedEvent(leagueGroupAPIModel);
+                cocApi.LeagueGroupTeamSizeChangeDetectedEvent(leagueGroupApiModel);
             }
             
         }

@@ -7,9 +7,9 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class WarClanAPIModel : IClanAPIModel
+    public class WarClanApiModel : IClanApiModel
     {
-        // IClanAPIModel
+        // IClanApiModel
         [JsonPropertyName("Tag")]
         public string ClanTag
         {
@@ -71,11 +71,11 @@ namespace CocApiLibrary.Models
 
         private string _clanTag = string.Empty;    
 
-        private IEnumerable<WarVillageAPIModel>? _villages;
+        private IEnumerable<WarVillageApiModel>? _villages;
 
         [ForeignKey(nameof(WarClanId))]
         [JsonPropertyName("members")]
-        public virtual IEnumerable<WarVillageAPIModel>? Villages
+        public virtual IEnumerable<WarVillageApiModel>? Villages
         {
             get
             {

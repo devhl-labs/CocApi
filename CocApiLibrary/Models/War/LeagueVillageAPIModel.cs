@@ -4,9 +4,9 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class LeagueVillageAPIModel : IVillageAPIModel
+    public class LeagueVillageApiModel : IVillageApiModel
     {
-        // IVillageAPIModel
+        // IVillageApiModel
         [Key]
         [JsonPropertyName("Tag")]
         public string VillageTag { get; set; } = string.Empty;

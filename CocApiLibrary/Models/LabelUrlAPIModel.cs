@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CocApiLibrary.Models
 {
-    public class LabelUrlAPIModel
+    public class LabelUrlApiModel
     {
         public int Id { get; set; }
 
@@ -47,13 +47,13 @@ namespace CocApiLibrary.Models
         }
 
         /// <summary>
-        /// The API returns the wrong url for the lables.  Use the corrected url until the API is updated.
+        /// The Api returns the wrong url for the lables.  Use the corrected url until the Api is updated.
         /// </summary>
         public string MediumCorrected { get; set; } = string.Empty;
 
 
         /// <summary>
-        /// The API returns the wrong url for the lables.  Use the corrected url until the API is updated.
+        /// The Api returns the wrong url for the lables.  Use the corrected url until the Api is updated.
         /// </summary>
         public string SmallCorrected { get; set; } = string.Empty;
 

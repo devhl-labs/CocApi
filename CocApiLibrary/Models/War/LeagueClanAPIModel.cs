@@ -6,9 +6,9 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class LeagueClanAPIModel : IClanAPIModel
+    public class LeagueClanApiModel : IClanApiModel
     {
-        // IClanAPIModel
+        // IClanApiModel
         [JsonPropertyName("Tag")]
         public string ClanTag { get; set; } = string.Empty;
 
@@ -33,6 +33,6 @@ namespace CocApiLibrary.Models
         public string LeagueClanId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(LeagueClanId))]
-        public virtual IEnumerable<LeagueVillageAPIModel>? Villages { get; set; }
+        public virtual IEnumerable<LeagueVillageApiModel>? Villages { get; set; }
     }
 }

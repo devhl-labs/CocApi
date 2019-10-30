@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace CocApiLibrary.Models
 {
-    public class AttackAPIModel
+    public class AttackApiModel
     {
         public DateTime PreparationStartTimeUtc { get; set; }
 

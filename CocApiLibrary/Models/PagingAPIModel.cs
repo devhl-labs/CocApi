@@ -2,7 +2,7 @@
 
 namespace CocApiLibrary.Models
 {
-    public class PagingAPIModel
+    public class PagingApiModel
     {
         public CursorModel? Cursors { get; set; }
     }

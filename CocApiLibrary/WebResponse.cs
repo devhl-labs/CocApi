@@ -130,7 +130,7 @@ namespace CocApiLibrary
                 }
                 else
                 {
-                    ResponseMessageAPIModel ex = JsonSerializer.Deserialize<ResponseMessageAPIModel>(responseText, _jsonSerializerOptions);
+                    ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
 
                     WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
 
@@ -197,12 +197,12 @@ namespace CocApiLibrary
 
         private static void SetRelationalProperties<T>(T result) where T : class, IDownloadable, new()
         {
-            if (result is ClanAPIModel clan)
+            if (result is ClanApiModel clan)
             {
                 SetRelationalProperties(clan);
             }
 
-            if (result is ClanSearchAPIModel clanSearch)
+            if (result is PaginatedApiModel<ClanApiModel> clanSearch)
             {
                 foreach(var clanItem in clanSearch.Items.EmptyIfNull())
                 {
@@ -210,7 +210,7 @@ namespace CocApiLibrary
                 }
             }
 
-            if (result is VillageAPIModel village)
+            if (result is VillageApiModel village)
             {
                 if (village.LegendStatistics != null)
                 {
@@ -259,7 +259,7 @@ namespace CocApiLibrary
                 }
             }
 
-            if (result is LeagueGroupAPIModel group)
+            if (result is LeagueGroupApiModel group)
             {
                 group.GroupId = $"{group.Season.ToString()}{group.Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
 
@@ -279,7 +279,7 @@ namespace CocApiLibrary
                 }
             }
 
-            if (result is CurrentWarAPIModel war)
+            if (result is CurrentWarApiModel war)
             {
                 foreach (var attack in war.Attacks.EmptyIfNull())
                 {
@@ -302,7 +302,7 @@ namespace CocApiLibrary
             }
         }
 
-        private static void SetRelationalProperties(ClanAPIModel clan)
+        private static void SetRelationalProperties(ClanApiModel clan)
         {
             foreach (var clanVillage in clan.Villages.EmptyIfNull())
             {
@@ -330,73 +330,79 @@ namespace CocApiLibrary
         {
             switch (result)
             {
-                case LeagueWarAPIModel leagueWarAPIModel:
-                    if (leagueWarAPIModel.State == WarState.WarEnded)
+                case LeagueWarApiModel leagueWarApiModel:
+                    if (leagueWarApiModel.State == WarState.WarEnded)
                     {
-                        leagueWarAPIModel.Expires = DateTime.UtcNow.AddYears(1);
+                        leagueWarApiModel.Expires = DateTime.UtcNow.AddYears(1);
                     }
                     else
                     {
-                        leagueWarAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueWarAPIModelTimeToLive);
+                        leagueWarApiModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueWarApiModelTimeToLive);
                     }
 
-                    leagueWarAPIModel.EncodedUrl = encodedURL;
+                    leagueWarApiModel.EncodedUrl = encodedURL;
                     break;
 
-                case CurrentWarAPIModel currentWar:
+                case CurrentWarApiModel currentWar:
                     if (currentWar.State == WarState.WarEnded)
                     {
                         currentWar.Expires = DateTime.UtcNow.AddYears(1);
                     }
                     else
                     {
-                        currentWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarAPIModelTimeToLive);
+                        currentWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
                     }
 
                     currentWar.EncodedUrl = encodedURL;
                     break;
 
-                case LeagueGroupAPIModel leagueGroupAPIModel:
-                    if (leagueGroupAPIModel.State == LeagueState.WarsEnded)
+                case LeagueGroupApiModel leagueGroupApiModel:
+                    if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
-                        leagueGroupAPIModel.Expires = DateTime.UtcNow.AddHours(6);
+                        leagueGroupApiModel.Expires = DateTime.UtcNow.AddHours(6);
                     }
                     else
                     {
-                        leagueGroupAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupAPIModelTimeToLive);
+                        leagueGroupApiModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupApiModelTimeToLive);
                     }
 
-                    leagueGroupAPIModel.EncodedUrl = encodedURL;
+                    leagueGroupApiModel.EncodedUrl = encodedURL;
                     break;
 
-                case ClanAPIModel clanAPIModel:
-                    clanAPIModel.Expires = DateTime.UtcNow.Add(_cfg.ClanAPIModelTimeToLive);
-                    clanAPIModel.EncodedUrl = encodedURL;
+
+                case ClanApiModel clanApiModel:
+                    clanApiModel.Expires = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
+                    clanApiModel.EncodedUrl = encodedURL;
                     break;
 
-                case VillageAPIModel villageAPIModel:
-                    villageAPIModel.Expires = DateTime.UtcNow.Add(_cfg.VillageAPIModelTimeToLive);
-                    villageAPIModel.EncodedUrl = encodedURL;
+
+                case VillageApiModel villageApiModel:
+                    villageApiModel.Expires = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
+                    villageApiModel.EncodedUrl = encodedURL;
                     break;
 
-                case WarLogAPIModel warLogAPIModel:
-                    warLogAPIModel.Expires = DateTime.UtcNow.Add(_cfg.WarLogAPIModelTimeToLive);
-                    warLogAPIModel.EncodedUrl = encodedURL;
+
+                case PaginatedApiModel<WarLogEntryModel> warLogApiModel:
+                    warLogApiModel.Expires = DateTime.UtcNow.Add(_cfg.WarLogApiModelTimeToLive);
+                    warLogApiModel.EncodedUrl = encodedURL;
                     break;
 
-                case ClanSearchAPIModel clanSearchModel:
-                    clanSearchModel.Expires = DateTime.UtcNow.Add(_cfg.ClanSearchAPIModelTimeToLive);
-                    clanSearchModel.EncodedUrl = encodedURL;
-                    break;
 
-                case VillageLeagueSearchAPIModel villageLeagueSearchModel:
-                    villageLeagueSearchModel.Expires = DateTime.UtcNow.Add(_cfg.VillageLeagueSearchAPIModelTimeToLive);
+                case PaginatedApiModel<VillageLeagueApiModel> villageLeagueSearchModel:
+                    villageLeagueSearchModel.Expires = DateTime.UtcNow.Add(_cfg.VillageLeagueSearchApiModelTimeToLive);
                     villageLeagueSearchModel.EncodedUrl = encodedURL;
                     break;
 
-                case LocationSearchAPIModel locationSearchAPIModel:
-                    locationSearchAPIModel.Expires = DateTime.UtcNow.Add(_cfg.LocationSearchAPIModelTimeToLive);
-                    locationSearchAPIModel.EncodedUrl = encodedURL;
+
+                case PaginatedApiModel<LocationApiModel> searchApiModel:
+                    searchApiModel.Expires = DateTime.UtcNow.Add(_cfg.LocationSearchApiModelTimeToLive);
+                    searchApiModel.EncodedUrl = encodedURL;
+                    break;
+
+
+                case PaginatedApiModel<ClanApiModel> clanSearchModel:
+                    clanSearchModel.Expires = DateTime.UtcNow.Add(_cfg.ClanSearchApiModelTimeToLive);
+                    clanSearchModel.EncodedUrl = encodedURL;
                     break;
 
 

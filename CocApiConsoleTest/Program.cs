@@ -70,13 +70,13 @@ namespace CocApiConsoleTest
                  */
 
                 CacheHttpResponses = true,
-                ClanAPIModelTimeToLive = TimeSpan.FromMinutes(10),
-                CurrentWarAPIModelTimeToLive = TimeSpan.FromSeconds(15),
-                LeagueGroupAPIModelTimeToLive = TimeSpan.FromHours(1),
-                LeagueWarAPIModelTimeToLive = TimeSpan.FromSeconds(15),
+                ClanApiModelTimeToLive = TimeSpan.FromMinutes(10),
+                CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
+                LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
+                LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
                 TokenTimeOut = TimeSpan.FromSeconds(3),
-                VillageAPIModelTimeToLive = TimeSpan.FromHours(1),
-                WarLogAPIModelTimeToLive = TimeSpan.FromHours(1),
+                VillageApiModelTimeToLive = TimeSpan.FromHours(1),
+                WarLogApiModelTimeToLive = TimeSpan.FromHours(1),
                 NumberOfUpdaters = 1,
                 TimeToWaitForWebRequests = TimeSpan.FromSeconds(10),                
             };
