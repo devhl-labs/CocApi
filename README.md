@@ -28,12 +28,6 @@ This is to avoid rate limiting your key.\
 If your key is only used in CocApi, you can make the time spans much shorter.\
 The API allows about 10 requests a second per key.
 
-## [ICurrentWarAPIModel](/CocApiLibrary/Models/War/ICurrentWarAPIModel.cs)
-This interface is implemented by [CurrentWarAPIModel](/CocApiLibrary/Models/War/CurrentWarAPIModel.cs) and [LeagueWarAPIModel](/CocApiLibrary/Models/War/LeagueWarAPIModel.cs).\
-The only difference is LeagueWarAPIModel has a WarTag property, and the WarType enum will be SCCWL.\
-When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate type when necessary.\
-LeagueWarAPIModel also inherits from CurrentWarAPIModel.  If you have to cast, ensure you start with LeagueWarAPIModel.
-
 ## [WebResponse](/CocApiLibrary/WebResponse.cs)
 This is an internal static class.\
 If it prints to the ILogger, that indicates that the library is polling the API.
@@ -41,6 +35,18 @@ If it prints to the ILogger, that indicates that the library is polling the API.
 ## [UpdateService](/CocApiLibrary/UpdateService.cs)
 This is an internal class.  It is only public so it can inherit a public abstract class.
 If it prints to the ILogger, it is updating an object.  If the object being updated is not expired, it will not ask the WebResponse class to poll the API.
+
+## [ICurrentWarAPIModel](/CocApiLibrary/Models/War/ICurrentWarAPIModel.cs)
+This interface is implemented by [CurrentWarAPIModel](/CocApiLibrary/Models/War/CurrentWarAPIModel.cs) and [LeagueWarAPIModel](/CocApiLibrary/Models/War/LeagueWarAPIModel.cs).\
+The only difference is LeagueWarAPIModel has a WarTag property, and the WarType enum will be SCCWL.\
+When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate type when necessary.\
+LeagueWarAPIModel also inherits from CurrentWarAPIModel.  If you have to cast, ensure you start with LeagueWarAPIModel.
+
+## IWar
+This empty interface is implemented by ICurrentWarAPIModel and the NotInWar model.  The library will never return an ICurrentWarAPIModel with a state of notInWar.
+
+## ILeagueGroup
+This empty interface is implemented by ILeagueGroup and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
 
 ## [Extensions](/CocApiLibrary/Extensions.cs)
 The static Extensions class contains some things that may be useful, especially for Discord bots.\
