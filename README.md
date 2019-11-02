@@ -3,14 +3,14 @@ This .NET Standard 2.1 library will provide responses from [developer.clashofcla
 This is a rewrite of the class library Minion Bot uses.
  
 ## [CocApiConsoleTest](/CocApiConsoleTest)
-The test program shows you how to set up the library.\
-The library can grab SC API objects on command.\
-It can also automatically keep these objects up to date by polling the API.\
-When an object changes, it will fire an event which you can subscribe to.\
-You may optionally provide an ILogger to observe what the library is doing.\
+The test program shows you how to set up the library.
+The library can grab SC API objects on command.
+It can also automatically keep these objects up to date by polling the API.
+When an object changes, it will fire an event which you can subscribe to.
+You may optionally provide an ILogger to observe what the library is doing.
 The test program will output the following:<br/><br/>
-![Test Program console output](https://github.com/devhl-labs/CocApi/blob/controlsloop/CocApiConsoleTest/images/console.jpg)\
-If you choose to keep the objects up to date, the library will constantly write to the ILogger.\
+![Test Program console output](https://github.com/devhl-labs/CocApi/blob/controlsloop/CocApiConsoleTest/images/console.jpg)
+If you choose to keep the objects up to date, the library will constantly write to the ILogger.
 Of course, the ILogger is in your program, so you can choose what to print.
 
 ## [CocApi](/CocApiLibrary/CocApi.cs)
