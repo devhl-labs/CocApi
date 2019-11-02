@@ -42,7 +42,7 @@ When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate t
 LeagueWarAPIModel also inherits from CurrentWarAPIModel.  If you have to cast, ensure you start with LeagueWarAPIModel.
 
 ## IWar
-This empty interface is implemented by ICurrentWarAPIModel and the NotInWar model.  The library will never return an ICurrentWarAPIModel with a state of notInWar.
+This empty interface is implemented by ICurrentWarAPIModel and the NotInWar model.  The library will never return an ICurrentWarAPIModel with state = notInWar.
 
 ## ILeagueGroup
 This empty interface is implemented by LeagueGroupApiModel and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
