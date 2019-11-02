@@ -11,11 +11,13 @@ namespace CocApiLibrary.Models
 
         public PagingApiModel? Paging { get; set; }
 
-        public DateTime DateTimeUtc { get; internal set; } = DateTime.UtcNow;
+        public DateTime UpdateAtUtc { get; internal set; } = DateTime.UtcNow;
 
         public DateTime Expires { get; internal set; }
 
         public string EncodedUrl { get; internal set; } = string.Empty;
+
+        public DateTime? CacheExpiresAtUtc { get; set; }
 
         public bool IsExpired()
         {

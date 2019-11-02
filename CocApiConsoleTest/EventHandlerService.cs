@@ -49,6 +49,34 @@ namespace CocApiConsoleTest
             _cocApi.ClanVillagesLeagueChanged += CocApi_ClanVillagesLeagueChanged; ;
 
             _cocApi.ClanVillagesRoleChanged += CocApi_ClanVillagesRoleChanged;
+
+            _cocApi.VillageLabelsAdded += CocApi_VillageLabelsAdded;
+
+            _cocApi.VillageLabelsRemoved += CocApi_VillageLabelsRemoved;
+
+            _cocApi.WarStarted += CocApi_WarStarted;
+
+            _cocApi.WarStartingSoon += CocApi_WarStartingSoon;
+        }
+
+        private void CocApi_WarStartingSoon(ICurrentWarApiModel currentWarApiModel)
+        {
+            _logService.LogInformation("war starting soon");
+        }
+
+        private void CocApi_WarStarted(ICurrentWarApiModel currentWarApiModel)
+        {
+            _logService.LogInformation("war started");
+        }
+
+        private void CocApi_VillageLabelsRemoved(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels)
+        {
+            _logService.LogInformation("labels removed");
+        }
+
+        private void CocApi_VillageLabelsAdded(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels)
+        {
+            _logService.LogInformation("labels added");
         }
 
         private void CocApi_ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged)

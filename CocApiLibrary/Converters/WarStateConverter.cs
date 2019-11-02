@@ -14,7 +14,7 @@ namespace CocApiLibrary.Converters
         {
             string value = reader.GetString();
 
-            if (string.IsNullOrEmpty(value)) return WarState.NotInWar;
+            if (string.IsNullOrEmpty(value)) return WarState.Unknown;
 
             if (value == "inWar") return WarState.InWar;
 

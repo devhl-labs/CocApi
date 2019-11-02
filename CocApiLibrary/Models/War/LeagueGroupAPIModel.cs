@@ -11,7 +11,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class LeagueGroupApiModel : IDownloadable
+    public class LeagueGroupApiModel : ILeagueGroup, IDownloadable
     {
         [JsonConverter(typeof(LeagueStateConverter))]
         public LeagueState State { get; set; }
@@ -40,11 +40,13 @@ namespace CocApiLibrary.Models
         [ForeignKey(nameof(GroupId))]
         public virtual IList<RoundApiModel>? Rounds { get; set; }
 
-        public DateTime DateTimeUtc { get; internal set; } = DateTime.UtcNow;
+        public DateTime UpdateAtUtc { get; internal set; } = DateTime.UtcNow;
 
         public DateTime Expires { get; internal set; }
 
         public string EncodedUrl { get; internal set; } = string.Empty;
+
+        public DateTime? CacheExpiresAtUtc { get; set; }
 
         [JsonIgnore]
         public int TeamSize { get; internal set; } = 15;

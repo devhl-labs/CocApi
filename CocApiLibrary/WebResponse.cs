@@ -78,7 +78,7 @@ namespace CocApiLibrary
 
         internal static List<WebResponseTimer> GetTimers() => WebResponseTimers;
 
-        internal static async Task<T> GetWebResponse<T>(EndPoint endPoint, string encodedUrl, CancellationTokenSource? cancellationTokenSource = null) where T : class, IDownloadable, new()
+        internal static async Task<IDownloadable> GetWebResponse<T>(EndPoint endPoint, string encodedUrl, CancellationTokenSource? cancellationTokenSource = null) where T : class, IDownloadable, new()
         {
             Stopwatch stopwatch = new Stopwatch();
 
@@ -100,6 +100,8 @@ namespace CocApiLibrary
 
                 stopwatch.Stop();
 
+                DateTime? cacheExpires = GetCacheExpirationDate(response);
+
                 string responseText = response.Content.ReadAsStringAsync().Result;
 
                 if (response.IsSuccessStatusCode)
@@ -110,18 +112,40 @@ namespace CocApiLibrary
 
                     if (result != null)
                     {
-                        WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
-
-                        if (result is IInitialize process)
+                        if (result is CurrentWarApiModel currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
                         {
-                            process.Initialize();
+                            var notInWar = new NotInWar();
+
+                            PrepareResult(notInWar, endPoint, stopwatch, response, encodedUrl);
+
+                            return notInWar;
+                        }
+                        else
+                        {
+                            PrepareResult(result, endPoint, stopwatch, response, encodedUrl);
+
+                            return result;
                         }
 
-                        SetIDownloadableProperties(result, encodedUrl);
 
-                        SetRelationalProperties(result);
 
-                        return result;
+                        //WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
+
+                        //if (result is IInitialize process)
+                        //{
+                        //    process.Initialize();
+                        //}
+
+                        //SetIDownloadableProperties(result, encodedUrl);
+
+                        //SetRelationalProperties(result);
+
+                        //if (cacheExpires.HasValue)
+                        //{
+                        //    result.CacheExpiresAtUtc = cacheExpires;
+                        //}
+
+                        //return result;
                     }
                     else
                     {
@@ -142,6 +166,19 @@ namespace CocApiLibrary
                     {
                         throw new ForbiddenException(ex, response.StatusCode);
                     }
+
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound && endPoint == EndPoint.LeagueGroup)
+                    {
+                        var leagueGroupNotFound = new LeagueGroupNotFound
+                        {
+                            CacheExpiresAtUtc = GetCacheExpirationDate(response)
+                        };
+
+                        SetIDownloadableProperties(leagueGroupNotFound, encodedUrl);
+
+                        return leagueGroupNotFound;
+                    }
+
                     else if (response.StatusCode == System.Net.HttpStatusCode.NotFound) //404
                     {
                         throw new NotFoundException(ex, response.StatusCode);
@@ -186,6 +223,16 @@ namespace CocApiLibrary
 
                 _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
 
+                if (e is TaskCanceledException taskCanceled && endPoint == EndPoint.LeagueGroup)
+                {
+                    //there is a bug while the clan is searching where the api returns nothing
+                    var leagueGroupNotFound = new LeagueGroupNotFound();
+
+                    SetIDownloadableProperties(leagueGroupNotFound, encodedUrl);
+
+                    return leagueGroupNotFound;
+                }
+
                 if (e is TaskCanceledException taskCanceledException)
                 {
                     throw new ServerTookTooLongToRespondException(e.Message, e);
@@ -193,6 +240,39 @@ namespace CocApiLibrary
 
                 throw _cocApi.GetException(e);
             }
+        }
+
+        private static void PrepareResult<T>(T result, EndPoint endPoint, Stopwatch stopwatch, HttpResponseMessage response, string encodedUrl) where T : class, IDownloadable, new()
+        {
+            WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
+
+            if (result is IInitialize process)
+            {
+                process.Initialize();
+            }
+
+            SetIDownloadableProperties(result, encodedUrl);
+
+            SetRelationalProperties(result);
+
+            DateTime? cacheExpires = GetCacheExpirationDate(response);
+
+            if (cacheExpires.HasValue)
+            {
+                result.CacheExpiresAtUtc = cacheExpires;
+            }
+        }
+
+        private static DateTime? GetCacheExpirationDate(HttpResponseMessage response)
+        {
+            DateTime? cacheExpires = null;
+
+            if (response.Headers.Date.HasValue && response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge.HasValue)
+            {
+                cacheExpires = response.Headers.Date.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value);
+            }
+
+            return cacheExpires;
         }
 
         private static void SetRelationalProperties<T>(T result) where T : class, IDownloadable, new()
@@ -299,6 +379,45 @@ namespace CocApiLibrary
                         warVillage.WarId = war.WarId;
                     }
                 }
+
+                if (war.PreparationStartTimeUtc != DateTime.MinValue)
+                {
+                    war.Flags.WarIsAccessible = true;
+                }
+
+                if (war.State > WarState.Preparation)
+                {
+                    war.Flags.WarAnnounced = true;
+
+                    war.Flags.WarStarted = true;
+
+                    war.Flags.WarStartingSoon = true;
+                }
+
+                if (war.State > WarState.InWar)
+                {
+                    war.Flags.AttacksMissed = true;
+
+                    war.Flags.AttacksNotSeen = true;
+
+                    war.Flags.WarEnded = true;
+
+                    war.Flags.WarEndingSoon = true;
+
+                    war.Flags.WarEndNotSeen = true;
+
+                    war.Flags.WarEndSeen = true;
+                }
+
+                if (war.State == WarState.Preparation && war.WarStartingSoonUtc < DateTime.UtcNow)
+                {
+                    war.Flags.WarStartingSoon = true;
+                }
+
+                if (war.State == WarState.InWar && war.WarEndingSoonUtc < DateTime.UtcNow)
+                {
+                    war.Flags.WarEndingSoon = true;
+                }
             }
         }
 
@@ -356,6 +475,7 @@ namespace CocApiLibrary
                     currentWar.EncodedUrl = encodedURL;
                     break;
 
+
                 case LeagueGroupApiModel leagueGroupApiModel:
                     if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
@@ -367,6 +487,12 @@ namespace CocApiLibrary
                     }
 
                     leagueGroupApiModel.EncodedUrl = encodedURL;
+                    break;
+
+
+                case LeagueGroupNotFound leagueGroupNotFound:
+                    leagueGroupNotFound.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
+                    leagueGroupNotFound.EncodedUrl = encodedURL;
                     break;
 
 
@@ -404,6 +530,13 @@ namespace CocApiLibrary
                     clanSearchModel.Expires = DateTime.UtcNow.Add(_cfg.ClanSearchApiModelTimeToLive);
                     clanSearchModel.EncodedUrl = encodedURL;
                     break;
+
+                case NotInWar notInWar:
+                    notInWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                    notInWar.EncodedUrl = encodedURL;
+                    break;
+
+
 
 
                 default:

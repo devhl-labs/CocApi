@@ -54,7 +54,7 @@ namespace CocApiConsoleTest
             {
                 /*
                  *  These times are rather conservative incase the key you provide is 
-                 *  used elsewhere.  In production you can make these whatever you want
+                 *  used elsewhere.  In production you can make these whatever you want.
                  *  You will certainly want the TokenTimeOut to be much faster,
                  *  perhaps half a second.
                  *  
@@ -67,18 +67,22 @@ namespace CocApiConsoleTest
                  *  
                  *  Preemptive rate limits come from the TokenObject.
                  *  Rate Limits are actual errors that come from WebResponse.
+                 *  
+                 *  This program will honor cache expirations as well, 
+                 *  so polling the API may wait longer than the time to live.
                  */
 
                 CacheHttpResponses = true,
-                ClanApiModelTimeToLive = TimeSpan.FromMinutes(10),
+                ClanApiModelTimeToLive = TimeSpan.FromMinutes(5),
                 CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
                 LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
+                LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
                 LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
-                TokenTimeOut = TimeSpan.FromSeconds(3),
-                VillageApiModelTimeToLive = TimeSpan.FromHours(1),
+                TokenTimeOut = TimeSpan.FromSeconds(1),
+                VillageApiModelTimeToLive = TimeSpan.FromMinutes(5),
                 WarLogApiModelTimeToLive = TimeSpan.FromHours(1),
                 NumberOfUpdaters = 1,
-                TimeToWaitForWebRequests = TimeSpan.FromSeconds(10),                
+                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),     
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
@@ -93,12 +97,15 @@ namespace CocApiConsoleTest
             
             List<string> clans = new List<string>
             {
-                "#8J82PV0C",  // FYSB Unbuckled
-                "#2C8V29YJ",  // Зеленоград
-                "#22VCPLR98", // LostMeta Power
+                "#8J82PV0C",   // FYSB Unbuckled
+                "#2C8V29YJ",   // Зеленоград
+                "#22VCPLR98",  // LostMeta Power
                 "#8RJJ0C0Y",   // Rising Asylum
                 "#22G0JJR8",   // FYSB
                 "#P989QU9P",   // Burlap Thongs
+                "#YJC98R20",   // The hunters
+                "#GGR2GU8Y",   // kerala kings 2
+                "#R09C9RR0",   // Parathanon
             };
 
             _cocApi.WatchClans(clans);

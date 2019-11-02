@@ -26,6 +26,8 @@ namespace CocApiConsoleTest
             {
 #if DEBUG
                 if (eventId == LoggingEvents.IsPremptiveRateLimited) return;
+
+                if (eventId == LoggingEvents.UpdatingClan) return;
 #endif
 
                 PrintLogTitle(logLevel);

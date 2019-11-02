@@ -6,11 +6,13 @@ namespace CocApiLibrary.Models
 {
     public interface IDownloadable
     {
-        DateTime DateTimeUtc { get; }
+        DateTime UpdateAtUtc { get; }
 
         DateTime Expires { get; }
 
         string EncodedUrl { get; }
+
+        DateTime? CacheExpiresAtUtc { get; set; }
 
         bool IsExpired();
     }

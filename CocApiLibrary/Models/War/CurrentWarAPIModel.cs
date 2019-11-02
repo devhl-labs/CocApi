@@ -10,7 +10,7 @@ using static CocApiLibrary.Enums;
 
 namespace CocApiLibrary.Models
 {
-    public class CurrentWarApiModel : IDownloadable, IInitialize, ICurrentWarApiModel
+    public class CurrentWarApiModel : IInitialize, ICurrentWarApiModel
     {
         private DateTime _endTimeUtc;
 
@@ -164,11 +164,13 @@ namespace CocApiLibrary.Models
 
 
 
-        public DateTime DateTimeUtc { get; set; } = DateTime.UtcNow;
+        public DateTime UpdateAtUtc { get; set; } = DateTime.UtcNow;
 
         public DateTime Expires { get; set; }
 
         public string EncodedUrl { get; set; } = string.Empty;
+
+        public DateTime? CacheExpiresAtUtc { get; set; }
 
 
 
@@ -277,7 +279,7 @@ namespace CocApiLibrary.Models
 
         public bool WarIsOverOrAllAttacksUsed()
         {
-            if (State == WarState.NotInWar) return true;
+            //if (State == WarState.NotInWar) return true;
 
             if (State == WarState.WarEnded) return true;
 
@@ -301,12 +303,20 @@ namespace CocApiLibrary.Models
 
         private readonly object _updateLock = new object();
 
-        private readonly object _newWarLock = new object();
+        /// <summary>
+        /// This is used internally to prevent a race condition which would announce a war twice.
+        /// </summary>
+        public readonly object NewWarLock = new object();
 
-        internal void Update(CocApi cocApi, ICurrentWarApiModel? downloadedWar, LeagueGroupApiModel? leagueGroupApiModel)
+        internal void Update(CocApi cocApi, IWar? downloadedWar, ILeagueGroup? leagueGroupApiModel)
         {
             lock (_updateLock)
             {
+                if (ReferenceEquals(this, downloadedWar))
+                {
+                    return;
+                }
+
                 SendWarNotifications(cocApi, downloadedWar);
 
                 UpdateWar(cocApi, downloadedWar);
@@ -315,50 +325,69 @@ namespace CocApiLibrary.Models
 
                 UpdateLeagueTeamSize(cocApi, leagueGroupApiModel);
 
-                if (downloadedWar?.WarId == WarId)
-                {
-                    Expires = downloadedWar.Expires;
+                //if (downloadedWar?.WarId == WarId)
+                //{
+                //    Expires = downloadedWar.Expires;
 
-                    DateTimeUtc = downloadedWar.DateTimeUtc;
-                }
+                //    UpdateAtUtc = downloadedWar.UpdateAtUtc;
+
+                //    CacheExpiresAtUtc = downloadedWar.CacheExpiresAtUtc;
+
+                //    foreach (var clan in Clans)
+                //    {
+                //        cocApi.AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar); // cocApi.AllWars[clan.ClanTag] as ICurrentWarApiModel;
+
+                //        if (storedWar == null || storedWar.UpdateAtUtc < UpdateAtUtc)
+                //        {
+                //            cocApi.AllWarsByClanTag[clan.ClanTag] = this;
+
+                //            if (leagueGroupApiModel != null)
+                //            {
+                //                cocApi.AllLeagueGroups[clan.ClanTag] = leagueGroupApiModel;
+                //            }
+                //        }
+                //    }
+                //}
             }
         }
 
 
 
-        internal void AnnounceNewWar(CocApi cocApi)
-        {
-            lock (_newWarLock)
-            {
-                if (Flags.WarAnnounced) return;
+        //internal void AnnounceNewWar(CocApi cocApi)
+        //{
+        //    lock (NewWarLock)
+        //    {
+        //        if (Flags.WarAnnounced) return;
                 
-                foreach(var clan in Clans)
-                {
-                    if (cocApi.AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
-                    {
-                        //we only announce wars if this flag is false to avoid spamming new war events when the program starts.
-                        if (storedClan.AnnounceWars)
-                        {
-                            cocApi.NewWarEvent(this);
+        //        foreach(var clan in Clans)
+        //        {
+        //            if (cocApi.AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
+        //            {
+        //                //we only announce wars if this flag is false to avoid spamming new war events when the program starts.
+        //                if (storedClan.AnnounceWars)
+        //                {
+        //                    cocApi.NewWarEvent(this);
 
-                            break;
-                        }
-                    }
-                }                
+        //                    break;
+        //                }
+        //            }
+        //        }                
 
-                Flags.WarAnnounced = true;                
-            }
-        }
+        //        Flags.WarAnnounced = true;                
+        //    }
+        //}
 
-        private void SendWarNotifications(CocApi cocApi, ICurrentWarApiModel? downloadedWar)
+        private void SendWarNotifications(CocApi cocApi, IWar? downloadedWar)
         {
-            if (Flags.WarIsAccessible && (downloadedWar == null || downloadedWar.WarId != WarId))
+            ICurrentWarApiModel? currentWar = downloadedWar as ICurrentWarApiModel;
+
+            if (Flags.WarIsAccessible && (currentWar == null || currentWar.WarId != WarId))
             {
                 Flags.WarIsAccessible = false;
 
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
-            else if (!Flags.WarIsAccessible && (downloadedWar?.WarId == WarId))
+            else if (!Flags.WarIsAccessible && (currentWar?.WarId == WarId))
             {
                 Flags.WarIsAccessible = true;
 
@@ -379,7 +408,7 @@ namespace CocApiLibrary.Models
                 Flags.WarEndingSoon = true;
             }
 
-            if (!Flags.WarEndNotSeen && (downloadedWar == null || WarId != downloadedWar.WarId) && EndTimeUtc < DateTime.UtcNow)
+            if (!Flags.WarEndNotSeen && (currentWar == null || WarId != currentWar.WarId) && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEndNotSeen = true;
 
@@ -400,7 +429,7 @@ namespace CocApiLibrary.Models
                 cocApi.WarEndedEvent(this);
             }
 
-            if (!Flags.WarEndSeen && State == WarState.InWar && downloadedWar?.State == WarState.WarEnded)
+            if (!Flags.WarEndSeen && State == WarState.InWar && currentWar?.State == WarState.WarEnded)
             {
                 Flags.WarEndSeen = true;
 
@@ -408,92 +437,98 @@ namespace CocApiLibrary.Models
             }
         }
 
-        private void UpdateWar(CocApi cocApi, ICurrentWarApiModel? downloadedWar)
+        private void UpdateWar(CocApi cocApi, IWar? downloadedWar)
         {
-            if (downloadedWar == null || downloadedWar.WarId != WarId) return;
+            ICurrentWarApiModel? currentWar = downloadedWar as ICurrentWarApiModel;
+
+            if (currentWar == null || currentWar.WarId != WarId) return;
             
-            foreach(var clan in Clans)
-            {
-                clan.BadgeUrls = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).BadgeUrls;
+            //foreach(var clan in Clans)
+            //{
+            //    clan.BadgeUrls = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).BadgeUrls;
 
-                clan.ClanLevel = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).ClanLevel;
+            //    clan.ClanLevel = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).ClanLevel;
 
-                clan.Name = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Name;
-            }
+            //    clan.Name = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Name;
+            //}
 
-            if (EndTimeUtc != downloadedWar.EndTimeUtc ||
-                StartTimeUtc != downloadedWar.StartTimeUtc ||
-                State != downloadedWar.State
+            if (EndTimeUtc != currentWar.EndTimeUtc ||
+                StartTimeUtc != currentWar.StartTimeUtc ||
+                State != currentWar.State
             )
             {
-                cocApi.WarChangedEvent(this, downloadedWar);
+                cocApi.WarChangedEvent(this, currentWar);
 
-                EndTimeUtc = downloadedWar.EndTimeUtc;
-                StartTimeUtc = downloadedWar.StartTimeUtc;
-                State = downloadedWar.State;
+                //EndTimeUtc = downloadedWar.EndTimeUtc;
+                //StartTimeUtc = downloadedWar.StartTimeUtc;
+                //State = downloadedWar.State;
             }
         }
 
-        private void UpdateAttacks(CocApi cocApi, ICurrentWarApiModel? downloadedWar)
+        private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
         {
-            if (downloadedWar == null || downloadedWar.WarId != WarId) return;
+            ICurrentWarApiModel? currentWar = downloadedWar as ICurrentWarApiModel;
 
-            List<AttackApiModel> newAttacks = new List<AttackApiModel>();
+            if (currentWar == null || currentWar.WarId != WarId) return;
 
-            foreach (AttackApiModel attack in downloadedWar.Attacks)
-            {                
-                if (!Attacks.Any(a => a.Order == attack.Order))
-                {
-                    Attacks.Add(attack);
-                }
-            }
+            List<AttackApiModel> newAttacks = currentWar.Attacks.Where(a => a.Order > Attacks.Count()).ToList();
 
-            foreach(WarClanApiModel clan in Clans)
-            {
-                foreach(WarVillageApiModel warVillage in clan.Villages.EmptyIfNull())
-                {
-                    foreach(AttackApiModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag))
-                    {
-                        if (!warVillage.Attacks.Any(a => a.Order == downloadedAttack.Order))
-                        {
-                            if (warVillage.Attacks == null)
-                            {
-                                warVillage.Attacks = new List<AttackApiModel>();
-                            }
-
-                            warVillage.Attacks.Add(downloadedAttack);
-                        }
-                    }
-                }
-            }
-
-            foreach (var clan in Clans)
-            {
-                clan.AttackCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).AttackCount;
-
-                clan.DefenseCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DefenseCount;
-
-                clan.DestructionPercentage = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DestructionPercentage;
-
-                clan.Stars = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Stars;
-            }
-
-            cocApi.NewAttacksEvent(this, newAttacks);
-        }
-
-        private void UpdateLeagueTeamSize(CocApi cocApi, LeagueGroupApiModel? leagueGroupApiModel)
-        {
-            if (leagueGroupApiModel == null) return;
-
-            if (leagueGroupApiModel.TeamSize > 15) return;
-
-            if (Clans.Any(c => c.AttackCount > 15))
-            {
-                leagueGroupApiModel.TeamSize = 30;
-
-                cocApi.LeagueGroupTeamSizeChangeDetectedEvent(leagueGroupApiModel);
-            }
             
+
+            //foreach (AttackApiModel attack in downloadedWar.Attacks)
+            //{                
+            //    if (!Attacks.Any(a => a.Order == attack.Order))
+            //    {
+            //        Attacks.Add(attack);
+            //    }
+            //}
+
+            //foreach (WarClanApiModel clan in Clans)
+            //{
+            //    foreach (WarVillageApiModel warVillage in clan.Villages.EmptyIfNull())
+            //    {
+            //        foreach (AttackApiModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag))
+            //        {
+            //            if (!warVillage.Attacks.Any(a => a.Order == downloadedAttack.Order))
+            //            {
+            //                if (warVillage.Attacks == null)
+            //                {
+            //                    warVillage.Attacks = new List<AttackApiModel>();
+            //                }
+
+            //                warVillage.Attacks.Add(downloadedAttack);
+            //            }
+            //        }
+            //    }
+            //}
+
+            //foreach (var clan in Clans)
+            //{
+            //    clan.AttackCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).AttackCount;
+
+            //    clan.DefenseCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DefenseCount;
+
+            //    clan.DestructionPercentage = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DestructionPercentage;
+
+            //    clan.Stars = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Stars;
+            //}
+
+            cocApi.NewAttacksEvent(currentWar, newAttacks);
+        }
+
+        private void UpdateLeagueTeamSize(CocApi cocApi, ILeagueGroup? leagueGroup)
+        {
+            if (leagueGroup is LeagueGroupApiModel leagueGroupApiModel)
+            {
+                if (leagueGroupApiModel.TeamSize > 15) return;
+
+                if (Clans.Any(c => c.AttackCount > 15))
+                {
+                    leagueGroupApiModel.TeamSize = 30;
+
+                    cocApi.LeagueGroupTeamSizeChangeDetectedEvent(leagueGroupApiModel);
+                }
+            }            
         }
     }
 }
