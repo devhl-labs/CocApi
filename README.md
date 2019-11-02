@@ -45,7 +45,7 @@ LeagueWarAPIModel also inherits from CurrentWarAPIModel.  If you have to cast, e
 This empty interface is implemented by ICurrentWarAPIModel and the NotInWar model.  The library will never return an ICurrentWarAPIModel with a state of notInWar.
 
 ## ILeagueGroup
-This empty interface is implemented by ILeagueGroup and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
+This empty interface is implemented by LeagueGroupApiModel and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
 
 ## [Extensions](/CocApiLibrary/Extensions.cs)
 The static Extensions class contains some things that may be useful, especially for Discord bots.
