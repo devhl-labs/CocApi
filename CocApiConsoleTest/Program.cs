@@ -17,36 +17,29 @@ namespace CocApiConsoleTest
 
         public static async Task Main(string[] args)
         {
-            var host = CreateHostBuilder(args).Build();
+            var services = ConfigureServices();
 
-            LogService logService = host.Services.GetRequiredService<LogService>();
+            LogService logService = services.GetRequiredService<LogService>();
 
             logService.LogInformation("Press CTRL-C to exit");
 
-            Console.CancelKeyPress += (s, e) => DoExitStuff(host.Services);
+            Console.CancelKeyPress += (s, e) => DoExitStuff(services);
 
-            InitializeCocApi(host.Services);
+            InitializeCocApi(services);
 
-            host.Services.GetRequiredService<EventHandlerService>();
+            services.GetRequiredService<EventHandlerService>();
 
-            host.Run();
-
-            await Task.Delay(1);
+            await Task.Delay(-1);
         }     
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-
-            Host.CreateDefaultBuilder(args)
-
-            .ConfigureServices((context, services) =>
-            {
-                services.AddSingleton<LogService>();
-
-                services.AddSingleton<CocApi>();
-
-                services.AddSingleton<EventHandlerService>();
-            })
-        ;
+        public static IServiceProvider ConfigureServices()
+        {
+            return new ServiceCollection()
+                .AddSingleton<LogService>()
+                .AddSingleton<CocApi>()
+                .AddSingleton<EventHandlerService>()
+                .BuildServiceProvider();
+        }
 
         private static void InitializeCocApi(IServiceProvider serviceProvider)
         {
@@ -120,7 +113,8 @@ namespace CocApiConsoleTest
             services.GetRequiredService<LogService>().LogInformation("{program}: Quiting, please wait...", "Program.cs");
 
             _cocApi?.Dispose();
-        }
 
+            Environment.Exit(0);
+        }
     }
 }

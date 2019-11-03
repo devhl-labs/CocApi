@@ -16,7 +16,7 @@ namespace CocApiLibrary.Models
         public string Name { get; set; } = string.Empty;
 
         [NotMapped]
-        public ClanBadgeUrlModel? BadgeUrls { get; set; }
+        public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
         [NotMapped]
         public int ClanLevel { get; set; }

@@ -12,6 +12,6 @@ namespace CocApiLibrary.Models
 
         int ClanLevel { get; set; }
 
-        ClanBadgeUrlModel? BadgeUrls { get; set; }
+        ClanBadgeUrlApiModel? BadgeUrls { get; set; }
     }
 }
