@@ -59,10 +59,6 @@ CocApi will not stop trying to update expired objects unless you tell it to in t
 When an outage is detected, it will poll the API every five seconds to see if the server is back up.
 
 ## Issues
-If you try to duplicate the test program in a fresh console application, ensure that your .csproj file contains .Web as seen here:
-```xml 
-<Project Sdk="Microsoft.NET.Sdk.Web">
-```
 If you have problems finding one of the required nuget packages, add https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json as a source.</br></br>
 If the objects update too slow or two fast, modify the properties of the CocApiConfiguration.  TokenObject rate limits are bad.  TokenObject preemptive rate limits are okay, though it does indicate the library is updating as fast as the TokenTimeOut allows. 
 
