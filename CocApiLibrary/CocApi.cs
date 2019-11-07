@@ -54,10 +54,10 @@ namespace CocApiLibrary
     public delegate void VillageLabelsAddedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
     public delegate void VillageReachedLegendsLeagueEventHandler(VillageApiModel villageApiModel);
     public delegate void ClanDonationsEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, int>> receivedDonations, Dictionary<string, Tuple<ClanVillageApiModel, int>> gaveDonations);
-    public delegate void ClanVillageNameChanged(ClanVillageApiModel oldVillage, string newName);
-    public delegate void ClanVillagesLeagueChanged(Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged);
-    public delegate void ClanVillagesRoleChanged(Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges);
-
+    public delegate void ClanVillageNameChangedEventHandler(ClanVillageApiModel oldVillage, string newName);
+    public delegate void ClanVillagesLeagueChangedEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged);
+    public delegate void ClanVillagesRoleChangedEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges);
+    public delegate void ClanDonationsResetEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
 
 
     public sealed class CocApi : IDisposable
@@ -121,6 +121,12 @@ namespace CocApiLibrary
         public event ClanPointsChangedEventHandler? ClanPointsChanged;
 
         /// <summary>
+        /// Fires when the donations decrease.
+        /// </summary>
+        public event ClanDonationsResetEventHandler? ClanDonationsReset;
+
+
+        /// <summary>
         /// Fires if the war cannot be found from either clanTags or warTag.  Private war logs can also fire this.
         /// </summary>
         public event WarIsAccessibleChangedEventHandler? WarIsAccessibleChanged;
@@ -174,9 +180,9 @@ namespace CocApiLibrary
         public event VillageLabelsRemovedEventHandler? VillageLabelsRemoved;
         public event VillageReachedLegendsLeagueEventHandler? VillageReachedLegendsLeague;
         public event ClanDonationsEventHandler? ClanDonations;
-        public event ClanVillageNameChanged? ClanVillageNameChanged;
-        public event ClanVillagesLeagueChanged? ClanVillagesLeagueChanged;
-        public event ClanVillagesRoleChanged? ClanVillagesRoleChanged;
+        public event ClanVillageNameChangedEventHandler? ClanVillageNameChanged;
+        public event ClanVillagesLeagueChangedEventHandler? ClanVillagesLeagueChanged;
+        public event ClanVillagesRoleChangedEventHandler? ClanVillagesRoleChanged;
 
 
         public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
@@ -249,6 +255,11 @@ namespace CocApiLibrary
         }
 
 
+        internal void ClanDonationsResetEvent(ClanApiModel oldClan, ClanApiModel newClan)
+        {
+            ClanDonationsReset?.Invoke(oldClan, newClan);
+        }
+        
         internal void ClanVillagesRoleChangedEvent(Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges)
         {
             if (roleChanges.Count() > 0)
@@ -1323,6 +1334,15 @@ namespace CocApiLibrary
 
             return result;
         }
+
+
+
+
+
+
+
+
+
 
 
 

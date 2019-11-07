@@ -277,6 +277,15 @@ namespace CocApiLibrary.Models
                 {
                     donating.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Donations));
                 }
+
+                bool resetSent = false;
+
+                if (!resetSent && oldClanVillage.DonationsReceived > newClanVillage.DonationsReceived || oldClanVillage.Donations > newClanVillage.Donations)
+                {
+                    cocApi.ClanDonationsResetEvent(this, downloadedClan);
+
+                    resetSent = true;
+                }                 
             }
 
             cocApi.ClanDonationsEvent(receiving, donating);

@@ -275,11 +275,6 @@ namespace CocApiLibrary
                     return;
                 }
 
-                //if (Name == "devhl")
-                //{
-                //    Console.WriteLine("here");
-                //}
-
                 Swallow(() => UpdateVillage(cocApi, downloadedVillage), nameof(UpdateVillage));
 
                 Swallow(() => UpdateLabels(cocApi, downloadedVillage), nameof(UpdateLabels));
