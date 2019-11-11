@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class WarVillageApiModel : IVillageApiModel
     {

@@ -1,9 +1,8 @@
-﻿using CocApiLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
-namespace CocApiLibrary.Exceptions
+using devhl.CocApi.Models;
+
+namespace devhl.CocApi.Exceptions
 {
     [Serializable]
     public class ForbiddenException : ServerResponseException

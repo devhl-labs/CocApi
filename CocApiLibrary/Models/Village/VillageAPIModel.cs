@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
-using CocApiLibrary.Converters;
-using CocApiLibrary.Models;
-using Microsoft.Extensions.Logging;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary
+using devhl.CocApi.Converters;
+using devhl.CocApi.Models;
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi
 {
     public class VillageApiModel : SwallowDelegates, IVillageApiModel, IDownloadable
     {

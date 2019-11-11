@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace CocApiLibrary
+namespace devhl.CocApi
 {
     public static class Extensions
     {

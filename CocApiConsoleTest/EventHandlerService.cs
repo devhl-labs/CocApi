@@ -1,10 +1,10 @@
-﻿using CocApiLibrary;
-using CocApiLibrary.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+
+using devhl.CocApi;
+using devhl.CocApi.Models;
 
 namespace CocApiConsoleTest
 {

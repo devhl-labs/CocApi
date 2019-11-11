@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CocApiLibrary.Models;
 
-namespace CocApiLibrary.Exceptions
+namespace devhl.CocApi.Exceptions
 {
     [Serializable]
     public class ServerTookTooLongToRespondException : CocApiException

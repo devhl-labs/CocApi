@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace CocApiLibrary
+namespace devhl.CocApi
 {
     public class Enums
     {

@@ -1,12 +1,10 @@
-﻿using CocApiLibrary.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary
+using devhl.CocApi.Converters;
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi
 {
     public class LegendLeagueResultApiModel
     {

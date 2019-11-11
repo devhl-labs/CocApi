@@ -1,15 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using System.Timers;
-using static CocApiLibrary.Enums;
+using Microsoft.Extensions.Logging;
 
-
-namespace CocApiLibrary
+namespace devhl.CocApi
 {
     internal sealed class TokenObject
     {

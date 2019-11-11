@@ -1,12 +1,10 @@
-﻿using CocApiLibrary;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary.Converters
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi.Converters
 {
     internal class LeagueStateConverter : JsonConverter<LeagueState>
     {

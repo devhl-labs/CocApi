@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using static CocApiLibrary.Enums;
-using CocApiLibrary.Exceptions;
 
-namespace CocApiLibrary
+using devhl.CocApi.Exceptions;
+
+namespace devhl.CocApi
 {
     public sealed class CocApiConfiguration
     {

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class CurrentWarFlagsModel
     {

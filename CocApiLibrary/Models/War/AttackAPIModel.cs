@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class AttackApiModel
     {
@@ -16,6 +14,8 @@ namespace CocApiLibrary.Models
         public string DefenderTag { get; set; } = string.Empty;
 
         public int Stars { get; set; }
+
+        public int StarsGained { get; set; }
 
         public int DestructionPercentage { get; set; }
 

@@ -1,10 +1,7 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class VillageLeagueIconUrlApiModel
     {

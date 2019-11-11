@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-using CocApiLibrary;
-using System.Threading.Tasks;
+using devhl.CocApi;
+
 
 namespace CocApiConsoleTest
 {
@@ -30,6 +29,8 @@ namespace CocApiConsoleTest
             services.GetRequiredService<EventHandlerService>();
 
             await Task.Delay(-1);
+
+            if (args == null) { } //remove the warning
         }     
 
         public static IServiceProvider ConfigureServices()
@@ -72,7 +73,7 @@ namespace CocApiConsoleTest
                 LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
                 LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
                 TokenTimeOut = TimeSpan.FromSeconds(1),
-                VillageApiModelTimeToLive = TimeSpan.FromMinutes(5),
+                VillageApiModelTimeToLive = TimeSpan.FromHours(1),
                 WarLogApiModelTimeToLive = TimeSpan.FromHours(1),
                 NumberOfUpdaters = 1,
                 TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),     

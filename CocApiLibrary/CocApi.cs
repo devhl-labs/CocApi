@@ -4,16 +4,14 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Text.RegularExpressions;
 using System.Linq;
-
-using CocApiLibrary.Models;
-using CocApiLibrary.Exceptions;
-using static CocApiLibrary.Enums;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 
+using devhl.CocApi.Models;
+using devhl.CocApi.Exceptions;
+using static devhl.CocApi.Enums;
 
-namespace CocApiLibrary
+namespace devhl.CocApi
 {
     public delegate void IsAvailableChangedEventHandler(bool isAvailable);
     public delegate void ClanChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
@@ -1655,12 +1653,13 @@ namespace CocApiLibrary
             {
                 int day = DateTime.UtcNow.Day;
 
-                if (day > 0 && day < 9)
+                if (day > 0 && day < 11)
                 {
                     return true;
                 }
 
-                if (day == 9 && DateTime.UtcNow.Hour < 3)
+                //just to ensure we get everything we need
+                if (day == 11 && DateTime.UtcNow.Hour < 3)
                 {
                     return true;
                 }

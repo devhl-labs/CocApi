@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class SimpleClanApiModel : IClanApiModel
     {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
-namespace CocApiLibrary
+namespace devhl.CocApi
 {
     public class WebResponseTimer
     {

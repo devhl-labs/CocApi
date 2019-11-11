@@ -1,12 +1,12 @@
-﻿using CocApiLibrary.Exceptions;
-using CocApiLibrary.Models;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CocApiLibrary
+using devhl.CocApi.Exceptions;
+using devhl.CocApi.Models;
+
+namespace devhl.CocApi
 {
     public sealed class UpdateService : SwallowDelegates
     {

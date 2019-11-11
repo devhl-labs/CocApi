@@ -1,10 +1,11 @@
-﻿using CocApiLibrary.Converters;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary.Models
+using devhl.CocApi.Converters;
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi.Models
 {
     public class ClanVillageApiModel : IVillageApiModel
     {

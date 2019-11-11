@@ -1,14 +1,14 @@
-﻿using CocApiLibrary.Converters;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary.Models
+using devhl.CocApi.Converters;
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi.Models
 {
     public class CurrentWarApiModel : IInitialize, ICurrentWarApiModel
     {

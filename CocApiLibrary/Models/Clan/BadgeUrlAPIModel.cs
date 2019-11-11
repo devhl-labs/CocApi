@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text.Json.Serialization;
+﻿using System.Linq;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class ClanBadgeUrlApiModel
     {

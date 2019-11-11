@@ -1,8 +1,7 @@
-﻿using CocApiLibrary;
+﻿using System;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
+
+using devhl.CocApi;
 
 namespace CocApiConsoleTest
 {

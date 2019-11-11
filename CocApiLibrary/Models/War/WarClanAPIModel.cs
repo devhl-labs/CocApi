@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
+using static devhl.CocApi.Enums;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class WarClanApiModel : IClanApiModel
     {

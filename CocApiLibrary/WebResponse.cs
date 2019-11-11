@@ -1,7 +1,4 @@
-﻿using CocApiLibrary.Exceptions;
-using CocApiLibrary.Models;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,9 +8,13 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using static CocApiLibrary.Enums;
+using Microsoft.Extensions.Logging;
 
-namespace CocApiLibrary
+using devhl.CocApi.Exceptions;
+using devhl.CocApi.Models;
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi
 {
     internal static class WebResponse
     {
@@ -364,6 +365,17 @@ namespace CocApiLibrary
                 foreach (var attack in war.Attacks.EmptyIfNull())
                 {
                     attack.WarId = war.WarId;
+
+                    var attacksThisBase = war.Attacks.Where(a => a.AttackerClanTag == attack.AttackerClanTag && a.DefenderTag == attack.DefenderTag && a.AttackerTag != attack.AttackerTag).ToList();
+
+                    if (attacksThisBase.Count() == 0)
+                    {
+                        attack.StarsGained = attack.Stars;
+                    }
+                    else
+                    {
+                        attack.StarsGained = attack.Stars - attacksThisBase.OrderBy(a => a.Stars).FirstOrDefault().Stars;
+                    }
                 }
 
                 foreach (var warClan in war.Clans)

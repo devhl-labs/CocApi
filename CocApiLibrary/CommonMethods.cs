@@ -1,13 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Extensions.Logging;
 
-namespace CocApiLibrary
+namespace devhl.CocApi
 {
     public abstract class SwallowDelegates
     {

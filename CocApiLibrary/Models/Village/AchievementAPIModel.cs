@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
 
-namespace CocApiLibrary.Models
+using static devhl.CocApi.Enums;
+
+namespace devhl.CocApi.Models
 {
     public class AchievementApiModel
     {

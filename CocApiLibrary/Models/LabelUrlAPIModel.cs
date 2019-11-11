@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CocApiLibrary.Models
+﻿namespace devhl.CocApi.Models
 {
     public class LabelUrlApiModel
     {

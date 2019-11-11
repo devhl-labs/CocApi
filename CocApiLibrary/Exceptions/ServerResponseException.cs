@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CocApiLibrary.Models;
 
-namespace CocApiLibrary.Exceptions
+using devhl.CocApi.Models;
+
+namespace devhl.CocApi.Exceptions
 {
     [Serializable]
     public class ServerResponseException : Exception

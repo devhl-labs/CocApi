@@ -1,11 +1,8 @@
-﻿using CocApiLibrary;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace CocApiLibrary.Converters
+namespace devhl.CocApi.Converters
 {
     internal class LeagueSeasonConverter : JsonConverter<DateTime>
     {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class NotInWar : IWar
     {

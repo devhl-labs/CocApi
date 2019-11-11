@@ -1,9 +1,9 @@
-﻿using CocApiLibrary.Converters;
+﻿using devhl.CocApi.Converters;
 using System;
 using System.Text.Json.Serialization;
-using static CocApiLibrary.Enums;
+using static devhl.CocApi.Enums;
 
-namespace CocApiLibrary.Models
+namespace devhl.CocApi.Models
 {
     public class WarLogEntryModel
     {
