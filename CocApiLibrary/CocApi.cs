@@ -1503,6 +1503,38 @@ namespace devhl.CocApi
             }
         }
 
+        public void WatchClans(IEnumerable<ClanApiModel> clans)
+        {
+            VerifyInitialization();
+
+            try
+            {
+                int j = 0;
+
+                foreach (ClanApiModel clan in clans)
+                {
+                    try
+                    {
+                        ValidateTag(clan.ClanTag);
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+
+                    _updateServices.ElementAt(j).ClanStrings.Add(clan.ClanTag);
+
+                    j++;
+
+                    if (j >= CocApiConfiguration.NumberOfUpdaters) { j = 0; }
+                }
+            }
+            catch (Exception e)
+            {
+                throw new CocApiException(e.Message, e);
+            }
+        }
+
         ///// <summary>
         ///// Load this library's stored objects with objects from your database.  
         ///// You must still run WatchClans to establish which clans you want to keep updated.
