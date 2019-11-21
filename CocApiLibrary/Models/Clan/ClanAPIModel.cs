@@ -126,9 +126,9 @@ namespace devhl.CocApi.Models
 
 
 
-        public DateTime UpdateAtUtc { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
 
-        public DateTime Expires { get; set; }
+        public DateTime ExpiresAtUtc { get; set; }
 
         public string EncodedUrl { get; set; } = string.Empty;
 
@@ -136,7 +136,7 @@ namespace devhl.CocApi.Models
 
         public bool IsExpired()
         {
-            if (DateTime.UtcNow > Expires)
+            if (DateTime.UtcNow > ExpiresAtUtc)
             {
                 return true;
             }
@@ -183,9 +183,9 @@ namespace devhl.CocApi.Models
 
                 Swallow(() => VillagesJoined(cocApi, downloadedClan), nameof(VillagesJoined));
 
-                UpdateAtUtc = downloadedClan.UpdateAtUtc;
+                UpdatedAtUtc = downloadedClan.UpdatedAtUtc;
 
-                Expires = downloadedClan.Expires;
+                ExpiresAtUtc = downloadedClan.ExpiresAtUtc;
             }
         }
 

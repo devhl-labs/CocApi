@@ -464,11 +464,11 @@ namespace devhl.CocApi
                 case LeagueWarApiModel leagueWarApiModel:
                     if (leagueWarApiModel.State == WarState.WarEnded)
                     {
-                        leagueWarApiModel.Expires = DateTime.UtcNow.AddYears(1);
+                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.AddYears(1);
                     }
                     else
                     {
-                        leagueWarApiModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueWarApiModelTimeToLive);
+                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarApiModelTimeToLive);
                     }
 
                     leagueWarApiModel.EncodedUrl = encodedURL;
@@ -477,11 +477,11 @@ namespace devhl.CocApi
                 case CurrentWarApiModel currentWar:
                     if (currentWar.State == WarState.WarEnded)
                     {
-                        currentWar.Expires = DateTime.UtcNow.AddYears(1);
+                        currentWar.ExpiresAtUtc = DateTime.UtcNow.AddYears(1);
                     }
                     else
                     {
-                        currentWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                        currentWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
                     }
 
                     currentWar.EncodedUrl = encodedURL;
@@ -491,11 +491,11 @@ namespace devhl.CocApi
                 case LeagueGroupApiModel leagueGroupApiModel:
                     if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
-                        leagueGroupApiModel.Expires = DateTime.UtcNow.AddHours(6);
+                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.AddHours(6);
                     }
                     else
                     {
-                        leagueGroupApiModel.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupApiModelTimeToLive);
+                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupApiModelTimeToLive);
                     }
 
                     leagueGroupApiModel.EncodedUrl = encodedURL;
@@ -503,48 +503,48 @@ namespace devhl.CocApi
 
 
                 case LeagueGroupNotFound leagueGroupNotFound:
-                    leagueGroupNotFound.Expires = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
+                    leagueGroupNotFound.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
                     leagueGroupNotFound.EncodedUrl = encodedURL;
                     break;
 
 
                 case ClanApiModel clanApiModel:
-                    clanApiModel.Expires = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
+                    clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
                     clanApiModel.EncodedUrl = encodedURL;
                     break;
 
 
                 case VillageApiModel villageApiModel:
-                    villageApiModel.Expires = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
+                    villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
                     villageApiModel.EncodedUrl = encodedURL;
                     break;
 
 
                 case PaginatedApiModel<WarLogEntryModel> warLogApiModel:
-                    warLogApiModel.Expires = DateTime.UtcNow.Add(_cfg.WarLogApiModelTimeToLive);
+                    warLogApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.WarLogApiModelTimeToLive);
                     warLogApiModel.EncodedUrl = encodedURL;
                     break;
 
 
                 case PaginatedApiModel<VillageLeagueApiModel> villageLeagueSearchModel:
-                    villageLeagueSearchModel.Expires = DateTime.UtcNow.Add(_cfg.VillageLeagueSearchApiModelTimeToLive);
+                    villageLeagueSearchModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageLeagueSearchApiModelTimeToLive);
                     villageLeagueSearchModel.EncodedUrl = encodedURL;
                     break;
 
 
                 case PaginatedApiModel<LocationApiModel> searchApiModel:
-                    searchApiModel.Expires = DateTime.UtcNow.Add(_cfg.LocationSearchApiModelTimeToLive);
+                    searchApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LocationSearchApiModelTimeToLive);
                     searchApiModel.EncodedUrl = encodedURL;
                     break;
 
 
                 case PaginatedApiModel<ClanApiModel> clanSearchModel:
-                    clanSearchModel.Expires = DateTime.UtcNow.Add(_cfg.ClanSearchApiModelTimeToLive);
+                    clanSearchModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanSearchApiModelTimeToLive);
                     clanSearchModel.EncodedUrl = encodedURL;
                     break;
 
                 case NotInWar notInWar:
-                    notInWar.Expires = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
                     notInWar.EncodedUrl = encodedURL;
                     break;
 

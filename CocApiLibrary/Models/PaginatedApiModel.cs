@@ -9,9 +9,9 @@ namespace devhl.CocApi.Models
 
         public PagingApiModel? Paging { get; set; }
 
-        public DateTime UpdateAtUtc { get; internal set; } = DateTime.UtcNow;
+        public DateTime UpdatedAtUtc { get; internal set; } = DateTime.UtcNow;
 
-        public DateTime Expires { get; internal set; }
+        public DateTime ExpiresAtUtc { get; internal set; }
 
         public string EncodedUrl { get; internal set; } = string.Empty;
 
@@ -19,7 +19,7 @@ namespace devhl.CocApi.Models
 
         public bool IsExpired()
         {
-            if (DateTime.UtcNow > Expires)
+            if (DateTime.UtcNow > ExpiresAtUtc)
             {
                 return true;
             }

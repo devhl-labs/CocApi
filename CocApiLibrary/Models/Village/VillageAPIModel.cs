@@ -242,9 +242,9 @@ namespace devhl.CocApi
             }
         }
 
-        public DateTime UpdateAtUtc { get; internal set; } = DateTime.UtcNow;
+        public DateTime UpdatedAtUtc { get; internal set; } = DateTime.UtcNow;
 
-        public DateTime Expires { get; internal set; }
+        public DateTime ExpiresAtUtc { get; internal set; }
 
         public string EncodedUrl { get; internal set; } = string.Empty;
 
@@ -252,7 +252,7 @@ namespace devhl.CocApi
 
         public bool IsExpired()
         {
-            if (DateTime.UtcNow > Expires)
+            if (DateTime.UtcNow > ExpiresAtUtc)
             {
                 return true;
             }

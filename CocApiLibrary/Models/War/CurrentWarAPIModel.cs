@@ -164,9 +164,9 @@ namespace devhl.CocApi.Models
 
 
 
-        public DateTime UpdateAtUtc { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
 
-        public DateTime Expires { get; set; }
+        public DateTime ExpiresAtUtc { get; set; }
 
         public string EncodedUrl { get; set; } = string.Empty;
 
@@ -290,7 +290,7 @@ namespace devhl.CocApi.Models
 
         public bool IsExpired()
         {
-            if (DateTime.UtcNow > Expires)
+            if (DateTime.UtcNow > ExpiresAtUtc)
             {
                 return true;
             }

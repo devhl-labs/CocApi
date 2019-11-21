@@ -4,9 +4,9 @@ namespace devhl.CocApi.Models
 {
     public class LeagueGroupNotFound : ILeagueGroup, IDownloadable
     {
-        public DateTime UpdateAtUtc => DateTime.UtcNow;
+        public DateTime UpdatedAtUtc => DateTime.UtcNow;
 
-        public DateTime Expires { get; set; }
+        public DateTime ExpiresAtUtc { get; set; }
 
         public string EncodedUrl { get; set; } = string.Empty;
 
@@ -14,7 +14,7 @@ namespace devhl.CocApi.Models
 
         public bool IsExpired()
         {
-            if (DateTime.UtcNow > Expires)
+            if (DateTime.UtcNow > ExpiresAtUtc)
             {
                 return true;
             }
