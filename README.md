@@ -57,6 +57,8 @@ ToDateTime will convert SC API date time objects to C# DateTime, though the libr
 When the API goes down, the IsAvailableChanged event will fire.
 CocApi will not stop trying to update expired objects unless you tell it to in this event.
 When an outage is detected, it will poll the API every five seconds to see if the server is back up.
+If an error occurs while watching clans, a CrashDetected event will fire. 
+You may handle it by StartWatchingClans, or any other means you wish.
 
 ## Issues
 If you have problems finding one of the required nuget packages, add https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json as a source.</br></br>
