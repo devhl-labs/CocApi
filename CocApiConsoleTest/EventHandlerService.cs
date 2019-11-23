@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 
 using devhl.CocApi;
 using devhl.CocApi.Models;
+using System.Threading.Tasks;
 
 namespace CocApiConsoleTest
 {
@@ -19,6 +20,8 @@ namespace CocApiConsoleTest
             _logService = logService;
 
             _cocApi = cocApi;
+
+            _cocApi.CrashDetected += CocApi_CrashDetected;
 
             _cocApi.ClanChanged += CocApi_ClanChanged;
 
@@ -57,6 +60,13 @@ namespace CocApiConsoleTest
             _cocApi.WarStarted += CocApi_WarStarted;
 
             _cocApi.WarStartingSoon += CocApi_WarStartingSoon;
+        }
+
+        private void CocApi_CrashDetected(Exception e)
+        {
+            _logService.LogInformation($"Crash detected on updater: {e.Message}");
+
+            _cocApi.StartUpdatingClans();
         }
 
         private void CocApi_WarStartingSoon(ICurrentWarApiModel currentWarApiModel)

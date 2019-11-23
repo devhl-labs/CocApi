@@ -64,6 +64,8 @@ namespace CocApiConsoleTest
                  *  
                  *  This program will honor cache expirations as well, 
                  *  so polling the API may wait longer than the time to live.
+                 *  
+                 *  Do not hard code these values.  Store them in a json file instead.
                  */
 
                 CacheHttpResponses = true,
@@ -74,7 +76,6 @@ namespace CocApiConsoleTest
                 LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
                 TokenTimeOut = TimeSpan.FromSeconds(1),
                 VillageApiModelTimeToLive = TimeSpan.FromHours(1),
-                WarLogApiModelTimeToLive = TimeSpan.FromHours(1),
                 NumberOfUpdaters = 1,
                 TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),     
             };
@@ -104,7 +105,7 @@ namespace CocApiConsoleTest
 
             _cocApi.WatchClans(clans);
 
-            _cocApi.BeginUpdatingClans();
+            _cocApi.StartUpdatingClans();
 
             return;
         }

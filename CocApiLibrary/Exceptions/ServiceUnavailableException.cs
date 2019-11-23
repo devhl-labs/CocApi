@@ -11,6 +11,5 @@ namespace devhl.CocApi.Exceptions
         {
 
         }
-
     }
 }

@@ -17,11 +17,15 @@ namespace devhl.CocApi.Models
         [NotMapped]
         public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
+
+
+
+
+
+
+
         [NotMapped]
         public int ClanLevel { get; set; }
-
-
-
 
         public string GroupId { get; set; } = string.Empty;
 
@@ -32,6 +36,7 @@ namespace devhl.CocApi.Models
         public string LeagueClanId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(LeagueClanId))]
+        [JsonPropertyName("members")]
         public virtual IEnumerable<LeagueVillageApiModel>? Villages { get; set; }
     }
 }

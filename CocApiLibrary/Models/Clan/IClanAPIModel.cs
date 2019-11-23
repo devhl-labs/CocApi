@@ -6,7 +6,7 @@
 
         string Name { get; }
 
-        int ClanLevel { get; set; }
+        //int ClanLevel { get; set; }
 
         ClanBadgeUrlApiModel? BadgeUrls { get; set; }
     }

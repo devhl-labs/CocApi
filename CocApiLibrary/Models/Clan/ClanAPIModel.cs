@@ -4,13 +4,18 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 using static devhl.CocApi.Enums;
+//using static devhl.CocApi.ExceptionHandler;
 
 namespace devhl.CocApi.Models
 {
-    public class ClanApiModel : SwallowDelegates, IClanApiModel, IDownloadable
+    public class ClanApiModel : Downloadable, IClanApiModel, IInitialize /*, IDownloadable*/
     {
+        [NotMapped]
+        public ILogger? Logger { get; set; }
+
         // IClanApiModel
         [Key]
         [JsonPropertyName("Tag")]
@@ -29,7 +34,7 @@ namespace devhl.CocApi.Models
         	        
                     EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(_tag)}";
 
-                    SetRelationalProperties();
+                    //SetRelationalProperties();
                 }
             }
         }
@@ -39,7 +44,7 @@ namespace devhl.CocApi.Models
         //[NotMapped]
         public virtual ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
-        public int ClanLevel { get; set; }
+
 
         public virtual LocationApiModel? Location { get; set; }
 
@@ -57,11 +62,11 @@ namespace devhl.CocApi.Models
             {
                 _labels = value;
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
-
+        public int ClanLevel { get; set; }
 
         public string? BadgeUrlsId { get; set; } = string.Empty;
 
@@ -126,22 +131,22 @@ namespace devhl.CocApi.Models
 
 
 
-        public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
+        //public DateTime UpdatedAtUtc { get; set; }
 
-        public DateTime ExpiresAtUtc { get; set; }
+        //public DateTime ExpiresAtUtc { get; set; }
 
-        public string EncodedUrl { get; set; } = string.Empty;
+        //public string EncodedUrl { get; set; } = string.Empty;
 
-        public DateTime? CacheExpiresAtUtc { get; set; }
+        //public DateTime? CacheExpiresAtUtc { get; set; }
 
-        public bool IsExpired()
-        {
-            if (DateTime.UtcNow > ExpiresAtUtc)
-            {
-                return true;
-            }
-            return false;
-        }
+        //public bool IsExpired()
+        //{
+        //    if (DateTime.UtcNow > ExpiresAtUtc)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
 
         /// <summary>
@@ -154,10 +159,12 @@ namespace devhl.CocApi.Models
 
         
 
-        internal void Update(CocApi cocApi, ClanApiModel downloadedClan)
+        internal void Update(CocApi cocApi, ClanApiModel? downloadedClan)
         {
             lock (_updateLock)
             {
+                if (downloadedClan == null) return;
+
                 Logger ??= cocApi.Logger;
 
                 if (ReferenceEquals(this, downloadedClan))
@@ -165,23 +172,56 @@ namespace devhl.CocApi.Models
                     return;
                 }
 
-                Swallow(() => UpdateClan(cocApi, downloadedClan), nameof(UpdateClan));
+                //Try(() => UpdateClan(cocApi, downloadedClan), nameof(UpdateClan));
 
-                Swallow(() => UpdateLabels(cocApi, downloadedClan), nameof(UpdateLabels));
+                //Try(() => UpdateLabels(cocApi, downloadedClan), nameof(UpdateLabels));
 
-                Swallow(() => UpdateBadge(cocApi, downloadedClan), nameof(UpdateBadge));
+                //Try(() => UpdateBadge(cocApi, downloadedClan), nameof(UpdateBadge));
 
-                Swallow(() => UpdateLocation(cocApi, downloadedClan), nameof(UpdateLocation));
+                //Try(() => UpdateLocation(cocApi, downloadedClan), nameof(UpdateLocation));
 
-                Swallow(() => AnnounceDonations(cocApi, downloadedClan), nameof(AnnounceDonations));
+                //Try(() => AnnounceDonations(cocApi, downloadedClan), nameof(AnnounceDonations));
 
-                Swallow(() => AnnounceVillageChanges(cocApi, downloadedClan), nameof(AnnounceVillageChanges));
+                //Try(() => AnnounceVillageChanges(cocApi, downloadedClan), nameof(AnnounceVillageChanges));
+
+                ////Swallow(() => UpdateVillages(downloadedClan), nameof(UpdateVillages));
+
+                //Try(() => VillagesLeft(cocApi, downloadedClan), nameof(VillagesLeft));
+
+                //Try(() => VillagesJoined(cocApi, downloadedClan), nameof(VillagesJoined));
+
+
+
+
+
+                UpdateClan(cocApi, downloadedClan);
+
+                UpdateLabels(cocApi, downloadedClan);
+
+                UpdateBadge(cocApi, downloadedClan);
+
+                UpdateLocation(cocApi, downloadedClan);
+
+                AnnounceDonations(cocApi, downloadedClan);
+
+                AnnounceVillageChanges(cocApi, downloadedClan);
 
                 //Swallow(() => UpdateVillages(downloadedClan), nameof(UpdateVillages));
 
-                Swallow(() => VillagesLeft(cocApi, downloadedClan), nameof(VillagesLeft));
+                VillagesLeft(cocApi, downloadedClan);
 
-                Swallow(() => VillagesJoined(cocApi, downloadedClan), nameof(VillagesJoined));
+                VillagesJoined(cocApi, downloadedClan);
+
+
+
+
+
+
+
+
+
+
+
 
                 UpdatedAtUtc = downloadedClan.UpdatedAtUtc;
 
@@ -474,7 +514,7 @@ namespace devhl.CocApi.Models
             cocApi.VillagesLeftEvent(this, leftVillages);
         }
 
-        private void SetRelationalProperties()
+        public void Initialize()
         {
             if (!string.IsNullOrEmpty(ClanTag) && _labels != null)
             {
@@ -482,6 +522,21 @@ namespace devhl.CocApi.Models
                 {
                     label.ClanTag = ClanTag;
                 }
+            }
+
+            foreach (var clanVillage in Villages.EmptyIfNull())
+            {
+                clanVillage.ClanTag = ClanTag;
+            }
+
+            if (BadgeUrls != null)
+            {
+                BadgeUrlsId = BadgeUrls.Id;
+            }
+
+            if (Location != null)
+            {
+                LocationId = Location.Id;
             }
         }
     }

@@ -3,27 +3,38 @@ using System.Collections.Generic;
 
 namespace devhl.CocApi.Models
 {
-    public class PaginatedApiModel<T> : IDownloadable
+    public class PaginatedApiModel<T> : Downloadable, IInitialize /*, IDownloadable*/
     {
         public IEnumerable<T>? Items { get; set; }
 
         public PagingApiModel? Paging { get; set; }
 
-        public DateTime UpdatedAtUtc { get; internal set; } = DateTime.UtcNow;
-
-        public DateTime ExpiresAtUtc { get; internal set; }
-
-        public string EncodedUrl { get; internal set; } = string.Empty;
-
-        public DateTime? CacheExpiresAtUtc { get; set; }
-
-        public bool IsExpired()
+        public void Initialize()
         {
-            if (DateTime.UtcNow > ExpiresAtUtc)
+            foreach(var item in Items.EmptyIfNull())
             {
-                return true;
+                if (item is IInitialize initialize)
+                {
+                    initialize.Initialize();
+                }
             }
-            return false;
         }
+
+        //public DateTime UpdatedAtUtc { get; set; }
+
+        //public DateTime ExpiresAtUtc { get; set; }
+
+        //public string EncodedUrl { get; set; } = string.Empty;
+
+        //public DateTime? CacheExpiresAtUtc { get; set; }
+
+        //public bool IsExpired()
+        //{
+        //    if (DateTime.UtcNow > ExpiresAtUtc)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
     }
 }

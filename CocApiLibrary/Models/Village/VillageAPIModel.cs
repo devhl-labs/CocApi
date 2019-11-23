@@ -4,15 +4,22 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 using devhl.CocApi.Converters;
 using devhl.CocApi.Models;
 using static devhl.CocApi.Enums;
+//using static devhl.CocApi.ExceptionHandler;
 
 namespace devhl.CocApi
 {
-    public class VillageApiModel : SwallowDelegates, IVillageApiModel, IDownloadable
+    public class VillageApiModel : Downloadable, IVillageApiModel, IInitialize /*, IDownloadable*/
     {
+        [NotMapped]
+        public ILogger? Logger { get; set; }
+
+
+
         // IVillageApiModel
         [Key]
         [JsonPropertyName("Tag")]
@@ -31,24 +38,7 @@ namespace devhl.CocApi
 
         public string Name { get; set; } = string.Empty;
 
-#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-        private string _clanTag;
-#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-
-        public string ClanTag
-        {
-            get
-            {
-                return _clanTag;
-            }
-
-            set
-            {
-                _clanTag = value;
-
-                SetRelationalProperties();
-            }
-        }
+        public string ClanTag { get; set; } = string.Empty;
 
 
 
@@ -90,12 +80,12 @@ namespace devhl.CocApi
         public int DonationsReceived { get; set; }
 
 
-        private SimpleClanApiModel? _clan;
+        private VillageClanApiModel? _clan;
 
 
         [ForeignKey(nameof(ClanTag))]
         [NotMapped]
-        public SimpleClanApiModel? Clan
+        public VillageClanApiModel? Clan
         {
             get
             {
@@ -106,7 +96,7 @@ namespace devhl.CocApi
             {
                 _clan = value;
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
@@ -242,22 +232,22 @@ namespace devhl.CocApi
             }
         }
 
-        public DateTime UpdatedAtUtc { get; internal set; } = DateTime.UtcNow;
+        //public DateTime UpdatedAtUtc { get; set; }
 
-        public DateTime ExpiresAtUtc { get; internal set; }
+        //public DateTime ExpiresAtUtc { get; set; }
 
-        public string EncodedUrl { get; internal set; } = string.Empty;
+        //public string EncodedUrl { get; set; } = string.Empty;
 
-        public DateTime? CacheExpiresAtUtc { get; set; }
+        //public DateTime? CacheExpiresAtUtc { get; set; }
 
-        public bool IsExpired()
-        {
-            if (DateTime.UtcNow > ExpiresAtUtc)
-            {
-                return true;
-            }
-            return false;
-        }
+        //public bool IsExpired()
+        //{
+        //    if (DateTime.UtcNow > ExpiresAtUtc)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
 
 
@@ -275,41 +265,83 @@ namespace devhl.CocApi
                     return;
                 }
 
-                Swallow(() => UpdateVillage(cocApi, downloadedVillage), nameof(UpdateVillage));
+                //Try(() => UpdateVillage(cocApi, downloadedVillage), nameof(UpdateVillage));
 
-                Swallow(() => UpdateLabels(cocApi, downloadedVillage), nameof(UpdateLabels));
+                //Try(() => UpdateLabels(cocApi, downloadedVillage), nameof(UpdateLabels));
 
-                Swallow(() => UpdateVillageDefenseWins(cocApi, downloadedVillage), nameof(UpdateVillageDefenseWins));
+                //Try(() => UpdateVillageDefenseWins(cocApi, downloadedVillage), nameof(UpdateVillageDefenseWins));
 
-                //UpdateVillageDonations(cocApi, downloadedVillage);
+                //Try(() => UpdateVillageExpLevel(cocApi, downloadedVillage), nameof(UpdateVillageExpLevel));
 
-                //UpdateVillageDonationsReceived(cocApi, downloadedVillage);
+                //Try(() => UpdateVillageTrophies(cocApi, downloadedVillage), nameof(UpdateVillageTrophies));
 
-                Swallow(() => UpdateVillageExpLevel(cocApi, downloadedVillage), nameof(UpdateVillageExpLevel));
+                //Try(() => UpdateVillageVersusBattleWinCount(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWinCount));
 
-                Swallow(() => UpdateVillageTrophies(cocApi, downloadedVillage), nameof(UpdateVillageTrophies));
+                //Try(() => UpdateVillageVersusBattleWins(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWins));
 
-                Swallow(() => UpdateVillageVersusBattleWinCount(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWinCount));
+                //Try(() => UpdateVillageVersusTrophies(cocApi, downloadedVillage), nameof(UpdateVillageVersusTrophies));
 
-                Swallow(() => UpdateVillageVersusBattleWins(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWins));
+                //Try(() => UpdateVillageAchievements(cocApi, downloadedVillage), nameof(UpdateVillageAchievements));
 
-                Swallow(() => UpdateVillageVersusTrophies(cocApi, downloadedVillage), nameof(UpdateVillageVersusTrophies));
+                //Try(() => UpdateVillageTroops(cocApi, downloadedVillage), nameof(UpdateVillageTroops));
 
-                //UpdateVillageLeague(cocApi, downloadedVillage);
+                //Try(() => UpdateVillageHeroes(cocApi, downloadedVillage), nameof(UpdateVillageHeroes));
 
-                Swallow(() => UpdateVillageAchievements(cocApi, downloadedVillage), nameof(UpdateVillageAchievements));
+                //Try(() => UpdateVillageSpells(cocApi, downloadedVillage), nameof(UpdateVillageSpells));
 
-                Swallow(() => UpdateVillageTroops(cocApi, downloadedVillage), nameof(UpdateVillageTroops));
+                //Try(() => UpdateLegendLeagueStatistics(cocApi, downloadedVillage), nameof(UpdateLegendLeagueStatistics));
 
-                Swallow(() => UpdateVillageHeroes(cocApi, downloadedVillage), nameof(UpdateVillageHeroes));
 
-                Swallow(() => UpdateVillageSpells(cocApi, downloadedVillage), nameof(UpdateVillageSpells));
 
-                Swallow(() => UpdateLegendLeagueStatistics(cocApi, downloadedVillage), nameof(UpdateLegendLeagueStatistics));
 
-                //UpdateAtUtc = downloadedVillage.UpdateAtUtc;
 
-                //Expires = downloadedVillage.Expires;
+
+
+
+
+
+
+
+
+
+                UpdateVillage(cocApi, downloadedVillage);
+
+                UpdateLabels(cocApi, downloadedVillage);
+
+                UpdateVillageDefenseWins(cocApi, downloadedVillage);
+
+                UpdateVillageExpLevel(cocApi, downloadedVillage);
+
+                UpdateVillageTrophies(cocApi, downloadedVillage);
+
+                UpdateVillageVersusBattleWinCount(cocApi, downloadedVillage);
+
+                UpdateVillageVersusBattleWins(cocApi, downloadedVillage);
+
+                UpdateVillageVersusTrophies(cocApi, downloadedVillage);
+
+                UpdateVillageAchievements(cocApi, downloadedVillage);
+
+                UpdateVillageTroops(cocApi, downloadedVillage);
+
+                UpdateVillageHeroes(cocApi, downloadedVillage);
+
+                UpdateVillageSpells(cocApi, downloadedVillage);
+
+                UpdateLegendLeagueStatistics(cocApi, downloadedVillage);
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
         }
 
@@ -464,7 +496,6 @@ namespace devhl.CocApi
             }            
         }
 
-
         private void UpdateVillage(CocApi cocApi, VillageApiModel downloadedVillage)
         {
             if (downloadedVillage.AttackWins != AttackWins ||
@@ -560,12 +591,58 @@ namespace devhl.CocApi
             }
         }
 
-        private void SetRelationalProperties()
+        public void Initialize()
         {
             if (_clan != null)
             {
-                _clanTag = _clan.ClanTag;
-            }                
+                ClanTag = _clan.ClanTag;
+            }
+
+            if (LegendStatistics != null)
+            {
+                LegendStatistics.VillageTag = VillageTag;
+
+                if (LegendStatistics.BestSeason != null) LegendStatistics.BestSeason.VillageTag = VillageTag;
+
+                if (LegendStatistics.CurrentSeason != null) LegendStatistics.CurrentSeason.VillageTag = VillageTag;
+
+                if (LegendStatistics.PreviousVersusSeason != null) LegendStatistics.PreviousVersusSeason.VillageTag = VillageTag;
+
+                if (LegendStatistics.PreviousVersusSeason != null) LegendStatistics.PreviousVersusSeason.VillageTag = VillageTag;
+            }
+
+            foreach (var spell in Spells.EmptyIfNull())
+            {
+                spell.VillageTag = VillageTag;
+            }
+
+            foreach (var hero in Heroes.EmptyIfNull())
+            {
+                AllTroops.Add(hero);
+
+                hero.VillageTag = VillageTag;
+
+                hero.IsHero = true;
+            }
+
+            foreach (var troop in Troops.EmptyIfNull())
+            {
+                AllTroops.Add(troop);
+
+                troop.VillageTag = VillageTag;
+
+                troop.IsHero = false;
+            }
+
+            foreach (var achievement in Achievements.EmptyIfNull())
+            {
+                achievement.VillageTag = VillageTag;
+            }
+
+            foreach (var label in Labels.EmptyIfNull())
+            {
+                label.VillageTag = VillageTag;
+            }
         }
     }
 }

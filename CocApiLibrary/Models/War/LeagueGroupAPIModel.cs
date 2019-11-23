@@ -10,7 +10,7 @@ using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models
 {
-    public class LeagueGroupApiModel : ILeagueGroup, IDownloadable
+    public class LeagueGroupApiModel : Downloadable, ILeagueGroup, IInitialize /*, IDownloadable*/
     {
         [JsonConverter(typeof(LeagueStateConverter))]
         public LeagueState State { get; set; }
@@ -29,7 +29,7 @@ namespace devhl.CocApi.Models
             {
                 _season = value;
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
@@ -39,16 +39,16 @@ namespace devhl.CocApi.Models
         [ForeignKey(nameof(GroupId))]
         public virtual IList<RoundApiModel>? Rounds { get; set; }
 
-        public DateTime UpdatedAtUtc { get; internal set; } = DateTime.UtcNow;
+        //public DateTime UpdatedAtUtc { get; set; }
 
-        public DateTime ExpiresAtUtc { get; internal set; }
+        //public DateTime ExpiresAtUtc { get; set; }
 
-        public string EncodedUrl { get; internal set; } = string.Empty;
+        //public string EncodedUrl { get; set; } = string.Empty;
 
-        public DateTime? CacheExpiresAtUtc { get; set; }
+        //public DateTime? CacheExpiresAtUtc { get; set; }
 
         [JsonIgnore]
-        public int TeamSize { get; internal set; } = 15;
+        public int TeamSize { get; set; } = 15;
 
 
 
@@ -69,33 +69,73 @@ namespace devhl.CocApi.Models
             {
                 _groupId = value;
 
-                SetRelationalProperties();
+                //SetRelationalProperties();
             }
         }
 
 
-        public bool IsExpired()
-        {
-            if (DateTime.UtcNow > ExpiresAtUtc)
-            {
-                return true;
-            }
-            return false;
-        }
+        //public bool IsExpired()
+        //{
+        //    if (DateTime.UtcNow > ExpiresAtUtc)
+        //    {
+        //        return true;
+        //    }
+        //    return false;
+        //}
 
-        private void SetRelationalProperties()
+        public void Initialize()
         {
-            if (_season != null && Clans?.Count() > 0)
-            {
-                _groupId = $"{_season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
-            }
+            //if (_season != null && Clans?.Count() > 0)
+            //{
+            //    _groupId = $"{_season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
+            //}
 
-            if (Clans?.Count() > 0 && _season != null)
+            //if (Clans?.Count() > 0 && _season != null)
+            //{
+            //    foreach (var clan in Clans)
+            //    {
+            //        clan.LeagueClanId = $"{_season.ToShortDateString()};{clan.ClanTag}";
+            //    }
+            //}
+
+            GroupId = $"{Season.ToString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
+
+            //foreach (var leagueClan in Clans.EmptyIfNull())
+            //{
+            //    leagueClan.GroupId = GroupId;
+
+            //    foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
+            //    {
+            //        leagueVillage.ClanTag = leagueClan.ClanTag;
+            //    }
+            //}
+
+            //foreach (var round in Rounds.EmptyIfNull())
+            //{
+            //    round.RoundId = $"{Season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
+            //}
+
+            //GroupId = $"{Season.ToString()}{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
+
+            foreach (var leagueClan in Clans.EmptyIfNull())
             {
-                foreach (var clan in Clans)
+                leagueClan.GroupId = GroupId;
+
+                leagueClan.LeagueClanId = $"{_season.ToShortDateString()};{leagueClan.ClanTag}";
+
+                foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
                 {
-                    clan.LeagueClanId = $"{_season.ToShortDateString()};{clan.ClanTag}";
+                    leagueVillage.ClanTag = leagueClan.ClanTag;
+
+                    leagueVillage.LeagueClanId = leagueClan.LeagueClanId;
                 }
+            }
+
+            foreach (var round in Rounds.EmptyIfNull())
+            {
+                round.RoundId = $"{Season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
+
+                round.GroupId = GroupId;
             }
         }
     }

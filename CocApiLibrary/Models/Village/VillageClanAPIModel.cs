@@ -3,17 +3,20 @@ using System.Text.Json.Serialization;
 
 namespace devhl.CocApi.Models
 {
-    public class SimpleClanApiModel : IClanApiModel
+    public class VillageClanApiModel : IClanApiModel
     {
         // IClanApiModel
         [Key]
         [JsonPropertyName("Tag")]
         public string ClanTag { get; set; } = string.Empty;
 
-        public int ClanLevel { get; set; }
-
         public string Name { get; set; } = string.Empty;
 
         public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
+
+
+
+
+        public int ClanLevel { get; set; }
     }
 }

@@ -41,14 +41,16 @@ namespace devhl.CocApi.Models
         [NotMapped]
         public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
+
+
+
+
+
+
+
+
         [NotMapped]
         public int ClanLevel { get; set; }
-
-
-
-
-
-
 
 
         private string _warId = string.Empty;

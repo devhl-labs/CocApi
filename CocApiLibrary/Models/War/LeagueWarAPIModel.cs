@@ -1,4 +1,6 @@
-﻿namespace devhl.CocApi.Models
+﻿using System.Text.Json.Serialization;
+
+namespace devhl.CocApi.Models
 {
     public class LeagueWarApiModel : CurrentWarApiModel, IInitialize, ICurrentWarApiModel
     {

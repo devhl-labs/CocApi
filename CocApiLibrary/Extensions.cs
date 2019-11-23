@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace devhl.CocApi
 {
@@ -11,8 +13,6 @@ namespace devhl.CocApi
         public const string LeftToRightOverride = "\u202D";
         public const string LeftToRightIsolate = "\u2066";
         public const string PopDirectionalIsolate = "\u2069";
-
-        //public static ILogger? Logger { get; internal set; } = null;
 
         /// <summary>
         /// Discord markup characters are stripped out

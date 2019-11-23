@@ -2,24 +2,24 @@
 
 namespace devhl.CocApi.Models
 {
-    public class NotInWar : IWar
+    public class NotInWar : Downloadable, IWar
     {
-        public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
+        //public DateTime UpdatedAtUtc { get; set; } = DateTime.UtcNow;
 
-        public DateTime ExpiresAtUtc { get; set; }
+        //public DateTime ExpiresAtUtc { get; set; }
 
-        public string EncodedUrl { get; set; } = string.Empty;
+        //public string EncodedUrl { get; set; } = string.Empty;
 
-        public DateTime? CacheExpiresAtUtc { get; set; }
+        //public DateTime? CacheExpiresAtUtc { get; set; }
 
-        public bool IsExpired()
-        {
-            if (DateTime.UtcNow > ExpiresAtUtc)
-            {
-                return true;
-            }
+        //public bool IsExpired()
+        //{
+        //    if (DateTime.UtcNow > ExpiresAtUtc)
+        //    {
+        //        return true;
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 }

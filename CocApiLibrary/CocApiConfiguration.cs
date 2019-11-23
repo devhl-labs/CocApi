@@ -60,33 +60,33 @@ namespace devhl.CocApi
         /// </summary>
         public TimeSpan VillageApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
-        /// <summary>
-        /// Defines how long to wait before an HTTP request is considered expired.
-        /// This end point is not cached, so do not spam it.
-        /// </summary>
-        public TimeSpan WarLogApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        ///// <summary>
+        ///// Defines how long to wait before an HTTP request is considered expired.
+        ///// This end point is not cached, so do not spam it.
+        ///// </summary>
+        //public TimeSpan WarLogApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
-        /// <summary>
-        /// Defines how long to wait before an HTTP request is considered expired.
-        /// This end point is not cached, so do not spam it.  
-        /// Each request will query the server.
-        /// </summary>
-        public TimeSpan ClanSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        ///// <summary>
+        ///// Defines how long to wait before an HTTP request is considered expired.
+        ///// This end point is not cached, so do not spam it.  
+        ///// Each request will query the server.
+        ///// </summary>
+        //public TimeSpan ClanSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
 
-        /// <summary>
-        /// Defines how long to wait before an HTTP request is considered expired.
-        /// This end point is not cached, so do not spam it.  
-        /// Each request will query the server.
-        /// </summary>
-        public TimeSpan VillageLeagueSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        ///// <summary>
+        ///// Defines how long to wait before an HTTP request is considered expired.
+        ///// This end point is not cached, so do not spam it.  
+        ///// Each request will query the server.
+        ///// </summary>
+        //public TimeSpan VillageLeagueSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
-        /// <summary>
-        /// Defines how long to wait before an HTTP request is considered expired.
-        /// This end point is not cached, so do not spam it.  
-        /// Each request will query the server.
-        /// </summary>
-        public TimeSpan LocationSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        ///// <summary>
+        ///// Defines how long to wait before an HTTP request is considered expired.
+        ///// This end point is not cached, so do not spam it.  
+        ///// Each request will query the server.
+        ///// </summary>
+        //public TimeSpan LocationSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.

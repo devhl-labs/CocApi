@@ -3,64 +3,64 @@ using System.Text.Json.Serialization;
 
 namespace devhl.CocApi.Models
 {
-    public class VillageLabelApiModel
+    public class VillageLabelApiModel : LabelApiModel
     {
         public string VillageTag { get; set; } = string.Empty;
 
-        public int Id { get; set; }
+//        public int Id { get; set; }
 
-        private string _name = string.Empty;
+//        private string _name = string.Empty;
         
-        [NotMapped]
-        public string Name
-        {
-            get
-            {
-                return _name;
-            }
+//        [NotMapped]
+//        public string Name
+//        {
+//            get
+//            {
+//                return _name;
+//            }
         
-            set
-            {
-                _name = value;
+//            set
+//            {
+//                _name = value;
 
-                SetRelationalProperties();
-            }
-        }
+//                SetRelationalProperties();
+//            }
+//        }
 
 
 
-        private LabelUrlApiModel? _imageUrl;
+//        private LabelUrlApiModel? _imageUrl;
 
-        [JsonPropertyName("IconUrls")]
-        [ForeignKey(nameof(Id))]
-        public virtual LabelUrlApiModel? ImageUrl
-        {
-            get
-            {
-                return _imageUrl;
-            }
+//        [JsonPropertyName("IconUrls")]
+//        [ForeignKey(nameof(Id))]
+//        public virtual LabelUrlApiModel? LabelUrl
+//        {
+//            get
+//            {
+//                return _imageUrl;
+//            }
         
-            set
-            {
-                _imageUrl = value;
+//            set
+//            {
+//                _imageUrl = value;
 
-                SetRelationalProperties();
-            }
-        }
+//                SetRelationalProperties();
+//            }
+//        }
 
-        private void SetRelationalProperties()
-        {
-            if (!string.IsNullOrEmpty(_name) && ImageUrl != null)
-            {
-                ImageUrl.Name = _name;
-            }
+//        private void SetRelationalProperties()
+//        {
+//            if (!string.IsNullOrEmpty(_name) && LabelUrl != null)
+//            {
+//                LabelUrl.Name = _name;
+//            }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            if (Id != null && ImageUrl != null)
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            {
-                ImageUrl.Id = Id;
-            }
-        }
+//#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+//            if (Id != null && LabelUrl != null)
+//#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+//            {
+//                LabelUrl.Id = Id;
+//            }
+//        }
     }
 }

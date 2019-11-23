@@ -1,8 +1,8 @@
-﻿namespace devhl.CocApi.Models
-{
-    public interface IInitialize
-    {
-        void Initialize();
+﻿//namespace devhl.CocApi.Models
+//{
+//    public interface IInitialize
+//    {
+//        void Initialize();
 
-    }
-}
+//    }
+//}
