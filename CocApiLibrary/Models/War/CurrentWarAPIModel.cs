@@ -377,12 +377,12 @@ namespace devhl.CocApi.Models
         {
             lock (_updateLock)
             {
+                SendWarNotifications(cocApi, downloadedWar);
+
                 if (ReferenceEquals(this, downloadedWar))
                 {
                     return;
                 }
-
-                SendWarNotifications(cocApi, downloadedWar);
 
                 UpdateWar(cocApi, downloadedWar);
 
@@ -411,16 +411,16 @@ namespace devhl.CocApi.Models
 
             if (!Flags.WarStartingSoon && State == WarState.Preparation && DateTime.UtcNow > WarStartingSoonUtc)
             {
-                cocApi.WarStartingSoonEvent(this);
+                Flags.WarStartingSoon = true;
 
-                Flags.WarEndingSoon = true;
+                cocApi.WarStartingSoonEvent(this);
             }
 
             if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUtc)
             {
-                cocApi.WarEndingSoonEvent(this);
-
                 Flags.WarEndingSoon = true;
+
+                cocApi.WarEndingSoonEvent(this);
             }
 
             if (!Flags.WarEndNotSeen && (currentWar == null || WarId != currentWar.WarId) && EndTimeUtc < DateTime.UtcNow)

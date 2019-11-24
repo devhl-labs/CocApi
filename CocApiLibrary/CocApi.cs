@@ -67,7 +67,7 @@ namespace devhl.CocApi
 
         internal Dictionary<string, ClanApiModel> AllClans { get; } = new Dictionary<string, ClanApiModel>();
         internal Dictionary<string, IWar> AllWarsByClanTag { get; } = new Dictionary<string, IWar>();
-        internal Dictionary<string, IWar> AllWarsByWarId { get; } = new Dictionary<string, IWar>();
+        internal Dictionary<string, ICurrentWarApiModel> AllWarsByWarId { get; } = new Dictionary<string, ICurrentWarApiModel>();
         internal Dictionary<string, LeagueWarApiModel> AllWarsByWarTag { get; } = new Dictionary<string, LeagueWarApiModel>();
         internal Dictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new Dictionary<string, ILeagueGroup>();
         internal Dictionary<string, VillageApiModel> AllVillages { get; } = new Dictionary<string, VillageApiModel>();
@@ -568,8 +568,10 @@ namespace devhl.CocApi
             }
         }
 
+        public Dictionary<string, DateTime> kvp = new Dictionary<string, DateTime>();
+
         public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
-        {
+        {         
             VerifyInitialization();
 
             try
@@ -580,17 +582,11 @@ namespace devhl.CocApi
                 {
                     if (AllWarsByClanTag.TryGetValue(clanTag, out IWar warByClanTag))
                     {
-                        //if (warByClanTag.CacheExpiresAtUtc != null && warByClanTag.CacheExpiresAtUtc > DateTime.UtcNow) return warByClanTag;
-
                         if (allowExpiredItem || !warByClanTag.IsExpired()) return warByClanTag;
 
-                        //if (allowExpiredItem) return warByClanTag;
-
-                        if (warByClanTag is CurrentWarApiModel currentWar)
+                        if (warByClanTag is ICurrentWarApiModel currentWar)
                         {
                             if (currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
-
-                            if (currentWar.State == WarState.WarEnded) return currentWar;
                         }
                     }
                 }
@@ -624,6 +620,11 @@ namespace devhl.CocApi
                         {
                             AllWarsByClanTag[clan.ClanTag] = downloadedWar;
                         }
+
+                        if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
+                        {
+                            storedClan.Wars.TryAdd(downloadedWar.WarId, downloadedWar);
+                        }
                     }
                         
                     AllWarsByWarId[downloadedWar.WarId] = downloadedWar;                                       
@@ -633,7 +634,6 @@ namespace devhl.CocApi
             }
             catch (Exception e)
             {
-                //throw GetException(e);
                 if (e is CocApiException) throw;
 
                 throw new CocApiException(e.Message, e);
@@ -661,7 +661,6 @@ namespace devhl.CocApi
                 if (allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup leagueGroup))
                 {
                     if (allowExpiredItem || !leagueGroup.IsExpired())
-                    //if ((leagueGroup.CacheExpiresAtUtc != null && leagueGroup.CacheExpiresAtUtc > DateTime.UtcNow) || allowExpiredItem || !leagueGroup.IsExpired())
                     {
                         return leagueGroup;
                     }
@@ -710,7 +709,6 @@ namespace devhl.CocApi
 
             catch (Exception e)
             {
-                //throw GetException(e);
                 if (e is CocApiException) throw;
 
                 throw new CocApiException(e.Message, e);
@@ -729,13 +727,9 @@ namespace devhl.CocApi
                 {
                     if (AllWarsByWarTag.TryGetValue(warTag, out LeagueWarApiModel leagueWar))
                     {
-                        //if (leagueWar.CacheExpiresAtUtc != null && leagueWar.CacheExpiresAtUtc > DateTime.UtcNow) return leagueWar;
-
                         if (allowExpiredItem || !leagueWar.IsExpired()) return leagueWar;
 
                         if (leagueWar.State == WarState.WarEnded) return leagueWar;
-
-                        //if (!leagueWar.IsExpired()) return leagueWar;
 
                         if (leagueWar.StartTimeUtc > DateTime.UtcNow) return leagueWar;
                     }
@@ -761,6 +755,14 @@ namespace devhl.CocApi
 
                     foreach(var clan in leagueWarApiModel.Clans)
                     {
+                        if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
+                        {
+                            storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel);
+                        }
+                    }
+
+                    foreach(var clan in leagueWarApiModel.Clans)
+                    {
                         AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                     }
                 }
@@ -769,7 +771,6 @@ namespace devhl.CocApi
             }
             catch (Exception e)
             {
-                //throw GetException(e);
                 if (e is CocApiException) throw;
 
                 throw new CocApiException(e.Message, e);
@@ -1050,7 +1051,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<TopMainClan>> GetTopMainClans(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopMainClan>> GetTopMainClansAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
         {
             VerifyInitialization();
 
@@ -1082,7 +1083,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopBuilderClan>> GetTopBuilderClans(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopBuilderClan>> GetTopBuilderClansAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
         {
             VerifyInitialization();
 
@@ -1114,7 +1115,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopMainVillage>> GetTopMainVillages(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopMainVillage>> GetTopMainVillagesAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
         {
             VerifyInitialization();
 
@@ -1146,7 +1147,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopBuilderVillage>> GetTopBuilderVillages(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopBuilderVillage>> GetTopBuilderVillagesAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
         {
             VerifyInitialization();
 
@@ -1429,60 +1430,52 @@ namespace devhl.CocApi
         /// <param name="storedWar"></param>
         /// <returns></returns>
 
-        public async Task<IWar?> GetCurrentWarOrDefaultAsync(ICurrentWarApiModel storedWar)
+        public async Task<ICurrentWarApiModel?> GetCurrentWarOrDefaultAsync(ICurrentWarApiModel storedWar)
         {
             VerifyInitialization();
 
             try
             {
-                if (AllWarsByWarId.TryGetValue(storedWar.WarId, out IWar warByWarId))
+                if (AllWarsByWarId.TryGetValue(storedWar.WarId, out ICurrentWarApiModel warByWarId))
                 {
                     if (!warByWarId.IsExpired()) return warByWarId;
 
-                    if (warByWarId is ICurrentWarApiModel currentWarById)
-                    {
-                        if (currentWarById.State == WarState.WarEnded) return currentWarById;
+                    if (warByWarId.State == WarState.WarEnded) return warByWarId;
 
-                        if (currentWarById.StartTimeUtc > DateTime.UtcNow) return currentWarById;
-                    }
+                    if (warByWarId.StartTimeUtc > DateTime.UtcNow) return warByWarId;
                 }
 
                 foreach (var clan in storedWar.Clans)
                 {
                     if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar warByClanTag))
                     {
-                        if (!warByClanTag.IsExpired()) return warByClanTag;
-
-                        if (warByClanTag is ICurrentWarApiModel currentWar)
+                        if (warByClanTag is ICurrentWarApiModel currentWar2 && storedWar.WarId == currentWar2.WarId)
                         {
-                            if (currentWar.State == WarState.WarEnded) return currentWar;
+                            if (!warByClanTag.IsExpired()) return currentWar2;
 
-                            if (currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
+                            if (currentWar2.State == WarState.WarEnded) return currentWar2;
+
+                            if (currentWar2.StartTimeUtc > DateTime.UtcNow) return currentWar2;
                         }
                     }
                 }
 
-                ICurrentWarApiModel? currentWarApiModel = null;
+                IWar? war = null;
 
                 if (storedWar is LeagueWarApiModel leagueWar)
                 {
                     //allow stored items is false becuase we already checked
-                    currentWarApiModel = await GetLeagueWarOrDefaultAsync(leagueWar.WarTag, allowStoredItem: false, allowExpiredItem: false);
+                    return await GetLeagueWarOrDefaultAsync(leagueWar.WarTag, allowStoredItem: false, allowExpiredItem: false);
                 }
                 else
                 {
                     foreach (var clan in storedWar.Clans)
                     {
                         //allow stored items is false becuase we already checked
-                        currentWarApiModel = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowStoredItem: false, allowExpiredItem: false) as CurrentWarApiModel;
+                        war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowStoredItem: false, allowExpiredItem: false);
 
-                        if (currentWarApiModel?.WarId == storedWar.WarId) break;
+                        if (war is ICurrentWarApiModel currentWar1 && currentWar1?.WarId == storedWar.WarId) return currentWar1;
                     }
-                }
-
-                if (currentWarApiModel?.WarId == storedWar.WarId)
-                {
-                    return currentWarApiModel;
                 }
 
                 return null;
