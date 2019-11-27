@@ -20,19 +20,19 @@ namespace devhl.CocApi
             Always = 50
         }
 
-        public enum Role : int
-        {
-            [EnumMember(Value = "unknown")]
-            Unknown = 0,
-            [EnumMember(Value = "member")]
-            Member = 10,
-            [EnumMember(Value = "admin")]
-            Elder = 20,
-            [EnumMember(Value = "coLeader")]
-            Coleader = 30,
-            [EnumMember(Value = "leader")]
-            Leader = 40
-        }
+            public enum Role : int
+            {
+                [EnumMember(Value = "unknown")]
+                Unknown = 0,
+                [EnumMember(Value = "member")]
+                Member = 10,
+                [EnumMember(Value = "admin")]
+                Elder = 20,
+                [EnumMember(Value = "coLeader")]
+                Coleader = 30,
+                [EnumMember(Value = "leader")]
+                Leader = 40
+            }
 
         public enum WarState : int
         {

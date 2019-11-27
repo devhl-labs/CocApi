@@ -11,9 +11,10 @@ using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models
 {
-    public class ClanApiModel : Downloadable, IClanApiModel, IInitialize /*, IDownloadable*/
+    public class ClanApiModel : Downloadable, IClanApiModel, IInitialize
     {
         [NotMapped]
+        [JsonIgnore]
         public ILogger? Logger { get; set; }
 
         // IClanApiModel
@@ -332,48 +333,84 @@ namespace devhl.CocApi.Models
 
         private void UpdateLabels(CocApi cocApi, ClanApiModel downloadedClan)
         {
-            if (Labels == null && downloadedClan.Labels == null) return;
+            List<ClanLabelApiModel> added = new List<ClanLabelApiModel>();
 
-            if (Labels != null && Labels.Count() > 0 && (downloadedClan.Labels == null || downloadedClan.Labels.Count() == 0))
+            List<ClanLabelApiModel> removed = new List<ClanLabelApiModel>();
+
+            foreach(var oldLabel in Labels.EmptyIfNull())
             {
-                cocApi.ClanLabelsRemovedEvent(downloadedClan, Labels);
-
-                //Labels = downloadedClan.Labels;
-            }
-            else if ((Labels == null || Labels.Count() == 0) && downloadedClan.Labels != null && downloadedClan.Labels.Count() > 0)
-            {
-                cocApi.ClanLabelsAddedEvent(downloadedClan, downloadedClan.Labels);
-
-                //Labels = downloadedClan.Labels;
-            }
-            else
-            {
-                List<ClanLabelApiModel> added = new List<ClanLabelApiModel>();
-
-                List<ClanLabelApiModel> removed = new List<ClanLabelApiModel>();
-
-                foreach (ClanLabelApiModel labelApiModel in Labels.EmptyIfNull())
+                if (!downloadedClan.Labels.Any(l => l.Id == oldLabel.Id))
                 {
-                    if (!downloadedClan.Labels.Any(l => l.Id == labelApiModel.Id))
-                    {
-                        removed.Add(labelApiModel);
-                    }
+                    removed.Add(oldLabel);
                 }
-
-                foreach (ClanLabelApiModel labelApiModel in downloadedClan.Labels.EmptyIfNull())
-                {
-                    if (!Labels.Any(l => l.Id == labelApiModel.Id))
-                    {
-                        added.Add(labelApiModel);
-                    }
-                }
-
-                cocApi.ClanLabelsRemovedEvent(downloadedClan, removed);
-
-                cocApi.ClanLabelsAddedEvent(downloadedClan, added);
-
-                //Labels = downloadedClan.Labels;
             }
+
+            foreach(var newLabel in downloadedClan.Labels.EmptyIfNull())
+            {
+                if (!Labels.Any(l => l.Id == newLabel.Id))
+                {
+                    added.Add(newLabel);
+                }
+            }
+
+            if (Labels == null && downloadedClan.Labels != null && added.Count() == 0)
+            {
+                foreach(var newLabel in downloadedClan.Labels)
+                {
+                    added.Add(newLabel);
+                }
+            }
+
+            if (downloadedClan.Labels == null && Labels != null && removed.Count() == 0)
+            {
+                foreach(var removedLabel in Labels)
+                {
+                    removed.Add(removedLabel);
+                }
+            }
+
+            //if (Labels == null && downloadedClan.Labels == null) return;
+
+            //if (Labels != null && Labels.Count() > 0 && (downloadedClan.Labels == null || downloadedClan.Labels.Count() == 0))
+            //{
+            //    cocApi.ClanLabelsRemovedEvent(downloadedClan, Labels);
+
+            //    //Labels = downloadedClan.Labels;
+            //}
+            //else if ((Labels == null || Labels.Count() == 0) && downloadedClan.Labels != null && downloadedClan.Labels.Count() > 0)
+            //{
+            //    cocApi.ClanLabelsAddedEvent(downloadedClan, downloadedClan.Labels);
+
+            //    //Labels = downloadedClan.Labels;
+            //}
+            //else
+            //{
+            //    List<ClanLabelApiModel> added = new List<ClanLabelApiModel>();
+
+            //    List<ClanLabelApiModel> removed = new List<ClanLabelApiModel>();
+
+            //    foreach (ClanLabelApiModel labelApiModel in Labels.EmptyIfNull())
+            //    {
+            //        if (!downloadedClan.Labels.Any(l => l.Id == labelApiModel.Id))
+            //        {
+            //            removed.Add(labelApiModel);
+            //        }
+            //    }
+
+            //    foreach (ClanLabelApiModel labelApiModel in downloadedClan.Labels.EmptyIfNull())
+            //    {
+            //        if (!Labels.Any(l => l.Id == labelApiModel.Id))
+            //        {
+            //            added.Add(labelApiModel);
+            //        }
+            //    }
+
+            //    cocApi.ClanLabelsRemovedEvent(downloadedClan, removed);
+
+            //    cocApi.ClanLabelsAddedEvent(downloadedClan, added);
+
+            //    //Labels = downloadedClan.Labels;
+            //}
         }
 
         private void UpdateLocation(CocApi cocApi, ClanApiModel downloadedClan)

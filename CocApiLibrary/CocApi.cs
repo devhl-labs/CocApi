@@ -46,10 +46,12 @@ namespace devhl.CocApi
     public delegate void WarEndedEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate void WarEndSeenEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate void LeagueGroupTeamSizeChangeDetectedEventHandler(LeagueGroupApiModel leagueGroupApiModel);
-    public delegate void ClanLabelsRemovedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> labelApiModels);
-    public delegate void ClanLabelsAddedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> labelApiModels);
-    public delegate void VillageLabelsRemovedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
-    public delegate void VillageLabelsAddedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
+    //public delegate void ClanLabelsRemovedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> labelApiModels);
+    //public delegate void ClanLabelsAddedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> labelApiModels);
+    public delegate void ClanLabelsChangedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> addedLabels, IEnumerable<ClanLabelApiModel> removedLables);
+    //public delegate void VillageLabelsRemovedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
+    //public delegate void VillageLabelsAddedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
+    public delegate void VillageLabelsChangedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> addedLabels, IEnumerable<VillageLabelApiModel> removedLabels);
     public delegate void VillageReachedLegendsLeagueEventHandler(VillageApiModel villageApiModel);
     public delegate void ClanDonationsEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, int>> receivedDonations, Dictionary<string, Tuple<ClanVillageApiModel, int>> gaveDonations);
     public delegate void ClanVillageNameChangedEventHandler(ClanVillageApiModel oldVillage, string newName);
@@ -172,10 +174,12 @@ namespace devhl.CocApi
         /// Fires when any clan in a league group has more than 15 attacks.
         /// </summary>
         public event LeagueGroupTeamSizeChangeDetectedEventHandler? LeagueGroupTeamSizeChangeDetected;
-        public event ClanLabelsAddedEventHandler? ClanLabelsAdded;
-        public event ClanLabelsRemovedEventHandler? ClanLabelsRemoved;
-        public event VillageLabelsAddedEventHandler? VillageLabelsAdded;
-        public event VillageLabelsRemovedEventHandler? VillageLabelsRemoved;
+        //public event ClanLabelsAddedEventHandler? ClanLabelsAdded;
+        //public event ClanLabelsRemovedEventHandler? ClanLabelsRemoved;
+        public event ClanLabelsChangedEventHandler? ClanLabelsChanged;
+        //public event VillageLabelsAddedEventHandler? VillageLabelsAdded;
+        //public event VillageLabelsRemovedEventHandler? VillageLabelsRemoved;
+        public event VillageLabelsChangedEventHandler? VillageLabelsChanged;
         public event VillageReachedLegendsLeagueEventHandler? VillageReachedLegendsLeague;
         public event ClanDonationsEventHandler? ClanDonations;
         public event ClanVillageNameChangedEventHandler? ClanVillageNameChanged;
@@ -240,8 +244,6 @@ namespace devhl.CocApi
         {            
             Logger = logger;
 
-            //ExceptionHandler.Logger = Logger;
-
             if (cfg != null)
             {
                 CocApiConfiguration = cfg;
@@ -259,21 +261,42 @@ namespace devhl.CocApi
             _isInitialized = true;
         }
 
-        internal void CrashDetectedEvent(Exception e)
+        internal void CrashDetectedEvent(Exception error)
         {
-            CrashDetected?.Invoke(e);
+            try
+            {
+                CrashDetected?.Invoke(error);
+            }
+            catch (Exception e)
+            { 
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void ClanDonationsResetEvent(ClanApiModel oldClan, ClanApiModel newClan)
         {
-            ClanDonationsReset?.Invoke(oldClan, newClan);
+            try
+            { 
+                ClanDonationsReset?.Invoke(oldClan, newClan);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
         
         internal void ClanVillagesRoleChangedEvent(Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges)
         {
             if (roleChanges.Count() > 0)
             {
-                ClanVillagesRoleChanged?.Invoke(roleChanges);
+                try
+                {
+                    ClanVillagesRoleChanged?.Invoke(roleChanges);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                }
             }
         }
 
@@ -281,226 +304,481 @@ namespace devhl.CocApi
         {
             if (leagueChanged.Count() > 0)
             {
-                ClanVillagesLeagueChanged?.Invoke(leagueChanged);
+                try
+                { 
+                    ClanVillagesLeagueChanged?.Invoke(leagueChanged);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                }
             }
         }
 
         internal void ClanVillageNameChangedEvent(ClanVillageApiModel oldVillage, string newName)
         {
-            ClanVillageNameChanged?.Invoke(oldVillage, newName);
+            try
+            { 
+                ClanVillageNameChanged?.Invoke(oldVillage, newName);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void ClanDonationsEvent(Dictionary<string, Tuple<ClanVillageApiModel, int>> receivedDonations, Dictionary<string, Tuple<ClanVillageApiModel, int>> gaveDonations)
         {
             if (receivedDonations.Count() > 0 || gaveDonations.Count() > 0)
             {
-                ClanDonations?.Invoke(receivedDonations, gaveDonations);
+                try
+                { 
+                    ClanDonations?.Invoke(receivedDonations, gaveDonations);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                }
             }
         }
 
         internal void VillageReachedLegendsLeagueEvent(VillageApiModel villageApiModel)
         {
-            VillageReachedLegendsLeague?.Invoke(villageApiModel);
-        }
-
-        internal void VillageLabelsRemovedEvent(VillageApiModel newVillage, IEnumerable<VillageLabelApiModel> labelApiModels)
-        {
-            if (labelApiModels != null && labelApiModels.Count() > 0)
+            try
             {
-                VillageLabelsRemoved?.Invoke(newVillage, labelApiModels);
+                VillageReachedLegendsLeague?.Invoke(villageApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
             }
         }
 
-        internal void VillageLabelsAddedEvent(VillageApiModel newVillage, IEnumerable<VillageLabelApiModel> labelApiModels)
+        internal void ClanLabelsChangedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> addedLabels, IEnumerable<ClanLabelApiModel> removedLabels)
         {
-            if (labelApiModels != null && labelApiModels.Count() > 0)
+            if (addedLabels.Count() == 0 && removedLabels.Count() == 0) return;
+
+            try
             {
-                VillageLabelsAdded?.Invoke(newVillage, labelApiModels);
+                ClanLabelsChanged?.Invoke(newClan, addedLabels, removedLabels);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
             }
         }
 
-        internal void ClanLabelsRemovedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> labelApiModels)
+        internal void VillageLabelsChangedEvent(VillageApiModel newVillage, IEnumerable<VillageLabelApiModel> addedLabels, IEnumerable<VillageLabelApiModel> removedLabels)
         {
-            if (labelApiModels != null && labelApiModels.Count() > 0)
+            if (addedLabels.Count() == 0 && removedLabels.Count() == 0) return;
+
+
+            try
             {
-                ClanLabelsRemoved?.Invoke(newClan, labelApiModels);
+                VillageLabelsChanged?.Invoke(newVillage, addedLabels, removedLabels);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
             }
         }
 
-        internal void ClanLabelsAddedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> labelApiModels)
-        {
-            if (labelApiModels != null && labelApiModels.Count() > 0)
-            {
-                ClanLabelsAdded?.Invoke(newClan, labelApiModels);
-            }
-        }
+        //internal void ClanLabelsRemovedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> labelApiModels)
+        //{
+        //    if (labelApiModels != null && labelApiModels.Count() > 0)
+        //    {
+        //        try
+        //        {
+        //            ClanLabelsRemoved?.Invoke(newClan, labelApiModels);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+        //        }
+        //    }
+        //}
+
+        //internal void ClanLabelsAddedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> labelApiModels)
+        //{
+        //    if (labelApiModels != null && labelApiModels.Count() > 0)
+        //    {
+        //        try
+        //        {
+        //            ClanLabelsAdded?.Invoke(newClan, labelApiModels);
+        //        }
+        //        catch (Exception e)
+        //        {
+        //            Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+        //        }
+        //    }
+        //}
 
         internal void LeagueGroupTeamSizeChangeDetectedEvent(LeagueGroupApiModel leagueGroupApiModel)
         {
-            LeagueGroupTeamSizeChangeDetected?.Invoke(leagueGroupApiModel);
+            try
+            {
+                LeagueGroupTeamSizeChangeDetected?.Invoke(leagueGroupApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarEndSeenEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarEndSeen?.Invoke(currentWarApiModel);
+            try
+            {
+                WarEndSeen?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarEndedEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarEnded?.Invoke(currentWarApiModel);
+            try
+            {
+                WarEnded?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarStartedEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarStarted?.Invoke(currentWarApiModel);
+            try
+            {
+                WarStarted?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageSpellsChangedEvent(VillageApiModel oldVillage, List<VillageSpellApiModel> newSpells)
         {
-            VillageSpellsChanged?.Invoke(oldVillage, newSpells);
+            try
+            {
+                VillageSpellsChanged?.Invoke(oldVillage, newSpells);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageHeroesChangedEvent(VillageApiModel oldVillage, List<TroopApiModel> newHeroes)
         {
-            VillageHeroesChanged?.Invoke(oldVillage, newHeroes);
+            try
+            {
+                VillageHeroesChanged?.Invoke(oldVillage, newHeroes);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageTroopsChangedEvent(VillageApiModel oldVillage, List<TroopApiModel> newTroops)
         {
-            VillageTroopsChanged?.Invoke(oldVillage, newTroops);
+            try
+            {
+                VillageTroopsChanged?.Invoke(oldVillage, newTroops);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageAchievementsChangedEvent(VillageApiModel oldVillage, List<AchievementApiModel> newAchievements)
         {
-            VillageAchievementsChanged?.Invoke(oldVillage, newAchievements);
+            try
+            {
+                VillageAchievementsChanged?.Invoke(oldVillage, newAchievements);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageLeagueChangedEvent(VillageApiModel oldVillage, VillageLeagueApiModel? newLeague)
         {
-            VillageLeagueChanged?.Invoke(oldVillage, newLeague);
+            try
+            {
+                VillageLeagueChanged?.Invoke(oldVillage, newLeague);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageVersusTrophiesChangedEvent(VillageApiModel oldVillage, int newVersusTrophies)
         {
-            VillageVersusTrophiesChanged?.Invoke(oldVillage, newVersusTrophies);
+            try
+            {
+                VillageVersusTrophiesChanged?.Invoke(oldVillage, newVersusTrophies);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageVersusBattleWinsChangedEvent(VillageApiModel oldVillage, int newVersusBattleWins)
         {
-            VillageVersusBattleWinsChanged?.Invoke(oldVillage, newVersusBattleWins);
+            try
+            {
+                VillageVersusBattleWinsChanged?.Invoke(oldVillage, newVersusBattleWins);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageVersusBattleWinCountChangedEvent(VillageApiModel oldVillage, int newVersusBattleWinCount)
         {
-            VillageVersusBattleWinCountChanged?.Invoke(oldVillage, newVersusBattleWinCount);
+            try
+            {
+                VillageVersusBattleWinCountChanged?.Invoke(oldVillage, newVersusBattleWinCount);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageTrophiesChangedEvent(VillageApiModel oldVillage, int newTrophies)
         {
-            VillageTrophiesChanged?.Invoke(oldVillage, newTrophies);
+            try
+            {
+                VillageTrophiesChanged?.Invoke(oldVillage, newTrophies);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageExpLevelChangedEvent(VillageApiModel oldVillage, int newExpLevel)
         {
-            VillageExpLevelChanged?.Invoke(oldVillage, newExpLevel);
+            try
+            {
+                VillageExpLevelChanged?.Invoke(oldVillage, newExpLevel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
-
-        //internal void VillageDonationsReceivedChangedEvent(VillageApiModel oldVillage, int newDonationsReceived)
-        //{
-        //    VillageDonationsReceivedChanged?.Invoke(oldVillage, newDonationsReceived);
-        //}
-
-        //internal void VillageDonationsChangedEvent(VillageApiModel oldVillage, int newDonations)
-        //{
-        //    VillageDonationsChanged?.Invoke(oldVillage, newDonations);
-        //}
 
         internal void VillageDefenseWinsChangedEvent(VillageApiModel oldVillage, int newDefenseWinsChanged)
         {
-            VillageDefenseWinsChanged?.Invoke(oldVillage, newDefenseWinsChanged);
+            try
+            {
+                VillageDefenseWinsChanged?.Invoke(oldVillage, newDefenseWinsChanged);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillageChangedEvent(VillageApiModel oldVillage, VillageApiModel newVillage)
         {
-            VillageChanged?.Invoke(oldVillage, newVillage);
+            try
+            {
+                VillageChanged?.Invoke(oldVillage, newVillage);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarEndNotSeenEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarEndNotSeen?.Invoke(currentWarApiModel);
+            try
+            {
+                WarEndNotSeen?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarIsAccessibleChangedEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarIsAccessibleChanged?.Invoke(currentWarApiModel);
+            try
+            {
+                WarIsAccessibleChanged?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void ClanPointsChangedEvent(ClanApiModel oldClan, int newClanPoints)
         {
-            ClanPointsChanged?.Invoke(oldClan, newClanPoints);
+            try
+            {
+                ClanPointsChanged?.Invoke(oldClan, newClanPoints);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void ClanVersusPointsChangedEvent(ClanApiModel oldClan, int newClanVersusPoints)
         {
-            ClanVersusPointsChanged?.Invoke(oldClan, newClanVersusPoints);
+            try
+            {
+                ClanVersusPointsChanged?.Invoke(oldClan, newClanVersusPoints);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarStartingSoonEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarStartingSoon?.Invoke(currentWarApiModel);
+            try
+            {
+                WarStartingSoon?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void WarEndingSoonEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            WarEndingSoon?.Invoke(currentWarApiModel);
+            try
+            {
+                WarEndingSoon?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void NewAttacksEvent(ICurrentWarApiModel currentWarApiModel, List<AttackApiModel> attackApiModels)
         {
             if (attackApiModels.Count() > 0)
             {
-                NewAttacks?.Invoke(currentWarApiModel, attackApiModels);
+                try
+                {
+                    NewAttacks?.Invoke(currentWarApiModel, attackApiModels);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                }
             }
         }
 
         internal void WarChangedEvent(ICurrentWarApiModel oldWar, ICurrentWarApiModel newWar)
         {
-            WarChanged?.Invoke(oldWar, newWar);
+            try
+            {
+                WarChanged?.Invoke(oldWar, newWar);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void NewWarEvent(ICurrentWarApiModel currentWarApiModel)
         {
-            NewWar?.Invoke(currentWarApiModel);
+            try
+            {
+                NewWar?.Invoke(currentWarApiModel);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillagesLeftEvent(ClanApiModel newClan, List<ClanVillageApiModel> clanVillageApiModels)
         {
             if (clanVillageApiModels.Count() > 0)
             {
-                VillagesLeft?.Invoke(newClan, clanVillageApiModels);
+                try
+                {
+                    VillagesLeft?.Invoke(newClan, clanVillageApiModels);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                }
             }            
         }
 
         internal void ClanLocationChangedEvent(ClanApiModel oldClan, ClanApiModel newClan)
         {
-            ClanLocationChanged?.Invoke(oldClan, newClan);
+            try
+            {
+                ClanLocationChanged?.Invoke(oldClan, newClan);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void ClanBadgeUrlChangedEvent(ClanApiModel oldClan, ClanApiModel newClan)
         {
-            ClanBadgeUrlChanged?.Invoke(oldClan, newClan);
+            try
+            {
+                ClanBadgeUrlChanged?.Invoke(oldClan, newClan);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void ClanChangedEvent(ClanApiModel oldClan, ClanApiModel newClan)
         {
-            ClanChanged?.Invoke(oldClan, newClan);
+            try
+            {
+                ClanChanged?.Invoke(oldClan, newClan);
+            }
+            catch (Exception e)
+            {
+                Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+            }
         }
 
         internal void VillagesJoinedEvent(ClanApiModel newClan, List<ClanVillageApiModel> clanVillageApiModels)
         {
             if (clanVillageApiModels.Count() > 0)
             {
-                VillagesJoined?.Invoke(newClan, clanVillageApiModels);
+                try
+                {
+                    VillagesJoined?.Invoke(newClan, clanVillageApiModels);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                }
             }
         }
 

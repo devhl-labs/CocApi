@@ -7,15 +7,13 @@ namespace devhl.CocApi.Converters
     internal class LeagueSeasonConverter : JsonConverter<DateTime>
     {
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            string date = reader.GetString();
-            
+        {            
             return DateTime.Parse(reader.GetString());
         }
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue(value.ToString("yyyy'-'MM"));
         }
     }
 }

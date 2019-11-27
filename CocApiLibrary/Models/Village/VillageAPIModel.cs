@@ -9,13 +9,13 @@ using Microsoft.Extensions.Logging;
 using devhl.CocApi.Converters;
 using devhl.CocApi.Models;
 using static devhl.CocApi.Enums;
-//using static devhl.CocApi.ExceptionHandler;
 
 namespace devhl.CocApi
 {
-    public class VillageApiModel : Downloadable, IVillageApiModel, IInitialize /*, IDownloadable*/
+    public class VillageApiModel : Downloadable, IVillageApiModel, IInitialize
     {
         [NotMapped]
+        [JsonIgnore]
         public ILogger? Logger { get; set; }
 
 
@@ -359,48 +359,60 @@ namespace devhl.CocApi
 
         private void UpdateLabels(CocApi cocApi, VillageApiModel downloadedVillage)
         {
-            if (Labels == null && downloadedVillage.Labels == null) return;
+            List<VillageLabelApiModel> added = new List<VillageLabelApiModel>();
 
-            if (Labels != null && Labels.Count() > 0 && (downloadedVillage.Labels == null || downloadedVillage.Labels.Count() == 0))
+            List<VillageLabelApiModel> removed = new List<VillageLabelApiModel>();
+
+            foreach(var newLabel in downloadedVillage.Labels.EmptyIfNull())
             {
-                cocApi.VillageLabelsRemovedEvent(downloadedVillage, Labels);
-
-                //Labels = downloadedVillage.Labels;
-            }
-            else if ((Labels == null || Labels.Count() == 0) && downloadedVillage.Labels != null && downloadedVillage.Labels.Count() > 0)
-            {
-                cocApi.VillageLabelsAddedEvent(downloadedVillage, downloadedVillage.Labels);
-
-                //Labels = downloadedVillage.Labels;
-            }
-            else
-            {
-                List<VillageLabelApiModel> added = new List<VillageLabelApiModel>();
-
-                List<VillageLabelApiModel> removed = new List<VillageLabelApiModel>();
-
-                foreach (VillageLabelApiModel labelApiModel in Labels.EmptyIfNull())
+                if (!Labels.Any(l => l.Id == newLabel.Id))
                 {
-                    if (!downloadedVillage.Labels.Any(l => l.Id == labelApiModel.Id))
-                    {
-                        removed.Add(labelApiModel);
-                    }
+                    added.Add(newLabel);
                 }
-
-                foreach (VillageLabelApiModel labelApiModel in downloadedVillage.Labels.EmptyIfNull())
-                {
-                    if (!Labels.Any(l => l.Id == labelApiModel.Id))
-                    {
-                        added.Add(labelApiModel);
-                    }
-                }
-
-                cocApi.VillageLabelsRemovedEvent(downloadedVillage, removed);
-
-                cocApi.VillageLabelsAddedEvent(downloadedVillage, added);
-
-                //Labels = downloadedVillage.Labels;
             }
+
+            foreach(var oldLabel in Labels.EmptyIfNull())
+            {
+                if (!downloadedVillage.Labels.EmptyIfNull().Any(l => l.Id == oldLabel.Id))
+                {
+                    removed.Add(oldLabel);
+                }
+            }
+
+            cocApi.VillageLabelsChangedEvent(this, added, removed);
+
+            //if (Labels == null && downloadedVillage.Labels == null) return;
+
+            //if (Labels != null && Labels.Count() > 0 && (downloadedVillage.Labels == null || downloadedVillage.Labels.Count() == 0))
+            //{
+            //    cocApi.VillageLabelsRemovedEvent(downloadedVillage, Labels);
+            //}
+            //else if ((Labels == null || Labels.Count() == 0) && downloadedVillage.Labels != null && downloadedVillage.Labels.Count() > 0)
+            //{
+            //    cocApi.VillageLabelsAddedEvent(downloadedVillage, downloadedVillage.Labels);
+            //}
+            //else
+            //{
+            //    foreach (VillageLabelApiModel labelApiModel in Labels.EmptyIfNull())
+            //    {
+            //        if (!downloadedVillage.Labels.Any(l => l.Id == labelApiModel.Id))
+            //        {
+            //            removed.Add(labelApiModel);
+            //        }
+            //    }
+
+            //    foreach (VillageLabelApiModel labelApiModel in downloadedVillage.Labels.EmptyIfNull())
+            //    {
+            //        if (!Labels.Any(l => l.Id == labelApiModel.Id))
+            //        {
+            //            added.Add(labelApiModel);
+            //        }
+            //    }
+
+            //    cocApi.VillageLabelsRemovedEvent(downloadedVillage, removed);
+
+            //    cocApi.VillageLabelsAddedEvent(downloadedVillage, added);
+            //}
         }
 
         private void UpdateVillageSpells(CocApi cocApi, VillageApiModel downloadedVillage)
@@ -409,7 +421,7 @@ namespace devhl.CocApi
 
             foreach(VillageSpellApiModel spell in downloadedVillage.Spells.EmptyIfNull())
             {
-                VillageSpellApiModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name);
+                VillageSpellApiModel? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name && s.Village == spell.Village);
 
                 if (oldSpell == null || oldSpell.Level < spell.Level)
                 {
@@ -431,7 +443,7 @@ namespace devhl.CocApi
 
             foreach (TroopApiModel troop in downloadedVillage.Heroes.EmptyIfNull())
             {
-                TroopApiModel? oldTroop = Heroes.FirstOrDefault(t => t.Name == troop.Name);
+                TroopApiModel? oldTroop = Heroes.FirstOrDefault(t => t.Name == troop.Name && t.Village == troop.Village);
 
                 if (oldTroop == null || oldTroop.Level < troop.Level)
                 {
@@ -454,7 +466,7 @@ namespace devhl.CocApi
             
             foreach(TroopApiModel troop in downloadedVillage.Troops.EmptyIfNull())
             {
-                TroopApiModel? oldTroop = Troops.FirstOrDefault(t => t.Name == troop.Name);
+                TroopApiModel? oldTroop = Troops.FirstOrDefault(t => t.Name == troop.Name && t.Village == troop.Village);
 
                 if (oldTroop == null || oldTroop.Level < troop.Level)
                 {

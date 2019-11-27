@@ -25,7 +25,7 @@ namespace devhl.CocApi.Converters
 
         public override void Write(Utf8JsonWriter writer, LeagueState value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue(value.ToEnumMemberAttrValue());
         }
     }
 }

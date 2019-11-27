@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Runtime.Serialization;
 
 using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Converters
 {
-    internal class RoleConverter : JsonConverter<Role>
+    public class RoleConverter : JsonConverter<Role>
     {
         public override Role Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -27,7 +29,7 @@ namespace devhl.CocApi.Converters
 
         public override void Write(Utf8JsonWriter writer, Role value, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            writer.WriteStringValue(value.ToEnumMemberAttrValue());
         }
     }
 }
