@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public interface ICurrentWarApiModel : IDownloadable, IWar
     {

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using devhl.CocApi.Exceptions;
-using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
+using devhl.CocApi.Models.War;
+using devhl.CocApi.Models.Village;
 
 namespace devhl.CocApi
 {
@@ -81,9 +82,9 @@ namespace devhl.CocApi
 
                     ObjectsAreBeingUpdated = false;
 
-                    Logger.LogCritical(LoggingEvents.UnhandledError, "{source} BeginUpdateClans()", _source);
+                    Logger.LogCritical(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
 
-                    _cocApi.CrashDetectedEvent(e);
+                    _cocApi.CrashDetectedEvent();
 
                     throw;
                 }
@@ -150,7 +151,11 @@ namespace devhl.CocApi
 
             downloadedClan.Wars = storedClan.Wars;
 
-            _cocApi.AllClans[downloadedClan.ClanTag] = downloadedClan;
+            //Update service must update the dictionary so the old state is not lost and the events can be fired
+            lock (_cocApi._allClansLock)
+            {
+                _cocApi.AllClans[downloadedClan.ClanTag] = downloadedClan;
+            }
         }
 
         private void AnnounceNewWar(ClanApiModel storedClan, CurrentWarApiModel currentWarApiModel)

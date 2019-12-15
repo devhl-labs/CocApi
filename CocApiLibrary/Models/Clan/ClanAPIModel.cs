@@ -4,12 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text.Json.Serialization;
+using devhl.CocApi.Models.Clan;
+using devhl.CocApi.Models.Location;
+using devhl.CocApi.Models.War;
 using Microsoft.Extensions.Logging;
 
 using static devhl.CocApi.Enums;
-//using static devhl.CocApi.ExceptionHandler;
 
-namespace devhl.CocApi.Models
+
+namespace devhl.CocApi.Models.Clan
 {
     public class ClanApiModel : Downloadable, IClanApiModel, IInitialize
     {
@@ -232,10 +235,17 @@ namespace devhl.CocApi.Models
 
         private void AnnounceVillageChanges(CocApi cocApi, ClanApiModel downloadedClan)
         {
-            Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanges = new Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>>();
+            //Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanges = new Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>>();
 
-            Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges = new Dictionary<string, Tuple<ClanVillageApiModel, Role>>();
+            //Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges = new Dictionary<string, Tuple<ClanVillageApiModel, Role>>();
 
+            //List<Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanges = new List<Tuple<ClanVillageApiModel, VillageLeagueApiModel>>();
+
+            List<LeagueChange> leagueChanges = new List<LeagueChange>();
+
+            //List<Tuple<ClanVillageApiModel, Role>> roleChanges = new List<Tuple<ClanVillageApiModel, Role>>();
+
+            List<RoleChange> roleChanges = new List<RoleChange>();
 
             foreach (ClanVillageApiModel oldClanVillage in Villages.EmptyIfNull())
             {
@@ -245,7 +255,11 @@ namespace devhl.CocApi.Models
 
                 if ((oldClanVillage.League == null && newClanVillage.League != null) || (oldClanVillage.League != null && newClanVillage.League != null && oldClanVillage.League.Id != newClanVillage.League.Id))
                 {
-                    leagueChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.League));
+                    //leagueChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.League));
+
+                    //leagueChanges.Add(Tuple.Create(oldClanVillage, newClanVillage.League));
+
+                    leagueChanges.Add(new LeagueChange { Village = oldClanVillage, League = newClanVillage.League });
                 }
                         
                 if (oldClanVillage.Name != newClanVillage.Name)
@@ -255,13 +269,17 @@ namespace devhl.CocApi.Models
 
                 if (oldClanVillage.Role != newClanVillage.Role)
                 {
-                    roleChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Role));
+                    //roleChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Role));
+
+                    //roleChanges.Add(Tuple.Create(oldClanVillage, newClanVillage.Role));
+
+                    roleChanges.Add(new RoleChange { Village = oldClanVillage, Role = newClanVillage.Role });
                 }
             }
 
-            cocApi.ClanVillagesLeagueChangedEvent(leagueChanges);
+            cocApi.ClanVillagesLeagueChangedEvent(this, leagueChanges);
 
-            cocApi.ClanVillagesRoleChangedEvent(roleChanges);
+            cocApi.ClanVillagesRoleChangedEvent(this, roleChanges);
         }
 
         //private void UpdateVillages(ClanApiModel downloadedClan)
@@ -297,11 +315,20 @@ namespace devhl.CocApi.Models
 
         private void AnnounceDonations(CocApi cocApi, ClanApiModel downloadedClan)
         {
-            Dictionary<string, Tuple<ClanVillageApiModel, int>> receiving = new Dictionary<string, Tuple<ClanVillageApiModel, int>>();
+            //Dictionary<string, Tuple<ClanVillageApiModel, int>> receiving = new Dictionary<string, Tuple<ClanVillageApiModel, int>>();
 
-            Dictionary<string, Tuple<ClanVillageApiModel, int>> donating = new Dictionary<string, Tuple<ClanVillageApiModel, int>>();
+            //Dictionary<string, Tuple<ClanVillageApiModel, int>> donating = new Dictionary<string, Tuple<ClanVillageApiModel, int>>();
 
-            foreach(ClanVillageApiModel oldClanVillage in Villages.EmptyIfNull())
+            //List<Tuple<ClanVillageApiModel, int>> receiving = new List<Tuple<ClanVillageApiModel, int>>();
+
+            //List<Tuple<ClanVillageApiModel, int>> donating = new List<Tuple<ClanVillageApiModel, int>>();
+
+
+            List<Donation> receiving = new List<Donation>();
+
+            List<Donation> donating = new List<Donation>();
+
+            foreach (ClanVillageApiModel oldClanVillage in Villages.EmptyIfNull())
             {
                 ClanVillageApiModel? newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
@@ -309,12 +336,16 @@ namespace devhl.CocApi.Models
 
                 if (oldClanVillage.DonationsReceived < newClanVillage.DonationsReceived)
                 {
-                    receiving.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.DonationsReceived));
+                    //receiving.Add(Tuple.Create(oldClanVillage, newClanVillage.DonationsReceived));
+
+                    receiving.Add(new Donation { Village = oldClanVillage, Quantity = newClanVillage.DonationsReceived - oldClanVillage.DonationsReceived });
                 }
 
                 if (oldClanVillage.Donations < newClanVillage.Donations)
                 {
-                    donating.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Donations));
+                    //donating.Add(Tuple.Create(oldClanVillage, newClanVillage.Donations));
+
+                    donating.Add(new Donation { Village = oldClanVillage, Quantity = newClanVillage.Donations - oldClanVillage.Donations});
                 }
 
                 bool resetSent = false;
@@ -327,7 +358,7 @@ namespace devhl.CocApi.Models
                 }                 
             }
 
-            cocApi.ClanDonationsEvent(receiving, donating);
+            cocApi.ClanDonationsEvent(this, receiving, donating);
 
         }
 

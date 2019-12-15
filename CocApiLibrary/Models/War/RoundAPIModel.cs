@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class RoundApiModel
     {

@@ -8,30 +8,15 @@ using System.Text.Json.Serialization;
 using devhl.CocApi.Converters;
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class LeagueGroupApiModel : Downloadable, ILeagueGroup, IInitialize /*, IDownloadable*/
     {
         [JsonConverter(typeof(LeagueStateConverter))]
         public LeagueState State { get; set; }
 
-        private DateTime _season;
-
         [JsonConverter(typeof(LeagueSeasonConverter))]
-        public DateTime Season
-        {
-            get
-            {
-                return _season;
-            }
-
-            set
-            {
-                _season = value;
-
-                //SetRelationalProperties();
-            }
-        }
+        public DateTime Season { get; set; }
 
         [ForeignKey(nameof(GroupId))]
         public virtual IEnumerable<LeagueClanApiModel>? Clans { get; set; }
@@ -47,31 +32,14 @@ namespace devhl.CocApi.Models
 
         //public DateTime? CacheExpiresAtUtc { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public int TeamSize { get; set; } = 15;
-
-
-
-        private string _groupId = string.Empty;
 
         /// <summary>
         /// This is the season and the first clan tag where the clans are sorted alphabetically.
         /// </summary>
         [Key]
-        public string GroupId
-        {
-            get
-            {
-                return _groupId;
-            }
-
-            set
-            {
-                _groupId = value;
-
-                //SetRelationalProperties();
-            }
-        }
+        public string GroupId { get; set; } = string.Empty;
 
 
         //public bool IsExpired()
@@ -121,7 +89,7 @@ namespace devhl.CocApi.Models
             {
                 leagueClan.GroupId = GroupId;
 
-                leagueClan.LeagueClanId = $"{_season.ToShortDateString()};{leagueClan.ClanTag}";
+                leagueClan.LeagueClanId = $"{Season.ToShortDateString()};{leagueClan.ClanTag}";
 
                 foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
                 {

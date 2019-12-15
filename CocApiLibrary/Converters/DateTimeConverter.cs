@@ -13,25 +13,7 @@ namespace devhl.CocApi.Converters
 
         public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-
-            //DateTime result = DateTime.ParseExact(str, "yyyyMMdd'T'HHmmss.fff'Z'", null);
-
-            //result = DateTime.SpecifyKind(result, DateTimeKind.Utc);
-
-            //return result;
-
-            //string result = $"{value.Year.ToString()}{value.Month.";
-
-            string str = value.ToString("yyyyMMdd'T'HHmmss.fff'Z'");
-
-            Console.WriteLine(str);
-
             writer.WriteStringValue(value.ToString("yyyyMMdd'T'HHmmss.fff'Z'"));
-
-
-            throw new NotImplementedException();
-
-
         }
     }
 }

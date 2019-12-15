@@ -13,6 +13,10 @@ using Microsoft.Extensions.Logging;
 using devhl.CocApi.Exceptions;
 using devhl.CocApi.Models;
 using static devhl.CocApi.Enums;
+using devhl.CocApi.Models.War;
+using devhl.CocApi.Models.Clan;
+using devhl.CocApi.Models.Village;
+using devhl.CocApi.Models.Location;
 
 namespace devhl.CocApi
 {
@@ -22,8 +26,11 @@ namespace devhl.CocApi
         public static HttpClient ApiClient { get; } = new HttpClient();
 
         private readonly static string _source = "WebResponse   | ";
+
         private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
+
         private static CocApi _cocApi = new CocApi();
+
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
 
         private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
@@ -197,7 +204,14 @@ namespace devhl.CocApi
 
                 WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
 
-                _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
+                if (e is ServerResponseException serverResponse)
+                {
+                    _cocApi.Logger?.LogWarning("{source} {encodedUrl} {httpStatusCode} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), serverResponse.HttpStatusCode, e.Message);
+                }
+                else
+                {
+                    _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
+                }
 
                 if (e is TaskCanceledException taskCanceled && endPoint == EndPoint.LeagueGroup)
                 {
@@ -258,7 +272,8 @@ namespace devhl.CocApi
 
                 if (response?.Headers?.Date.HasValue == true && response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge.HasValue)
                 {
-                    result.CacheExpiresAtUtc = response!.Headers!.Date!.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value);
+                    //adding 3 seconds incase the server clock is different than our clock
+                    result.CacheExpiresAtUtc = response!.Headers!.Date!.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3); 
                 }
             }
         }

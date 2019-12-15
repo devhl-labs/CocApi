@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using devhl.CocApi.Models.Clan;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Village
 {
     public class VillageClanApiModel : IClanApiModel
     {

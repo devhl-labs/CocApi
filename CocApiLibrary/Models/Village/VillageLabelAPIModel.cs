@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Village
 {
     public class VillageLabelApiModel : LabelApiModel
     {

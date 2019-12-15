@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Clan
 {
     public class SimpleClanApiModel : IClanApiModel
     {

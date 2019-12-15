@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class AttackApiModel
     {
@@ -24,13 +24,18 @@ namespace devhl.CocApi.Models
 
 
 
-        [JsonIgnore]
         public bool Fresh { get; set; } = false;
 
-        [JsonIgnore]
         public string AttackerClanTag { get; set; } = string.Empty;
 
-        [JsonIgnore]
         public string DefenderClanTag { get; set; } = string.Empty;
+
+        public int AttackerMapPosition { get; set; }
+
+        public int DefenderMapPosition { get; set; }
+
+        public int AttackerTownHallLevel { get; set; }
+
+        public int DefenderTownHallLevel { get; set; }
     }
 }

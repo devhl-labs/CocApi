@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using devhl.CocApi.Converters;
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class CurrentWarApiModel : Downloadable, IInitialize, ICurrentWarApiModel
     {
@@ -136,29 +136,29 @@ namespace devhl.CocApi.Models
 
 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         [ForeignKey(nameof(WarId))]
         
         public virtual IList<WarClanApiModel> Clans { get; set; } = new List<WarClanApiModel>();
 
-        [JsonIgnore]
+        //[JsonIgnore]
         [ForeignKey(nameof(WarId))]
         public virtual List<AttackApiModel> Attacks { get; set; } = new List<AttackApiModel>();
 
-        [JsonIgnore]
+        //[JsonIgnore]
         [Key]
         public string WarId { get; set; } = string.Empty;
 
-        [JsonIgnore]
-        public WarType WarType { get; set; } = WarType.Random;
+        //[JsonIgnore]
+        public WarType WarType { get; set; } = WarType.Random; 
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public DateTime WarEndingSoonUtc { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public DateTime WarStartingSoonUtc { get; set; }
 
-        [JsonIgnore]
+        //[JsonIgnore]
         [ForeignKey(nameof(WarId))]
         public virtual CurrentWarFlagsModel Flags { get; set; } = new CurrentWarFlagsModel();
 
@@ -197,6 +197,11 @@ namespace devhl.CocApi.Models
                 || timeSpan.TotalMinutes == 15)
             {
                 WarType = WarType.Friendly;
+            }
+
+            if (this is LeagueWarApiModel)
+            {
+                WarType = WarType.SCCWL;
             }
 
             if (WarIsOverOrAllAttacksUsed())
@@ -289,11 +294,25 @@ namespace devhl.CocApi.Models
                 {
                     WarVillageApiModel? attacker = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.AttackerTag);
 
-                    if (attacker != null) attack.AttackerClanTag = clan.ClanTag;
+                    if (attacker != null)
+                    {
+                        attack.AttackerClanTag = clan.ClanTag;
+
+                        attack.AttackerMapPosition = attacker.MapPosition;
+
+                        attack.AttackerTownHallLevel = attacker.TownhallLevel;
+                    }
 
                     WarVillageApiModel? defender = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.DefenderTag);
 
-                    if (defender != null) attack.DefenderClanTag = clan.ClanTag;
+                    if (defender != null)
+                    {
+                        attack.DefenderClanTag = clan.ClanTag;
+
+                        attack.DefenderMapPosition = defender.MapPosition;
+
+                        attack.DefenderTownHallLevel = defender.TownhallLevel;
+                    }
                 }
             }
 
@@ -371,7 +390,7 @@ namespace devhl.CocApi.Models
         /// <summary>
         /// This is used internally to prevent a race condition which would announce a war twice.
         /// </summary>
-        public readonly object NewWarLock = new object();
+        internal readonly object NewWarLock = new object();
 
         internal void Update(CocApi cocApi, IWar? downloadedWar, ILeagueGroup? leagueGroupApiModel)
         {
@@ -382,6 +401,13 @@ namespace devhl.CocApi.Models
                 if (ReferenceEquals(this, downloadedWar))
                 {
                     return;
+                }
+
+                if (downloadedWar is ICurrentWarApiModel currentWar)
+                {
+                    //the type of war should only be decided on the wars fist download
+                    //to prevent maintenance breaks from changing the type to random
+                    currentWar.WarType = this.WarType;
                 }
 
                 UpdateWar(cocApi, downloadedWar);
@@ -541,7 +567,7 @@ namespace devhl.CocApi.Models
                 {
                     leagueGroupApiModel.TeamSize = 30;
 
-                    cocApi.LeagueGroupTeamSizeChangeDetectedEvent(leagueGroupApiModel);
+                    cocApi.LeagueGroupTeamSizeChangedEvent(leagueGroupApiModel);
                 }
             }            
         }

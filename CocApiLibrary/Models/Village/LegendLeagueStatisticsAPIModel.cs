@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-namespace devhl.CocApi
+namespace devhl.CocApi.Models.Village
 {
     public class LegendLeagueStatisticsApiModel
     {

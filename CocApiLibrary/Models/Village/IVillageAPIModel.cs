@@ -1,4 +1,4 @@
-﻿namespace devhl.CocApi.Models
+﻿namespace devhl.CocApi.Models.Village
 {
     public interface IVillageApiModel
     {

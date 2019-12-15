@@ -9,8 +9,9 @@ using Microsoft.Extensions.Logging;
 using devhl.CocApi.Converters;
 using devhl.CocApi.Models;
 using static devhl.CocApi.Enums;
+using devhl.CocApi.Models.Village;
 
-namespace devhl.CocApi
+namespace devhl.CocApi.Models.Village
 {
     public class VillageApiModel : Downloadable, IVillageApiModel, IInitialize
     {
@@ -376,6 +377,22 @@ namespace devhl.CocApi
                 if (!downloadedVillage.Labels.EmptyIfNull().Any(l => l.Id == oldLabel.Id))
                 {
                     removed.Add(oldLabel);
+                }
+            }
+
+            if (Labels == null && downloadedVillage.Labels != null && added.Count() == 0)
+            {
+                foreach (var newLabel in downloadedVillage.Labels)
+                {
+                    added.Add(newLabel);
+                }
+            }
+
+            if (downloadedVillage.Labels == null && Labels != null && removed.Count() == 0)
+            {
+                foreach (var removedLabel in Labels)
+                {
+                    removed.Add(removedLabel);
                 }
             }
 

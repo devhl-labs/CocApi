@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Clan
 {
     public class ClanBadgeUrlApiModel
     {

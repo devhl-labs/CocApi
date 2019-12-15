@@ -3,7 +3,7 @@ using System;
 using System.Text.Json.Serialization;
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class WarLogEntryModel
     {

@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using devhl.CocApi.Converters;
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi
+namespace devhl.CocApi.Models.Village
 {
     public class LegendLeagueResultApiModel
     {

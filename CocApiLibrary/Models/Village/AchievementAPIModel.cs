@@ -2,7 +2,7 @@
 
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Village
 {
     public class AchievementApiModel
     {

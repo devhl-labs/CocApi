@@ -1,4 +1,4 @@
-﻿namespace devhl.CocApi.Models
+﻿namespace devhl.CocApi.Models.Clan
 {
     public interface IClanApiModel
     {

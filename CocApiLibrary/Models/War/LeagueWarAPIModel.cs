@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class LeagueWarApiModel : CurrentWarApiModel, IInitialize, ICurrentWarApiModel
     {
@@ -9,8 +9,6 @@ namespace devhl.CocApi.Models
         public new void Initialize()
         {
             base.Initialize();
-
-            WarType = Enums.WarType.SCCWL;
         }
     }
 }

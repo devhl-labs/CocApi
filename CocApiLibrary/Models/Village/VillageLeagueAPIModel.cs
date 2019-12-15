@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Village
 {
     public class VillageLeagueApiModel
     {
@@ -15,6 +15,7 @@ namespace devhl.CocApi.Models
         private VillageLeagueIconUrlApiModel? _iconUrl;
         
         [JsonPropertyName("IconUrls")]
+        //[JsonIgnore]
         [ForeignKey(nameof(LeagueIconUrlId))]
         public virtual VillageLeagueIconUrlApiModel? LeagueIconUrl
         {

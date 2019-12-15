@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using devhl.CocApi.Models.Clan;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class LeagueClanApiModel : IClanApiModel
     {

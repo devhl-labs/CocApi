@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Location
 {
     public class LocationApiModel
     {

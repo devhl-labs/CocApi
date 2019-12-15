@@ -1,4 +1,5 @@
-﻿using System;
+﻿using devhl.CocApi.Models.Location;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;

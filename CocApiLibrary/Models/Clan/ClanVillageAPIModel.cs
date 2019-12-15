@@ -3,9 +3,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 using devhl.CocApi.Converters;
+using devhl.CocApi.Models.Village;
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.Clan
 {
     public class ClanVillageApiModel : IVillageApiModel
     {

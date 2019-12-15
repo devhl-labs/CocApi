@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using devhl.CocApi.Models.Clan;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 using static devhl.CocApi.Enums;
 
-namespace devhl.CocApi.Models
+namespace devhl.CocApi.Models.War
 {
     public class WarClanApiModel : IClanApiModel
     {
@@ -109,7 +110,7 @@ namespace devhl.CocApi.Models
         [Key]
         public string WarClanId { get; set; } = string.Empty;
 
-        [JsonIgnore]
+        //[JsonIgnore]
         public Result Result { get; set; }
 
         private void SetRelationalProperties()
