@@ -233,23 +233,6 @@ namespace devhl.CocApi.Models.Village
             }
         }
 
-        //public DateTime UpdatedAtUtc { get; set; }
-
-        //public DateTime ExpiresAtUtc { get; set; }
-
-        //public string EncodedUrl { get; set; } = string.Empty;
-
-        //public DateTime? CacheExpiresAtUtc { get; set; }
-
-        //public bool IsExpired()
-        //{
-        //    if (DateTime.UtcNow > ExpiresAtUtc)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
 
 
 
@@ -265,45 +248,6 @@ namespace devhl.CocApi.Models.Village
                 {
                     return;
                 }
-
-                //Try(() => UpdateVillage(cocApi, downloadedVillage), nameof(UpdateVillage));
-
-                //Try(() => UpdateLabels(cocApi, downloadedVillage), nameof(UpdateLabels));
-
-                //Try(() => UpdateVillageDefenseWins(cocApi, downloadedVillage), nameof(UpdateVillageDefenseWins));
-
-                //Try(() => UpdateVillageExpLevel(cocApi, downloadedVillage), nameof(UpdateVillageExpLevel));
-
-                //Try(() => UpdateVillageTrophies(cocApi, downloadedVillage), nameof(UpdateVillageTrophies));
-
-                //Try(() => UpdateVillageVersusBattleWinCount(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWinCount));
-
-                //Try(() => UpdateVillageVersusBattleWins(cocApi, downloadedVillage), nameof(UpdateVillageVersusBattleWins));
-
-                //Try(() => UpdateVillageVersusTrophies(cocApi, downloadedVillage), nameof(UpdateVillageVersusTrophies));
-
-                //Try(() => UpdateVillageAchievements(cocApi, downloadedVillage), nameof(UpdateVillageAchievements));
-
-                //Try(() => UpdateVillageTroops(cocApi, downloadedVillage), nameof(UpdateVillageTroops));
-
-                //Try(() => UpdateVillageHeroes(cocApi, downloadedVillage), nameof(UpdateVillageHeroes));
-
-                //Try(() => UpdateVillageSpells(cocApi, downloadedVillage), nameof(UpdateVillageSpells));
-
-                //Try(() => UpdateLegendLeagueStatistics(cocApi, downloadedVillage), nameof(UpdateLegendLeagueStatistics));
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                 UpdateVillage(cocApi, downloadedVillage);
 
@@ -331,20 +275,17 @@ namespace devhl.CocApi.Models.Village
 
                 UpdateLegendLeagueStatistics(cocApi, downloadedVillage);
 
-
-
-
-
-
-
-
-
-
-
-
-
+                //UpdateLeague(cocApi, downloadedVillage);
             }
         }
+
+        //private void UpdateLeague(CocApi cocApi, VillageApiModel downloadedVillage)
+        //{
+        //    if (League == null && downloadedVillage != null)
+        //    {
+        //        cocApi.ClanVillagesLeagueChangedEvent()
+        //    }
+        //}
 
         private void UpdateLegendLeagueStatistics(CocApi cocApi, VillageApiModel downloadedVillage)
         {
@@ -354,8 +295,6 @@ namespace devhl.CocApi.Models.Village
             {
                 cocApi.VillageReachedLegendsLeagueEvent(downloadedVillage);
             }
-
-            //LegendStatistics = downloadedVillage.LegendStatistics;
         }
 
         private void UpdateLabels(CocApi cocApi, VillageApiModel downloadedVillage)
@@ -380,7 +319,7 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            if (Labels == null && downloadedVillage.Labels != null && added.Count() == 0)
+            if (Labels == null && downloadedVillage.Labels != null && added.Count == 0)
             {
                 foreach (var newLabel in downloadedVillage.Labels)
                 {
@@ -388,7 +327,7 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            if (downloadedVillage.Labels == null && Labels != null && removed.Count() == 0)
+            if (downloadedVillage.Labels == null && Labels != null && removed.Count == 0)
             {
                 foreach (var removedLabel in Labels)
                 {
@@ -397,39 +336,6 @@ namespace devhl.CocApi.Models.Village
             }
 
             cocApi.VillageLabelsChangedEvent(this, added, removed);
-
-            //if (Labels == null && downloadedVillage.Labels == null) return;
-
-            //if (Labels != null && Labels.Count() > 0 && (downloadedVillage.Labels == null || downloadedVillage.Labels.Count() == 0))
-            //{
-            //    cocApi.VillageLabelsRemovedEvent(downloadedVillage, Labels);
-            //}
-            //else if ((Labels == null || Labels.Count() == 0) && downloadedVillage.Labels != null && downloadedVillage.Labels.Count() > 0)
-            //{
-            //    cocApi.VillageLabelsAddedEvent(downloadedVillage, downloadedVillage.Labels);
-            //}
-            //else
-            //{
-            //    foreach (VillageLabelApiModel labelApiModel in Labels.EmptyIfNull())
-            //    {
-            //        if (!downloadedVillage.Labels.Any(l => l.Id == labelApiModel.Id))
-            //        {
-            //            removed.Add(labelApiModel);
-            //        }
-            //    }
-
-            //    foreach (VillageLabelApiModel labelApiModel in downloadedVillage.Labels.EmptyIfNull())
-            //    {
-            //        if (!Labels.Any(l => l.Id == labelApiModel.Id))
-            //        {
-            //            added.Add(labelApiModel);
-            //        }
-            //    }
-
-            //    cocApi.VillageLabelsRemovedEvent(downloadedVillage, removed);
-
-            //    cocApi.VillageLabelsAddedEvent(downloadedVillage, added);
-            //}
         }
 
         private void UpdateVillageSpells(CocApi cocApi, VillageApiModel downloadedVillage)
@@ -446,11 +352,9 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            if (newSpells.Count() > 0)
+            if (newSpells.Count > 0)
             {
                 cocApi.VillageSpellsChangedEvent(this, newSpells);
-
-                //Spells = downloadedVillage.Spells;
             }
         }
 
@@ -469,11 +373,9 @@ namespace devhl.CocApi.Models.Village
 
             }
 
-            if (newTroops.Count() > 0)
+            if (newTroops.Count > 0)
             {
                 cocApi.VillageHeroesChangedEvent(this, newTroops);
-
-                //Heroes = downloadedVillage.Heroes;
             }
         }
 
@@ -492,11 +394,9 @@ namespace devhl.CocApi.Models.Village
 
             }
 
-            if (newTroops.Count() > 0)
+            if (newTroops.Count > 0)
             {
                 cocApi.VillageTroopsChangedEvent(this, newTroops);
-
-                //Troops = downloadedVillage.Troops;
             }
         }
 
@@ -517,11 +417,9 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            if (newAchievements.Count() > 0)
+            if (newAchievements.Count > 0)
             {
                 cocApi.VillageAchievementsChangedEvent(this, newAchievements);
-
-                //Achievements = downloadedVillage.Achievements;
             }            
         }
 
@@ -565,8 +463,6 @@ namespace devhl.CocApi.Models.Village
             if (downloadedVillage.DefenseWins != DefenseWins)
             {
                 cocApi.VillageDefenseWinsChangedEvent(this, downloadedVillage.DefenseWins);
-
-                //DefenseWins = downloadedVillage.DefenseWins;
             }
         }
 

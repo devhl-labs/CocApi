@@ -45,10 +45,7 @@ namespace devhl.CocApi.Models.Clan
 
         public string Name { get; set; } = string.Empty;
 
-        //[NotMapped]
         public virtual ClanBadgeUrlApiModel? BadgeUrls { get; set; }
-
-
 
         public virtual LocationApiModel? Location { get; set; }
 
@@ -97,8 +94,6 @@ namespace devhl.CocApi.Models.Clan
 
         public string Description { get; set; } = string.Empty;
 
-
-
         public int ClanPoints { get; set; }
 
         public int ClanVersusPoints { get; set; }
@@ -120,38 +115,11 @@ namespace devhl.CocApi.Models.Clan
 
         public WarFrequency WarFrequency { get; set; }
 
-
-
-
-
-
-
         [JsonIgnore]
         [NotMapped]
         public Dictionary<string, ICurrentWarApiModel> Wars { get; set; } = new Dictionary<string, ICurrentWarApiModel>();
 
-
-
-
-
-
-        //public DateTime UpdatedAtUtc { get; set; }
-
-        //public DateTime ExpiresAtUtc { get; set; }
-
-        //public string EncodedUrl { get; set; } = string.Empty;
-
-        //public DateTime? CacheExpiresAtUtc { get; set; }
-
-        //public bool IsExpired()
-        //{
-        //    if (DateTime.UtcNow > ExpiresAtUtc)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
-
+        internal object WarsLock { get; } = new object();
 
         /// <summary>
         /// This is a flag used to prevent all wars from being announced on startup. 
@@ -159,8 +127,8 @@ namespace devhl.CocApi.Models.Clan
         /// </summary>
         internal bool AnnounceWars { get; set; } = false;
 
-        private readonly object _updateLock = new object();
 
+        private readonly object _updateLock = new object();
         
 
         internal void Update(CocApi cocApi, ClanApiModel? downloadedClan)
@@ -176,28 +144,6 @@ namespace devhl.CocApi.Models.Clan
                     return;
                 }
 
-                //Try(() => UpdateClan(cocApi, downloadedClan), nameof(UpdateClan));
-
-                //Try(() => UpdateLabels(cocApi, downloadedClan), nameof(UpdateLabels));
-
-                //Try(() => UpdateBadge(cocApi, downloadedClan), nameof(UpdateBadge));
-
-                //Try(() => UpdateLocation(cocApi, downloadedClan), nameof(UpdateLocation));
-
-                //Try(() => AnnounceDonations(cocApi, downloadedClan), nameof(AnnounceDonations));
-
-                //Try(() => AnnounceVillageChanges(cocApi, downloadedClan), nameof(AnnounceVillageChanges));
-
-                ////Swallow(() => UpdateVillages(downloadedClan), nameof(UpdateVillages));
-
-                //Try(() => VillagesLeft(cocApi, downloadedClan), nameof(VillagesLeft));
-
-                //Try(() => VillagesJoined(cocApi, downloadedClan), nameof(VillagesJoined));
-
-
-
-
-
                 UpdateClan(cocApi, downloadedClan);
 
                 UpdateLabels(cocApi, downloadedClan);
@@ -210,40 +156,15 @@ namespace devhl.CocApi.Models.Clan
 
                 AnnounceVillageChanges(cocApi, downloadedClan);
 
-                //Swallow(() => UpdateVillages(downloadedClan), nameof(UpdateVillages));
-
                 VillagesLeft(cocApi, downloadedClan);
 
                 VillagesJoined(cocApi, downloadedClan);
-
-
-
-
-
-
-
-
-
-
-
-
-                UpdatedAtUtc = downloadedClan.UpdatedAtUtc;
-
-                ExpiresAtUtc = downloadedClan.ExpiresAtUtc;
             }
         }
 
         private void AnnounceVillageChanges(CocApi cocApi, ClanApiModel downloadedClan)
         {
-            //Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanges = new Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>>();
-
-            //Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges = new Dictionary<string, Tuple<ClanVillageApiModel, Role>>();
-
-            //List<Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanges = new List<Tuple<ClanVillageApiModel, VillageLeagueApiModel>>();
-
             List<LeagueChange> leagueChanges = new List<LeagueChange>();
-
-            //List<Tuple<ClanVillageApiModel, Role>> roleChanges = new List<Tuple<ClanVillageApiModel, Role>>();
 
             List<RoleChange> roleChanges = new List<RoleChange>();
 
@@ -255,10 +176,6 @@ namespace devhl.CocApi.Models.Clan
 
                 if ((oldClanVillage.League == null && newClanVillage.League != null) || (oldClanVillage.League != null && newClanVillage.League != null && oldClanVillage.League.Id != newClanVillage.League.Id))
                 {
-                    //leagueChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.League));
-
-                    //leagueChanges.Add(Tuple.Create(oldClanVillage, newClanVillage.League));
-
                     leagueChanges.Add(new LeagueChange { Village = oldClanVillage, League = newClanVillage.League });
                 }
                         
@@ -269,10 +186,6 @@ namespace devhl.CocApi.Models.Clan
 
                 if (oldClanVillage.Role != newClanVillage.Role)
                 {
-                    //roleChanges.Add(oldClanVillage.VillageTag, Tuple.Create(oldClanVillage, newClanVillage.Role));
-
-                    //roleChanges.Add(Tuple.Create(oldClanVillage, newClanVillage.Role));
-
                     roleChanges.Add(new RoleChange { Village = oldClanVillage, Role = newClanVillage.Role });
                 }
             }
@@ -282,48 +195,8 @@ namespace devhl.CocApi.Models.Clan
             cocApi.ClanVillagesRoleChangedEvent(this, roleChanges);
         }
 
-        //private void UpdateVillages(ClanApiModel downloadedClan)
-        //{
-        //    foreach (ClanVillageApiModel oldClanVillage in Villages.EmptyIfNull())
-        //    {
-        //        ClanVillageApiModel newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
-
-        //        if (newClanVillage == null) { continue; }
-
-        //        oldClanVillage.League = newClanVillage.League;
-
-        //        oldClanVillage.Name = newClanVillage.Name;
-
-        //        oldClanVillage.Role = newClanVillage.Role;
-
-        //        oldClanVillage.ExpLevel = newClanVillage.ExpLevel;
-
-        //        oldClanVillage.ClanRank = newClanVillage.ClanRank;
-
-        //        oldClanVillage.PreviousClanRank = newClanVillage.PreviousClanRank;
-
-        //        oldClanVillage.Donations = newClanVillage.Donations;
-
-        //        oldClanVillage.DonationsReceived = newClanVillage.DonationsReceived;
-
-        //        oldClanVillage.Trophies = newClanVillage.Trophies;
-
-        //        oldClanVillage.VersusTrophies = newClanVillage.VersusTrophies;
-        //    }
-
-        //}
-
         private void AnnounceDonations(CocApi cocApi, ClanApiModel downloadedClan)
         {
-            //Dictionary<string, Tuple<ClanVillageApiModel, int>> receiving = new Dictionary<string, Tuple<ClanVillageApiModel, int>>();
-
-            //Dictionary<string, Tuple<ClanVillageApiModel, int>> donating = new Dictionary<string, Tuple<ClanVillageApiModel, int>>();
-
-            //List<Tuple<ClanVillageApiModel, int>> receiving = new List<Tuple<ClanVillageApiModel, int>>();
-
-            //List<Tuple<ClanVillageApiModel, int>> donating = new List<Tuple<ClanVillageApiModel, int>>();
-
-
             List<Donation> receiving = new List<Donation>();
 
             List<Donation> donating = new List<Donation>();
@@ -336,15 +209,11 @@ namespace devhl.CocApi.Models.Clan
 
                 if (oldClanVillage.DonationsReceived < newClanVillage.DonationsReceived)
                 {
-                    //receiving.Add(Tuple.Create(oldClanVillage, newClanVillage.DonationsReceived));
-
                     receiving.Add(new Donation { Village = oldClanVillage, Quantity = newClanVillage.DonationsReceived - oldClanVillage.DonationsReceived });
                 }
 
                 if (oldClanVillage.Donations < newClanVillage.Donations)
                 {
-                    //donating.Add(Tuple.Create(oldClanVillage, newClanVillage.Donations));
-
                     donating.Add(new Donation { Village = oldClanVillage, Quantity = newClanVillage.Donations - oldClanVillage.Donations});
                 }
 
@@ -384,7 +253,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            if (Labels == null && downloadedClan.Labels != null && added.Count() == 0)
+            if (Labels == null && downloadedClan.Labels != null && added.Count == 0)
             {
                 foreach(var newLabel in downloadedClan.Labels)
                 {
@@ -392,7 +261,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            if (downloadedClan.Labels == null && Labels != null && removed.Count() == 0)
+            if (downloadedClan.Labels == null && Labels != null && removed.Count == 0)
             {
                 foreach(var removedLabel in Labels)
                 {
@@ -400,48 +269,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            //if (Labels == null && downloadedClan.Labels == null) return;
-
-            //if (Labels != null && Labels.Count() > 0 && (downloadedClan.Labels == null || downloadedClan.Labels.Count() == 0))
-            //{
-            //    cocApi.ClanLabelsRemovedEvent(downloadedClan, Labels);
-
-            //    //Labels = downloadedClan.Labels;
-            //}
-            //else if ((Labels == null || Labels.Count() == 0) && downloadedClan.Labels != null && downloadedClan.Labels.Count() > 0)
-            //{
-            //    cocApi.ClanLabelsAddedEvent(downloadedClan, downloadedClan.Labels);
-
-            //    //Labels = downloadedClan.Labels;
-            //}
-            //else
-            //{
-            //    List<ClanLabelApiModel> added = new List<ClanLabelApiModel>();
-
-            //    List<ClanLabelApiModel> removed = new List<ClanLabelApiModel>();
-
-            //    foreach (ClanLabelApiModel labelApiModel in Labels.EmptyIfNull())
-            //    {
-            //        if (!downloadedClan.Labels.Any(l => l.Id == labelApiModel.Id))
-            //        {
-            //            removed.Add(labelApiModel);
-            //        }
-            //    }
-
-            //    foreach (ClanLabelApiModel labelApiModel in downloadedClan.Labels.EmptyIfNull())
-            //    {
-            //        if (!Labels.Any(l => l.Id == labelApiModel.Id))
-            //        {
-            //            added.Add(labelApiModel);
-            //        }
-            //    }
-
-            //    cocApi.ClanLabelsRemovedEvent(downloadedClan, removed);
-
-            //    cocApi.ClanLabelsAddedEvent(downloadedClan, added);
-
-            //    //Labels = downloadedClan.Labels;
-            //}
+            cocApi.ClanLabelsChangedEvent(downloadedClan, added, removed);
         }
 
         private void UpdateLocation(CocApi cocApi, ClanApiModel downloadedClan)
@@ -459,8 +287,6 @@ namespace devhl.CocApi.Models.Clan
                 Location?.Name != downloadedClan.Location?.Name)
             {
                 cocApi.ClanLocationChangedEvent(this, downloadedClan);
-
-                //Location = downloadedClan.Location;
             }
 
         }
@@ -479,8 +305,6 @@ namespace devhl.CocApi.Models.Clan
                 BadgeUrls?.Small != downloadedClan.BadgeUrls?.Small)
             {
                 cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
-
-                //BadgeUrls = downloadedClan.BadgeUrls;
             }
         }
 
@@ -489,15 +313,11 @@ namespace devhl.CocApi.Models.Clan
             if (ClanPoints != downloadedClan.ClanPoints)
             {
                 cocApi.ClanPointsChangedEvent(this, downloadedClan.ClanPoints);
-
-                //ClanPoints = downloadedClan.ClanPoints;
             }
 
             if (ClanVersusPoints != downloadedClan.ClanVersusPoints)
             {
                 cocApi.ClanVersusPointsChangedEvent(this, downloadedClan.ClanVersusPoints);
-
-                //ClanVersusPoints = downloadedClan.ClanVersusPoints;
             }
 
             if (ClanLevel != downloadedClan.ClanLevel ||
@@ -515,18 +335,6 @@ namespace devhl.CocApi.Models.Clan
             )
             {
                 cocApi.ClanChangedEvent(this, downloadedClan);
-
-                //ClanLevel = downloadedClan.ClanLevel;
-                //Description = downloadedClan.Description;
-                //IsWarLogPublic = downloadedClan.IsWarLogPublic;
-                //VillageCount = downloadedClan.VillageCount;
-                //Name = downloadedClan.Name;
-                //RequiredTrophies = downloadedClan.RequiredTrophies;
-                //Recruitment = downloadedClan.Recruitment;
-                //WarFrequency = downloadedClan.WarFrequency;
-                //WarLosses = downloadedClan.WarLosses;
-                //WarTies = downloadedClan.WarWins;
-                //WarWinStreak = downloadedClan.WarWinStreak;
             }
         }
 
@@ -539,18 +347,11 @@ namespace devhl.CocApi.Models.Clan
                 return;
             }
 
-            //if (Villages == null)
-            //{
-            //    Villages = new List<ClanVillageApiModel>();
-            //}
-
             foreach (ClanVillageApiModel clanVillage in downloadedClan.Villages)
             {
                 if (!Villages?.Any(m => m.VillageTag == clanVillage.VillageTag) == true)
                 {
                     newVillages.Add(clanVillage);
-
-                    //Villages.Add(clanVillage);
                 }
             }
 
@@ -561,22 +362,12 @@ namespace devhl.CocApi.Models.Clan
         {
             List<ClanVillageApiModel> leftVillages = new List<ClanVillageApiModel>();
 
-            //if (Villages == null)
-            //{
-            //    return;
-            //}
-
             foreach (ClanVillageApiModel clanVillage in Villages.EmptyIfNull())
             {
                 if (!downloadedClan.Villages.Any(m => m.VillageTag == clanVillage.VillageTag))
                 {
                     leftVillages.Add(clanVillage);
                 }
-            }
-
-            foreach (ClanVillageApiModel clanVillage in leftVillages)
-            {
-                //Villages.Remove(clanVillage);
             }
 
             cocApi.VillagesLeftEvent(this, leftVillages);

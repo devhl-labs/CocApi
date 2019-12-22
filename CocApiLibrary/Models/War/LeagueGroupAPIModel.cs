@@ -53,37 +53,7 @@ namespace devhl.CocApi.Models.War
 
         public void Initialize()
         {
-            //if (_season != null && Clans?.Count() > 0)
-            //{
-            //    _groupId = $"{_season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
-            //}
-
-            //if (Clans?.Count() > 0 && _season != null)
-            //{
-            //    foreach (var clan in Clans)
-            //    {
-            //        clan.LeagueClanId = $"{_season.ToShortDateString()};{clan.ClanTag}";
-            //    }
-            //}
-
             GroupId = $"{Season.ToString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
-
-            //foreach (var leagueClan in Clans.EmptyIfNull())
-            //{
-            //    leagueClan.GroupId = GroupId;
-
-            //    foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
-            //    {
-            //        leagueVillage.ClanTag = leagueClan.ClanTag;
-            //    }
-            //}
-
-            //foreach (var round in Rounds.EmptyIfNull())
-            //{
-            //    round.RoundId = $"{Season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
-            //}
-
-            //GroupId = $"{Season.ToString()}{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
 
             foreach (var leagueClan in Clans.EmptyIfNull())
             {

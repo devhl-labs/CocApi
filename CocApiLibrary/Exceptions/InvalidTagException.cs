@@ -8,9 +8,8 @@ namespace devhl.CocApi.Exceptions
     [Serializable]
     public class InvalidTagException : CocApiException
     {
-        public InvalidTagException(string message) : base(message)
+        public InvalidTagException() : base("Tags must not be null nor empty and must start with a #.")
         {
-
         }
     }
 }

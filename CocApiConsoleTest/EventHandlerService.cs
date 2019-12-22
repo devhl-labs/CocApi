@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.War;
 using devhl.CocApi.Models.Village;
+using System.Collections.Immutable;
 
 namespace CocApiConsoleTest
 {
@@ -82,14 +83,14 @@ namespace CocApiConsoleTest
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesLeagueChanged(ClanApiModel oldClan, List<LeagueChange> leagueChanged)
+        public Task ClanVillagesLeagueChanged(ClanApiModel oldClan, IImmutableList<LeagueChange> leagueChanged)
         {
             _logService.LogInformation($"League changed {leagueChanged.First().Village.Name}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesRoleChanged(ClanApiModel clan, List<RoleChange> roleChanges)
+        public Task ClanVillagesRoleChanged(ClanApiModel clan, IImmutableList<RoleChange> roleChanges)
         {
             _logService.LogInformation($"New role: {roleChanges.First().Village.Name}");
 
@@ -159,14 +160,14 @@ namespace CocApiConsoleTest
             return Task.CompletedTask;
         }
 
-        public Task NewAttacks(ICurrentWarApiModel currentWarApiModel, List<AttackApiModel> attackApiModels)
+        public Task NewAttacks(ICurrentWarApiModel currentWarApiModel, IImmutableList<AttackApiModel> attackApiModels)
         {
             _logService.LogInformation($"new attacks: {attackApiModels.Count()}");
 
             return Task.CompletedTask;
         }
 
-        public Task MembersJoined(ClanApiModel clanApiModel, List<ClanVillageApiModel> memberListApiModels)
+        public Task MembersJoined(ClanApiModel clanApiModel, IImmutableList<ClanVillageApiModel> memberListApiModels)
         {
             _logService.LogInformation($"{memberListApiModels.Count()} members joined.");
 

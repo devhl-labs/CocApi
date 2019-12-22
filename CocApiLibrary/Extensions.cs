@@ -62,6 +62,22 @@ namespace devhl.CocApi
             if (attr == null) return @enum.ToString();
 
             return attr.Value;
-        }        
+        }
+
+        public static bool TryAdd<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, TValue value, object dictionaryLock) where TKey : notnull
+        {
+            lock (dictionaryLock)
+            {
+                return dictionary.TryAdd(key, value);
+            }
+        }
+
+        public static bool TryGetValue<TKey, TValue>(this Dictionary<TKey, TValue> dictionary, TKey key, out TValue value, object dictionaryLock) where TKey : notnull where TValue : class
+        {
+            lock (dictionaryLock)
+            {
+                return dictionary.TryGetValue(key, out value);
+            }
+        }
     }
 }

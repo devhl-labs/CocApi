@@ -279,15 +279,13 @@ namespace devhl.CocApi.Models.War
 
                 var attacksThisBase = Attacks.Where(a => a.AttackerClanTag == attack.AttackerClanTag && a.DefenderTag == attack.DefenderTag && a.AttackerTag != attack.AttackerTag).ToList();
 
-                if (attacksThisBase.Count() == 0)
+                if (attacksThisBase.Count == 0)
                 {
                     attack.StarsGained = attack.Stars;
                 }
                 else
                 {
-                    attack.StarsGained = Math.Max(attack.Stars - attacksThisBase.OrderBy(a => a.Stars).FirstOrDefault().Stars, 0);
-
-                    
+                    attack.StarsGained = Math.Max(attack.Stars - attacksThisBase.OrderBy(a => a.Stars).First().Stars, 0);                    
                 }
 
                 foreach (var clan in Clans)
@@ -363,11 +361,9 @@ namespace devhl.CocApi.Models.War
 
         public bool WarIsOverOrAllAttacksUsed()
         {
-            //if (State == WarState.NotInWar) return true;
-
             if (State == WarState.WarEnded) return true;
 
-            if (Clans[0].Villages.All(m => m.Attacks?.Count() == 2) && Clans[1].Villages.All(m => m.Attacks?.Count() == 2)) return true;
+            if (Clans[0].Villages.All(m => m.Attacks?.Count == 2) && Clans[1].Villages.All(m => m.Attacks?.Count == 2)) return true;
 
             return false;
         }
@@ -480,18 +476,7 @@ namespace devhl.CocApi.Models.War
 
         private void UpdateWar(CocApi cocApi, IWar? downloadedWar)
         {
-            ICurrentWarApiModel? currentWar = downloadedWar as ICurrentWarApiModel;
-
-            if (currentWar == null || currentWar.WarId != WarId) return;
-            
-            //foreach(var clan in Clans)
-            //{
-            //    clan.BadgeUrls = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).BadgeUrls;
-
-            //    clan.ClanLevel = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).ClanLevel;
-
-            //    clan.Name = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Name;
-            //}
+            if (!(downloadedWar is ICurrentWarApiModel currentWar) || currentWar.WarId != WarId) return;
 
             if (EndTimeUtc != currentWar.EndTimeUtc ||
                 StartTimeUtc != currentWar.StartTimeUtc ||
@@ -499,60 +484,14 @@ namespace devhl.CocApi.Models.War
             )
             {
                 cocApi.WarChangedEvent(this, currentWar);
-
-                //EndTimeUtc = downloadedWar.EndTimeUtc;
-                //StartTimeUtc = downloadedWar.StartTimeUtc;
-                //State = downloadedWar.State;
             }
         }
 
         private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
         {
-            ICurrentWarApiModel? currentWar = downloadedWar as ICurrentWarApiModel;
+            if (!(downloadedWar is ICurrentWarApiModel currentWar) || currentWar.WarId != WarId) return;
 
-            if (currentWar == null || currentWar.WarId != WarId) return;
-
-            List<AttackApiModel> newAttacks = currentWar.Attacks.Where(a => a.Order > Attacks.Count()).ToList();
-
-            
-
-            //foreach (AttackApiModel attack in downloadedWar.Attacks)
-            //{                
-            //    if (!Attacks.Any(a => a.Order == attack.Order))
-            //    {
-            //        Attacks.Add(attack);
-            //    }
-            //}
-
-            //foreach (WarClanApiModel clan in Clans)
-            //{
-            //    foreach (WarVillageApiModel warVillage in clan.Villages.EmptyIfNull())
-            //    {
-            //        foreach (AttackApiModel downloadedAttack in downloadedWar.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag))
-            //        {
-            //            if (!warVillage.Attacks.Any(a => a.Order == downloadedAttack.Order))
-            //            {
-            //                if (warVillage.Attacks == null)
-            //                {
-            //                    warVillage.Attacks = new List<AttackApiModel>();
-            //                }
-
-            //                warVillage.Attacks.Add(downloadedAttack);
-            //            }
-            //        }
-            //    }
-            //}
-
-            //foreach (var clan in Clans)
-            //{
-            //    clan.AttackCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).AttackCount;
-
-            //    clan.DefenseCount = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DefenseCount;
-
-            //    clan.DestructionPercentage = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).DestructionPercentage;
-
-            //    clan.Stars = downloadedWar.Clans.First(c => c.ClanTag == clan.ClanTag).Stars;
-            //}
+            List<AttackApiModel> newAttacks = currentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
 
             cocApi.NewAttacksEvent(currentWar, newAttacks);
         }

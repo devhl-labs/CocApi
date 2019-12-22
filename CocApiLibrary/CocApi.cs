@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Threading;
@@ -14,18 +13,20 @@ using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
 using devhl.CocApi.Models.Location;
+using System.Collections.Immutable;
+using System.Collections.Concurrent;
 
 namespace devhl.CocApi
 {
     public delegate Task ApiIsAvailableChangedEventHandler(bool isAvailable);
     public delegate Task ClanChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
-    public delegate Task VillagesJoinedEventHandler(ClanApiModel oldClan, List<ClanVillageApiModel> villageListApiModels);
-    public delegate Task VillagesLeftEventHandler(ClanApiModel oldClan, List<ClanVillageApiModel> villageListApiModels);
+    public delegate Task VillagesJoinedEventHandler(ClanApiModel oldClan, IImmutableList<ClanVillageApiModel> villageListApiModels);
+    public delegate Task VillagesLeftEventHandler(ClanApiModel oldClan, IImmutableList<ClanVillageApiModel> villageListApiModels);
     public delegate Task ClanBadgeUrlChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
     public delegate Task ClanLocationChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
     public delegate Task NewWarEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarChangedEventHandler(ICurrentWarApiModel oldWar, ICurrentWarApiModel newWar);
-    public delegate Task NewAttacksEventHandler(ICurrentWarApiModel currentWarApiModel, List<AttackApiModel> newAttacks);
+    public delegate Task NewAttacksEventHandler(ICurrentWarApiModel currentWarApiModel, IImmutableList<AttackApiModel> newAttacks);
     public delegate Task WarEndingSoonEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarStartingSoonEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task ClanVersusPointsChangedEventHandler(ClanApiModel oldClan, int newClanVersusPoints);
@@ -39,54 +40,27 @@ namespace devhl.CocApi
     public delegate Task VillageVersusBattleWinCountChangedEventHandler(VillageApiModel oldVillage, int newVersusBattleWinCount);
     public delegate Task VillageVersusBattleWinsChangedEventHandler(VillageApiModel oldVillage, int newVersusBattleWins);
     public delegate Task VillageVersusTrophiesChangedEventHandler(VillageApiModel oldVillage, int newVersusTrophies);
-    public delegate Task VillageLeagueChangedEventHandler(VillageApiModel oldVillage, VillageLeagueApiModel? newLeague);
-    public delegate Task VillageAchievementsChangedEventHandler(VillageApiModel oldVillage, List<AchievementApiModel> newAchievements);
-    public delegate Task VillageTroopsChangedEventHandler(VillageApiModel oldVillage, List<TroopApiModel> newTroops);
-    public delegate Task VillageHeroesChangedEventHandler(VillageApiModel oldVillage, List<TroopApiModel> newHeroes);
-    public delegate Task VillageSpellsChangedEventHandler(VillageApiModel oldVillage, List<VillageSpellApiModel> newSpells);
+    public delegate Task VillageAchievementsChangedEventHandler(VillageApiModel oldVillage, IImmutableList<AchievementApiModel> newAchievements);
+    public delegate Task VillageTroopsChangedEventHandler(VillageApiModel oldVillage, IImmutableList<TroopApiModel> newTroops);
+    public delegate Task VillageHeroesChangedEventHandler(VillageApiModel oldVillage, IImmutableList<TroopApiModel> newHeroes);
+    public delegate Task VillageSpellsChangedEventHandler(VillageApiModel oldVillage, IImmutableList<VillageSpellApiModel> newSpells);
     public delegate Task WarStartedEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarEndedEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarEndSeenEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task LeagueGroupTeamSizeChangedEventHandler(LeagueGroupApiModel leagueGroupApiModel);
-    //public delegate Task ClanLabelsRemovedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> labelApiModels);
-    //public delegate Task ClanLabelsAddedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> labelApiModels);
-    public delegate Task ClanLabelsChangedEventHandler(ClanApiModel newClanApiModel, IEnumerable<ClanLabelApiModel> addedLabels, IEnumerable<ClanLabelApiModel> removedLables);
-    //public delegate Task VillageLabelsRemovedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
-    //public delegate Task VillageLabelsAddedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> labelApiModels);
-    public delegate Task VillageLabelsChangedEventHandler(VillageApiModel newVillageApiModel, IEnumerable<VillageLabelApiModel> addedLabels, IEnumerable<VillageLabelApiModel> removedLabels);
+    public delegate Task ClanLabelsChangedEventHandler(ClanApiModel newClanApiModel, IImmutableList<ClanLabelApiModel> addedLabels, IImmutableList<ClanLabelApiModel> removedLables);
+    public delegate Task VillageLabelsChangedEventHandler(VillageApiModel newVillageApiModel, IImmutableList<VillageLabelApiModel> addedLabels, IImmutableList<VillageLabelApiModel> removedLabels);
     public delegate Task VillageReachedLegendsLeagueEventHandler(VillageApiModel villageApiModel);
-    //public delegate Task ClanDonationsEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, int>> receivedDonations, Dictionary<string, Tuple<ClanVillageApiModel, int>> gaveDonations);
-    //public delegate Task ClanDonationsEventHandler(List<Tuple<ClanVillageApiModel, int>> receivedDonations,List<Tuple<ClanVillageApiModel, int>> gaveDonations);
-    public delegate Task ClanDonationsEventHandler(ClanApiModel oldClan, List<Donation> receivedDonations, List<Donation> gaveDonations);
+    public delegate Task ClanDonationsEventHandler(ClanApiModel oldClan, IImmutableList<Donation> receivedDonations, IImmutableList<Donation> gaveDonations);
     public delegate Task ClanVillageNameChangedEventHandler(ClanVillageApiModel oldVillage, string newName);
-    //public delegate Task ClanVillagesLeagueChangedEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged);
-    //public delegate Task ClanVillagesLeagueChangedEventHandler(List<Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged);
-    public delegate Task ClanVillagesLeagueChangedEventHandler(ClanApiModel oldClan, List<LeagueChange> leagueChanged);
-    //public delegate Task ClanVillagesRoleChangedEventHandler(Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges);
-    //public delegate Task ClanVillagesRoleChangedEventHandler(List<Tuple<ClanVillageApiModel, Role>> roleChanges);
-    public delegate Task ClanVillagesRoleChangedEventHandler(ClanApiModel oldClan, List<RoleChange> roleChanges);
+    public delegate Task ClanVillagesLeagueChangedEventHandler(ClanApiModel oldClan, IImmutableList<LeagueChange> leagueChanged);
+    public delegate Task ClanVillagesRoleChangedEventHandler(ClanApiModel oldClan, IImmutableList<RoleChange> roleChanges);
     public delegate Task ClanDonationsResetEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public sealed class CocApi : IDisposable
     {
         private bool _isAvailable = true;
-
-        private readonly System.Timers.Timer _testConnection = new System.Timers.Timer();
 
         private readonly List<UpdateService> _updateServices = new List<UpdateService>();
 
@@ -94,14 +68,18 @@ namespace devhl.CocApi
 
         private readonly object _cancellationTokenSourcesLock = new object();
 
-        //public static SemaphoreSlim _cancellationTokenSourcesSemaphore { get; } = new SemaphoreSlim(1, 1);
-
         internal Dictionary<string, ClanApiModel> AllClans { get; } = new Dictionary<string, ClanApiModel>();
+
         internal Dictionary<string, IWar> AllWarsByClanTag { get; } = new Dictionary<string, IWar>();
+
         internal Dictionary<string, ICurrentWarApiModel> AllWarsByWarId { get; } = new Dictionary<string, ICurrentWarApiModel>();
+
         internal Dictionary<string, LeagueWarApiModel> AllWarsByWarTag { get; } = new Dictionary<string, LeagueWarApiModel>();
+
         internal Dictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new Dictionary<string, ILeagueGroup>();
+
         internal Dictionary<string, VillageApiModel> AllVillages { get; } = new Dictionary<string, VillageApiModel>();
+
 
         private readonly object _allVillagesLock = new object();
 
@@ -118,8 +96,7 @@ namespace devhl.CocApi
         internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
 
         /// <summary>
-        /// Fires if you query the Api during an outage.  
-        /// The Api will be polled every five seconds to see when service is restored. 
+        /// Fires if you query the Api during an outage.
         /// If the service is not available, you may still try to query the Api if you wish.
         /// </summary>
         public event ApiIsAvailableChangedEventHandler? ApiIsAvailableChanged;
@@ -198,7 +175,6 @@ namespace devhl.CocApi
         public event VillageVersusBattleWinCountChangedEventHandler? VillageVersusBattleWinCountChanged;
         public event VillageVersusBattleWinsChangedEventHandler? VillageVersusBattleWinsChanged;
         public event VillageVersusTrophiesChangedEventHandler? VillageVersusTrophiesChanged;
-        public event VillageLeagueChangedEventHandler? VillageLeagueChanged;
         public event VillageAchievementsChangedEventHandler? VillageAchievementsChanged;
         public event VillageTroopsChangedEventHandler? VillageTroopsChanged;
         public event VillageHeroesChangedEventHandler? VillageHeroesChanged;
@@ -216,11 +192,7 @@ namespace devhl.CocApi
         /// Fires when any clan in a league group has more than 15 attacks.
         /// </summary>
         public event LeagueGroupTeamSizeChangedEventHandler? LeagueGroupTeamSizeChanged;
-        //public event ClanLabelsAddedEventHandler? ClanLabelsAdded;
-        //public event ClanLabelsRemovedEventHandler? ClanLabelsRemoved;
         public event ClanLabelsChangedEventHandler? ClanLabelsChanged;
-        //public event VillageLabelsAddedEventHandler? VillageLabelsAdded;
-        //public event VillageLabelsRemovedEventHandler? VillageLabelsRemoved;
         public event VillageLabelsChangedEventHandler? VillageLabelsChanged;
         public event VillageReachedLegendsLeagueEventHandler? VillageReachedLegendsLeague;
         public event ClanDonationsEventHandler? ClanDonations;
@@ -230,7 +202,7 @@ namespace devhl.CocApi
         /// <summary>
         /// Fires when an update task encounters an error.  Recommended fix action is to <see cref="StartUpdatingClans()"/> or restart.
         /// </summary>
-        //public event CrashEventHandler? CrashDetected;
+
 
         
 
@@ -250,24 +222,21 @@ namespace devhl.CocApi
         /// </summary>
         public bool DownloadVillages { get; set; } = false;
 
+        private readonly object _isAvailableLock = new object();
+
         public bool IsAvailable
         {
             get { return _isAvailable; }
 
             internal set
             {
-                if (_isAvailable != value)
+                lock (_isAvailableLock)
                 {
-                    _isAvailable = value;
-
-                    ApiIsAvailableChanged?.Invoke(_isAvailable);
-
-                    if (_isAvailable == false)
+                    if (_isAvailable != value)
                     {
-                        _testConnection.Interval = 5000;
-                        _testConnection.Elapsed += TestConnection_Elapsed;
-                        _testConnection.AutoReset = true;
-                        _testConnection.Enabled = true;
+                        _isAvailable = value;
+
+                        ApiIsAvailableChanged?.Invoke(_isAvailable);
                     }
                 }
             }
@@ -293,7 +262,7 @@ namespace devhl.CocApi
                 CocApiConfiguration = cfg;
             }
 
-            if (cfg == null || cfg.Tokens.Count() == 0)
+            if (cfg == null || cfg.Tokens.Count == 0)
             {
                 throw new CocApiException("You did not provide any tokens to access the SC Api.");
             }
@@ -309,8 +278,6 @@ namespace devhl.CocApi
         {
             try
             {
-                //CrashDetected?.Invoke(error);
-
                 Task.Run(async () =>
                 {
                     //wait to allow the updater to finish crashing
@@ -332,24 +299,20 @@ namespace devhl.CocApi
             ClanDonationsReset?.Invoke(oldClan, newClan);
         }
 
-        //internal void ClanVillagesRoleChangedEvent(Dictionary<string, Tuple<ClanVillageApiModel, Role>> roleChanges)
-        //internal void ClanVillagesRoleChangedEvent(List<Tuple<ClanVillageApiModel, Role>> roleChanges)
         internal void ClanVillagesRoleChangedEvent(ClanApiModel clan, List<RoleChange> roleChanges)
         {
-            if (roleChanges.Count() > 0)
+            if (roleChanges.Count > 0)
             {
 
-                ClanVillagesRoleChanged?.Invoke(clan, roleChanges);
+                ClanVillagesRoleChanged?.Invoke(clan, roleChanges.ToImmutableList());
             }
         }
 
-        //internal void ClanVillagesLeagueChangedEvent(Dictionary<string, Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged)
-        //internal void ClanVillagesLeagueChangedEvent(List<Tuple<ClanVillageApiModel, VillageLeagueApiModel>> leagueChanged)
         internal void ClanVillagesLeagueChangedEvent(ClanApiModel oldClan, List<LeagueChange> leagueChanged)
         {
-            if (leagueChanged.Count() > 0)
+            if (leagueChanged.Count > 0)
             {
-                ClanVillagesLeagueChanged?.Invoke(oldClan, leagueChanged);
+                ClanVillagesLeagueChanged?.Invoke(oldClan, leagueChanged.ToImmutableList());
 
             }
         }
@@ -359,13 +322,11 @@ namespace devhl.CocApi
             ClanVillageNameChanged?.Invoke(oldVillage, newName);
         }
 
-        //internal void ClanDonationsEvent(Dictionary<string, Tuple<ClanVillageApiModel, int>> receivedDonations, Dictionary<string, Tuple<ClanVillageApiModel, int>> gaveDonations)
-        //internal void ClanDonationsEvent(List<Tuple<ClanVillageApiModel, int>> receivedDonations, List<Tuple<ClanVillageApiModel, int>> gaveDonations)
         internal void ClanDonationsEvent(ClanApiModel oldClan, List<Donation> received, List<Donation> donated)
         {
-            if (received.Count() > 0 || donated.Count() > 0)
+            if (received.Count > 0 || donated.Count > 0)
             {
-                ClanDonations?.Invoke(oldClan, received, donated);
+                ClanDonations?.Invoke(oldClan, received.ToImmutableList(), donated.ToImmutableList());
             }
         }
 
@@ -374,50 +335,20 @@ namespace devhl.CocApi
             VillageReachedLegendsLeague?.Invoke(villageApiModel);
         }
 
-        internal void ClanLabelsChangedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> addedLabels, IEnumerable<ClanLabelApiModel> removedLabels)
+        internal void ClanLabelsChangedEvent(ClanApiModel newClan, List<ClanLabelApiModel> addedLabels, List<ClanLabelApiModel> removedLabels)
         {
-            if (addedLabels.Count() == 0 && removedLabels.Count() == 0) return;
+            if (addedLabels.Count == 0 && removedLabels.Count == 0) return;
 
-            ClanLabelsChanged?.Invoke(newClan, addedLabels, removedLabels);
+            ClanLabelsChanged?.Invoke(newClan, addedLabels.ToImmutableList(), removedLabels.ToImmutableList());
         }
 
-        internal void VillageLabelsChangedEvent(VillageApiModel newVillage, IEnumerable<VillageLabelApiModel> addedLabels, IEnumerable<VillageLabelApiModel> removedLabels)
+        internal void VillageLabelsChangedEvent(VillageApiModel newVillage, List<VillageLabelApiModel> addedLabels, List<VillageLabelApiModel> removedLabels)
         {
-            if (addedLabels.Count() == 0 && removedLabels.Count() == 0) return;
+            if (addedLabels.Count == 0 && removedLabels.Count == 0) return;
 
-            VillageLabelsChanged?.Invoke(newVillage, addedLabels, removedLabels);
+            VillageLabelsChanged?.Invoke(newVillage, addedLabels.ToImmutableList(), removedLabels.ToImmutableList());
 
         }
-
-        //internal void ClanLabelsRemovedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> labelApiModels)
-        //{
-        //    if (labelApiModels != null && labelApiModels.Count() > 0)
-        //    {
-        //        try
-        //        {
-        //            ClanLabelsRemoved?.Invoke(newClan, labelApiModels);
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
-        //        }
-        //    }
-        //}
-
-        //internal void ClanLabelsAddedEvent(ClanApiModel newClan, IEnumerable<ClanLabelApiModel> labelApiModels)
-        //{
-        //    if (labelApiModels != null && labelApiModels.Count() > 0)
-        //    {
-        //        try
-        //        {
-        //            ClanLabelsAdded?.Invoke(newClan, labelApiModels);
-        //        }
-        //        catch (Exception e)
-        //        {
-        //            Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
-        //        }
-        //    }
-        //}
 
         internal void LeagueGroupTeamSizeChangedEvent(LeagueGroupApiModel leagueGroupApiModel)
         {
@@ -441,27 +372,22 @@ namespace devhl.CocApi
 
         internal void VillageSpellsChangedEvent(VillageApiModel oldVillage, List<VillageSpellApiModel> newSpells)
         {
-            VillageSpellsChanged?.Invoke(oldVillage, newSpells);
+            VillageSpellsChanged?.Invoke(oldVillage, newSpells.ToImmutableList());
         }
 
         internal void VillageHeroesChangedEvent(VillageApiModel oldVillage, List<TroopApiModel> newHeroes)
         {
-            VillageHeroesChanged?.Invoke(oldVillage, newHeroes);
+            VillageHeroesChanged?.Invoke(oldVillage, newHeroes.ToImmutableList());
         }
 
         internal void VillageTroopsChangedEvent(VillageApiModel oldVillage, List<TroopApiModel> newTroops)
         {
-            VillageTroopsChanged?.Invoke(oldVillage, newTroops);
+            VillageTroopsChanged?.Invoke(oldVillage, newTroops.ToImmutableList());
         }
 
         internal void VillageAchievementsChangedEvent(VillageApiModel oldVillage, List<AchievementApiModel> newAchievements)
         {
-            VillageAchievementsChanged?.Invoke(oldVillage, newAchievements);
-        }
-
-        internal void VillageLeagueChangedEvent(VillageApiModel oldVillage, VillageLeagueApiModel? newLeague)
-        {
-            VillageLeagueChanged?.Invoke(oldVillage, newLeague);
+            VillageAchievementsChanged?.Invoke(oldVillage, newAchievements.ToImmutableList());
         }
 
         internal void VillageVersusTrophiesChangedEvent(VillageApiModel oldVillage, int newVersusTrophies)
@@ -531,9 +457,9 @@ namespace devhl.CocApi
 
         internal void NewAttacksEvent(ICurrentWarApiModel currentWarApiModel, List<AttackApiModel> attackApiModels)
         {
-            if (attackApiModels.Count() > 0)
+            if (attackApiModels.Count > 0)
             {
-                NewAttacks?.Invoke(currentWarApiModel, attackApiModels);
+                NewAttacks?.Invoke(currentWarApiModel, attackApiModels.ToImmutableList());
             }
         }
 
@@ -549,9 +475,9 @@ namespace devhl.CocApi
 
         internal void VillagesLeftEvent(ClanApiModel newClan, List<ClanVillageApiModel> clanVillageApiModels)
         {
-            if (clanVillageApiModels.Count() > 0)
+            if (clanVillageApiModels.Count > 0)
             {
-                VillagesLeft?.Invoke(newClan, clanVillageApiModels);
+                VillagesLeft?.Invoke(newClan, clanVillageApiModels.ToImmutableList());
             }            
         }
 
@@ -572,67 +498,69 @@ namespace devhl.CocApi
 
         internal void VillagesJoinedEvent(ClanApiModel newClan, List<ClanVillageApiModel> clanVillageApiModels)
         {
-            if (clanVillageApiModels.Count() > 0)
+            if (clanVillageApiModels.Count > 0)
             {
-                VillagesJoined?.Invoke(newClan, clanVillageApiModels);
+                VillagesJoined?.Invoke(newClan, clanVillageApiModels.ToImmutableList());
             }
         }
 
 
 
 
+        //public async Task<IDownloadable> GetAsync<TResult>(string url, EndPoint endPoint, CancellationTokenSource? cancellationTokenSource = null) where TResult : class, IDownloadable, new()
+        //{
+        //    using CancellationTokenSource cts = GetCancellationTokenSource();
+
+        //    cancellationTokenSource?.Token.Register(() => cts.Cancel());
+
+        //    IDownloadable result = await WebResponse.DownloadAsync<TResult>(endPoint, url, cts);
+
+        //    RemoveCancellationTokenSource(cts);
+
+        //    return result;
+        //}
+
+        public async Task<IDownloadable> GetAsync<TResult>(string url, EndPoint endPoint, CancellationToken? cancellationToken = null) where TResult : class, IDownloadable, new()
+        {
+            using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken ?? new CancellationToken());
+
+            if (cancellationToken == null) cts.CancelAfter(CocApiConfiguration.TimeToWaitForWebRequests);
+
+            AddCancellationTokenSource(cts);
+
+            IDownloadable result = await WebResponse.GetIDownloadableAsync<TResult>(endPoint, url, cts.Token);
+
+            RemoveCancellationTokenSource(cts);
+
+            return result;
+        }
 
 
 
-
-
-
-
-
-
-
-        public async Task<ClanApiModel> GetClanAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<ClanApiModel> GetClanAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
-
+            
             try
             {
-                ValidateTag(clanTag);
+                ThrowIfInvalidTag(clanTag);
 
-                if (allowStoredItem)
-                {
-                    if (AllClans.TryGetValue(clanTag, out ClanApiModel storedClan))
-                    {
-                        if (allowExpiredItem || !storedClan.IsExpired())
-                        {
-                            return storedClan;
-                        }
-                    }
-                }
+                ClanApiModel? clan = GetClanOrDefault(clanTag);
+
+                if (clan != null && (allowExpiredItem || clan.IsExpired() == false)) return clan;                    
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
+                clan = (ClanApiModel) await GetAsync<ClanApiModel>(url, EndPoint.Clan, cancellationToken);
 
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                ClanApiModel downloadedClan = (ClanApiModel) await WebResponse.GetWebResponse<ClanApiModel>(EndPoint.Clan, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                if (CocApiConfiguration.CacheHttpResponses)
+                if (!CocApiConfiguration.CacheHttpResponses) return clan;
+                
+                lock (_allClansLock)
                 {
-                    if (!AllClans.TryAdd(downloadedClan.ClanTag, downloadedClan) && !_updateServices.Any(c => c.ClanStrings.Any(t => t == downloadedClan.ClanTag)))
-                    {
-                        lock (_allClansLock)
-                        {
-                            //clan is not watched so lets update it in the dictionary
-                            AllClans[clanTag] = downloadedClan;
-                        }
-                    }
-                }
+                    AllClans[clan.ClanTag] = clan;
+                }                
 
-                return downloadedClan;
+                return clan;
             }
             catch (Exception e)
             {
@@ -642,54 +570,23 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {         
             VerifyInitialization();
 
             try
             {
-                ValidateTag(clanTag);
+                ThrowIfInvalidTag(clanTag);
 
-                if (allowStoredItem)
-                {
-                    //this should not be needed as long as the GetLeagueWarAsync handles the AllWarsByClanTag correctly
+                IWar? war = GetWarByClanTagOrDefault(clanTag);
 
-                    //if (AllClans.TryGetValue(clanTag, out ClanApiModel clan))
-                    //{
-                    //    var wars = clan.Wars.OrderBy(w => w.Value.PreparationStartTimeUtc).ToList();
+                if (war != null && (allowExpiredItem || !war.IsExpired())) return war;
 
-                    //    ICurrentWarApiModel? result = wars.FirstOrDefault(w => w.Value.State == WarState.InWar).Value;
-
-                    //    result ??= wars.FirstOrDefault(w => w.Value.State == WarState.Preparation).Value;
-
-                    //    result ??= wars.FirstOrDefault(w => w.Value.State == WarState.WarEnded).Value;
-
-                    //    if (result != null)
-                    //    {
-                    //        if (allowExpiredItem || !result.IsExpired()) return result;
-                    //    }
-                    //}
-
-                    if (AllWarsByClanTag.TryGetValue(clanTag, out IWar warByClanTag))
-                    {
-                        if (allowExpiredItem || !warByClanTag.IsExpired()) return warByClanTag;
-
-                        if (warByClanTag is ICurrentWarApiModel currentWar)
-                        {
-                            if (currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
-                        }
-                    }
-                }
+                if (war is ICurrentWarApiModel currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                IDownloadable downloadable = await WebResponse.GetWebResponse<CurrentWarApiModel>(EndPoint.CurrentWar, url, cts);
-                
-                RemoveCancellationTokenSource(cts);
+                IDownloadable downloadable = await GetAsync<CurrentWarApiModel>(url, EndPoint.CurrentWar, cancellationToken);
 
                 if (downloadable is NotInWar notInWar)
                 {
@@ -706,28 +603,30 @@ namespace devhl.CocApi
 
                 ICurrentWarApiModel downloadedWar = (ICurrentWarApiModel) downloadable;
 
-                if (CocApiConfiguration.CacheHttpResponses)
+                if (!CocApiConfiguration.CacheHttpResponses) return downloadedWar;
+                
+                foreach(var clan in downloadedWar.Clans)
                 {
-                    foreach(var clan in downloadedWar.Clans)
+                    AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar, _allWarsByClanTagLock);
+
+                    if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc)
                     {
-                        AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
-
-                        if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc)
+                        lock (_allWarsByClanTagLock)
                         {
-                            lock (_allWarsByClanTagLock)
-                            {
-                                AllWarsByClanTag[clan.ClanTag] = downloadedWar;
-                            }
-                        }
-
-                        if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
-                        {
-                            storedClan.Wars.TryAdd(downloadedWar.WarId, downloadedWar);
+                            AllWarsByClanTag[clan.ClanTag] = downloadedWar;
                         }
                     }
-                        
-                    AllWarsByWarId[downloadedWar.WarId] = downloadedWar;                                       
+
+                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, _allClansLock))
+                    {
+                        storedClan.Wars.TryAdd(downloadedWar.WarId, downloadedWar, storedClan.WarsLock);
+                    }
                 }
+
+                lock (_allWarsByWarIdLock)
+                {
+                    AllWarsByWarId[downloadedWar.WarId] = downloadedWar;
+                }                                                        
 
                 return downloadedWar;
             }
@@ -747,7 +646,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<ILeagueGroup> GetLeagueGroupAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<ILeagueGroup> GetLeagueGroupAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -755,24 +654,14 @@ namespace devhl.CocApi
 
             try
             {
-                ValidateTag(clanTag);
+                ThrowIfInvalidTag(clanTag);
 
-                if (allowStoredItem && AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup leagueGroup))
-                {
-                    if (allowExpiredItem || !leagueGroup.IsExpired())
-                    {
-                        return leagueGroup;
-                    }
-                }
+                ILeagueGroup? leagueGroup = GetLeagueGroupOrDefault(clanTag);
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var downloadable = await WebResponse.GetWebResponse<LeagueGroupApiModel>(EndPoint.LeagueGroup, url, cts);
+                if (leagueGroup != null && (allowExpiredItem || !leagueGroup.IsExpired())) return leagueGroup;
                 
-                RemoveCancellationTokenSource(cts);
-                
+                IDownloadable downloadable = await GetAsync<LeagueGroupApiModel>(url, EndPoint.LeagueGroup, cancellationToken);
+
                 if (downloadable is LeagueGroupNotFound notFound)
                 {
                     lock (_allLeagueGroupsLock)
@@ -783,30 +672,27 @@ namespace devhl.CocApi
                     return notFound;
                 }
 
-                if (downloadable is LeagueGroupApiModel leagueGroupApiModel)
+                if (!(downloadable is LeagueGroupApiModel leagueGroupApiModel)) throw new CocApiException("Unknown Type");
+
+                if (!CocApiConfiguration.CacheHttpResponses) return leagueGroupApiModel;
+
+                foreach(var clan in leagueGroupApiModel.Clans.EmptyIfNull())
                 {
-                    if (CocApiConfiguration.CacheHttpResponses)
+                    if (AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel, _allLeagueGroupsLock)) continue;
+
+                    if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup, _allLeagueGroupsLock)) continue;
+
+                    //the league group already exists.  Lets check if the existing one is from last month
+                    if (storedLeagueGroup is LeagueGroupApiModel storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
                     {
-                        foreach(var clan in leagueGroupApiModel.Clans.EmptyIfNull())
+                        lock (_allLeagueGroupsLock)
                         {
-                            if (!AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel))
-                            {
-                                if (AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup))
-                                {
-                                    //the league group already exists.  Lets check if the existing one is from last month
-                                    if (storedLeagueGroup is LeagueGroupApiModel storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
-                                    {
-                                        AllLeagueGroups[clan.ClanTag] = storedLeagueGroupApiModel;
-                                    }
-                                }
-                            }
+                            AllLeagueGroups[clan.ClanTag] = storedLeagueGroupApiModel;
                         }
                     }
-
-                    return leagueGroupApiModel;
                 }
 
-                throw new CocApiException("Unknown type");
+                return leagueGroupApiModel;
             }
 
             catch (Exception e)
@@ -817,85 +703,77 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<LeagueWarApiModel> GetLeagueWarAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<LeagueWarApiModel> GetLeagueWarAsync(string warTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
             try
             {
-                ValidateTag(warTag);
+                ThrowIfInvalidTag(warTag);
 
-                if (allowStoredItem)
+                LeagueWarApiModel? leagueWar = GetLeagueWarOrDefault(warTag);
+
+                if (leagueWar != null)
                 {
-                    if (AllWarsByWarTag.TryGetValue(warTag, out LeagueWarApiModel leagueWar))
-                    {
-                        if (allowExpiredItem || !leagueWar.IsExpired()) return leagueWar;
+                    if (allowExpiredItem || !leagueWar.IsExpired()) return leagueWar;
 
-                        if (leagueWar.State == WarState.WarEnded) return leagueWar;
+                    if (leagueWar.State == WarState.WarEnded) return leagueWar;
 
-                        if (leagueWar.StartTimeUtc > DateTime.UtcNow) return leagueWar;
-                    }
+                    if (leagueWar.StartTimeUtc > DateTime.UtcNow) return leagueWar;
                 }
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                LeagueWarApiModel leagueWarApiModel = (LeagueWarApiModel) await WebResponse.GetWebResponse<LeagueWarApiModel>(EndPoint.LeagueWar, url, cts);
-
-                RemoveCancellationTokenSource(cts);
+                LeagueWarApiModel leagueWarApiModel = (LeagueWarApiModel) await GetAsync<LeagueWarApiModel>(url, EndPoint.LeagueWar, cancellationToken);
 
                 leagueWarApiModel.WarTag = warTag;
 
                 leagueWarApiModel.WarType = WarType.SCCWL;
 
-                if (CocApiConfiguration.CacheHttpResponses)
+                if (!CocApiConfiguration.CacheHttpResponses) return leagueWarApiModel;
+
+                lock (_allWarsByWarTagLock)
                 {
-                    lock (_allWarsByWarTagLock)
-                    {
-                        AllWarsByWarTag[leagueWarApiModel.WarTag] = leagueWarApiModel;
-                    }
+                    AllWarsByWarTag[leagueWarApiModel.WarTag] = leagueWarApiModel;
+                }
 
-                    lock (_allWarsByWarIdLock)
-                    {
-                        AllWarsByWarId[leagueWarApiModel.WarId] = leagueWarApiModel;
-                    }
+                lock (_allWarsByWarIdLock)
+                {
+                    AllWarsByWarId[leagueWarApiModel.WarId] = leagueWarApiModel;
+                }
 
-                    foreach(var clan in leagueWarApiModel.Clans)
+                foreach(var clan in leagueWarApiModel.Clans)
+                {
+                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, _allClansLock))
                     {
-                        if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan))
-                        {
-                            storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel);
-                        }
+                        storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel, storedClan.WarsLock);
                     }
+                }
 
-                    foreach(var clan in leagueWarApiModel.Clans)
+                foreach(var clan in leagueWarApiModel.Clans)
+                {
+                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war, _allWarsByClanTagLock))
                     {
-                        if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war))
-                        {
-                            if (war is NotInWar || leagueWarApiModel.State == WarState.InWar)
-                            {
-                                lock (_allWarsByClanTagLock)
-                                {
-                                    AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
-                                }
-                            }
-                            else if (war is ICurrentWarApiModel currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
-                            {
-                                lock (_allWarsByClanTagLock)
-                                {
-                                    AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
-                                }
-                            }
-                        }
-                        else
+                        if (war is NotInWar || leagueWarApiModel.State == WarState.InWar)
                         {
                             lock (_allWarsByClanTagLock)
                             {
                                 AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                             }
+                        }
+                        else if (war is ICurrentWarApiModel currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
+                        {
+                            lock (_allWarsByClanTagLock)
+                            {
+                                AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        lock (_allWarsByClanTagLock)
+                        {
+                            AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                         }
                     }
                 }
@@ -910,28 +788,21 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<VillageApiModel> GetVillageAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<VillageApiModel> GetVillageAsync(string villageTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
             try
             {
-                ValidateTag(villageTag);
+                ThrowIfInvalidTag(villageTag);
 
-                if (allowStoredItem && AllVillages.TryGetValue(villageTag, out VillageApiModel villageApiModel))
-                {
-                    if (allowExpiredItem || !villageApiModel.IsExpired()) return villageApiModel;
-                }
+                VillageApiModel? villageApiModel = GetVillageOrDefault(villageTag);
+
+                if (villageApiModel != null && (allowExpiredItem || !villageApiModel.IsExpired())) return villageApiModel;
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                villageApiModel = (VillageApiModel) await WebResponse.GetWebResponse<VillageApiModel>(EndPoint.Village, url, cts);
-
-                RemoveCancellationTokenSource(cts);
+                villageApiModel = (VillageApiModel) await GetAsync<VillageApiModel>(url, EndPoint.Village, cancellationToken);
 
                 if (CocApiConfiguration.CacheHttpResponses)
                 {
@@ -956,13 +827,13 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<WarLogEntryModel>> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<WarLogEntryModel>> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
             try
             {
-                ValidateTag(clanTag);
+                ThrowIfInvalidTag(clanTag);
 
                 string url = $"https://api.clashofclans.com/v1/clans/";
 
@@ -993,15 +864,7 @@ namespace devhl.CocApi
                     url = url[0..^1];
                 }
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<WarLogEntryModel>) await WebResponse.GetWebResponse<PaginatedApiModel<WarLogEntryModel>>(EndPoint.WarLog, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<WarLogEntryModel>) await GetAsync<PaginatedApiModel<WarLogEntryModel>>(url, EndPoint.WarLog, cancellationToken);
             }
             catch (Exception e)
             {
@@ -1026,7 +889,7 @@ namespace devhl.CocApi
                                                         , int? limit = null
                                                         , int? after = null
                                                         , int? before = null
-                                                        , CancellationTokenSource? cancellationTokenSource = null)
+                                                        , CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1085,16 +948,7 @@ namespace devhl.CocApi
                     url = url[0..^1];
                 }
 
-
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<ClanApiModel>) await WebResponse.GetWebResponse<PaginatedApiModel<ClanApiModel>>(EndPoint.Clans, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<ClanApiModel>) await GetAsync<PaginatedApiModel<ClanApiModel>>(url, EndPoint.Clans, cancellationToken);
             }
             catch (Exception e)
             {
@@ -1109,7 +963,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<VillageLeagueApiModel>> GetVillageLeaguesAsync(CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<VillageLeagueApiModel>> GetVillageLeaguesAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1117,15 +971,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/leagues?limit=500";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<VillageLeagueApiModel>) await WebResponse.GetWebResponse<PaginatedApiModel<VillageLeagueApiModel>>(EndPoint.VillageLeagues, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<VillageLeagueApiModel>) await GetAsync<PaginatedApiModel<VillageLeagueApiModel>>(url, EndPoint.VillageLeagues, cancellationToken);
             }
             catch (Exception e)
             {
@@ -1140,7 +986,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<LocationApiModel>> GetLocationsAsync(CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<LocationApiModel>> GetLocationsAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1148,15 +994,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations?limit=10000";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<LocationApiModel>) await WebResponse.GetWebResponse<PaginatedApiModel<LocationApiModel>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<LocationApiModel>) await GetAsync<PaginatedApiModel<LocationApiModel>>(url, EndPoint.Locations, cancellationToken);
             }
             catch (Exception e)
             {
@@ -1171,7 +1009,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<TopMainClan>> GetTopMainClansAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopMainClan>> GetTopMainClansAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1179,15 +1017,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<TopMainClan>)await WebResponse.GetWebResponse<PaginatedApiModel<TopMainClan>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<TopMainClan>) await GetAsync<PaginatedApiModel<TopMainClan>>(url, EndPoint.Locations, cancellationToken);//todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1203,7 +1033,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopBuilderClan>> GetTopBuilderClansAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopBuilderClan>> GetTopBuilderClansAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1211,15 +1041,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans-versus";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<TopBuilderClan>)await WebResponse.GetWebResponse<PaginatedApiModel<TopBuilderClan>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<TopBuilderClan>) await GetAsync<PaginatedApiModel<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken);  //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1235,7 +1057,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopMainVillage>> GetTopMainVillagesAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopMainVillage>> GetTopMainVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1243,15 +1065,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<TopMainVillage>)await WebResponse.GetWebResponse<PaginatedApiModel<TopMainVillage>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<TopMainVillage>) await GetAsync<PaginatedApiModel<TopMainVillage>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1267,7 +1081,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopBuilderVillage>> GetTopBuilderVillagesAsync(int locationId, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<TopBuilderVillage>> GetTopBuilderVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1275,15 +1089,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players-versus";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<TopBuilderVillage>)await WebResponse.GetWebResponse<PaginatedApiModel<TopBuilderVillage>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<TopBuilderVillage>) await GetAsync<PaginatedApiModel<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1299,7 +1105,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<LabelApiModel>> GetClanLabelsAsync(CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<LabelApiModel>> GetClanLabelsAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1307,15 +1113,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/clans?limit=10000";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<LabelApiModel>)await WebResponse.GetWebResponse<PaginatedApiModel<LabelApiModel>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1331,7 +1129,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<LabelApiModel>> GetVillageLabelsAsync(CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<LabelApiModel>> GetVillageLabelsAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1339,15 +1137,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/players?limit=10000";
 
-                using CancellationTokenSource cts = GetCancellationTokenSource();
-
-                cancellationTokenSource?.Token.Register(() => cts.Cancel());
-
-                var result = (PaginatedApiModel<LabelApiModel>)await WebResponse.GetWebResponse<PaginatedApiModel<LabelApiModel>>(EndPoint.Locations, url, cts);
-
-                RemoveCancellationTokenSource(cts);
-
-                return result;
+                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1377,7 +1167,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<ClanApiModel?> GetClanOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<ClanApiModel?> GetClanOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1385,7 +1175,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetClanAsync(clanTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+                result = await GetClanAsync(clanTag, allowExpiredItem, cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1415,7 +1205,7 @@ namespace devhl.CocApi
                                                         , int? limit = null
                                                         , int? after = null
                                                         , int? before = null
-                                                        , CancellationTokenSource? cancellationTokenSource = null)
+                                                        , CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -1423,7 +1213,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetClansAsync(clanName, warFrequency, locationId, minVillages, maxVillages, minClanPoints, minClanLevel, limit, after, before, cancellationTokenSource);
+                result = await GetClansAsync(clanName, warFrequency, locationId, minVillages, maxVillages, minClanPoints, minClanLevel, limit, after, before, cancellationToken);
             }
             catch (ServerResponseException) { }
             //catch (InvalidTagException) { }
@@ -1445,13 +1235,13 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<ILeagueGroup?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<ILeagueGroup?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             ILeagueGroup? result = null;
 
             try
             {
-                result = await GetLeagueGroupAsync(clanTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+                result = await GetLeagueGroupAsync(clanTag, allowExpiredItem, cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1471,13 +1261,13 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<IWar?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<IWar?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             IWar? result = null;
 
             try
             {
-                result = await GetCurrentWarAsync(clanTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+                result = await GetCurrentWarAsync(clanTag, allowExpiredItem, cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1498,13 +1288,13 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<LeagueWarApiModel?> GetLeagueWarOrDefaultAsync(string warTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<LeagueWarApiModel?> GetLeagueWarOrDefaultAsync(string warTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             LeagueWarApiModel? result = null;
 
             try
             {
-                result = await GetLeagueWarAsync(warTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+                result = await GetLeagueWarAsync(warTag, allowExpiredItem, cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1525,13 +1315,13 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<VillageApiModel?> GetVillageOrDefaultAsync(string villageTag, bool allowStoredItem = true, bool allowExpiredItem = false, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<VillageApiModel?> GetVillageOrDefaultAsync(string villageTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VillageApiModel? result = null;
 
             try
             {
-                result = await GetVillageAsync(villageTag, allowStoredItem, allowExpiredItem, cancellationTokenSource);
+                result = await GetVillageAsync(villageTag, allowExpiredItem, cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1553,13 +1343,13 @@ namespace devhl.CocApi
         /// <param name="before"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<WarLogEntryModel>?> GetWarLogOrDefaultAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<WarLogEntryModel>?> GetWarLogOrDefaultAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
         {
             PaginatedApiModel<WarLogEntryModel>? result = null;
 
             try
             {
-                result = await GetWarLogAsync(clanTag, limit, after, before, cancellationTokenSource);
+                result = await GetWarLogAsync(clanTag, limit, after, before, cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1576,48 +1366,29 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="storedWar"></param>
         /// <returns></returns>
-
         public async Task<ICurrentWarApiModel?> GetCurrentWarOrDefaultAsync(ICurrentWarApiModel storedWar)
         {
             try
             {
-                if (AllWarsByWarId.TryGetValue(storedWar.WarId, out ICurrentWarApiModel warByWarId))
-                {
-                    if (!warByWarId.IsExpired()) return warByWarId;
+                ICurrentWarApiModel? warByWarId = GetWarByWarIdOrDefault(storedWar.WarId);
 
-                    if (warByWarId.State == WarState.WarEnded) return warByWarId;
+                if (warByWarId?.IsExpired() == false) return warByWarId;
 
-                    if (warByWarId.StartTimeUtc > DateTime.UtcNow) return warByWarId;
-                }
+                if (warByWarId?.State == WarState.WarEnded) return warByWarId;
 
-                foreach (var clan in storedWar.Clans)
-                {
-                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar warByClanTag))
-                    {
-                        if (warByClanTag is ICurrentWarApiModel currentWar2 && storedWar.WarId == currentWar2.WarId)
-                        {
-                            if (!warByClanTag.IsExpired()) return currentWar2;
-
-                            if (currentWar2.State == WarState.WarEnded) return currentWar2;
-
-                            if (currentWar2.StartTimeUtc > DateTime.UtcNow) return currentWar2;
-                        }
-                    }
-                }
+                if (warByWarId?.StartTimeUtc > DateTime.UtcNow) return warByWarId;
 
                 IWar? war = null;
 
                 if (storedWar is LeagueWarApiModel leagueWar)
                 {
-                    //allow stored items is false becuase we already checked
-                    return await GetLeagueWarOrDefaultAsync(leagueWar.WarTag, allowStoredItem: false, allowExpiredItem: false);
+                    return await GetLeagueWarOrDefaultAsync(leagueWar.WarTag, allowExpiredItem: false);
                 }
                 else
                 {
                     foreach (var clan in storedWar.Clans)
                     {
-                        //allow stored items is false becuase we already checked
-                        war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowStoredItem: false, allowExpiredItem: false);
+                        war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowExpiredItem: false);
 
                         if (war is ICurrentWarApiModel currentWar1 && currentWar1?.WarId == storedWar.WarId) return currentWar1;
                     }
@@ -1633,13 +1404,18 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<PaginatedApiModel<LabelApiModel>?> GetClanLabelsOrDefaultAsync(CancellationTokenSource? cancellationTokenSource = null)
+        /// <summary>
+        /// This does not cache responses.  Every request will poll the Api.
+        /// </summary>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<PaginatedApiModel<LabelApiModel>?> GetClanLabelsOrDefaultAsync(CancellationToken? cancellationToken = null)
         {
             PaginatedApiModel<LabelApiModel>? result = null;
 
             try
             {
-                return await GetClanLabelsAsync(cancellationTokenSource);
+                return await GetClanLabelsAsync(cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (Exception)
@@ -1655,14 +1431,13 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-
-        public async Task<PaginatedApiModel<LabelApiModel>?> GetVillageLabelsOrDefaultAsync(CancellationTokenSource? cancellationTokenSource = null)
+        public async Task<PaginatedApiModel<LabelApiModel>?> GetVillageLabelsOrDefaultAsync(CancellationToken? cancellationToken = null)
         {
             PaginatedApiModel<LabelApiModel>? result = null;
 
             try
             {
-                result = await GetVillageLabelsAsync(cancellationTokenSource);
+                result = await GetVillageLabelsAsync(cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (Exception)
@@ -1673,13 +1448,18 @@ namespace devhl.CocApi
             return result;
         }
 
-        public async Task<PaginatedApiModel<VillageLeagueApiModel>?> GetVillageLeaguesOrDefaultAsync(CancellationTokenSource? cancellationTokenSource = null)
+        /// <summary>
+        /// This does not cache responses.  Every request will poll the Api.
+        /// </summary>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        public async Task<PaginatedApiModel<VillageLeagueApiModel>?> GetVillageLeaguesOrDefaultAsync(CancellationToken? cancellationToken = null)
         {
             PaginatedApiModel<VillageLeagueApiModel>? result = null;
 
             try
             {
-                result = await GetVillageLeaguesAsync(cancellationTokenSource);
+                result = await GetVillageLeaguesAsync(cancellationToken);
             }
             catch (ServerResponseException) { }
             catch (Exception)
@@ -1711,9 +1491,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public ClanApiModel? GetClanOrDefault(string clanTag)
         {
-            VerifyInitialization();
-
-            AllClans.TryGetValue(clanTag, out ClanApiModel? result);
+            AllClans.TryGetValue(clanTag, out ClanApiModel? result, _allClansLock);
 
             return result;
         }
@@ -1724,15 +1502,20 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="clanTag"></param>
         /// <returns></returns>
-        public IWar? GetCurrentWarByClanTagOrDefault(string clanTag)
+        public IWar? GetWarByClanTagOrDefault(string clanTag)
         {
-            VerifyInitialization();
-
-            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result);
+            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result, _allWarsByClanTagLock);
 
             return result;
         }
 
+        public ICurrentWarApiModel? GetWarByWarIdOrDefault(string warId)
+        {
+            AllWarsByWarId.TryGetValue(warId, out ICurrentWarApiModel? currentWar, _allWarsByWarIdLock);
+
+            return currentWar;
+        }
+ 
 
         /// <summary>
         /// This only searches what is currently in memory.  Returns null if the clan is not in a clan is not found to be in a league.  
@@ -1742,9 +1525,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public ILeagueGroup? GetLeagueGroupOrDefault(string clanTag)
         {
-            VerifyInitialization();
-
-            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result);
+            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result, _allLeagueGroupsLock);
 
             return result;
         }
@@ -1755,11 +1536,9 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="warTag"></param>
         /// <returns></returns>
-        public ICurrentWarApiModel? GetLeagueWarOrDefault(string warTag)
+        public LeagueWarApiModel? GetLeagueWarOrDefault(string warTag)
         {
-            VerifyInitialization();
-
-            AllWarsByWarTag.TryGetValue(warTag, out LeagueWarApiModel? result);
+            AllWarsByWarTag.TryGetValue(warTag, out LeagueWarApiModel? result, _allWarsByWarTagLock);
 
             return result;
         }
@@ -1771,10 +1550,8 @@ namespace devhl.CocApi
         /// <param name="villageTag"></param>
         /// <returns></returns>
         public VillageApiModel? GetVillageOrDefault(string villageTag)
-        {
-            VerifyInitialization();
-            
-            AllVillages.TryGetValue(villageTag, out VillageApiModel? result);
+        {            
+            AllVillages.TryGetValue(villageTag, out VillageApiModel? result, _allVillagesLock);
 
             return result;
         }
@@ -1804,11 +1581,8 @@ namespace devhl.CocApi
         /// Stop polling the Api.  Events will not fire.  This could take some time to finish if updating villages or league wars.
         /// </summary>
         /// <returns></returns>
-        public async Task StopUpdatingClansAsync(bool cancelPendingRequests = true)
+        public async Task StopUpdatingClansAsync()
         {
-
-            if (cancelPendingRequests) CancelAllAsyncRequests();
-
             var tasks = new List<Task>();
                        
             foreach(UpdateService clanUpdateService in _updateServices)
@@ -1825,17 +1599,13 @@ namespace devhl.CocApi
         /// Stop polling the Api.  Events will not fire.  Returns immediately, but will take time to complete.
         /// </summary>
         /// <returns></returns>
-        public void StopUpdatingClans(bool cancelPendingRequests = true)
+        public void StopUpdatingClans()
         {
-            if (cancelPendingRequests) CancelAllAsyncRequests();
-
-            foreach(UpdateService updateService in _updateServices)
+            foreach (UpdateService updateService in _updateServices)
             {
                 updateService.StopUpdatingClans();
             }
         }
-
-        
 
         /// <summary>
         /// Establish the clans that you would like to poll for updates.  Run this when your program starts.  After running this, run <see cref="StartUpdatingClans"/>.  Watching a large number of clans will take a lot of memory.  If you watch clans, you should have caching enabled.
@@ -1853,14 +1623,16 @@ namespace devhl.CocApi
                 {
                     try
                     {
-                        ValidateTag(clanTag);
+                        ThrowIfInvalidTag(clanTag);
                     }
                     catch (Exception)
                     {
                         continue;
                     }
 
-                    _updateServices.ElementAt(j).ClanStrings.Add(clanTag);
+                    //_updateServices.ElementAt(j).ClanStrings.Add(clanTag);
+
+                    _updateServices[j].ClanStrings.Add(clanTag);  //todo does this work?
 
                     j++;
 
@@ -1890,14 +1662,16 @@ namespace devhl.CocApi
                 {
                     try
                     {
-                        ValidateTag(clan.ClanTag);
+                        ThrowIfInvalidTag(clan.ClanTag);
                     }
                     catch (Exception)
                     {
                         continue;
                     }
 
-                    _updateServices.ElementAt(j).ClanStrings.Add(clan.ClanTag);
+                    //_updateServices.ElementAt(j).ClanStrings.Add(clan.ClanTag); //todo does this work?
+
+                    _updateServices[j].ClanStrings.Add(clan.ClanTag);
 
                     j++;
 
@@ -1996,19 +1770,15 @@ namespace devhl.CocApi
 
             try
             {
-                try
-                {
-                    ValidateTag(clanTag);
-                }
-                catch (Exception)
-                {
+                ThrowIfInvalidTag(clanTag);
 
-                    throw;
-                }
-
-                UpdateService clanUpdateService = _updateServices.OrderBy(c => c.ClanStrings.Count()).FirstOrDefault();
+                UpdateService clanUpdateService = _updateServices.OrderBy(c => c.ClanStrings.Count).First();
 
                 clanUpdateService.ClanStrings.Add(clanTag);
+            }
+            catch (CocApiException)
+            {
+                throw;
             }
             catch (Exception e)
             {
@@ -2019,7 +1789,7 @@ namespace devhl.CocApi
         public string GetTokenStatus() => WebResponse.GetTokenStatus();
 
         /// <summary>
-        /// Check if a string appears to be a SuperCell tag.
+        /// Check if a string appears to be a SuperCell tag. Will not do any formatting to the input.
         /// </summary>
         /// <param name="tag"></param>
         /// <returns></returns>
@@ -2039,10 +1809,35 @@ namespace devhl.CocApi
         }
 
         /// <summary>
+        /// Check if user input could be a valid tag. Will add leading #, replace O with 0, and check against a regular expression.
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <param name="formattedTag"></param>
+        /// <returns></returns>
+        public bool IsValidTag(string userInput, out string formattedTag)
+        {
+            formattedTag = string.Empty;
+
+            if (string.IsNullOrEmpty(userInput)) return false;
+
+            formattedTag = userInput.ToUpper();
+
+            formattedTag = formattedTag.Replace("O", "0");
+
+            if (!formattedTag.StartsWith("#")) formattedTag = $"#{formattedTag}";
+
+            var result = IsValidTag(formattedTag);
+
+            if (!result) formattedTag = string.Empty;
+
+            return result;
+        }
+
+        /// <summary>
         /// Use this to get statistics on how long the Api takes to respond for diffent and points.
         /// </summary>
         /// <returns></returns>
-        public List<WebResponseTimer> GetTimers() => WebResponse.GetTimers();
+        public ConcurrentBag<WebResponseTimer> GetTimers() => WebResponse.GetTimers();
 
         /// <summary>
         /// Determines whether CWL should be downloading.
@@ -2085,8 +1880,6 @@ namespace devhl.CocApi
                 updateService.StopUpdatingClans();
             }
 
-            _testConnection.Dispose();
-
             foreach(CancellationTokenSource cancellationTokenSource in _cancellationTokenSources)
             {
                 try
@@ -2109,31 +1902,15 @@ namespace devhl.CocApi
         /// Check if a string appears to be a SuperCell tag.
         /// </summary>
         /// <param name="tag"></param>
-        /// <exception cref="ArgumentException"></exception>
-        public void ValidateTag(string tag)
+        /// <exception cref="InvalidTagException"></exception>
+        public void ThrowIfInvalidTag(string tag)
         {
             if (!IsValidTag(tag))
             {
                 Logger.LogWarning(LoggingEvents.InvalidTag, "{source} The provided tag is not valid {tag}", _source, tag);
 
-                throw new InvalidTagException("Tags must not be null nor empty and must start with a #.");
+                throw new InvalidTagException();
             }
-        }
-
-        private void TestConnection_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            var _ = Task.Run(async () =>
-            {
-                try
-                {
-                    await GetClanOrDefaultAsync("#929YJPYJ", allowStoredItem: false, allowExpiredItem: false);
-
-                    _testConnection.Stop();
-                }
-                catch (Exception)
-                {
-                }
-            });
         }
 
         private void CreateUpdaters()
@@ -2147,12 +1924,7 @@ namespace devhl.CocApi
 
                 for (int i = 0; i < CocApiConfiguration.NumberOfUpdaters; i++)
                 {
-                    UpdateService updateService = new UpdateService(this)
-                    {
-                        Logger = Logger
-                    };
-
-                    _updateServices.Add(updateService);
+                    _updateServices.Add(new UpdateService(this, Logger));
                 }
             }
             catch (Exception e)
@@ -2161,38 +1933,15 @@ namespace devhl.CocApi
             }
         }
 
-        private CancellationTokenSource GetCancellationTokenSource()
-        {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            AddCancellationTokenSource(cancellationTokenSource);
-
-            return cancellationTokenSource;
-        }
-
         private void VerifyInitialization()
         {
-            if (!_isInitialized || CocApiConfiguration.Tokens == null || CocApiConfiguration.Tokens.Count() == 0)
+            if (!_isInitialized || CocApiConfiguration.Tokens == null || CocApiConfiguration.Tokens.Count == 0)
             {
                 throw new CocApiException("The library is not initialized, or you did not provide SC Api tokens.");
             }
         }
 
-        private void CancelAllAsyncRequests()
-        {
-            foreach(var request in _cancellationTokenSources)
-            {
-                try
-                {
-                    request.Cancel();
-                }
-                catch (Exception)
-                {
-                }
-            }
-        }
-
-        private void AddCancellationTokenSource (CancellationTokenSource cts)
+        private void AddCancellationTokenSource(CancellationTokenSource cts)
         {
             lock (_cancellationTokenSourcesLock)
             {
@@ -2200,28 +1949,12 @@ namespace devhl.CocApi
             }
         }
 
-        private void RemoveCancellationTokenSource (CancellationTokenSource cts)
+        private void RemoveCancellationTokenSource(CancellationTokenSource cts)
         {
             lock (_cancellationTokenSourcesLock)
             {
                 _cancellationTokenSources.Remove(cts);
             }
-
-            //await _cancellationTokenSourcesSemaphore.WaitAsync();
-
-            //try
-            //{
-            //    //while (_tokenObjects.All(x => x.IsRateLimited))
-            //    //{
-            //    //    await Task.Delay(50);
-            //    //}
-
-            //    //return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).FirstOrDefault().GetTokenAsync(endPoint, url);
-            //}
-            //finally
-            //{
-            //    _cancellationTokenSourcesSemaphore.Release();
-            //}
         }
     }
 }

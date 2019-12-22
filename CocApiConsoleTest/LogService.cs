@@ -33,14 +33,7 @@ namespace CocApiConsoleTest
 
                 Console.Write(DateTime.UtcNow.ToShortTimeString() + "  | ");
 
-                if (exception == null)
-                {
-                    Console.WriteLine(formatter.Invoke(state, exception!));
-                }
-                else
-                {
-                    Console.WriteLine(formatter.Invoke(state, exception) + " " + exception.Message);
-                }
+                Console.WriteLine(formatter.Invoke(state, exception) + " " + exception.Message);               
             }
         }
 

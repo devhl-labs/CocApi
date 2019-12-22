@@ -17,17 +17,19 @@ using devhl.CocApi.Models.War;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.Location;
+using System.Collections.Concurrent;
 
 namespace devhl.CocApi
 {
     internal static class WebResponse
     {
         public static SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
+
         public static HttpClient ApiClient { get; } = new HttpClient();
 
         private readonly static string _source = "WebResponse   | ";
 
-        private static readonly IList<TokenObject> _tokenObjects = new List<TokenObject>();
+        private static readonly List<TokenObject> _tokenObjects = new List<TokenObject>();
 
         private static CocApi _cocApi = new CocApi();
 
@@ -38,7 +40,7 @@ namespace devhl.CocApi
             PropertyNameCaseInsensitive = true
         };
 
-        public static List<WebResponseTimer> WebResponseTimers { get; } = new List<WebResponseTimer>();
+        public static ConcurrentBag<WebResponseTimer> WebResponseTimers { get; } = new ConcurrentBag<WebResponseTimer>();
 
         public static void Initialize(CocApi cocApi, CocApiConfiguration cfg, IEnumerable<string> tokens)
         {
@@ -60,10 +62,7 @@ namespace devhl.CocApi
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
-        public static string GetTokenStatus()
-        {
-            return $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
-        }
+        public static string GetTokenStatus() => $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
 
         private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
         {
@@ -76,7 +75,7 @@ namespace devhl.CocApi
                     await Task.Delay(50);
                 }
 
-                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).FirstOrDefault().GetTokenAsync(endPoint, url);
+                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url);
             }
             finally
             {
@@ -84,182 +83,203 @@ namespace devhl.CocApi
             }
         }
 
-        internal static List<WebResponseTimer> GetTimers() => WebResponseTimers;
+        public static ConcurrentBag<WebResponseTimer> GetTimers() => WebResponseTimers;
 
-        internal static async Task<IDownloadable> GetWebResponse<T>(EndPoint endPoint, string encodedUrl, CancellationTokenSource? cancellationTokenSource = null) where T : class, IDownloadable, new()
+        private static async Task<HttpResponseMessage> GetHttpResponseAsync(EndPoint endPoint, string encodedUrl, TokenObject token, CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = new Stopwatch();
 
+            ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+
+            using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            stopwatch.Start();
+
+            HttpResponseMessage response;
+
             try
             {
-                _cocApi.Logger?.LogDebug("{source} {encodedUrl}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
-
-                TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
-
-                using CancellationTokenSource cts = new CancellationTokenSource(_cfg.TimeToWaitForWebRequests);
-
-                cancellationTokenSource?.Token.Register(() => cts?.Cancel());
-
-                ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-
-                stopwatch.Start();
-
-                using HttpResponseMessage response = await ApiClient.GetAsync(encodedUrl, cts.Token);
-
+                response = await ApiClient.GetAsync(encodedUrl, cts.Token);
+            }
+            catch (Exception)
+            {
                 stopwatch.Stop();
 
-                string responseText = response.Content.ReadAsStringAsync().Result;
+                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, null));
+
+                throw;
+            }
+
+            stopwatch.Stop();
+
+            WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
+
+            return response;
+        }
+
+        public static async Task<IDownloadable> GetIDownloadableAsync<TValue>(EndPoint endPoint, string encodedUrl, CancellationToken cancellationToken) where TValue : class, IDownloadable, new()
+        {
+            try
+            {
+                TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
+
+                using HttpResponseMessage response = await GetHttpResponseAsync(endPoint, encodedUrl, token, cancellationToken);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    _cocApi.IsAvailable = true;
-
-                    T result = JsonSerializer.Deserialize<T>(responseText, _jsonSerializerOptions);
-
-                    if (result != null)
-                    {
-                        if (result is CurrentWarApiModel currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
-                        {
-                            var notInWar = new NotInWar();
-
-                            PrepareResult(notInWar, endPoint, stopwatch, response, encodedUrl);
-
-                            return notInWar;
-                        }
-                        else
-                        {
-                            PrepareResult(result, endPoint, stopwatch, response, encodedUrl);
-
-                            return result;
-                        }
-                    }
-                    else
-                    {
-                        throw new CocApiException("The response could not be parsed.");
-                    }
+                    return SuccessfulResponse<TValue>(response, encodedUrl);
                 }
                 else
                 {
-                    ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
-
-                    WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
-
-                    if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-                    {
-                        throw new BadRequestException(ex, response.StatusCode);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-                    {
-                        throw new ForbiddenException(ex, response.StatusCode);
-                    }
-
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound && endPoint == EndPoint.LeagueGroup)
-                    {
-                        var leagueGroupNotFound = new LeagueGroupNotFound();
-
-                        PrepareResult(leagueGroupNotFound, EndPoint.LeagueGroup, stopwatch, response, encodedUrl);
-
-                        return leagueGroupNotFound;
-                    }
-
-                    else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-                    {
-                        throw new NotFoundException(ex, response.StatusCode);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
-                    {
-                        token.IsRateLimited = true;
-
-                        throw new TooManyRequestsException(ex, response.StatusCode);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-                    {
-                        throw new InternalServerErrorException(ex, response.StatusCode);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway)
-                    {
-                        _cocApi.IsAvailable = false;
-
-                        throw new BadGateWayException(ex, response.StatusCode);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
-                    {
-                        _cocApi.IsAvailable = false;
-
-                        throw new ServiceUnavailableException(ex, response.StatusCode);
-                    }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)
-                    {
-                        _cocApi.IsAvailable = false;
-
-                        throw new GatewayTimeoutException(ex, response.StatusCode);
-                    }
-
-                    throw new ServerResponseException(ex, response.StatusCode);
+                    return UnSuccessfulResponse(response, encodedUrl, endPoint, token);
                 }
             }
             catch (Exception e)
             {
-                stopwatch.Stop();
-
-                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed));
-
-                if (e is ServerResponseException serverResponse)
-                {
-                    _cocApi.Logger?.LogWarning("{source} {encodedUrl} {httpStatusCode} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), serverResponse.HttpStatusCode, e.Message);
-                }
-                else
-                {
-                    _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
-                }
-
-                if (e is TaskCanceledException taskCanceled && endPoint == EndPoint.LeagueGroup)
-                {
-                    //there is a bug while the clan is searching where the api returns nothing
-                    var leagueGroupNotFound = new LeagueGroupNotFound();
-
-                    PrepareResult(leagueGroupNotFound, EndPoint.LeagueGroup, stopwatch, null, encodedUrl);
-
-                    return leagueGroupNotFound;
-                }
-
-                if (e is TaskCanceledException taskCanceledException)
-                {
-                    ResponseMessageApiModel responseMessageApiModel = new ResponseMessageApiModel
-                    {
-                        Message = e.Message,
-
-                        Reason = e.ToString()
-                    };
-
-                    throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
-                }
-
-                if (e is CocApiException) throw;
-
-                throw new CocApiException(e.Message, e);
+                return ErrorInResponse(e, encodedUrl, endPoint);
             }
         }
 
-        private static void PrepareResult<T>(T result, EndPoint endPoint, Stopwatch stopwatch, HttpResponseMessage? response, string encodedUrl) where T : class, IDownloadable, new()
+        private static IDownloadable ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
         {
-            if (response == null)
+            if (e is ServerResponseException serverResponse)
             {
-                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, null));
+                _cocApi.Logger?.LogWarning("{source} {encodedUrl} {httpStatusCode} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), serverResponse.HttpStatusCode, e.Message);
             }
             else
             {
-                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
+                _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
             }
 
-            SetIDownloadableProperties(result, encodedUrl, response);
+            if (e is TaskCanceledException && endPoint == EndPoint.LeagueGroup)
+            {
+                //there is a bug while the clan is searching where the api returns nothing
+                var leagueGroupNotFound = new LeagueGroupNotFound();
 
-            SetCacheExpiration(result, response);
+                InitializeResult(leagueGroupNotFound, null, encodedUrl);
+
+                return leagueGroupNotFound;
+            }
+            else if (e is TaskCanceledException)
+            {
+                ResponseMessageApiModel responseMessageApiModel = new ResponseMessageApiModel
+                {
+                    Message = e.Message,
+
+                    Reason = e.ToString()
+                };
+
+                throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
+            }
+
+            if (e is CocApiException) throw e;
+
+            throw new CocApiException(e.Message, e);
+        }
+
+        private static IDownloadable UnSuccessfulResponse(HttpResponseMessage response, string encodedUrl, EndPoint endPoint, TokenObject token)
+        {
+            _cocApi.Logger?.LogDebug("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), "unsuccessful http response");
+
+            string responseText = response.Content.ReadAsStringAsync().Result;
+
+            ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                throw new BadRequestException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+            {
+                throw new ForbiddenException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound && endPoint == EndPoint.LeagueGroup)
+            {
+                var leagueGroupNotFound = new LeagueGroupNotFound();
+
+                InitializeResult(leagueGroupNotFound, response, encodedUrl);
+
+                return leagueGroupNotFound;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new NotFoundException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                token.IsRateLimited = true;
+
+                throw new TooManyRequestsException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new InternalServerErrorException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway)
+            {
+                _cocApi.IsAvailable = false;
+
+                throw new BadGateWayException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
+            {
+                _cocApi.IsAvailable = false;
+
+                throw new ServiceUnavailableException(ex, response.StatusCode);
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)
+            {
+                _cocApi.IsAvailable = false;
+
+                throw new GatewayTimeoutException(ex, response.StatusCode);
+            }
+
+            throw new ServerResponseException(ex, response.StatusCode);
+        }
+
+        private static IDownloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : class, IDownloadable, new()
+        {
+            _cocApi.Logger?.LogDebug("{source} {encodedUrl}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+
+            _cocApi.IsAvailable = true;
+
+            string responseText = response.Content.ReadAsStringAsync().Result;
+
+            TValue result = JsonSerializer.Deserialize<TValue>(responseText, _jsonSerializerOptions);
+
+            if (result != null)
+            {
+                if (result is CurrentWarApiModel currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
+                {
+                    var notInWar = new NotInWar();
+
+                    InitializeResult(notInWar, response, encodedUrl);
+
+                    return notInWar;
+                }
+                else
+                {
+                    InitializeResult(result, response, encodedUrl);
+
+                    return result;
+                }
+            }
+            else
+            {
+                throw new CocApiException("The response could not be parsed.");
+            }
+        }
+
+        private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : class, IDownloadable, new()
+        {
+            InitializeIDownloadableProperties(result, encodedUrl, response);
+
+            InitializeCacheExpiration(result, response);
 
             if (result is IInitialize initialize) initialize.Initialize();
         }
 
-        private static void SetCacheExpiration(IDownloadable result, HttpResponseMessage? response)
+        private static void InitializeCacheExpiration(IDownloadable result, HttpResponseMessage? response)
         {
             result.UpdatedAtUtc = DateTime.UtcNow;
 
@@ -278,7 +298,7 @@ namespace devhl.CocApi
             }
         }
 
-        private static void SetIDownloadableProperties(IDownloadable result, string encodedURL, HttpResponseMessage? response)
+        private static void InitializeIDownloadableProperties(IDownloadable result, string encodedURL, HttpResponseMessage? response)
         {
             result.EncodedUrl = encodedURL;
 
@@ -287,7 +307,7 @@ namespace devhl.CocApi
                 case LeagueWarApiModel leagueWarApiModel:
                     if (leagueWarApiModel.State == WarState.WarEnded)
                     {
-                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.AddYears(1);
+                        leagueWarApiModel.ExpiresAtUtc = DateTime.MaxValue;
                     }
                     else
                     {
@@ -299,7 +319,7 @@ namespace devhl.CocApi
                 case CurrentWarApiModel currentWar:
                     if (currentWar.State == WarState.WarEnded)
                     {
-                        currentWar.ExpiresAtUtc = DateTime.UtcNow.AddYears(1);
+                        currentWar.ExpiresAtUtc = DateTime.MaxValue;
                     }
                     else
                     {
@@ -358,24 +378,19 @@ namespace devhl.CocApi
                     villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
-
                 case PaginatedApiModel<LabelApiModel> villageSearchModel:
                     villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
-
-
 
                 case NotInWar notInWar:
                     notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
                     break;
 
-
-
-
                 default:
                     result.ExpiresAtUtc = DateTime.UtcNow;
+
                     _cocApi.Logger.LogWarning(LoggingEvents.UnhandledCase, "Unhandled case");
-                    //throw new CocApiException($"Unhandled Type");
+
                     break;
             }
         }
