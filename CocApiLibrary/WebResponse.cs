@@ -99,7 +99,7 @@ namespace devhl.CocApi
 
             try
             {
-                response = await ApiClient.GetAsync(encodedUrl, cts.Token);
+               response = await ApiClient.GetAsync(encodedUrl, cts.Token);
             }
             catch (Exception)
             {
@@ -169,7 +169,7 @@ namespace devhl.CocApi
                     Reason = e.ToString()
                 };
 
-                throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
+               throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
             }
 
             if (e is CocApiException) throw e;

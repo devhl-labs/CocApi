@@ -35,14 +35,33 @@ namespace devhl.CocApi
         /// Stops updating objects.  This may take some time to complete as the executing updates finish.
         /// </summary>
         /// <returns></returns>
-        public async Task StopUpdatingClansAsync()
+        public Task<bool> StopUpdatingClansAsync()
         {
+            //_continueUpdatingObjects = false;
+
+            //while (ObjectsAreBeingUpdated)
+            //{
+            //    await Task.Delay(100);
+            //}
+                                 
             _continueUpdatingObjects = false;
 
-            while (ObjectsAreBeingUpdated)
+            TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
+
+            Task<bool> task = tsc.Task;
+
+            _ = Task.Run(async () =>
             {
-                await Task.Delay(100);
-            }
+                while (ObjectsAreBeingUpdated)
+                {
+                    await Task.Delay(100).ConfigureAwait(false);
+                }
+
+                tsc.SetResult(true);
+            });
+
+
+            return tsc.Task;
         }
 
         /// <summary>
@@ -57,6 +76,8 @@ namespace devhl.CocApi
         {
             _continueUpdatingObjects = true;
 
+            if (ObjectsAreBeingUpdated) return;
+
             ObjectsAreBeingUpdated = true;
 
             Task.Run(async () =>
@@ -67,12 +88,12 @@ namespace devhl.CocApi
                     {
                         foreach(string clanTag in ClanStrings)
                         {
-                            await UpdateClanAsync(clanTag);
+                            await UpdateClanAsync(clanTag).ConfigureAwait(false);
 
                             if (!_continueUpdatingObjects) break;
                         }
 
-                        await Task.Delay(100);
+                        await Task.Delay(100).ConfigureAwait(false);
                     }
 
                     ObjectsAreBeingUpdated = false;
@@ -98,9 +119,9 @@ namespace devhl.CocApi
         {
             _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source} UpdateClanAsync({clanString})", _source, clanString);
 
-            ClanApiModel? storedClan = await _cocApi.GetClanOrDefaultAsync(clanString, allowExpiredItem: true);
+            ClanApiModel? storedClan = await _cocApi.GetClanOrDefaultAsync(clanString, allowExpiredItem: true).ConfigureAwait(false);
 
-            ClanApiModel? downloadedClan = await _cocApi.GetClanOrDefaultAsync(clanString, allowExpiredItem: false);
+            ClanApiModel? downloadedClan = await _cocApi.GetClanOrDefaultAsync(clanString, allowExpiredItem: false).ConfigureAwait(false);
 
             if (storedClan == null || downloadedClan == null) return;
 
@@ -110,19 +131,19 @@ namespace devhl.CocApi
 
             if (downloadedClan.IsWarLogPublic == true)
             {
-                war = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.ClanTag, allowExpiredItem: false) as ICurrentWarApiModel;
+                war = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.ClanTag, allowExpiredItem: false).ConfigureAwait(false) as ICurrentWarApiModel;
             }
 
             ILeagueGroup? leagueGroup = null;
 
             if (_cocApi.IsDownloadingLeagueWars() && (war == null || war is LeagueWarApiModel))
             {
-                leagueGroup = await _cocApi.GetLeagueGroupOrDefaultAsync(storedClan.ClanTag);
+                leagueGroup = await _cocApi.GetLeagueGroupOrDefaultAsync(storedClan.ClanTag).ConfigureAwait(false);
 
-                await DownloadLeagueWarsAsync(storedClan, leagueGroup);
+                await DownloadLeagueWarsAsync(storedClan, leagueGroup).ConfigureAwait(false);
             }
 
-            lock (storedClan.WarsLock)
+            lock (storedClan.Wars)
             {
                 if (storedClan.AnnounceWars == false)
                 {
@@ -143,9 +164,9 @@ namespace devhl.CocApi
                 }
             }
             
-            await UpdateWarsAsync(storedClan, leagueGroup);
+            await UpdateWarsAsync(storedClan, leagueGroup).ConfigureAwait(false);
 
-            await UpdateVillagesAsync(storedClan);
+            await UpdateVillagesAsync(storedClan).ConfigureAwait(false);
 
             downloadedClan.AnnounceWars = storedClan.AnnounceWars;
 
@@ -153,13 +174,7 @@ namespace devhl.CocApi
 
             downloadedClan.DownloadVillages = storedClan.DownloadVillages;
 
-            lock (downloadedClan.WarsLock)
-            {
-                lock (storedClan.WarsLock)
-                {
-                    downloadedClan.Wars = storedClan.Wars;
-                }
-            }
+            downloadedClan.Wars = storedClan.Wars;
 
             ////Update service must update the dictionary so the old state is not lost and the events can be fired
             //lock (_cocApi.AllClansLock)
@@ -188,7 +203,7 @@ namespace devhl.CocApi
         {
             int numberOfWars = 0;
 
-            lock (storedClan.WarsLock)
+            lock (storedClan.Wars)
             {
                 numberOfWars = storedClan.Wars.Count;
             }
@@ -197,12 +212,12 @@ namespace devhl.CocApi
             {
                 ICurrentWarApiModel storedWar;
 
-                lock (storedClan.WarsLock)
+                lock (storedClan.Wars)
                 {
                     storedWar = storedClan.Wars.ElementAt(i).Value;
                 }
 
-                ICurrentWarApiModel? downloadedWar = await _cocApi.GetCurrentWarOrDefaultAsync(storedWar);
+                ICurrentWarApiModel? downloadedWar = await _cocApi.GetCurrentWarOrDefaultAsync(storedWar).ConfigureAwait(false);
 
                 if (storedWar is LeagueWarApiModel leagueWar)
                 {
@@ -217,7 +232,7 @@ namespace devhl.CocApi
                 {
                     downloadedCurrentWar.Flags = storedWar.Flags;
 
-                    lock (storedClan.WarsLock)
+                    lock (storedClan.Wars)
                     {
                         storedClan.Wars[storedWar.WarId] = downloadedCurrentWar;
                     }
@@ -238,7 +253,7 @@ namespace devhl.CocApi
                         tasks.Add(DownloadRoundAsync(storedClan, round));
                     }
 
-                    await Task.WhenAll(tasks);
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
                 }
             }
         }
@@ -247,7 +262,7 @@ namespace devhl.CocApi
         {
             foreach (var warTag in round.WarTags.EmptyIfNull().Where(w => w != "#0"))
             {
-                ICurrentWarApiModel? leagueWar = await _cocApi.GetLeagueWarOrDefaultAsync(warTag, allowExpiredItem: false);
+                ICurrentWarApiModel? leagueWar = await _cocApi.GetLeagueWarOrDefaultAsync(warTag, allowExpiredItem: false).ConfigureAwait(false);
 
                 if (leagueWar == null) continue;
 
@@ -274,15 +289,15 @@ namespace devhl.CocApi
                     tasks.Add(UpdateVillageAsync(village));
                 }
 
-                await Task.WhenAll(tasks);
+                await Task.WhenAll(tasks).ConfigureAwait(false);
             }
         }
 
         private async Task UpdateVillageAsync(ClanVillageApiModel village)
         {
-            VillageApiModel? storedVillage = await _cocApi.GetVillageOrDefaultAsync(village.VillageTag, allowExpiredItem: true);
+            VillageApiModel? storedVillage = await _cocApi.GetVillageOrDefaultAsync(village.VillageTag, allowExpiredItem: true).ConfigureAwait(false);
 
-            VillageApiModel? downloadedVillage = await _cocApi.GetVillageOrDefaultAsync(village.VillageTag, allowExpiredItem: false);
+            VillageApiModel? downloadedVillage = await _cocApi.GetVillageOrDefaultAsync(village.VillageTag, allowExpiredItem: false).ConfigureAwait(false);
 
             if (storedVillage != null && downloadedVillage != null)
             {

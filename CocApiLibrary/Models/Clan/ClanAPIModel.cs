@@ -119,7 +119,7 @@ namespace devhl.CocApi.Models.Clan
         [NotMapped]
         public Dictionary<string, ICurrentWarApiModel> Wars { get; set; } = new Dictionary<string, ICurrentWarApiModel>();
 
-        internal object WarsLock { get; } = new object();
+        //internal object WarsLock { get; } = new object();
 
         /// <summary>
         /// This is a flag used to prevent all wars from being announced on startup. 
@@ -128,12 +128,12 @@ namespace devhl.CocApi.Models.Clan
         internal bool AnnounceWars { get; set; } = false;
 
 
-        private readonly object _updateLock = new object();
+        //private readonly object _updateLock = new object();
         
 
         internal void Update(CocApi cocApi, ClanApiModel? downloadedClan)
         {
-            lock (_updateLock)
+            lock (this)
             {
                 if (downloadedClan == null) return;
 

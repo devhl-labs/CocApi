@@ -83,14 +83,14 @@ namespace CocApiConsoleTest
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesLeagueChanged(ClanApiModel oldClan, IImmutableList<LeagueChange> leagueChanged)
+        public Task ClanVillagesLeagueChanged(ClanApiModel oldClan, IReadOnlyList<LeagueChange> leagueChanged)
         {
             _logService.LogInformation($"League changed {leagueChanged.First().Village.Name}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesRoleChanged(ClanApiModel clan, IImmutableList<RoleChange> roleChanges)
+        public Task ClanVillagesRoleChanged(ClanApiModel clan, IReadOnlyList<RoleChange> roleChanges)
         {
             _logService.LogInformation($"New role: {roleChanges.First().Village.Name}");
 
@@ -160,14 +160,14 @@ namespace CocApiConsoleTest
             return Task.CompletedTask;
         }
 
-        public Task NewAttacks(ICurrentWarApiModel currentWarApiModel, IImmutableList<AttackApiModel> attackApiModels)
+        public Task NewAttacks(ICurrentWarApiModel currentWarApiModel, IReadOnlyList<AttackApiModel> attackApiModels)
         {
             _logService.LogInformation($"new attacks: {attackApiModels.Count()}");
 
             return Task.CompletedTask;
         }
 
-        public Task MembersJoined(ClanApiModel clanApiModel, IImmutableList<ClanVillageApiModel> memberListApiModels)
+        public Task MembersJoined(ClanApiModel clanApiModel, IReadOnlyList<ClanVillageApiModel> memberListApiModels)
         {
             _logService.LogInformation($"{memberListApiModels.Count()} members joined.");
 

@@ -20,13 +20,13 @@ namespace devhl.CocApi
 {
     public delegate Task ApiIsAvailableChangedEventHandler(bool isAvailable);
     public delegate Task ClanChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
-    public delegate Task VillagesJoinedEventHandler(ClanApiModel oldClan, IImmutableList<ClanVillageApiModel> villageListApiModels);
-    public delegate Task VillagesLeftEventHandler(ClanApiModel oldClan, IImmutableList<ClanVillageApiModel> villageListApiModels);
+    public delegate Task VillagesJoinedEventHandler(ClanApiModel oldClan, IReadOnlyList<ClanVillageApiModel> villageListApiModels);
+    public delegate Task VillagesLeftEventHandler(ClanApiModel oldClan, IReadOnlyList<ClanVillageApiModel> villageListApiModels);
     public delegate Task ClanBadgeUrlChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
     public delegate Task ClanLocationChangedEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
     public delegate Task NewWarEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarChangedEventHandler(ICurrentWarApiModel oldWar, ICurrentWarApiModel newWar);
-    public delegate Task NewAttacksEventHandler(ICurrentWarApiModel currentWarApiModel, IImmutableList<AttackApiModel> newAttacks);
+    public delegate Task NewAttacksEventHandler(ICurrentWarApiModel currentWarApiModel, IReadOnlyList<AttackApiModel> newAttacks);
     public delegate Task WarEndingSoonEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarStartingSoonEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task ClanVersusPointsChangedEventHandler(ClanApiModel oldClan, int newClanVersusPoints);
@@ -40,33 +40,33 @@ namespace devhl.CocApi
     public delegate Task VillageVersusBattleWinCountChangedEventHandler(VillageApiModel oldVillage, int newVersusBattleWinCount);
     public delegate Task VillageVersusBattleWinsChangedEventHandler(VillageApiModel oldVillage, int newVersusBattleWins);
     public delegate Task VillageVersusTrophiesChangedEventHandler(VillageApiModel oldVillage, int newVersusTrophies);
-    public delegate Task VillageAchievementsChangedEventHandler(VillageApiModel oldVillage, IImmutableList<AchievementApiModel> newAchievements);
-    public delegate Task VillageTroopsChangedEventHandler(VillageApiModel oldVillage, IImmutableList<TroopApiModel> newTroops);
-    public delegate Task VillageHeroesChangedEventHandler(VillageApiModel oldVillage, IImmutableList<TroopApiModel> newHeroes);
-    public delegate Task VillageSpellsChangedEventHandler(VillageApiModel oldVillage, IImmutableList<VillageSpellApiModel> newSpells);
+    public delegate Task VillageAchievementsChangedEventHandler(VillageApiModel oldVillage, IReadOnlyList<AchievementApiModel> newAchievements);
+    public delegate Task VillageTroopsChangedEventHandler(VillageApiModel oldVillage, IReadOnlyList<TroopApiModel> newTroops);
+    public delegate Task VillageHeroesChangedEventHandler(VillageApiModel oldVillage, IReadOnlyList<TroopApiModel> newHeroes);
+    public delegate Task VillageSpellsChangedEventHandler(VillageApiModel oldVillage, IReadOnlyList<VillageSpellApiModel> newSpells);
     public delegate Task WarStartedEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarEndedEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task WarEndSeenEventHandler(ICurrentWarApiModel currentWarApiModel);
     public delegate Task LeagueGroupTeamSizeChangedEventHandler(LeagueGroupApiModel leagueGroupApiModel);
-    public delegate Task ClanLabelsChangedEventHandler(ClanApiModel newClanApiModel, IImmutableList<ClanLabelApiModel> addedLabels, IImmutableList<ClanLabelApiModel> removedLables);
-    public delegate Task VillageLabelsChangedEventHandler(VillageApiModel newVillageApiModel, IImmutableList<VillageLabelApiModel> addedLabels, IImmutableList<VillageLabelApiModel> removedLabels);
+    public delegate Task ClanLabelsChangedEventHandler(ClanApiModel newClanApiModel, IReadOnlyList<ClanLabelApiModel> addedLabels, IReadOnlyList<ClanLabelApiModel> removedLables);
+    public delegate Task VillageLabelsChangedEventHandler(VillageApiModel newVillageApiModel, IReadOnlyList<VillageLabelApiModel> addedLabels, IReadOnlyList<VillageLabelApiModel> removedLabels);
     public delegate Task VillageReachedLegendsLeagueEventHandler(VillageApiModel villageApiModel);
-    public delegate Task ClanDonationsEventHandler(ClanApiModel oldClan, IImmutableList<Donation> receivedDonations, IImmutableList<Donation> gaveDonations);
+    public delegate Task ClanDonationsEventHandler(ClanApiModel oldClan, IReadOnlyList<Donation> receivedDonations, IReadOnlyList<Donation> gaveDonations);
     public delegate Task ClanVillageNameChangedEventHandler(ClanVillageApiModel oldVillage, string newName);
-    public delegate Task ClanVillagesLeagueChangedEventHandler(ClanApiModel oldClan, IImmutableList<LeagueChange> leagueChanged);
-    public delegate Task ClanVillagesRoleChangedEventHandler(ClanApiModel oldClan, IImmutableList<RoleChange> roleChanges);
+    public delegate Task ClanVillagesLeagueChangedEventHandler(ClanApiModel oldClan, IReadOnlyList<LeagueChange> leagueChanged);
+    public delegate Task ClanVillagesRoleChangedEventHandler(ClanApiModel oldClan, IReadOnlyList<RoleChange> roleChanges);
     public delegate Task ClanDonationsResetEventHandler(ClanApiModel oldClan, ClanApiModel newClan);
 
 
     public sealed class CocApi : IDisposable
     {
-        private bool _isAvailable = true;
+        private volatile bool _isAvailable = true;
 
         private readonly List<UpdateService> _updateServices = new List<UpdateService>();
 
         private readonly List<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
 
-        private readonly object _cancellationTokenSourcesLock = new object();
+        //private readonly object _cancellationTokenSourcesLock = new object();
 
         internal Dictionary<string, ClanApiModel> AllClans { get; } = new Dictionary<string, ClanApiModel>();
 
@@ -81,17 +81,17 @@ namespace devhl.CocApi
         internal Dictionary<string, VillageApiModel> AllVillages { get; } = new Dictionary<string, VillageApiModel>();
 
 
-        private readonly object _allVillagesLock = new object();
+        //private readonly object _allVillagesLock = new object();
 
-        private readonly object _allLeagueGroupsLock = new object();
+        //private readonly object _allLeagueGroupsLock = new object();
 
-        private readonly object _allWarsByWarTagLock = new object();
+        //private readonly object _allWarsByWarTagLock = new object();
 
-        private readonly object _allWarsByWarIdLock = new object();
+        //private readonly object _allWarsByWarIdLock = new object();
 
-        private readonly object _allWarsByClanTagLock = new object();
+        //private readonly object _allWarsByClanTagLock = new object();
 
-        internal readonly object _allClansLock = new object();
+        //internal readonly object _allClansLock = new object();
 
         internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
 
@@ -226,7 +226,13 @@ namespace devhl.CocApi
 
         public bool IsAvailable
         {
-            get { return _isAvailable; }
+            get 
+            {
+                lock (_isAvailableLock)
+                {
+                    return _isAvailable; 
+                }
+            }
 
             internal set
             {
@@ -281,7 +287,7 @@ namespace devhl.CocApi
                 Task.Run(async () =>
                 {
                     //wait to allow the updater to finish crashing
-                    await Task.Delay(5000);
+                    await Task.Delay(5000).ConfigureAwait(false);
 
                     StartUpdatingClans();
 
@@ -304,7 +310,7 @@ namespace devhl.CocApi
             if (roleChanges.Count > 0)
             {
 
-                ClanVillagesRoleChanged?.Invoke(clan, roleChanges.ToImmutableList());
+                ClanVillagesRoleChanged?.Invoke(clan, roleChanges.ToImmutableArray());
             }
         }
 
@@ -312,7 +318,7 @@ namespace devhl.CocApi
         {
             if (leagueChanged.Count > 0)
             {
-                ClanVillagesLeagueChanged?.Invoke(oldClan, leagueChanged.ToImmutableList());
+                ClanVillagesLeagueChanged?.Invoke(oldClan, leagueChanged.ToImmutableArray());
 
             }
         }
@@ -326,7 +332,7 @@ namespace devhl.CocApi
         {
             if (received.Count > 0 || donated.Count > 0)
             {
-                ClanDonations?.Invoke(oldClan, received.ToImmutableList(), donated.ToImmutableList());
+                ClanDonations?.Invoke(oldClan, received.ToImmutableArray(), donated.ToImmutableArray());
             }
         }
 
@@ -339,14 +345,14 @@ namespace devhl.CocApi
         {
             if (addedLabels.Count == 0 && removedLabels.Count == 0) return;
 
-            ClanLabelsChanged?.Invoke(newClan, addedLabels.ToImmutableList(), removedLabels.ToImmutableList());
+            ClanLabelsChanged?.Invoke(newClan, addedLabels.ToImmutableArray(), removedLabels.ToImmutableArray());
         }
 
         internal void VillageLabelsChangedEvent(VillageApiModel newVillage, List<VillageLabelApiModel> addedLabels, List<VillageLabelApiModel> removedLabels)
         {
             if (addedLabels.Count == 0 && removedLabels.Count == 0) return;
 
-            VillageLabelsChanged?.Invoke(newVillage, addedLabels.ToImmutableList(), removedLabels.ToImmutableList());
+            VillageLabelsChanged?.Invoke(newVillage, addedLabels.ToImmutableArray(), removedLabels.ToImmutableArray());
 
         }
 
@@ -372,22 +378,22 @@ namespace devhl.CocApi
 
         internal void VillageSpellsChangedEvent(VillageApiModel oldVillage, List<VillageSpellApiModel> newSpells)
         {
-            VillageSpellsChanged?.Invoke(oldVillage, newSpells.ToImmutableList());
+            VillageSpellsChanged?.Invoke(oldVillage, newSpells.ToImmutableArray());
         }
 
         internal void VillageHeroesChangedEvent(VillageApiModel oldVillage, List<TroopApiModel> newHeroes)
         {
-            VillageHeroesChanged?.Invoke(oldVillage, newHeroes.ToImmutableList());
+            VillageHeroesChanged?.Invoke(oldVillage, newHeroes.ToImmutableArray());
         }
 
         internal void VillageTroopsChangedEvent(VillageApiModel oldVillage, List<TroopApiModel> newTroops)
         {
-            VillageTroopsChanged?.Invoke(oldVillage, newTroops.ToImmutableList());
+            VillageTroopsChanged?.Invoke(oldVillage, newTroops.ToImmutableArray());
         }
 
         internal void VillageAchievementsChangedEvent(VillageApiModel oldVillage, List<AchievementApiModel> newAchievements)
         {
-            VillageAchievementsChanged?.Invoke(oldVillage, newAchievements.ToImmutableList());
+            VillageAchievementsChanged?.Invoke(oldVillage, newAchievements.ToImmutableArray());
         }
 
         internal void VillageVersusTrophiesChangedEvent(VillageApiModel oldVillage, int newVersusTrophies)
@@ -459,7 +465,7 @@ namespace devhl.CocApi
         {
             if (attackApiModels.Count > 0)
             {
-                NewAttacks?.Invoke(currentWarApiModel, attackApiModels.ToImmutableList());
+                NewAttacks?.Invoke(currentWarApiModel, attackApiModels.ToImmutableArray());
             }
         }
 
@@ -477,7 +483,7 @@ namespace devhl.CocApi
         {
             if (clanVillageApiModels.Count > 0)
             {
-                VillagesLeft?.Invoke(newClan, clanVillageApiModels.ToImmutableList());
+                VillagesLeft?.Invoke(newClan, clanVillageApiModels.ToImmutableArray());
             }            
         }
 
@@ -500,7 +506,7 @@ namespace devhl.CocApi
         {
             if (clanVillageApiModels.Count > 0)
             {
-                VillagesJoined?.Invoke(newClan, clanVillageApiModels.ToImmutableList());
+                VillagesJoined?.Invoke(newClan, clanVillageApiModels.ToImmutableArray());
             }
         }
 
@@ -528,7 +534,7 @@ namespace devhl.CocApi
 
             AddCancellationTokenSource(cts);
 
-            IDownloadable result = await WebResponse.GetIDownloadableAsync<TResult>(endPoint, url, cts.Token);
+            IDownloadable result = await WebResponse.GetIDownloadableAsync<TResult>(endPoint, url, cts.Token).ConfigureAwait(false);
 
             RemoveCancellationTokenSource(cts);
 
@@ -551,11 +557,11 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                clan = (ClanApiModel) await GetAsync<ClanApiModel>(url, EndPoint.Clan, cancellationToken);
+                clan = (ClanApiModel) await GetAsync<ClanApiModel>(url, EndPoint.Clan, cancellationToken).ConfigureAwait(false);
 
                 if (!CocApiConfiguration.CacheHttpResponses) return clan;
                 
-                lock (_allClansLock)
+                lock (AllClans)
                 {
                     AllClans[clan.ClanTag] = clan;
                 }                
@@ -586,13 +592,13 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
-                IDownloadable downloadable = await GetAsync<CurrentWarApiModel>(url, EndPoint.CurrentWar, cancellationToken);
+                IDownloadable downloadable = await GetAsync<CurrentWarApiModel>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
 
                 if (downloadable is NotInWar notInWar)
                 {
                     if (CocApiConfiguration.CacheHttpResponses)
                     {
-                        lock (_allWarsByClanTagLock)
+                        lock (AllWarsByClanTag)
                         {
                             AllWarsByClanTag[clanTag] = notInWar;
                         }
@@ -607,23 +613,23 @@ namespace devhl.CocApi
                 
                 foreach(var clan in downloadedWar.Clans)
                 {
-                    AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar, _allWarsByClanTagLock);
+                    AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar, AllWarsByClanTag);
 
                     if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc)
                     {
-                        lock (_allWarsByClanTagLock)
+                        lock (AllWarsByClanTag)
                         {
                             AllWarsByClanTag[clan.ClanTag] = downloadedWar;
                         }
                     }
 
-                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, _allClansLock))
+                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, AllClans))
                     {
-                        storedClan.Wars.TryAdd(downloadedWar.WarId, downloadedWar, storedClan.WarsLock);
+                        storedClan.Wars.TryAdd(downloadedWar.WarId, downloadedWar, storedClan.Wars);
                     }
                 }
 
-                lock (_allWarsByWarIdLock)
+                lock (AllWarsByWarId)
                 {
                     AllWarsByWarId[downloadedWar.WarId] = downloadedWar;
                 }                                                        
@@ -660,11 +666,11 @@ namespace devhl.CocApi
 
                 if (leagueGroup != null && (allowExpiredItem || !leagueGroup.IsExpired())) return leagueGroup;
                 
-                IDownloadable downloadable = await GetAsync<LeagueGroupApiModel>(url, EndPoint.LeagueGroup, cancellationToken);
+                IDownloadable downloadable = await GetAsync<LeagueGroupApiModel>(url, EndPoint.LeagueGroup, cancellationToken).ConfigureAwait(false);
 
                 if (downloadable is LeagueGroupNotFound notFound)
                 {
-                    lock (_allLeagueGroupsLock)
+                    lock (AllLeagueGroups)
                     {
                         AllLeagueGroups[clanTag] = notFound;
                     }
@@ -678,14 +684,14 @@ namespace devhl.CocApi
 
                 foreach(var clan in leagueGroupApiModel.Clans.EmptyIfNull())
                 {
-                    if (AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel, _allLeagueGroupsLock)) continue;
+                    if (AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel, AllLeagueGroups)) continue;
 
-                    if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup, _allLeagueGroupsLock)) continue;
+                    if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup, AllLeagueGroups)) continue;
 
                     //the league group already exists.  Lets check if the existing one is from last month
                     if (storedLeagueGroup is LeagueGroupApiModel storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
                     {
-                        lock (_allLeagueGroupsLock)
+                        lock (AllLeagueGroups)
                         {
                             AllLeagueGroups[clan.ClanTag] = storedLeagueGroupApiModel;
                         }
@@ -724,7 +730,7 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                LeagueWarApiModel leagueWarApiModel = (LeagueWarApiModel) await GetAsync<LeagueWarApiModel>(url, EndPoint.LeagueWar, cancellationToken);
+                LeagueWarApiModel leagueWarApiModel = (LeagueWarApiModel) await GetAsync<LeagueWarApiModel>(url, EndPoint.LeagueWar, cancellationToken).ConfigureAwait(false);
 
                 leagueWarApiModel.WarTag = warTag;
 
@@ -732,38 +738,38 @@ namespace devhl.CocApi
 
                 if (!CocApiConfiguration.CacheHttpResponses) return leagueWarApiModel;
 
-                lock (_allWarsByWarTagLock)
+                lock (AllWarsByWarTag)
                 {
                     AllWarsByWarTag[leagueWarApiModel.WarTag] = leagueWarApiModel;
                 }
 
-                lock (_allWarsByWarIdLock)
+                lock (AllWarsByWarId)
                 {
                     AllWarsByWarId[leagueWarApiModel.WarId] = leagueWarApiModel;
                 }
 
                 foreach(var clan in leagueWarApiModel.Clans)
                 {
-                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, _allClansLock))
+                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, AllClans))
                     {
-                        storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel, storedClan.WarsLock);
+                        storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel, storedClan.Wars);
                     }
                 }
 
                 foreach(var clan in leagueWarApiModel.Clans)
                 {
-                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war, _allWarsByClanTagLock))
+                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war, AllWarsByClanTag))
                     {
                         if (war is NotInWar || leagueWarApiModel.State == WarState.InWar)
                         {
-                            lock (_allWarsByClanTagLock)
+                            lock (AllWarsByClanTag)
                             {
                                 AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                             }
                         }
                         else if (war is ICurrentWarApiModel currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
                         {
-                            lock (_allWarsByClanTagLock)
+                            lock (AllWarsByClanTag)
                             {
                                 AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                             }
@@ -771,7 +777,7 @@ namespace devhl.CocApi
                     }
                     else
                     {
-                        lock (_allWarsByClanTagLock)
+                        lock (AllWarsByClanTag)
                         {
                             AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                         }
@@ -802,11 +808,11 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                villageApiModel = (VillageApiModel) await GetAsync<VillageApiModel>(url, EndPoint.Village, cancellationToken);
+                villageApiModel = (VillageApiModel) await GetAsync<VillageApiModel>(url, EndPoint.Village, cancellationToken).ConfigureAwait(false);
 
                 if (CocApiConfiguration.CacheHttpResponses)
                 {
-                    lock (_allVillagesLock)
+                    lock (AllVillages)
                     {
                         AllVillages[villageTag] = villageApiModel;
                     }
@@ -864,7 +870,7 @@ namespace devhl.CocApi
                     url = url[0..^1];
                 }
 
-                return (PaginatedApiModel<WarLogEntryModel>) await GetAsync<PaginatedApiModel<WarLogEntryModel>>(url, EndPoint.WarLog, cancellationToken);
+                return (PaginatedApiModel<WarLogEntryModel>) await GetAsync<PaginatedApiModel<WarLogEntryModel>>(url, EndPoint.WarLog, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -948,7 +954,7 @@ namespace devhl.CocApi
                     url = url[0..^1];
                 }
 
-                return (PaginatedApiModel<ClanApiModel>) await GetAsync<PaginatedApiModel<ClanApiModel>>(url, EndPoint.Clans, cancellationToken);
+                return (PaginatedApiModel<ClanApiModel>) await GetAsync<PaginatedApiModel<ClanApiModel>>(url, EndPoint.Clans, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -971,7 +977,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/leagues?limit=500";
 
-                return (PaginatedApiModel<VillageLeagueApiModel>) await GetAsync<PaginatedApiModel<VillageLeagueApiModel>>(url, EndPoint.VillageLeagues, cancellationToken);
+                return (PaginatedApiModel<VillageLeagueApiModel>) await GetAsync<PaginatedApiModel<VillageLeagueApiModel>>(url, EndPoint.VillageLeagues, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -994,7 +1000,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations?limit=10000";
 
-                return (PaginatedApiModel<LocationApiModel>) await GetAsync<PaginatedApiModel<LocationApiModel>>(url, EndPoint.Locations, cancellationToken);
+                return (PaginatedApiModel<LocationApiModel>) await GetAsync<PaginatedApiModel<LocationApiModel>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -1017,7 +1023,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans";
 
-                return (PaginatedApiModel<TopMainClan>) await GetAsync<PaginatedApiModel<TopMainClan>>(url, EndPoint.Locations, cancellationToken);//todo why is the end point locations
+                return (PaginatedApiModel<TopMainClan>) await GetAsync<PaginatedApiModel<TopMainClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1041,7 +1047,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans-versus";
 
-                return (PaginatedApiModel<TopBuilderClan>) await GetAsync<PaginatedApiModel<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken);  //todo why is the end point locations
+                return (PaginatedApiModel<TopBuilderClan>) await GetAsync<PaginatedApiModel<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1065,7 +1071,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players";
 
-                return (PaginatedApiModel<TopMainVillage>) await GetAsync<PaginatedApiModel<TopMainVillage>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
+                return (PaginatedApiModel<TopMainVillage>) await GetAsync<PaginatedApiModel<TopMainVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1089,7 +1095,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players-versus";
 
-                return (PaginatedApiModel<TopBuilderVillage>) await GetAsync<PaginatedApiModel<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
+                return (PaginatedApiModel<TopBuilderVillage>) await GetAsync<PaginatedApiModel<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1113,7 +1119,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/clans?limit=10000";
 
-                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
+                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1137,7 +1143,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/players?limit=10000";
 
-                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken); //todo why is the end point locations
+                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -1175,7 +1181,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetClanAsync(clanTag, allowExpiredItem, cancellationToken);
+                result = await GetClanAsync(clanTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1213,7 +1219,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetClansAsync(clanName, warFrequency, locationId, minVillages, maxVillages, minClanPoints, minClanLevel, limit, after, before, cancellationToken);
+                result = await GetClansAsync(clanName, warFrequency, locationId, minVillages, maxVillages, minClanPoints, minClanLevel, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             //catch (InvalidTagException) { }
@@ -1241,7 +1247,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetLeagueGroupAsync(clanTag, allowExpiredItem, cancellationToken);
+                result = await GetLeagueGroupAsync(clanTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1267,7 +1273,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetCurrentWarAsync(clanTag, allowExpiredItem, cancellationToken);
+                result = await GetCurrentWarAsync(clanTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1294,7 +1300,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetLeagueWarAsync(warTag, allowExpiredItem, cancellationToken);
+                result = await GetLeagueWarAsync(warTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1321,7 +1327,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetVillageAsync(villageTag, allowExpiredItem, cancellationToken);
+                result = await GetVillageAsync(villageTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1349,7 +1355,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetWarLogAsync(clanTag, limit, after, before, cancellationToken);
+                result = await GetWarLogAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -1382,13 +1388,13 @@ namespace devhl.CocApi
 
                 if (storedWar is LeagueWarApiModel leagueWar)
                 {
-                    return await GetLeagueWarOrDefaultAsync(leagueWar.WarTag, allowExpiredItem: false);
+                    return await GetLeagueWarOrDefaultAsync(leagueWar.WarTag, allowExpiredItem: false).ConfigureAwait(false);
                 }
                 else
                 {
                     foreach (var clan in storedWar.Clans)
                     {
-                        war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowExpiredItem: false);
+                        war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
 
                         if (war is ICurrentWarApiModel currentWar1 && currentWar1?.WarId == storedWar.WarId) return currentWar1;
                     }
@@ -1415,7 +1421,7 @@ namespace devhl.CocApi
 
             try
             {
-                return await GetClanLabelsAsync(cancellationToken);
+                return await GetClanLabelsAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (Exception)
@@ -1437,7 +1443,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetVillageLabelsAsync(cancellationToken);
+                result = await GetVillageLabelsAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (Exception)
@@ -1459,7 +1465,7 @@ namespace devhl.CocApi
 
             try
             {
-                result = await GetVillageLeaguesAsync(cancellationToken);
+                result = await GetVillageLeaguesAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (Exception)
@@ -1491,7 +1497,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public ClanApiModel? GetClanOrDefault(string clanTag)
         {
-            AllClans.TryGetValue(clanTag, out ClanApiModel? result, _allClansLock);
+            AllClans.TryGetValue(clanTag, out ClanApiModel? result, AllClans);
 
             return result;
         }
@@ -1504,14 +1510,14 @@ namespace devhl.CocApi
         /// <returns></returns>
         public IWar? GetWarByClanTagOrDefault(string clanTag)
         {
-            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result, _allWarsByClanTagLock);
+            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result, AllWarsByClanTag);
 
             return result;
         }
 
         public ICurrentWarApiModel? GetWarByWarIdOrDefault(string warId)
         {
-            AllWarsByWarId.TryGetValue(warId, out ICurrentWarApiModel? currentWar, _allWarsByWarIdLock);
+            AllWarsByWarId.TryGetValue(warId, out ICurrentWarApiModel? currentWar, AllWarsByWarId);
 
             return currentWar;
         }
@@ -1525,7 +1531,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public ILeagueGroup? GetLeagueGroupOrDefault(string clanTag)
         {
-            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result, _allLeagueGroupsLock);
+            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result, AllLeagueGroups);
 
             return result;
         }
@@ -1538,7 +1544,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public LeagueWarApiModel? GetLeagueWarOrDefault(string warTag)
         {
-            AllWarsByWarTag.TryGetValue(warTag, out LeagueWarApiModel? result, _allWarsByWarTagLock);
+            AllWarsByWarTag.TryGetValue(warTag, out LeagueWarApiModel? result, AllWarsByWarTag);
 
             return result;
         }
@@ -1551,7 +1557,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public VillageApiModel? GetVillageOrDefault(string villageTag)
         {            
-            AllVillages.TryGetValue(villageTag, out VillageApiModel? result, _allVillagesLock);
+            AllVillages.TryGetValue(villageTag, out VillageApiModel? result, AllVillages);
 
             return result;
         }
@@ -1943,7 +1949,7 @@ namespace devhl.CocApi
 
         private void AddCancellationTokenSource(CancellationTokenSource cts)
         {
-            lock (_cancellationTokenSourcesLock)
+            lock (_cancellationTokenSources)
             {
                 _cancellationTokenSources.Add(cts);
             }
@@ -1951,7 +1957,7 @@ namespace devhl.CocApi
 
         private void RemoveCancellationTokenSource(CancellationTokenSource cts)
         {
-            lock (_cancellationTokenSourcesLock)
+            lock (_cancellationTokenSources)
             {
                 _cancellationTokenSources.Remove(cts);
             }

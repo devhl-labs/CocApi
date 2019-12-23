@@ -61,7 +61,7 @@ namespace devhl.CocApi
 
             while (timeSpan.TotalMilliseconds < _tokenTimeOut.TotalMilliseconds)
             {
-                await Task.Delay(50);
+                await Task.Delay(50).ConfigureAwait(false);
 
                 if (!notified)
                 {
