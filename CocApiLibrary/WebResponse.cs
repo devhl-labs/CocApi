@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+//using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -60,22 +61,30 @@ namespace devhl.CocApi
             }
 
             _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+            //JsonSerializerSettings a = new JsonSerializerSettings
+            //{
+            //    Converters = new JsonConverterAttribute()
+            //}
+
+            //JsonConverterCollection converters = new JsonConverterCollection();
+            //converters.Add()
         }
 
         public static string GetTokenStatus() => $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
 
         private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
         {
-            await SemaphoreSlim.WaitAsync();
+            await SemaphoreSlim.WaitAsync().ConfigureAwait(false);
 
             try
             {
                 while (_tokenObjects.All(x => x.IsRateLimited))
                 {
-                    await Task.Delay(50);
+                    await Task.Delay(50).ConfigureAwait(false);
                 }
 
-                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url);
+                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url).ConfigureAwait(false);
             }
             finally
             {
@@ -99,7 +108,7 @@ namespace devhl.CocApi
 
             try
             {
-               response = await ApiClient.GetAsync(encodedUrl, cts.Token);
+               response = await ApiClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -121,9 +130,9 @@ namespace devhl.CocApi
         {
             try
             {
-                TokenObject token = await GetTokenAsync(endPoint, encodedUrl);
+                TokenObject token = await GetTokenAsync(endPoint, encodedUrl).ConfigureAwait(false);
 
-                using HttpResponseMessage response = await GetHttpResponseAsync(endPoint, encodedUrl, token, cancellationToken);
+                using HttpResponseMessage response = await GetHttpResponseAsync(endPoint, encodedUrl, token, cancellationToken).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -272,7 +281,7 @@ namespace devhl.CocApi
 
         private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : class, IDownloadable, new()
         {
-            InitializeIDownloadableProperties(result, encodedUrl, response);
+            InitializeIDownloadableProperties(result, encodedUrl);
 
             InitializeCacheExpiration(result, response);
 
@@ -298,7 +307,7 @@ namespace devhl.CocApi
             }
         }
 
-        private static void InitializeIDownloadableProperties(IDownloadable result, string encodedURL, HttpResponseMessage? response)
+        private static void InitializeIDownloadableProperties(IDownloadable result, string encodedURL)
         {
             result.EncodedUrl = encodedURL;
 

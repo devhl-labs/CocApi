@@ -119,16 +119,12 @@ namespace devhl.CocApi.Models.Clan
         [NotMapped]
         public Dictionary<string, ICurrentWarApiModel> Wars { get; set; } = new Dictionary<string, ICurrentWarApiModel>();
 
-        //internal object WarsLock { get; } = new object();
-
         /// <summary>
         /// This is a flag used to prevent all wars from being announced on startup. 
         /// It is set to true after all wars have been downloaded at least once for this clan.
         /// </summary>
         internal bool AnnounceWars { get; set; } = false;
 
-
-        //private readonly object _updateLock = new object();
         
 
         internal void Update(CocApi cocApi, ClanApiModel? downloadedClan)
