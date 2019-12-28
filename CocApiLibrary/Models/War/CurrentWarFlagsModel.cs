@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
-using System.Text.Json.Serialization;
+//System.Text.Json.Serialization
 
 namespace devhl.CocApi.Models.War
 {

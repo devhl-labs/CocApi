@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
     public class LeagueClanApiModel : IClanApiModel
     {
         // IClanApiModel
-        [JsonPropertyName("Tag")]
+        [JsonProperty("Tag")]
         public string ClanTag { get; set; } = string.Empty;
 
         [NotMapped]
@@ -37,7 +38,7 @@ namespace devhl.CocApi.Models.War
         public string LeagueClanId { get; set; } = string.Empty;
 
         [ForeignKey(nameof(LeagueClanId))]
-        [JsonPropertyName("members")]
+        [JsonProperty("members")]
         public virtual IEnumerable<LeagueVillageApiModel>? Villages { get; set; }
     }
 }

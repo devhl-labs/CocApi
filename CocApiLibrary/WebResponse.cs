@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-//using Newtonsoft.Json;
+//using System.Text.Json;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -19,6 +19,8 @@ using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.Location;
 using System.Collections.Concurrent;
+using devhl.CocApi.Converters;
+using Newtonsoft.Json.Converters;
 
 namespace devhl.CocApi
 {
@@ -32,14 +34,18 @@ namespace devhl.CocApi
 
         private static readonly List<TokenObject> _tokenObjects = new List<TokenObject>();
 
-        private static CocApi _cocApi = new CocApi();
+#nullable disable
+
+        private static CocApi _cocApi;
+
+#nullable enable
 
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
 
-        private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        };
+        //private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
+        //{
+        //    PropertyNameCaseInsensitive = true
+        //};
 
         public static ConcurrentBag<WebResponseTimer> WebResponseTimers { get; } = new ConcurrentBag<WebResponseTimer>();
 
@@ -60,15 +66,21 @@ namespace devhl.CocApi
                 _tokenObjects.Add(tokenObject);
             }
 
-            _jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            //_jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 
-            //JsonSerializerSettings a = new JsonSerializerSettings
-            //{
-            //    Converters = new JsonConverterAttribute()
-            //}
-
-            //JsonConverterCollection converters = new JsonConverterCollection();
-            //converters.Add()
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Converters = new List<JsonConverter> 
+                { 
+                    new DateTimeConverter() ,
+                    new LeagueSeasonConverter(),
+                    new StringEnumConverter()
+                    //new LeagueStateConverter(),
+                    //new ResultConverter(),
+                    //new RoleConverter(),
+                    //new WarStateConverter()
+                }
+            };
         }
 
         public static string GetTokenStatus() => $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
@@ -192,7 +204,9 @@ namespace devhl.CocApi
 
             string responseText = response.Content.ReadAsStringAsync().Result;
 
-            ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
+            //ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
+
+            ResponseMessageApiModel ex = JsonConvert.DeserializeObject<ResponseMessageApiModel>(responseText);
 
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
@@ -254,7 +268,9 @@ namespace devhl.CocApi
 
             string responseText = response.Content.ReadAsStringAsync().Result;
 
-            TValue result = JsonSerializer.Deserialize<TValue>(responseText, _jsonSerializerOptions);
+            //TValue result = JsonSerializer.Deserialize<TValue>(responseText, _jsonSerializerOptions);
+
+            TValue result = JsonConvert.DeserializeObject<TValue>(responseText);
 
             if (result != null)
             {

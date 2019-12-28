@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+////System.Text.Json.Serialization
 
 namespace devhl.CocApi.Models.Village
 {
     public class TopBuilderVillage : TopVillage
     {
-        [JsonPropertyName("versusTrophies")]
+        [JsonProperty("versusTrophies")]
         public long VersusTrophies { get; set; }
 
-        [JsonPropertyName("versusBattleWins")]
+        [JsonProperty("versusBattleWins")]
         public int VersusBattleWins { get; set; }
     }
 }

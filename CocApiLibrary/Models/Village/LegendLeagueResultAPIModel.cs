@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Text.Json.Serialization;
+//System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
 using static devhl.CocApi.Enums;

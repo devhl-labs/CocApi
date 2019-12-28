@@ -2,37 +2,38 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Clan
 {
     public class TopClan : IClanApiModel
     {
-        [JsonPropertyName("tag")]
+        [JsonProperty("tag")]
         public string ClanTag { get; set; } = string.Empty;
 
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
-        [JsonPropertyName("location")]
+        [JsonProperty("location")]
         public LocationApiModel? Location { get; set; }
 
-        [JsonPropertyName("badgeUrls")]
+        [JsonProperty("badgeUrls")]
         public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
-        [JsonPropertyName("clanLevel")]
+        [JsonProperty("clanLevel")]
         public int ClanLevel { get; set; }
 
-        [JsonPropertyName("members")]
+        [JsonProperty("members")]
         public int VillageCount { get; set; }
 
-        //[JsonPropertyName("clanPoints")]
+        //[JsonProperty("clanPoints")]
         //public int ClanPoints { get; set; }
 
-        [JsonPropertyName("rank")]
+        [JsonProperty("rank")]
         public int Rank { get; set; }
 
-        [JsonPropertyName("previousRank")]
+        [JsonProperty("previousRank")]
         public int PreviousRank { get; set; }
     }
 }

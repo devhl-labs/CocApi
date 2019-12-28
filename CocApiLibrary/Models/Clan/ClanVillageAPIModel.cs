@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
 using devhl.CocApi.Models.Village;
@@ -12,7 +13,8 @@ namespace devhl.CocApi.Models.Clan
     {
         // IVillageApiModel
         [Key]
-        [JsonPropertyName("Tag")]
+        //[JsonProperty("Tag")]
+        [JsonProperty("Tag")]
         public string VillageTag { get; set; } = string.Empty;
 
         [NotMapped]
@@ -26,7 +28,7 @@ namespace devhl.CocApi.Models.Clan
 
 
 
-        [JsonConverter(typeof(RoleConverter))]
+        //[JsonConverter(typeof(RoleConverter))]
         public Role Role { get; set; } = Role.Unknown;
 
         public int ExpLevel { get; set; }

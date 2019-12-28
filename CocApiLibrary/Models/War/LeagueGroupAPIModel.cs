@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text.Json.Serialization;
+//System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
 using static devhl.CocApi.Enums;
@@ -12,7 +13,8 @@ namespace devhl.CocApi.Models.War
 {
     public class LeagueGroupApiModel : Downloadable, ILeagueGroup, IInitialize /*, IDownloadable*/
     {
-        [JsonConverter(typeof(LeagueStateConverter))]
+        //[JsonConverter(typeof(LeagueStateConverter))]
+        
         public LeagueState State { get; set; }
 
         [JsonConverter(typeof(LeagueSeasonConverter))]

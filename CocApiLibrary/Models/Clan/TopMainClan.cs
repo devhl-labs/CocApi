@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Clan
 {
     public class TopMainClan : TopClan, IClanApiModel
     {
-        [JsonPropertyName("clanPoints")]
+        [JsonProperty("clanPoints")]
         public int ClanPoints { get; set; }
 
     }

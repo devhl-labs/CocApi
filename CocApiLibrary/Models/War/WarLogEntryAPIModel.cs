@@ -1,13 +1,14 @@
 ﻿using devhl.CocApi.Converters;
 using System;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
 using static devhl.CocApi.Enums;
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
     public class WarLogEntryModel
     {
-        [JsonConverter(typeof(ResultConverter))]
+        //[JsonConverter(typeof(ResultConverter))]
         public Result Result { get; set; }
 
         public int TeamSize { get; set; }
@@ -16,7 +17,7 @@ namespace devhl.CocApi.Models.War
 
         public WarClanApiModel? Opponent { get; set; }
 
-        [JsonPropertyName("endTime")]
+        [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUtc { get; set; }
 

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 
 using devhl.CocApi.Converters;
@@ -23,7 +24,7 @@ namespace devhl.CocApi.Models.Village
 
         // IVillageApiModel
         [Key]
-        [JsonPropertyName("Tag")]
+        [JsonProperty("Tag")]
         public string VillageTag
         {
             get
@@ -73,7 +74,7 @@ namespace devhl.CocApi.Models.Village
 
         public int VersusBattleWins { get; set; }
 
-        [JsonConverter(typeof(RoleConverter))]
+        //[JsonConverter(typeof(RoleConverter))]
         public Role Role { get; set; } = Role.Unknown;
 
         public int Donations { get; set; }
@@ -81,25 +82,9 @@ namespace devhl.CocApi.Models.Village
         public int DonationsReceived { get; set; }
 
 
-        private VillageClanApiModel? _clan;
-
-
         [ForeignKey(nameof(ClanTag))]
         [NotMapped]
-        public VillageClanApiModel? Clan
-        {
-            get
-            {
-                return _clan;
-            }
-        
-            set
-            {
-                _clan = value;
-
-                //SetRelationalProperties();
-            }
-        }
+        public VillageClanApiModel? Clan { get; set; }
 
 
         private VillageLeagueApiModel? _league;
@@ -143,95 +128,22 @@ namespace devhl.CocApi.Models.Village
 
         public int VersusBattleWinCount { get; set; }
 
-
-        private IEnumerable<TroopApiModel>? _troops;
         
         [NotMapped]
-        public virtual IEnumerable<TroopApiModel>? Troops
-        {
-            get
-            {
-                return _troops;
-            }
-        
-            set
-            {
-                _troops = value;
-
-                //foreach(var troop in Troops.EmptyIfNull())
-                //{
-                //    AllTroops.Add(troop);
-                //}
-
-                //SetRelationalProperties();
-            }
-        }
+        public virtual IEnumerable<TroopApiModel>? Troops { get; set; }
 
 
-        private IEnumerable<TroopApiModel>? _heroes;
-        
         [NotMapped]
-        public virtual IEnumerable<TroopApiModel>? Heroes
-        {
-            get
-            {
-                return _heroes;
-            }
-        
-            set
-            {
-                _heroes = value;
-
-                //foreach(var hero in Heroes.EmptyIfNull())
-                //{
-                //    hero.IsHero = true;
-
-                //    AllTroops.Add(hero);
-                //}
-
-                //SetRelationalProperties();
-            }
-        }
+        public virtual IEnumerable<TroopApiModel>? Heroes { get; set; }
 
         [ForeignKey(nameof(VillageTag))]
         public virtual IList<TroopApiModel> AllTroops { get; set; } = new List<TroopApiModel>();
 
-        private IEnumerable<VillageLabelApiModel>? _labels;
-
         [ForeignKey("VillageTag")]
-        public virtual IEnumerable<VillageLabelApiModel>? Labels
-        {
-            get
-            {
-                return _labels;
-            }
-        
-            set
-            {
-                _labels = value;
-
-                //SetRelationalProperties();
-            }
-        }
-
-
-        private IEnumerable<VillageSpellApiModel>? _spells;
+        public virtual IEnumerable<VillageLabelApiModel>? Labels { get; set; }
 
         [ForeignKey(nameof(VillageTag))]
-        public virtual IEnumerable<VillageSpellApiModel>? Spells
-        {
-            get
-            {
-                return _spells;
-            }
-        
-            set
-            {
-                _spells = value;
-
-                //SetRelationalProperties();
-            }
-        }
+        public virtual IEnumerable<VillageSpellApiModel>? Spells { get; set; }
 
 
 
@@ -518,9 +430,9 @@ namespace devhl.CocApi.Models.Village
 
         public void Initialize()
         {
-            if (_clan != null)
+            if (Clan != null)
             {
-                ClanTag = _clan.ClanTag;
+                ClanTag = Clan.ClanTag;
             }
 
             if (LegendStatistics != null)

@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Location;
 using devhl.CocApi.Models.War;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 using static devhl.CocApi.Enums;
 
@@ -22,7 +23,7 @@ namespace devhl.CocApi.Models.Clan
 
         // IClanApiModel
         [Key]
-        [JsonPropertyName("Tag")]
+        [JsonProperty("Tag")]
         public string ClanTag
         {
             get
@@ -37,8 +38,6 @@ namespace devhl.CocApi.Models.Clan
         		    _tag = value;
         	        
                     EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(_tag)}";
-
-                    //SetRelationalProperties();
                 }
             }
         }
@@ -49,23 +48,8 @@ namespace devhl.CocApi.Models.Clan
 
         public virtual LocationApiModel? Location { get; set; }
 
-        private IEnumerable<ClanLabelApiModel>? _labels;
-
         [ForeignKey(nameof(ClanTag))]
-        public virtual IEnumerable<ClanLabelApiModel>? Labels
-        {
-            get
-            {
-                return _labels;
-            }
-
-            set
-            {
-                _labels = value;
-
-                //SetRelationalProperties();
-            }
-        }
+        public virtual IEnumerable<ClanLabelApiModel>? Labels { get; set; }
 
         public int ClanLevel { get; set; }
 
@@ -85,11 +69,13 @@ namespace devhl.CocApi.Models.Clan
 
         private string _tag = string.Empty;
 
-        [JsonPropertyName("memberList")]
+        //[JsonProperty("memberList")]
+        [JsonProperty("memberList")]
         [ForeignKey(nameof(ClanTag))]
         public virtual IList<ClanVillageApiModel>? Villages { get; set; }
 
-        [JsonPropertyName("type")]
+        //[JsonProperty("type")]
+        [JsonProperty("type")]
         public RecruitmentType Recruitment { get; set; }
 
         public string Description { get; set; } = string.Empty;
@@ -110,7 +96,8 @@ namespace devhl.CocApi.Models.Clan
 
         public bool IsWarLogPublic { get; set; } = false;
 
-        [JsonPropertyName("members")]
+        //[JsonProperty("members")]
+        [JsonProperty("members")]
         public int VillageCount { get; set; }
 
         public WarFrequency WarFrequency { get; set; }
@@ -371,9 +358,9 @@ namespace devhl.CocApi.Models.Clan
 
         public void Initialize()
         {
-            if (!string.IsNullOrEmpty(ClanTag) && _labels != null)
+            if (!string.IsNullOrEmpty(ClanTag) && Labels != null)
             {
-                foreach(var label in _labels)
+                foreach(var label in Labels)
                 {
                     label.ClanTag = ClanTag;
                 }

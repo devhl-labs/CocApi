@@ -36,14 +36,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <returns></returns>
         public Task<bool> StopUpdatingClansAsync()
-        {
-            //_continueUpdatingObjects = false;
-
-            //while (ObjectsAreBeingUpdated)
-            //{
-            //    await Task.Delay(100);
-            //}
-                                 
+        {                               
             _continueUpdatingObjects = false;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();

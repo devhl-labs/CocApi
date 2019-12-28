@@ -1,16 +1,53 @@
 ﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+//using System.Text.Json;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Converters
 {
-    internal class ResultConverter : JsonConverter<Result>
+    //internal class ResultConverter : JsonConverter<Result>
+    //{
+    //    public override Result Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    //    {
+    //        string result = reader.GetString();
+
+    //        if (string.IsNullOrEmpty(result)) return Result.Undetermined;
+
+    //        result = result.ToLower();
+
+    //        if (result == "win") return Result.Win;
+
+    //        if (result == "lose") return Result.Lose;
+
+    //        if (result == "draw") return Result.Draw;
+
+    //        if (result == "undetermined") return Result.Undetermined;
+
+    //        throw new Exception($"{result} is not a supported role.");
+    //    }
+
+    //    public override void Write(Utf8JsonWriter writer, Result value, JsonSerializerOptions options)
+    //    {
+    //        writer.WriteStringValue(value.ToEnumMemberAttrValue());
+    //    }
+    //}
+
+    internal class ResultConverter : JsonConverter
     {
-        public override Result Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override bool CanConvert(Type objectType)
         {
-            string result = reader.GetString();
+            if (objectType == typeof(Result)) return true;
+
+            return false;
+        }
+
+        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        {
+            if (reader.Value == null) return Result.Unknown;
+
+            string result = reader.Value.ToString();
 
             if (string.IsNullOrEmpty(result)) return Result.Undetermined;
 
@@ -24,12 +61,20 @@ namespace devhl.CocApi.Converters
 
             if (result == "undetermined") return Result.Undetermined;
 
-            throw new Exception($"{result} is not a supported role.");      
+            throw new Exception($"{result} is not a supported role.");
         }
 
-        public override void Write(Utf8JsonWriter writer, Result value, JsonSerializerOptions options)
+        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
         {
-            writer.WriteStringValue(value.ToEnumMemberAttrValue());
+            if (value == null)
+            {
+                writer.WriteNull();
+            }
+            else
+            {
+                writer.WriteValue(((Result) value).ToEnumMemberAttrValue());
+            }
         }
     }
+
 }

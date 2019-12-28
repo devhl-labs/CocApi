@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
 using static devhl.CocApi.Enums;
@@ -14,8 +15,9 @@ namespace devhl.CocApi.Models.War
     {
         private DateTime _endTimeUtc;
 
-        [JsonPropertyName("endTime")]
+        //[JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
+        [JsonProperty("endTime")]
         public DateTime EndTimeUtc
         {
             get
@@ -39,14 +41,18 @@ namespace devhl.CocApi.Models.War
             }
         }
 
-        [JsonPropertyName("preparationStartTime")]
+        //[JsonProperty("preparationStartTime")]
+        //[JsonConverter(typeof(DateTimeConverter))]
+        [JsonProperty("preparationStartTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime PreparationStartTimeUtc { get; set; }
 
 
         private DateTime _startTimeUtc;
 
-        [JsonPropertyName("startTime")]
+        //[JsonProperty("startTime")]
+        //[JsonConverter(typeof(DateTimeConverter))]
+        [JsonProperty("startTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime StartTimeUtc
         {

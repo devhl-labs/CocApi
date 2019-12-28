@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-
-namespace devhl.CocApi.Models.Clan
+﻿namespace devhl.CocApi.Models.Clan
 {
     public class ClanLabelApiModel : LabelApiModel
     {

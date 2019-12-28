@@ -1,15 +1,15 @@
 ﻿using devhl.CocApi.Models.Village;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 namespace devhl.CocApi.Models.War
 {
     public class LeagueVillageApiModel : IVillageApiModel
     {
         // IVillageApiModel
         [Key]
-        [JsonPropertyName("Tag")]
+        [JsonProperty("Tag")]
         public string VillageTag { get; set; } = string.Empty;
 
         [NotMapped]

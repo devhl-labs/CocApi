@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Village
 {
     public class TopMainVillage :TopVillage
     {
-        [JsonPropertyName("trophies")]
+        [JsonProperty("trophies")]
         public long Trophies { get; set; }
 
-        [JsonPropertyName("attackWins")]
+        [JsonProperty("attackWins")]
         public long AttackWins { get; set; }
 
-        [JsonPropertyName("defenseWins")]
+        [JsonProperty("defenseWins")]
         public long DefenseWins { get; set; }
 
-        [JsonPropertyName("league")]
+        [JsonProperty("league")]
         public VillageLeagueApiModel? League { get; set; }
     }
 }

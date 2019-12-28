@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Clan
 {
@@ -7,7 +8,8 @@ namespace devhl.CocApi.Models.Clan
     {
         // IClanApiModel
         [Key]
-        [JsonPropertyName("Tag")]
+        //[JsonProperty("Tag")]
+        [JsonProperty("tag")]
         public string ClanTag { get; set; } = string.Empty;
 
         public string Name { get; set; } = string.Empty;

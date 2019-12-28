@@ -41,6 +41,11 @@ namespace devhl.CocApi
 
         public ILogger? Logger { get; set; }
 
+        public CocApi(ILogger? logger = null)
+        {
+            Logger = logger;
+        }
+
 
         /// <summary>
         /// Controls whether any clan will be able to download league wars.
@@ -90,10 +95,8 @@ namespace devhl.CocApi
         /// <param name="cfg"></param>
         /// <param name="logger"></param>
         /// <exception cref="CocApiException"></exception>
-        public void Initialize(CocApiConfiguration cfg, ILogger? logger)
-        {            
-            Logger = logger;
-
+        public void Initialize(CocApiConfiguration cfg)
+        {
             if (cfg != null)
             {
                 CocApiConfiguration = cfg;

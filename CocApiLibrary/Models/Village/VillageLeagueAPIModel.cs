@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Village
 {
@@ -14,7 +15,7 @@ namespace devhl.CocApi.Models.Village
 
         private VillageLeagueIconUrlApiModel? _iconUrl;
         
-        [JsonPropertyName("IconUrls")]
+        [JsonProperty("IconUrls")]
         //[JsonIgnore]
         [ForeignKey(nameof(LeagueIconUrlId))]
         public virtual VillageLeagueIconUrlApiModel? LeagueIconUrl

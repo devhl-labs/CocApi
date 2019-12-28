@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
@@ -12,7 +13,7 @@ namespace devhl.CocApi.Models.War
 
         private string _villageTag = string.Empty;
 
-        [JsonPropertyName("Tag")]
+        [JsonProperty("Tag")]
         public string VillageTag
         {
             get

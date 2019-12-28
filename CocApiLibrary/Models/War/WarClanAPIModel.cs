@@ -2,15 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
 using static devhl.CocApi.Enums;
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
     public class WarClanApiModel : IClanApiModel
     {
         // IClanApiModel
-        [JsonPropertyName("Tag")]
+        [JsonProperty("Tag")]
         public string ClanTag
         {
             get
@@ -22,13 +23,11 @@ namespace devhl.CocApi.Models.War
             {
                 _clanTag = value;
 
-                //if (BadgeUrls != null) BadgeUrls.ClanTag = _tag;
-
                 if (_villages != null)
                 {
                     foreach (var village in _villages)
                     {
-                        village.VillageTag = ClanTag;
+                        village.ClanTag = ClanTag;
                     }
                 }
 
@@ -76,7 +75,7 @@ namespace devhl.CocApi.Models.War
         private IEnumerable<WarVillageApiModel>? _villages;
 
         [ForeignKey(nameof(WarClanId))]
-        [JsonPropertyName("members")]
+        [JsonProperty("members")]
         public virtual IEnumerable<WarVillageApiModel>? Villages
         {
             get
@@ -92,13 +91,13 @@ namespace devhl.CocApi.Models.War
                 {
                     foreach (var village in _villages)
                     {
-                        village.VillageTag = ClanTag;
+                        village.ClanTag = ClanTag;
                     }
                 }
             }
         }
 
-        [JsonPropertyName("attacks")]
+        [JsonProperty("attacks")]
         public int AttackCount { get; set; }
 
         public int DefenseCount { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+////System.Text.Json.Serialization
+using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models
 {
@@ -29,7 +30,7 @@ namespace devhl.CocApi.Models
 
         private LabelUrlApiModel? _imageUrl;
 
-        [JsonPropertyName("IconUrls")]
+        [JsonProperty("IconUrls")]
         [ForeignKey(nameof(Id))]
         public virtual LabelUrlApiModel? LabelUrl
         {
