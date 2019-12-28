@@ -7,7 +7,7 @@ namespace devhl.CocApi.Models.Village
 {
     public class VillageLeagueApiModel
     {
-        [Key]
+
         public int Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
@@ -16,9 +16,7 @@ namespace devhl.CocApi.Models.Village
         private VillageLeagueIconUrlApiModel? _iconUrl;
         
         [JsonProperty("IconUrls")]
-        //[JsonIgnore]
-        [ForeignKey(nameof(LeagueIconUrlId))]
-        public virtual VillageLeagueIconUrlApiModel? LeagueIconUrl
+        public VillageLeagueIconUrlApiModel? LeagueIconUrl
         {
             get
             {

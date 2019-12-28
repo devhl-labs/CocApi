@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using devhl.CocApi.Models;
 using devhl.CocApi.Exceptions;
 using static devhl.CocApi.Enums;
+using static devhl.CocApi.Extensions;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
@@ -102,7 +103,7 @@ namespace devhl.CocApi
 
                     if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, AllClans))
                     {
-                        storedClan.Wars.TryAdd(downloadedWar.WarId, downloadedWar, storedClan.Wars);
+                        storedClan.Wars.TryAdd(downloadedWar.WarId, (CurrentWarApiModel) downloadedWar, storedClan.Wars);
                     }
                 }
 

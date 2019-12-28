@@ -12,12 +12,12 @@ namespace devhl.CocApi.Models.Clan
     public class ClanVillageApiModel : IVillageApiModel
     {
         // IVillageApiModel
-        [Key]
+
         //[JsonProperty("Tag")]
         [JsonProperty("Tag")]
         public string VillageTag { get; set; } = string.Empty;
 
-        [NotMapped]
+
         public string Name { get; set; } = string.Empty;
 
         public string ClanTag { get; set; } = string.Empty;
@@ -28,7 +28,7 @@ namespace devhl.CocApi.Models.Clan
 
 
 
-        //[JsonConverter(typeof(RoleConverter))]
+
         public Role Role { get; set; } = Role.Unknown;
 
         public int ExpLevel { get; set; }
@@ -38,8 +38,7 @@ namespace devhl.CocApi.Models.Clan
         /// <summary>
         /// All leagues with the same Id will be the same instance
         /// </summary>
-        [ForeignKey(nameof(LeagueId))]
-        public virtual VillageLeagueApiModel? League
+        public VillageLeagueApiModel? League
         {
             get
             {

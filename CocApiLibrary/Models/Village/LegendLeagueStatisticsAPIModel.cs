@@ -7,10 +7,10 @@ namespace devhl.CocApi.Models.Village
 {
     public class LegendLeagueStatisticsApiModel
     {
-        [Key]
+
         public string VillageTag { get; set; } = string.Empty;
 
-        public virtual VillageApiModel? Village { get; set; } 
+        public VillageApiModel? Village { get; set; } 
 
         public int LegendTrophies { get; set; }
 
@@ -31,7 +31,7 @@ namespace devhl.CocApi.Models.Village
 
 
 
-        [NotMapped]        
+        
         public LegendLeagueResultApiModel? BestSeason
         {
             get
@@ -54,7 +54,7 @@ namespace devhl.CocApi.Models.Village
             }
         } 
 
-        [NotMapped]       
+       
         public LegendLeagueResultApiModel? PreviousVersusSeason
         {
             get
@@ -78,7 +78,7 @@ namespace devhl.CocApi.Models.Village
             }
         }
 
-        [NotMapped]        
+        
         public LegendLeagueResultApiModel? CurrentSeason
         {
             get
@@ -100,7 +100,7 @@ namespace devhl.CocApi.Models.Village
             }
         }
 
-        [NotMapped]
+
         public LegendLeagueResultApiModel? CurrentVersusSeason
         {
             get
@@ -124,7 +124,7 @@ namespace devhl.CocApi.Models.Village
             }
         }
 
-        [NotMapped]
+
         public LegendLeagueResultApiModel? BestVersusSeason
         {
             get
@@ -148,7 +148,7 @@ namespace devhl.CocApi.Models.Village
             }
         }
 
-        [NotMapped]
+
         public LegendLeagueResultApiModel? PreviousSeason
         {
             get
@@ -175,7 +175,7 @@ namespace devhl.CocApi.Models.Village
 
 
 
-        [ForeignKey(nameof(VillageTag))]
-        public virtual IList<LegendLeagueResultApiModel> LegendLeagueStatistics { get; set; } = new List<LegendLeagueResultApiModel>();
+
+        public IList<LegendLeagueResultApiModel> LegendLeagueStatistics { get; set; } = new List<LegendLeagueResultApiModel>();
     }
 }

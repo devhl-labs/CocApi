@@ -29,7 +29,7 @@ namespace devhl.CocApi.Models.War
             }
         }
 
-        [NotMapped]
+
         public string Name { get; set; } = string.Empty;
 
         public string ClanTag { get; set; } = string.Empty;
@@ -40,7 +40,7 @@ namespace devhl.CocApi.Models.War
 
 
 
-        [Key]
+
         public string WarVillageId { get; set; } = string.Empty;
 
         public int TownhallLevel { get; set; }
@@ -64,7 +64,7 @@ namespace devhl.CocApi.Models.War
             }
         }
 
-        [NotMapped]
+
         public IList<AttackApiModel>? Attacks { get; set; }
 
         private string _warId = string.Empty;

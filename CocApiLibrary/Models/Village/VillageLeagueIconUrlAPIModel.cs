@@ -5,7 +5,7 @@ namespace devhl.CocApi.Models.Village
 {
     public class VillageLeagueIconUrlApiModel
     {
-        [Key]
+
         public string Id { get; set; } = string.Empty;
 
 

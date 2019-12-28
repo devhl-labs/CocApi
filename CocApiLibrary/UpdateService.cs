@@ -221,15 +221,25 @@ namespace devhl.CocApi
                     currentWar.Update(_cocApi, downloadedWar, null);
                 }
 
-                if (downloadedWar is ICurrentWarApiModel downloadedCurrentWar)
+                if (downloadedWar != null)
                 {
-                    downloadedCurrentWar.Flags = storedWar.Flags;
+                    downloadedWar.Flags = storedWar.Flags;
 
                     lock (storedClan.Wars)
                     {
-                        storedClan.Wars[storedWar.WarId] = downloadedCurrentWar;
+                        storedClan.Wars[storedWar.WarId] = (CurrentWarApiModel) downloadedWar;
                     }
                 }
+
+                //if (downloadedWar is ICurrentWarApiModel downloadedCurrentWar)
+                //{
+                //    downloadedCurrentWar.Flags = storedWar.Flags;
+
+                //    lock (storedClan.Wars)
+                //    {
+                //        storedClan.Wars[storedWar.WarId] = downloadedCurrentWar;
+                //    }
+                //}
             }
         }
 

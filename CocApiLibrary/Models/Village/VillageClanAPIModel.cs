@@ -8,7 +8,7 @@ namespace devhl.CocApi.Models.Village
     public class VillageClanApiModel : IClanApiModel
     {
         // IClanApiModel
-        [Key]
+
         [JsonProperty("Tag")]
         public string ClanTag { get; set; } = string.Empty;
 

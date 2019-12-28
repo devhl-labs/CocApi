@@ -7,7 +7,7 @@
 //{
 //    public abstract class SwallowDelegates
 //    {
-//        [NotMapped]
+//
 //        public ILogger? Logger { get; set; }
 
 //        /// <summary>

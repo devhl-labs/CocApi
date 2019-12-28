@@ -10,7 +10,7 @@ namespace devhl.CocApi.Models
 
         private string _name = string.Empty;
 
-        [NotMapped]
+
         public string Name
         {
             get
@@ -31,8 +31,7 @@ namespace devhl.CocApi.Models
         private LabelUrlApiModel? _imageUrl;
 
         [JsonProperty("IconUrls")]
-        [ForeignKey(nameof(Id))]
-        public virtual LabelUrlApiModel? LabelUrl
+        public LabelUrlApiModel? LabelUrl
         {
             get
             {

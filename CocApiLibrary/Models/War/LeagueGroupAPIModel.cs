@@ -11,47 +11,30 @@ using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.War
 {
-    public class LeagueGroupApiModel : Downloadable, ILeagueGroup, IInitialize /*, IDownloadable*/
+    public class LeagueGroupApiModel : Downloadable, ILeagueGroup, IInitialize
     {
-        //[JsonConverter(typeof(LeagueStateConverter))]
+
         
         public LeagueState State { get; set; }
 
         [JsonConverter(typeof(LeagueSeasonConverter))]
         public DateTime Season { get; set; }
 
-        [ForeignKey(nameof(GroupId))]
-        public virtual IEnumerable<LeagueClanApiModel>? Clans { get; set; }
 
-        [ForeignKey(nameof(GroupId))]
-        public virtual IList<RoundApiModel>? Rounds { get; set; }
+        public IEnumerable<LeagueClanApiModel>? Clans { get; set; }
 
-        //public DateTime UpdatedAtUtc { get; set; }
+        public IList<RoundApiModel>? Rounds { get; set; }
 
-        //public DateTime ExpiresAtUtc { get; set; }
 
-        //public string EncodedUrl { get; set; } = string.Empty;
 
-        //public DateTime? CacheExpiresAtUtc { get; set; }
-
-        //[JsonIgnore]
         public int TeamSize { get; set; } = 15;
 
         /// <summary>
         /// This is the season and the first clan tag where the clans are sorted alphabetically.
         /// </summary>
-        [Key]
+
         public string GroupId { get; set; } = string.Empty;
 
-
-        //public bool IsExpired()
-        //{
-        //    if (DateTime.UtcNow > ExpiresAtUtc)
-        //    {
-        //        return true;
-        //    }
-        //    return false;
-        //}
 
         public void Initialize()
         {

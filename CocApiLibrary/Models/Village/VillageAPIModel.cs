@@ -16,14 +16,14 @@ namespace devhl.CocApi.Models.Village
 {
     public class VillageApiModel : Downloadable, IVillageApiModel, IInitialize
     {
-        [NotMapped]
+
         [JsonIgnore]
         public ILogger? Logger { get; set; }
 
 
 
         // IVillageApiModel
-        [Key]
+
         [JsonProperty("Tag")]
         public string VillageTag
         {
@@ -63,8 +63,7 @@ namespace devhl.CocApi.Models.Village
 
         public int DefenseWins { get; set; }
 
-        [ForeignKey(nameof(VillageTag))]
-        public virtual LegendLeagueStatisticsApiModel? LegendStatistics { get; set; }
+        public LegendLeagueStatisticsApiModel? LegendStatistics { get; set; }
 
         public int BuilderHallLevel { get; set; }
 
@@ -74,7 +73,7 @@ namespace devhl.CocApi.Models.Village
 
         public int VersusBattleWins { get; set; }
 
-        //[JsonConverter(typeof(RoleConverter))]
+
         public Role Role { get; set; } = Role.Unknown;
 
         public int Donations { get; set; }
@@ -82,15 +81,15 @@ namespace devhl.CocApi.Models.Village
         public int DonationsReceived { get; set; }
 
 
-        [ForeignKey(nameof(ClanTag))]
-        [NotMapped]
+
+
         public VillageClanApiModel? Clan { get; set; }
 
 
         private VillageLeagueApiModel? _league;
 
-        [NotMapped]
-        public virtual VillageLeagueApiModel? League
+
+        public VillageLeagueApiModel? League
         {
             get
             {
@@ -110,40 +109,27 @@ namespace devhl.CocApi.Models.Village
 
         public int LeagueId { get; set; }
 
-        private IEnumerable<AchievementApiModel>? _achievements;
 
-        [ForeignKey(nameof(VillageTag))]
-        public virtual IEnumerable<AchievementApiModel>? Achievements
-        {
-            get
-            {
-                return _achievements;
-            }
-        
-            set
-            {
-                _achievements = value;
-            }
-        }
+        public IEnumerable<AchievementApiModel>? Achievements { get; set; }
 
         public int VersusBattleWinCount { get; set; }
 
         
-        [NotMapped]
-        public virtual IEnumerable<TroopApiModel>? Troops { get; set; }
+
+        public IEnumerable<TroopApiModel>? Troops { get; set; }
 
 
-        [NotMapped]
-        public virtual IEnumerable<TroopApiModel>? Heroes { get; set; }
 
-        [ForeignKey(nameof(VillageTag))]
-        public virtual IList<TroopApiModel> AllTroops { get; set; } = new List<TroopApiModel>();
+        public IEnumerable<TroopApiModel>? Heroes { get; set; }
 
-        [ForeignKey("VillageTag")]
-        public virtual IEnumerable<VillageLabelApiModel>? Labels { get; set; }
 
-        [ForeignKey(nameof(VillageTag))]
-        public virtual IEnumerable<VillageSpellApiModel>? Spells { get; set; }
+        public IList<TroopApiModel> AllTroops { get; set; } = new List<TroopApiModel>();
+
+
+        public IEnumerable<VillageLabelApiModel>? Labels { get; set; }
+
+
+        public IEnumerable<VillageSpellApiModel>? Spells { get; set; }
 
 
 
@@ -190,14 +176,6 @@ namespace devhl.CocApi.Models.Village
                 //UpdateLeague(cocApi, downloadedVillage);
             }
         }
-
-        //private void UpdateLeague(CocApi cocApi, VillageApiModel downloadedVillage)
-        //{
-        //    if (League == null && downloadedVillage != null)
-        //    {
-        //        cocApi.ClanVillagesLeagueChangedEvent()
-        //    }
-        //}
 
         private void UpdateLegendLeagueStatistics(CocApi cocApi, VillageApiModel downloadedVillage)
         {

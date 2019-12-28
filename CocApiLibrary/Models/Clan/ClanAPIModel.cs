@@ -17,12 +17,12 @@ namespace devhl.CocApi.Models.Clan
 {
     public class ClanApiModel : Downloadable, IClanApiModel, IInitialize
     {
-        [NotMapped]
+
         [JsonIgnore]
         public ILogger? Logger { get; set; }
 
         // IClanApiModel
-        [Key]
+
         [JsonProperty("Tag")]
         public string ClanTag
         {
@@ -44,12 +44,11 @@ namespace devhl.CocApi.Models.Clan
 
         public string Name { get; set; } = string.Empty;
 
-        public virtual ClanBadgeUrlApiModel? BadgeUrls { get; set; }
+        public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
-        public virtual LocationApiModel? Location { get; set; }
+        public LocationApiModel? Location { get; set; }
 
-        [ForeignKey(nameof(ClanTag))]
-        public virtual IEnumerable<ClanLabelApiModel>? Labels { get; set; }
+        public IEnumerable<ClanLabelApiModel>? Labels { get; set; }
 
         public int ClanLevel { get; set; }
 
@@ -69,12 +68,9 @@ namespace devhl.CocApi.Models.Clan
 
         private string _tag = string.Empty;
 
-        //[JsonProperty("memberList")]
         [JsonProperty("memberList")]
-        [ForeignKey(nameof(ClanTag))]
-        public virtual IList<ClanVillageApiModel>? Villages { get; set; }
+        public IList<ClanVillageApiModel>? Villages { get; set; }
 
-        //[JsonProperty("type")]
         [JsonProperty("type")]
         public RecruitmentType Recruitment { get; set; }
 
@@ -96,15 +92,13 @@ namespace devhl.CocApi.Models.Clan
 
         public bool IsWarLogPublic { get; set; } = false;
 
-        //[JsonProperty("members")]
         [JsonProperty("members")]
         public int VillageCount { get; set; }
 
         public WarFrequency WarFrequency { get; set; }
 
-        [JsonIgnore]
-        [NotMapped]
-        public Dictionary<string, ICurrentWarApiModel> Wars { get; set; } = new Dictionary<string, ICurrentWarApiModel>();
+
+        public Dictionary<string, CurrentWarApiModel> Wars { get; set; } = new Dictionary<string, CurrentWarApiModel>();
 
         /// <summary>
         /// This is a flag used to prevent all wars from being announced on startup. 

@@ -13,10 +13,10 @@ namespace devhl.CocApi.Models.War
         [JsonProperty("Tag")]
         public string ClanTag { get; set; } = string.Empty;
 
-        [NotMapped]
+
         public string Name { get; set; } = string.Empty;
 
-        [NotMapped]
+
         public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
 
@@ -26,7 +26,7 @@ namespace devhl.CocApi.Models.War
 
 
 
-        [NotMapped]
+
         public int ClanLevel { get; set; }
 
         public string GroupId { get; set; } = string.Empty;
@@ -34,11 +34,10 @@ namespace devhl.CocApi.Models.War
         /// <summary>
         /// This is the season and the clan tag
         /// </summary>
-        [Key]
+
         public string LeagueClanId { get; set; } = string.Empty;
 
-        [ForeignKey(nameof(LeagueClanId))]
         [JsonProperty("members")]
-        public virtual IEnumerable<LeagueVillageApiModel>? Villages { get; set; }
+        public IEnumerable<LeagueVillageApiModel>? Villages { get; set; }
     }
 }

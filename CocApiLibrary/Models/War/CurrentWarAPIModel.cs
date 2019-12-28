@@ -84,7 +84,7 @@ namespace devhl.CocApi.Models.War
         /// <summary>
         /// Do not use this property.  Instead, use the Clans property.
         /// </summary>
-        [NotMapped]
+
         public WarClanApiModel? Clan
         {
             get { return _clan; }
@@ -103,7 +103,7 @@ namespace devhl.CocApi.Models.War
         /// <summary>
         /// Do not use this property.  Instead, use the Clans property.
         /// </summary>
-        [NotMapped]
+
         public WarClanApiModel? Opponent
         {
             get { return _opponent; }
@@ -142,41 +142,25 @@ namespace devhl.CocApi.Models.War
 
 
 
-        //[JsonIgnore]
-        [ForeignKey(nameof(WarId))]
+
         
-        public virtual IList<WarClanApiModel> Clans { get; set; } = new List<WarClanApiModel>();
+        public IList<WarClanApiModel> Clans { get; set; } = new List<WarClanApiModel>();
 
-        //[JsonIgnore]
-        [ForeignKey(nameof(WarId))]
-        public virtual List<AttackApiModel> Attacks { get; set; } = new List<AttackApiModel>();
+        public List<AttackApiModel> Attacks { get; set; } = new List<AttackApiModel>();
 
-        //[JsonIgnore]
-        [Key]
+
         public string WarId { get; set; } = string.Empty;
 
-        //[JsonIgnore]
         public WarType WarType { get; set; } = WarType.Random; 
 
-        //[JsonIgnore]
         public DateTime WarEndingSoonUtc { get; set; }
 
-        //[JsonIgnore]
         public DateTime WarStartingSoonUtc { get; set; }
 
-        //[JsonIgnore]
-        [ForeignKey(nameof(WarId))]
-        public virtual CurrentWarFlagsModel Flags { get; set; } = new CurrentWarFlagsModel();
+
+        public CurrentWarFlagsModel Flags { get; set; } = new CurrentWarFlagsModel();
 
 
-
-        //public DateTime UpdatedAtUtc { get; set; }
-
-        //public DateTime ExpiresAtUtc { get; set; }
-
-        //public string EncodedUrl { get; set; } = string.Empty;
-
-        //public DateTime? CacheExpiresAtUtc { get; set; }
 
 
 

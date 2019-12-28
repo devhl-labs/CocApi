@@ -6,7 +6,6 @@ namespace devhl.CocApi.Models.Village
 {
     public class AchievementApiModel
     {
-        [ForeignKey(nameof(VillageTag))]
         public string VillageTag { get; set; } = string.Empty;
 
         private string _name = string.Empty;

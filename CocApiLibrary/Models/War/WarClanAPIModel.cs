@@ -35,10 +35,10 @@ namespace devhl.CocApi.Models.War
             }
         }
 
-        [NotMapped]
+
         public string Name { get; set; } = string.Empty;
 
-        [NotMapped]
+
         public ClanBadgeUrlApiModel? BadgeUrls { get; set; }
 
 
@@ -49,7 +49,7 @@ namespace devhl.CocApi.Models.War
 
 
 
-        [NotMapped]
+
         public int ClanLevel { get; set; }
 
 
@@ -74,9 +74,8 @@ namespace devhl.CocApi.Models.War
 
         private IEnumerable<WarVillageApiModel>? _villages;
 
-        [ForeignKey(nameof(WarClanId))]
         [JsonProperty("members")]
-        public virtual IEnumerable<WarVillageApiModel>? Villages
+        public IEnumerable<WarVillageApiModel>? Villages
         {
             get
             {
@@ -106,10 +105,9 @@ namespace devhl.CocApi.Models.War
 
         public decimal DestructionPercentage { get; set; }
 
-        [Key]
+
         public string WarClanId { get; set; } = string.Empty;
 
-        //[JsonIgnore]
         public Result Result { get; set; }
 
         private void SetRelationalProperties()
