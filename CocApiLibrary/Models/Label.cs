@@ -14,7 +14,7 @@ namespace devhl.CocApi.Models
 
 
         [JsonProperty("IconUrls")]
-        public LabelUrl? LabelUrl { get; }
+        public LabelUrl? LabelUrl { get; internal set; }
 
 
         public void Initialize()

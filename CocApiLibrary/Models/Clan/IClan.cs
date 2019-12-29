@@ -6,6 +6,6 @@
 
         string Name { get; }
 
-        ClanBadgeUrl? BadgeUrls { get; }
+        BadgeUrl? BadgeUrl { get; }
     }
 }

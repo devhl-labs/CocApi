@@ -81,31 +81,31 @@ namespace devhl.CocApi.Models.Village
         public VillageClan? Clan { get; }
 
         [JsonProperty]
-        public VillageLeague? League { get; }
+        public League? League { get; internal set; }
 
         public int LeagueId { get; private set; }
 
         [JsonProperty]
-        public IEnumerable<Achievement>? Achievements { get; }
+        public IEnumerable<Achievement>? Achievements { get; internal set; }
 
 
         [JsonProperty]
         public int VersusBattleWinCount { get; }
 
         [JsonProperty]
-        public IEnumerable<Troop>? Troops { get; }
+        internal IEnumerable<Troop>? Troops { get; set; }
 
         [JsonProperty]
-        public IEnumerable<Troop>? Heroes { get; }
+        internal IEnumerable<Troop>? Heroes { get; set; }
 
         [JsonProperty]
-        public IList<Troop> AllTroops { get; } = new List<Troop>();
+        public IList<Troop> AllTroops { get; internal set; } = new List<Troop>();
 
         [JsonProperty]
-        public IEnumerable<VillageLabel>? Labels { get; }
+        public IEnumerable<VillageLabel>? Labels { get; internal set; }
 
         [JsonProperty]
-        public IEnumerable<VillageSpell>? Spells { get; }
+        public IEnumerable<Spell>? Spells { get; internal set; }
 
 
 
@@ -199,11 +199,11 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateVillageSpells(CocApi cocApi, Village downloadedVillage)
         {
-            List<VillageSpell> newSpells = new List<VillageSpell>();
+            List<Spell> newSpells = new List<Spell>();
 
-            foreach(VillageSpell spell in downloadedVillage.Spells.EmptyIfNull())
+            foreach(Spell spell in downloadedVillage.Spells.EmptyIfNull())
             {
-                VillageSpell? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name && s.Village == spell.Village);
+                Spell? oldSpell = Spells.FirstOrDefault(s => s.Name == spell.Name && s.Village == spell.Village);
 
                 if (oldSpell == null || oldSpell.Level < spell.Level)
                 {
@@ -437,6 +437,8 @@ namespace devhl.CocApi.Models.Village
             foreach (var label in Labels.EmptyIfNull())
             {
                 label.VillageTag = VillageTag;
+
+                label.Initialize();
             }
         }
     }

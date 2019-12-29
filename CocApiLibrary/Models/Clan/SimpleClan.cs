@@ -13,11 +13,11 @@ namespace devhl.CocApi.Models.Clan
         public string Name { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public ClanBadgeUrl? BadgeUrls { get; internal set; }
+        public BadgeUrl? BadgeUrl { get; internal set; }
 
         public void Initialize()
         {
-            if (BadgeUrls != null) BadgeUrls.Initialize();
+
         }
     }
 }

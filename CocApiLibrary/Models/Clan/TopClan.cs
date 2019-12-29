@@ -18,7 +18,7 @@ namespace devhl.CocApi.Models.Clan
         public Location? Location { get; internal set; }
 
         [JsonProperty("badgeUrls")]
-        public ClanBadgeUrl? BadgeUrls { get; internal set; }
+        public BadgeUrl? BadgeUrl { get; internal set; }
 
         [JsonProperty("clanLevel")]
         public int ClanLevel { get; internal set; }
@@ -34,7 +34,6 @@ namespace devhl.CocApi.Models.Clan
 
         public void Initialize()
         {
-            if (BadgeUrls != null) BadgeUrls.Initialize();
         }
     }
 }

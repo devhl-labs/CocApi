@@ -15,7 +15,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public ClanBadgeUrl? BadgeUrls { get; }
+        public BadgeUrl? BadgeUrl { get; internal set; }
 
 
         [JsonProperty]
@@ -31,11 +31,11 @@ namespace devhl.CocApi.Models.War
         public string LeagueClanId { get; internal set; } = string.Empty;
 
         [JsonProperty("members")]
-        public IEnumerable<LeagueVillage>? Villages { get; }
+        public IEnumerable<LeagueVillage>? Villages { get; internal set; }
 
         public void Initialize()
         {
-            if (BadgeUrls != null) BadgeUrls.Initialize();
+
         }
     }
 }

@@ -27,7 +27,7 @@ namespace devhl.CocApi.Models.Clan
         public string Name { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public ClanBadgeUrl? BadgeUrls { get; internal set; }
+        public BadgeUrl? BadgeUrl { get; internal set; }
 
         [JsonProperty]
         public Location? Location { get; internal set; }
@@ -264,16 +264,16 @@ namespace devhl.CocApi.Models.Clan
 
         private void UpdateBadge(CocApi cocApi, Clan downloadedClan)
         {
-            if (BadgeUrls == null && downloadedClan.BadgeUrls != null)
+            if (BadgeUrl == null && downloadedClan.BadgeUrl != null)
             {
                 cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
                 return;
             }
 
-            if (BadgeUrls == null && downloadedClan.BadgeUrls != null |
-                BadgeUrls?.Large != downloadedClan.BadgeUrls?.Large ||
-                BadgeUrls?.Medium != downloadedClan.BadgeUrls?.Medium ||
-                BadgeUrls?.Small != downloadedClan.BadgeUrls?.Small)
+            if (BadgeUrl == null && downloadedClan.BadgeUrl != null |
+                BadgeUrl?.Large != downloadedClan.BadgeUrl?.Large ||
+                BadgeUrl?.Medium != downloadedClan.BadgeUrl?.Medium ||
+                BadgeUrl?.Small != downloadedClan.BadgeUrl?.Small)
             {
                 cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
             }
@@ -350,10 +350,7 @@ namespace devhl.CocApi.Models.Clan
 
             if (!string.IsNullOrEmpty(ClanTag) && Labels != null)
             {
-                foreach(var label in Labels)
-                {
-                    label.ClanTag = ClanTag;
-                }
+                foreach(var label in Labels) label.ClanTag = ClanTag;
             }
 
             foreach (var clanVillage in Villages.EmptyIfNull())
@@ -363,17 +360,9 @@ namespace devhl.CocApi.Models.Clan
                 clanVillage.Initialize();
             }
 
-            if (BadgeUrls != null)
-            {
-                BadgeUrls.Initialize();
+            if (BadgeUrl != null) BadgeUrl.ClanTag = ClanTag;
 
-                BadgeUrlsId = BadgeUrls.Id;
-            }
-
-            if (Location != null)
-            {
-                LocationId = Location.Id;
-            }
+            if (Location != null) LocationId = Location.Id;
         }
     }
 }

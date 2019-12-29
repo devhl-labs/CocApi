@@ -24,7 +24,7 @@ namespace CocApiConsoleTest
 
             Console.CancelKeyPress += (s, e) => DoExitStuff(services);
 
-            InitializeCocApi(services);
+            ConfigureCocApi(services);
 
             services.GetRequiredService<EventHandlerService>();
 
@@ -42,7 +42,7 @@ namespace CocApiConsoleTest
                 .BuildServiceProvider();
         }
 
-        private static void InitializeCocApi(IServiceProvider serviceProvider)
+        private static void ConfigureCocApi(IServiceProvider serviceProvider)
         {
             CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
             {
@@ -68,18 +68,16 @@ namespace CocApiConsoleTest
                  *  Do not hard code these values.  Store them in a json file instead.
                  */
 
-                //CacheHttpResponses = true,
-                //ClanApiModelTimeToLive = TimeSpan.FromMinutes(5),
-                //CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
-                //LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
-                //LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
-                //LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
-                //TokenTimeOut = TimeSpan.FromSeconds(1),
-                //VillageApiModelTimeToLive = TimeSpan.FromHours(1),
-                //NumberOfUpdaters = 1,
-                //TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),     
-
-                //todo load this from json
+                CacheHttpResponses = true,
+                ClanApiModelTimeToLive = TimeSpan.FromMinutes(5),
+                CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
+                LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
+                LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
+                LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
+                TokenTimeOut = TimeSpan.FromSeconds(1),
+                VillageApiModelTimeToLive = TimeSpan.FromHours(1),
+                NumberOfUpdaters = 1,
+                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5)
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));

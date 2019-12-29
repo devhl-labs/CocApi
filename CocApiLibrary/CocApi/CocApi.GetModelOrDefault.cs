@@ -91,5 +91,13 @@ namespace devhl.CocApi
 
             return result;
         }
+
+        public Paginated<League> GetLeagues() => AllLeagues;
+
+        public Paginated<Label> GetClanLabels() => AllClanLabels;
+
+        public Paginated<Label> GetVillageLabels() => AllVillageLabels;
+
+        public Paginated<Location> GetLocations() => AllLocations;
     }
 }

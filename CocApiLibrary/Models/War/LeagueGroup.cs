@@ -21,7 +21,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public IEnumerable<LeagueClan>? Clans { get; }
+        public IEnumerable<LeagueClan>? Clans { get; internal set; }
 
         [JsonProperty]
         public IList<Round>? Rounds { get; }

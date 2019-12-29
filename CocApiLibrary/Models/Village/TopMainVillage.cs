@@ -18,6 +18,6 @@ namespace devhl.CocApi.Models.Village
         public long DefenseWins { get; }
 
         [JsonProperty("league")]
-        public VillageLeague? League { get; }
+        public League? League { get; }
     }
 }

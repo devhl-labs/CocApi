@@ -18,7 +18,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public ClanBadgeUrl? BadgeUrls { get; }
+        public BadgeUrl? BadgeUrl { get; }
 
 
         [JsonProperty]
@@ -50,8 +50,6 @@ namespace devhl.CocApi.Models.War
 
         public void Initialize()
         {
-            if (BadgeUrls != null) BadgeUrls.Initialize();
-
             if (!string.IsNullOrEmpty(WarId) && !string.IsNullOrEmpty(ClanTag))
             {
                 WarClanId = $"{WarId};{ClanTag}";

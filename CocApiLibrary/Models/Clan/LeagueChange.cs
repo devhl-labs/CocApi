@@ -14,6 +14,6 @@ namespace devhl.CocApi.Models.Clan
         public ClanVillage Village { get; internal set; }
         
         [JsonProperty]
-        public VillageLeague League { get; internal set; }
+        public League League { get; internal set; }
     }
 }

@@ -5,13 +5,13 @@ namespace devhl.CocApi
 {
     public abstract class Downloadable : IDownloadable
     {
-        public DateTime UpdatedAtUtc { get; set; }
+        public DateTime UpdatedAtUtc { get; internal set; }
 
-        public DateTime ExpiresAtUtc { get; set; }
+        public DateTime ExpiresAtUtc { get; internal set; }
 
-        public string EncodedUrl { get; set; } = string.Empty;
+        public string EncodedUrl { get; internal set; } = string.Empty;
 
-        public DateTime? CacheExpiresAtUtc { get; set; }
+        public DateTime? CacheExpiresAtUtc { get; internal set; }
 
         public bool IsExpired()
         {

@@ -148,7 +148,7 @@ namespace CocApiConsoleTest
 
         public Task ClanBadgeUrlChanged(Clan oldClan, Clan newClan)
         {
-            _logService.LogInformation(newClan.BadgeUrls?.Large);
+            _logService.LogInformation(newClan.BadgeUrl?.Large);
 
             return Task.CompletedTask;
         }

@@ -4,7 +4,7 @@ using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Village
 {
-    public class VillageSpell
+    public class Spell
     {
         [JsonProperty]
         public string VillageTag { get; internal set; } = string.Empty;

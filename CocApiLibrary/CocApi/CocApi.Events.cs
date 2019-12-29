@@ -43,7 +43,7 @@ namespace devhl.CocApi
     public delegate Task VillageAchievementsChangedEventHandler(Village oldVillage, IReadOnlyList<Achievement> newAchievements);
     public delegate Task VillageTroopsChangedEventHandler(Village oldVillage, IReadOnlyList<Troop> newTroops);
     public delegate Task VillageHeroesChangedEventHandler(Village oldVillage, IReadOnlyList<Troop> newHeroes);
-    public delegate Task VillageSpellsChangedEventHandler(Village oldVillage, IReadOnlyList<VillageSpell> newSpells);
+    public delegate Task VillageSpellsChangedEventHandler(Village oldVillage, IReadOnlyList<Spell> newSpells);
     public delegate Task WarStartedEventHandler(IActiveWar currentWarApiModel);
     public delegate Task WarEndedEventHandler(IActiveWar currentWarApiModel);
     public delegate Task WarEndSeenEventHandler(IActiveWar currentWarApiModel);
@@ -241,7 +241,7 @@ namespace devhl.CocApi
 
         internal void WarStartedEvent(IActiveWar currentWarApiModel) => WarStarted?.Invoke(currentWarApiModel);
 
-        internal void VillageSpellsChangedEvent(Village oldVillage, List<VillageSpell> newSpells) => VillageSpellsChanged?.Invoke(oldVillage, newSpells.ToImmutableArray());
+        internal void VillageSpellsChangedEvent(Village oldVillage, List<Spell> newSpells) => VillageSpellsChanged?.Invoke(oldVillage, newSpells.ToImmutableArray());
 
         internal void VillageHeroesChangedEvent(Village oldVillage, List<Troop> newHeroes) => VillageHeroesChanged?.Invoke(oldVillage, newHeroes.ToImmutableArray());
 

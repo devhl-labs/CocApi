@@ -1,144 +1,47 @@
-﻿using System;
+﻿using devhl.CocApi.Converters;
+using devhl.CocApi.Exceptions;
+using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
+using devhl.CocApi.Models.Village;
+using devhl.CocApi.Models.War;
+using Microsoft.Extensions.Logging;
+
+//using System.Text.Json;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-//using System.Text.Json;
-
-using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-
-using devhl.CocApi.Exceptions;
-using devhl.CocApi.Models;
 using static devhl.CocApi.Enums;
-using devhl.CocApi.Models.War;
-using devhl.CocApi.Models.Clan;
-using devhl.CocApi.Models.Village;
-
-using System.Collections.Concurrent;
-using devhl.CocApi.Converters;
-using Newtonsoft.Json.Converters;
 
 namespace devhl.CocApi
 {
     internal static class WebResponse
     {
-        public static SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
-
-        public static HttpClient ApiClient { get; } = new HttpClient();
-
         private readonly static string _source = "WebResponse   | ";
 
         private static readonly List<TokenObject> _tokenObjects = new List<TokenObject>();
 
-#nullable disable
-
-        private static CocApi _cocApi;
-
-#nullable enable
-
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
 
-        //private static readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions
-        //{
-        //    PropertyNameCaseInsensitive = true
-        //};
+#nullable disable
+        private static CocApi _cocApi;
+#nullable enable
+
+        public static HttpClient ApiClient { get; } = new HttpClient();
+
+        public static SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
 
         public static ConcurrentBag<WebResponseTimer> WebResponseTimers { get; } = new ConcurrentBag<WebResponseTimer>();
 
-        public static void Initialize(CocApi cocApi, CocApiConfiguration cfg, IEnumerable<string> tokens)
-        {
-            _cocApi = cocApi;
-
-            _cfg = cfg;
-
-            ApiClient.DefaultRequestHeaders.Accept.Clear();
-
-            ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            foreach (string token in tokens)
-            {
-                TokenObject tokenObject = new TokenObject(cocApi, token, _cfg.TokenTimeOut);
-
-                _tokenObjects.Add(tokenObject);
-            }
-
-            //_jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                Converters = new List<JsonConverter> 
-                { 
-                    new DateTimeConverter() ,
-                    new LeagueSeasonConverter(),
-                    new StringEnumConverter()
-                    //new LeagueStateConverter(),
-                    //new ResultConverter(),
-                    //new RoleConverter(),
-                    //new WarStateConverter()
-                }
-            };
-        }
-
-        public static string GetTokenStatus() => $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
-
-        private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
-        {
-            await SemaphoreSlim.WaitAsync().ConfigureAwait(false);
-
-            try
-            {
-                while (_tokenObjects.All(x => x.IsRateLimited))
-                {
-                    await Task.Delay(50).ConfigureAwait(false);
-                }
-
-                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url).ConfigureAwait(false);
-            }
-            finally
-            {
-                SemaphoreSlim.Release();
-            }
-        }
-
-        public static ConcurrentBag<WebResponseTimer> GetTimers() => WebResponseTimers;
-
-        private static async Task<HttpResponseMessage> GetHttpResponseAsync(EndPoint endPoint, string encodedUrl, TokenObject token, CancellationToken cancellationToken)
-        {
-            Stopwatch stopwatch = new Stopwatch();
-
-            ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
-
-            using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-
-            stopwatch.Start();
-
-            HttpResponseMessage response;
-
-            try
-            {
-               response = await ApiClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                stopwatch.Stop();
-
-                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, null));
-
-                throw;
-            }
-
-            stopwatch.Stop();
-
-            WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
-
-            return response;
-        }
-
-        public static async Task<IDownloadable> GetIDownloadableAsync<TValue>(EndPoint endPoint, string encodedUrl, CancellationToken cancellationToken) where TValue : class, IDownloadable, new()
+        public static async Task<Downloadable> GetDownloadableAsync<TValue>(EndPoint endPoint, string encodedUrl, CancellationToken cancellationToken) where TValue : Downloadable, new()
         {
             try
             {
@@ -161,7 +64,45 @@ namespace devhl.CocApi
             }
         }
 
-        private static IDownloadable ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
+        public static ConcurrentBag<WebResponseTimer> GetTimers() => WebResponseTimers;
+
+        public static string GetTokenStatus() => $"{_tokenObjects.Count(x => x.IsRateLimited)} Rate Limited\n{_tokenObjects.Count(x => !x.IsRateLimited)} not rate limited";
+
+        public static void Initialize(CocApi cocApi, CocApiConfiguration cfg, IEnumerable<string> tokens)
+        {
+            _cocApi = cocApi;
+
+            _cfg = cfg;
+
+            ApiClient.DefaultRequestHeaders.Accept.Clear();
+
+            ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            foreach (string token in tokens)
+            {
+                TokenObject tokenObject = new TokenObject(cocApi, token, _cfg.TokenTimeOut);
+
+                _tokenObjects.Add(tokenObject);
+            }
+
+            //_jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+            {
+                Converters = new List<JsonConverter>
+                {
+                    new DateTimeConverter() ,
+                    new LeagueSeasonConverter(),
+                    new StringEnumConverter()
+                    //new LeagueStateConverter(),
+                    //new ResultConverter(),
+                    //new RoleConverter(),
+                    //new WarStateConverter()
+                }
+            };
+        }
+
+        private static Downloadable ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
         {
             if (e is ServerResponseException serverResponse)
             {
@@ -190,7 +131,7 @@ namespace devhl.CocApi
                     Reason = e.ToString()
                 };
 
-               throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
+                throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
             }
 
             if (e is CocApiException) throw e;
@@ -198,7 +139,212 @@ namespace devhl.CocApi
             throw new CocApiException(e.Message, e);
         }
 
-        private static IDownloadable UnSuccessfulResponse(HttpResponseMessage response, string encodedUrl, EndPoint endPoint, TokenObject token)
+        private static async Task<HttpResponseMessage> GetHttpResponseAsync(EndPoint endPoint, string encodedUrl, TokenObject token, CancellationToken cancellationToken)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+
+            ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+
+            using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+
+            stopwatch.Start();
+
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await ApiClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                stopwatch.Stop();
+
+                WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, null));
+
+                throw;
+            }
+
+            stopwatch.Stop();
+
+            WebResponseTimers.Add(new WebResponseTimer(endPoint, stopwatch.Elapsed, response.StatusCode));
+
+            return response;
+        }
+
+        private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
+        {
+            await SemaphoreSlim.WaitAsync().ConfigureAwait(false);
+
+            try
+            {
+                while (_tokenObjects.All(x => x.IsRateLimited))
+                {
+                    await Task.Delay(50).ConfigureAwait(false);
+                }
+
+                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url).ConfigureAwait(false);
+            }
+            finally
+            {
+                SemaphoreSlim.Release();
+            }
+        }
+
+        private static void InitializeCacheExpiration(Downloadable result, HttpResponseMessage? response)
+        {
+            result.UpdatedAtUtc = DateTime.UtcNow;
+
+            if (response != null)
+            {
+                if (response.Headers?.Date.HasValue == true)
+                {
+                    result.UpdatedAtUtc = response!.Headers!.Date!.Value.UtcDateTime;
+                }
+
+                if (response?.Headers?.Date.HasValue == true && response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge.HasValue)
+                {
+                    //adding 3 seconds incase the server clock is different than our clock
+                    result.CacheExpiresAtUtc = response!.Headers!.Date!.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
+                }
+            }
+        }
+
+        private static void InitializeDownloadableProperties(Downloadable result, string encodedURL)
+        {
+            result.EncodedUrl = encodedURL;
+
+            switch (result)
+            {
+                case LeagueWar leagueWarApiModel:
+                    if (leagueWarApiModel.State == WarState.WarEnded)
+                    {
+                        leagueWarApiModel.ExpiresAtUtc = DateTime.MaxValue;
+                    }
+                    else
+                    {
+                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarApiModelTimeToLive);
+                    }
+
+                    break;
+
+                case CurrentWar currentWar:
+                    if (currentWar.State == WarState.WarEnded)
+                    {
+                        currentWar.ExpiresAtUtc = DateTime.MaxValue;
+                    }
+                    else
+                    {
+                        currentWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                    }
+
+                    break;
+
+                case LeagueGroup leagueGroupApiModel:
+                    if (leagueGroupApiModel.State == LeagueState.WarsEnded)
+                    {
+                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.AddHours(6);
+                    }
+                    else
+                    {
+                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupApiModelTimeToLive);
+                    }
+
+                    break;
+
+                case LeagueGroupNotFound leagueGroupNotFound:
+                    leagueGroupNotFound.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
+                    break;
+
+                case Clan clanApiModel:
+                    clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
+                    break;
+
+                case Village villageApiModel:
+                    villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
+                    break;
+
+                case Paginated<WarLogEntry> warLogApiModel:
+                    warLogApiModel.ExpiresAtUtc = DateTime.UtcNow;
+                    break;
+
+                case Paginated<League> villageLeagueSearchModel:
+                    villageLeagueSearchModel.ExpiresAtUtc = DateTime.UtcNow;
+                    break;
+
+                case Paginated<Location> searchApiModel:
+                    searchApiModel.ExpiresAtUtc = DateTime.UtcNow;
+                    break;
+
+                case Paginated<Clan> clanSearchModel:
+                    clanSearchModel.ExpiresAtUtc = DateTime.UtcNow;
+                    break;
+
+                case Paginated<Village> villageSearchModel:
+                    villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
+                    break;
+
+                case Paginated<Label> villageSearchModel:
+                    villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
+                    break;
+
+                case NotInWar notInWar:
+                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                    break;
+
+                default:
+                    result.ExpiresAtUtc = DateTime.UtcNow;
+
+                    _cocApi.Logger.LogWarning(LoggingEvents.UnhandledCase, "Unhandled case");
+
+                    break;
+            }
+        }
+
+        private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : Downloadable, new()
+        {
+            InitializeDownloadableProperties(result, encodedUrl);
+
+            InitializeCacheExpiration(result, response);
+
+            if (result is IInitialize initialize) initialize.Initialize();
+        }
+
+        private static Downloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : Downloadable, new()
+        {
+            _cocApi.Logger?.LogDebug("{source} {encodedUrl}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+
+            _cocApi.IsAvailable = true;
+
+            string responseText = response.Content.ReadAsStringAsync().Result;
+
+            //TValue result = JsonSerializer.Deserialize<TValue>(responseText, _jsonSerializerOptions);
+
+            TValue result = JsonConvert.DeserializeObject<TValue>(responseText);
+
+            if (result != null)
+            {
+                if (result is CurrentWar currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
+                {
+                    var notInWar = new NotInWar();
+
+                    InitializeResult(notInWar, response, encodedUrl);
+
+                    return notInWar;
+                }
+                else
+                {
+                    InitializeResult(result, response, encodedUrl);
+
+                    return result;
+                }
+            }
+            else
+            {
+                throw new CocApiException("The response could not be parsed.");
+            }
+        }
+
+        private static Downloadable UnSuccessfulResponse(HttpResponseMessage response, string encodedUrl, EndPoint endPoint, TokenObject token)
         {
             _cocApi.Logger?.LogDebug("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), "unsuccessful http response");
 
@@ -258,166 +404,6 @@ namespace devhl.CocApi
             }
 
             throw new ServerResponseException(ex, response.StatusCode);
-        }
-
-        private static IDownloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : class, IDownloadable, new()
-        {
-            _cocApi.Logger?.LogDebug("{source} {encodedUrl}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
-
-            _cocApi.IsAvailable = true;
-
-            string responseText = response.Content.ReadAsStringAsync().Result;
-
-            //TValue result = JsonSerializer.Deserialize<TValue>(responseText, _jsonSerializerOptions);
-
-            TValue result = JsonConvert.DeserializeObject<TValue>(responseText);
-
-            if (result != null)
-            {
-                if (result is CurrentWar currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
-                {
-                    var notInWar = new NotInWar();
-
-                    InitializeResult(notInWar, response, encodedUrl);
-
-                    return notInWar;
-                }
-                else
-                {
-                    InitializeResult(result, response, encodedUrl);
-
-                    return result;
-                }
-            }
-            else
-            {
-                throw new CocApiException("The response could not be parsed.");
-            }
-        }
-
-        private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : class, IDownloadable, new()
-        {
-            InitializeIDownloadableProperties(result, encodedUrl);
-
-            InitializeCacheExpiration(result, response);
-
-            if (result is IInitialize initialize) initialize.Initialize();
-        }
-
-        private static void InitializeCacheExpiration(IDownloadable result, HttpResponseMessage? response)
-        {
-            result.UpdatedAtUtc = DateTime.UtcNow;
-
-            if (response != null)
-            {
-                if (response.Headers?.Date.HasValue == true)
-                {
-                    result.UpdatedAtUtc = response!.Headers!.Date!.Value.UtcDateTime;
-                }
-
-                if (response?.Headers?.Date.HasValue == true && response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge.HasValue)
-                {
-                    //adding 3 seconds incase the server clock is different than our clock
-                    result.CacheExpiresAtUtc = response!.Headers!.Date!.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3); 
-                }
-            }
-        }
-
-        private static void InitializeIDownloadableProperties(IDownloadable result, string encodedURL)
-        {
-            result.EncodedUrl = encodedURL;
-
-            switch (result)
-            {
-                case LeagueWar leagueWarApiModel:
-                    if (leagueWarApiModel.State == WarState.WarEnded)
-                    {
-                        leagueWarApiModel.ExpiresAtUtc = DateTime.MaxValue;
-                    }
-                    else
-                    {
-                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarApiModelTimeToLive);
-                    }
-
-                    break;
-
-                case CurrentWar currentWar:
-                    if (currentWar.State == WarState.WarEnded)
-                    {
-                        currentWar.ExpiresAtUtc = DateTime.MaxValue;
-                    }
-                    else
-                    {
-                        currentWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
-                    }
-
-                    break;
-
-                case LeagueGroup leagueGroupApiModel:
-                    if (leagueGroupApiModel.State == LeagueState.WarsEnded)
-                    {
-                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.AddHours(6);
-                    }
-                    else
-                    {
-                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupApiModelTimeToLive);
-                    }
-
-                    break;
-
-                case LeagueGroupNotFound leagueGroupNotFound:
-                    leagueGroupNotFound.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
-                    break;
-
-
-                case Clan clanApiModel:
-                    clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
-                    break;
-
-
-                case Village villageApiModel:
-                    villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
-                    break;
-
-
-                case Paginated<WarLogEntry> warLogApiModel:
-                    warLogApiModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-
-                case Paginated<VillageLeague> villageLeagueSearchModel:
-                    villageLeagueSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-
-                case Paginated<Location> searchApiModel:
-                    searchApiModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-
-                case Paginated<Clan> clanSearchModel:
-                    clanSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<Village> villageSearchModel:
-                    villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<Label> villageSearchModel:
-                    villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case NotInWar notInWar:
-                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
-                    break;
-
-                default:
-                    result.ExpiresAtUtc = DateTime.UtcNow;
-
-                    _cocApi.Logger.LogWarning(LoggingEvents.UnhandledCase, "Unhandled case");
-
-                    break;
-            }
         }
     }
 }

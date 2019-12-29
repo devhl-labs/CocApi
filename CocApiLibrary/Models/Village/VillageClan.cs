@@ -14,14 +14,13 @@ namespace devhl.CocApi.Models.Village
         public string Name { get; } = string.Empty;
 
         [JsonProperty]
-        public ClanBadgeUrl? BadgeUrls { get; }
+        public BadgeUrl? BadgeUrl { get; }
 
         [JsonProperty]
         public int ClanLevel { get; }
 
         public void Initialize()
         {
-            if (BadgeUrls != null) BadgeUrls.Initialize();
         }
     }
 }

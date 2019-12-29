@@ -27,7 +27,7 @@ namespace devhl.CocApi.Models.Clan
         public int ExpLevel { get; internal set; }
 
         [JsonProperty]
-        public VillageLeague? League { get; internal set; }
+        public League? League { get; internal set; }
 
         [JsonProperty]
         public int? LeagueId { get; internal set; }

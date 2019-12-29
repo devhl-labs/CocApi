@@ -31,7 +31,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public async Task<Clan?> GetClanOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
-            VerifyInitialization();
+            ThrowIfNotInitialized();
 
             Clan? result = null;
 
@@ -69,7 +69,7 @@ namespace devhl.CocApi
                                                         , int? before = null
                                                         , CancellationToken? cancellationToken = null)
         {
-            VerifyInitialization();
+            ThrowIfNotInitialized();
 
             Paginated<Clan>? result = null;
 
@@ -315,13 +315,15 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<Paginated<VillageLeague>?> GetVillageLeaguesOrDefaultAsync(CancellationToken? cancellationToken = null)
+        public async Task<Paginated<League>?> GetLeaguesOrDefaultAsync(CancellationToken? cancellationToken = null)
         {
-            Paginated<VillageLeague>? result = null;
+            Paginated<League>? result = null;
 
             try
             {
-                result = await GetVillageLeaguesAsync(cancellationToken).ConfigureAwait(false);
+                AllLeagues = await GetLeaguesAsync(cancellationToken).ConfigureAwait(false);
+
+                return AllLeagues;
             }
             catch (ServerResponseException) { }
             catch (Exception)
