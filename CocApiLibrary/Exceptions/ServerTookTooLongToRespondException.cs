@@ -18,7 +18,7 @@ namespace devhl.CocApi.Exceptions
         //{
         //}
 
-        public ServerTookTooLongToRespondException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode? httpStatusCode) : base(responseMessage, httpStatusCode)
+        public ServerTookTooLongToRespondException(ResponseMessage responseMessage, System.Net.HttpStatusCode? httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

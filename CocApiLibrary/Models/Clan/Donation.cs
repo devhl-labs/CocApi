@@ -1,13 +1,18 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
+
+#nullable disable
 
 namespace devhl.CocApi.Models.Clan
 {
     public class Donation
     {
-        public ClanVillageApiModel Village { get; set; }
+        [JsonProperty]
+        public ClanVillage Village { get; internal set; }
 
-        public int Quantity { get; set; }
+        [JsonProperty]
+        public int Quantity { get; internal set; }
     }
 }

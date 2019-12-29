@@ -2,34 +2,34 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-////System.Text.Json.Serialization
+
 using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Village
 {
-    public class TopVillage : IVillageApiModel, IInitialize
+    public class TopVillage : IVillage, IInitialize
     {
         [JsonProperty("tag")]
-        public string VillageTag { get; set; } = string.Empty;
+        public string VillageTag { get;  } = string.Empty;
 
         [JsonProperty("name")]
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; } = string.Empty;
 
         [JsonProperty("expLevel")]
-        public long ExpLevel { get; set; }
+        public long ExpLevel { get; }
 
         [JsonProperty("rank")]
-        public long Rank { get; set; }
+        public long Rank { get; }
 
         [JsonProperty("previousRank")]
-        public long PreviousRank { get; set; }
+        public long PreviousRank { get; }
 
         [JsonProperty("clan")]
-        public SimpleClanApiModel? Clan { get; set; }
+        public SimpleClan? Clan { get; }
 
 
-
-        public string ClanTag { get; set; } = string.Empty;
+        [JsonProperty]
+        public string ClanTag { get; private set; } = string.Empty;
 
         public void Initialize()
         {

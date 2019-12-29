@@ -8,7 +8,7 @@ namespace devhl.CocApi.Exceptions
     [Serializable]
     public class NotFoundException : ServerResponseException /*, ICocApiException*/
     {
-        public NotFoundException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public NotFoundException(ResponseMessage responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

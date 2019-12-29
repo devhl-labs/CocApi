@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using static devhl.CocApi.Enums;
@@ -9,8 +10,10 @@ namespace devhl.CocApi.Models.Clan
 {
     public class RoleChange
     {
-        public ClanVillageApiModel Village { get; set; } 
+        [JsonProperty]
+        public ClanVillage Village { get; internal set; } 
         
-        public Role Role { get; set; }
+        [JsonProperty]
+        public Role Role { get; internal set; } //todo is this the old role or the new role?
     }
 }

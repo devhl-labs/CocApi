@@ -12,6 +12,8 @@ namespace devhl.CocApi.Models
 
         DateTime? CacheExpiresAtUtc { get; set; }
 
-        bool IsExpired();  //todo make this check both the cache and expires datetime?
+        bool IsExpired();
     }
+
 }
+//todo make this abstract class

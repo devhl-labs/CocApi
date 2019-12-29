@@ -3,7 +3,7 @@ using System;
 
 namespace devhl.CocApi
 {
-    public class Downloadable : IDownloadable
+    public abstract class Downloadable : IDownloadable
     {
         public DateTime UpdatedAtUtc { get; set; }
 

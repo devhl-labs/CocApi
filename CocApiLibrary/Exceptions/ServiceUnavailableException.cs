@@ -7,7 +7,7 @@ namespace devhl.CocApi.Exceptions
     [Serializable]
     public class ServiceUnavailableException : ServerResponseException
     {
-        public ServiceUnavailableException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public ServiceUnavailableException(ResponseMessage responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

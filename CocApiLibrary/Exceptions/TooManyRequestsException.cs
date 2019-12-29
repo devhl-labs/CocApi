@@ -7,7 +7,7 @@ namespace devhl.CocApi.Exceptions
     [Serializable]
     public class TooManyRequestsException : ServerResponseException
     {
-        public TooManyRequestsException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public TooManyRequestsException(ResponseMessage responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

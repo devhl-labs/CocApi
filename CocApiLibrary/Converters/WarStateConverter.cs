@@ -1,6 +1,6 @@
 ﻿using System;
 //using System.Text.Json;
-////System.Text.Json.Serialization
+
 using Newtonsoft.Json;
 
 using static devhl.CocApi.Enums;
@@ -32,44 +32,44 @@ namespace devhl.CocApi.Converters
     //    }
     //}
 
-    internal class WarStateConverter : JsonConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            if (objectType == typeof(WarState)) return true;
+    //internal class WarStateConverter : JsonConverter
+    //{
+    //    public override bool CanConvert(Type objectType)
+    //    {
+    //        if (objectType == typeof(WarState)) return true;
 
-            return false;
-        }
+    //        return false;
+    //    }
 
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-        {
-            if (reader.Value == null) return WarState.Unknown;
+    //    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    //    {
+    //        if (reader.Value == null) return WarState.Unknown;
 
-            string value = reader.Value.ToString();
+    //        string value = reader.Value.ToString();
 
-            if (string.IsNullOrEmpty(value)) return WarState.Unknown;
+    //        if (string.IsNullOrEmpty(value)) return WarState.Unknown;
 
-            if (value == "inWar") return WarState.InWar;
+    //        if (value == "inWar") return WarState.InWar;
 
-            if (value == "notInWar") return WarState.NotInWar;
+    //        if (value == "notInWar") return WarState.NotInWar;
 
-            if (value == "preparation") return WarState.Preparation;
+    //        if (value == "preparation") return WarState.Preparation;
 
-            if (value == "warEnded") return WarState.WarEnded;
+    //        if (value == "warEnded") return WarState.WarEnded;
 
-            throw new Exception($"{value} is not a supported role.");
-        }
+    //        throw new Exception($"{value} is not a supported role.");
+    //    }
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-            }
-            else
-            {
-                writer.WriteValue(((WarState) value).ToEnumMemberAttrValue());
-            }
-        }
-    }
+    //    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+    //    {
+    //        if (value == null)
+    //        {
+    //            writer.WriteNull();
+    //        }
+    //        else
+    //        {
+    //            writer.WriteValue(((WarState) value).ToEnumMemberAttrValue());
+    //        }
+    //    }
+    //}
 }

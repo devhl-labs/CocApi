@@ -69,105 +69,105 @@ namespace CocApiConsoleTest
             return Task.CompletedTask;
         }
 
-        public Task WarStartingSoon(ICurrentWarApiModel currentWarApiModel)
+        public Task WarStartingSoon(IActiveWar currentWarApiModel)
         {
             _logService.LogInformation("war starting soon");
 
             return Task.CompletedTask;
         }
 
-        public Task WarStarted(ICurrentWarApiModel currentWarApiModel)
+        public Task WarStarted(IActiveWar currentWarApiModel)
         {
             _logService.LogInformation("war started");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesLeagueChanged(ClanApiModel oldClan, IReadOnlyList<LeagueChange> leagueChanged)
+        public Task ClanVillagesLeagueChanged(Clan oldClan, IReadOnlyList<LeagueChange> leagueChanged)
         {
             _logService.LogInformation($"League changed {leagueChanged.First().Village.Name}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesRoleChanged(ClanApiModel clan, IReadOnlyList<RoleChange> roleChanges)
+        public Task ClanVillagesRoleChanged(Clan clan, IReadOnlyList<RoleChange> roleChanges)
         {
             _logService.LogInformation($"New role: {roleChanges.First().Village.Name}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillageNameChanged(ClanVillageApiModel oldMember, string newName)
+        public Task ClanVillageNameChanged(ClanVillage oldMember, string newName)
         {
             _logService.LogInformation($"New name: {newName}");
 
             return Task.CompletedTask;
         }
 
-        public Task VillageReachedLegendsLeague(VillageApiModel villageApiModel)
+        public Task VillageReachedLegendsLeague(Village villageApiModel)
         {
             _logService.LogInformation($"Village reached legends: {villageApiModel.Name}");
 
             return Task.CompletedTask;
         }
 
-        public Task WarIsAccessibleChanged(ICurrentWarApiModel currentWarApiModel)
+        public Task WarIsAccessibleChanged(IActiveWar currentWarApiModel)
         {
             _logService.LogInformation($"War is accessible changed:{currentWarApiModel.Flags.WarIsAccessible}");
 
             return Task.CompletedTask;
         }
 
-        public Task NewWar(ICurrentWarApiModel currentWarApiModel)
+        public Task NewWar(IActiveWar currentWarApiModel)
         {
             _logService.LogInformation($"New War: {currentWarApiModel.WarId}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVersusPointsChanged(ClanApiModel oldClan, int newClanVersusPoints)
+        public Task ClanVersusPointsChanged(Clan oldClan, int newClanVersusPoints)
         {
             _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanPointsChanged(ClanApiModel oldClan, int newClanPoints)
+        public Task ClanPointsChanged(Clan oldClan, int newClanPoints)
         {
             _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} new clan points: {newClanPoints}");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanLocationChanged(ClanApiModel oldClan, ClanApiModel newClan)
+        public Task ClanLocationChanged(Clan oldClan, Clan newClan)
         {
             _logService.LogInformation(newClan.Location?.Name);
 
             return Task.CompletedTask;
         }
 
-        public Task ClanBadgeUrlChanged(ClanApiModel oldClan, ClanApiModel newClan)
+        public Task ClanBadgeUrlChanged(Clan oldClan, Clan newClan)
         {
             _logService.LogInformation(newClan.BadgeUrls?.Large);
 
             return Task.CompletedTask;
         }
 
-        public Task ClanChanged(ClanApiModel oldClan, ClanApiModel newClan)
+        public Task ClanChanged(Clan oldClan, Clan newClan)
         {
             _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} changed.");
 
             return Task.CompletedTask;
         }
 
-        public Task NewAttacks(ICurrentWarApiModel currentWarApiModel, IReadOnlyList<AttackApiModel> attackApiModels)
+        public Task NewAttacks(IActiveWar currentWarApiModel, IReadOnlyList<Attack> attackApiModels)
         {
             _logService.LogInformation($"new attacks: {attackApiModels.Count()}");
 
             return Task.CompletedTask;
         }
 
-        public Task MembersJoined(ClanApiModel clanApiModel, IReadOnlyList<ClanVillageApiModel> memberListApiModels)
+        public Task MembersJoined(Clan clanApiModel, IReadOnlyList<ClanVillage> memberListApiModels)
         {
             _logService.LogInformation($"{memberListApiModels.Count()} members joined.");
 
@@ -181,7 +181,7 @@ namespace CocApiConsoleTest
             return Task.CompletedTask;
         }
 
-        public Task LeagueSizeChangeDetected(LeagueGroupApiModel leagueGroupApiModel)
+        public Task LeagueSizeChangeDetected(LeagueGroup leagueGroupApiModel)
         {
             _logService.LogInformation($"League Size changed: {leagueGroupApiModel.TeamSize}");
 

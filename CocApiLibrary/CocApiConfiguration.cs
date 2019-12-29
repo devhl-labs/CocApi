@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using devhl.CocApi.Exceptions;
+using Newtonsoft.Json;
 
 namespace devhl.CocApi
 {
@@ -11,7 +12,6 @@ namespace devhl.CocApi
         /// List of tokens used to query the SC Api
         /// </summary>
         public IList<string> Tokens { get; set; } = new List<string>();
-
 
         /// <summary>
         /// If you watch many clans increase this number for faster updates.
@@ -32,8 +32,6 @@ namespace devhl.CocApi
         /// Set this to true if you want to store HTTP responses in memory.
         /// </summary>
         public bool CacheHttpResponses { get; set; } = true;
-
-
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
@@ -59,34 +57,6 @@ namespace devhl.CocApi
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
         public TimeSpan VillageApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
-        ///// <summary>
-        ///// Defines how long to wait before an HTTP request is considered expired.
-        ///// This end point is not cached, so do not spam it.
-        ///// </summary>
-        //public TimeSpan WarLogApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
-        ///// <summary>
-        ///// Defines how long to wait before an HTTP request is considered expired.
-        ///// This end point is not cached, so do not spam it.  
-        ///// Each request will query the server.
-        ///// </summary>
-        //public TimeSpan ClanSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
-
-        ///// <summary>
-        ///// Defines how long to wait before an HTTP request is considered expired.
-        ///// This end point is not cached, so do not spam it.  
-        ///// Each request will query the server.
-        ///// </summary>
-        //public TimeSpan VillageLeagueSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
-        ///// <summary>
-        ///// Defines how long to wait before an HTTP request is considered expired.
-        ///// This end point is not cached, so do not spam it.  
-        ///// Each request will query the server.
-        ///// </summary>
-        //public TimeSpan LocationSearchApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.

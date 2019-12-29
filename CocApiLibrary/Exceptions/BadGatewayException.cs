@@ -7,7 +7,7 @@ namespace devhl.CocApi.Exceptions
     [Serializable]
     public class BadGateWayException : ServerResponseException
     {
-        public BadGateWayException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public BadGateWayException(ResponseMessage responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

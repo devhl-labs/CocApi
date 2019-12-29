@@ -36,7 +36,7 @@ namespace CocApiConsoleTest
         public static IServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
-                .AddSingleton<LogService>()
+                .AddSingleton<ILogger, LogService>()
                 .AddSingleton<CocApi>()
                 .AddSingleton<EventHandlerService>()
                 .BuildServiceProvider();
@@ -68,23 +68,25 @@ namespace CocApiConsoleTest
                  *  Do not hard code these values.  Store them in a json file instead.
                  */
 
-                CacheHttpResponses = true,
-                ClanApiModelTimeToLive = TimeSpan.FromMinutes(5),
-                CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
-                LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
-                LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
-                LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
-                TokenTimeOut = TimeSpan.FromSeconds(1),
-                VillageApiModelTimeToLive = TimeSpan.FromHours(1),
-                NumberOfUpdaters = 1,
-                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),     
+                //CacheHttpResponses = true,
+                //ClanApiModelTimeToLive = TimeSpan.FromMinutes(5),
+                //CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
+                //LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
+                //LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
+                //LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
+                //TokenTimeOut = TimeSpan.FromSeconds(1),
+                //VillageApiModelTimeToLive = TimeSpan.FromHours(1),
+                //NumberOfUpdaters = 1,
+                //TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),     
+
+                //todo load this from json
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
 
             _cocApi = serviceProvider.GetRequiredService<CocApi>();
 
-            _cocApi.Initialize(cocApiConfiguration, serviceProvider.GetRequiredService<LogService>());
+            _cocApi.Initialize(cocApiConfiguration);
 
             _cocApi.DownloadLeagueWars = DownloadLeagueWars.False;
 

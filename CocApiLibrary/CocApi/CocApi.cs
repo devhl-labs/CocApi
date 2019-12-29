@@ -23,17 +23,17 @@ namespace devhl.CocApi
 
         private readonly List<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
 
-        internal Dictionary<string, ClanApiModel> AllClans { get; } = new Dictionary<string, ClanApiModel>();
+        internal Dictionary<string, Clan> AllClans { get; } = new Dictionary<string, Clan>();
 
         internal Dictionary<string, IWar> AllWarsByClanTag { get; } = new Dictionary<string, IWar>();
 
-        internal Dictionary<string, ICurrentWarApiModel> AllWarsByWarId { get; } = new Dictionary<string, ICurrentWarApiModel>();
+        internal Dictionary<string, IActiveWar> AllWarsByWarId { get; } = new Dictionary<string, IActiveWar>();
 
-        internal Dictionary<string, LeagueWarApiModel> AllWarsByWarTag { get; } = new Dictionary<string, LeagueWarApiModel>();
+        internal Dictionary<string, LeagueWar> AllWarsByWarTag { get; } = new Dictionary<string, LeagueWar>();
 
         internal Dictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new Dictionary<string, ILeagueGroup>();
 
-        internal Dictionary<string, VillageApiModel> AllVillages { get; } = new Dictionary<string, VillageApiModel>();
+        internal Dictionary<string, Village> AllVillages { get; } = new Dictionary<string, Village>();
 
         internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
 
@@ -462,7 +462,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="clans"></param>
 
-        public void WatchClans(IEnumerable<ClanApiModel> clans)
+        public void WatchClans(IEnumerable<Clan> clans)
         {
             VerifyInitialization();
 
@@ -470,7 +470,7 @@ namespace devhl.CocApi
             {
                 int j = 0;
 
-                foreach (ClanApiModel clan in clans)
+                foreach (Clan clan in clans)
                 {
                     try
                     {

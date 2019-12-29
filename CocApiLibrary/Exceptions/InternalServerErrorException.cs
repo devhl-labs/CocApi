@@ -7,7 +7,7 @@ namespace devhl.CocApi.Exceptions
     [Serializable]
     public class InternalServerErrorException : ServerResponseException
     {
-        public InternalServerErrorException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
+        public InternalServerErrorException(ResponseMessage responseMessage, System.Net.HttpStatusCode httpStatusCode) : base(responseMessage, httpStatusCode)
         {
 
         }

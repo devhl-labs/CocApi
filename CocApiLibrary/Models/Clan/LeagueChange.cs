@@ -1,4 +1,5 @@
 ﻿using devhl.CocApi.Models.Village;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,8 +10,10 @@ namespace devhl.CocApi.Models.Clan
 {
     public class LeagueChange
     {
-        public ClanVillageApiModel Village { get; set; }
+        [JsonProperty]
+        public ClanVillage Village { get; internal set; }
         
-        public VillageLeagueApiModel League { get; set; }
+        [JsonProperty]
+        public VillageLeague League { get; internal set; }
     }
 }

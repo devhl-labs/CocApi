@@ -13,7 +13,6 @@ using static devhl.CocApi.Extensions;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
-using devhl.CocApi.Models.Location;
 using System.Collections.Immutable;
 using System.Collections.Concurrent;
 
@@ -21,7 +20,7 @@ namespace devhl.CocApi
 {
     public sealed partial class CocApi : IDisposable
     {
-        public async Task<ClanApiModel> GetClanAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<Clan> GetClanAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
             
@@ -29,13 +28,13 @@ namespace devhl.CocApi
             {
                 ThrowIfInvalidTag(clanTag);
 
-                ClanApiModel? clan = GetClanOrDefault(clanTag);
+                Clan? clan = GetClanOrDefault(clanTag);
 
                 if (clan != null && (allowExpiredItem || clan.IsExpired() == false)) return clan;                    
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}";
 
-                clan = (ClanApiModel) await GetAsync<ClanApiModel>(url, EndPoint.Clan, cancellationToken).ConfigureAwait(false);
+                clan = (Clan) await GetAsync<Clan>(url, EndPoint.Clan, cancellationToken).ConfigureAwait(false);
 
                 if (!CocApiConfiguration.CacheHttpResponses) return clan;
                 
@@ -66,11 +65,11 @@ namespace devhl.CocApi
 
                 if (war != null && (allowExpiredItem || !war.IsExpired())) return war;
 
-                if (war is ICurrentWarApiModel currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
+                if (war is IActiveWar currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
-                IDownloadable downloadable = await GetAsync<CurrentWarApiModel>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
+                IDownloadable downloadable = await GetAsync<CurrentWar>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
 
                 if (downloadable is NotInWar notInWar)
                 {
@@ -85,7 +84,7 @@ namespace devhl.CocApi
                     return notInWar;
                 }
 
-                ICurrentWarApiModel downloadedWar = (ICurrentWarApiModel) downloadable;
+                IActiveWar downloadedWar = (IActiveWar) downloadable;
 
                 if (!CocApiConfiguration.CacheHttpResponses) return downloadedWar;
                 
@@ -101,9 +100,9 @@ namespace devhl.CocApi
                         }
                     }
 
-                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, AllClans))
+                    if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan, AllClans))
                     {
-                        storedClan.Wars.TryAdd(downloadedWar.WarId, (CurrentWarApiModel) downloadedWar, storedClan.Wars);
+                        storedClan.Wars.TryAdd(downloadedWar.WarId, (CurrentWar) downloadedWar, storedClan.Wars);
                     }
                 }
 
@@ -123,7 +122,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// Returns <see cref="LeagueGroupApiModel"/> or <see cref="LeagueGroupNotFound"/>
+        /// Returns <see cref="LeagueGroup"/> or <see cref="LeagueGroupNotFound"/>
         /// </summary>
         /// <param name="clanTag"></param>
         /// <param name="allowStoredItem"></param>
@@ -144,7 +143,7 @@ namespace devhl.CocApi
 
                 if (leagueGroup != null && (allowExpiredItem || !leagueGroup.IsExpired())) return leagueGroup;
                 
-                IDownloadable downloadable = await GetAsync<LeagueGroupApiModel>(url, EndPoint.LeagueGroup, cancellationToken).ConfigureAwait(false);
+                IDownloadable downloadable = await GetAsync<LeagueGroup>(url, EndPoint.LeagueGroup, cancellationToken).ConfigureAwait(false);
 
                 if (downloadable is LeagueGroupNotFound notFound)
                 {
@@ -156,7 +155,7 @@ namespace devhl.CocApi
                     return notFound;
                 }
 
-                if (!(downloadable is LeagueGroupApiModel leagueGroupApiModel)) throw new CocApiException("Unknown Type");
+                if (!(downloadable is LeagueGroup leagueGroupApiModel)) throw new CocApiException("Unknown Type");
 
                 if (!CocApiConfiguration.CacheHttpResponses) return leagueGroupApiModel;
 
@@ -167,7 +166,7 @@ namespace devhl.CocApi
                     if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup, AllLeagueGroups)) continue;
 
                     //the league group already exists.  Lets check if the existing one is from last month
-                    if (storedLeagueGroup is LeagueGroupApiModel storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
+                    if (storedLeagueGroup is LeagueGroup storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
                     {
                         lock (AllLeagueGroups)
                         {
@@ -187,7 +186,7 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<LeagueWarApiModel> GetLeagueWarAsync(string warTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<LeagueWar> GetLeagueWarAsync(string warTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -195,7 +194,7 @@ namespace devhl.CocApi
             {
                 ThrowIfInvalidTag(warTag);
 
-                LeagueWarApiModel? leagueWar = GetLeagueWarOrDefault(warTag);
+                LeagueWar? leagueWar = GetLeagueWarOrDefault(warTag);
 
                 if (leagueWar != null)
                 {
@@ -208,7 +207,7 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                LeagueWarApiModel leagueWarApiModel = (LeagueWarApiModel) await GetAsync<LeagueWarApiModel>(url, EndPoint.LeagueWar, cancellationToken).ConfigureAwait(false);
+                LeagueWar leagueWarApiModel = (LeagueWar) await GetAsync<LeagueWar>(url, EndPoint.LeagueWar, cancellationToken).ConfigureAwait(false);
 
                 leagueWarApiModel.WarTag = warTag;
 
@@ -228,7 +227,7 @@ namespace devhl.CocApi
 
                 foreach(var clan in leagueWarApiModel.Clans)
                 {
-                    if (AllClans.TryGetValue(clan.ClanTag, out ClanApiModel storedClan, AllClans))
+                    if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan, AllClans))
                     {
                         storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel, storedClan.Wars);
                     }
@@ -245,7 +244,7 @@ namespace devhl.CocApi
                                 AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
                             }
                         }
-                        else if (war is ICurrentWarApiModel currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
+                        else if (war is IActiveWar currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
                         {
                             lock (AllWarsByClanTag)
                             {
@@ -272,7 +271,7 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<VillageApiModel> GetVillageAsync(string villageTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<Village> GetVillageAsync(string villageTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -280,13 +279,13 @@ namespace devhl.CocApi
             {
                 ThrowIfInvalidTag(villageTag);
 
-                VillageApiModel? villageApiModel = GetVillageOrDefault(villageTag);
+                Village? villageApiModel = GetVillageOrDefault(villageTag);
 
                 if (villageApiModel != null && (allowExpiredItem || !villageApiModel.IsExpired())) return villageApiModel;
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                villageApiModel = (VillageApiModel) await GetAsync<VillageApiModel>(url, EndPoint.Village, cancellationToken).ConfigureAwait(false);
+                villageApiModel = (Village) await GetAsync<Village>(url, EndPoint.Village, cancellationToken).ConfigureAwait(false);
 
                 if (CocApiConfiguration.CacheHttpResponses)
                 {
@@ -311,7 +310,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<WarLogEntryModel>> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<WarLogEntry>> GetWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -348,7 +347,7 @@ namespace devhl.CocApi
                     url = url[0..^1];
                 }
 
-                return (PaginatedApiModel<WarLogEntryModel>) await GetAsync<PaginatedApiModel<WarLogEntryModel>>(url, EndPoint.WarLog, cancellationToken).ConfigureAwait(false);
+                return (Paginated<WarLogEntry>) await GetAsync<Paginated<WarLogEntry>>(url, EndPoint.WarLog, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -363,7 +362,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<ClanApiModel>> GetClansAsync(string? clanName = null
+        public async Task<Paginated<Clan>> GetClansAsync(string? clanName = null
                                                         , WarFrequency? warFrequency = null
                                                         , int? locationId = null
                                                         , int? minVillages = null
@@ -432,7 +431,7 @@ namespace devhl.CocApi
                     url = url[0..^1];
                 }
 
-                return (PaginatedApiModel<ClanApiModel>) await GetAsync<PaginatedApiModel<ClanApiModel>>(url, EndPoint.Clans, cancellationToken).ConfigureAwait(false);
+                return (Paginated<Clan>) await GetAsync<Paginated<Clan>>(url, EndPoint.Clans, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -447,7 +446,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<VillageLeagueApiModel>> GetVillageLeaguesAsync(CancellationToken? cancellationToken = null)
+        public async Task<Paginated<VillageLeague>> GetVillageLeaguesAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -455,7 +454,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/leagues?limit=500";
 
-                return (PaginatedApiModel<VillageLeagueApiModel>) await GetAsync<PaginatedApiModel<VillageLeagueApiModel>>(url, EndPoint.VillageLeagues, cancellationToken).ConfigureAwait(false);
+                return (Paginated<VillageLeague>) await GetAsync<Paginated<VillageLeague>>(url, EndPoint.VillageLeagues, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -470,7 +469,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<LocationApiModel>> GetLocationsAsync(CancellationToken? cancellationToken = null)
+        public async Task<Paginated<Location>> GetLocationsAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -478,7 +477,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations?limit=10000";
 
-                return (PaginatedApiModel<LocationApiModel>) await GetAsync<PaginatedApiModel<LocationApiModel>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
+                return (Paginated<Location>) await GetAsync<Paginated<Location>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -493,7 +492,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<PaginatedApiModel<TopMainClan>> GetTopMainClansAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopMainClan>> GetTopMainClansAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -501,7 +500,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans";
 
-                return (PaginatedApiModel<TopMainClan>) await GetAsync<PaginatedApiModel<TopMainClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
+                return (Paginated<TopMainClan>) await GetAsync<Paginated<TopMainClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -517,7 +516,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopBuilderClan>> GetTopBuilderClansAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopBuilderClan>> GetTopBuilderClansAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -525,7 +524,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans-versus";
 
-                return (PaginatedApiModel<TopBuilderClan>) await GetAsync<PaginatedApiModel<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
+                return (Paginated<TopBuilderClan>) await GetAsync<Paginated<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -541,7 +540,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopMainVillage>> GetTopMainVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopMainVillage>> GetTopMainVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -549,7 +548,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players";
 
-                return (PaginatedApiModel<TopMainVillage>) await GetAsync<PaginatedApiModel<TopMainVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                return (Paginated<TopMainVillage>) await GetAsync<Paginated<TopMainVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -565,7 +564,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<TopBuilderVillage>> GetTopBuilderVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopBuilderVillage>> GetTopBuilderVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -573,7 +572,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players-versus";
 
-                return (PaginatedApiModel<TopBuilderVillage>) await GetAsync<PaginatedApiModel<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                return (Paginated<TopBuilderVillage>) await GetAsync<Paginated<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -589,7 +588,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<LabelApiModel>> GetClanLabelsAsync(CancellationToken? cancellationToken = null)
+        public async Task<Paginated<Label>> GetClanLabelsAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -597,7 +596,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/clans?limit=10000";
 
-                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                return (Paginated<Label>) await GetAsync<Paginated<Label>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {
@@ -613,7 +612,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<PaginatedApiModel<LabelApiModel>> GetVillageLabelsAsync(CancellationToken? cancellationToken = null)
+        public async Task<Paginated<Label>> GetVillageLabelsAsync(CancellationToken? cancellationToken = null)
         {
             VerifyInitialization();
 
@@ -621,7 +620,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/players?limit=10000";
 
-                return (PaginatedApiModel<LabelApiModel>) await GetAsync<PaginatedApiModel<LabelApiModel>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                return (Paginated<Label>) await GetAsync<Paginated<Label>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
             catch (Exception e)
             {

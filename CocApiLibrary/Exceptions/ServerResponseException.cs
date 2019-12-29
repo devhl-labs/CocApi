@@ -12,7 +12,7 @@ namespace devhl.CocApi.Exceptions
         public readonly System.Net.HttpStatusCode? HttpStatusCode;
 
 
-        public ServerResponseException(ResponseMessageApiModel responseMessage, System.Net.HttpStatusCode? httpStatusCode) : base(responseMessage.Reason)
+        public ServerResponseException(ResponseMessage responseMessage, System.Net.HttpStatusCode? httpStatusCode) : base(responseMessage.Reason)
         {
             Reason = responseMessage.Reason;
             HttpStatusCode = httpStatusCode;

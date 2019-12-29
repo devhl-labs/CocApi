@@ -1,6 +1,6 @@
 ﻿using System;
 //using System.Text.Json;
-////System.Text.Json.Serialization
+
 using Newtonsoft.Json;
 
 namespace devhl.CocApi.Converters

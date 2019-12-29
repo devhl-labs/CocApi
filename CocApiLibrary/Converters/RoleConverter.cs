@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 //using System.Text.Json;
-////System.Text.Json.Serialization
+
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -79,31 +79,31 @@ namespace devhl.CocApi.Converters
     //    }
     //}
 
-    internal class RoleConverter : StringEnumConverter
-    {
-        public override bool CanConvert(Type objectType)
-        {
-            return (objectType == typeof(Role));
-        }
+    //internal class RoleConverter : StringEnumConverter
+    //{
+    //    public override bool CanConvert(Type objectType)
+    //    {
+    //        return (objectType == typeof(Role));
+    //    }
 
-        //public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
-        //{
-        //    return base.ReadJson(reader, objectType, existingValue, serializer);
-        //}
+    //    //public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    //    //{
+    //    //    return base.ReadJson(reader, objectType, existingValue, serializer);
+    //    //}
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-            }
-            else
-            {
-                var a = ((Role) value).ToEnumMemberAttrValue();
+    //    public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+    //    {
+    //        if (value == null)
+    //        {
+    //            writer.WriteNull();
+    //        }
+    //        else
+    //        {
+    //            var a = ((Role) value).ToEnumMemberAttrValue();
 
 
-                writer.WriteValue(((Role) value).ToEnumMemberAttrValue());
-            }
-        }
-    }
+    //            writer.WriteValue(((Role) value).ToEnumMemberAttrValue());
+    //        }
+    //    }
+    //}
 }

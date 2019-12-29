@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 //using System.Text.Json;
-////System.Text.Json.Serialization
+
 using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +17,7 @@ using static devhl.CocApi.Enums;
 using devhl.CocApi.Models.War;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
-using devhl.CocApi.Models.Location;
+
 using System.Collections.Concurrent;
 using devhl.CocApi.Converters;
 using Newtonsoft.Json.Converters;
@@ -183,7 +183,7 @@ namespace devhl.CocApi
             }
             else if (e is TaskCanceledException)
             {
-                ResponseMessageApiModel responseMessageApiModel = new ResponseMessageApiModel
+                ResponseMessage responseMessageApiModel = new ResponseMessage
                 {
                     Message = e.Message,
 
@@ -206,7 +206,7 @@ namespace devhl.CocApi
 
             //ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
 
-            ResponseMessageApiModel ex = JsonConvert.DeserializeObject<ResponseMessageApiModel>(responseText);
+            ResponseMessage ex = JsonConvert.DeserializeObject<ResponseMessage>(responseText);
 
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {
@@ -274,7 +274,7 @@ namespace devhl.CocApi
 
             if (result != null)
             {
-                if (result is CurrentWarApiModel currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
+                if (result is CurrentWar currentWar && currentWar.PreparationStartTimeUtc == DateTime.MinValue)
                 {
                     var notInWar = new NotInWar();
 
@@ -329,7 +329,7 @@ namespace devhl.CocApi
 
             switch (result)
             {
-                case LeagueWarApiModel leagueWarApiModel:
+                case LeagueWar leagueWarApiModel:
                     if (leagueWarApiModel.State == WarState.WarEnded)
                     {
                         leagueWarApiModel.ExpiresAtUtc = DateTime.MaxValue;
@@ -341,7 +341,7 @@ namespace devhl.CocApi
 
                     break;
 
-                case CurrentWarApiModel currentWar:
+                case CurrentWar currentWar:
                     if (currentWar.State == WarState.WarEnded)
                     {
                         currentWar.ExpiresAtUtc = DateTime.MaxValue;
@@ -353,7 +353,7 @@ namespace devhl.CocApi
 
                     break;
 
-                case LeagueGroupApiModel leagueGroupApiModel:
+                case LeagueGroup leagueGroupApiModel:
                     if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
                         leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.AddHours(6);
@@ -370,40 +370,40 @@ namespace devhl.CocApi
                     break;
 
 
-                case ClanApiModel clanApiModel:
+                case Clan clanApiModel:
                     clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
                     break;
 
 
-                case VillageApiModel villageApiModel:
+                case Village villageApiModel:
                     villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
                     break;
 
 
-                case PaginatedApiModel<WarLogEntryModel> warLogApiModel:
+                case Paginated<WarLogEntry> warLogApiModel:
                     warLogApiModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
 
-                case PaginatedApiModel<VillageLeagueApiModel> villageLeagueSearchModel:
+                case Paginated<VillageLeague> villageLeagueSearchModel:
                     villageLeagueSearchModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
 
-                case PaginatedApiModel<LocationApiModel> searchApiModel:
+                case Paginated<Location> searchApiModel:
                     searchApiModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
 
-                case PaginatedApiModel<ClanApiModel> clanSearchModel:
+                case Paginated<Clan> clanSearchModel:
                     clanSearchModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
-                case PaginatedApiModel<VillageApiModel> villageSearchModel:
+                case Paginated<Village> villageSearchModel:
                     villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
-                case PaginatedApiModel<LabelApiModel> villageSearchModel:
+                case Paginated<Label> villageSearchModel:
                     villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
                     break;
 
