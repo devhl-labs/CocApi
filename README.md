@@ -12,7 +12,7 @@ The test program will output the following:<br/><br/>
 If you choose to keep the objects up to date, the library will constantly write to the ILogger.
 Of course, the ILogger is in your program, so you can choose what to print.
 
-## [CocApi](/CocApiLibrary/CocApi/CocApi.cs)
+## [CocApi](/CocApiLibrary/CocApi)
 The CocApi class is the entry point to this library.
 You likely want this class to be a singleton that lives for the life of your application.
 This class is disposable, don't forget to call Dispose when you end your applicaiton.
