@@ -28,24 +28,19 @@ If your key is only used in CocApi, you can make the time spans much shorter.
 The API allows about 10 requests a second per key.
 
 ## [WebResponse](/CocApiLibrary/WebResponse.cs)
-This is an internal static class.
 If it prints to the ILogger, that indicates that the library is polling the API.
 
-## [UpdateService](/CocApiLibrary/UpdateService.cs)
-This is an internal class.
-If it prints to the ILogger, it is updating an object.  If the object being updated is not expired, it will not ask the WebResponse class to poll the API.
-
-## [ICurrentWarAPIModel](/CocApiLibrary/Models/War/ICurrentWarAPIModel.cs)
-This interface is implemented by [CurrentWarAPIModel](/CocApiLibrary/Models/War/CurrentWarAPIModel.cs) and [LeagueWarAPIModel](/CocApiLibrary/Models/War/LeagueWarAPIModel.cs).
-The only difference is LeagueWarAPIModel has a WarTag property, and the WarType enum will be SCCWL.
-When CocApi returns an ICurrentWarAPIModel, you can cast it to the appropriate type when necessary.
-LeagueWarAPIModel also inherits from CurrentWarAPIModel.  If you have to cast, ensure you start with LeagueWarAPIModel.
+## [IActiveWar](/CocApiLibrary/Models/War/IActiveWar.cs)
+This interface is implemented by [CurrentWar](/CocApiLibrary/Models/War/CurrentWar.cs) and [LeagueWar](/CocApiLibrary/Models/War/LeagueWar.cs).
+The only difference is LeagueWar has a WarTag property, and the WarType enum will be SCCWL.
+When CocApi returns an IActiveWar you can cast it to the appropriate type when necessary.
+LeagueWar also inherits CurrentWar.  If you have to cast, ensure you start with LeagueWar.
 
 ## IWar
-This empty interface is implemented by ICurrentWarAPIModel and the NotInWar model.  The library will never return an ICurrentWarAPIModel with state = notInWar.
+This empty interface is implemented by IActiveWar and the NotInWar model.  The library will never return an IActiveWar with state = notInWar.
 
 ## ILeagueGroup
-This empty interface is implemented by LeagueGroupApiModel and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
+This empty interface is implemented by LeagueGroup and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
 
 ## [Extensions](/CocApiLibrary/Extensions.cs)
 The static Extensions class contains some things that may be useful, especially for Discord bots.
@@ -56,42 +51,11 @@ ToDateTime will convert SC API date time objects to C# DateTime, though the libr
 ## Outages
 When the API goes down, the IsAvailableChanged event will fire.
 CocApi will not stop trying to update expired objects unless you tell it to in this event.
-When an outage is detected, it will poll the API every five seconds to see if the server is back up.
-If an error occurs while watching clans, a CrashDetected event will fire. 
-You may handle it by StartWatchingClans, or any other means you wish.
+If an error occurs while watching clans, the library will attempt to restart the UpdateService.
 
 ## Issues
 If you have problems finding one of the required nuget packages, add https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json as a source.</br></br>
 If the objects update too slow or two fast, modify the properties of the CocApiConfiguration.  TokenObject rate limits are bad.  TokenObject preemptive rate limits are okay, though it does indicate the library is updating as fast as the TokenTimeOut allows. 
 
-## Entity Framework
-These classes should translate to working tables with little or no effort.  Paste the below code into your OnModelCreating.
-
-```csharp
-protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    //composite keys
-    modelBuilder.Entity<ClanLabelAPIModel>().HasKey(p => new { p.Id,  p.ClanTag });
-    modelBuilder.Entity<AchievementAPIModel>().HasKey(p => new { p.Name, p.VillageTag });
-    modelBuilder.Entity<SpellAPIModel>().HasKey(p => new { p.Name, p.VillageTag });
-    modelBuilder.Entity<TroopAPIModel>().HasKey(p => new { p.Name, p.VillageTag, p.Village });
-    modelBuilder.Entity<LegendLeagueResultAPIModel>().HasKey(p => new { p.Id, p.VillageTag, p.Village });
-    modelBuilder.Entity<VillageLabelAPIModel>().HasKey(p => new { p.Id, p.VillageTag });
-    modelBuilder.Entity<AttackAPIModel>().HasKey(p => new { p.WarId, p.Order });
-
-    //define one-to-zero(or one) relationship between villages and legends league
-    modelBuilder.Entity<VillageAPIModel>()
-                .HasOne(p => p.LegendStatistics)
-                .WithOne(p => p!.Village!)
-                .HasForeignKey<LegendLeagueStatisticsAPIModel>(p => p.VillageTag)
-                .OnDelete(DeleteBehavior.Restrict);
-
-    //define one-to-one relationship between current war and flags
-    modelBuilder.Entity<CurrentWarAPIModel>()
-        .HasOne(p => p.Flags)
-        .WithOne(p => p.CurrentWarAPIModel)
-        .HasForeignKey<CurrentWarFlagsModel>(p => p.WarId);
-}
-```
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).
