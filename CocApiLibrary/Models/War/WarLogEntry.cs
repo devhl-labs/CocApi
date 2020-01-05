@@ -10,20 +10,20 @@ namespace devhl.CocApi.Models.War
     {
 
         [JsonProperty]
-        public Result Result { get; }
+        public Result Result { get; private set; }
 
         [JsonProperty]
-        public int TeamSize { get; }
+        public int TeamSize { get; private set; }
 
         [JsonProperty]
-        public WarClan? Clan { get; }
+        public WarClan? Clan { get; private set; }
 
         [JsonProperty]
-        public WarClan? Opponent { get; }
+        public WarClan? Opponent { get; private set; }
 
         [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime EndTimeUtc { get; }
+        public DateTime EndTimeUtc { get; private set; }
 
     }
 }

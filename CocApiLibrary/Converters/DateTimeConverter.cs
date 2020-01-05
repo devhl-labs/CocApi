@@ -20,7 +20,7 @@ namespace devhl.CocApi.Converters
 
 
 
-    internal class DateTimeConverter : JsonConverter
+    public class DateTimeConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

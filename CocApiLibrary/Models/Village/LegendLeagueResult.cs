@@ -13,13 +13,13 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public int Trophies { get; }
+        public int Trophies { get; private set; }
 
         [JsonConverter(typeof(LeagueSeasonConverter))]
-        public DateTime Id { get; } = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+        public DateTime Id { get; private set; } = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
 
         [JsonProperty]
-        public int? Rank { get; }
+        public int? Rank { get; private set; }
 
         [JsonProperty]
         public VillageType Village { get; internal set; } = VillageType.Home;

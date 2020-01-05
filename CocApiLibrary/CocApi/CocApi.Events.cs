@@ -55,7 +55,8 @@ namespace devhl.CocApi
     public delegate Task ClanVillageNameChangedEventHandler(ClanVillage oldVillage, string newName);
     public delegate Task ClanVillagesLeagueChangedEventHandler(Clan oldClan, IReadOnlyList<LeagueChange> leagueChanged);
     public delegate Task ClanVillagesRoleChangedEventHandler(Clan oldClan, IReadOnlyList<RoleChange> roleChanges);
-    public delegate Task ClanDonationsResetEventHandler(Clan oldClan, Clan newClan);
+    public delegate Task ClanDonationsResetEventHandler(Clan oldClan, Clan newClan); //todo rework this event to handle villages leaving
+    public delegate Task MissedAttacksEventHandler(IActiveWar activeWar, IReadOnlyList<Attack> attacks);
 
 
     public sealed partial class CocApi : IDisposable
@@ -167,7 +168,14 @@ namespace devhl.CocApi
         /// <summary>
         /// Fires when an update task encounters an error.  Recommended fix action is to <see cref="StartUpdatingClans()"/> or restart.
         /// </summary>
+        public event MissedAttacksEventHandler? MissedAttacks;
 
+        internal void MissedAttacksEvent(IActiveWar activeWar, List<Attack> missedAttacks)
+        {
+            if (missedAttacks.Count == 0) return;
+
+            MissedAttacks?.Invoke(activeWar, missedAttacks.ToImmutableArray());
+        }
 
         internal void CrashDetectedEvent()
         {

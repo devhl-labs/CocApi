@@ -8,16 +8,16 @@ namespace devhl.CocApi.Models.Village
     public class VillageClan : IClan
     {
         [JsonProperty("Tag")]
-        public string ClanTag { get; } = string.Empty;
+        public string ClanTag { get; private set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
 
         [JsonProperty]
-        public BadgeUrl? BadgeUrl { get; }
+        public BadgeUrl? BadgeUrl { get; private set; }
 
         [JsonProperty]
-        public int ClanLevel { get; }
+        public int ClanLevel { get; private set; }
 
         public void Initialize()
         {

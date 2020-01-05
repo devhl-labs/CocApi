@@ -11,7 +11,7 @@ namespace devhl.CocApi.Models.War
         public string ClanTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
 
 
         [JsonProperty]
@@ -19,7 +19,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public int ClanLevel { get; }
+        public int ClanLevel { get; private set; }
 
         [JsonProperty]
         public string GroupId { get; internal set; } = string.Empty;

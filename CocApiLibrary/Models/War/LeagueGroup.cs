@@ -17,14 +17,14 @@ namespace devhl.CocApi.Models.War
         public LeagueState State { get; }
 
         [JsonConverter(typeof(LeagueSeasonConverter))]
-        public DateTime Season { get; }
+        public DateTime Season { get; private set; }
 
 
         [JsonProperty]
         public IEnumerable<LeagueClan>? Clans { get; internal set; }
 
         [JsonProperty]
-        public IList<Round>? Rounds { get; }
+        public IList<Round>? Rounds { get; private set; }
 
 
 

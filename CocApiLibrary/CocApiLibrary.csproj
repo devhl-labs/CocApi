@@ -10,8 +10,8 @@
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</Description>
-    <Version>0.21.0-alpha</Version>
-    <AssemblyVersion>0.21.0.0</AssemblyVersion>
+    <Version>0.22.0-alpha</Version>
+    <AssemblyVersion>0.22.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
     <PackageId>CocApi</PackageId>
@@ -25,7 +25,7 @@ Use this feed to get Reflection while this is in prerelease.</Description>
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</PackageReleaseNotes>
-    <FileVersion>0.21.0.0</FileVersion>
+    <FileVersion>0.22.0.0</FileVersion>
     <ApplicationIcon />
     <AssemblyName>CocApi</AssemblyName>
     <RootNamespace>devhl.CocApi</RootNamespace>
@@ -52,7 +52,7 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="5.0.0-alpha1.19519.4" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="5.0.0-alpha1.19523.8" />
     <PackageReference Include="System.Text.Json" Version="5.0.0-alpha1.19523.8" />
   </ItemGroup>
 

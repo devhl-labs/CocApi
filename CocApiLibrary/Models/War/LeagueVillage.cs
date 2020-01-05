@@ -8,11 +8,11 @@ namespace devhl.CocApi.Models.War
     public class LeagueVillage : IVillage
     {
         [JsonProperty("Tag")]
-        public string VillageTag { get; } = string.Empty;
+        public string VillageTag { get; private set; } = string.Empty;
 
 
         [JsonProperty]
-        public string Name { get; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
 
 
         [JsonProperty]
@@ -20,7 +20,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public int TownhallLevel { get; }
+        public int TownhallLevel { get; private set; }
 
         [JsonProperty]
         public string LeagueClanId { get; internal set; } = string.Empty;

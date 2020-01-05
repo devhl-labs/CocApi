@@ -5,12 +5,12 @@ namespace devhl.CocApi.Models.Village
     public class League : IInitialize
     {
         [JsonProperty]
-        public int Id { get; }
+        public int Id { get; internal set; }
 
         [JsonProperty]
-        public string Name { get; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
-        [JsonProperty("IconUrls")]
+        [JsonProperty("iconUrls")]
         public LeagueIcon? LeagueIcon { get; internal set; }
 
         public void Initialize()

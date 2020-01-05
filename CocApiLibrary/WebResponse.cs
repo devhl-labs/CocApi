@@ -153,7 +153,7 @@ namespace devhl.CocApi
 
             try
             {
-                response = await ApiClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
+                 response = await ApiClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -317,8 +317,6 @@ namespace devhl.CocApi
 
             string responseText = response.Content.ReadAsStringAsync().Result;
 
-            //TValue result = JsonSerializer.Deserialize<TValue>(responseText, _jsonSerializerOptions);
-
             TValue result = JsonConvert.DeserializeObject<TValue>(responseText);
 
             if (result != null)
@@ -349,8 +347,6 @@ namespace devhl.CocApi
             _cocApi.Logger?.LogDebug("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), "unsuccessful http response");
 
             string responseText = response.Content.ReadAsStringAsync().Result;
-
-            //ResponseMessageApiModel ex = JsonSerializer.Deserialize<ResponseMessageApiModel>(responseText, _jsonSerializerOptions);
 
             ResponseMessage ex = JsonConvert.DeserializeObject<ResponseMessage>(responseText);
 

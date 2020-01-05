@@ -37,11 +37,13 @@ namespace devhl.CocApi
                 clan = (Clan) await GetAsync<Clan>(url, EndPoint.Clan, cancellationToken).ConfigureAwait(false);
 
                 if (!CocApiConfiguration.CacheHttpResponses) return clan;
-                
-                lock (AllClans)
+
+                AllClans.AddOrUpdate(clan.ClanTag, clan, (clanTag, clan2) =>
                 {
-                    AllClans[clan.ClanTag] = clan;
-                }                
+                    if (clan.UpdatedAtUtc > clan2.CacheExpiresAtUtc) return clan;
+
+                    return clan2;
+                });                      
 
                 return clan;
             }
@@ -75,13 +77,15 @@ namespace devhl.CocApi
                 {
                     if (CocApiConfiguration.CacheHttpResponses)
                     {
-                        lock (AllWarsByClanTag)
+                        AllWarsByClanTag.AddOrUpdate(clanTag, notInWar, (clanTag, war2) =>
                         {
-                            AllWarsByClanTag[clanTag] = notInWar;
-                        }
-                    }
+                            if (notInWar.UpdatedAtUtc > war2.UpdatedAtUtc) return notInWar;
 
-                    return notInWar;
+                            return war2;
+                        });
+
+                        return notInWar;
+                    }
                 }
 
                 IActiveWar downloadedWar = (IActiveWar) downloadable;
@@ -90,26 +94,30 @@ namespace devhl.CocApi
                 
                 foreach(var clan in downloadedWar.Clans)
                 {
-                    AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar, AllWarsByClanTag);
+                    AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
 
                     if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc)
                     {
-                        lock (AllWarsByClanTag)
+                        AllWarsByClanTag.AddOrUpdate(clanTag, downloadedWar, (clanTag, war2) =>
                         {
-                            AllWarsByClanTag[clan.ClanTag] = downloadedWar;
-                        }
+                            if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return downloadedWar;
+
+                            return war2;
+                        });
                     }
 
-                    if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan, AllClans))
+                    if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
                     {
-                        storedClan.Wars.TryAdd(downloadedWar.WarId, (CurrentWar) downloadedWar, storedClan.Wars);
+                        storedClan.Wars.TryAdd(downloadedWar.WarId, (CurrentWar) downloadedWar);
                     }
-                }
+                }             
 
-                lock (AllWarsByWarId)
+                AllWarsByWarId.AddOrUpdate(downloadedWar.WarId, downloadedWar, (_, war2) =>
                 {
-                    AllWarsByWarId[downloadedWar.WarId] = downloadedWar;
-                }                                                        
+                    if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return downloadedWar;
+
+                    return war2;
+                });
 
                 return downloadedWar;
             }
@@ -139,7 +147,7 @@ namespace devhl.CocApi
             {
                 ThrowIfInvalidTag(clanTag);
 
-                LeagueGroup? leagueGroup = (LeagueGroup?) GetLeagueGroupOrDefault(clanTag);
+                ILeagueGroup? leagueGroup = GetLeagueGroupOrDefault(clanTag);
 
                 if (leagueGroup != null && (allowExpiredItem || !leagueGroup.IsExpired())) return leagueGroup;
                 
@@ -147,10 +155,12 @@ namespace devhl.CocApi
 
                 if (downloadable is LeagueGroupNotFound notFound)
                 {
-                    lock (AllLeagueGroups)
+                    AllLeagueGroups.AddOrUpdate(clanTag, notFound, (clanTag, group2) =>
                     {
-                        AllLeagueGroups[clanTag] = notFound;
-                    }
+                        if (notFound.UpdatedAtUtc > group2.UpdatedAtUtc) return notFound;
+
+                        return group2;
+                    });
 
                     return notFound;
                 }
@@ -161,17 +171,20 @@ namespace devhl.CocApi
 
                 foreach(var clan in leagueGroupApiModel.Clans.EmptyIfNull())
                 {
-                    if (AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel, AllLeagueGroups)) continue;
+                    if (AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel)) continue;
 
-                    if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup, AllLeagueGroups)) continue;
+                    if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup)) continue;
 
                     //the league group already exists.  Lets check if the existing one is from last month
                     if (storedLeagueGroup is LeagueGroup storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
                     {
-                        lock (AllLeagueGroups)
+                        AllLeagueGroups.AddOrUpdate(clan.ClanTag, storedLeagueGroupApiModel, (clanTag, group2) =>
                         {
-                            AllLeagueGroups[clan.ClanTag] = storedLeagueGroupApiModel;
-                        }
+                            if (storedLeagueGroupApiModel.UpdatedAtUtc > group2.UpdatedAtUtc) return storedLeagueGroupApiModel;
+
+                            return group2;
+                        });
+
                     }
                 }
 
@@ -215,49 +228,60 @@ namespace devhl.CocApi
 
                 if (!CocApiConfiguration.CacheHttpResponses) return leagueWarApiModel;
 
-                lock (AllWarsByWarTag)
+                AllWarsByWarTag.AddOrUpdate(leagueWarApiModel.WarTag, leagueWarApiModel, (_, war2) =>
                 {
-                    AllWarsByWarTag[leagueWarApiModel.WarTag] = leagueWarApiModel;
-                }
+                    if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
 
-                lock (AllWarsByWarId)
+                    return war2;
+                });
+
+                AllWarsByWarId.AddOrUpdate(leagueWarApiModel.WarId, leagueWarApiModel, (_, war2) =>
                 {
-                    AllWarsByWarId[leagueWarApiModel.WarId] = leagueWarApiModel;
-                }
+                    if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
 
+                    return war2;
+                });
+                
                 foreach(var clan in leagueWarApiModel.Clans)
                 {
-                    if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan, AllClans))
+                    if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
                     {
-                        storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel, storedClan.Wars);
+                        storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel);
                     }
                 }
 
                 foreach(var clan in leagueWarApiModel.Clans)
                 {
-                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war, AllWarsByClanTag))
+                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war))
                     {
                         if (war is NotInWar || leagueWarApiModel.State == WarState.InWar)
                         {
-                            lock (AllWarsByClanTag)
+                            AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                             {
-                                AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
-                            }
+                                if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+
+                                return war2;
+                            });
+
                         }
                         else if (war is IActiveWar currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
                         {
-                            lock (AllWarsByClanTag)
+                            AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                             {
-                                AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
-                            }
+                                if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+
+                                return war2;
+                            });
                         }
                     }
                     else
                     {
-                        lock (AllWarsByClanTag)
+                        AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                         {
-                            AllWarsByClanTag[clan.ClanTag] = leagueWarApiModel;
-                        }
+                            if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+
+                            return war2;
+                        });
                     }
                 }
 
@@ -289,10 +313,12 @@ namespace devhl.CocApi
 
                 if (CocApiConfiguration.CacheHttpResponses)
                 {
-                    lock (AllVillages)
+                    AllVillages.AddOrUpdate(villageTag, villageApiModel, (villageTag, village2) =>
                     {
-                        AllVillages[villageTag] = villageApiModel;
-                    }
+                        if (villageApiModel.UpdatedAtUtc > village2.UpdatedAtUtc) return villageApiModel;
+
+                        return village2;
+                    });
                 }
 
                 return villageApiModel;

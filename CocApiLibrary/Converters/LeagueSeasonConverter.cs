@@ -18,7 +18,7 @@ namespace devhl.CocApi.Converters
     //    }
     //}
 
-    internal class LeagueSeasonConverter : JsonConverter
+    public class LeagueSeasonConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {

@@ -15,32 +15,32 @@ namespace devhl.CocApi.Models.War
     {
         [JsonConverter(typeof(DateTimeConverter))]
         [JsonProperty("endTime")]
-        public DateTime EndTimeUtc { get; }
+        public DateTime EndTimeUtc { get; private set; }
 
 
         [JsonProperty("preparationStartTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime PreparationStartTimeUtc { get; }
+        public DateTime PreparationStartTimeUtc { get; private set; }
 
 
         [JsonProperty("startTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime StartTimeUtc { get; }
+        public DateTime StartTimeUtc { get; private set; }
 
 
         [JsonProperty]
-        public int TeamSize { get; }
+        public int TeamSize { get; private set; }
 
 
         [JsonProperty]
-        internal WarClan? Clan { get; }
+        internal WarClan? Clan { get; private set; }
 
         [JsonProperty]
-        internal WarClan? Opponent { get; }
+        internal WarClan? Opponent { get; private set; }
 
 
         [JsonProperty]
-        public WarState State { get; }
+        public WarState State { get; private set; }
 
 
         [JsonProperty]
@@ -176,6 +176,8 @@ namespace devhl.CocApi.Models.War
 
                 attack.PreparationStartTimeUtc = PreparationStartTimeUtc;
 
+                attack.Initialize();
+
                 var attacksThisBase = Attacks.Where(a => a.AttackerClanTag == attack.AttackerClanTag && a.DefenderTag == attack.DefenderTag && a.AttackerTag != attack.AttackerTag).ToList();
 
                 if (attacksThisBase.Count == 0)
@@ -184,7 +186,7 @@ namespace devhl.CocApi.Models.War
                 }
                 else
                 {
-                    attack.StarsGained = Math.Max(attack.Stars - attacksThisBase.OrderBy(a => a.Stars).First().Stars, 0);                    
+                    attack.StarsGained = Math.Max(attack.Stars!.Value - attacksThisBase.OrderBy(a => a.Stars).First().Stars!.Value, 0);                    
                 }
 
                 foreach (var clan in Clans)
@@ -366,8 +368,77 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarEndSeen = true;
 
+                foreach (var warClan in Clans) CreateMissedAttacks(warClan);
+
+                cocApi.MissedAttacksEvent(this, Attacks.Where(a => a.Missed == true).ToList());
+
                 cocApi.WarEndSeenEvent(this);
             }
+        }
+
+        private void CreateMissedAttacks(WarClan warClan)
+        {
+            if (this is LeagueWar)
+            {
+                CreateMissedAttacksLeagueWar(warClan);
+            }
+            else
+            {
+                CreateMissedAttacksCurrentWar(warClan);
+            }
+        }
+
+        private void CreateMissedAttacksCurrentWar(WarClan warClan)
+        {
+            foreach (var attacker in warClan.Villages.EmptyIfNull())
+            {
+                attacker.Attacks ??= new List<Attack>();
+
+                for (int i = 0; i < 2; i++)
+                {
+                    if (attacker.Attacks[i] == null) CreateMissedAttack(attacker);
+                }
+            }
+
+            return;
+        }
+
+        private void  CreateMissedAttacksLeagueWar(WarClan warClan)
+        {
+            foreach(var attacker in warClan.Villages.EmptyIfNull())
+            {
+                if (attacker.Attacks?.Count == 1) continue;
+
+                if (Attacks.Any(a => a.DefenderTag == attacker.VillageTag)) CreateMissedAttack(attacker);
+            }
+        }
+
+        
+
+        private Attack CreateMissedAttack(WarVillage attacker)
+        {
+            Attack attack = new Attack
+            {
+                AttackerClanTag = attacker.ClanTag,
+
+                AttackerMapPosition = attacker.MapPosition,
+
+                AttackerTag = attacker.VillageTag,
+
+                AttackerTownHallLevel = attacker.TownhallLevel,
+
+                Missed = true,
+
+                PreparationStartTimeUtc = PreparationStartTimeUtc,
+
+                WarId = WarId
+            };
+
+            Attacks.Add(attack);
+
+            attacker.Attacks?.Add(attack);
+
+            return attack;
         }
 
         private void UpdateWar(CocApi cocApi, IWar? downloadedWar)

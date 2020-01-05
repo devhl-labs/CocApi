@@ -9,9 +9,9 @@ namespace devhl.CocApi.Models.Village
     public class TopBuilderVillage : TopVillage
     {
         [JsonProperty("versusTrophies")]
-        public long VersusTrophies { get;  }
+        public long VersusTrophies { get; private set; }
 
         [JsonProperty("versusBattleWins")]
-        public int VersusBattleWins { get; }
+        public int VersusBattleWins { get; private set; }
     }
 }

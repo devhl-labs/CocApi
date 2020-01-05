@@ -73,25 +73,25 @@ namespace devhl.CocApi
 
         public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
-        internal Dictionary<string, Clan> AllClans { get; } = new Dictionary<string, Clan>();
+        internal ConcurrentDictionary<string, Clan> AllClans { get; } = new ConcurrentDictionary<string, Clan>();
 
-        internal Dictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new Dictionary<string, ILeagueGroup>();
+        internal ConcurrentDictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new ConcurrentDictionary<string, ILeagueGroup>();
 
-        internal Dictionary<string, Village> AllVillages { get; } = new Dictionary<string, Village>();
+        internal ConcurrentDictionary<string, Village> AllVillages { get; } = new ConcurrentDictionary<string, Village>();
 
-        internal Dictionary<string, IWar> AllWarsByClanTag { get; } = new Dictionary<string, IWar>();
+        internal ConcurrentDictionary<string, IWar> AllWarsByClanTag { get; } = new ConcurrentDictionary<string, IWar>();
 
-        internal Dictionary<string, IActiveWar> AllWarsByWarId { get; } = new Dictionary<string, IActiveWar>();
+        internal ConcurrentDictionary<string, IActiveWar> AllWarsByWarId { get; } = new ConcurrentDictionary<string, IActiveWar>();
 
-        internal Dictionary<string, LeagueWar> AllWarsByWarTag { get; } = new Dictionary<string, LeagueWar>();
+        internal ConcurrentDictionary<string, LeagueWar> AllWarsByWarTag { get; } = new ConcurrentDictionary<string, LeagueWar>();
 
-        internal Paginated<League> AllLeagues { get; private set; }
+        internal Paginated<League> AllLeagues { get; private set; } = new Paginated<League>();
 
-        internal Paginated<Label> AllVillageLabels { get; private set; }
+        internal Paginated<Label> AllVillageLabels { get; private set; } = new Paginated<Label>();
 
-        internal Paginated<Label> AllClanLabels { get; private set; }
+        internal Paginated<Label> AllClanLabels { get; private set; } = new Paginated<Label>();
 
-        internal Paginated<Location> AllLocations { get; private set; }
+        internal Paginated<Location> AllLocations { get; private set; } = new Paginated<Location>();
 
         internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
 
@@ -298,6 +298,11 @@ namespace devhl.CocApi
             }
         }
 
+        private void ThrowIfNoUpdatersCreated()
+        {
+            if (_updateServices.Count == 0) throw new CocApiException("There are no update services created.");
+        }
+
         /// <summary>
         /// Begin watching a new clan.  This is to add new clans to be watched after your program has started.
         /// </summary>
@@ -306,17 +311,20 @@ namespace devhl.CocApi
         {
             ThrowIfNotInitialized();
 
+            ThrowIfInvalidTag(clanTag);
+
+            ThrowIfNoUpdatersCreated();
+
             try
             {
-                ThrowIfInvalidTag(clanTag);
+                foreach(var updater in _updateServices)
+                {
+                    if (updater.ClanStrings.Contains(clanTag)) return;
+                }
 
                 UpdateService clanUpdateService = _updateServices.OrderBy(c => c.ClanStrings.Count).First();
 
                 clanUpdateService.ClanStrings.Add(clanTag);
-            }
-            catch (CocApiException)
-            {
-                throw;
             }
             catch (Exception e)
             {
@@ -332,24 +340,18 @@ namespace devhl.CocApi
         {
             ThrowIfNotInitialized();
 
+            ThrowIfNoUpdatersCreated();
+
             try
             {
                 int j = 0;
 
                 foreach (string clanTag in clanTags)
                 {
-                    try
+                    if (IsValidTag(clanTag))
                     {
-                        ThrowIfInvalidTag(clanTag);
+                        _updateServices[j].ClanStrings.Add(clanTag); 
                     }
-                    catch (Exception)
-                    {
-                        continue;
-                    }
-
-                    //_updateServices.ElementAt(j).ClanStrings.Add(clanTag);
-
-                    _updateServices[j].ClanStrings.Add(clanTag);  //todo does this work?
 
                     j++;
 
@@ -370,24 +372,18 @@ namespace devhl.CocApi
         {
             ThrowIfNotInitialized();
 
+            ThrowIfNoUpdatersCreated();
+
             try
             {
                 int j = 0;
 
                 foreach (Clan clan in clans)
                 {
-                    try
+                    if (IsValidTag(clan.ClanTag))
                     {
-                        ThrowIfInvalidTag(clan.ClanTag);
+                        _updateServices[j].ClanStrings.Add(clan.ClanTag);
                     }
-                    catch (Exception)
-                    {
-                        continue;
-                    }
-
-                    //_updateServices.ElementAt(j).ClanStrings.Add(clan.ClanTag); //todo does this work?
-
-                    _updateServices[j].ClanStrings.Add(clan.ClanTag);
 
                     j++;
 
@@ -426,10 +422,10 @@ namespace devhl.CocApi
         /// <param name="clanLabels"></param>
         /// <param name="clanVillages"></param>
         public void LoadFromDatabase(
-                                     IEnumerable<Clan> clans, 
-                                     IEnumerable<BadgeUrl>? badgeUrls, 
-                                     IEnumerable<ClanLabel>? clanLabels, 
-                                     IEnumerable<ClanVillage>? clanVillages)
+                            IEnumerable<Clan> clans, 
+                            IEnumerable<BadgeUrl>? badgeUrls, 
+                            IEnumerable<ClanLabel>? clanLabels, 
+                            IEnumerable<ClanVillage>? clanVillages)
         {
             ThrowIfNotInitialized();
 
@@ -447,25 +443,25 @@ namespace devhl.CocApi
                     clanLabel.LabelUrl = AllClanLabels.Items.FirstOrDefault(l => l.Id == clanLabel.Id).LabelUrl;
                 }
 
-                lock (AllClans)
+                //lock (AllClans)
+                //{
+                foreach (Clan clan in clans.EmptyIfNull())
                 {
-                    foreach (Clan clan in clans.EmptyIfNull())
-                    {
-                        if (Logger != null) clan.Logger = Logger;
+                    if (Logger != null) clan.Logger = Logger;
 
-                        clan.AnnounceWars = true;
+                    clan.AnnounceWars = true;
 
-                        clan.BadgeUrl = badgeUrls.FirstOrDefault(b => b.ClanTag == clan.ClanTag);
+                    clan.BadgeUrl = badgeUrls.FirstOrDefault(b => b.ClanTag == clan.ClanTag);
 
-                        clan.Location = AllLocations.Items.FirstOrDefault(l => l.Id == clan.LocationId);
+                    clan.Location = AllLocations.Items.FirstOrDefault(l => l.Id == clan.LocationId);
 
-                        clan.Villages = clanVillages.Where(v => v.ClanTag == clan.ClanTag).ToList();
+                    clan.Villages = clanVillages.Where(v => v.ClanTag == clan.ClanTag).ToList();
 
-                        clan.Labels = clanLabels.Where(c => c.ClanTag == clan.ClanTag).ToList();
+                    clan.Labels = clanLabels.Where(c => c.ClanTag == clan.ClanTag).ToList();
 
-                        AllClans.TryAdd(clan.ClanTag, clan);
-                    }
+                    AllClans.TryAdd(clan.ClanTag, clan);
                 }
+                //}
             }
             catch (Exception e)
             {
@@ -500,25 +496,22 @@ namespace devhl.CocApi
                     villageLabel.LabelUrl = AllVillageLabels.Items.FirstOrDefault(l => l.Id == villageLabel.Id).LabelUrl;
                 }
 
-                lock (AllVillages)
+                foreach (Village village in villages.EmptyIfNull())
                 {
-                    foreach (Village village in villages.EmptyIfNull())
-                    {
-                        village.Labels = villageLabels.Where(l => l.VillageTag == village.VillageTag).ToList();                        
+                    village.Labels = villageLabels.Where(l => l.VillageTag == village.VillageTag).ToList();                        
 
-                        village.Achievements = achievements.Where(a => a.VillageTag == village.VillageTag);
+                    village.Achievements = achievements.Where(a => a.VillageTag == village.VillageTag);
 
-                        village.Troops = troops.Where(t => t.VillageTag == village.VillageTag);
+                    village.Soldiers = troops.Where(t => t.VillageTag == village.VillageTag);
 
-                        village.Spells = spells.Where(s => s.VillageTag == village.VillageTag);
+                    village.Spells = spells.Where(s => s.VillageTag == village.VillageTag);
 
-                        village.League = AllLeagues.Items.FirstOrDefault(l => l.Id == village.LeagueId);
+                    village.League = AllLeagues.Items.FirstOrDefault(l => l.Id == village.LeagueId);
 
-                        village.Initialize();
+                    village.Initialize();
 
-                        AllVillages.TryAdd(village.VillageTag, village);
-                    }
-                }
+                    AllVillages.TryAdd(village.VillageTag, village);
+                }                
             }
             catch (Exception e)
             {
@@ -550,10 +543,7 @@ namespace devhl.CocApi
         {
             ThrowIfNotInitialized();
 
-            lock (AllClans)
-            {
-                if (AllClans.Count == 0) throw new CocApiException("You must load the clans before loading the wars.");
-            }
+            if (AllClans.Count == 0) throw new CocApiException("You must load the clans before loading the wars.");
 
             try
             {
@@ -581,27 +571,24 @@ namespace devhl.CocApi
 
                 foreach (LeagueWar leagueWar in wars.EmptyIfNull())
                 {
-                    lock (AllWarsByWarId)
-                    {
-                        AllWarsByWarId.TryAdd(leagueWar.WarTag, leagueWar);
-                    }
+                    AllWarsByWarId.TryAdd(leagueWar.WarTag, leagueWar);                    
                 }
 
                 foreach (CurrentWar currentWar in wars.EmptyIfNull())
                 {
-                    AllWarsByClanTag.TryAdd(currentWar.Clans[0].ClanTag, currentWar, AllWarsByClanTag);
+                    AllWarsByClanTag.TryAdd(currentWar.Clans[0].ClanTag, currentWar);
 
-                    AllWarsByClanTag.TryAdd(currentWar.Clans[1].ClanTag, currentWar, AllWarsByClanTag);
+                    AllWarsByClanTag.TryAdd(currentWar.Clans[1].ClanTag, currentWar);
 
-                    AllWarsByWarId.TryAdd(currentWar.WarId, currentWar, AllWarsByWarId);
+                    AllWarsByWarId.TryAdd(currentWar.WarId, currentWar);
 
                     Clan? clan = GetClanOrDefault(currentWar.Clans[0].ClanTag);
 
-                    if (clan != null) clan.Wars.TryAdd(currentWar.WarId, currentWar, clan.Wars);
+                    if (clan != null) clan.Wars.TryAdd(currentWar.WarId, currentWar);
 
                     clan = GetClanOrDefault(currentWar.Clans[1].ClanTag);
 
-                    if (clan != null) clan.Wars.TryAdd(currentWar.WarId, currentWar, clan.Wars);
+                    if (clan != null) clan.Wars.TryAdd(currentWar.WarId, currentWar);
                 }
 
                 foreach (LeagueGroup leagueGroup in leagueGroups.EmptyIfNull())
@@ -610,10 +597,7 @@ namespace devhl.CocApi
 
                     leagueGroup.Initialize();
 
-                    lock (AllLeagueGroups)
-                    {
-                        AllLeagueGroups.TryAdd(leagueGroup.GroupId, leagueGroup);
-                    }
+                    AllLeagueGroups.TryAdd(leagueGroup.GroupId, leagueGroup);
                 }
             }
             catch (Exception e)

@@ -27,7 +27,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public Clan? GetClanOrDefault(string clanTag)
         {
-            AllClans.TryGetValue(clanTag, out Clan? result, AllClans);
+            AllClans.TryGetValue(clanTag, out Clan? result);
 
             return result;
         }
@@ -40,14 +40,14 @@ namespace devhl.CocApi
         /// <returns></returns>
         public IWar? GetWarByClanTagOrDefault(string clanTag)
         {
-            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result, AllWarsByClanTag);
+            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result);
 
             return result;
         }
 
         public IActiveWar? GetWarByWarIdOrDefault(string warId)
         {
-            AllWarsByWarId.TryGetValue(warId, out IActiveWar? currentWar, AllWarsByWarId);
+            AllWarsByWarId.TryGetValue(warId, out IActiveWar? currentWar);
 
             return currentWar;
         }
@@ -61,7 +61,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public ILeagueGroup? GetLeagueGroupOrDefault(string clanTag)
         {
-            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result, AllLeagueGroups);
+            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result);
 
             return result;
         }
@@ -74,7 +74,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public LeagueWar? GetLeagueWarOrDefault(string warTag)
         {
-            AllWarsByWarTag.TryGetValue(warTag, out LeagueWar? result, AllWarsByWarTag);
+            AllWarsByWarTag.TryGetValue(warTag, out LeagueWar? result);
 
             return result;
         }
@@ -87,7 +87,7 @@ namespace devhl.CocApi
         /// <returns></returns>
         public Village? GetVillageOrDefault(string villageTag)
         {            
-            AllVillages.TryGetValue(villageTag, out Village? result, AllVillages);
+            AllVillages.TryGetValue(villageTag, out Village? result);
 
             return result;
         }

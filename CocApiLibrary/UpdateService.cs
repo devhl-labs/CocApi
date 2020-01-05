@@ -187,24 +187,21 @@ namespace devhl.CocApi
                 await DownloadLeagueWarsAsync(storedClan, leagueGroup).ConfigureAwait(false);
             }
 
-            lock (storedClan.Wars)
+            if (storedClan.AnnounceWars == false)
             {
-                if (storedClan.AnnounceWars == false)
-                {
-                    //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
-                    storedClan.AnnounceWars = true;  
+                //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
+                storedClan.AnnounceWars = true;  
 
-                    foreach(var storedWar in storedClan.Wars.Values)
-                    {
-                        storedWar.Flags.WarAnnounced = true;
-                    }
-                }
-                else
+                foreach(var storedWar in storedClan.Wars.Values)
                 {
-                    foreach(var storedWar in storedClan.Wars.Values)
-                    {
-                        AnnounceNewWar(storedClan, (CurrentWar)storedWar);
-                    }
+                    storedWar.Flags.WarAnnounced = true;
+                }
+            }
+            else
+            {
+                foreach(var storedWar in storedClan.Wars.Values)
+                {
+                    AnnounceNewWar(storedClan, storedWar);
                 }
             }
             
@@ -250,21 +247,13 @@ namespace devhl.CocApi
 
         private async Task UpdateWarsAsync(Clan storedClan, ILeagueGroup? leagueGroup)
         {
-            int numberOfWars = 0;
-
-            lock (storedClan.Wars)
-            {
-                numberOfWars = storedClan.Wars.Count;
-            }
+            int numberOfWars = storedClan.Wars.Count;
 
             for (int i = 0; i < numberOfWars; i++)
             {
                 IActiveWar storedWar;
 
-                lock (storedClan.Wars)
-                {
-                    storedWar = storedClan.Wars.ElementAt(i).Value;
-                }
+                storedWar = storedClan.Wars.ElementAt(i).Value;
 
                 IActiveWar? downloadedWar = await _cocApi.GetCurrentWarOrDefaultAsync(storedWar).ConfigureAwait(false);
 
@@ -281,10 +270,12 @@ namespace devhl.CocApi
                 {
                     currentWar1.Flags = storedWar.Flags;
 
-                    lock (storedClan.Wars)
-                    {
-                        storedClan.Wars[storedWar.WarId] = (CurrentWar) downloadedWar;
-                    }
+                    storedClan.Wars.AddOrUpdate(storedWar.WarId, currentWar1, (_, war2) => {
+
+                        if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return currentWar1;
+
+                        return war2;
+                    });
                 }
             }
         }

@@ -7,10 +7,10 @@ namespace devhl.CocApi.Models
     public class Paginated<T> : Downloadable, IInitialize
     {
         [JsonProperty]
-        public IEnumerable<T>? Items { get; }
+        public IEnumerable<T>? Items { get; private set; }
 
         [JsonProperty]
-        public Paging? Paging { get; }
+        public Paging? Paging { get; private set; }
 
         public void Initialize()
         {

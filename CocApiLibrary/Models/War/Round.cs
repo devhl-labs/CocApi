@@ -13,6 +13,6 @@ namespace devhl.CocApi.Models.War
         public string GroupId { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public List<string>? WarTags { get; }
+        public List<string>? WarTags { get; private set; }
     }
 }

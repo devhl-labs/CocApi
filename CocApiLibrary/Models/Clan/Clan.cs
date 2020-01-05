@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -20,13 +21,13 @@ namespace devhl.CocApi.Models.Clan
         [JsonIgnore]
         internal ILogger? Logger { get; set; }
 
-        [JsonProperty("Tag")]
+        [JsonProperty("tag")]
         public string ClanTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public string Name { get; internal set; } = string.Empty;
 
-        [JsonProperty]
+        [JsonProperty("badgeUrls")]
         public BadgeUrl? BadgeUrl { get; internal set; }
 
         [JsonProperty]
@@ -42,13 +43,12 @@ namespace devhl.CocApi.Models.Clan
         public int ClanLevel { get; internal set; }
 
         [JsonProperty]
-        public string? BadgeUrlsId { get; internal set; } = string.Empty;                    
-
         /// <summary>
         /// Controls whether this clan will download villages.
         /// </summary>
         public bool DownloadVillages { get; set; } = true;
 
+        [JsonProperty]
         /// <summary>
         /// Controls whether this clan will download league wars.
         /// </summary>
@@ -94,8 +94,9 @@ namespace devhl.CocApi.Models.Clan
         public WarFrequency WarFrequency { get; internal set; }
 
 
-        public Dictionary<string, CurrentWar> Wars { get; internal set; } = new Dictionary<string, CurrentWar>();
+        public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();
 
+        [JsonProperty]
         /// <summary>
         /// This is a flag used to prevent all wars from being announced on startup. 
         /// It is set to true after all wars have been downloaded at least once for this clan.

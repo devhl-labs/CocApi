@@ -24,61 +24,61 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; private set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
 
         [JsonProperty]
         public string ClanTag { get; private set; } = string.Empty;
 
         [JsonProperty]
-        public int TownHallLevel { get; }
+        public int TownHallLevel { get; private set; }
 
         [JsonProperty]
-        public int TownHallWeaponLevel { get; }
+        public int TownHallWeaponLevel { get; private set; }
 
         [JsonProperty]
-        public int ExpLevel { get; }
+        public int ExpLevel { get; private set; }
 
         [JsonProperty]
-        public int Trophies { get; }
+        public int Trophies { get; private set; }
 
         [JsonProperty]
         public int BestTrophies { get; }
 
         [JsonProperty]
-        public int WarStars { get; }
+        public int WarStars { get; private set; }
 
         [JsonProperty]
-        public int AttackWins { get; }
+        public int AttackWins { get; private set; }
 
         [JsonProperty]
-        public int DefenseWins { get; }
+        public int DefenseWins { get; private set; }
 
         [JsonProperty]
-        public LegendLeagueStatistics? LegendStatistics { get; }
+        public LegendLeagueStatistics? LegendStatistics { get; private set; }
 
         [JsonProperty]
-        public int BuilderHallLevel { get; }
+        public int BuilderHallLevel { get; private set; }
 
         [JsonProperty]
-        public int VersusTrophies { get; }
+        public int VersusTrophies { get; private set; }
 
         [JsonProperty]
-        public int BestVersusTrophies { get; }
+        public int BestVersusTrophies { get; private set; }
 
         [JsonProperty]
-        public int VersusBattleWins { get; }
+        public int VersusBattleWins { get; private set; }
 
         [JsonProperty]
-        public Role Role { get; } = Role.Unknown;
+        public Role Role { get; private set; } = Role.Unknown;
 
         [JsonProperty]
-        public int Donations { get; }
+        public int Donations { get; private set; }
 
         [JsonProperty]
-        public int DonationsReceived { get; }
+        public int DonationsReceived { get; private set; }
 
         [JsonProperty]
-        public VillageClan? Clan { get; }
+        public VillageClan? Clan { get; private set; }
 
         [JsonProperty]
         public League? League { get; internal set; }
@@ -90,16 +90,16 @@ namespace devhl.CocApi.Models.Village
 
 
         [JsonProperty]
-        public int VersusBattleWinCount { get; }
+        public int VersusBattleWinCount { get; private set; }
 
-        [JsonProperty]
-        internal IEnumerable<Troop>? Troops { get; set; }
+        [JsonProperty("Troop")]
+        internal IEnumerable<Troop>? Soldiers { get; set; }
 
         [JsonProperty]
         internal IEnumerable<Troop>? Heroes { get; set; }
 
         [JsonProperty]
-        public IList<Troop> AllTroops { get; internal set; } = new List<Troop>();
+        public IList<Troop> Troops { get; internal set; } = new List<Troop>();
 
         [JsonProperty]
         public IEnumerable<VillageLabel>? Labels { get; internal set; }
@@ -242,9 +242,9 @@ namespace devhl.CocApi.Models.Village
         {
             List<Troop> newTroops = new List<Troop>();
             
-            foreach(Troop troop in downloadedVillage.Troops.EmptyIfNull())
+            foreach(Troop troop in downloadedVillage.Soldiers.EmptyIfNull())
             {
-                Troop? oldTroop = Troops.FirstOrDefault(t => t.Name == troop.Name && t.Village == troop.Village);
+                Troop? oldTroop = Soldiers.FirstOrDefault(t => t.Name == troop.Name && t.Village == troop.Village);
 
                 if (oldTroop == null || oldTroop.Level < troop.Level)
                 {
@@ -409,18 +409,26 @@ namespace devhl.CocApi.Models.Village
                 spell.VillageTag = VillageTag;
             }
 
+            SetOrderOfHeroes();
+
+
+            //todo
+            //SetOrderOfSoldiers();
+
+            //SetOrderOfSpells();
+
             foreach (var hero in Heroes.EmptyIfNull())
             {
-                AllTroops.Add(hero);
+                Troops.Add(hero);
 
                 hero.VillageTag = VillageTag;
 
                 hero.IsHero = true;
             }
 
-            foreach (var troop in Troops.EmptyIfNull())
+            foreach (var troop in Soldiers.EmptyIfNull())
             {
-                AllTroops.Add(troop);
+                Troops.Add(troop);
 
                 troop.VillageTag = VillageTag;
 
@@ -439,6 +447,51 @@ namespace devhl.CocApi.Models.Village
                 label.VillageTag = VillageTag;
 
                 label.Initialize();
+            }
+        }
+
+        //private void SetOrderOfSoldiers()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        //private void SetOrderOfSpells()
+        //{
+        //    foreach (var spell in Spells.EmptyIfNull())
+        //    {
+        //        if (spell.Name == "Barbarian King") spell.Order = 1;
+        //        if (spell.Name == "Archer Queen") spell.Order = 2;
+        //        if (spell.Name == "Grand Warden") spell.Order = 3;
+        //        if (spell.Name == "Royal Champion") spell.Order = 4;
+        //    }
+
+        //    var i = 5;
+
+        //    foreach (var spell in Spells.Where(h => h.Order == 0))
+        //    {
+        //        spell.Order = i;
+
+        //        i++;
+        //    }
+        //}
+
+        private void SetOrderOfHeroes()
+        {
+            foreach(var hero in Heroes.EmptyIfNull())
+            {
+                if (hero.Name == "Barbarian King") hero.Order = 1;
+                if (hero.Name == "Archer Queen") hero.Order = 2;
+                if (hero.Name == "Grand Warden") hero.Order = 3;
+                if (hero.Name == "Royal Champion") hero.Order = 4;
+            }
+
+            var i = 5;
+
+            foreach(var hero in Heroes.Where(h => h.Order == 0))
+            {
+                hero.Order = i;
+
+                i++;
             }
         }
     }

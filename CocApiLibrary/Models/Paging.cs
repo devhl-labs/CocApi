@@ -5,6 +5,6 @@ namespace devhl.CocApi.Models
     public class Paging
     {
         [JsonProperty]
-        public Cursor? Cursors { get; }
+        public Cursor? Cursors { get; private set; }
     }
 }

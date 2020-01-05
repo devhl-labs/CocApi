@@ -10,22 +10,22 @@ namespace devhl.CocApi.Models.Village
     public class TopVillage : IVillage, IInitialize
     {
         [JsonProperty("tag")]
-        public string VillageTag { get;  } = string.Empty;
+        public string VillageTag { get; private set; } = string.Empty;
 
         [JsonProperty("name")]
-        public string Name { get; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
 
         [JsonProperty("expLevel")]
-        public long ExpLevel { get; }
+        public long ExpLevel { get; private set; }
 
         [JsonProperty("rank")]
-        public long Rank { get; }
+        public long Rank { get; private set; }
 
         [JsonProperty("previousRank")]
-        public long PreviousRank { get; }
+        public long PreviousRank { get; private set; }
 
         [JsonProperty("clan")]
-        public SimpleClan? Clan { get; }
+        public SimpleClan? Clan { get; private set; }
 
 
         [JsonProperty]

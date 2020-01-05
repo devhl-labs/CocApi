@@ -11,7 +11,7 @@ namespace devhl.CocApi.Models.Clan
 {
     public class ClanVillage : IVillage
     {
-        [JsonProperty("Tag")]
+        [JsonProperty("tag")]
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
@@ -52,9 +52,12 @@ namespace devhl.CocApi.Models.Clan
 
         public void Initialize()
         {
-            if (League != null) LeagueId = League.Id;
+            if (League != null)
+            {
+                LeagueId = League.Id;
 
-            if (League != null) League.Initialize();
+                League.Initialize();
+            }
         }
     }
 }

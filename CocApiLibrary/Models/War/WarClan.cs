@@ -14,21 +14,21 @@ namespace devhl.CocApi.Models.War
         public string ClanTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; } = string.Empty;
+        public string Name { get; private set; } = string.Empty;
 
 
         [JsonProperty]
-        public BadgeUrl? BadgeUrl { get; }
+        public BadgeUrl? BadgeUrl { get; private set; }
 
 
         [JsonProperty]
-        public int ClanLevel { get; }
+        public int ClanLevel { get; private set; }
 
         [JsonProperty]
         public string WarId { get; internal set; } = string.Empty;
 
         [JsonProperty("members")]
-        public IEnumerable<WarVillage>? Villages { get; }
+        public IEnumerable<WarVillage>? Villages { get; private set; }
 
         [JsonProperty("attacks")]
         public int AttackCount { get; }
@@ -37,10 +37,10 @@ namespace devhl.CocApi.Models.War
         public int DefenseCount { get; internal set; }
 
         [JsonProperty]
-        public int Stars { get; }
+        public int Stars { get; private set; }
 
         [JsonProperty]
-        public decimal DestructionPercentage { get; }
+        public decimal DestructionPercentage { get; private set; }
 
         [JsonProperty]
         public string WarClanId { get; private set; } = string.Empty;

@@ -12,36 +12,36 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public Village? Village { get; }
+        public Village? Village { get; private set; }
 
         [JsonProperty]
-        public int LegendTrophies { get; }
+        public int LegendTrophies { get; private set; }
 
         [JsonProperty]
-        public LegendLeagueResult? BestSeason { get; }
-
-
-        [JsonProperty]
-        public LegendLeagueResult? PreviousVersusSeason { get; }
+        public LegendLeagueResult? BestSeason { get; private set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? CurrentSeason { get; }
+        public LegendLeagueResult? PreviousVersusSeason { get; private set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? CurrentVersusSeason { get; }
+        public LegendLeagueResult? CurrentSeason { get; private set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? BestVersusSeason { get; }
+        public LegendLeagueResult? CurrentVersusSeason { get; private set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? PreviousSeason { get; } 
+        public LegendLeagueResult? BestVersusSeason { get; private set; }
+
 
         [JsonProperty]
-        public IList<LegendLeagueResult> Results { get; } = new List<LegendLeagueResult>();
+        public LegendLeagueResult? PreviousSeason { get; private set; } 
+
+        [JsonProperty]
+        public IList<LegendLeagueResult> Results { get; private set; } = new List<LegendLeagueResult>();
 
         public void Initialize()
         {
