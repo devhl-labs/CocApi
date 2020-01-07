@@ -32,7 +32,9 @@ namespace devhl.CocApi
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
 
 #nullable disable
+
         private static CocApi _cocApi;
+
 #nullable enable
 
         public static HttpClient ApiClient { get; } = new HttpClient();

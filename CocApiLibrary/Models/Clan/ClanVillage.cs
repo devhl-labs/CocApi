@@ -59,5 +59,7 @@ namespace devhl.CocApi.Models.Clan
                 League.Initialize();
             }
         }
+
+        public override string ToString() => $"{VillageTag} {Name} {Role}";
     }
 }

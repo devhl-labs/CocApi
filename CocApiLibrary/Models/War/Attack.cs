@@ -58,5 +58,7 @@ namespace devhl.CocApi.Models.War
         {
             Missed = false;
         }
+
+        public override string ToString() => $"{AttackerClanTag} {AttackerTag}";
     }
 }

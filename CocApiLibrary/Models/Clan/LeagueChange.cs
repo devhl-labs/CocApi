@@ -15,5 +15,21 @@ namespace devhl.CocApi.Models.Clan
         
         [JsonProperty]
         public League League { get; internal set; }
+
+        public override string ToString()
+        {
+            if (Village != null  && League != null)
+            {
+                return $"{Village.VillageTag} {Village.Name} {League.Name}";
+            }
+            else if (Village != null)
+            {
+                return $"{Village.VillageTag} {Village.Name}";
+            }
+            else
+            {
+                return base.ToString();
+            }
+        }
     }
 }

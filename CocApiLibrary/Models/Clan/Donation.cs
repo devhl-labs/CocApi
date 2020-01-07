@@ -14,5 +14,17 @@ namespace devhl.CocApi.Models.Clan
 
         [JsonProperty]
         public int Quantity { get; internal set; }
+
+        public override string ToString()
+        {
+            if (Village != null)
+            {
+                return $"{Village.VillageTag} {Village.Name} {Quantity}";
+            }
+            else
+            {
+                return base.ToString();
+            }
+        }
     }
 }

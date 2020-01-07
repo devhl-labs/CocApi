@@ -22,5 +22,7 @@ namespace devhl.CocApi.Models.Village
         public void Initialize()
         {
         }
+
+        public override string ToString() => $"{ClanTag} {Name}";
     }
 }

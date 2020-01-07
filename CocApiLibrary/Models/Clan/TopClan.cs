@@ -35,5 +35,10 @@ namespace devhl.CocApi.Models.Clan
         public void Initialize()
         {
         }
+
+        public override string ToString()
+        {
+            return $"{Rank} {ClanTag} {Name}";
+        }
     }
 }

@@ -21,5 +21,7 @@ namespace devhl.CocApi.Models
         {
             if (LabelUrl != null) LabelUrl.Id = Id;
         }
+
+        public override string ToString() => Name;
     }
 }

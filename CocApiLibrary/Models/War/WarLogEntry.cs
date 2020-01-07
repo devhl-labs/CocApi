@@ -25,5 +25,6 @@ namespace devhl.CocApi.Models.War
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUtc { get; private set; }
 
+        public override string ToString() => EndTimeUtc.ToString();
     }
 }

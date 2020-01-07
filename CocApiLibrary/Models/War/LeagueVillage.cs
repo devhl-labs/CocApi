@@ -29,5 +29,7 @@ namespace devhl.CocApi.Models.War
         {
 
         }
+
+        public override string ToString() => $"{VillageTag} {Name} {TownhallLevel}";
     }
 }

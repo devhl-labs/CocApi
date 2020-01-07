@@ -38,5 +38,7 @@ namespace devhl.CocApi.Models.Village
                 ClanTag = Clan.ClanTag;
             }
         }
+
+        public override string ToString() => $"{Rank} {VillageTag} {Name}";
     }
 }

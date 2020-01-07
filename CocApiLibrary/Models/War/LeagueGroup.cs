@@ -64,5 +64,7 @@ namespace devhl.CocApi.Models.War
                 round.GroupId = GroupId;
             }
         }
+
+        public override string ToString() => Season.ToString();
     }
 }

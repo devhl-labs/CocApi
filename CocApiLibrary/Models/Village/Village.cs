@@ -26,8 +26,12 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public string Name { get; private set; } = string.Empty;
 
+#pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
+
         [JsonProperty]
-        public string ClanTag { get; private set; } = string.Empty;
+        public string? ClanTag { get; private set; }
+
+#pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 
         [JsonProperty]
         public int TownHallLevel { get; private set; }
@@ -494,5 +498,7 @@ namespace devhl.CocApi.Models.Village
                 i++;
             }
         }
+
+        public override string ToString() => $"{VillageTag} {Name} {TownHallLevel}";
     }
 }

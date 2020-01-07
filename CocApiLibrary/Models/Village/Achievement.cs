@@ -38,5 +38,7 @@ namespace devhl.CocApi.Models.Village
                 Name = "Keep your village safe2";
             }
         }
+
+        public override string ToString() => Name;
     }
 }

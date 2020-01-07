@@ -25,5 +25,7 @@ namespace devhl.CocApi.Models.Village
 
         [JsonProperty]
         public int Order { get; internal set; }
+
+        public override string ToString() => Name;
     }
 }

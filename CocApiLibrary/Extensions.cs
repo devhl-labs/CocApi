@@ -17,7 +17,7 @@ namespace devhl.CocApi
 
         /// <summary>
         /// Discord markup characters are stripped out
-        /// Includes *_~~`|| also {space} and >{space}
+        /// Includes * _ ~~ ` || >{space}
         /// </summary>
         /// <param name="str"></param>
         /// <returns></returns>

@@ -522,13 +522,17 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<Paginated<TopMainClan>> GetTopMainClansAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopMainClan>> GetTopMainClansAsync(int? locationId = null, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
             try
             {
-                string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans";
+                string location = "global";
+
+                if (locationId != null) location = locationId.ToString();
+
+                string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/clans";
 
                 return (Paginated<TopMainClan>) await GetAsync<Paginated<TopMainClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
             }
@@ -546,13 +550,17 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<Paginated<TopBuilderClan>> GetTopBuilderClansAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopBuilderClan>> GetTopBuilderClansAsync(int? locationId = null, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
             try
             {
-                string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/clans-versus";
+                string location = "global";
+
+                if (locationId != null) location = locationId.ToString();
+
+                string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/clans-versus";
 
                 return (Paginated<TopBuilderClan>) await GetAsync<Paginated<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
             }
@@ -570,13 +578,17 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<Paginated<TopMainVillage>> GetTopMainVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopMainVillage>> GetTopMainVillagesAsync(int? locationId = null, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
             try
             {
-                string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players";
+                string location = "global";
+
+                if (locationId != null) location = locationId.ToString();
+
+                string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/players";
 
                 return (Paginated<TopMainVillage>) await GetAsync<Paginated<TopMainVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }
@@ -594,13 +606,17 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<Paginated<TopBuilderVillage>> GetTopBuilderVillagesAsync(int locationId, CancellationToken? cancellationToken = null)
+        public async Task<Paginated<TopBuilderVillage>> GetTopBuilderVillagesAsync(int? locationId = null, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
             try
             {
-                string url = $"https://api.clashofclans.com/v1/locations/{locationId}/rankings/players-versus";
+                string location = "global";
+
+                if (locationId != null) location = locationId.ToString();
+
+                string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/players-versus";
 
                 return (Paginated<TopBuilderVillage>) await GetAsync<Paginated<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
             }

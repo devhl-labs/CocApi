@@ -19,5 +19,10 @@ namespace devhl.CocApi.Models.Clan
         {
 
         }
+
+        public override string ToString()
+        {
+            return $"{ClanTag} {Name}";
+        }
     }
 }

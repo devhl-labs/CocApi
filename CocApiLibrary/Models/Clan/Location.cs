@@ -19,5 +19,17 @@ namespace devhl.CocApi.Models.Clan
         /// </summary>
         [JsonProperty]
         public string CountryCode { get; internal set; } = string.Empty;
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrWhiteSpace(Name))
+            {
+                return Name;
+            }
+            else
+            {
+                return base.ToString();
+            }
+        }
     }
 }

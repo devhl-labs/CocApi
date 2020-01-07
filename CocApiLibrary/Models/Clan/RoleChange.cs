@@ -15,5 +15,17 @@ namespace devhl.CocApi.Models.Clan
         
         [JsonProperty]
         public Role Role { get; internal set; } //todo is this the old role or the new role?
+
+        public override string ToString()
+        {
+            if (Village != null)
+            {
+                return $"{Village.VillageTag} {Village.Name} {Role}";
+            }
+            else
+            {
+                return base.ToString();
+            }
+        }
     }
 }

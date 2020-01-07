@@ -17,5 +17,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (LeagueIcon != null) LeagueIcon.LeaugeId = Id;
         }
+
+        public override string ToString() => Name;
     }
 }

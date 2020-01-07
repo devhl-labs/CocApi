@@ -52,5 +52,7 @@ namespace devhl.CocApi.Models.War
                 WarVillageId = $"{WarId};{VillageTag}";
             }
         }
+
+        public override string ToString() => $"{VillageTag} {Name}";
     }
 }

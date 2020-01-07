@@ -63,5 +63,7 @@ namespace devhl.CocApi.Models.War
                 }
             }
         }
+
+        public override string ToString() => $"{ClanTag} {Name}";
     }
 }

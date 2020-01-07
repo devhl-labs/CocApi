@@ -365,5 +365,7 @@ namespace devhl.CocApi.Models.Clan
 
             if (Location != null) LocationId = Location.Id;
         }
+
+        public override string ToString() => $"{ClanTag} {Name}";
     }
 }
