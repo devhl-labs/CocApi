@@ -81,7 +81,5 @@ namespace CocApiConsoleTest
 
             return Task.CompletedTask;
         }
-
-
     }
 }

@@ -68,29 +68,26 @@ namespace CocApiConsoleTest
                  */
 
                 CacheHttpResponses = true,
+                DownloadCurrentWar = true,
+                DownloadVillages = false,
+                NumberOfUpdaters = 1,
+                DownloadLeagueWars = DownloadLeagueWars.False,
+                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),
+                TokenTimeOut = TimeSpan.FromSeconds(1),
+
                 ClanTimeToLive = TimeSpan.FromMinutes(5),
                 CurrentWarTimeToLive = TimeSpan.FromSeconds(15),
                 LeagueGroupTimeToLive = TimeSpan.FromHours(1),
                 LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
                 LeagueWarTimeToLive = TimeSpan.FromSeconds(15),
-                TokenTimeOut = TimeSpan.FromSeconds(1),
-                VillageTimeToLive = TimeSpan.FromHours(1),
-                NumberOfUpdaters = 1,
-                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),
-                DownloadCurrentWar = true,
-                DownloadLeagueWars = DownloadLeagueWars.False,
-                DownloadVillages = false
+                VillageTimeToLive = TimeSpan.FromHours(1)
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
 
             _cocApi = serviceProvider.GetRequiredService<CocApi>();
 
-             await _cocApi.InitializeAsync(cocApiConfiguration);
-
-            //_cocApi.DownloadLeagueWars = DownloadLeagueWars.False;
-
-            //_cocApi.DownloadVillages = false;            
+             await _cocApi.InitializeAsync(cocApiConfiguration);          
             
             List<string> clans = new List<string>
             {
