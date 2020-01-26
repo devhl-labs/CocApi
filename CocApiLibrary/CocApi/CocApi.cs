@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 
 using devhl.CocApi.Models;
 using devhl.CocApi.Exceptions;
@@ -21,8 +20,6 @@ namespace devhl.CocApi
 
         private readonly object _isAvailableLock = new object();
 
-        private readonly string _source = "CocApi       | ";
-
         private readonly List<UpdateService> _updateServices = new List<UpdateService>();
 
         private volatile bool _isAvailable = true;
@@ -35,15 +32,20 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// Controls whether any clan will be able to download league wars.
+        /// Controls whether any clan will download league wars.
         /// Set it to Auto to only download on the first week of the month.
         /// </summary>
-        public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.False;
+        public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.Auto;
 
         /// <summary>
         /// Controls whether any clan will be able to download villages.
         /// </summary>
         public bool DownloadVillages { get; set; } = false;
+
+        /// <summary>
+        /// Controls whether any clan will download the current war.
+        /// </summary>
+        public bool DownloadCurrentWar { get; set; } = true;
 
         public bool IsAvailable
         {
@@ -137,7 +139,7 @@ namespace devhl.CocApi
         /// <param name="cfg"></param>
         /// <param name="logger"></param>
         /// <exception cref="CocApiException"></exception>
-        public async Task Initialize(CocApiConfiguration cfg)
+        public async Task InitializeAsync(CocApiConfiguration cfg)
         {
             if (cfg != null)
             {
@@ -148,6 +150,12 @@ namespace devhl.CocApi
             {
                 throw new CocApiException("You did not provide any tokens to access the SC Api.");
             }
+
+            DownloadLeagueWars = cfg.DownloadLeagueWars;
+
+            DownloadVillages = cfg.DownloadVillages;
+
+            DownloadCurrentWar = cfg.DownloadCurrentWar;
 
             WebResponse.Initialize(this, CocApiConfiguration, cfg.Tokens);
 
@@ -292,7 +300,9 @@ namespace devhl.CocApi
         {
             if (!IsValidTag(tag))
             {
-                Logger.LogWarning(LoggingEvents.InvalidTag, "{source} The provided tag is not valid {tag}", _source, tag);
+                //Logger.LogWarning(LoggingEvents.InvalidTag, "{source} The provided tag is not valid {tag}", _source, tag);
+
+                _ = Logger?.Log<CocApi>(LoggingEvent.InvalidTag, $"The provided tag {tag} is not valid.");
 
                 throw new InvalidTagException();
             }
@@ -625,7 +635,7 @@ namespace devhl.CocApi
 
                 for (int i = 0; i < CocApiConfiguration.NumberOfUpdaters; i++)
                 {
-                    _updateServices.Add(new UpdateService(this, Logger));
+                    _updateServices.Add(new UpdateService(this));
                 }
             }
             catch (Exception e)

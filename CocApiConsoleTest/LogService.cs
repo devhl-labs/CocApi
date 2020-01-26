@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 using devhl.CocApi;
 
@@ -7,35 +7,7 @@ namespace CocApiConsoleTest
 {
     public class LogService : ILogger
     {
-        private static readonly object logLock = new object();
-
-        public IDisposable BeginScope<TState>(TState state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool IsEnabled(LogLevel logLevel)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
-        {
-            lock (logLock)
-            {
-#if DEBUG
-                if (eventId == LoggingEvents.IsPremptiveRateLimited) return;
-
-                if (eventId == LoggingEvents.UpdatingClan) return;
-#endif
-
-                PrintLogTitle(logLevel);
-
-                Console.Write(DateTime.UtcNow.ToShortTimeString() + "  | ");
-
-                Console.WriteLine(formatter.Invoke(state, exception) + " " + exception.Message);               
-            }
-        }
+        private static readonly object _logLock = new object();
 
         private static void ResetConsoleColor()
         {
@@ -43,38 +15,73 @@ namespace CocApiConsoleTest
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        private static void PrintLogTitle(LogLevel logLevel)
+        private static void PrintLogTitle(LoggingEvent loggingEvent)
         {
-            switch (logLevel)
+            switch (loggingEvent)
             {
-                case LogLevel.Debug:
+                //green
+                case LoggingEvent.UpdateServiceStarted:
+                case LoggingEvent.HttpResponseStatusCodeSuccessful:
+                case LoggingEvent.UpdatingClan:
+                case LoggingEvent.Debug:
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.Write("[dbug] ");
                     break;
-                case LogLevel.Information:
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.Write("[info] ");
-                    break;
-                case LogLevel.Warning:
+
+                //yellow
+                case LoggingEvent.HttpResponseError:
+                case LoggingEvent.HttpResponseStatusCodeUnsuccessful:
+                case LoggingEvent.InvalidTag:
+                case LoggingEvent.IsPremptiveRateLimited:
+                case LoggingEvent.UnhandledCase:
+                case LoggingEvent.Unknown:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.BackgroundColor = ConsoleColor.Black;
                     Console.Write("[warn] ");
                     break;
-                case LogLevel.Error:
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.BackgroundColor = ConsoleColor.Yellow;
-                    Console.Write("[err ]");
-                    break;
-                case LogLevel.Critical:
+
+                //red
+                case LoggingEvent.UpdateServiceEnding:
+                case LoggingEvent.Exception:
+                case LoggingEvent.IsRateLimited:
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.BackgroundColor = ConsoleColor.Red;
                     Console.Write("[crit] ");
+                    break;
+
+                default:
+
                     break;
             }
 
             ResetConsoleColor();
         }
+
+        public Task Log<T>(LoggingEvent loggingEvent, string? message = null) => Log(typeof(T).Name, loggingEvent, message);
+
+        public Task Log<T>(LoggingEvent loggingEvent, Exception exception) => Log(typeof(T).Name, loggingEvent, exception.Message);
+
+        public Task Log(string source, LoggingEvent loggingEvent, Exception exception) => Log(source, loggingEvent, exception.Message);
+
+        public Task Log(string source, LoggingEvent loggingEvent, string? message = null)
+        {
+            if (loggingEvent == LoggingEvent.IsPremptiveRateLimited || loggingEvent == LoggingEvent.UpdatingClan) return Task.CompletedTask;
+
+            if (source.Length > 15) source = source[0..15];
+
+            source = source.PadRight(15);
+
+            lock (_logLock)
+            {
+                PrintLogTitle(loggingEvent);
+
+                Console.WriteLine($"{DateTime.UtcNow.ToShortTimeString()}  | {source} | {message ?? loggingEvent.ToString()}");
+            }
+
+            return Task.CompletedTask;
+        }
+
+
     }
 }

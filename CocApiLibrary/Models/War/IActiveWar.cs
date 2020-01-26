@@ -17,7 +17,7 @@ namespace devhl.CocApi.Models.War
 
         DateTime StartTimeUtc { get; }
 
-        Enums.WarState State { get; }
+        WarState State { get; }
 
         int TeamSize { get; }
 
@@ -27,7 +27,7 @@ namespace devhl.CocApi.Models.War
 
         DateTime WarStartingSoonUtc { get; }
 
-        Enums.WarType WarType { get; }
+        WarType WarType { get; }
 
         bool WarIsOverOrAllAttacksUsed();
     }

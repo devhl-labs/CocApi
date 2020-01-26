@@ -5,11 +5,11 @@ using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
 using devhl.CocApi.Models.Village;
-using static devhl.CocApi.Enums;
+//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Clan
 {
-    public class ClanVillage : IVillage
+    public class ClanVillage : IVillage, IInitialize
     {
         [JsonProperty("tag")]
         public string VillageTag { get; internal set; } = string.Empty;

@@ -1,6 +1,6 @@
 ﻿namespace devhl.CocApi.Models.Village
 {
-    public interface IVillage : IInitialize
+    public interface IVillage
     {
         string VillageTag { get; }
 

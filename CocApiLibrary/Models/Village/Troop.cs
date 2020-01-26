@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using static devhl.CocApi.Enums;
+//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Village
 {

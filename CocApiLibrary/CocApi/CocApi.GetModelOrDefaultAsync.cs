@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Linq;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 
 using devhl.CocApi.Models;
 using devhl.CocApi.Exceptions;
-using static devhl.CocApi.Enums;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
-
-using System.Collections.Immutable;
-using System.Collections.Concurrent;
 
 namespace devhl.CocApi
 {

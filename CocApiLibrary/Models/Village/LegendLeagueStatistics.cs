@@ -55,7 +55,7 @@ namespace devhl.CocApi.Models.Village
 
             if (BestVersusSeason != null)
             {
-                BestVersusSeason.Village = Enums.VillageType.BuilderBase;
+                BestVersusSeason.Village = VillageType.BuilderBase;
 
                 if (!Results.Any(l => l.Id == BestVersusSeason.Id))
                 {
@@ -65,7 +65,7 @@ namespace devhl.CocApi.Models.Village
 
             if (CurrentVersusSeason != null)
             {
-                CurrentVersusSeason.Village = Enums.VillageType.BuilderBase;
+                CurrentVersusSeason.Village = VillageType.BuilderBase;
 
                 if (!Results.Any(l => l.Id == CurrentVersusSeason.Id))
                 {
@@ -83,7 +83,7 @@ namespace devhl.CocApi.Models.Village
 
             if (PreviousVersusSeason != null)
             {
-                PreviousVersusSeason.Village = Enums.VillageType.BuilderBase;
+                PreviousVersusSeason.Village = VillageType.BuilderBase;
 
                 if (!Results.Any(l => l.Id == PreviousVersusSeason.Id))
                 {

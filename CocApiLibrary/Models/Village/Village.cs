@@ -1,20 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
-
-using devhl.CocApi.Converters;
-using devhl.CocApi.Models;
-using static devhl.CocApi.Enums;
-using devhl.CocApi.Models.Village;
 
 namespace devhl.CocApi.Models.Village
 {
-    public class Village : Downloadable, IVillage
+    public class Village : Downloadable, IVillage, IInitialize
     {
 
         [JsonIgnore]

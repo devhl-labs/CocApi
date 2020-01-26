@@ -1,20 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Text.RegularExpressions;
-using System.Linq;
 using System.Threading;
-using Microsoft.Extensions.Logging;
 
 using devhl.CocApi.Models;
 using devhl.CocApi.Exceptions;
-using static devhl.CocApi.Enums;
-using static devhl.CocApi.Extensions;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
-using System.Collections.Immutable;
-using System.Collections.Concurrent;
 
 namespace devhl.CocApi
 {
@@ -534,7 +526,7 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/clans";
 
-                return (Paginated<TopMainClan>) await GetAsync<Paginated<TopMainClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
+                return (Paginated<TopMainClan>) await GetAsync<Paginated<TopMainClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -562,7 +554,7 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/clans-versus";
 
-                return (Paginated<TopBuilderClan>) await GetAsync<Paginated<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);  //todo why is the end point locations
+                return (Paginated<TopBuilderClan>) await GetAsync<Paginated<TopBuilderClan>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -590,7 +582,7 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/players";
 
-                return (Paginated<TopMainVillage>) await GetAsync<Paginated<TopMainVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                return (Paginated<TopMainVillage>) await GetAsync<Paginated<TopMainVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -618,7 +610,7 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/locations/{location}/rankings/players-versus";
 
-                return (Paginated<TopBuilderVillage>) await GetAsync<Paginated<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                return (Paginated<TopBuilderVillage>) await GetAsync<Paginated<TopBuilderVillage>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -642,7 +634,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/clans?limit=10000";
 
-                AllClanLabels = (Paginated<Label>) await GetAsync<Paginated<Label>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                AllClanLabels = (Paginated<Label>) await GetAsync<Paginated<Label>>(url, EndPoint.Labels, cancellationToken).ConfigureAwait(false);
 
                 return AllClanLabels;
             }
@@ -668,7 +660,7 @@ namespace devhl.CocApi
             {
                 string url = $"https://api.clashofclans.com/v1/labels/players?limit=10000";
 
-                AllVillageLabels = (Paginated<Label>) await GetAsync<Paginated<Label>>(url, EndPoint.Locations, cancellationToken).ConfigureAwait(false); //todo why is the end point locations
+                AllVillageLabels = (Paginated<Label>) await GetAsync<Paginated<Label>>(url, EndPoint.Labels, cancellationToken).ConfigureAwait(false);
 
                 return AllVillageLabels;
             }

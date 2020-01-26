@@ -4,9 +4,6 @@ using devhl.CocApi.Models;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
-using Microsoft.Extensions.Logging;
-
-//using System.Text.Json;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -19,14 +16,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi
 {
     internal static class WebResponse
     {
-        private readonly static string _source = "WebResponse   | ";
-
         private static readonly List<TokenObject> _tokenObjects = new List<TokenObject>();
 
         private static CocApiConfiguration _cfg = new CocApiConfiguration();
@@ -108,11 +102,11 @@ namespace devhl.CocApi
         {
             if (e is ServerResponseException serverResponse)
             {
-                _cocApi.Logger?.LogWarning("{source} {encodedUrl} {httpStatusCode} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), serverResponse.HttpStatusCode, e.Message);
+                _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
             }
             else
             {
-                _cocApi.Logger?.LogWarning("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), e.Message);
+                _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
             }
 
             if (e is TaskCanceledException && endPoint == EndPoint.LeagueGroup)
@@ -224,7 +218,7 @@ namespace devhl.CocApi
                     }
                     else
                     {
-                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarApiModelTimeToLive);
+                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
                     }
 
                     break;
@@ -236,7 +230,7 @@ namespace devhl.CocApi
                     }
                     else
                     {
-                        currentWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                        currentWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
                     }
 
                     break;
@@ -248,7 +242,7 @@ namespace devhl.CocApi
                     }
                     else
                     {
-                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupApiModelTimeToLive);
+                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
                     }
 
                     break;
@@ -258,46 +252,19 @@ namespace devhl.CocApi
                     break;
 
                 case Clan clanApiModel:
-                    clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanApiModelTimeToLive);
+                    clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
                     break;
 
                 case Village villageApiModel:
-                    villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageApiModelTimeToLive);
-                    break;
-
-                case Paginated<WarLogEntry> warLogApiModel:
-                    warLogApiModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<League> villageLeagueSearchModel:
-                    villageLeagueSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<Location> searchApiModel:
-                    searchApiModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<Clan> clanSearchModel:
-                    clanSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<Village> villageSearchModel:
-                    villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
-                    break;
-
-                case Paginated<Label> villageSearchModel:
-                    villageSearchModel.ExpiresAtUtc = DateTime.UtcNow;
+                    villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
                     break;
 
                 case NotInWar notInWar:
-                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarApiModelTimeToLive);
+                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
                     break;
 
                 default:
                     result.ExpiresAtUtc = DateTime.UtcNow;
-
-                    _cocApi.Logger.LogWarning(LoggingEvents.UnhandledCase, "Unhandled case");
-
                     break;
             }
         }
@@ -313,7 +280,7 @@ namespace devhl.CocApi
 
         private static Downloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : Downloadable, new()
         {
-            _cocApi.Logger?.LogDebug("{source} {encodedUrl}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+            _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
 
             _cocApi.IsAvailable = true;
 
@@ -346,8 +313,6 @@ namespace devhl.CocApi
 
         private static Downloadable UnSuccessfulResponse(HttpResponseMessage response, string encodedUrl, EndPoint endPoint, TokenObject token)
         {
-            _cocApi.Logger?.LogDebug("{source} {encodedUrl} {message}", _source, encodedUrl.Replace("https://api.clashofclans.com/v1", ""), "unsuccessful http response");
-
             string responseText = response.Content.ReadAsStringAsync().Result;
 
             ResponseMessage ex = JsonConvert.DeserializeObject<ResponseMessage>(responseText);
@@ -358,6 +323,15 @@ namespace devhl.CocApi
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
+                //if (endPoint == EndPoint.CurrentWar)
+                //{
+                //    var privateWar = new WarLogIsPrivate();
+
+                //    InitializeResult(privateWar, response, encodedUrl);
+
+                //    return privateWar;
+                //}
+
                 throw new ForbiddenException(ex, response.StatusCode);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound && endPoint == EndPoint.LeagueGroup)
@@ -365,6 +339,8 @@ namespace devhl.CocApi
                 var leagueGroupNotFound = new LeagueGroupNotFound();
 
                 InitializeResult(leagueGroupNotFound, response, encodedUrl);
+
+                _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
 
                 return leagueGroupNotFound;
             }

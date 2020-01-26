@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 
 using devhl.CocApi;
 using devhl.CocApi.Models;
@@ -15,13 +14,13 @@ namespace CocApiConsoleTest
 {
     public class EventHandlerService
     {
-        private readonly LogService _logService;
+        private readonly ILogger _logger;
 
         private readonly CocApi _cocApi;
 
-        public EventHandlerService(LogService logService, CocApi cocApi)
+        public EventHandlerService(ILogger logger, CocApi cocApi)
         {
-            _logService = logService;
+            _logger = logger;
 
             _cocApi = cocApi;
 
@@ -60,135 +59,123 @@ namespace CocApiConsoleTest
             _cocApi.WarStartingSoon += WarStartingSoon;
         }
 
-        public Task CrashDetected(Exception e)
-        {
-            _logService.LogInformation($"Crash detected on updater: {e.Message}");
-
-            _cocApi.StartUpdatingClans();
-
-            return Task.CompletedTask;
-        }
-
         public Task WarStartingSoon(IActiveWar currentWarApiModel)
         {
-            _logService.LogInformation("war starting soon");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, "War starting soon");
 
             return Task.CompletedTask;
         }
 
         public Task WarStarted(IActiveWar currentWarApiModel)
         {
-            _logService.LogInformation("war started");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, "War started");
 
             return Task.CompletedTask;
         }
 
         public Task ClanVillagesLeagueChanged(Clan oldClan, IReadOnlyList<LeagueChange> leagueChanged)
         {
-            _logService.LogInformation($"League changed {leagueChanged.First().Village.Name}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"League changed {leagueChanged.First().Village.Name}");
 
             return Task.CompletedTask;
         }
 
         public Task ClanVillagesRoleChanged(Clan clan, IReadOnlyList<RoleChange> roleChanges)
         {
-            _logService.LogInformation($"New role: {roleChanges.First().Village.Name}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"New role: {roleChanges.First().Village.Name}");
 
             return Task.CompletedTask;
         }
 
         public Task ClanVillageNameChanged(ClanVillage oldMember, string newName)
         {
-            _logService.LogInformation($"New name: {newName}");
+            _logger.Log<EventHandler>(LoggingEvent.Debug, $"New name: {newName}");
 
             return Task.CompletedTask;
         }
 
         public Task VillageReachedLegendsLeague(Village villageApiModel)
         {
-            _logService.LogInformation($"Village reached legends: {villageApiModel.Name}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"Village reached legends: {villageApiModel.Name}");
 
             return Task.CompletedTask;
         }
 
         public Task WarIsAccessibleChanged(IActiveWar currentWarApiModel)
         {
-            _logService.LogInformation($"War is accessible changed:{currentWarApiModel.Flags.WarIsAccessible}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"War is accessible changed:{currentWarApiModel.Flags.WarIsAccessible}");
 
             return Task.CompletedTask;
         }
 
         public Task NewWar(IActiveWar currentWarApiModel)
         {
-            _logService.LogInformation($"New War: {currentWarApiModel.WarId}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"New War: {currentWarApiModel.WarId}");
 
             return Task.CompletedTask;
         }
 
         public Task ClanVersusPointsChanged(Clan oldClan, int newClanVersusPoints)
         {
-            _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"{oldClan.ClanTag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
 
             return Task.CompletedTask;
         }
 
         public Task ClanPointsChanged(Clan oldClan, int newClanPoints)
         {
-            _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} new clan points: {newClanPoints}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"{oldClan.ClanTag} {oldClan.Name} new clan points: {newClanPoints}");
 
             return Task.CompletedTask;
         }
 
         public Task ClanLocationChanged(Clan oldClan, Clan newClan)
         {
-            _logService.LogInformation(newClan.Location?.Name);
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, newClan.Location?.Name);
 
             return Task.CompletedTask;
         }
 
         public Task ClanBadgeUrlChanged(Clan oldClan, Clan newClan)
         {
-            _logService.LogInformation(newClan.BadgeUrl?.Large);
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, newClan.BadgeUrl?.Large);
 
             return Task.CompletedTask;
         }
 
         public Task ClanChanged(Clan oldClan, Clan newClan)
         {
-            _logService.LogInformation($"{oldClan.ClanTag} {oldClan.Name} changed.");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"{oldClan.ClanTag} {oldClan.Name} changed.");
 
             return Task.CompletedTask;
         }
 
         public Task NewAttacks(IActiveWar currentWarApiModel, IReadOnlyList<Attack> attackApiModels)
         {
-            _logService.LogInformation($"new attacks: {attackApiModels.Count()}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"new attacks: {attackApiModels.Count()}");
 
             return Task.CompletedTask;
         }
 
         public Task MembersJoined(Clan clanApiModel, IReadOnlyList<ClanVillage> memberListApiModels)
         {
-            _logService.LogInformation($"{memberListApiModels.Count()} members joined.");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"{memberListApiModels.Count()} members joined.");
 
             return Task.CompletedTask;
         }
 
         public Task IsAvailableChanged(bool isAvailable)
         {
-            _logService.LogInformation($"CocApi isAvailable: {isAvailable}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"CocApi isAvailable: {isAvailable}");
 
             return Task.CompletedTask;
         }
 
         public Task LeagueSizeChangeDetected(LeagueGroup leagueGroupApiModel)
         {
-            _logService.LogInformation($"League Size changed: {leagueGroupApiModel.TeamSize}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"League Size changed: {leagueGroupApiModel.TeamSize}");
 
             return Task.CompletedTask;
         }
-
-
-
     }
 }

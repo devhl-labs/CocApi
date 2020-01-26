@@ -9,6 +9,27 @@ namespace devhl.CocApi
     public sealed class CocApiConfiguration
     {
         /// <summary>
+        /// Set this to true if you want to store HTTP responses in memory.
+        /// </summary>
+        public bool CacheHttpResponses { get; set; } = true;
+
+        /// <summary>
+        /// Controls whether any clan will download league wars.
+        /// Set it to Auto to only download on the first week of the month.
+        /// </summary>
+        public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.Auto;
+
+        /// <summary>
+        /// Controls whether any clan will be able to download villages.
+        /// </summary>
+        public bool DownloadVillages { get; set; } = false;
+
+        /// <summary>
+        /// Controls whether any clan will download the current war.
+        /// </summary>
+        public bool DownloadCurrentWar { get; set; } = true;
+
+        /// <summary>
         /// List of tokens used to query the SC Api
         /// </summary>
         public IList<string> Tokens { get; set; } = new List<string>();
@@ -29,34 +50,29 @@ namespace devhl.CocApi
         public TimeSpan TimeToWaitForWebRequests { get; set; } = new TimeSpan(0, 0, 10);
 
         /// <summary>
-        /// Set this to true if you want to store HTTP responses in memory.
+        /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public bool CacheHttpResponses { get; set; } = true;
+        public TimeSpan LeagueWarTimeToLive { get; set; } = new TimeSpan(0, 5, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan LeagueWarApiModelTimeToLive { get; set; } = new TimeSpan(0, 5, 0);
+        public TimeSpan CurrentWarTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan CurrentWarApiModelTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+        public TimeSpan LeagueGroupTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan LeagueGroupApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan ClanTimeToLive { get; set; } = new TimeSpan(0, 10, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan ClanApiModelTimeToLive { get; set; } = new TimeSpan(0, 10, 0);
-
-        /// <summary>
-        /// Defines how long to wait before an HTTP request is considered expired.
-        /// </summary>
-        public TimeSpan VillageApiModelTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan VillageTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.

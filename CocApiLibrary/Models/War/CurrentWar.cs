@@ -7,14 +7,14 @@ using System.Linq;
 using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
-using static devhl.CocApi.Enums;
+//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.War
 {
     public class CurrentWar : Downloadable, IInitialize, IActiveWar
     {
-        [JsonConverter(typeof(DateTimeConverter))]
         [JsonProperty("endTime")]
+        [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUtc { get; private set; }
 
 

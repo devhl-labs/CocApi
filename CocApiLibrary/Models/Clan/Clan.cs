@@ -1,17 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
-using devhl.CocApi.Models.Clan;
-
 using devhl.CocApi.Models.War;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-
-using static devhl.CocApi.Enums;
 
 
 namespace devhl.CocApi.Models.Clan
@@ -42,17 +35,23 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty]
         public int ClanLevel { get; internal set; }
 
-        [JsonProperty]
         /// <summary>
         /// Controls whether this clan will download villages.
         /// </summary>
+        [JsonProperty]
         public bool DownloadVillages { get; set; } = true;
 
-        [JsonProperty]
         /// <summary>
         /// Controls whether this clan will download league wars.
         /// </summary>
+        [JsonProperty]
         public bool DownloadLeagueWars { get; set; } = true;
+
+        /// <summary>
+        /// Controls whether this clan will download the current war.
+        /// </summary>
+        [JsonProperty]        
+        public bool DownloadCurrentWar { get; set; } = true;
 
         [JsonProperty("memberList")]
         public IList<ClanVillage>? Villages { get; internal set; }

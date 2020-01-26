@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using devhl.CocApi;
 
@@ -18,13 +17,13 @@ namespace CocApiConsoleTest
         {
             var services = ConfigureServices();
 
-            LogService logService = services.GetRequiredService<LogService>();
+            ILogger logger = services.GetRequiredService<ILogger>();
 
-            logService.LogInformation("Press CTRL-C to exit");
+            await logger.Log<Program>(LoggingEvent.Debug, "Press CTRL-C to exit");
 
             Console.CancelKeyPress += (s, e) => DoExitStuff(services);
 
-            ConfigureCocApi(services);
+            await ConfigureCocApi(services);
 
             services.GetRequiredService<EventHandlerService>();
 
@@ -42,7 +41,7 @@ namespace CocApiConsoleTest
                 .BuildServiceProvider();
         }
 
-        private static void ConfigureCocApi(IServiceProvider serviceProvider)
+        private static async Task ConfigureCocApi(IServiceProvider serviceProvider)
         {
             CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
             {
@@ -69,26 +68,29 @@ namespace CocApiConsoleTest
                  */
 
                 CacheHttpResponses = true,
-                ClanApiModelTimeToLive = TimeSpan.FromMinutes(5),
-                CurrentWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
-                LeagueGroupApiModelTimeToLive = TimeSpan.FromHours(1),
+                ClanTimeToLive = TimeSpan.FromMinutes(5),
+                CurrentWarTimeToLive = TimeSpan.FromSeconds(15),
+                LeagueGroupTimeToLive = TimeSpan.FromHours(1),
                 LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
-                LeagueWarApiModelTimeToLive = TimeSpan.FromSeconds(15),
+                LeagueWarTimeToLive = TimeSpan.FromSeconds(15),
                 TokenTimeOut = TimeSpan.FromSeconds(1),
-                VillageApiModelTimeToLive = TimeSpan.FromHours(1),
+                VillageTimeToLive = TimeSpan.FromHours(1),
                 NumberOfUpdaters = 1,
-                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5)
+                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),
+                DownloadCurrentWar = true,
+                DownloadLeagueWars = DownloadLeagueWars.False,
+                DownloadVillages = false
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
 
             _cocApi = serviceProvider.GetRequiredService<CocApi>();
 
-            _cocApi.Initialize(cocApiConfiguration);
+             await _cocApi.InitializeAsync(cocApiConfiguration);
 
-            _cocApi.DownloadLeagueWars = DownloadLeagueWars.False;
+            //_cocApi.DownloadLeagueWars = DownloadLeagueWars.False;
 
-            _cocApi.DownloadVillages = false;            
+            //_cocApi.DownloadVillages = false;            
             
             List<string> clans = new List<string>
             {
@@ -112,7 +114,7 @@ namespace CocApiConsoleTest
 
         private static void DoExitStuff(IServiceProvider services)
         {
-            services.GetRequiredService<LogService>().LogInformation("{program}: Quiting, please wait...", "Program.cs");
+            services.GetRequiredService<ILogger>().Log<Program>(LoggingEvent.Debug, "Quiting, please wait...");
 
             _cocApi?.Dispose();
 

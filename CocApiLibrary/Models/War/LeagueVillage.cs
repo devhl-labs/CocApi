@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 namespace devhl.CocApi.Models.War
 {
-    public class LeagueVillage : IVillage
+    public class LeagueVillage : IVillage, IInitialize
     {
         [JsonProperty("Tag")]
         public string VillageTag { get; private set; } = string.Empty;

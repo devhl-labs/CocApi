@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using static devhl.CocApi.Enums;
+//using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War

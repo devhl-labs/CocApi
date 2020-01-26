@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.War;
 using devhl.CocApi.Models.Village;
 using System.Collections.Concurrent;
-using System.Threading;
 
 namespace devhl.CocApi
 {
@@ -16,17 +14,11 @@ namespace devhl.CocApi
     {
         private readonly CocApi _cocApi;
 
-        private readonly ILogger? _logger;
-
-        private readonly string _source = "UpdateService | ";
-
         private bool _continueUpdatingObjects = false;
 
-        public UpdateService(CocApi cocApi, ILogger? logger)
+        public UpdateService(CocApi cocApi)
         {
             _cocApi = cocApi;
-
-            _logger = logger;
         }
 
         public ConcurrentBag<string> ClanStrings { get; } = new ConcurrentBag<string>();
@@ -58,6 +50,8 @@ namespace devhl.CocApi
                     }
 
                     ObjectsAreBeingUpdated = false;
+
+                    _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.UpdateServiceEnding);
                 }
                 catch (Exception e)
                 {
@@ -65,13 +59,15 @@ namespace devhl.CocApi
 
                     ObjectsAreBeingUpdated = false;
 
-                    _logger.LogCritical(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
+                    _ = _cocApi.Logger?.Log<UpdateService>(LoggingEvent.Exception, e);
 
                     _cocApi.CrashDetectedEvent();
 
                     throw;
                 }
             });
+
+            _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.UpdateServiceStarted);
         }
 
         /// <summary>
@@ -161,7 +157,7 @@ namespace devhl.CocApi
 
         private async Task UpdateClanAsync(string clanString)
         {
-            _cocApi.Logger?.LogDebug(LoggingEvents.UpdatingClan, "{source} UpdateClanAsync({clanString})", _source, clanString);
+            _ = _cocApi.Logger?.Log<UpdateService>(LoggingEvent.UpdatingClan, $"UpdateClanAsync({clanString})");
 
             Clan? storedClan = await _cocApi.GetClanOrDefaultAsync(clanString, allowExpiredItem: true).ConfigureAwait(false);
 
@@ -173,14 +169,21 @@ namespace devhl.CocApi
 
             IWar? war = null;
 
-            if (downloadedClan.IsWarLogPublic == true)
+            if (downloadedClan.IsWarLogPublic == true && _cocApi.DownloadCurrentWar && storedClan.DownloadCurrentWar)
             {
-                war = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.ClanTag, allowExpiredItem: false).ConfigureAwait(false) as IActiveWar;
+                war = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
+
+                if (war == null)
+                {
+                    downloadedClan.IsWarLogPublic = false;
+
+                    _ = _cocApi.Logger?.Log<UpdateService>(LoggingEvent.Debug, $"{downloadedClan.ClanTag} {downloadedClan.Name} war log is private or an error occured. It will not be downloaded again until the ClanTimeToLive is reached.");
+                }
             }
 
             ILeagueGroup? leagueGroup = null;
 
-            if (_cocApi.IsDownloadingLeagueWars() && (war == null || war is LeagueWar))
+            if ((war == null || war is LeagueWar) && storedClan.DownloadLeagueWars && _cocApi.IsDownloadingLeagueWars())
             {
                 leagueGroup = await _cocApi.GetLeagueGroupOrDefaultAsync(storedClan.ClanTag).ConfigureAwait(false);
 
