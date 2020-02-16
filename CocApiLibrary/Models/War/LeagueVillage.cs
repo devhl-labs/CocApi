@@ -23,7 +23,7 @@ namespace devhl.CocApi.Models.War
         public int TownhallLevel { get; private set; }
 
         [JsonProperty]
-        public string LeagueClanId { get; internal set; } = string.Empty;
+        public string LeagueClanKey { get; internal set; } = string.Empty;
 
         public void Initialize()
         {

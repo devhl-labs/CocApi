@@ -224,7 +224,7 @@ namespace devhl.CocApi
         {
             try
             {
-                IActiveWar? warByWarId = GetWarByWarIdOrDefault(storedWar.WarId);
+                IActiveWar? warByWarId = GetWarByWarIdOrDefault(storedWar.WarKey);
 
                 if (warByWarId?.IsExpired() == false) return warByWarId;
 
@@ -244,7 +244,7 @@ namespace devhl.CocApi
                     {
                         war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
 
-                        if (war is IActiveWar currentWar1 && currentWar1?.WarId == storedWar.WarId) return currentWar1;
+                        if (war is IActiveWar activeWar && activeWar?.WarKey == storedWar.WarKey) return activeWar;
                     }
                 }
 

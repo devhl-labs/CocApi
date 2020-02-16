@@ -23,7 +23,7 @@ namespace devhl.CocApi.Models.War
 
         DateTime WarEndingSoonUtc { get; }
 
-        string WarId { get; }
+        string WarKey { get; }
 
         DateTime WarStartingSoonUtc { get; }
 

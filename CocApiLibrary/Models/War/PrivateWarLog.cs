@@ -2,7 +2,7 @@
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarLogIsPrivate : Downloadable, IWar
+    public class PrivateWarLog : Downloadable, IWar
     {
     }
 }

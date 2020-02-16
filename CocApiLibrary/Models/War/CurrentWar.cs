@@ -49,9 +49,11 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public List<Attack> Attacks { get; internal set; } = new List<Attack>();
 
-
+        /// <summary>
+        /// This value is used internally to identify unique wars.
+        /// </summary>
         [JsonProperty]
-        public string WarId { get; private set; } = string.Empty;
+        public string WarKey { get; private set; } = string.Empty;
 
         [JsonProperty]
         public WarType WarType { get; internal set; } = WarType.Random;
@@ -77,9 +79,9 @@ namespace devhl.CocApi.Models.War
 
             Clans = Clans.OrderBy(x => x.ClanTag).ToList();
 
-            WarId = $"{PreparationStartTimeUtc};{Clans[0].ClanTag}";
+            WarKey = $"{PreparationStartTimeUtc};{Clans[0].ClanTag}";
 
-            Flags.WarId = WarId;
+            Flags.WarKey = WarKey;
 
             TimeSpan timeSpan = StartTimeUtc - PreparationStartTimeUtc;
 
@@ -96,11 +98,6 @@ namespace devhl.CocApi.Models.War
                 || timeSpan.TotalMinutes == 15)
             {
                 WarType = WarType.Friendly;
-            }
-
-            if (this is LeagueWar)
-            {
-                WarType = WarType.SCCWL;
             }
 
             if (WarIsOverOrAllAttacksUsed())
@@ -137,16 +134,12 @@ namespace devhl.CocApi.Models.War
 
             foreach (WarClan clan in Clans)
             {
-                clan.WarId = WarId;
+                clan.WarKey = WarKey;
+
+                clan.Initialize();
 
                 foreach (WarVillage warVillage in clan.Villages.EmptyIfNull())
                 {
-                    warVillage.WarClanId = clan.WarClanId;
-
-                    warVillage.ClanTag = clan.ClanTag;
-
-                    warVillage.WarId = WarId;
-
                     foreach (Attack attack in warVillage.Attacks.EmptyIfNull())
                     {
                         attack.AttackerClanTag = clan.ClanTag;
@@ -172,7 +165,7 @@ namespace devhl.CocApi.Models.War
 
             foreach(var attack in Attacks)
             {
-                attack.WarId = WarId;
+                attack.WarKey = WarKey;
 
                 attack.PreparationStartTimeUtc = PreparationStartTimeUtc;
 
@@ -316,13 +309,13 @@ namespace devhl.CocApi.Models.War
         {
             IActiveWar? currentWar = downloadedWar as IActiveWar;
 
-            if (Flags.WarIsAccessible && (currentWar == null || currentWar.WarId != WarId))
+            if (Flags.WarIsAccessible && (currentWar == null || currentWar.WarKey != WarKey))
             {
                 Flags.WarIsAccessible = false;
 
                 cocApi.WarIsAccessibleChangedEvent(this);
             }
-            else if (!Flags.WarIsAccessible && (currentWar?.WarId == WarId))
+            else if (!Flags.WarIsAccessible && (currentWar?.WarKey == WarKey))
             {
                 Flags.WarIsAccessible = true;
 
@@ -343,7 +336,7 @@ namespace devhl.CocApi.Models.War
                 cocApi.WarEndingSoonEvent(this);
             }
 
-            if (!Flags.WarEndNotSeen && (currentWar == null || WarId != currentWar.WarId) && EndTimeUtc < DateTime.UtcNow)
+            if (!Flags.WarEndNotSeen && (currentWar == null || WarKey != currentWar.WarKey) && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEndNotSeen = true;
 
@@ -431,7 +424,9 @@ namespace devhl.CocApi.Models.War
 
                 PreparationStartTimeUtc = PreparationStartTimeUtc,
 
-                WarId = WarId
+                WarKey = WarKey,
+
+                DefenderClanTag = Clans.First(c => c.ClanTag != attacker.ClanTag).ClanTag
             };
 
             Attacks.Add(attack);
@@ -443,7 +438,7 @@ namespace devhl.CocApi.Models.War
 
         private void UpdateWar(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!(downloadedWar is IActiveWar currentWar) || currentWar.WarId != WarId) return;
+            if (!(downloadedWar is IActiveWar currentWar) || currentWar.WarKey != WarKey) return;
 
             if (EndTimeUtc != currentWar.EndTimeUtc ||
                 StartTimeUtc != currentWar.StartTimeUtc ||
@@ -456,7 +451,7 @@ namespace devhl.CocApi.Models.War
 
         private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!(downloadedWar is IActiveWar currentWar) || currentWar.WarId != WarId) return;
+            if (!(downloadedWar is IActiveWar currentWar) || currentWar.WarKey != WarKey) return;
 
             List<Attack> newAttacks = currentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
 

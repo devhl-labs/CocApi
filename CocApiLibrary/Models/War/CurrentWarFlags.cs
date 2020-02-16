@@ -9,7 +9,7 @@ namespace devhl.CocApi.Models.War
     public class CurrentWarFlags
     {
 
-        public string WarId { get; internal set; } = string.Empty;
+        public string WarKey { get; internal set; } = string.Empty;
 
 
         public bool WarEndingSoon { get; internal set; } = false;

@@ -36,32 +36,32 @@ namespace devhl.CocApi.Models.War
         /// </summary>
 
         [JsonProperty]
-        public string GroupId { get; internal set; } = string.Empty;
+        public string GroupKey { get; internal set; } = string.Empty;
 
 
         public void Initialize()
         {
-            GroupId = $"{Season.ToString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
+            GroupKey = $"{Season.ToString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
 
             foreach (var leagueClan in Clans.EmptyIfNull())
             {
-                leagueClan.GroupId = GroupId;
+                leagueClan.GroupId = GroupKey;
 
-                leagueClan.LeagueClanId = $"{Season.ToShortDateString()};{leagueClan.ClanTag}";
+                leagueClan.LeagueClanKey = $"{Season.ToShortDateString()};{leagueClan.ClanTag}";
 
                 foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
                 {
                     leagueVillage.ClanTag = leagueClan.ClanTag;
 
-                    leagueVillage.LeagueClanId = leagueClan.LeagueClanId;
+                    leagueVillage.LeagueClanKey = leagueClan.LeagueClanKey;
                 }
             }
 
             foreach (var round in Rounds.EmptyIfNull())
             {
-                round.RoundId = $"{Season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
+                round.RoundKey = $"{Season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
 
-                round.GroupId = GroupId;
+                round.GroupKey = GroupKey;
             }
         }
 

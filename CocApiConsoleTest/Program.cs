@@ -77,10 +77,12 @@ namespace CocApiConsoleTest
 
                 ClanTimeToLive = TimeSpan.FromMinutes(5),
                 CurrentWarTimeToLive = TimeSpan.FromSeconds(15),
+                NotInWarTimeToLive = TimeSpan.FromSeconds(15),
+                PrivateWarLogTimeToLive = TimeSpan.FromSeconds(15),
                 LeagueGroupTimeToLive = TimeSpan.FromHours(1),
                 LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
                 LeagueWarTimeToLive = TimeSpan.FromSeconds(15),
-                VillageTimeToLive = TimeSpan.FromHours(1)
+                VillageTimeToLive = TimeSpan.FromHours(1)                
             };
 
             cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));

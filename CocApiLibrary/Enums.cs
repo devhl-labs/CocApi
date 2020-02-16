@@ -5,17 +5,17 @@ namespace devhl.CocApi
     public enum WarFrequency : int
     {
         [EnumMember(Value = "unknown")]
-        Unknown = 0,
+        Unknown,
         [EnumMember(Value = "never")]
-        Never = 10,
+        Never,
         [EnumMember(Value = "lessThanOncePerWeek")]
-        LessThanOncePerWeek = 20,
+        LessThanOncePerWeek,
         [EnumMember(Value = "oncePerWeek")]
-        OncePerWeek = 30,
+        OncePerWeek,
         [EnumMember(Value = "moreThanOncePerWeek")]
-        MoreThanOncePerWeek = 40,
+        MoreThanOncePerWeek,
         [EnumMember(Value = "always")]
-        Always = 50
+        Always
     }
 
     public enum Role : int
@@ -35,29 +35,29 @@ namespace devhl.CocApi
     public enum WarState : int
     {
         [EnumMember(Value = "unknown")]
-        Unknown = 0,
+        Unknown,
         [EnumMember(Value = "notInWar")]
-        NotInWar = 10,
+        NotInWar,
         [EnumMember(Value = "preparation")]
-        Preparation = 20,
+        Preparation,
         [EnumMember(Value = "inWar")]
-        InWar = 30,
+        InWar,
         [EnumMember(Value = "warEnded")]
-        WarEnded = 40            
+        WarEnded            
     }
 
     public enum LeagueState : int
     {
         [EnumMember(Value = "unknown")]
-        Unknown = 0,
+        Unknown,
         [EnumMember(Value = "notInWar")]
-        NotInWar = 10,
+        NotInWar,
         [EnumMember(Value = "preparation")]
-        Preparation = 20,
+        Preparation,
         [EnumMember(Value = "inWar")]
-        InWar = 30,
+        InWar,
         [EnumMember(Value = "ended")]
-        WarsEnded = 50
+        WarsEnded
 
     }
 
@@ -65,48 +65,44 @@ namespace devhl.CocApi
     {
         [EnumMember(Value = "unknown")]
         Unknown = 0,
-        [EnumMember(Value = "undetermined")]
-        Undetermined = 10,
-        [EnumMember(Value = "win")]
-        Win = 20,
         [EnumMember(Value = "lose")]
-        Lose = 30,
+        Lose = -1,
         [EnumMember(Value = "draw")]
-        Draw = 40
+        Draw = 1,
+        [EnumMember(Value = "win")]
+        Win = 2
     }
 
     public enum WarType : int
     {
-        [EnumMember(Value = "unknown")]
-        Unknown = 0,
         [EnumMember(Value = "Random")]
-        Random = 10,
+        Random,
         [EnumMember(Value = "Friendly")]
-        Friendly = 20,
+        Friendly,
         [EnumMember(Value = "SCCWL")]
-        SCCWL = 30
+        SCCWL
     }
 
     public enum RecruitmentType : int
     {
         [EnumMember(Value = "unknown")]
-        Unknown = 0,
+        Unknown,
         [EnumMember(Value = "InviteOnly")]
-        InviteOnly = 10,
+        InviteOnly,
         [EnumMember(Value = "Closed")]
-        Closed = 20,
+        Closed,
         [EnumMember(Value = "Open")]
-        Open = 30
+        Open
     }
 
     public enum VillageType : int
     {
         [EnumMember(Value = "unknown")]
-        Unknown = 0,
+        Unknown,
         [EnumMember(Value = "Home")]
-        Home = 10,
+        Home,
         [EnumMember(Value = "BuilderBase")]
-        BuilderBase = 20
+        BuilderBase
     }
 
     public enum EndPoint

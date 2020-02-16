@@ -110,7 +110,7 @@ namespace CocApiConsoleTest
 
         public Task NewWar(IActiveWar currentWarApiModel)
         {
-            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"New War: {currentWarApiModel.WarId}");
+            _logger.Log<EventHandlerService>(LoggingEvent.Debug, $"New War: {currentWarApiModel.WarKey}");
 
             return Task.CompletedTask;
         }

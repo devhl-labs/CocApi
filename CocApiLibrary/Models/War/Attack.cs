@@ -10,7 +10,7 @@ namespace devhl.CocApi.Models.War
         public DateTime PreparationStartTimeUtc { get; internal set; }
 
         [JsonProperty]
-        public string WarId { get; internal set; } = string.Empty;
+        public string WarKey { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public string AttackerTag { get; internal set; } = string.Empty;
@@ -37,7 +37,7 @@ namespace devhl.CocApi.Models.War
         public string AttackerClanTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string? DefenderClanTag { get; internal set; } = string.Empty;
+        public string DefenderClanTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public int AttackerMapPosition { get; internal set; }

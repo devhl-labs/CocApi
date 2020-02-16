@@ -7,10 +7,10 @@ namespace devhl.CocApi.Models.War
     public class Round
     {
         [JsonProperty]
-        public string RoundId { get; internal set; } = string.Empty;
+        public string RoundKey { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string GroupId { get; internal set; } = string.Empty;
+        public string GroupKey { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public List<string>? WarTags { get; private set; }

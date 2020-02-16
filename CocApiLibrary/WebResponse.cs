@@ -102,11 +102,11 @@ namespace devhl.CocApi
         {
             if (e is ServerResponseException serverResponse)
             {
-                _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
+                _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
             }
             else
             {
-                _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
+                _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
             }
 
             if (e is TaskCanceledException && endPoint == EndPoint.LeagueGroup)
@@ -260,7 +260,11 @@ namespace devhl.CocApi
                     break;
 
                 case NotInWar notInWar:
-                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
+                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.NotInWarTimeToLive);
+                    break;
+
+                case PrivateWarLog privateWarLog:
+                    privateWarLog.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.PrivateWarLogTimeToLive);
                     break;
 
                 default:
@@ -280,7 +284,7 @@ namespace devhl.CocApi
 
         private static Downloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : Downloadable, new()
         {
-            _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+            _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
 
             _cocApi.IsAvailable = true;
 
@@ -323,14 +327,14 @@ namespace devhl.CocApi
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
-                //if (endPoint == EndPoint.CurrentWar)
-                //{
-                //    var privateWar = new WarLogIsPrivate();
+                if (endPoint == EndPoint.CurrentWar)
+                {
+                    var privateWar = new PrivateWarLog();
 
-                //    InitializeResult(privateWar, response, encodedUrl);
+                    InitializeResult(privateWar, response, encodedUrl);
 
-                //    return privateWar;
-                //}
+                    return privateWar;
+                }
 
                 throw new ForbiddenException(ex, response.StatusCode);
             }
@@ -340,7 +344,7 @@ namespace devhl.CocApi
 
                 InitializeResult(leagueGroupNotFound, response, encodedUrl);
 
-                _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
+                _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
 
                 return leagueGroupNotFound;
             }

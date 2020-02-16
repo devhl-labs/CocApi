@@ -17,7 +17,7 @@ namespace devhl.CocApi.Models.War
         public string Name { get; private set; } = string.Empty;
 
 
-        [JsonProperty]
+        [JsonProperty("badgeUrls")]
         public BadgeUrl? BadgeUrl { get; private set; }
 
 
@@ -25,13 +25,13 @@ namespace devhl.CocApi.Models.War
         public int ClanLevel { get; private set; }
 
         [JsonProperty]
-        public string WarId { get; internal set; } = string.Empty;
+        public string WarKey { get; internal set; } = string.Empty;
 
         [JsonProperty("members")]
         public IEnumerable<WarVillage>? Villages { get; private set; }
 
         [JsonProperty("attacks")]
-        public int AttackCount { get; }
+        public int AttackCount { get; private set; }
 
         [JsonProperty]
         public int DefenseCount { get; internal set; }
@@ -43,24 +43,17 @@ namespace devhl.CocApi.Models.War
         public decimal DestructionPercentage { get; private set; }
 
         [JsonProperty]
-        public string WarClanId { get; private set; } = string.Empty;
-
-        [JsonProperty]
         public Result Result { get; internal set; }
 
         public void Initialize()
         {
-            if (!string.IsNullOrEmpty(WarId) && !string.IsNullOrEmpty(ClanTag))
-            {
-                WarClanId = $"{WarId};{ClanTag}";
-            }
+            if (BadgeUrl != null) BadgeUrl.ClanTag = ClanTag;
 
-            if (!string.IsNullOrEmpty(ClanTag))
+            foreach (var warVillage in Villages.EmptyIfNull())
             {
-                foreach (var village in Villages.EmptyIfNull())
-                {
-                    village.ClanTag = ClanTag;
-                }
+                warVillage.ClanTag = ClanTag;
+
+                warVillage.WarKey = WarKey;
             }
         }
 

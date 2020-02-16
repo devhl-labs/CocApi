@@ -559,11 +559,11 @@ namespace devhl.CocApi
             {
                 foreach (CurrentWar war in wars.EmptyIfNull())
                 {
-                    war.Attacks = attacks.Where(a => a.WarId == war.WarId).ToList();
+                    war.Attacks = attacks.Where(a => a.WarKey == war.WarKey).ToList();
 
-                    war.Clans = warClans.Where(c => c.WarId == war.WarId).OrderBy(c => c.ClanTag).ToList();
+                    war.Clans = warClans.Where(c => c.WarKey == war.WarKey).OrderBy(c => c.ClanTag).ToList();
 
-                    war.Flags = currentWarFlags.FirstOrDefault(f => f.WarId == war.WarId);
+                    war.Flags = currentWarFlags.FirstOrDefault(f => f.WarKey == war.WarKey);
 
                     war.Initialize();
                 }
@@ -574,7 +574,7 @@ namespace devhl.CocApi
 
                     if (clan != null) leagueClan.BadgeUrl = clan.BadgeUrl;
 
-                    leagueClan.Villages = leagueVillages.Where(v => v.LeagueClanId == leagueClan.LeagueClanId);
+                    leagueClan.Villages = leagueVillages.Where(v => v.LeagueClanKey == leagueClan.LeagueClanKey);
 
                     leagueClan.Initialize();
                 }
@@ -590,24 +590,24 @@ namespace devhl.CocApi
 
                     AllWarsByClanTag.TryAdd(currentWar.Clans[1].ClanTag, currentWar);
 
-                    AllWarsByWarId.TryAdd(currentWar.WarId, currentWar);
+                    AllWarsByWarId.TryAdd(currentWar.WarKey, currentWar);
 
                     Clan? clan = GetClanOrDefault(currentWar.Clans[0].ClanTag);
 
-                    if (clan != null) clan.Wars.TryAdd(currentWar.WarId, currentWar);
+                    if (clan != null) clan.Wars.TryAdd(currentWar.WarKey, currentWar);
 
                     clan = GetClanOrDefault(currentWar.Clans[1].ClanTag);
 
-                    if (clan != null) clan.Wars.TryAdd(currentWar.WarId, currentWar);
+                    if (clan != null) clan.Wars.TryAdd(currentWar.WarKey, currentWar);
                 }
 
                 foreach (LeagueGroup leagueGroup in leagueGroups.EmptyIfNull())
                 {
-                    leagueGroup.Clans = leagueClans.Where(c => c.GroupId == leagueGroup.GroupId);
+                    leagueGroup.Clans = leagueClans.Where(c => c.GroupId == leagueGroup.GroupKey);
 
                     leagueGroup.Initialize();
 
-                    AllLeagueGroups.TryAdd(leagueGroup.GroupId, leagueGroup);
+                    AllLeagueGroups.TryAdd(leagueGroup.GroupKey, leagueGroup);
                 }
             }
             catch (Exception e)

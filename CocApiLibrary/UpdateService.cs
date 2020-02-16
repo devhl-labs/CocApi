@@ -172,18 +172,11 @@ namespace devhl.CocApi
             if (downloadedClan.IsWarLogPublic == true && _cocApi.DownloadCurrentWar && storedClan.DownloadCurrentWar)
             {
                 war = await _cocApi.GetCurrentWarOrDefaultAsync(storedClan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
-
-                if (war == null)
-                {
-                    downloadedClan.IsWarLogPublic = false;
-
-                    _ = _cocApi.Logger?.Log<UpdateService>(LoggingEvent.Debug, $"{downloadedClan.ClanTag} {downloadedClan.Name} war log is private or an error occured. It will not be downloaded again until the ClanTimeToLive is reached.");
-                }
             }
 
             ILeagueGroup? leagueGroup = null;
 
-            if ((war == null || war is LeagueWar) && storedClan.DownloadLeagueWars && _cocApi.IsDownloadingLeagueWars())
+            if ((war == null || war is LeagueWar || war is PrivateWarLog) && storedClan.DownloadLeagueWars && _cocApi.IsDownloadingLeagueWars())
             {
                 leagueGroup = await _cocApi.GetLeagueGroupOrDefaultAsync(storedClan.ClanTag).ConfigureAwait(false);
 
@@ -254,9 +247,7 @@ namespace devhl.CocApi
 
             for (int i = 0; i < numberOfWars; i++)
             {
-                IActiveWar storedWar;
-
-                storedWar = storedClan.Wars.ElementAt(i).Value;
+                IActiveWar storedWar = storedClan.Wars.ElementAt(i).Value;
 
                 IActiveWar? downloadedWar = await _cocApi.GetCurrentWarOrDefaultAsync(storedWar).ConfigureAwait(false);
 
@@ -273,7 +264,7 @@ namespace devhl.CocApi
                 {
                     currentWar1.Flags = storedWar.Flags;
 
-                    storedClan.Wars.AddOrUpdate(storedWar.WarId, currentWar1, (_, war2) => {
+                    storedClan.Wars.AddOrUpdate(storedWar.WarKey, currentWar1, (_, war2) => {
 
                         if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return currentWar1;
 

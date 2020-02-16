@@ -75,9 +75,24 @@ namespace devhl.CocApi
 
                             return war2;
                         });
-
-                        return notInWar;
                     }
+
+                    return notInWar;
+                }
+
+                if (downloadable is PrivateWarLog privateWarLog)
+                {
+                    if (CocApiConfiguration.CacheHttpResponses)
+                    {
+                        AllWarsByClanTag.AddOrUpdate(clanTag, privateWarLog, (clanTag, war2) =>
+                        {
+                            if (privateWarLog.UpdatedAtUtc > war2.UpdatedAtUtc) return privateWarLog;
+
+                            return war2;
+                        });
+                    }
+
+                    return privateWarLog;
                 }
 
                 IActiveWar downloadedWar = (IActiveWar) downloadable;
@@ -100,11 +115,11 @@ namespace devhl.CocApi
 
                     if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
                     {
-                        storedClan.Wars.TryAdd(downloadedWar.WarId, (CurrentWar) downloadedWar);
+                        storedClan.Wars.TryAdd(downloadedWar.WarKey, (CurrentWar) downloadedWar);
                     }
                 }             
 
-                AllWarsByWarId.AddOrUpdate(downloadedWar.WarId, downloadedWar, (_, war2) =>
+                AllWarsByWarId.AddOrUpdate(downloadedWar.WarKey, downloadedWar, (_, war2) =>
                 {
                     if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return downloadedWar;
 
@@ -216,8 +231,6 @@ namespace devhl.CocApi
 
                 leagueWarApiModel.WarTag = warTag;
 
-                leagueWarApiModel.WarType = WarType.SCCWL;
-
                 if (!CocApiConfiguration.CacheHttpResponses) return leagueWarApiModel;
 
                 AllWarsByWarTag.AddOrUpdate(leagueWarApiModel.WarTag, leagueWarApiModel, (_, war2) =>
@@ -227,7 +240,7 @@ namespace devhl.CocApi
                     return war2;
                 });
 
-                AllWarsByWarId.AddOrUpdate(leagueWarApiModel.WarId, leagueWarApiModel, (_, war2) =>
+                AllWarsByWarId.AddOrUpdate(leagueWarApiModel.WarKey, leagueWarApiModel, (_, war2) =>
                 {
                     if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
 
@@ -238,7 +251,7 @@ namespace devhl.CocApi
                 {
                     if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
                     {
-                        storedClan.Wars.TryAdd(leagueWarApiModel.WarId, leagueWarApiModel);
+                        storedClan.Wars.TryAdd(leagueWarApiModel.WarKey, leagueWarApiModel);
                     }
                 }
 

@@ -62,6 +62,16 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
+        public TimeSpan NotInWarTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// </summary>
+        public TimeSpan PrivateWarLogTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// </summary>
         public TimeSpan LeagueGroupTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
 
         /// <summary>

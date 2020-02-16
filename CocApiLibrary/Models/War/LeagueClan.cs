@@ -28,7 +28,7 @@ namespace devhl.CocApi.Models.War
         /// This is the season and the clan tag
         /// </summary>
         [JsonProperty]
-        public string LeagueClanId { get; internal set; } = string.Empty;
+        public string LeagueClanKey { get; internal set; } = string.Empty;
 
         [JsonProperty("members")]
         public IEnumerable<LeagueVillage>? Villages { get; internal set; }

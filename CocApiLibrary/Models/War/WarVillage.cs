@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarVillage : IVillage, IInitialize
+    public class WarVillage : IVillage
     {
         [JsonProperty("Tag")]
         public string VillageTag { get; private set; } = string.Empty;
@@ -25,8 +25,7 @@ namespace devhl.CocApi.Models.War
 
 
 
-        [JsonProperty]
-        public string WarVillageId { get; internal set; } = string.Empty;
+
 
         [JsonProperty]
         public int TownhallLevel { get; private set; }
@@ -36,22 +35,10 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public string WarClanId { get; internal set; } = string.Empty;
-
-
-        [JsonProperty]
         public IList<Attack>? Attacks { get; internal set; }
 
         [JsonProperty]
-        public string WarId { get; internal set; } = string.Empty;
-
-        public void Initialize()
-        {            
-            if (!string.IsNullOrEmpty(WarId) && !string.IsNullOrEmpty(VillageTag))
-            {
-                WarVillageId = $"{WarId};{VillageTag}";
-            }
-        }
+        public string WarKey { get; internal set; } = string.Empty;
 
         public override string ToString() => $"{VillageTag} {Name}";
     }
