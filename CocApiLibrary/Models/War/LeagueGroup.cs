@@ -14,8 +14,9 @@ namespace devhl.CocApi.Models.War
     public class LeagueGroup : Downloadable, ILeagueGroup, IInitialize
     {
         [JsonProperty]
-        public LeagueState State { get; }
+        public LeagueState State { get; private set; }
 
+        [JsonProperty]
         [JsonConverter(typeof(LeagueSeasonConverter))]
         public DateTime Season { get; private set; }
 

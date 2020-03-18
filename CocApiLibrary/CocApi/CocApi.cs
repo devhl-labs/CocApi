@@ -83,7 +83,7 @@ namespace devhl.CocApi
 
         internal ConcurrentDictionary<string, IWar> AllWarsByClanTag { get; } = new ConcurrentDictionary<string, IWar>();
 
-        internal ConcurrentDictionary<string, IActiveWar> AllWarsByWarId { get; } = new ConcurrentDictionary<string, IActiveWar>();
+        internal ConcurrentDictionary<string, CurrentWar> AllWarsByWarId { get; } = new ConcurrentDictionary<string, CurrentWar>();
 
         internal ConcurrentDictionary<string, LeagueWar> AllWarsByWarTag { get; } = new ConcurrentDictionary<string, LeagueWar>();
 
@@ -302,7 +302,7 @@ namespace devhl.CocApi
             {
                 //Logger.LogWarning(LoggingEvents.InvalidTag, "{source} The provided tag is not valid {tag}", _source, tag);
 
-                _ = Logger?.Log<CocApi>(LoggingEvent.InvalidTag, $"The provided tag {tag} is not valid.");
+                _ = Logger?.LogAsync<CocApi>($"The provided tag {tag} is not valid.", LogLevel.Debug, LoggingEvent.InvalidTag);
 
                 throw new InvalidTagException();
             }
@@ -314,7 +314,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// Begin watching a new clan.  This is to add new clans to be watched after your program has started.
+        /// Begin watching a new clan. After running this, run <see cref="StartUpdatingClans"/>.
         /// </summary>
         /// <param name="clanTag"></param>
         public void WatchClan(string clanTag)
@@ -343,67 +343,27 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// Establish the clans that you would like to poll for updates.  Run this when your program starts.  After running this, run <see cref="StartUpdatingClans"/>.  Watching a large number of clans will take a lot of memory.  If you watch clans, you should have caching enabled.
+        /// Begin watching a new clan. After running this, run <see cref="StartUpdatingClans"/>.
+        /// </summary>
+        /// <param name="clan"></param>
+        public void WatchClan(Clan clan) => WatchClan(clan.ClanTag);
+
+        /// <summary>
+        /// Begin watching a new clan. After running this, run <see cref="StartUpdatingClans"/>.
         /// </summary>
         /// <param name="clanTags"></param>
         public void WatchClans(IEnumerable<string> clanTags)
         {
-            ThrowIfNotInitialized();
-
-            ThrowIfNoUpdatersCreated();
-
-            try
-            {
-                int j = 0;
-
-                foreach (string clanTag in clanTags)
-                {
-                    if (IsValidTag(clanTag))
-                    {
-                        _updateServices[j].ClanStrings.Add(clanTag); 
-                    }
-
-                    j++;
-
-                    if (j >= CocApiConfiguration.NumberOfUpdaters) { j = 0; }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new CocApiException(e.Message, e);
-            }
+            foreach (string clanTag in clanTags) WatchClan(clanTag);
         }
-        
+
         /// <summary>
-        /// Establish the clans that you would like to poll for updates.  Run this when your program starts.  After running this, run <see cref="StartUpdatingClans"/>.  Watching a large number of clans will take a lot of memory.  If you watch clans, you should have caching enabled.
+        /// Begin watching a new clan. After running this, run <see cref="StartUpdatingClans"/>.
         /// </summary>
         /// <param name="clans"></param>
         public void WatchClans(IEnumerable<Clan> clans)
         {
-            ThrowIfNotInitialized();
-
-            ThrowIfNoUpdatersCreated();
-
-            try
-            {
-                int j = 0;
-
-                foreach (Clan clan in clans)
-                {
-                    if (IsValidTag(clan.ClanTag))
-                    {
-                        _updateServices[j].ClanStrings.Add(clan.ClanTag);
-                    }
-
-                    j++;
-
-                    if (j >= CocApiConfiguration.NumberOfUpdaters) { j = 0; }
-                }
-            }
-            catch (Exception e)
-            {
-                throw new CocApiException(e.Message, e);
-            }
+            foreach (Clan clan in clans) WatchClan(clan.ClanTag);
         }
 
         internal async Task<Downloadable> GetAsync<TResult>(string url, EndPoint endPoint, CancellationToken? cancellationToken = null) where TResult : Downloadable, new()
@@ -459,7 +419,7 @@ namespace devhl.CocApi
                 {
                     if (Logger != null) clan.Logger = Logger;
 
-                    clan.AnnounceWars = true;
+                    //clan.AnnounceWars = true;
 
                     clan.BadgeUrl = badgeUrls.FirstOrDefault(b => b.ClanTag == clan.ClanTag);
 
@@ -543,7 +503,7 @@ namespace devhl.CocApi
         /// <param name="warClans"></param>
         /// <param name="currentWarFlags"></param>
         public void LoadFromDatabase(
-                             IEnumerable<IActiveWar> wars,
+                             IEnumerable<CurrentWar> wars,
                              IEnumerable<ILeagueGroup>? leagueGroups,
                              IEnumerable<LeagueClan>? leagueClans,
                              IEnumerable<LeagueVillage>? leagueVillages,

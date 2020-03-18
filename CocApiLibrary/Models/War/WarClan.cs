@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarClan : IClan
+    public class WarClan : IClan, IWarClan
     {
         [JsonProperty("Tag")]
         public string ClanTag { get; internal set; } = string.Empty;

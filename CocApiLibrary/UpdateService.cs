@@ -25,6 +25,8 @@ namespace devhl.CocApi
 
         public bool ObjectsAreBeingUpdated { get; private set; } = false;
 
+        private bool _firstPassComplete = false;
+
         public void StartUpdatingClans()
         {
             _continueUpdatingObjects = true;
@@ -46,12 +48,14 @@ namespace devhl.CocApi
                             if (!_continueUpdatingObjects) break;
                         }
 
+                        _firstPassComplete = true;
+
                         await Task.Delay(100).ConfigureAwait(false);
                     }
 
                     ObjectsAreBeingUpdated = false;
 
-                    _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.UpdateServiceEnding);
+                    _ = _cocApi.Logger?.LogAsync<CocApi>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.UpdateServiceEnding);
                 }
                 catch (Exception e)
                 {
@@ -59,7 +63,7 @@ namespace devhl.CocApi
 
                     ObjectsAreBeingUpdated = false;
 
-                    _ = _cocApi.Logger?.Log<UpdateService>(LoggingEvent.Exception, e);
+                    _ = _cocApi.Logger?.LogAsync<UpdateService>(e, LogLevel.Critical, LoggingEvent.CrashDetected);
 
                     _cocApi.CrashDetectedEvent();
 
@@ -67,7 +71,7 @@ namespace devhl.CocApi
                 }
             });
 
-            _ = _cocApi.Logger?.Log<CocApi>(LoggingEvent.UpdateServiceStarted);
+            _ = _cocApi.Logger?.LogAsync<CocApi>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.UpdateServiceStarted);
         }
 
         /// <summary>
@@ -104,34 +108,64 @@ namespace devhl.CocApi
             return tsc.Task;
         }
 
-        private void AnnounceNewWar(Clan storedClan, CurrentWar currentWarApiModel)
-        {
-            if (currentWarApiModel.Flags.WarAnnounced) return;
+        //private void AnnounceNewWar(Clan storedClan, CurrentWar currentWarApiModel)
+        //{
+        //    if (currentWarApiModel.Flags.WarAnnounced) return;
 
-            //we only announce wars if this flag is false to avoid spamming new war events when the program starts.
-            if (storedClan.AnnounceWars)
+        //    ////we only announce wars if this flag is false to avoid spamming new war events when the program starts.
+        //    //if (storedClan.AnnounceWars)
+        //    //{
+        //        _cocApi.NewWarEvent(currentWarApiModel);
+        //    //}
+
+        //    currentWarApiModel.Flags.WarAnnounced = true;
+        //}
+
+        private void AnnounceNewWars(Clan storedClan)
+        {
+            List<CurrentWar> currentWars = new List<CurrentWar>();
+                
+            foreach(var kvp in storedClan.Wars)
             {
-                _cocApi.NewWarEvent(currentWarApiModel);
+                lock (kvp.Value._announceWarLock)
+                {
+                    if (kvp.Value.Flags.WarAnnounced) continue;
+
+                    currentWars.Add(kvp.Value);
+
+                    kvp.Value.Flags.WarAnnounced = true;
+                }
             }
 
-            currentWarApiModel.Flags.WarAnnounced = true;
+            if (currentWars.Count == 1)
+            {
+                _cocApi.NewWarEvent(currentWars.First());
+
+                Console.WriteLine($"announcing war:  {currentWars.First().PreparationStartTimeUtc}");
+            }
+            else if (currentWars.Count > 1)
+            {
+                _cocApi.NewWarsEvent(currentWars);
+
+                Console.WriteLine("announcing wars");
+            }
         }
 
         private async Task DownloadLeagueWarsAsync(Clan storedClan, ILeagueGroup? leagueGroup)
         {
-            if (leagueGroup is LeagueGroup leagueGroupApiModel)
+            if (leagueGroup is LeagueGroup leagueGroupApiModel && _cocApi.IsDownloadingLeagueWars() && storedClan.DownloadLeagueWars)
             {
-                if (_cocApi.IsDownloadingLeagueWars() && storedClan.DownloadLeagueWars && leagueGroupApiModel != null)
+                //if (_cocApi.IsDownloadingLeagueWars() && storedClan.DownloadLeagueWars && leagueGroupApiModel != null)
+                //{
+                List<Task> tasks = new List<Task>();
+
+                foreach (var round in leagueGroupApiModel.Rounds.EmptyIfNull())
                 {
-                    List<Task> tasks = new List<Task>();
-
-                    foreach (var round in leagueGroupApiModel.Rounds.EmptyIfNull())
-                    {
-                        tasks.Add(DownloadRoundAsync(storedClan, round));
-                    }
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                    tasks.Add(DownloadRoundAsync(storedClan, round));
                 }
+
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+                //}
             }
         }
 
@@ -139,25 +173,24 @@ namespace devhl.CocApi
         {
             foreach (var warTag in round.WarTags.EmptyIfNull().Where(w => w != "#0"))
             {
-                IActiveWar? leagueWar = await _cocApi.GetLeagueWarOrDefaultAsync(warTag, allowExpiredItem: false).ConfigureAwait(false);
+                LeagueWar? leagueWar = await _cocApi.GetLeagueWarOrDefaultAsync(warTag, allowExpiredItem: false).ConfigureAwait(false);
 
                 if (leagueWar == null) continue;
 
                 if (leagueWar.Clans.Any(c => c.ClanTag == storedClan.ClanTag))
                 {
-                    continue;
-                }
+                    //Console.WriteLine("!!!!!!!!!!!!!!!FOUND!!!!!!!!!!!!!");
 
-                if (!_continueUpdatingObjects || !_cocApi.IsDownloadingLeagueWars() || !storedClan.DownloadLeagueWars)
-                {
                     return;
                 }
+
+                if (!_continueUpdatingObjects || !_cocApi.IsDownloadingLeagueWars() || !storedClan.DownloadLeagueWars) return;
             }
         }
 
         private async Task UpdateClanAsync(string clanString)
         {
-            _ = _cocApi.Logger?.Log<UpdateService>(LoggingEvent.UpdatingClan, $"UpdateClanAsync({clanString})");
+            _ = _cocApi.Logger?.LogAsync<UpdateService>($"Updating clan {clanString}", LogLevel.Trace, LoggingEvent.UpdatingClan);
 
             Clan? storedClan = await _cocApi.GetClanOrDefaultAsync(clanString, allowExpiredItem: true).ConfigureAwait(false);
 
@@ -183,29 +216,31 @@ namespace devhl.CocApi
                 await DownloadLeagueWarsAsync(storedClan, leagueGroup).ConfigureAwait(false);
             }
 
-            if (storedClan.AnnounceWars == false)
-            {
-                //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
-                storedClan.AnnounceWars = true;  
+            //if (storedClan.AnnounceWars == false)
+            //{
+            //    //We have tried to download all wars at least once, announce future wars.  This prevents all wars from being announced on startup
+            //    storedClan.AnnounceWars = true;  
 
-                foreach(var storedWar in storedClan.Wars.Values)
-                {
-                    storedWar.Flags.WarAnnounced = true;
-                }
-            }
-            else
-            {
-                foreach(var storedWar in storedClan.Wars.Values)
-                {
-                    AnnounceNewWar(storedClan, storedWar);
-                }
-            }
-            
+            //    foreach(var storedWar in storedClan.Wars.Values)
+            //    {
+            //        storedWar.Flags.WarAnnounced = true;
+            //    }
+            //}
+            //else
+            //{
+            //foreach (var storedWar in storedClan.Wars.Values)
+            //{
+            //    AnnounceNewWar(storedClan, storedWar);
+            //}
+            //}
+
+            AnnounceNewWars(storedClan);
+
             await UpdateWarsAsync(storedClan, leagueGroup).ConfigureAwait(false);
 
             await UpdateVillagesAsync(storedClan).ConfigureAwait(false);
 
-            downloadedClan.AnnounceWars = storedClan.AnnounceWars;
+            //downloadedClan.AnnounceWars = storedClan.AnnounceWars;
 
             downloadedClan.DownloadLeagueWars = storedClan.DownloadLeagueWars;
 
@@ -228,7 +263,7 @@ namespace devhl.CocApi
 
         private async Task UpdateVillagesAsync(Clan storedClan)
         {
-            if (_cocApi.DownloadVillages && storedClan.DownloadVillages)
+            if (_cocApi.DownloadVillages && storedClan.DownloadVillages && _firstPassComplete)
             {
                 List<Task> tasks = new List<Task>();
 
@@ -247,9 +282,9 @@ namespace devhl.CocApi
 
             for (int i = 0; i < numberOfWars; i++)
             {
-                IActiveWar storedWar = storedClan.Wars.ElementAt(i).Value;
+                CurrentWar storedWar = storedClan.Wars.ElementAt(i).Value;
 
-                IActiveWar? downloadedWar = await _cocApi.GetCurrentWarOrDefaultAsync(storedWar).ConfigureAwait(false);
+                CurrentWar? downloadedWar = await _cocApi.GetCurrentWarOrDefaultAsync(storedWar).ConfigureAwait(false);
 
                 if (storedWar is LeagueWar leagueWar)
                 {
@@ -265,6 +300,18 @@ namespace devhl.CocApi
                     currentWar1.Flags = storedWar.Flags;
 
                     storedClan.Wars.AddOrUpdate(storedWar.WarKey, currentWar1, (_, war2) => {
+
+                        if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return currentWar1;
+
+                        return war2;
+                    });
+
+                    Clan? clan = _cocApi.GetClanOrDefault(currentWar1.Clans.First(c => c.ClanTag != storedClan.ClanTag).ClanTag);
+
+                    if (clan == null) return;
+
+                    clan.Wars.AddOrUpdate(storedWar.WarKey, currentWar1, (_, war2) =>
+                    {
 
                         if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return currentWar1;
 

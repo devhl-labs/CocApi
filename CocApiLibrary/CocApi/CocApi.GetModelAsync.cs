@@ -12,7 +12,7 @@ namespace devhl.CocApi
 {
     public sealed partial class CocApi : IDisposable
     {
-        public async Task<Clan> GetClanAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<Clan> GetClanAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
             
@@ -47,7 +47,7 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {         
             ThrowIfNotInitialized();
 
@@ -59,7 +59,7 @@ namespace devhl.CocApi
 
                 if (war != null && (allowExpiredItem || !war.IsExpired())) return war;
 
-                if (war is IActiveWar currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
+                if (war is CurrentWar currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
@@ -95,7 +95,7 @@ namespace devhl.CocApi
                     return privateWarLog;
                 }
 
-                IActiveWar downloadedWar = (IActiveWar) downloadable;
+                CurrentWar downloadedWar = (CurrentWar) downloadable;
 
                 if (!CocApiConfiguration.CacheHttpResponses) return downloadedWar;
                 
@@ -103,9 +103,9 @@ namespace devhl.CocApi
                 {
                     AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
 
-                    if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc)
+                    if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc || storedWar is PrivateWarLog)
                     {
-                        AllWarsByClanTag.AddOrUpdate(clanTag, downloadedWar, (clanTag, war2) =>
+                        AllWarsByClanTag.AddOrUpdate(clan.ClanTag, downloadedWar, (clanTag, war2) =>
                         {
                             if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return downloadedWar;
 
@@ -144,7 +144,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<ILeagueGroup> GetLeagueGroupAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<ILeagueGroup> GetLeagueGroupAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
@@ -206,7 +206,7 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<LeagueWar> GetLeagueWarAsync(string warTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<LeagueWar> GetLeagueWarAsync(string warTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
@@ -269,7 +269,7 @@ namespace devhl.CocApi
                             });
 
                         }
-                        else if (war is IActiveWar currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
+                        else if (war is CurrentWar currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
                         {
                             AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                             {
@@ -300,7 +300,7 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task<Village> GetVillageAsync(string villageTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<Village> GetVillageAsync(string villageTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 

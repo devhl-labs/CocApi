@@ -67,10 +67,10 @@ namespace devhl.CocApi
         Unknown = 0,
         [EnumMember(Value = "lose")]
         Lose = -1,
-        [EnumMember(Value = "draw")]
-        Draw = 1,
         [EnumMember(Value = "win")]
-        Win = 2
+        Win = 1,
+        [EnumMember(Value = "draw")]
+        Draw = 2
     }
 
     public enum WarType : int
@@ -141,14 +141,27 @@ namespace devhl.CocApi
         UpdatingClan,
         IsRateLimited,
         IsPremptiveRateLimited,
-        UnhandledCase,
+        //UnhandledCase,
         InvalidTag,
         HttpResponseError,
         HttpResponseStatusCodeSuccessful,
         HttpResponseStatusCodeUnsuccessful,
-        Exception,
+        //Exception,
         UpdateServiceStarted,
         UpdateServiceEnding,
-        Debug
+        //Debug,
+        //Other,
+        CrashDetected
+    }
+
+    public enum LogLevel
+    {
+        Trace,
+        Debug,
+        Information,
+        Warning,
+        Error,
+        Critical,
+        None
     }
 }

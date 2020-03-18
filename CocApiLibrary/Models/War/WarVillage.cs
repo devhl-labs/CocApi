@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarVillage : IVillage
+    public class WarVillage : IVillage, IWarVillage
     {
         [JsonProperty("Tag")]
         public string VillageTag { get; private set; } = string.Empty;
@@ -28,7 +28,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public int TownhallLevel { get; private set; }
+        public int TownHallLevel { get; private set; }
 
         [JsonProperty]
         public int MapPosition { get; private set; }

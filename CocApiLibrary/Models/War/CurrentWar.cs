@@ -7,11 +7,13 @@ using System.Linq;
 using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
+using System.Threading;
+using System.Threading.Tasks;
 //using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.War
 {
-    public class CurrentWar : Downloadable, IInitialize, IActiveWar
+    public class CurrentWar : Downloadable, IInitialize, IWar, ICurrentWar
     {
         [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
@@ -157,13 +159,13 @@ namespace devhl.CocApi.Models.War
             Attacks = Attacks.OrderBy(a => a.Order).ToList();
 
             var attacksByDefenderTag = Attacks.GroupBy(a => a.DefenderTag);
-            
-            foreach(var defendingVillage in attacksByDefenderTag)
+
+            foreach (var defendingVillage in attacksByDefenderTag)
             {
                 defendingVillage.OrderBy(d => d.Order).First().Fresh = true;
             }
 
-            foreach(var attack in Attacks)
+            foreach (var attack in Attacks)
             {
                 attack.WarKey = WarKey;
 
@@ -179,7 +181,7 @@ namespace devhl.CocApi.Models.War
                 }
                 else
                 {
-                    attack.StarsGained = Math.Max(attack.Stars!.Value - attacksThisBase.OrderBy(a => a.Stars).First().Stars!.Value, 0);                    
+                    attack.StarsGained = Math.Max(attack.Stars!.Value - attacksThisBase.OrderBy(a => a.Stars).First().Stars!.Value, 0);
                 }
 
                 foreach (var clan in Clans)
@@ -192,7 +194,7 @@ namespace devhl.CocApi.Models.War
 
                         attack.AttackerMapPosition = attacker.MapPosition;
 
-                        attack.AttackerTownHallLevel = attacker.TownhallLevel;
+                        attack.AttackerTownHallLevel = attacker.TownHallLevel;
                     }
 
                     WarVillage? defender = clan.Villages.FirstOrDefault(m => m.VillageTag == attack.DefenderTag);
@@ -203,7 +205,7 @@ namespace devhl.CocApi.Models.War
 
                         attack.DefenderMapPosition = defender.MapPosition;
 
-                        attack.DefenderTownHallLevel = defender.TownhallLevel;
+                        attack.DefenderTownHallLevel = defender.TownHallLevel;
                     }
                 }
             }
@@ -220,7 +222,7 @@ namespace devhl.CocApi.Models.War
 
             if (State > WarState.Preparation)
             {
-                Flags.WarAnnounced = true;
+                //Flags.WarAnnounced = true;
 
                 Flags.WarStarted = true;
 
@@ -282,32 +284,38 @@ namespace devhl.CocApi.Models.War
             return false;
         }
 
+        //private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1);
+
+        private readonly object _lockObject = new object();
+
+        internal readonly object _announceWarLock = new object();
+
         internal void Update(CocApi cocApi, IWar? downloadedWar, ILeagueGroup? leagueGroupApiModel)
         {
-            SendWarNotifications(cocApi, downloadedWar);
-
-            if (ReferenceEquals(this, downloadedWar))
+            lock (_lockObject)
             {
-                return;
+                SendWarNotifications(cocApi, downloadedWar);
+
+                if (ReferenceEquals(this, downloadedWar)) return;
+
+                if (downloadedWar is CurrentWar currentWar)
+                {
+                    //the type of war should only be decided on the wars fist download
+                    //to prevent maintenance breaks from changing the type to random
+                    currentWar.WarType = this.WarType;
+                }
+
+                UpdateWar(cocApi, downloadedWar);
+
+                UpdateAttacks(cocApi, downloadedWar);
+
+                UpdateLeagueTeamSize(cocApi, leagueGroupApiModel);
             }
-
-            if (downloadedWar is CurrentWar currentWar)
-            {
-                //the type of war should only be decided on the wars fist download
-                //to prevent maintenance breaks from changing the type to random
-                currentWar.WarType = this.WarType;
-            }
-
-            UpdateWar(cocApi, downloadedWar);
-
-            UpdateAttacks(cocApi, downloadedWar);
-
-            UpdateLeagueTeamSize(cocApi, leagueGroupApiModel);
         }
 
         private void SendWarNotifications(CocApi cocApi, IWar? downloadedWar)
         {
-            IActiveWar? currentWar = downloadedWar as IActiveWar;
+            CurrentWar? currentWar = downloadedWar as CurrentWar;
 
             if (Flags.WarIsAccessible && (currentWar == null || currentWar.WarKey != WarKey))
             {
@@ -387,18 +395,17 @@ namespace devhl.CocApi.Models.War
             {
                 attacker.Attacks ??= new List<Attack>();
 
-                for (int i = 0; i < 2; i++)
-                {
-                    if (attacker.Attacks[i] == null) CreateMissedAttack(attacker);
-                }
+                if (attacker.Attacks.Count() == 0) CreateMissedAttack(attacker);
+
+                if (attacker.Attacks.Count() == 1) CreateMissedAttack(attacker);
             }
 
             return;
         }
 
-        private void  CreateMissedAttacksLeagueWar(WarClan warClan)
+        private void CreateMissedAttacksLeagueWar(WarClan warClan)
         {
-            foreach(var attacker in warClan.Villages.EmptyIfNull())
+            foreach (var attacker in warClan.Villages.EmptyIfNull())
             {
                 if (attacker.Attacks?.Count == 1) continue;
 
@@ -406,7 +413,7 @@ namespace devhl.CocApi.Models.War
             }
         }
 
-        
+
 
         private Attack CreateMissedAttack(WarVillage attacker)
         {
@@ -418,7 +425,7 @@ namespace devhl.CocApi.Models.War
 
                 AttackerTag = attacker.VillageTag,
 
-                AttackerTownHallLevel = attacker.TownhallLevel,
+                AttackerTownHallLevel = attacker.TownHallLevel,
 
                 Missed = true,
 
@@ -438,7 +445,7 @@ namespace devhl.CocApi.Models.War
 
         private void UpdateWar(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!(downloadedWar is IActiveWar currentWar) || currentWar.WarKey != WarKey) return;
+            if (!(downloadedWar is CurrentWar currentWar) || currentWar.WarKey != WarKey) return;
 
             if (EndTimeUtc != currentWar.EndTimeUtc ||
                 StartTimeUtc != currentWar.StartTimeUtc ||
@@ -451,11 +458,14 @@ namespace devhl.CocApi.Models.War
 
         private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!(downloadedWar is IActiveWar currentWar) || currentWar.WarKey != WarKey) return;
+            if (!(downloadedWar is CurrentWar currentWar) || currentWar.WarKey != WarKey) return;
 
             List<Attack> newAttacks = currentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
 
             cocApi.NewAttacksEvent(currentWar, newAttacks);
+
+            //this prevents a race condition if both clans are present but in different updaters
+            Attacks = currentWar.Attacks;
         }
 
         private void UpdateLeagueTeamSize(CocApi cocApi, ILeagueGroup? leagueGroup)
@@ -470,7 +480,7 @@ namespace devhl.CocApi.Models.War
 
                     cocApi.LeagueGroupTeamSizeChangedEvent(leagueGroupApiModel);
                 }
-            }            
+            }
         }
 
         public override string ToString() => PreparationStartTimeUtc.ToString();

@@ -15,6 +15,7 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public int Trophies { get; private set; }
 
+        [JsonProperty]
         [JsonConverter(typeof(LeagueSeasonConverter))]
         public DateTime Id { get; private set; } = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
 

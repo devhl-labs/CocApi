@@ -33,7 +33,7 @@ namespace devhl.CocApi
 
                     //_cocApi.Logger?.LogWarning(LoggingEvents.IsRateLimited, "{source} Token is rate limited.", _source);
 
-                    _ = _cocApi.Logger?.Log<TokenObject>(LoggingEvent.IsRateLimited, "Token is rate limited.");
+                    _ = _cocApi.Logger?.LogAsync<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
                 }
             }
         }
@@ -64,9 +64,7 @@ namespace devhl.CocApi
 
                 if (!notified)
                 {
-                    //_cocApi.Logger?.LogDebug(LoggingEvents.IsPremptiveRateLimited, "{source} Preemptive rate limit downloading {endpoint}", _source, endPoint.ToString());
-
-                    _ = _cocApi.Logger?.Log<TokenObject>(LoggingEvent.IsPremptiveRateLimited, $"Preemptive rate limit downloading {endPoint}.");
+                    _ = _cocApi.Logger?.LogAsync<TokenObject>($"Preemptive rate limit downloading {endPoint}.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
 
                     notified = true;
                 }

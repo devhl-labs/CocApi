@@ -7,12 +7,22 @@ namespace devhl.CocApi
 {
     public interface ILogger
     {
-        Task Log<T>(LoggingEvent loggingEvent, string? message = null);
+        Task LogAsync<T>(string? message, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown);
 
-        Task Log<T>(LoggingEvent loggingEvent, Exception exception);
+        Task LogAsync<T>(Exception exception, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown);
 
-        Task Log(string source, LoggingEvent loggingEvent, string? message = null);
+        Task LogAsync(string source, Exception exception, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown);
 
-        Task Log(string source, LoggingEvent loggingEvent, Exception exception);
+        Task LogAsync<T>(LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown);
+
+
+        Task LogAsync(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null);
+
+
+        //Task LogAsync<T>(LogLevel logLevel, string? message = null);
+
+        //Task LogAsync<T>(LogLevel logLevel, Exception exception);
+
+        //Task LogAsync(string source, LogLevel logLevel, string? message = null);
     }
 }

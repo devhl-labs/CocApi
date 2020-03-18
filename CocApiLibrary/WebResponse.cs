@@ -87,8 +87,8 @@ namespace devhl.CocApi
             {
                 Converters = new List<JsonConverter>
                 {
-                    new DateTimeConverter() ,
-                    new LeagueSeasonConverter(),
+                    //new DateTimeConverter() ,
+                    //new LeagueSeasonConverter(),
                     new StringEnumConverter()
                     //new LeagueStateConverter(),
                     //new ResultConverter(),
@@ -102,11 +102,11 @@ namespace devhl.CocApi
         {
             if (e is ServerResponseException serverResponse)
             {
-                _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
+                _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
             }
             else
             {
-                _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
+                _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
             }
 
             if (e is TaskCanceledException && endPoint == EndPoint.LeagueGroup)
@@ -284,7 +284,7 @@ namespace devhl.CocApi
 
         private static Downloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : Downloadable, new()
         {
-            _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+            _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
 
             _cocApi.IsAvailable = true;
 
@@ -344,7 +344,7 @@ namespace devhl.CocApi
 
                 InitializeResult(leagueGroupNotFound, response, encodedUrl);
 
-                _ = _cocApi.Logger?.Log("WebResponse", LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
+                _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
 
                 return leagueGroupNotFound;
             }

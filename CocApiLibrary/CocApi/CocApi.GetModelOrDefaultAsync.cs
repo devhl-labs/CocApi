@@ -21,7 +21,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<Clan?> GetClanOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<Clan?> GetClanOrDefaultAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
@@ -89,7 +89,7 @@ namespace devhl.CocApi
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
 
-        public async Task<ILeagueGroup?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<ILeagueGroup?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             ILeagueGroup? result = null;
 
@@ -115,7 +115,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<IWar?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<IWar?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             IWar? result = null;
 
@@ -142,7 +142,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<LeagueWar?> GetLeagueWarOrDefaultAsync(string warTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<LeagueWar?> GetLeagueWarOrDefaultAsync(string warTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             LeagueWar? result = null;
 
@@ -169,7 +169,7 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<Village?> GetVillageOrDefaultAsync(string villageTag, bool allowExpiredItem = false, CancellationToken? cancellationToken = null)
+        public async Task<Village?> GetVillageOrDefaultAsync(string villageTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
             Village? result = null;
 
@@ -220,11 +220,11 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="storedWar"></param>
         /// <returns></returns>
-        public async Task<IActiveWar?> GetCurrentWarOrDefaultAsync(IActiveWar storedWar)
+        public async Task<CurrentWar?> GetCurrentWarOrDefaultAsync(CurrentWar storedWar)
         {
             try
             {
-                IActiveWar? warByWarId = GetWarByWarIdOrDefault(storedWar.WarKey);
+                CurrentWar? warByWarId = GetWarByWarIdOrDefault(storedWar.WarKey);
 
                 if (warByWarId?.IsExpired() == false) return warByWarId;
 
@@ -244,7 +244,7 @@ namespace devhl.CocApi
                     {
                         war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
 
-                        if (war is IActiveWar activeWar && activeWar?.WarKey == storedWar.WarKey) return activeWar;
+                        if (war is CurrentWar currentWar && currentWar?.WarKey == storedWar.WarKey) return currentWar;
                     }
                 }
 

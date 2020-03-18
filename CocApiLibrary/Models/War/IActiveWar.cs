@@ -1,34 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿//using System;
+//using System.Collections.Generic;
 
-namespace devhl.CocApi.Models.War
-{
-    public interface IActiveWar : IDownloadable, IWar
-    {
-        List<Attack> Attacks { get;  }
+//namespace devhl.CocApi.Models.War
+//{
+//    public interface IActiveWar : IDownloadable, IWar
+//    {
+//        List<Attack> Attacks { get;  }
 
-        IList<WarClan> Clans { get; }
+//        IList<WarClan> Clans { get; }
 
-        DateTime EndTimeUtc { get; }
+//        DateTime EndTimeUtc { get; }
 
-        CurrentWarFlags Flags { get; }
+//        CurrentWarFlags Flags { get; }
 
-        DateTime PreparationStartTimeUtc { get; }
+//        DateTime PreparationStartTimeUtc { get; }
 
-        DateTime StartTimeUtc { get; }
+//        DateTime StartTimeUtc { get; }
 
-        WarState State { get; }
+//        WarState State { get; }
 
-        int TeamSize { get; }
+//        int TeamSize { get; }
 
-        DateTime WarEndingSoonUtc { get; }
+//        DateTime WarEndingSoonUtc { get; }
 
-        string WarKey { get; }
+//        string WarKey { get; }
 
-        DateTime WarStartingSoonUtc { get; }
+//        DateTime WarStartingSoonUtc { get; }
 
-        WarType WarType { get; }
+//        WarType WarType { get; }
 
-        bool WarIsOverOrAllAttacksUsed();
-    }
-}
+//        bool WarIsOverOrAllAttacksUsed();
+//    }
+//}

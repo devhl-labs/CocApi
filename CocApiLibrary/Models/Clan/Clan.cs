@@ -95,12 +95,12 @@ namespace devhl.CocApi.Models.Clan
 
         public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();
 
-        [JsonProperty]
+        //[JsonProperty]
         /// <summary>
         /// This is a flag used to prevent all wars from being announced on startup. 
         /// It is set to true after all wars have been downloaded at least once for this clan.
         /// </summary>
-        internal bool AnnounceWars { get; set; } = false;        
+        //internal bool AnnounceWars { get; set; } = false;        
 
         internal void Update(CocApi cocApi, Clan? downloadedClan)
         {

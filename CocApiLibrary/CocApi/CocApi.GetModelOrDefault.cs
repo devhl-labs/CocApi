@@ -34,9 +34,9 @@ namespace devhl.CocApi
             return result;
         }
 
-        public IActiveWar? GetWarByWarIdOrDefault(string warId)
+        public CurrentWar? GetWarByWarIdOrDefault(string warId)
         {
-            AllWarsByWarId.TryGetValue(warId, out IActiveWar? currentWar);
+            AllWarsByWarId.TryGetValue(warId, out CurrentWar? currentWar);
 
             return currentWar;
         }

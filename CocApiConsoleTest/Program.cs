@@ -19,7 +19,7 @@ namespace CocApiConsoleTest
 
             ILogger logger = services.GetRequiredService<ILogger>();
 
-            await logger.Log<Program>(LoggingEvent.Debug, "Press CTRL-C to exit");
+            await logger.LogAsync<Program>("Press CTRL-C to exit");
 
             Console.CancelKeyPress += (s, e) => DoExitStuff(services);
 
@@ -113,7 +113,7 @@ namespace CocApiConsoleTest
 
         private static void DoExitStuff(IServiceProvider services)
         {
-            services.GetRequiredService<ILogger>().Log<Program>(LoggingEvent.Debug, "Quiting, please wait...");
+            services.GetRequiredService<ILogger>().LogAsync<Program>("Quiting, please wait...");
 
             _cocApi?.Dispose();
 

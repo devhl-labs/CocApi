@@ -15,15 +15,16 @@ namespace devhl.CocApi
     public delegate Task VillagesLeftEventHandler(Clan oldClan, IReadOnlyList<ClanVillage> villageListApiModels);
     public delegate Task ClanBadgeUrlChangedEventHandler(Clan oldClan, Clan newClan);
     public delegate Task ClanLocationChangedEventHandler(Clan oldClan, Clan newClan);
-    public delegate Task NewWarEventHandler(IActiveWar currentWarApiModel);
-    public delegate Task WarChangedEventHandler(IActiveWar oldWar, IActiveWar newWar);
-    public delegate Task NewAttacksEventHandler(IActiveWar currentWarApiModel, IReadOnlyList<Attack> newAttacks);
-    public delegate Task WarEndingSoonEventHandler(IActiveWar currentWarApiModel);
-    public delegate Task WarStartingSoonEventHandler(IActiveWar currentWarApiModel);
+    public delegate Task NewWarEventHandler(CurrentWar currentWarApiModel);
+    public delegate Task NewWarsEventHandler(IReadOnlyList<CurrentWar> currentWars);
+    public delegate Task WarChangedEventHandler(CurrentWar oldWar, CurrentWar newWar);
+    public delegate Task NewAttacksEventHandler(CurrentWar currentWar, IReadOnlyList<Attack> newAttacks);
+    public delegate Task WarEndingSoonEventHandler(CurrentWar currentWar);
+    public delegate Task WarStartingSoonEventHandler(CurrentWar currentWar);
     public delegate Task ClanVersusPointsChangedEventHandler(Clan oldClan, int newClanVersusPoints);
     public delegate Task ClanPointsChangedEventHandler(Clan oldClan, int newClanPoints);
-    public delegate Task WarIsAccessibleChangedEventHandler(IActiveWar currentWarApiModel);
-    public delegate Task WarEndNotSeenEventHandler(IActiveWar currentWarApiModel);
+    public delegate Task WarIsAccessibleChangedEventHandler(CurrentWar currentWar);
+    public delegate Task WarEndNotSeenEventHandler(CurrentWar currentWar);
     public delegate Task VillageChangedEventHandler(Village oldVillage, Village newVillage);
     public delegate Task VillageDefenseWinsChangedEventHandler(Village oldVillage, int newDefenseWins);
     public delegate Task VillageExpLevelChangedEventHandler(Village oldVillage, int newExpLevel);
@@ -35,9 +36,9 @@ namespace devhl.CocApi
     public delegate Task VillageTroopsChangedEventHandler(Village oldVillage, IReadOnlyList<Troop> newTroops);
     public delegate Task VillageHeroesChangedEventHandler(Village oldVillage, IReadOnlyList<Troop> newHeroes);
     public delegate Task VillageSpellsChangedEventHandler(Village oldVillage, IReadOnlyList<Spell> newSpells);
-    public delegate Task WarStartedEventHandler(IActiveWar currentWarApiModel);
-    public delegate Task WarEndedEventHandler(IActiveWar currentWarApiModel);
-    public delegate Task WarEndSeenEventHandler(IActiveWar currentWarApiModel);
+    public delegate Task WarStartedEventHandler(CurrentWar currentWar);
+    public delegate Task WarEndedEventHandler(CurrentWar currentWar);
+    public delegate Task WarEndSeenEventHandler(CurrentWar currentWar);
     public delegate Task LeagueGroupTeamSizeChangedEventHandler(LeagueGroup leagueGroupApiModel);
     public delegate Task ClanLabelsChangedEventHandler(Clan newClanApiModel, IReadOnlyList<ClanLabel> addedLabels, IReadOnlyList<ClanLabel> removedLables);
     public delegate Task VillageLabelsChangedEventHandler(Village newVillageApiModel, IReadOnlyList<VillageLabel> addedLabels, IReadOnlyList<VillageLabel> removedLabels);
@@ -47,7 +48,7 @@ namespace devhl.CocApi
     public delegate Task ClanVillagesLeagueChangedEventHandler(Clan oldClan, IReadOnlyList<LeagueChange> leagueChanged);
     public delegate Task ClanVillagesRoleChangedEventHandler(Clan oldClan, IReadOnlyList<RoleChange> roleChanges);
     public delegate Task ClanDonationsResetEventHandler(Clan oldClan, Clan newClan); //todo rework this event to handle villages leaving
-    public delegate Task MissedAttacksEventHandler(IActiveWar activeWar, IReadOnlyList<Attack> attacks);
+    public delegate Task MissedAttacksEventHandler(CurrentWar currentWar, IReadOnlyList<Attack> attacks);
 
 
     public sealed partial class CocApi : IDisposable
@@ -80,6 +81,10 @@ namespace devhl.CocApi
         public event ClanBadgeUrlChangedEventHandler? ClanBadgeUrlChanged;
         public event ClanLocationChangedEventHandler? ClanLocationChanged;
         public event NewWarEventHandler? NewWar;
+        /// <summary>
+        /// Fires if there are multiple wars to announce, usually just when the program first starts.
+        /// </summary>
+        public event NewWarsEventHandler? NewWars;
         /// <summary>
         /// Fires if the following properties change:
         /// <list type="bullet">
@@ -161,11 +166,11 @@ namespace devhl.CocApi
         /// </summary>
         public event MissedAttacksEventHandler? MissedAttacks;
 
-        internal void MissedAttacksEvent(IActiveWar activeWar, List<Attack> missedAttacks)
+        internal void MissedAttacksEvent(CurrentWar currentWar, List<Attack> missedAttacks)
         {
             if (missedAttacks.Count == 0) return;
 
-            MissedAttacks?.Invoke(activeWar, missedAttacks.ToImmutableArray());
+             MissedAttacks?.Invoke(currentWar, missedAttacks.ToImmutableArray());
         }
 
         internal void CrashDetectedEvent()
@@ -178,17 +183,11 @@ namespace devhl.CocApi
                     await Task.Delay(5000).ConfigureAwait(false);
 
                     StartUpdatingClans();
-
-                    //Logger.LogInformation(LoggingEvents.None, "{source} Update services restarted.", _source);
-
-                    //_ = Logger?.Log<CocApi>(LoggingEvent.)
                 });
             }
             catch (Exception e)
             {
-                //Logger.LogWarning(LoggingEvents.UnhandledError, "{source} {message}", _source, e.Message);
-
-                _ = Logger?.Log<CocApi>(LoggingEvent.Exception, e);
+                _ = Logger?.LogAsync<CocApi>(e, LogLevel.Critical, LoggingEvent.CrashDetected);
             }
         }
 
@@ -238,11 +237,11 @@ namespace devhl.CocApi
 
         internal void LeagueGroupTeamSizeChangedEvent(LeagueGroup leagueGroupApiModel) => LeagueGroupTeamSizeChanged?.Invoke(leagueGroupApiModel);
 
-        internal void WarEndSeenEvent(IActiveWar currentWarApiModel) => WarEndSeen?.Invoke(currentWarApiModel);
+        internal void WarEndSeenEvent(CurrentWar currentWar) => WarEndSeen?.Invoke(currentWar);
 
-        internal void WarEndedEvent(IActiveWar currentWarApiModel) => WarEnded?.Invoke(currentWarApiModel);
+        internal void WarEndedEvent(CurrentWar currentWar) => WarEnded?.Invoke(currentWar);
 
-        internal void WarStartedEvent(IActiveWar currentWarApiModel) => WarStarted?.Invoke(currentWarApiModel);
+        internal void WarStartedEvent(CurrentWar currentWar) => WarStarted?.Invoke(currentWar);
 
         internal void VillageSpellsChangedEvent(Village oldVillage, List<Spell> newSpells) => VillageSpellsChanged?.Invoke(oldVillage, newSpells.ToImmutableArray());
 
@@ -266,29 +265,34 @@ namespace devhl.CocApi
 
         internal void VillageChangedEvent(Village oldVillage, Village newVillage) => VillageChanged?.Invoke(oldVillage, newVillage);
 
-        internal void WarEndNotSeenEvent(IActiveWar currentWarApiModel) => WarEndNotSeen?.Invoke(currentWarApiModel);
+        internal void WarEndNotSeenEvent(CurrentWar currentWar) => WarEndNotSeen?.Invoke(currentWar);
 
-        internal void WarIsAccessibleChangedEvent(IActiveWar currentWarApiModel) => WarIsAccessibleChanged?.Invoke(currentWarApiModel);
+        internal void WarIsAccessibleChangedEvent(CurrentWar currentWar) => WarIsAccessibleChanged?.Invoke(currentWar);
 
         internal void ClanPointsChangedEvent(Clan oldClan, int newClanPoints) => ClanPointsChanged?.Invoke(oldClan, newClanPoints);
 
         internal void ClanVersusPointsChangedEvent(Clan oldClan, int newClanVersusPoints) => ClanVersusPointsChanged?.Invoke(oldClan, newClanVersusPoints);
 
-        internal void WarStartingSoonEvent(IActiveWar currentWarApiModel) => WarStartingSoon?.Invoke(currentWarApiModel);
+        internal void WarStartingSoonEvent(CurrentWar currentWar) => WarStartingSoon?.Invoke(currentWar);
 
-        internal void WarEndingSoonEvent(IActiveWar currentWarApiModel) => WarEndingSoon?.Invoke(currentWarApiModel);
+        internal void WarEndingSoonEvent(CurrentWar currentWar) => WarEndingSoon?.Invoke(currentWar);
 
-        internal void NewAttacksEvent(IActiveWar currentWarApiModel, List<Attack> attackApiModels)
+        internal void NewAttacksEvent(CurrentWar currentWar, List<Attack> attackApiModels)
         {
             if (attackApiModels.Count > 0)
             {
-                NewAttacks?.Invoke(currentWarApiModel, attackApiModels.ToImmutableArray());
+                NewAttacks?.Invoke(currentWar, attackApiModels.ToImmutableArray());
             }
         }
 
-        internal void WarChangedEvent(IActiveWar oldWar, IActiveWar newWar) => WarChanged?.Invoke(oldWar, newWar);
+        internal void WarChangedEvent(CurrentWar oldWar, CurrentWar newWar) => WarChanged?.Invoke(oldWar, newWar);
 
-        internal void NewWarEvent(IActiveWar currentWarApiModel) => NewWar?.Invoke(currentWarApiModel);
+        public void NewWarEvent(CurrentWar currentWar) => NewWar?.Invoke(currentWar);
+
+        public void NewWarsEvent(List<CurrentWar> currentWars)
+        {
+            if (currentWars.Count > 0) NewWars?.Invoke(currentWars.ToImmutableArray());
+        }
 
         internal void VillagesLeftEvent(Clan newClan, List<ClanVillage> clanVillageApiModels)
         {
