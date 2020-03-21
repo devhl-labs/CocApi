@@ -4,13 +4,13 @@ namespace devhl.CocApi.Models
 {
     public interface IDownloadable
     {
-        DateTime UpdatedAtUtc { get; }
+        DateTime DownloadedAtUtc { get; }
 
-        DateTime ExpiresAtUtc { get; }
+        DateTime CacheExpiresAtUtc { get; }
 
         string EncodedUrl { get; }
 
-        DateTime? CacheExpiresAtUtc { get; }
+        DateTime? ServerResponseRefreshesAtUtc { get; }
 
         bool IsExpired();
     }

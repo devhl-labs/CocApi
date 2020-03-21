@@ -18,7 +18,11 @@ namespace devhl.CocApi.Models.War
         public string AttackerTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
+#pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
+
         public string? DefenderTag { get; internal set; }
+
+#pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 
         [JsonProperty]
         public int? Stars { get; private set; }

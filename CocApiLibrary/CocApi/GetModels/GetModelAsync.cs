@@ -32,7 +32,7 @@ namespace devhl.CocApi
 
                 AllClans.AddOrUpdate(clan.ClanTag, clan, (clanTag, clan2) =>
                 {
-                    if (clan.UpdatedAtUtc > clan2.CacheExpiresAtUtc) return clan;
+                    if (clan.DownloadedAtUtc > clan2.ServerResponseRefreshesAtUtc) return clan;
 
                     return clan2;
                 });                      
@@ -71,7 +71,7 @@ namespace devhl.CocApi
                     {
                         AllWarsByClanTag.AddOrUpdate(clanTag, notInWar, (clanTag, war2) =>
                         {
-                            if (notInWar.UpdatedAtUtc > war2.UpdatedAtUtc) return notInWar;
+                            if (notInWar.DownloadedAtUtc > war2.DownloadedAtUtc) return notInWar;
 
                             return war2;
                         });
@@ -86,7 +86,7 @@ namespace devhl.CocApi
                     {
                         AllWarsByClanTag.AddOrUpdate(clanTag, privateWarLog, (clanTag, war2) =>
                         {
-                            if (privateWarLog.UpdatedAtUtc > war2.UpdatedAtUtc) return privateWarLog;
+                            if (privateWarLog.DownloadedAtUtc > war2.DownloadedAtUtc) return privateWarLog;
 
                             return war2;
                         });
@@ -103,11 +103,11 @@ namespace devhl.CocApi
                 {
                     AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
 
-                    if (storedWar == null || storedWar.CacheExpiresAtUtc < downloadedWar.CacheExpiresAtUtc || storedWar is PrivateWarLog)
+                    if (storedWar == null || storedWar.ServerResponseRefreshesAtUtc < downloadedWar.ServerResponseRefreshesAtUtc || storedWar is PrivateWarLog)
                     {
                         AllWarsByClanTag.AddOrUpdate(clan.ClanTag, downloadedWar, (clanTag, war2) =>
                         {
-                            if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return downloadedWar;
+                            if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
 
                             return war2;
                         });
@@ -121,7 +121,7 @@ namespace devhl.CocApi
 
                 AllWarsByWarId.AddOrUpdate(downloadedWar.WarKey, downloadedWar, (_, war2) =>
                 {
-                    if (downloadedWar.UpdatedAtUtc > war2.UpdatedAtUtc) return downloadedWar;
+                    if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
 
                     return war2;
                 });
@@ -164,7 +164,7 @@ namespace devhl.CocApi
                 {
                     AllLeagueGroups.AddOrUpdate(clanTag, notFound, (clanTag, group2) =>
                     {
-                        if (notFound.UpdatedAtUtc > group2.UpdatedAtUtc) return notFound;
+                        if (notFound.DownloadedAtUtc > group2.DownloadedAtUtc) return notFound;
 
                         return group2;
                     });
@@ -187,7 +187,7 @@ namespace devhl.CocApi
                     {
                         AllLeagueGroups.AddOrUpdate(clan.ClanTag, storedLeagueGroupApiModel, (clanTag, group2) =>
                         {
-                            if (storedLeagueGroupApiModel.UpdatedAtUtc > group2.UpdatedAtUtc) return storedLeagueGroupApiModel;
+                            if (storedLeagueGroupApiModel.DownloadedAtUtc > group2.DownloadedAtUtc) return storedLeagueGroupApiModel;
 
                             return group2;
                         });
@@ -235,14 +235,14 @@ namespace devhl.CocApi
 
                 AllWarsByWarTag.AddOrUpdate(leagueWarApiModel.WarTag, leagueWarApiModel, (_, war2) =>
                 {
-                    if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+                    if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
 
                     return war2;
                 });
 
                 AllWarsByWarId.AddOrUpdate(leagueWarApiModel.WarKey, leagueWarApiModel, (_, war2) =>
                 {
-                    if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+                    if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
 
                     return war2;
                 });
@@ -263,7 +263,7 @@ namespace devhl.CocApi
                         {
                             AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                             {
-                                if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+                                if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
 
                                 return war2;
                             });
@@ -273,7 +273,7 @@ namespace devhl.CocApi
                         {
                             AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                             {
-                                if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+                                if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
 
                                 return war2;
                             });
@@ -283,7 +283,7 @@ namespace devhl.CocApi
                     {
                         AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
                         {
-                            if (leagueWarApiModel.UpdatedAtUtc > war2.UpdatedAtUtc) return leagueWarApiModel;
+                            if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
 
                             return war2;
                         });
@@ -320,7 +320,7 @@ namespace devhl.CocApi
                 {
                     AllVillages.AddOrUpdate(villageTag, villageApiModel, (villageTag, village2) =>
                     {
-                        if (villageApiModel.UpdatedAtUtc > village2.UpdatedAtUtc) return villageApiModel;
+                        if (villageApiModel.DownloadedAtUtc > village2.DownloadedAtUtc) return villageApiModel;
 
                         return village2;
                     });

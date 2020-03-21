@@ -309,7 +309,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.VillagesJoinedEvent(downloadedClan, newVillages);
+            cocApi.ClanVillagesJoinedEvent(downloadedClan, newVillages);
         }
 
         private void VillagesLeft(CocApi cocApi, Clan downloadedClan)
@@ -324,7 +324,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.VillagesLeftEvent(downloadedClan, leftVillages);
+            cocApi.ClanVillagesLeftEvent(downloadedClan, leftVillages);
         }
 
         public void Initialize()

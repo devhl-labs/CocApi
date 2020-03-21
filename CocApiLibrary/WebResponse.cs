@@ -188,21 +188,17 @@ namespace devhl.CocApi
 
         private static void InitializeCacheExpiration(Downloadable result, HttpResponseMessage? response)
         {
-            result.UpdatedAtUtc = DateTime.UtcNow;
+            result.DownloadedAtUtc = DateTime.UtcNow;
 
-            if (response != null)
+            if (response == null || response.Headers == null || response.Headers.Date == null) return;
+            
+            result.DownloadedAtUtc = response.Headers.Date.Value.UtcDateTime;
+
+            if (response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge != null)
             {
-                if (response.Headers?.Date.HasValue == true)
-                {
-                    result.UpdatedAtUtc = response!.Headers!.Date!.Value.UtcDateTime;
-                }
-
-                if (response?.Headers?.Date.HasValue == true && response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge.HasValue)
-                {
-                    //adding 3 seconds incase the server clock is different than our clock
-                    result.CacheExpiresAtUtc = response!.Headers!.Date!.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
-                }
-            }
+                //adding 3 seconds incase the server clock is different than our clock
+                result.ServerResponseRefreshesAtUtc = response.Headers.Date.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
+            }            
         }
 
         private static void InitializeDownloadableProperties(Downloadable result, string encodedURL)
@@ -214,11 +210,11 @@ namespace devhl.CocApi
                 case LeagueWar leagueWarApiModel:
                     if (leagueWarApiModel.State == WarState.WarEnded)
                     {
-                        leagueWarApiModel.ExpiresAtUtc = DateTime.MaxValue;
+                        leagueWarApiModel.CacheExpiresAtUtc = DateTime.MaxValue;
                     }
                     else
                     {
-                        leagueWarApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
+                        leagueWarApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
                     }
 
                     break;
@@ -226,11 +222,11 @@ namespace devhl.CocApi
                 case CurrentWar currentWar:
                     if (currentWar.State == WarState.WarEnded)
                     {
-                        currentWar.ExpiresAtUtc = DateTime.MaxValue;
+                        currentWar.CacheExpiresAtUtc = DateTime.MaxValue;
                     }
                     else
                     {
-                        currentWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
+                        currentWar.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
                     }
 
                     break;
@@ -238,37 +234,37 @@ namespace devhl.CocApi
                 case LeagueGroup leagueGroupApiModel:
                     if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
-                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.AddHours(6);
+                        leagueGroupApiModel.CacheExpiresAtUtc = DateTime.UtcNow.AddHours(6);
                     }
                     else
                     {
-                        leagueGroupApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
+                        leagueGroupApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
                     }
 
                     break;
 
                 case LeagueGroupNotFound leagueGroupNotFound:
-                    leagueGroupNotFound.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
+                    leagueGroupNotFound.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
                     break;
 
                 case Clan clanApiModel:
-                    clanApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
+                    clanApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
                     break;
 
                 case Village villageApiModel:
-                    villageApiModel.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
+                    villageApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
                     break;
 
                 case NotInWar notInWar:
-                    notInWar.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.NotInWarTimeToLive);
+                    notInWar.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.NotInWarTimeToLive);
                     break;
 
                 case PrivateWarLog privateWarLog:
-                    privateWarLog.ExpiresAtUtc = DateTime.UtcNow.Add(_cfg.PrivateWarLogTimeToLive);
+                    privateWarLog.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.PrivateWarLogTimeToLive);
                     break;
 
                 default:
-                    result.ExpiresAtUtc = DateTime.UtcNow;
+                    result.CacheExpiresAtUtc = DateTime.UtcNow;
                     break;
             }
         }

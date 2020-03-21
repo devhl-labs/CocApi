@@ -76,25 +76,16 @@ namespace devhl.CocApi
         public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
         internal ConcurrentDictionary<string, Clan> AllClans { get; } = new ConcurrentDictionary<string, Clan>();
-
         internal ConcurrentDictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new ConcurrentDictionary<string, ILeagueGroup>();
-
         internal ConcurrentDictionary<string, Village> AllVillages { get; } = new ConcurrentDictionary<string, Village>();
-
         internal ConcurrentDictionary<string, IWar> AllWarsByClanTag { get; } = new ConcurrentDictionary<string, IWar>();
-
         internal ConcurrentDictionary<string, CurrentWar> AllWarsByWarId { get; } = new ConcurrentDictionary<string, CurrentWar>();
-
         internal ConcurrentDictionary<string, LeagueWar> AllWarsByWarTag { get; } = new ConcurrentDictionary<string, LeagueWar>();
 
         internal Paginated<League> AllLeagues { get; private set; } = new Paginated<League>();
-
         internal Paginated<Label> AllVillageLabels { get; private set; } = new Paginated<Label>();
-
         internal Paginated<Label> AllClanLabels { get; private set; } = new Paginated<Label>();
-
         internal Paginated<Location> AllLocations { get; private set; } = new Paginated<Location>();
-
         internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
 
         /// <summary>
