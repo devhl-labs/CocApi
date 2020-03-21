@@ -25,7 +25,7 @@ namespace devhl.CocApi
         Task LeagueGroupTeamSizeChangedAsync(LeagueGroup leagueGroupApiModel);
         Task NewAttacksAsync(CurrentWar currentWar, IReadOnlyList<Attack> newAttacks);
         Task NewWarAsync(CurrentWar currentWar);
-        Task NewWarsAsync(IReadOnlyList<CurrentWar> currentWar);
+        //Task NewWarsAsync(IReadOnlyList<CurrentWar> currentWar);
         Task VillageAchievementsChangedAsync(Village oldVillage, IReadOnlyList<Achievement> newAchievements);
         Task VillageChangedAsync(Village oldVillage, Village newVillage);
         Task VillageDefenseWinsChangedAsync(Village oldVillage, int newDefenseWins);

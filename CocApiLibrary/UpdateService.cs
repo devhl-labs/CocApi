@@ -121,34 +121,67 @@ namespace devhl.CocApi
         //    currentWarApiModel.Flags.WarAnnounced = true;
         //}
 
+        //private void AnnounceNewWars(Clan storedClan)
+        //{
+        //    List<CurrentWar> currentWars = new List<CurrentWar>();
+
+        //    foreach (var kvp in storedClan.Wars)
+        //    {
+        //        lock (kvp.Value._announceWarLock)
+        //        {
+        //            if (kvp.Value.Flags.WarAnnounced) continue;
+
+        //            currentWars.Add(kvp.Value);
+
+        //            kvp.Value.Flags.WarAnnounced = true;
+        //        }
+        //    }
+
+        //    if (currentWars.Count == 1)
+        //    {
+        //        _cocApi.NewWarEvent(currentWars.First());
+
+        //        Console.WriteLine($"announcing war:  {currentWars.First().PreparationStartTimeUtc}");
+        //    }
+        //    else if (currentWars.Count > 1)
+        //    {
+        //        _cocApi.NewWarsEvent(currentWars);
+
+        //        Console.WriteLine("announcing wars");
+        //    }
+        //}
+
         private void AnnounceNewWars(Clan storedClan)
         {
-            List<CurrentWar> currentWars = new List<CurrentWar>();
-                
-            foreach(var kvp in storedClan.Wars)
+            //List<CurrentWar> currentWars = new List<CurrentWar>();
+
+            foreach (var kvp in storedClan.Wars)
             {
                 lock (kvp.Value._announceWarLock)
                 {
-                    if (kvp.Value.Flags.WarAnnounced) continue;
+                    if (kvp.Value.Flags.WarAnnounced)
+                        continue;
 
-                    currentWars.Add(kvp.Value);
+                    //currentWars.Add(kvp.Value);
+
+                    _cocApi.NewWarEvent(kvp.Value);
 
                     kvp.Value.Flags.WarAnnounced = true;
                 }
             }
 
-            if (currentWars.Count == 1)
-            {
-                _cocApi.NewWarEvent(currentWars.First());
+            //if (currentWars.Count == 1)
+            //{
+            //    _cocApi.NewWarEvent(currentWars.First());
 
-                Console.WriteLine($"announcing war:  {currentWars.First().PreparationStartTimeUtc}");
-            }
-            else if (currentWars.Count > 1)
-            {
-                _cocApi.NewWarsEvent(currentWars);
+            //    Console.WriteLine($"announcing war:  {currentWars.First().PreparationStartTimeUtc}");
+            //}
+            //else if (currentWars.Count > 1)
+            //{
+            //    _cocApi.NewWarsEvent(currentWars);
 
-                Console.WriteLine("announcing wars");
-            }
+            //    Console.WriteLine("announcing wars");
+            //}
         }
 
         private async Task DownloadLeagueWarsAsync(Clan storedClan, ILeagueGroup? leagueGroup)

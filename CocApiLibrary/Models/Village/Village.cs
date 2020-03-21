@@ -109,10 +109,7 @@ namespace devhl.CocApi.Models.Village
         {
             Logger ??= cocApi.Logger;
 
-            if (ReferenceEquals(this, downloadedVillage))
-            {
-                return;
-            }
+            if (ReferenceEquals(this, downloadedVillage)) return;
 
             UpdateVillage(cocApi, downloadedVillage);
 
@@ -189,7 +186,7 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            cocApi.VillageLabelsChangedEvent(this, added, removed);
+            cocApi.VillageLabelsChangedEvent(downloadedVillage, added, removed);
         }
 
         private void UpdateVillageSpells(CocApi cocApi, Village downloadedVillage)
@@ -208,7 +205,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newSpells.Count > 0)
             {
-                cocApi.VillageSpellsChangedEvent(this, newSpells);
+                cocApi.VillageSpellsChangedEvent(downloadedVillage, newSpells);
             }
         }
 
@@ -229,7 +226,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newTroops.Count > 0)
             {
-                cocApi.VillageHeroesChangedEvent(this, newTroops);
+                cocApi.VillageHeroesChangedEvent(downloadedVillage, newTroops);
             }
         }
 
@@ -250,7 +247,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newTroops.Count > 0)
             {
-                cocApi.VillageTroopsChangedEvent(this, newTroops);
+                cocApi.VillageTroopsChangedEvent(downloadedVillage, newTroops);
             }
         }
 
@@ -273,7 +270,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newAchievements.Count > 0)
             {
-                cocApi.VillageAchievementsChangedEvent(this, newAchievements);
+                cocApi.VillageAchievementsChangedEvent(downloadedVillage, newAchievements);
             }            
         }
 
@@ -316,7 +313,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (downloadedVillage.DefenseWins != DefenseWins)
             {
-                cocApi.VillageDefenseWinsChangedEvent(this, downloadedVillage.DefenseWins);
+                cocApi.VillageDefenseWinsChangedEvent(downloadedVillage, downloadedVillage.DefenseWins - DefenseWins);
             }
         }
 
@@ -324,9 +321,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (downloadedVillage.ExpLevel != ExpLevel)
             {
-                cocApi.VillageExpLevelChangedEvent(this, downloadedVillage.ExpLevel);
-
-                //ExpLevel = downloadedVillage.ExpLevel;
+                cocApi.VillageExpLevelChangedEvent(downloadedVillage, downloadedVillage.ExpLevel - ExpLevel);
             }
         }
 
@@ -334,9 +329,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (downloadedVillage.Trophies != Trophies)
             {
-                cocApi.VillageTrophiesChangedEvent(this, downloadedVillage.Trophies);
-
-                //Trophies = downloadedVillage.Trophies;
+                cocApi.VillageTrophiesChangedEvent(downloadedVillage, downloadedVillage.Trophies - Trophies);
             }
         }
 
@@ -344,9 +337,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (downloadedVillage.VersusBattleWinCount != VersusBattleWinCount)
             {
-                cocApi.VillageVersusBattleWinCountChangedEvent(this, downloadedVillage.VersusBattleWinCount);
-
-                //VersusBattleWinCount = downloadedVillage.VersusBattleWinCount;
+                cocApi.VillageVersusBattleWinCountChangedEvent(downloadedVillage, downloadedVillage.VersusBattleWinCount - VersusBattleWinCount);
             }
         }
 
@@ -354,9 +345,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (downloadedVillage.VersusBattleWins != VersusBattleWins)
             {
-                cocApi.VillageVersusBattleWinsChangedEvent(this, downloadedVillage.VersusBattleWins);
-
-                //VersusBattleWins = downloadedVillage.VersusBattleWins;
+                cocApi.VillageVersusBattleWinsChangedEvent(downloadedVillage, downloadedVillage.VersusBattleWins - VersusBattleWins);
             }
         }
 
@@ -364,9 +353,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (downloadedVillage.VersusTrophies != VersusTrophies)
             {
-                cocApi.VillageVersusTrophiesChangedEvent(this, downloadedVillage.VersusTrophies);
-
-                //VersusTrophies = downloadedVillage.VersusTrophies;
+                cocApi.VillageVersusTrophiesChangedEvent(downloadedVillage, downloadedVillage.VersusTrophies - VersusTrophies);
             }
         }
 
@@ -405,7 +392,6 @@ namespace devhl.CocApi.Models.Village
             }
 
             SetOrderOfHeroes();
-
 
             //todo
             //SetOrderOfSoldiers();

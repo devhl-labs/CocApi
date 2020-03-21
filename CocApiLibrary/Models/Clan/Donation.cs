@@ -13,13 +13,13 @@ namespace devhl.CocApi.Models.Clan
         public ClanVillage Village { get; internal set; }
 
         [JsonProperty]
-        public int Quantity { get; internal set; }
+        public int Increase { get; internal set; }
 
         public override string ToString()
         {
             if (Village != null)
             {
-                return $"{Village.VillageTag} {Village.Name} {Quantity}";
+                return $"{Village.VillageTag} {Village.Name} {Increase}";
             }
             else
             {

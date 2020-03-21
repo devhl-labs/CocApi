@@ -14,13 +14,13 @@ namespace devhl.CocApi.Models.Clan
         public ClanVillage Village { get; internal set; }
         
         [JsonProperty]
-        public League League { get; internal set; }
+        public League OldLeague { get; internal set; }
 
         public override string ToString()
         {
-            if (Village != null  && League != null)
+            if (Village != null  && OldLeague != null)
             {
-                return $"{Village.VillageTag} {Village.Name} {League.Name}";
+                return $"{Village.VillageTag} {Village.Name} {OldLeague.Name}";
             }
             else if (Village != null)
             {

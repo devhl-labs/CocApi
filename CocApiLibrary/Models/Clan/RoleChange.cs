@@ -14,13 +14,13 @@ namespace devhl.CocApi.Models.Clan
         public ClanVillage Village { get; internal set; } 
         
         [JsonProperty]
-        public Role Role { get; internal set; } //todo is this the old role or the new role?
+        public Role OldRole { get; internal set; }
 
         public override string ToString()
         {
             if (Village != null)
             {
-                return $"{Village.VillageTag} {Village.Name} {Role}";
+                return $"{Village.VillageTag} {Village.Name} {OldRole}";
             }
             else
             {

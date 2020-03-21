@@ -104,33 +104,25 @@ namespace devhl.CocApi.Models.Clan
 
         internal void Update(CocApi cocApi, Clan? downloadedClan)
         {
-            lock (this)
-            {
-                if (downloadedClan == null) return;
+            if (downloadedClan == null || ReferenceEquals(this, downloadedClan)) return;
 
-                Logger ??= cocApi.Logger;
+            Logger ??= cocApi.Logger;
 
-                if (ReferenceEquals(this, downloadedClan))
-                {
-                    return;
-                }
+            UpdateClan(cocApi, downloadedClan);
 
-                UpdateClan(cocApi, downloadedClan);
+            UpdateLabels(cocApi, downloadedClan);
 
-                UpdateLabels(cocApi, downloadedClan);
+            UpdateBadge(cocApi, downloadedClan);
 
-                UpdateBadge(cocApi, downloadedClan);
+            UpdateLocation(cocApi, downloadedClan);
 
-                UpdateLocation(cocApi, downloadedClan);
+            AnnounceDonations(cocApi, downloadedClan);
 
-                AnnounceDonations(cocApi, downloadedClan);
+            AnnounceVillageChanges(cocApi, downloadedClan);
 
-                AnnounceVillageChanges(cocApi, downloadedClan);
+            VillagesLeft(cocApi, downloadedClan);
 
-                VillagesLeft(cocApi, downloadedClan);
-
-                VillagesJoined(cocApi, downloadedClan);
-            }
+            VillagesJoined(cocApi, downloadedClan);            
         }
 
         private void AnnounceVillageChanges(CocApi cocApi, Clan downloadedClan)
@@ -143,27 +135,27 @@ namespace devhl.CocApi.Models.Clan
             {
                 ClanVillage newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
-                if (newClanVillage == null) { continue; }
+                if (newClanVillage == null) continue;
 
                 if ((oldClanVillage.League == null && newClanVillage.League != null) || (oldClanVillage.League != null && newClanVillage.League != null && oldClanVillage.League.Id != newClanVillage.League.Id))
                 {
-                    leagueChanges.Add(new LeagueChange { Village = oldClanVillage, League = newClanVillage.League });
+                    leagueChanges.Add(new LeagueChange { Village = newClanVillage, OldLeague = oldClanVillage.League });
                 }
                         
                 if (oldClanVillage.Name != newClanVillage.Name)
                 {
-                    cocApi.ClanVillageNameChangedEvent(oldClanVillage, newClanVillage.Name);
+                    cocApi.ClanVillageNameChangedEvent(newClanVillage, oldClanVillage.Name);
                 }
 
                 if (oldClanVillage.Role != newClanVillage.Role)
                 {
-                    roleChanges.Add(new RoleChange { Village = oldClanVillage, Role = newClanVillage.Role });
+                    roleChanges.Add(new RoleChange { Village = newClanVillage, OldRole = oldClanVillage.Role });
                 }
             }
 
-            cocApi.ClanVillagesLeagueChangedEvent(this, leagueChanges);
+            cocApi.ClanVillagesLeagueChangedEvent(downloadedClan, leagueChanges);
 
-            cocApi.ClanVillagesRoleChangedEvent(this, roleChanges);
+            cocApi.ClanVillagesRoleChangedEvent(downloadedClan, roleChanges);
         }
 
         private void AnnounceDonations(CocApi cocApi, Clan downloadedClan)
@@ -180,25 +172,16 @@ namespace devhl.CocApi.Models.Clan
 
                 if (oldClanVillage.DonationsReceived < newClanVillage.DonationsReceived)
                 {
-                    receiving.Add(new Donation { Village = oldClanVillage, Quantity = newClanVillage.DonationsReceived - oldClanVillage.DonationsReceived });
+                    receiving.Add(new Donation { Village = newClanVillage, Increase = newClanVillage.DonationsReceived - oldClanVillage.DonationsReceived });
                 }
 
                 if (oldClanVillage.Donations < newClanVillage.Donations)
                 {
-                    donating.Add(new Donation { Village = oldClanVillage, Quantity = newClanVillage.Donations - oldClanVillage.Donations});
-                }
-
-                bool resetSent = false;
-
-                if (!resetSent && oldClanVillage.DonationsReceived > newClanVillage.DonationsReceived || oldClanVillage.Donations > newClanVillage.Donations)
-                {
-                    cocApi.ClanDonationsResetEvent(this, downloadedClan);
-
-                    resetSent = true;
+                    donating.Add(new Donation { Village = newClanVillage, Increase = newClanVillage.Donations - oldClanVillage.Donations});
                 }                 
             }
 
-            cocApi.ClanDonationsEvent(this, receiving, donating);
+            cocApi.ClanDonationsEvent(downloadedClan, receiving, donating);
 
         }
 
@@ -283,12 +266,12 @@ namespace devhl.CocApi.Models.Clan
         {
             if (ClanPoints != downloadedClan.ClanPoints)
             {
-                cocApi.ClanPointsChangedEvent(this, downloadedClan.ClanPoints);
+                cocApi.ClanPointsChangedEvent(downloadedClan, downloadedClan.ClanPoints - ClanPoints);
             }
 
             if (ClanVersusPoints != downloadedClan.ClanVersusPoints)
             {
-                cocApi.ClanVersusPointsChangedEvent(this, downloadedClan.ClanVersusPoints);
+                cocApi.ClanVersusPointsChangedEvent(downloadedClan, downloadedClan.ClanVersusPoints - ClanVersusPoints);
             }
 
             if (ClanLevel != downloadedClan.ClanLevel ||
@@ -326,7 +309,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.VillagesJoinedEvent(this, newVillages);
+            cocApi.VillagesJoinedEvent(downloadedClan, newVillages);
         }
 
         private void VillagesLeft(CocApi cocApi, Clan downloadedClan)
@@ -341,7 +324,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.VillagesLeftEvent(this, leftVillages);
+            cocApi.VillagesLeftEvent(downloadedClan, leftVillages);
         }
 
         public void Initialize()
