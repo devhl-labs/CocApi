@@ -116,7 +116,8 @@ namespace devhl.CocApi
         WarLog,
         VillageLeagues,
         Locations,
-        Labels
+        Labels,
+        WarLeagues
     }
 
     public enum DownloadLeagueWars

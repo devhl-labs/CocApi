@@ -343,5 +343,30 @@ namespace devhl.CocApi
 
             return result;
         }
+
+        /// <summary>
+        /// This does not cache responses.  Every request will poll the Api.
+        /// </summary>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+        /// 
+        public async Task<Paginated<WarLeague>?> GetWarLeaguesOrDefaultAsync(CancellationToken? cancellationToken = null)
+        {
+            Paginated<WarLeague>? result = null;
+
+            try
+            {
+                AllWarLeagues = await GetWarLeaguesAsync(cancellationToken).ConfigureAwait(false);
+
+                return AllWarLeagues;
+            }
+            catch (ServerResponseException) { }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return result;
+        }
     }
 }

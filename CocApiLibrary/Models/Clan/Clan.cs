@@ -11,9 +11,6 @@ namespace devhl.CocApi.Models.Clan
 {
     public class Clan : Downloadable, IClan
     {
-        //[JsonIgnore]
-        //internal ILogger? Logger { get; set; }
-
         [JsonProperty("tag")]
         public string ClanTag { get; internal set; } = string.Empty;
 
@@ -92,21 +89,14 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty]
         public WarFrequency WarFrequency { get; internal set; }
 
+        [JsonProperty]
+        public WarLeague? WarLeague { get; private set; }
 
-        public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();
-
-        //[JsonProperty]
-        /// <summary>
-        /// This is a flag used to prevent all wars from being announced on startup. 
-        /// It is set to true after all wars have been downloaded at least once for this clan.
-        /// </summary>
-        //internal bool AnnounceWars { get; set; } = false;        
+        public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();        
 
         internal void Update(CocApi cocApi, Clan? downloadedClan)
         {
             if (downloadedClan == null || ReferenceEquals(this, downloadedClan)) return;
-
-            //Logger ??= cocApi.Logger;
 
             UpdateClan(cocApi, downloadedClan);
 
@@ -289,6 +279,11 @@ namespace devhl.CocApi.Models.Clan
             )
             {
                 cocApi.ClanChangedEvent(this, downloadedClan);
+            }
+
+            if (WarLeague?.Id != downloadedClan.WarLeague?.Id)
+            {
+                cocApi.WarLeagueChangedEvent(downloadedClan, WarLeague);
             }
         }
 

@@ -48,100 +48,6 @@ namespace devhl.CocApi
             }
         }
 
-        //public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
-        //{         
-        //    ThrowIfNotInitialized();
-
-        //    try
-        //    {
-        //        ThrowIfInvalidTag(clanTag);
-
-        //        IWar? war = GetCurrentWarByClanTagOrDefault(clanTag);
-
-        //        if (war != null && (allowExpiredItem || !war.IsExpired())) return war;
-
-        //        if (war is CurrentWar currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
-
-        //        string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
-
-        //        Downloadable downloadable = await GetAsync<CurrentWar>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
-
-        //        if (downloadable is NotInWar notInWar)
-        //        {
-        //            if (CocApiConfiguration.CacheHttpResponses)
-        //            {
-        //                if (AllCurrentWarsByClanTag.TryGetValue(clanTag, out IWar storedWar) == false ||
-        //                    storedWar is NotInWar ||
-        //                    (storedWar is LeagueWar leagueWar && leagueWar.State == WarState.WarEnded))
-        //                {
-        //                    AllCurrentWarsByClanTag.AddOrUpdate(clanTag, notInWar, (clanTag, war2) =>
-        //                    {
-        //                        if (notInWar.DownloadedAtUtc > war2.DownloadedAtUtc) return notInWar;
-
-        //                        return war2;
-        //                    });
-        //                }
-        //            }
-
-        //            return notInWar;
-        //        }
-
-        //        if (downloadable is PrivateWarLog privateWarLog)
-        //        {
-        //            if (CocApiConfiguration.CacheHttpResponses)
-        //            {
-        //                AllCurrentWarsByClanTag.AddOrUpdate(clanTag, privateWarLog, (clanTag, war2) =>
-        //                {
-        //                    if (privateWarLog.DownloadedAtUtc > war2.DownloadedAtUtc) return privateWarLog;
-
-        //                    return war2;
-        //                });
-        //            }
-
-        //            return privateWarLog;
-        //        }
-
-        //        CurrentWar downloadedWar = (CurrentWar) downloadable;
-
-        //        if (!CocApiConfiguration.CacheHttpResponses) return downloadedWar;
-
-        //        foreach(var clan in downloadedWar.WarClans)
-        //        {
-        //            AllCurrentWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
-
-        //            if (storedWar == null || storedWar.ServerResponseRefreshesAtUtc < downloadedWar.ServerResponseRefreshesAtUtc || storedWar is PrivateWarLog)
-        //            {
-        //                AllCurrentWarsByClanTag.AddOrUpdate(clan.ClanTag, downloadedWar, (clanTag, war2) =>
-        //                {
-        //                    if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
-
-        //                    return war2;
-        //                });
-        //            }
-
-        //            if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
-        //            {
-        //                storedClan.Wars.TryAdd(downloadedWar.WarKey, (CurrentWar) downloadedWar);
-        //            }
-        //        }             
-
-        //        AllWarsByWarKey.AddOrUpdate(downloadedWar.WarKey, downloadedWar, (_, war2) =>
-        //        {
-        //            if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
-
-        //            return war2;
-        //        });
-
-        //        return downloadedWar;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e is CocApiException) throw;
-
-        //        throw new CocApiException(e.Message, e);
-        //    }
-        //}
-
         /// <summary>
         /// Returns <see cref="NotInWar"/>, <see cref="PrivateWarLog"/>, <see cref="CurrentWar"/>, or <see cref="LeagueWar"/>.
         /// </summary>
@@ -416,7 +322,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -468,7 +374,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -552,7 +458,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -577,7 +483,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -602,7 +508,7 @@ namespace devhl.CocApi
         }        
         
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -629,7 +535,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -655,9 +561,9 @@ namespace devhl.CocApi
                 throw new CocApiException(e.Message, e);
             }
         }
-        
+
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -685,7 +591,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -713,7 +619,7 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// This does not cache responses.  Every request will poll the Api.
+        /// This will poll the api.
         /// </summary>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
@@ -763,5 +669,34 @@ namespace devhl.CocApi
                 throw new CocApiException(e.Message, e);
             }
         }
+
+        /// <summary>
+        /// This will poll the api.
+        /// </summary>
+        /// <param name="cancellationTokenSource"></param>
+        /// <returns></returns>
+
+        public async Task<Paginated<WarLeague>> GetWarLeaguesAsync(CancellationToken? cancellationToken = null)
+        {
+            //ThrowIfNotInitialized();
+
+            try
+            {
+                string url = $"https://api.clashofclans.com/v1/warleagues?limit=10000";
+
+                AllWarLeagues = (Paginated<WarLeague>)await GetAsync<Paginated<WarLeague>>(url, EndPoint.WarLeagues, cancellationToken).ConfigureAwait(false);
+
+                return AllWarLeagues;
+            }
+            catch (Exception e)
+            {
+                if (e is CocApiException)
+                    throw;
+
+                throw new CocApiException(e.Message, e);
+            }
+        }
+
+
     }
 }

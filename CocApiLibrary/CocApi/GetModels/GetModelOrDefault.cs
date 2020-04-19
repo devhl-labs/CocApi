@@ -106,5 +106,7 @@ namespace devhl.CocApi
         public Paginated<Label> GetVillageLabels() => AllVillageLabels;
 
         public Paginated<Location> GetLocations() => AllLocations;
+
+        public Paginated<WarLeague> GetWarLeagues() => AllWarLeagues;
     }
 }

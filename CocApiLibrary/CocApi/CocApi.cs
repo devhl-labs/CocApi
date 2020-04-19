@@ -83,6 +83,7 @@ namespace devhl.CocApi
         internal ConcurrentDictionary<string, LeagueWar> AllLeagueWarsByWarTag { get; } = new ConcurrentDictionary<string, LeagueWar>();
 
         internal Paginated<League> AllLeagues { get; private set; } = new Paginated<League>();
+        internal Paginated<WarLeague> AllWarLeagues { get; private set; } = new Paginated<WarLeague>();
         internal Paginated<Label> AllVillageLabels { get; private set; } = new Paginated<Label>();
         internal Paginated<Label> AllClanLabels { get; private set; } = new Paginated<Label>();
         internal Paginated<Location> AllLocations { get; private set; } = new Paginated<Location>();
@@ -159,6 +160,8 @@ namespace devhl.CocApi
             await GetVillageLabelsAsync().ConfigureAwait(false);
 
             await GetLocationsAsync().ConfigureAwait(false);
+
+            await GetWarLeaguesAsync().ConfigureAwait(false);
 
             _isInitialized = true;
         }

@@ -1,4 +1,5 @@
-﻿using devhl.CocApi.Models.Clan;
+﻿using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
 using System;
@@ -23,7 +24,7 @@ namespace devhl.CocApi
         Task ApiIsAvailableChangedAsync(bool isAvailable);
         Task ClanVillagesJoinedAsync(Clan clan, IReadOnlyList<ClanVillage> clanVillages);
         Task ClanVillagesLeftAsync(Clan clan, IReadOnlyList<ClanVillage> clanVillages);
-
+        Task WarLeagueChangedAsync(Clan clan, WarLeague? oldWarLeague);
         
     }
 }

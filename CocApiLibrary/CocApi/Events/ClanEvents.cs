@@ -6,6 +6,7 @@ using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
 
 using System.Collections.Immutable;
+using devhl.CocApi.Models;
 
 namespace devhl.CocApi
 {
@@ -22,6 +23,7 @@ namespace devhl.CocApi
     public delegate Task ClanVillageNameChangedEventHandler(ClanVillage village, string newName);
     public delegate Task ClanVillagesLeagueChangedEventHandler(Clan clan, IReadOnlyList<LeagueChange> leagueChanges);
     public delegate Task ClanVillagesRoleChangedEventHandler(Clan clan, IReadOnlyList<RoleChange> roleChanges);
+    public delegate Task WarLeagueChangedEventHandler(Clan clan, WarLeague? oldWarLeague);
     public delegate Task LogEventHandler(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null);
 
     public sealed partial class CocApi : IDisposable
@@ -60,6 +62,7 @@ namespace devhl.CocApi
         public event ClanVillageNameChangedEventHandler? ClanVillageNameChanged;
         public event ClanVillagesLeagueChangedEventHandler? ClanVillagesLeagueChanged;
         public event ClanVillagesRoleChangedEventHandler? ClanVillagesRoleChanged;
+        public event WarLeagueChangedEventHandler? WarLeagueChanged;
         public event LogEventHandler? Log;
 
         internal void LogEvent(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null)
@@ -98,6 +101,11 @@ namespace devhl.CocApi
 
                 LogEvent<CocApi>(e, LogLevel.Critical, LoggingEvent.CrashDetected);
             }
+        }
+
+        internal void WarLeagueChangedEvent(Clan clan, WarLeague? oldWarLeague)
+        {
+            WarLeagueChanged?.Invoke(clan, oldWarLeague);
         }
 
         internal void ClanVillagesRoleChangedEvent(Clan clan, List<RoleChange> roleChanges)
