@@ -26,9 +26,9 @@ namespace devhl.CocApi
 
         private bool _isInitialized = false;
 
-        public CocApi(ILogger? logger = null)
+        public CocApi(/*ILogger? logger = null*/)
         {
-            Logger = logger;
+            //Logger = logger;
         }
 
         /// <summary>
@@ -71,16 +71,16 @@ namespace devhl.CocApi
             }
         }
 
-        public ILogger? Logger { get; set; }
+        //public ILogger? Logger { get; set; }
 
-        public Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
+        public static Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
         internal ConcurrentDictionary<string, Clan> AllClans { get; } = new ConcurrentDictionary<string, Clan>();
         internal ConcurrentDictionary<string, ILeagueGroup> AllLeagueGroups { get; } = new ConcurrentDictionary<string, ILeagueGroup>();
         internal ConcurrentDictionary<string, Village> AllVillages { get; } = new ConcurrentDictionary<string, Village>();
-        internal ConcurrentDictionary<string, IWar> AllWarsByClanTag { get; } = new ConcurrentDictionary<string, IWar>();
-        internal ConcurrentDictionary<string, CurrentWar> AllWarsByWarId { get; } = new ConcurrentDictionary<string, CurrentWar>();
-        internal ConcurrentDictionary<string, LeagueWar> AllWarsByWarTag { get; } = new ConcurrentDictionary<string, LeagueWar>();
+        internal ConcurrentDictionary<string, IWar> AllCurrentWarsByClanTag { get; } = new ConcurrentDictionary<string, IWar>();
+        internal ConcurrentDictionary<string, CurrentWar> AllWarsByWarKey { get; } = new ConcurrentDictionary<string, CurrentWar>();
+        internal ConcurrentDictionary<string, LeagueWar> AllLeagueWarsByWarTag { get; } = new ConcurrentDictionary<string, LeagueWar>();
 
         internal Paginated<League> AllLeagues { get; private set; } = new Paginated<League>();
         internal Paginated<Label> AllVillageLabels { get; private set; } = new Paginated<Label>();
@@ -111,7 +111,7 @@ namespace devhl.CocApi
                 cancellationTokenSource.Dispose();
             }
 
-            WebResponse.ApiClient.Dispose();
+            WebResponse.HttpClient.Dispose();
 
             WebResponse.SemaphoreSlim.Dispose();
         }
@@ -199,7 +199,7 @@ namespace devhl.CocApi
         /// </summary>
         /// <param name="tag"></param>
         /// <returns></returns>
-        public bool IsValidTag(string tag)
+        public static bool IsValidTag(string tag)
         {
             if (string.IsNullOrEmpty(tag))
             {
@@ -220,7 +220,7 @@ namespace devhl.CocApi
         /// <param name="userInput"></param>
         /// <param name="formattedTag"></param>
         /// <returns></returns>
-        public bool IsValidTag(string userInput, out string formattedTag)
+        public static bool IsValidTag(string userInput, out string formattedTag)
         {
             formattedTag = string.Empty;
 
@@ -293,7 +293,9 @@ namespace devhl.CocApi
             {
                 //Logger.LogWarning(LoggingEvents.InvalidTag, "{source} The provided tag is not valid {tag}", _source, tag);
 
-                _ = Logger?.LogAsync<CocApi>($"The provided tag {tag} is not valid.", LogLevel.Debug, LoggingEvent.InvalidTag);
+                LogEvent<CocApi>($"The provided tag {tag} is not valid.", LogLevel.Debug, LoggingEvent.InvalidTag);
+
+                //_ = Logger?.LogAsync<CocApi>($"The provided tag {tag} is not valid.", LogLevel.Debug, LoggingEvent.InvalidTag);
 
                 throw new InvalidTagException();
             }
@@ -408,7 +410,7 @@ namespace devhl.CocApi
                 //{
                 foreach (Clan clan in clans.EmptyIfNull())
                 {
-                    if (Logger != null) clan.Logger = Logger;
+                    //if (Logger != null) clan.Logger = Logger;
 
                     //clan.AnnounceWars = true;
 
@@ -469,7 +471,7 @@ namespace devhl.CocApi
 
                     village.League = AllLeagues.Items.FirstOrDefault(l => l.Id == village.LeagueId);
 
-                    village.Initialize();
+                    village.Initialize(this);
 
                     AllVillages.TryAdd(village.VillageTag, village);
                 }                
@@ -512,11 +514,11 @@ namespace devhl.CocApi
                 {
                     war.Attacks = attacks.Where(a => a.WarKey == war.WarKey).ToList();
 
-                    war.Clans = warClans.Where(c => c.WarKey == war.WarKey).OrderBy(c => c.ClanTag).ToList();
+                    war.WarClans = warClans.Where(c => c.WarKey == war.WarKey).OrderBy(c => c.ClanTag).ToList();
 
                     war.Flags = currentWarFlags.FirstOrDefault(f => f.WarKey == war.WarKey);
 
-                    war.Initialize();
+                    war.Initialize(this);
                 }
 
                 foreach (LeagueClan leagueClan in leagueClans.EmptyIfNull())
@@ -527,27 +529,27 @@ namespace devhl.CocApi
 
                     leagueClan.Villages = leagueVillages.Where(v => v.LeagueClanKey == leagueClan.LeagueClanKey);
 
-                    leagueClan.Initialize();
+                    leagueClan.Initialize(this);
                 }
 
                 foreach (LeagueWar leagueWar in wars.EmptyIfNull())
                 {
-                    AllWarsByWarId.TryAdd(leagueWar.WarTag, leagueWar);                    
+                    AllWarsByWarKey.TryAdd(leagueWar.WarTag, leagueWar);                    
                 }
 
                 foreach (CurrentWar currentWar in wars.EmptyIfNull())
                 {
-                    AllWarsByClanTag.TryAdd(currentWar.Clans[0].ClanTag, currentWar);
+                    AllCurrentWarsByClanTag.TryAdd(currentWar.WarClans[0].ClanTag, currentWar);
 
-                    AllWarsByClanTag.TryAdd(currentWar.Clans[1].ClanTag, currentWar);
+                    AllCurrentWarsByClanTag.TryAdd(currentWar.WarClans[1].ClanTag, currentWar);
 
-                    AllWarsByWarId.TryAdd(currentWar.WarKey, currentWar);
+                    AllWarsByWarKey.TryAdd(currentWar.WarKey, currentWar);
 
-                    Clan? clan = GetClanOrDefault(currentWar.Clans[0].ClanTag);
+                    Clan? clan = GetClanOrDefault(currentWar.WarClans[0].ClanTag);
 
                     if (clan != null) clan.Wars.TryAdd(currentWar.WarKey, currentWar);
 
-                    clan = GetClanOrDefault(currentWar.Clans[1].ClanTag);
+                    clan = GetClanOrDefault(currentWar.WarClans[1].ClanTag);
 
                     if (clan != null) clan.Wars.TryAdd(currentWar.WarKey, currentWar);
                 }
@@ -556,7 +558,7 @@ namespace devhl.CocApi
                 {
                     leagueGroup.Clans = leagueClans.Where(c => c.GroupId == leagueGroup.GroupKey);
 
-                    leagueGroup.Initialize();
+                    leagueGroup.Initialize(this);
 
                     AllLeagueGroups.TryAdd(leagueGroup.GroupKey, leagueGroup);
                 }

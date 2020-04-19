@@ -29,8 +29,6 @@ namespace devhl.CocApi.Models.War
 
 
 
-        [JsonProperty]
-        public int TeamSize { get; internal set; } = 15;
 
         /// <summary>
         /// This is the season and the first clan tag where the clans are sorted alphabetically.
@@ -40,15 +38,15 @@ namespace devhl.CocApi.Models.War
         public string GroupKey { get; internal set; } = string.Empty;
 
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
-            GroupKey = $"{Season.ToString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
+            GroupKey = $"{Season:MM/yyyy};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
 
             foreach (var leagueClan in Clans.EmptyIfNull())
             {
                 leagueClan.GroupId = GroupKey;
 
-                leagueClan.LeagueClanKey = $"{Season.ToShortDateString()};{leagueClan.ClanTag}";
+                leagueClan.LeagueClanKey = $"{Season};{leagueClan.ClanTag}";
 
                 foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
                 {
@@ -60,7 +58,7 @@ namespace devhl.CocApi.Models.War
 
             foreach (var round in Rounds.EmptyIfNull())
             {
-                round.RoundKey = $"{Season.ToShortDateString()};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
+                round.RoundKey = $"{Season};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
 
                 round.GroupKey = GroupKey;
             }

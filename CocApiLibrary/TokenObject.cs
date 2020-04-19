@@ -10,7 +10,6 @@ namespace devhl.CocApi
         private readonly System.Timers.Timer _clearRateLimitTimer = new System.Timers.Timer();
         private readonly TimeSpan _tokenTimeOut;
         private readonly CocApi _cocApi;
-        //private readonly string _source = "TokenObject   | ";
 
         public string Token { get; }
 
@@ -33,7 +32,9 @@ namespace devhl.CocApi
 
                     //_cocApi.Logger?.LogWarning(LoggingEvents.IsRateLimited, "{source} Token is rate limited.", _source);
 
-                    _ = _cocApi.Logger?.LogAsync<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
+                    //_ = _cocApi.Logger?.LogAsync<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
+
+                    _cocApi.LogEvent<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
                 }
             }
         }
@@ -64,7 +65,9 @@ namespace devhl.CocApi
 
                 if (!notified)
                 {
-                    _ = _cocApi.Logger?.LogAsync<TokenObject>($"Preemptive rate limit downloading {endPoint}.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
+                    //_ = _cocApi.Logger?.LogAsync<TokenObject>($"Preemptive rate limit downloading {endPoint}.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
+
+                    _cocApi.LogEvent<TokenObject>($"Preemptive rate limit downloading {endPoint}.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
 
                     notified = true;
                 }
@@ -82,11 +85,6 @@ namespace devhl.CocApi
 
 
 
-        private void ClearRateLimit(object sender, ElapsedEventArgs e)
-        {
-            IsRateLimited = false;
-        }
-
-
+        private void ClearRateLimit(object sender, ElapsedEventArgs e) => IsRateLimited = false;
     }
 }

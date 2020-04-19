@@ -10,19 +10,26 @@ namespace devhl.CocApi
         public DateTime DownloadedAtUtc { get; internal set; }
 
         [JsonProperty]
-        public DateTime CacheExpiresAtUtc { get; internal set; }
+        public DateTime LocalExpirationUtc { get; internal set; }
 
         [JsonProperty]
         public string EncodedUrl { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public DateTime? ServerResponseRefreshesAtUtc { get; internal set; }
+        public DateTime? ServerExpirationUtc { get; internal set; }
 
         public bool IsExpired()
         {
-            if (ServerResponseRefreshesAtUtc != null && DateTime.UtcNow < ServerResponseRefreshesAtUtc.Value) return false;
+            if (ServerExpirationUtc != null && DateTime.UtcNow < ServerExpirationUtc.Value)
+            {
+                return false;
+            }
+            else if (ServerExpirationUtc != null)
+            {
+                return true;
+            }
 
-            if (DateTime.UtcNow < CacheExpiresAtUtc) return false;
+            if (DateTime.UtcNow < LocalExpirationUtc) return false;
 
             return true;
         }

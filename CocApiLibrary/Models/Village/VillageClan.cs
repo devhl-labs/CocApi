@@ -19,7 +19,7 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public int ClanLevel { get; private set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
         }
 

@@ -22,6 +22,6 @@ namespace devhl.CocApi
         Task VillageTrophiesChangedAsync(Village village, int increase);
         Task VillageVersusBattleWinCountChangedAsync(Village village, int increase);
         Task VillageVersusBattleWinsChangedAsync(Village village, int increase);
-        Task VillageVersusTrophiesChangedAsync(Village village, int increase);        
+        Task VillageVersusTrophiesChangedAsync(Village village, int increase);
     }
 }

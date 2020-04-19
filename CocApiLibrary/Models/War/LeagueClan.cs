@@ -33,7 +33,7 @@ namespace devhl.CocApi.Models.War
         [JsonProperty("members")]
         public IEnumerable<LeagueVillage>? Villages { get; internal set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
 
         }

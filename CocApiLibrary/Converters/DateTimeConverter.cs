@@ -33,7 +33,13 @@ namespace devhl.CocApi.Converters
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            return reader.Value?.ToString().ToDateTime();
+            //return reader.Value?.ToString().ToDateTime();
+
+            DateTime result = DateTime.ParseExact(reader.Value?.ToString(), "yyyyMMdd'T'HHmmss.fff'Z'", null);
+
+            result = DateTime.SpecifyKind(result, DateTimeKind.Utc);
+
+            return result;
         }
 
         public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)

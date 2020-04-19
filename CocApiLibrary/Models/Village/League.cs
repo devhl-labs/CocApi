@@ -13,7 +13,7 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty("iconUrls")]
         public LeagueIcon? LeagueIcon { get; internal set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             if (LeagueIcon != null) LeagueIcon.LeaugeId = Id;
         }

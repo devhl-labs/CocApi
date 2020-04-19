@@ -31,7 +31,7 @@ namespace devhl.CocApi
 
 #nullable enable
 
-        public static HttpClient ApiClient { get; } = new HttpClient();
+        public static HttpClient HttpClient { get; } = new HttpClient();
 
         public static SemaphoreSlim SemaphoreSlim { get; } = new SemaphoreSlim(1, 1);
 
@@ -70,9 +70,9 @@ namespace devhl.CocApi
 
             _cfg = cfg;
 
-            ApiClient.DefaultRequestHeaders.Accept.Clear();
+            HttpClient.DefaultRequestHeaders.Accept.Clear();
 
-            ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             foreach (string token in tokens)
             {
@@ -102,11 +102,15 @@ namespace devhl.CocApi
         {
             if (e is ServerResponseException serverResponse)
             {
-                _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
+                //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
+
+                _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
             }
             else
             {
-                _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
+                //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
+
+                _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
             }
 
             if (e is TaskCanceledException && endPoint == EndPoint.LeagueGroup)
@@ -139,7 +143,7 @@ namespace devhl.CocApi
         {
             Stopwatch stopwatch = new Stopwatch();
 
-            ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+            HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
 
             using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
@@ -149,7 +153,7 @@ namespace devhl.CocApi
 
             try
             {
-                 response = await ApiClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
+                 response = await HttpClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -174,9 +178,7 @@ namespace devhl.CocApi
             try
             {
                 while (_tokenObjects.All(x => x.IsRateLimited))
-                {
                     await Task.Delay(50).ConfigureAwait(false);
-                }
 
                 return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url).ConfigureAwait(false);
             }
@@ -197,7 +199,7 @@ namespace devhl.CocApi
             if (response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge != null)
             {
                 //adding 3 seconds incase the server clock is different than our clock
-                result.ServerResponseRefreshesAtUtc = response.Headers.Date.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
+                result.ServerExpirationUtc = response.Headers.Date.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
             }            
         }
 
@@ -210,11 +212,11 @@ namespace devhl.CocApi
                 case LeagueWar leagueWarApiModel:
                     if (leagueWarApiModel.State == WarState.WarEnded)
                     {
-                        leagueWarApiModel.CacheExpiresAtUtc = DateTime.MaxValue;
+                        leagueWarApiModel.LocalExpirationUtc = DateTime.MaxValue;
                     }
                     else
                     {
-                        leagueWarApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
+                        leagueWarApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
                     }
 
                     break;
@@ -222,11 +224,11 @@ namespace devhl.CocApi
                 case CurrentWar currentWar:
                     if (currentWar.State == WarState.WarEnded)
                     {
-                        currentWar.CacheExpiresAtUtc = DateTime.MaxValue;
+                        currentWar.LocalExpirationUtc = DateTime.MaxValue;
                     }
                     else
                     {
-                        currentWar.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
+                        currentWar.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.CurrentWarTimeToLive);
                     }
 
                     break;
@@ -234,37 +236,37 @@ namespace devhl.CocApi
                 case LeagueGroup leagueGroupApiModel:
                     if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
-                        leagueGroupApiModel.CacheExpiresAtUtc = DateTime.UtcNow.AddHours(6);
+                        leagueGroupApiModel.LocalExpirationUtc = DateTime.UtcNow.AddHours(6);
                     }
                     else
                     {
-                        leagueGroupApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
+                        leagueGroupApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
                     }
 
                     break;
 
                 case LeagueGroupNotFound leagueGroupNotFound:
-                    leagueGroupNotFound.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
+                    leagueGroupNotFound.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
                     break;
 
                 case Clan clanApiModel:
-                    clanApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
+                    clanApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
                     break;
 
                 case Village villageApiModel:
-                    villageApiModel.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
+                    villageApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
                     break;
 
                 case NotInWar notInWar:
-                    notInWar.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.NotInWarTimeToLive);
+                    notInWar.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.NotInWarTimeToLive);
                     break;
 
                 case PrivateWarLog privateWarLog:
-                    privateWarLog.CacheExpiresAtUtc = DateTime.UtcNow.Add(_cfg.PrivateWarLogTimeToLive);
+                    privateWarLog.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.PrivateWarLogTimeToLive);
                     break;
 
                 default:
-                    result.CacheExpiresAtUtc = DateTime.UtcNow;
+                    result.LocalExpirationUtc = DateTime.UtcNow;
                     break;
             }
         }
@@ -275,12 +277,14 @@ namespace devhl.CocApi
 
             InitializeCacheExpiration(result, response);
 
-            if (result is IInitialize initialize) initialize.Initialize();
+            if (result is IInitialize initialize) initialize.Initialize(_cocApi);
         }
 
         private static Downloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : Downloadable, new()
         {
-            _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+            //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+
+            _cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
 
             _cocApi.IsAvailable = true;
 
@@ -340,7 +344,9 @@ namespace devhl.CocApi
 
                 InitializeResult(leagueGroupNotFound, response, encodedUrl);
 
-                _ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
+                //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
+
+                _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
 
                 return leagueGroupNotFound;
             }

@@ -22,7 +22,7 @@ namespace devhl.CocApi
     public delegate Task ClanVillageNameChangedEventHandler(ClanVillage village, string newName);
     public delegate Task ClanVillagesLeagueChangedEventHandler(Clan clan, IReadOnlyList<LeagueChange> leagueChanges);
     public delegate Task ClanVillagesRoleChangedEventHandler(Clan clan, IReadOnlyList<RoleChange> roleChanges);
-
+    public delegate Task LogEventHandler(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null);
 
     public sealed partial class CocApi : IDisposable
     {
@@ -60,6 +60,25 @@ namespace devhl.CocApi
         public event ClanVillageNameChangedEventHandler? ClanVillageNameChanged;
         public event ClanVillagesLeagueChangedEventHandler? ClanVillagesLeagueChanged;
         public event ClanVillagesRoleChangedEventHandler? ClanVillagesRoleChanged;
+        public event LogEventHandler? Log;
+
+        internal void LogEvent(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null)
+        {
+            Log?.Invoke(source, logLevel, loggingEvent, message);
+        }
+
+        internal void LogEvent<T>(string? message, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, message);
+
+        internal void LogEvent<T>(Exception exception, LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, exception.Message);
+
+        internal void LogEvent(string source, Exception exception, LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(source, logLevel, loggingEvent, exception.Message);
+
+        internal void LogEvent<T>(LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, null);
+
+
+
+
+
 
         internal void CrashDetectedEvent()
         {
@@ -75,7 +94,9 @@ namespace devhl.CocApi
             }
             catch (Exception e)
             {
-                _ = Logger?.LogAsync<CocApi>(e, LogLevel.Critical, LoggingEvent.CrashDetected);
+                //_ = Logger?.LogAsync<CocApi>(e, LogLevel.Critical, LoggingEvent.CrashDetected);
+
+                LogEvent<CocApi>(e, LogLevel.Critical, LoggingEvent.CrashDetected);
             }
         }
 

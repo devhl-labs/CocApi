@@ -4,7 +4,7 @@ using System;
 
 namespace devhl.CocApi.Models.War
 {
-    public class Attack : IInitialize, IAttack
+    public class Attack : /*IInitialize,*/ IAttack
     {
         [JsonProperty]
         public DateTime PreparationStartTimeUtc { get; internal set; }
@@ -59,11 +59,6 @@ namespace devhl.CocApi.Models.War
 
         [JsonProperty]
         public bool Missed { get; internal set; }
-
-        public void Initialize()
-        {
-            Missed = false;
-        }
 
         public override string ToString() => $"{AttackerClanTag} {AttackerTag}";
     }

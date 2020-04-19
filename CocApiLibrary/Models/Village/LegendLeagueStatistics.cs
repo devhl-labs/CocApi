@@ -43,7 +43,7 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public IList<LegendLeagueResult> Results { get; private set; } = new List<LegendLeagueResult>();
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             if (PreviousSeason != null)
             {

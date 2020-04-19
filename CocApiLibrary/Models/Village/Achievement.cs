@@ -31,7 +31,7 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public string Info { get; private set; } = string.Empty;
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {            
             if (Info == "Connect your account to Supercell ID for safe keeping.")
             {

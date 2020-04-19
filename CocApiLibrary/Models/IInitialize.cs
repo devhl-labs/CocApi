@@ -6,6 +6,6 @@ namespace devhl.CocApi.Models
 {
     public interface IInitialize
     {
-        void Initialize();
+        void Initialize(CocApi cocApi);
     }
 }

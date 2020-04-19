@@ -6,7 +6,7 @@ namespace devhl.CocApi.Models.War
     {
         string ClanTag { get; }
 
-        int MapPosition { get; }
+        int RosterPosition { get; }
 
         int TownHallLevel { get; }
 

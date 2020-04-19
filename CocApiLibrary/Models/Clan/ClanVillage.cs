@@ -1,11 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-using Newtonsoft.Json;
-
-using devhl.CocApi.Converters;
+﻿using Newtonsoft.Json;
 using devhl.CocApi.Models.Village;
-//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Clan
 {
@@ -50,13 +44,13 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty]
         public int DonationsReceived { get; internal set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             if (League != null)
             {
                 LeagueId = League.Id;
 
-                League.Initialize();
+                League.Initialize(cocApi);
             }
         }
 

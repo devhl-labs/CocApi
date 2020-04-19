@@ -15,7 +15,7 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty]
         public BadgeUrl? BadgeUrl { get; internal set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
 
         }

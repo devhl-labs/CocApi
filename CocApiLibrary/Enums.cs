@@ -2,7 +2,7 @@
 
 namespace devhl.CocApi
 {
-    public enum WarFrequency : int
+    public enum WarFrequency
     {
         [EnumMember(Value = "unknown")]
         Unknown,
@@ -18,7 +18,7 @@ namespace devhl.CocApi
         Always
     }
 
-    public enum Role : int
+    public enum Role
     {
         [EnumMember(Value = "unknown")]
         Unknown = 0,
@@ -32,7 +32,7 @@ namespace devhl.CocApi
         Leader = 40
     }
 
-    public enum WarState : int
+    public enum WarState
     {
         [EnumMember(Value = "unknown")]
         Unknown,
@@ -46,7 +46,7 @@ namespace devhl.CocApi
         WarEnded            
     }
 
-    public enum LeagueState : int
+    public enum LeagueState
     {
         [EnumMember(Value = "unknown")]
         Unknown,
@@ -61,19 +61,19 @@ namespace devhl.CocApi
 
     }
 
-    public enum Result : int
+    public enum Result
     {
-        [EnumMember(Value = "unknown")]
-        Unknown = 0,
         [EnumMember(Value = "lose")]
         Lose = -1,
+        [EnumMember(Value = "unknown")]
+        Unknown = 0,
         [EnumMember(Value = "win")]
         Win = 1,
         [EnumMember(Value = "draw")]
         Draw = 2
     }
 
-    public enum WarType : int
+    public enum WarType
     {
         [EnumMember(Value = "Random")]
         Random,
@@ -83,7 +83,7 @@ namespace devhl.CocApi
         SCCWL
     }
 
-    public enum RecruitmentType : int
+    public enum RecruitmentType
     {
         [EnumMember(Value = "unknown")]
         Unknown,
@@ -95,7 +95,7 @@ namespace devhl.CocApi
         Open
     }
 
-    public enum VillageType : int
+    public enum VillageType
     {
         [EnumMember(Value = "unknown")]
         Unknown,
@@ -141,16 +141,12 @@ namespace devhl.CocApi
         UpdatingClan,
         IsRateLimited,
         IsPremptiveRateLimited,
-        //UnhandledCase,
         InvalidTag,
         HttpResponseError,
         HttpResponseStatusCodeSuccessful,
         HttpResponseStatusCodeUnsuccessful,
-        //Exception,
         UpdateServiceStarted,
         UpdateServiceEnding,
-        //Debug,
-        //Other,
         CrashDetected
     }
 

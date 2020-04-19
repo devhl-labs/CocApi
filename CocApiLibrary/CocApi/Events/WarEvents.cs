@@ -14,14 +14,14 @@ namespace devhl.CocApi
     public delegate Task NewAttacksEventHandler(CurrentWar currentWar, IReadOnlyList<Attack> newAttacks);
     public delegate Task WarEndingSoonEventHandler(CurrentWar currentWar);
     public delegate Task WarStartingSoonEventHandler(CurrentWar currentWar);
-    public delegate Task WarIsAccessibleChangedEventHandler(CurrentWar currentWar);
+    public delegate Task WarIsAccessibleChangedEventHandler(CurrentWar currentWar, bool canRead);
     public delegate Task WarEndNotSeenEventHandler(CurrentWar currentWar);
     public delegate Task WarStartedEventHandler(CurrentWar currentWar);
     public delegate Task WarEndedEventHandler(CurrentWar currentWar);
     public delegate Task WarEndSeenEventHandler(CurrentWar currentWar);
     public delegate Task LeagueGroupTeamSizeChangedEventHandler(LeagueGroup leagueGroup);
-    public delegate Task MissedAttacksEventHandler(CurrentWar currentWar, IReadOnlyList<Attack> attacks);
-    public delegate Task InitialDownloadEventHandler(IReadOnlyList<CurrentWar> currentWars);
+    //public delegate Task MissedAttacksEventHandler(CurrentWar currentWar, IReadOnlyList<Attack> attacks);
+    public delegate Task NewWarsEventHandler(IReadOnlyList<CurrentWar> currentWars);
 
 
     public sealed partial class CocApi : IDisposable
@@ -101,15 +101,15 @@ namespace devhl.CocApi
         /// Fires when any clan in a league group has more than 15 attacks.
         /// </summary>
         public event LeagueGroupTeamSizeChangedEventHandler? LeagueGroupTeamSizeChanged;
-        public event MissedAttacksEventHandler? MissedAttacks;
-        public event InitialDownloadEventHandler? InitialDownload;
+        //public event MissedAttacksEventHandler? MissedAttacks;
+        public event NewWarsEventHandler? NewWars;
 
-        internal void MissedAttacksEvent(CurrentWar currentWar, List<Attack> missedAttacks)
-        {
-            if (missedAttacks.Count == 0) return;
+        //internal void MissedAttacksEvent(CurrentWar currentWar, List<Attack> missedAttacks)
+        //{
+        //    if (missedAttacks.Count == 0) return;
 
-             MissedAttacks?.Invoke(currentWar, missedAttacks.ToImmutableArray());
-        }
+        //     MissedAttacks?.Invoke(currentWar, missedAttacks.ToImmutableArray());
+        //}
 
         internal void LeagueGroupTeamSizeChangedEvent(LeagueGroup leagueGroup) => LeagueGroupTeamSizeChanged?.Invoke(leagueGroup);
 
@@ -121,7 +121,7 @@ namespace devhl.CocApi
 
         internal void WarEndNotSeenEvent(CurrentWar currentWar) => WarEndNotSeen?.Invoke(currentWar);
 
-        internal void WarIsAccessibleChangedEvent(CurrentWar currentWar) => WarIsAccessibleChanged?.Invoke(currentWar);
+        internal void WarIsAccessibleChangedEvent(CurrentWar currentWar, bool canRead) => WarIsAccessibleChanged?.Invoke(currentWar, canRead);
 
         internal void WarStartingSoonEvent(CurrentWar currentWar) => WarStartingSoon?.Invoke(currentWar);
 
@@ -139,11 +139,11 @@ namespace devhl.CocApi
 
         public void NewWarEvent(CurrentWar currentWar) => NewWar?.Invoke(currentWar);
 
-        public void InitialDownloadEvent(List<CurrentWar> currentWars)
+        public void NewWarsEvent(List<CurrentWar> currentWars)
         {
             if (currentWars.Count > 0)
             {
-                InitialDownload?.Invoke(currentWars.ToImmutableArray());
+                NewWars?.Invoke(currentWars.ToImmutableArray());
             }
         }
     }

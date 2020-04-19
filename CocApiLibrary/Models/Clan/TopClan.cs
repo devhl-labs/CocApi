@@ -32,7 +32,7 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty("previousRank")]
         public int PreviousRank { get; internal set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
         }
 

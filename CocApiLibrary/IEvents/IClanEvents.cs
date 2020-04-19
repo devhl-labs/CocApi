@@ -13,7 +13,6 @@ namespace devhl.CocApi
         Task ClanBadgeUrlChangedAsync(Clan oldClan, Clan newClan);
         Task ClanChangedAsync(Clan oldClan, Clan newClan);
         Task ClanDonationsAsync(Clan oldClan, IReadOnlyList<Donation> receivedDonations, IReadOnlyList<Donation> gaveDonations);
-        Task ClanDonationsResetAsync(Clan oldClan, Clan newClan);
         Task ClanLabelsChangedAsync(Clan clan, IReadOnlyList<ClanLabel> addedLabels, IReadOnlyList<ClanLabel> removedLabels);
         Task ClanLocationChangedAsync(Clan oldClan, Clan newClan);
         Task ClanPointsChangedAsync(Clan oldClan, int increase);

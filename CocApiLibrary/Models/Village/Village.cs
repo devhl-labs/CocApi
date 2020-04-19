@@ -8,8 +8,8 @@ namespace devhl.CocApi.Models.Village
     public class Village : Downloadable, IVillage, IInitialize
     {
 
-        [JsonIgnore]
-        internal ILogger? Logger { get; set; }
+        //[JsonIgnore]
+        //internal ILogger? Logger { get; set; }
 
         [JsonProperty("Tag")]
         public string VillageTag { get; private set; } = string.Empty;
@@ -107,7 +107,7 @@ namespace devhl.CocApi.Models.Village
 
         internal void Update(CocApi cocApi, Village downloadedVillage)
         {
-            Logger ??= cocApi.Logger;
+            //Logger ??= cocApi.Logger;
 
             if (ReferenceEquals(this, downloadedVillage)) return;
 
@@ -357,7 +357,7 @@ namespace devhl.CocApi.Models.Village
             }
         }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             VillageTag = VillageTag.ToUpper();
 
@@ -375,7 +375,7 @@ namespace devhl.CocApi.Models.Village
             {
                 LegendStatistics.VillageTag = VillageTag;
 
-                LegendStatistics.Initialize();
+                LegendStatistics.Initialize(cocApi);
 
                 if (LegendStatistics.BestSeason != null) LegendStatistics.BestSeason.VillageTag = VillageTag;
 
@@ -420,14 +420,14 @@ namespace devhl.CocApi.Models.Village
             {
                 achievement.VillageTag = VillageTag;
 
-                achievement.Initialize();
+                achievement.Initialize(cocApi);
             }
 
             foreach (var label in Labels.EmptyIfNull())
             {
                 label.VillageTag = VillageTag;
 
-                label.Initialize();
+                label.Initialize(cocApi);
             }
         }
 

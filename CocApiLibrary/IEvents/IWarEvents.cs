@@ -10,7 +10,7 @@ namespace devhl.CocApi
 {
     public interface IWarEvents
     {
-        Task LeagueGroupTeamSizeChangedAsync(LeagueGroup leagueGroup);
+        //Task LeagueGroupTeamSizeChangedAsync(LeagueGroup leagueGroup);
         Task NewAttacksAsync(CurrentWar currentWar, IReadOnlyList<Attack> attacks);
         Task NewWarAsync(CurrentWar currentWar);
         Task WarChangedAsync(CurrentWar oldWar, CurrentWar newWar);
@@ -18,9 +18,9 @@ namespace devhl.CocApi
         Task WarEndingSoonAsync(CurrentWar currentWar);
         Task WarEndNotSeenAsync(CurrentWar currentWar);
         Task WarEndSeenAsync(CurrentWar currentWar);
-        Task WarIsAccessibleChangedAsync(CurrentWar currentWar);
+        Task WarIsAccessibleChangedAsync(CurrentWar currentWar, bool canRead);
         Task WarStartedAsync(CurrentWar currentWar);
         Task WarStartingSoonAsync(CurrentWar currentWar);
-        Task InitialDownload(List<CurrentWar> currentWars);
+        Task InitialWarsDownloadedAsync(IReadOnlyList<CurrentWar> currentWars);
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
 namespace devhl.CocApi.Models.War
 {
-    public class LeagueVillage : IVillage, IInitialize
+    public class LeagueVillage : IVillage /*, IInitialize*/
     {
         [JsonProperty("Tag")]
         public string VillageTag { get; private set; } = string.Empty;
@@ -25,10 +25,10 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public string LeagueClanKey { get; internal set; } = string.Empty;
 
-        public void Initialize()
-        {
+        //public void Initialize()
+        //{
 
-        }
+        //}
 
         public override string ToString() => $"{VillageTag} {Name} {TownhallLevel}";
     }

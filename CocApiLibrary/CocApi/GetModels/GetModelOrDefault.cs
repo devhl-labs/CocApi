@@ -10,73 +10,91 @@ namespace devhl.CocApi
     public sealed partial class CocApi : IDisposable
     {
         /// <summary>
-        /// This only searches what is currently in memory.  Returns null if the clanTag is not found.
+        /// This only searches what is currently in memory.
         /// </summary>
         /// <param name="clanTag"></param>
         /// <returns></returns>
         public Clan? GetClanOrDefault(string clanTag)
         {
-            AllClans.TryGetValue(clanTag, out Clan? result);
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
+            AllClans.TryGetValue(formattedTag, out Clan? result);
 
             return result;
         }
 
 
         /// <summary>
-        /// This only searches what is currently in memory.  Returns null if the war log is private.
+        /// This only searches what is currently in memory.
         /// </summary>
         /// <param name="clanTag"></param>
         /// <returns></returns>
-        public IWar? GetWarByClanTagOrDefault(string clanTag)
+        public IWar? GetCurrentWarByClanTagOrDefault(string clanTag)
         {
-            AllWarsByClanTag.TryGetValue(clanTag, out IWar? result);
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
+            AllCurrentWarsByClanTag.TryGetValue(formattedTag, out IWar? result);
 
             return result;
         }
 
-        public CurrentWar? GetWarByWarIdOrDefault(string warId)
+        public CurrentWar? GetCurrentWarByWarKeyOrDefault(string warKey)
         {
-            AllWarsByWarId.TryGetValue(warId, out CurrentWar? currentWar);
+            if (IsValidTag(warKey, out string formattedWarKey) == false)
+                return null;
+
+            AllWarsByWarKey.TryGetValue(formattedWarKey, out CurrentWar? currentWar);
 
             return currentWar;
         }
  
 
         /// <summary>
-        /// This only searches what is currently in memory.  Returns null if the clan is not in a clan is not found to be in a league.  
+        /// This only searches what is currently in memory.  
         /// Returns <see cref="LeagueGroup"/> or <see cref="LeagueGroupNotFound"/>
         /// </summary>
         /// <param name="clanTag"></param>
         /// <returns></returns>
         public ILeagueGroup? GetLeagueGroupOrDefault(string clanTag)
         {
-            AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup? result);
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
+            AllLeagueGroups.TryGetValue(formattedTag, out ILeagueGroup? result);
 
             return result;
         }
 
 
         /// <summary>
-        /// This only searches what is currently in memory.  Returns null if the warTag is not found.
+        /// This only searches what is currently in memory.
         /// </summary>
         /// <param name="warTag"></param>
         /// <returns></returns>
         public LeagueWar? GetLeagueWarOrDefault(string warTag)
         {
-            AllWarsByWarTag.TryGetValue(warTag, out LeagueWar? result);
+            if (IsValidTag(warTag, out string formattedTag) == false)
+                return null;
+
+            AllLeagueWarsByWarTag.TryGetValue(formattedTag, out LeagueWar? result);
 
             return result;
         }
 
 
         /// <summary>
-        /// This only searches what is currently in memory.  Returns null if the villageTag is not found.
+        /// This only searches what is currently in memory.
         /// </summary>
         /// <param name="villageTag"></param>
         /// <returns></returns>
         public Village? GetVillageOrDefault(string villageTag)
-        {            
-            AllVillages.TryGetValue(villageTag, out Village? result);
+        {
+            if (IsValidTag(villageTag, out string formattedTag) == false)
+                return null;
+
+            AllVillages.TryGetValue(formattedTag, out Village? result);
 
             return result;
         }

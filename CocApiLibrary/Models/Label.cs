@@ -17,7 +17,7 @@ namespace devhl.CocApi.Models
         public LabelUrl? LabelUrl { get; internal set; }
 
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             if (LabelUrl != null) LabelUrl.Id = Id;
         }

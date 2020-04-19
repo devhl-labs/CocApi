@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace devhl.CocApi
 {
+    [Obsolete]
     public interface ILogger
     {
         Task LogAsync<T>(string? message, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown);
@@ -17,12 +18,5 @@ namespace devhl.CocApi
 
 
         Task LogAsync(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null);
-
-
-        //Task LogAsync<T>(LogLevel logLevel, string? message = null);
-
-        //Task LogAsync<T>(LogLevel logLevel, Exception exception);
-
-        //Task LogAsync(string source, LogLevel logLevel, string? message = null);
     }
 }

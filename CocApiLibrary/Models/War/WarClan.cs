@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 //using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace devhl.CocApi.Models.War
 {
@@ -28,7 +29,7 @@ namespace devhl.CocApi.Models.War
         public string WarKey { get; internal set; } = string.Empty;
 
         [JsonProperty("members")]
-        public IEnumerable<WarVillage>? Villages { get; private set; }
+        public IEnumerable<WarVillage>? WarVillages { get; internal set; }
 
         [JsonProperty("attacks")]
         public int AttackCount { get; private set; }
@@ -45,11 +46,13 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public Result Result { get; internal set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             if (BadgeUrl != null) BadgeUrl.ClanTag = ClanTag;
 
-            foreach (var warVillage in Villages.EmptyIfNull())
+            WarVillages = WarVillages.ToList().OrderBy(wv => wv.RosterPosition);
+
+            foreach (var warVillage in WarVillages.EmptyIfNull())
             {
                 warVillage.ClanTag = ClanTag;
 

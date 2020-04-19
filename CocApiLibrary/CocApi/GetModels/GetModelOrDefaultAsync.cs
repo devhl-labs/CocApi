@@ -25,11 +25,14 @@ namespace devhl.CocApi
         {
             ThrowIfNotInitialized();
 
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
             Clan? result = null;
 
             try
             {
-                result = await GetClanAsync(clanTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
+                result = await GetClanAsync(formattedTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -49,17 +52,17 @@ namespace devhl.CocApi
         /// <param name="allowExpiredItem"></param>
         /// <param name="cancellationTokenSource"></param>
         /// <returns></returns>
-        public async Task<Paginated<Clan>?> GetClansOrDefaultAsync(string? clanName = null
-                                                        , WarFrequency? warFrequency = null
-                                                        , int? locationId = null
-                                                        , int? minVillages = null
-                                                        , int? maxVillages = null
-                                                        , int? minClanPoints = null
-                                                        , int? minClanLevel = null
-                                                        , int? limit = null
-                                                        , int? after = null
-                                                        , int? before = null
-                                                        , CancellationToken? cancellationToken = null)
+        public async Task<Paginated<Clan>?> GetClansOrDefaultAsync(string? clanName = null,
+                                                                   WarFrequency? warFrequency = null,
+                                                                   int? locationId = null,
+                                                                   int? minVillages = null,
+                                                                   int? maxVillages = null,
+                                                                   int? minClanPoints = null,
+                                                                   int? minClanLevel = null,
+                                                                   int? limit = null,
+                                                                   int? after = null,
+                                                                   int? before = null,
+                                                                   CancellationToken? cancellationToken = null)
         {
             ThrowIfNotInitialized();
 
@@ -91,11 +94,14 @@ namespace devhl.CocApi
 
         public async Task<ILeagueGroup?> GetLeagueGroupOrDefaultAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
             ILeagueGroup? result = null;
 
             try
             {
-                result = await GetLeagueGroupAsync(clanTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
+                result = await GetLeagueGroupAsync(formattedTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -117,11 +123,14 @@ namespace devhl.CocApi
         /// <returns></returns>
         public async Task<IWar?> GetCurrentWarOrDefaultAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
             IWar? result = null;
 
             try
             {
-                result = await GetCurrentWarAsync(clanTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
+                result = await GetCurrentWarAsync(formattedTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -144,11 +153,14 @@ namespace devhl.CocApi
         /// <returns></returns>
         public async Task<LeagueWar?> GetLeagueWarOrDefaultAsync(string warTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
+            if (IsValidTag(warTag, out string formattedTag) == false)
+                return null;
+
             LeagueWar? result = null;
 
             try
             {
-                result = await GetLeagueWarAsync(warTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
+                result = await GetLeagueWarAsync(formattedTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -171,11 +183,14 @@ namespace devhl.CocApi
         /// <returns></returns>
         public async Task<Village?> GetVillageOrDefaultAsync(string villageTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
         {
+            if (IsValidTag(villageTag, out string formattedTag) == false)
+                return null;
+
             Village? result = null;
 
             try
             {
-                result = await GetVillageAsync(villageTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
+                result = await GetVillageAsync(formattedTag, allowExpiredItem, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -199,11 +214,14 @@ namespace devhl.CocApi
         /// <returns></returns>
         public async Task<Paginated<WarLogEntry>?> GetWarLogOrDefaultAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
         {
+            if (IsValidTag(clanTag, out string formattedTag) == false)
+                return null;
+
             Paginated<WarLogEntry>? result = null;
 
             try
             {
-                result = await GetWarLogAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+                result = await GetWarLogAsync(formattedTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (ServerResponseException) { }
             catch (InvalidTagException) { }
@@ -224,7 +242,7 @@ namespace devhl.CocApi
         {
             try
             {
-                CurrentWar? warByWarId = GetWarByWarIdOrDefault(storedWar.WarKey);
+                CurrentWar? warByWarId = GetCurrentWarByWarKeyOrDefault(storedWar.WarKey);
 
                 if (warByWarId?.IsExpired() == false) return warByWarId;
 
@@ -240,7 +258,7 @@ namespace devhl.CocApi
                 }
                 else
                 {
-                    foreach (var clan in storedWar.Clans)
+                    foreach (var clan in storedWar.WarClans)
                     {
                         war = await GetCurrentWarOrDefaultAsync(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
 

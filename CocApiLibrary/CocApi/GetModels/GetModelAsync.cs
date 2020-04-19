@@ -7,6 +7,7 @@ using devhl.CocApi.Exceptions;
 using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
+using System.Linq;
 
 namespace devhl.CocApi
 {
@@ -32,7 +33,7 @@ namespace devhl.CocApi
 
                 AllClans.AddOrUpdate(clan.ClanTag, clan, (clanTag, clan2) =>
                 {
-                    if (clan.DownloadedAtUtc > clan2.ServerResponseRefreshesAtUtc) return clan;
+                    if (clan.DownloadedAtUtc > clan2.DownloadedAtUtc) return clan;
 
                     return clan2;
                 });                      
@@ -47,90 +48,203 @@ namespace devhl.CocApi
             }
         }
 
+        //public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
+        //{         
+        //    ThrowIfNotInitialized();
+
+        //    try
+        //    {
+        //        ThrowIfInvalidTag(clanTag);
+
+        //        IWar? war = GetCurrentWarByClanTagOrDefault(clanTag);
+
+        //        if (war != null && (allowExpiredItem || !war.IsExpired())) return war;
+
+        //        if (war is CurrentWar currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
+
+        //        string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
+
+        //        Downloadable downloadable = await GetAsync<CurrentWar>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
+
+        //        if (downloadable is NotInWar notInWar)
+        //        {
+        //            if (CocApiConfiguration.CacheHttpResponses)
+        //            {
+        //                if (AllCurrentWarsByClanTag.TryGetValue(clanTag, out IWar storedWar) == false ||
+        //                    storedWar is NotInWar ||
+        //                    (storedWar is LeagueWar leagueWar && leagueWar.State == WarState.WarEnded))
+        //                {
+        //                    AllCurrentWarsByClanTag.AddOrUpdate(clanTag, notInWar, (clanTag, war2) =>
+        //                    {
+        //                        if (notInWar.DownloadedAtUtc > war2.DownloadedAtUtc) return notInWar;
+
+        //                        return war2;
+        //                    });
+        //                }
+        //            }
+
+        //            return notInWar;
+        //        }
+
+        //        if (downloadable is PrivateWarLog privateWarLog)
+        //        {
+        //            if (CocApiConfiguration.CacheHttpResponses)
+        //            {
+        //                AllCurrentWarsByClanTag.AddOrUpdate(clanTag, privateWarLog, (clanTag, war2) =>
+        //                {
+        //                    if (privateWarLog.DownloadedAtUtc > war2.DownloadedAtUtc) return privateWarLog;
+
+        //                    return war2;
+        //                });
+        //            }
+
+        //            return privateWarLog;
+        //        }
+
+        //        CurrentWar downloadedWar = (CurrentWar) downloadable;
+
+        //        if (!CocApiConfiguration.CacheHttpResponses) return downloadedWar;
+
+        //        foreach(var clan in downloadedWar.WarClans)
+        //        {
+        //            AllCurrentWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
+
+        //            if (storedWar == null || storedWar.ServerResponseRefreshesAtUtc < downloadedWar.ServerResponseRefreshesAtUtc || storedWar is PrivateWarLog)
+        //            {
+        //                AllCurrentWarsByClanTag.AddOrUpdate(clan.ClanTag, downloadedWar, (clanTag, war2) =>
+        //                {
+        //                    if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
+
+        //                    return war2;
+        //                });
+        //            }
+
+        //            if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
+        //            {
+        //                storedClan.Wars.TryAdd(downloadedWar.WarKey, (CurrentWar) downloadedWar);
+        //            }
+        //        }             
+
+        //        AllWarsByWarKey.AddOrUpdate(downloadedWar.WarKey, downloadedWar, (_, war2) =>
+        //        {
+        //            if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
+
+        //            return war2;
+        //        });
+
+        //        return downloadedWar;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        if (e is CocApiException) throw;
+
+        //        throw new CocApiException(e.Message, e);
+        //    }
+        //}
+
+        /// <summary>
+        /// Returns <see cref="NotInWar"/>, <see cref="PrivateWarLog"/>, <see cref="CurrentWar"/>, or <see cref="LeagueWar"/>.
+        /// </summary>
+        /// <param name="clanTag"></param>
+        /// <param name="allowExpiredItem"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IWar> GetCurrentWarAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
-        {         
+        {
             ThrowIfNotInitialized();
 
             try
             {
                 ThrowIfInvalidTag(clanTag);
 
-                IWar? war = GetWarByClanTagOrDefault(clanTag);
+                IWar? war = GetCurrentWarByClanTagOrDefault(clanTag);
 
-                if (war != null && (allowExpiredItem || !war.IsExpired())) return war;
+                if (war == null || war is NotInWar || war is PrivateWarLog)
+                {
+                    if (AllLeagueGroups.TryGetValue(clanTag, out ILeagueGroup iLeagueGroup) && iLeagueGroup is LeagueGroup leagueGroup)
+                    {
+                        LeagueWar? leagueWarInPrep = null;
 
-                if (war is CurrentWar currentWar && currentWar.StartTimeUtc > DateTime.UtcNow) return currentWar;
+                        foreach(Round round in leagueGroup.Rounds.EmptyIfNull())
+                        {
+                            foreach (string warTag in round.WarTags.Where(wt => wt != "#0"))
+                            {
+                                LeagueWar? leagueWar = GetLeagueWarOrDefault(warTag);
+
+                                if (leagueWar == null || !leagueWar.WarClans.Any(wc => wc.ClanTag == clanTag))
+                                    continue;
+
+                                if (leagueWar.State == WarState.InWar)
+                                    return leagueWar;
+
+                                if (leagueWar.State == WarState.Preparation)
+                                    leagueWarInPrep = leagueWar;
+                            }
+                        }
+
+                        if (leagueWarInPrep != null)
+                            return leagueWarInPrep;
+                    }
+                }
+
+                if (war != null && (allowExpiredItem || !war.IsExpired()))
+                    return war;
+
+                if (war is CurrentWar storedWar && storedWar.StartTimeUtc > DateTime.UtcNow)
+                    return storedWar;
 
                 string url = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(clanTag)}/currentwar";
 
-                Downloadable downloadable = await GetAsync<CurrentWar>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
+                war = (IWar) await GetAsync<CurrentWar>(url, EndPoint.CurrentWar, cancellationToken).ConfigureAwait(false);
 
-                if (downloadable is NotInWar notInWar)
+                if (!CocApiConfiguration.CacheHttpResponses)
+                    return war;
+
+                if (war is NotInWar || war is PrivateWarLog)
                 {
-                    if (CocApiConfiguration.CacheHttpResponses)
+                    AllCurrentWarsByClanTag.AddOrUpdate(clanTag, war, (_, war2) =>
                     {
-                        AllWarsByClanTag.AddOrUpdate(clanTag, notInWar, (clanTag, war2) =>
-                        {
-                            if (notInWar.DownloadedAtUtc > war2.DownloadedAtUtc) return notInWar;
+                        if (war.DownloadedAtUtc > war2.DownloadedAtUtc)
+                            return war;
 
-                            return war2;
-                        });
-                    }
+                        return war2;
+                    });
 
-                    return notInWar;
+                    return war;
                 }
 
-                if (downloadable is PrivateWarLog privateWarLog)
+                CurrentWar currentWar = (CurrentWar)war;
+
+                foreach (var clan in currentWar.WarClans)
                 {
-                    if (CocApiConfiguration.CacheHttpResponses)
+                    AllCurrentWarsByClanTag.AddOrUpdate(clan.ClanTag, currentWar, (_, war2) =>
                     {
-                        AllWarsByClanTag.AddOrUpdate(clanTag, privateWarLog, (clanTag, war2) =>
-                        {
-                            if (privateWarLog.DownloadedAtUtc > war2.DownloadedAtUtc) return privateWarLog;
+                        if (currentWar.DownloadedAtUtc > war2.DownloadedAtUtc)
+                            return currentWar;
 
-                            return war2;
-                        });
-                    }
-
-                    return privateWarLog;
-                }
-
-                CurrentWar downloadedWar = (CurrentWar) downloadable;
-
-                if (!CocApiConfiguration.CacheHttpResponses) return downloadedWar;
-                
-                foreach(var clan in downloadedWar.Clans)
-                {
-                    AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar storedWar);
-
-                    if (storedWar == null || storedWar.ServerResponseRefreshesAtUtc < downloadedWar.ServerResponseRefreshesAtUtc || storedWar is PrivateWarLog)
-                    {
-                        AllWarsByClanTag.AddOrUpdate(clan.ClanTag, downloadedWar, (clanTag, war2) =>
-                        {
-                            if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
-
-                            return war2;
-                        });
-                    }
+                        return war2;
+                    });
 
                     if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
                     {
-                        storedClan.Wars.TryAdd(downloadedWar.WarKey, (CurrentWar) downloadedWar);
+                        storedClan.Wars.TryAdd(currentWar.WarKey, currentWar);
                     }
-                }             
+                }
 
-                AllWarsByWarId.AddOrUpdate(downloadedWar.WarKey, downloadedWar, (_, war2) =>
+                AllWarsByWarKey.AddOrUpdate(currentWar.WarKey, currentWar, (_, war2) =>
                 {
-                    if (downloadedWar.DownloadedAtUtc > war2.DownloadedAtUtc) return downloadedWar;
+                    if (currentWar.DownloadedAtUtc > war2.DownloadedAtUtc)
+                        return currentWar;
 
                     return war2;
                 });
 
-                return downloadedWar;
+                return currentWar;
             }
             catch (Exception e)
             {
-                if (e is CocApiException) throw;
+                if (e is CocApiException)
+                    throw;
 
                 throw new CocApiException(e.Message, e);
             }
@@ -154,48 +268,48 @@ namespace devhl.CocApi
             {
                 ThrowIfInvalidTag(clanTag);
 
-                ILeagueGroup? leagueGroup = GetLeagueGroupOrDefault(clanTag);
+                ILeagueGroup? iLeagueGroup = GetLeagueGroupOrDefault(clanTag);
 
-                if (leagueGroup != null && (allowExpiredItem || !leagueGroup.IsExpired())) return leagueGroup;
+                if (iLeagueGroup != null && (allowExpiredItem || !iLeagueGroup.IsExpired())) return iLeagueGroup;
                 
-                Downloadable downloadable = await GetAsync<LeagueGroup>(url, EndPoint.LeagueGroup, cancellationToken).ConfigureAwait(false);
+                iLeagueGroup = (ILeagueGroup) await GetAsync<LeagueGroup>(url, EndPoint.LeagueGroup, cancellationToken).ConfigureAwait(false);
 
-                if (downloadable is LeagueGroupNotFound notFound)
+                if (!CocApiConfiguration.CacheHttpResponses) return iLeagueGroup;
+
+                if (iLeagueGroup is LeagueGroupNotFound notFound)
                 {
-                    AllLeagueGroups.AddOrUpdate(clanTag, notFound, (clanTag, group2) =>
+                    AllLeagueGroups.AddOrUpdate(clanTag, notFound, (_, group2) =>
                     {
                         if (notFound.DownloadedAtUtc > group2.DownloadedAtUtc) return notFound;
-
+                        
                         return group2;
                     });
 
                     return notFound;
                 }
 
-                if (!(downloadable is LeagueGroup leagueGroupApiModel)) throw new CocApiException("Unknown Type");
+                LeagueGroup leagueGroup = (LeagueGroup)iLeagueGroup;              
 
-                if (!CocApiConfiguration.CacheHttpResponses) return leagueGroupApiModel;
-
-                foreach(var clan in leagueGroupApiModel.Clans.EmptyIfNull())
+                foreach(var clan in leagueGroup.Clans.EmptyIfNull())
                 {
-                    if (AllLeagueGroups.TryAdd(clan.ClanTag, leagueGroupApiModel)) continue;
-
-                    if (!AllLeagueGroups.TryGetValue(clan.ClanTag, out ILeagueGroup storedLeagueGroup)) continue;
-
-                    //the league group already exists.  Lets check if the existing one is from last month
-                    if (storedLeagueGroup is LeagueGroup storedLeagueGroupApiModel && leagueGroupApiModel.Season > storedLeagueGroupApiModel.Season)
+                    AllLeagueGroups.AddOrUpdate(clan.ClanTag, leagueGroup, (_, iLeagueGroup2) =>
                     {
-                        AllLeagueGroups.AddOrUpdate(clan.ClanTag, storedLeagueGroupApiModel, (clanTag, group2) =>
+                        if (iLeagueGroup2 is LeagueGroup leagueGroup2 && leagueGroup.Season != leagueGroup2.Season)
                         {
-                            if (storedLeagueGroupApiModel.DownloadedAtUtc > group2.DownloadedAtUtc) return storedLeagueGroupApiModel;
+                            if (leagueGroup.Season > leagueGroup2.Season)
+                                return leagueGroup;
 
-                            return group2;
-                        });
+                            return leagueGroup2;
+                        }
 
-                    }
+                        if (leagueGroup.DownloadedAtUtc > iLeagueGroup2.DownloadedAtUtc)
+                            return leagueGroup;
+
+                        return iLeagueGroup2;
+                    });
                 }
 
-                return leagueGroupApiModel;
+                return leagueGroup;
             }
 
             catch (Exception e)
@@ -227,70 +341,35 @@ namespace devhl.CocApi
 
                 string url = $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(warTag)}";
 
-                LeagueWar leagueWarApiModel = (LeagueWar) await GetAsync<LeagueWar>(url, EndPoint.LeagueWar, cancellationToken).ConfigureAwait(false);
+                leagueWar = (LeagueWar) await GetAsync<LeagueWar>(url, EndPoint.LeagueWar, cancellationToken).ConfigureAwait(false);
 
-                leagueWarApiModel.WarTag = warTag;
+                leagueWar.WarTag = warTag;
 
-                if (!CocApiConfiguration.CacheHttpResponses) return leagueWarApiModel;
-
-                AllWarsByWarTag.AddOrUpdate(leagueWarApiModel.WarTag, leagueWarApiModel, (_, war2) =>
+                if (!CocApiConfiguration.CacheHttpResponses) return leagueWar;
+                
+                AllLeagueWarsByWarTag.AddOrUpdate(leagueWar.WarTag, leagueWar, (_, leagueWar2) =>
                 {
-                    if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
+                    if (leagueWar.DownloadedAtUtc > leagueWar2.DownloadedAtUtc) return leagueWar;
 
-                    return war2;
+                    return leagueWar2;
                 });
 
-                AllWarsByWarId.AddOrUpdate(leagueWarApiModel.WarKey, leagueWarApiModel, (_, war2) =>
+                AllWarsByWarKey.AddOrUpdate(leagueWar.WarKey, leagueWar, (_, leagueWar2) =>
                 {
-                    if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
+                    if (leagueWar.DownloadedAtUtc > leagueWar2.DownloadedAtUtc) return leagueWar;
 
-                    return war2;
+                    return leagueWar2;
                 });
                 
-                foreach(var clan in leagueWarApiModel.Clans)
+                foreach(var clan in leagueWar.WarClans)
                 {
                     if (AllClans.TryGetValue(clan.ClanTag, out Clan storedClan))
                     {
-                        storedClan.Wars.TryAdd(leagueWarApiModel.WarKey, leagueWarApiModel);
+                        storedClan.Wars.TryAdd(leagueWar.WarKey, leagueWar);
                     }
                 }
 
-                foreach(var clan in leagueWarApiModel.Clans)
-                {
-                    if (AllWarsByClanTag.TryGetValue(clan.ClanTag, out IWar war))
-                    {
-                        if (war is NotInWar || leagueWarApiModel.State == WarState.InWar)
-                        {
-                            AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
-                            {
-                                if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
-
-                                return war2;
-                            });
-
-                        }
-                        else if (war is CurrentWar currentWar && (DateTime.UtcNow > currentWar.EndTimeUtc && DateTime.UtcNow < leagueWarApiModel.EndTimeUtc))
-                        {
-                            AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
-                            {
-                                if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
-
-                                return war2;
-                            });
-                        }
-                    }
-                    else
-                    {
-                        AllWarsByClanTag.AddOrUpdate(clan.ClanTag, leagueWarApiModel, (_, war2) =>
-                        {
-                            if (leagueWarApiModel.DownloadedAtUtc > war2.DownloadedAtUtc) return leagueWarApiModel;
-
-                            return war2;
-                        });
-                    }
-                }
-
-                return leagueWarApiModel;
+                return leagueWar;
             }
             catch (Exception e)
             {
@@ -308,25 +387,25 @@ namespace devhl.CocApi
             {
                 ThrowIfInvalidTag(villageTag);
 
-                Village? villageApiModel = GetVillageOrDefault(villageTag);
+                Village? village = GetVillageOrDefault(villageTag);
 
-                if (villageApiModel != null && (allowExpiredItem || !villageApiModel.IsExpired())) return villageApiModel;
+                if (village != null && (allowExpiredItem || !village.IsExpired())) return village;
 
                 string url = $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(villageTag)}";
 
-                villageApiModel = (Village) await GetAsync<Village>(url, EndPoint.Village, cancellationToken).ConfigureAwait(false);
+                village = (Village) await GetAsync<Village>(url, EndPoint.Village, cancellationToken).ConfigureAwait(false);
 
-                if (CocApiConfiguration.CacheHttpResponses)
+                if (!CocApiConfiguration.CacheHttpResponses)
+                    return village;
+                
+                AllVillages.AddOrUpdate(villageTag, village, (_, village2) =>
                 {
-                    AllVillages.AddOrUpdate(villageTag, villageApiModel, (villageTag, village2) =>
-                    {
-                        if (villageApiModel.DownloadedAtUtc > village2.DownloadedAtUtc) return villageApiModel;
+                    if (village.DownloadedAtUtc > village2.DownloadedAtUtc) return village;
 
-                        return village2;
-                    });
-                }
+                    return village2;
+                });
 
-                return villageApiModel;
+                return village;
             }
             catch (Exception e)
             {

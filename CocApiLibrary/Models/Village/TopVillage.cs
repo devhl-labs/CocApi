@@ -31,7 +31,7 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public string ClanTag { get; private set; } = string.Empty;
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             if (Clan != null)
             {

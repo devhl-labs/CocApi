@@ -30,8 +30,11 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public int TownHallLevel { get; private set; }
 
+        [JsonProperty("mapPosition")]
+        public int RosterPosition { get; private set; }
+
         [JsonProperty]
-        public int MapPosition { get; private set; }
+        public int MapPosition { get; internal set; }
 
 
         [JsonProperty]

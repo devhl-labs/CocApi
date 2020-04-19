@@ -12,13 +12,13 @@ namespace devhl.CocApi.Models
         [JsonProperty]
         public Paging? Paging { get; private set; }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             foreach(var item in Items.EmptyIfNull())
             {
                 if (item is IInitialize initialize)
                 {
-                    initialize.Initialize();
+                    initialize.Initialize(cocApi);
                 }
             }
         }

@@ -11,8 +11,8 @@ namespace devhl.CocApi.Models.Clan
 {
     public class Clan : Downloadable, IClan
     {
-        [JsonIgnore]
-        internal ILogger? Logger { get; set; }
+        //[JsonIgnore]
+        //internal ILogger? Logger { get; set; }
 
         [JsonProperty("tag")]
         public string ClanTag { get; internal set; } = string.Empty;
@@ -106,7 +106,7 @@ namespace devhl.CocApi.Models.Clan
         {
             if (downloadedClan == null || ReferenceEquals(this, downloadedClan)) return;
 
-            Logger ??= cocApi.Logger;
+            //Logger ??= cocApi.Logger;
 
             UpdateClan(cocApi, downloadedClan);
 
@@ -303,7 +303,7 @@ namespace devhl.CocApi.Models.Clan
 
             foreach (ClanVillage clanVillage in downloadedClan.Villages)
             {
-                if (!Villages?.Any(m => m.VillageTag == clanVillage.VillageTag) == true)
+                if (Villages?.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
                 {
                     newVillages.Add(clanVillage);
                 }
@@ -318,7 +318,7 @@ namespace devhl.CocApi.Models.Clan
 
             foreach (ClanVillage clanVillage in Villages.EmptyIfNull())
             {
-                if (!downloadedClan.Villages.Any(m => m.VillageTag == clanVillage.VillageTag))
+                if (downloadedClan.Villages.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
                 {
                     leftVillages.Add(clanVillage);
                 }
@@ -327,7 +327,7 @@ namespace devhl.CocApi.Models.Clan
             cocApi.ClanVillagesLeftEvent(downloadedClan, leftVillages);
         }
 
-        public void Initialize()
+        public void Initialize(CocApi cocApi)
         {
             EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(ClanTag)}";
 
@@ -340,7 +340,7 @@ namespace devhl.CocApi.Models.Clan
             {
                 clanVillage.ClanTag = ClanTag;
 
-                clanVillage.Initialize();
+                clanVillage.Initialize(cocApi);
             }
 
             if (BadgeUrl != null) BadgeUrl.ClanTag = ClanTag;
