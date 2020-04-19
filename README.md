@@ -1,6 +1,9 @@
 # CocApi
 This .NET Standard 2.1 library will provide responses from [developer.clashofclans.com](https://developer.clashofclans.com/#/).
  
+## Help  
+![Discord Banner 2](https://discordapp.com/api/guilds/701245583444279328/widget.png?style=banner2)
+
 ## [CocApiConsoleTest](/CocApiConsoleTest)
 The test program shows you how to set up the library.
 The library can grab SC API objects on command.
