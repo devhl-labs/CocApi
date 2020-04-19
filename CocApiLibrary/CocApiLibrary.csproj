@@ -10,8 +10,8 @@
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</Description>
-    <Version>0.27.0-alpha</Version>
-    <AssemblyVersion>0.27.0.0</AssemblyVersion>
+    <Version>0.28.0-alpha</Version>
+    <AssemblyVersion>0.28.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
     <PackageId>CocApi</PackageId>
@@ -25,7 +25,7 @@ Use this feed to get Reflection while this is in prerelease.</Description>
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</PackageReleaseNotes>
-    <FileVersion>0.27.0.0</FileVersion>
+    <FileVersion>0.28.0.0</FileVersion>
     <ApplicationIcon />
     <AssemblyName>CocApi</AssemblyName>
     <RootNamespace>devhl.CocApi</RootNamespace>
@@ -46,12 +46,12 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0-preview.4.20207.9" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0-preview.4-runtime.20202.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.3" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="5.0.0-alpha1.19523.8" />
-    <PackageReference Include="System.Text.Json" Version="5.0.0-preview.4.20209.1" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Text.Json" Version="4.7.1" />
   </ItemGroup>
 
   <ItemGroup>		

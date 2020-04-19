@@ -1,7 +1,7 @@
 ﻿using devhl.CocApi.Models.Clan;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+//using System.ComponentModel.DataAnnotations;
+//using System.ComponentModel.DataAnnotations.Schema;
 
 //using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
