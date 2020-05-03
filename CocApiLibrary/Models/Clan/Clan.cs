@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-
+using devhl.CocApi.Exceptions;
 using devhl.CocApi.Models.War;
 using Newtonsoft.Json;
 
@@ -11,6 +11,66 @@ namespace devhl.CocApi.Models.Clan
 {
     public class Clan : Downloadable, IClan
     {
+        public static string Url(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            return $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(formattedTag)}";
+        }
+
+        public static string Url(ClanQueryOptions clanQueryOptions)
+        {
+            if (clanQueryOptions.ClanName == null || clanQueryOptions.ClanName.Length < 3)
+                throw new ArgumentException("The clan name must be longer than three characters.");
+
+            string url = $"https://api.clashofclans.com/v1/clans?";
+
+            if (clanQueryOptions.ClanName != null)
+                url = $"{url}name={Uri.EscapeDataString(clanQueryOptions.ClanName)}&";
+
+            if (clanQueryOptions.WarFrequency != null)
+
+                url = $"{url}warFrequency={clanQueryOptions.WarFrequency}&";
+
+            if (clanQueryOptions.LocationId != null)
+
+                url = $"{url}locationId={clanQueryOptions.LocationId}&";
+
+            if (clanQueryOptions.MinVillages != null)
+
+                url = $"{url}minMembers={clanQueryOptions.MinVillages}&";
+
+            if (clanQueryOptions.MaxVillages != null)
+
+                url = $"{url}maxMembers={clanQueryOptions.MaxVillages}&";
+
+            if (clanQueryOptions.MinClanPoints != null)
+
+                url = $"{url}minClanPoints={clanQueryOptions.MinClanPoints}&";
+
+            if (clanQueryOptions.MinClanLevel != null)
+
+                url = $"{url}minClanLevel={clanQueryOptions.MinClanLevel}&";
+
+            if (clanQueryOptions.Limit != null)
+
+                url = $"{url}limit={clanQueryOptions.Limit}&";
+
+            if (clanQueryOptions.After != null)
+
+                url = $"{url}after={clanQueryOptions.After}&";
+
+            if (clanQueryOptions.Before != null)
+
+                url = $"{url}before={clanQueryOptions.Before}&";
+
+            if (url.EndsWith("&"))
+                url = url[0..^1];
+
+            return url;
+        }
+
         [JsonProperty("tag")]
         public string ClanTag { get; internal set; } = string.Empty;
 
@@ -36,7 +96,7 @@ namespace devhl.CocApi.Models.Clan
         /// Controls whether this clan will download villages.
         /// </summary>
         [JsonProperty]
-        public bool DownloadVillages { get; set; } = true;
+        public bool DownloadClanVillages { get; set; } = true;
 
         /// <summary>
         /// Controls whether this clan will download league wars.
@@ -94,36 +154,42 @@ namespace devhl.CocApi.Models.Clan
 
         public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();        
 
-        internal void Update(CocApi cocApi, Clan? downloadedClan)
+        internal void Update(CocApi cocApi, Clan? storedClan)
         {
-            if (downloadedClan == null || ReferenceEquals(this, downloadedClan)) return;
+            if (storedClan == null || ReferenceEquals(this, storedClan)) return;
 
-            UpdateClan(cocApi, downloadedClan);
+            DownloadClanVillages = storedClan.DownloadClanVillages;
 
-            UpdateLabels(cocApi, downloadedClan);
+            DownloadCurrentWar = storedClan.DownloadCurrentWar;
 
-            UpdateBadge(cocApi, downloadedClan);
+            DownloadLeagueWars = storedClan.DownloadLeagueWars;
 
-            UpdateLocation(cocApi, downloadedClan);
+            UpdateClan(cocApi, storedClan);
 
-            AnnounceDonations(cocApi, downloadedClan);
+            UpdateLabels(cocApi, storedClan);
 
-            AnnounceVillageChanges(cocApi, downloadedClan);
+            UpdateBadge(cocApi, storedClan);
 
-            VillagesLeft(cocApi, downloadedClan);
+            UpdateLocation(cocApi, storedClan);
 
-            VillagesJoined(cocApi, downloadedClan);            
+            AnnounceDonations(cocApi, storedClan);
+
+            AnnounceVillageChanges(cocApi, storedClan);
+
+            VillagesLeft(cocApi, storedClan);
+
+            VillagesJoined(cocApi, storedClan);            
         }
 
-        private void AnnounceVillageChanges(CocApi cocApi, Clan downloadedClan)
+        private void AnnounceVillageChanges(CocApi cocApi, Clan storedClan)
         {
             List<LeagueChange> leagueChanges = new List<LeagueChange>();
 
             List<RoleChange> roleChanges = new List<RoleChange>();
 
-            foreach (ClanVillage oldClanVillage in Villages.EmptyIfNull())
+            foreach (ClanVillage oldClanVillage in storedClan.Villages.EmptyIfNull())
             {
-                ClanVillage newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
+                ClanVillage newClanVillage = Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
                 if (newClanVillage == null) continue;
 
@@ -134,7 +200,7 @@ namespace devhl.CocApi.Models.Clan
                         
                 if (oldClanVillage.Name != newClanVillage.Name)
                 {
-                    cocApi.ClanVillageNameChangedEvent(newClanVillage, oldClanVillage.Name);
+                    cocApi.Clans.ClanVillageNameChangedEvent(newClanVillage, oldClanVillage.Name);
                 }
 
                 if (oldClanVillage.Role != newClanVillage.Role)
@@ -143,20 +209,20 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.ClanVillagesLeagueChangedEvent(downloadedClan, leagueChanges);
+            cocApi.Clans.ClanVillagesLeagueChangedEvent(this, leagueChanges);
 
-            cocApi.ClanVillagesRoleChangedEvent(downloadedClan, roleChanges);
+            cocApi.Clans.OnClanVillagesRoleChanged(this, roleChanges);
         }
 
-        private void AnnounceDonations(CocApi cocApi, Clan downloadedClan)
+        private void AnnounceDonations(CocApi cocApi, Clan storedClan)
         {
             List<Donation> receiving = new List<Donation>();
 
             List<Donation> donating = new List<Donation>();
 
-            foreach (ClanVillage oldClanVillage in Villages.EmptyIfNull())
+            foreach (ClanVillage oldClanVillage in storedClan.Villages.EmptyIfNull())
             {
-                ClanVillage? newClanVillage = downloadedClan.Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
+                ClanVillage? newClanVillage = Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
 
                 if (newClanVillage == null) continue;
 
@@ -171,155 +237,155 @@ namespace devhl.CocApi.Models.Clan
                 }                 
             }
 
-            cocApi.ClanDonationsEvent(downloadedClan, receiving, donating);
+            cocApi.Clans.OnDonation(this, receiving, donating);
 
         }
 
-        private void UpdateLabels(CocApi cocApi, Clan downloadedClan)
+        private void UpdateLabels(CocApi cocApi, Clan storedClan)
         {
             List<ClanLabel> added = new List<ClanLabel>();
 
             List<ClanLabel> removed = new List<ClanLabel>();
 
-            foreach(var oldLabel in Labels.EmptyIfNull())
+            foreach(var oldLabel in storedClan.Labels.EmptyIfNull())
             {
-                if (!downloadedClan.Labels.Any(l => l.Id == oldLabel.Id))
+                if (!Labels.Any(l => l.Id == oldLabel.Id))
                 {
                     removed.Add(oldLabel);
                 }
             }
 
-            foreach(var newLabel in downloadedClan.Labels.EmptyIfNull())
+            foreach(var newLabel in Labels.EmptyIfNull())
             {
-                if (!Labels.Any(l => l.Id == newLabel.Id))
+                if (!storedClan.Labels.Any(l => l.Id == newLabel.Id))
                 {
                     added.Add(newLabel);
                 }
             }
 
-            if (Labels == null && downloadedClan.Labels != null && added.Count == 0)
+            if (storedClan.Labels == null && Labels != null && added.Count == 0)
             {
-                foreach(var newLabel in downloadedClan.Labels)
+                foreach(var newLabel in Labels)
                 {
                     added.Add(newLabel);
                 }
             }
 
-            if (downloadedClan.Labels == null && Labels != null && removed.Count == 0)
+            if (Labels == null && storedClan.Labels != null && removed.Count == 0)
             {
-                foreach(var removedLabel in Labels)
+                foreach(var removedLabel in storedClan.Labels)
                 {
                     removed.Add(removedLabel);
                 }
             }
 
-            cocApi.ClanLabelsChangedEvent(downloadedClan, added, removed);
+            cocApi.Clans.OnLabelsChanged(this, added, removed);
         }
 
-        private void UpdateLocation(CocApi cocApi, Clan downloadedClan)
+        private void UpdateLocation(CocApi cocApi, Clan storedClan)
         {
-            if (Location == null && downloadedClan.Location != null)
+            if (storedClan.Location == null && Location != null)
             {
-                cocApi.ClanLocationChangedEvent(this, downloadedClan);
+                cocApi.Clans.LocationChangedEvent(storedClan, this);
                 return;
             }
 
-            if (Location == null && downloadedClan.Location != null ||
-                Location?.CountryCode != downloadedClan.Location?.CountryCode ||
-                Location?.Id != downloadedClan.Location?.Id ||
-                Location?.IsCountry != downloadedClan.Location?.IsCountry ||
-                Location?.Name != downloadedClan.Location?.Name)
+            if (storedClan.Location == null && Location != null ||
+                storedClan.Location?.CountryCode != Location?.CountryCode ||
+                storedClan.Location?.Id != Location?.Id ||
+                storedClan.Location?.IsCountry != Location?.IsCountry ||
+                storedClan.Location?.Name != Location?.Name)
             {
-                cocApi.ClanLocationChangedEvent(this, downloadedClan);
+                cocApi.Clans.LocationChangedEvent(storedClan, this);
             }
 
         }
 
-        private void UpdateBadge(CocApi cocApi, Clan downloadedClan)
+        private void UpdateBadge(CocApi cocApi, Clan storedClan)
         {
-            if (BadgeUrl == null && downloadedClan.BadgeUrl != null)
+            if (storedClan.BadgeUrl == null && BadgeUrl != null)
             {
-                cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
+                cocApi.Clans.OnBadgeUrlChanged(this, storedClan);
                 return;
             }
 
-            if (BadgeUrl == null && downloadedClan.BadgeUrl != null |
-                BadgeUrl?.Large != downloadedClan.BadgeUrl?.Large ||
-                BadgeUrl?.Medium != downloadedClan.BadgeUrl?.Medium ||
-                BadgeUrl?.Small != downloadedClan.BadgeUrl?.Small)
+            if (storedClan.BadgeUrl == null && BadgeUrl != null |
+                storedClan.BadgeUrl?.Large != BadgeUrl?.Large ||
+                storedClan.BadgeUrl?.Medium != BadgeUrl?.Medium ||
+                storedClan.BadgeUrl?.Small != BadgeUrl?.Small)
             {
-                cocApi.ClanBadgeUrlChangedEvent(this, downloadedClan);
+                cocApi.Clans.OnBadgeUrlChanged(storedClan, this);
             }
         }
 
-        private void UpdateClan(CocApi cocApi, Clan downloadedClan)
+        private void UpdateClan(CocApi cocApi, Clan storedClan)
         {
-            if (ClanPoints != downloadedClan.ClanPoints)
+            if (storedClan.ClanPoints != ClanPoints)
             {
-                cocApi.ClanPointsChangedEvent(downloadedClan, downloadedClan.ClanPoints - ClanPoints);
+                cocApi.Clans.ClanPointsChangedEvent(this, ClanPoints - storedClan.ClanPoints);
             }
 
-            if (ClanVersusPoints != downloadedClan.ClanVersusPoints)
+            if (storedClan.ClanVersusPoints != ClanVersusPoints)
             {
-                cocApi.ClanVersusPointsChangedEvent(downloadedClan, downloadedClan.ClanVersusPoints - ClanVersusPoints);
+                cocApi.Clans.ClanVersusPointsChangedEvent(this, ClanVersusPoints - storedClan.ClanVersusPoints);
             }
 
-            if (ClanLevel != downloadedClan.ClanLevel ||
-                Description != downloadedClan.Description ||
-                IsWarLogPublic != downloadedClan.IsWarLogPublic ||
-                VillageCount != downloadedClan.VillageCount ||
-                Name != downloadedClan.Name ||
-                RequiredTrophies != downloadedClan.RequiredTrophies ||
-                Recruitment != downloadedClan.Recruitment ||
-                WarFrequency != downloadedClan.WarFrequency ||
-                WarLosses != downloadedClan.WarLosses ||
-                WarTies != downloadedClan.WarTies ||
-                WarWins != downloadedClan.WarWins ||
-                WarWinStreak != downloadedClan.WarWinStreak
+            if (ClanLevel != storedClan.ClanLevel ||
+                Description != storedClan.Description ||
+                IsWarLogPublic != storedClan.IsWarLogPublic ||
+                VillageCount != storedClan.VillageCount ||
+                Name != storedClan.Name ||
+                RequiredTrophies != storedClan.RequiredTrophies ||
+                Recruitment != storedClan.Recruitment ||
+                WarFrequency != storedClan.WarFrequency ||
+                WarLosses != storedClan.WarLosses ||
+                WarTies != storedClan.WarTies ||
+                WarWins != storedClan.WarWins ||
+                WarWinStreak != storedClan.WarWinStreak
             )
             {
-                cocApi.ClanChangedEvent(this, downloadedClan);
+                cocApi.Clans.OnClanChanged(storedClan, this);
             }
 
-            if (WarLeague?.Id != downloadedClan.WarLeague?.Id)
+            if (WarLeague?.Id != storedClan.WarLeague?.Id)
             {
-                cocApi.WarLeagueChangedEvent(downloadedClan, WarLeague);
+                cocApi.Clans.OnWarLeagueChanged(this, WarLeague);
             }
         }
 
-        private void VillagesJoined(CocApi cocApi, Clan downloadedClan)
+        private void VillagesJoined(CocApi cocApi, Clan storedClan)
         {
             List<ClanVillage> newVillages = new List<ClanVillage>();
 
-            if (downloadedClan.Villages == null)
+            if (Villages == null)
             {
                 return;
             }
 
-            foreach (ClanVillage clanVillage in downloadedClan.Villages)
+            foreach (ClanVillage clanVillage in Villages)
             {
-                if (Villages?.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
+                if (storedClan.Villages?.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
                 {
                     newVillages.Add(clanVillage);
                 }
             }
 
-            cocApi.ClanVillagesJoinedEvent(downloadedClan, newVillages);
+            cocApi.Clans.OnClanVillagesJoined(this, newVillages);
         }
 
-        private void VillagesLeft(CocApi cocApi, Clan downloadedClan)
+        private void VillagesLeft(CocApi cocApi, Clan storedClan)
         {
             List<ClanVillage> leftVillages = new List<ClanVillage>();
 
-            foreach (ClanVillage clanVillage in Villages.EmptyIfNull())
+            foreach (ClanVillage clanVillage in storedClan.Villages.EmptyIfNull())
             {
-                if (downloadedClan.Villages.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
+                if (Villages.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
                 {
                     leftVillages.Add(clanVillage);
                 }
             }
 
-            cocApi.ClanVillagesLeftEvent(downloadedClan, leftVillages);
+            cocApi.Clans.OnClanVillagesLeft(this, leftVillages);
         }
 
         public void Initialize(CocApi cocApi)

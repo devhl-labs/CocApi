@@ -4,6 +4,8 @@ namespace devhl.CocApi.Models.Clan
 {
     public class Location
     {
+        public static string Url() => $"https://api.clashofclans.com/v1/locations?limit=10000";
+
         [JsonProperty]
         public int Id { get; internal set; }
 

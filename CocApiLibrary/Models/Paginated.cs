@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using devhl.CocApi.Models.Village;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 

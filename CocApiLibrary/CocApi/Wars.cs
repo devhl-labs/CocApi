@@ -1,0 +1,515 @@
+﻿using devhl.CocApi.Exceptions;
+using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
+using devhl.CocApi.Models.Village;
+using devhl.CocApi.Models.War;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace devhl.CocApi
+{
+    public sealed class Wars
+    {
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar, IReadOnlyList<Attack>>>? NewAttacks;
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? NewWar;
+        /// <summary>
+        /// Fires if the following properties change:
+        /// <list type="bullet">
+        ///     <item><description><see cref="CurrentWar.EndTimeUtc"/></description></item>
+        ///     <item><description><see cref="CurrentWar.StartTimeUtc"/></description></item>
+        ///     <item><description><see cref="CurrentWar.State"/></description></item>
+        ///
+        /// </list>
+        /// </summary>
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar, CurrentWar>>? WarChanged;
+        /// <summary>
+        /// Fires if the war cannot be found from either clanTags or warTag.  Private war logs can also fire this.
+        /// </summary>
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar, bool>>? WarAccessibilityChanged;
+        /// <summary>
+        /// Fires when the <see cref="CurrentWar.EndTimeUtc"/> has elapsed.  The Api may or may not show the war end when this event occurs.
+        /// </summary>
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEnded;
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEndingSoon;
+        /// <summary>
+        /// Fires when the war is not accessible and the end time has passed.
+        /// This war may still become available if one of the clans does not spin and opens their war log.
+        /// </summary>
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEndNotSeen;
+        /// <summary>
+        /// Fires when the Api shows <see cref="CurrentWar.State"/> is <see cref="Enums.WarState.WarEnded"/>
+        /// </summary>
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEndSeen;
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarStarted;
+        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarStartingSoon;
+
+        private readonly CocApi _cocApi;
+
+        private bool _stopRequested = false;
+
+        public Wars(CocApi cocApi)
+        {
+            _cocApi = cocApi;
+
+            //_warUpdateService = new WarUpdateService(_cocApi);
+        }
+
+        /// <summary>
+        /// Controls whether any clan will download league wars.
+        /// Set it to Auto to only download on the first week of the month.
+        /// </summary>
+        public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.Auto;
+
+        public bool QueueRunning { get; private set; } = false;
+
+        internal ConcurrentDictionary<string, ILeagueGroup?> LeagueGroups { get; } = new ConcurrentDictionary<string, ILeagueGroup?>();
+
+        internal ConcurrentDictionary<string, IWar?> FetchedWars { get; } = new ConcurrentDictionary<string, IWar?>();
+
+        internal ConcurrentDictionary<string, IWar?> CachedWars { get; } = new ConcurrentDictionary<string, IWar?>();
+
+        internal ConcurrentDictionary<string, CurrentWar> QueuedWars { get; } = new ConcurrentDictionary<string, CurrentWar>();
+
+        public async Task<IWar?> FetchAsync<T>(string tag, CancellationToken? cancellationToken = null) where T : CurrentWar
+        {
+            if (!CocApi.TryGetValidTag(tag, out string formattedTag))
+                throw new InvalidTagException(tag);
+
+            if (typeof(T) == typeof(LeagueWar))
+            {
+                if (!(await _cocApi.FetchAsync<LeagueWar>(LeagueWar.Url(formattedTag), cancellationToken) is IWar war))
+                    return null;
+
+                if (war is LeagueWar leagueWar)
+                {
+                    leagueWar.WarTag = formattedTag;
+
+                    leagueWar.WarType = WarType.SCCWL;
+                }
+
+                return war;
+            }
+
+            return await _cocApi.FetchAsync<CurrentWar>(CurrentWar.Url(formattedTag), cancellationToken) as IWar;
+        }
+
+        public async Task<ILeagueGroup?> FetchLeagueGroupAsync(string clanTag, CancellationToken? cancellationToken = null)
+        {
+            if (!CocApi.TryGetValidTag(clanTag, out string formattedTag))
+                throw new InvalidTagException(clanTag);
+
+            return await _cocApi.FetchAsync<LeagueGroup>(LeagueGroup.Url(formattedTag), cancellationToken) as ILeagueGroup;
+        }
+
+        public async Task<Paginated<WarLeague>?> FetchWarLeaguesAsync(CancellationToken? cancellationToken = null)
+            => await _cocApi.FetchAsync<Paginated<WarLeague>>(WarLeague.Url(), cancellationToken).ConfigureAwait(false) as Paginated<WarLeague>;
+
+        public async Task<Paginated<WarLogEntry>?> FetchWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
+            => await _cocApi.FetchAsync<Paginated<WarLogEntry>>(WarLogEntry.Url(clanTag, limit, after, before), cancellationToken).ConfigureAwait(false) as Paginated<WarLogEntry>;
+
+        public CurrentWar? GetActiveWar(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            IWar? war = Get(formattedTag);
+
+            if (_cocApi.Wars.IsDownloadingLeagueWars() == false)
+                return war as CurrentWar;
+
+            if (war is CurrentWar currentWar && (currentWar.State == WarState.Preparation || currentWar.State == WarState.InWar))
+                return currentWar;
+
+            List<LeagueWar> leagueWars = GetLeagueWars(formattedTag);
+
+            if (leagueWars == null)
+                return war as CurrentWar;
+
+            LeagueWar? leagueWarInPrep = null;
+
+            foreach (LeagueWar leagueWar in leagueWars)
+            {
+                if (leagueWar.State == WarState.InWar)
+                    return leagueWar;
+
+                if (leagueWar.State == WarState.Preparation)
+                    leagueWarInPrep = leagueWar;
+            }
+
+            if (leagueWarInPrep != null)
+                return leagueWarInPrep;
+
+            if (war != null && war is CurrentWar currentWar1 && leagueWars.Last().PreparationStartTimeUtc > currentWar1.PreparationStartTimeUtc)
+                return leagueWars.Last();
+
+            return war as CurrentWar;
+        }
+
+        public async Task<IWar?> GetAsync<T>(string tag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null) where T : CurrentWar
+        {
+            if (CocApi.TryGetValidTag(tag, out string formattedTag) == false)
+                throw new InvalidTagException(tag);
+
+            CachedWars.TryGetValue(formattedTag, out IWar? cached);
+
+            if (cached != null && (allowExpiredItem || cached.IsExpired() == false))
+                return cached;
+
+            IWar? fetched = await FetchAsync<T>(formattedTag, cancellationToken).ConfigureAwait(false);
+
+            UpdateWarDictionary(fetched, formattedTag);
+
+            return fetched ?? cached;
+        }
+
+        public async Task<IWar?> GetCurrentWarAsync(CurrentWar storedWar, CancellationToken? cancellationToken = null)
+        {
+            IWar? war;
+
+            if (storedWar is LeagueWar leagueWar)
+            {
+                war = await FetchAsync<LeagueWar>(leagueWar.WarTag, cancellationToken);
+
+                UpdateWarDictionary(war, leagueWar.WarTag);
+
+                return war;
+            }
+            else
+            {
+                List<IWar> wars = new List<IWar>();
+
+                foreach (WarClan warClan in storedWar.WarClans)
+                {
+                    war = await FetchAsync<CurrentWar>(warClan.ClanTag, cancellationToken).ConfigureAwait(false);
+
+                    if (war is CurrentWar)
+                        UpdateWarDictionary(war, warClan.ClanTag);
+
+                    if (war is CurrentWar currentWar && currentWar.WarKey == storedWar.WarKey)
+                        return war;
+
+                    if (war != null)
+                        wars.Add(war);
+                } 
+
+                if (wars.Any(w => w is CurrentWar currentWar1 &&
+                    currentWar1.WarKey != storedWar.WarKey &&
+                    currentWar1.PreparationStartTimeUtc > storedWar.PreparationStartTimeUtc))
+                    return new NotInWar();
+
+                if (wars.Any(w => w is NotInWar))
+                    return wars.First(w => w is NotInWar);
+
+                if (wars.Any(w => w is PrivateWarLog))
+                    return wars.First(w => w is PrivateWarLog);
+            }
+
+            return null;
+        }
+
+        public ILeagueGroup? GetLeagueGroup(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            LeagueGroups.TryGetValue(formattedTag, out ILeagueGroup? result);
+
+            return result;
+        }
+
+        public async Task<ILeagueGroup?> GetLeagueGroupAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            ILeagueGroup? cached = GetLeagueGroup(formattedTag);
+
+            if (cached != null && (allowExpiredItem || cached.IsExpired() == false))
+                return cached;
+
+            ILeagueGroup? fetched = await FetchLeagueGroupAsync(formattedTag, cancellationToken).ConfigureAwait(false);
+
+            if (fetched is LeagueGroup leagueGroup)
+            {
+                foreach (var clan in leagueGroup.Clans.EmptyIfNull())
+                    _cocApi.UpdateDictionary(LeagueGroups, clan.ClanTag, leagueGroup);
+            }
+            else if (fetched != null)
+            {
+                _cocApi.UpdateDictionary(LeagueGroups, formattedTag, fetched);
+            }
+
+            return fetched ?? cached;
+        }
+
+        public IWar? Get(string tag)
+        {
+            CocApi.TryGetValidTag(tag, out string formattedTag);
+
+            CachedWars.TryGetValue(formattedTag ?? tag, out IWar? cached);
+
+            return cached;
+        }
+
+        public List<LeagueWar> GetLeagueWars(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            List<LeagueWar>? results = new List<LeagueWar>();
+
+            ILeagueGroup? iLeagueGroup = GetLeagueGroup(formattedTag);
+
+            if (!(iLeagueGroup is LeagueGroup leagueGroup))
+                return results;
+
+            foreach(Round round in leagueGroup.Rounds.EmptyIfNull())
+            {
+                foreach (string warTag in round.WarTags.EmptyIfNull())
+                {
+                    if (CachedWars.TryGetValue(warTag, out IWar? war) && war is LeagueWar leagueWar && leagueWar.WarClans.Any(c => c.ClanTag == formattedTag))
+                    {
+                        results.Add(leagueWar);
+                    }
+                }
+            }
+
+            return results;
+        }
+
+        public async Task<List<LeagueWar>?> GetLeagueWarsAsync(string clanTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            if (!(await GetLeagueGroupAsync(formattedTag, allowExpiredItem, cancellationToken).ConfigureAwait(false) is LeagueGroup leagueGroup))
+                return null;
+
+            List<LeagueWar> leagueWars = await GetLeagueWarsAsync(leagueGroup, allowExpiredItem, cancellationToken).ConfigureAwait(false);
+
+            return leagueWars.Where(w => w.WarClans.Any(wc => wc.ClanTag == formattedTag)).ToList();
+        }
+
+        public async Task<List<LeagueWar>> GetLeagueWarsAsync(LeagueGroup leagueGroup, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
+        {
+            List<LeagueWar> leagueWars = new List<LeagueWar>();
+
+            List<Task> tasks = new List<Task>();
+
+            foreach (var round in leagueGroup.Rounds.EmptyIfNull())
+            {
+                foreach (string warTag in round.WarTags.EmptyIfNull().Where(tag => tag != "#0"))
+                {
+                    tasks.Add(GetAsync<LeagueWar>(warTag, allowExpiredItem, cancellationToken));
+                }
+            }
+
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            return leagueWars.OrderBy(w => w.PreparationStartTimeUtc).ToList();
+        }
+
+        /// <summary>
+        /// Determines whether CWL should be downloading.
+        /// When DownloadLeagueWars is set to Auto, this returns true during the first week of the month
+        /// and the first three hours of day 8.  This is just to give you time to complete the downloads.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsDownloadingLeagueWars()
+        {
+            if (DownloadLeagueWars == DownloadLeagueWars.False)
+                return false;
+
+            if (DownloadLeagueWars == DownloadLeagueWars.True)
+                return true;
+
+            if (DownloadLeagueWars == DownloadLeagueWars.Auto)
+            {
+                int day = DateTime.UtcNow.Day;
+
+                if (day > 0 && day < 11)
+                {
+                    return true;
+                }
+
+                //just to ensure we get everything we need
+                if (day == 11 && DateTime.UtcNow.Hour < 3)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void StopQueue() => _stopRequested = false;
+
+        public Task StopQueueAsync()
+        {
+            _stopRequested = false;
+
+            TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
+
+            Task task = tsc.Task;
+
+            _ = Task.Run(async () =>
+            {
+                while (QueueRunning)
+                    await Task.Delay(100).ConfigureAwait(false);
+
+                tsc.SetResult(true);
+            });
+
+            return tsc.Task;
+        }
+
+        public void StartQueue()
+        {
+            _stopRequested = false;
+
+            if (QueueRunning)
+                return;
+
+            QueueRunning = true;
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    while (_stopRequested == false)
+                    {
+                        foreach (Clan? clan in _cocApi.Clans.Queued.Values)
+                        {
+                            if (clan == null)
+                                continue;
+
+                            await PopulateWars(clan).ConfigureAwait(false);
+
+                            if (_stopRequested)
+                                break;
+                        }
+
+                        foreach (CurrentWar storedWar in _cocApi.Wars.QueuedWars.Values)
+                        {
+                            await Update(storedWar).ConfigureAwait(false);
+
+                            if (_stopRequested)
+                                break;
+                        }
+
+                        await Task.Delay(50);
+                    }
+
+                    QueueRunning = false;
+
+                    _cocApi.LogEvent<Wars>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.WarUpdateEnded);
+                }
+                catch (Exception e)
+                {
+                    _stopRequested = false;
+
+                    QueueRunning = false;
+
+                    _cocApi.LogEvent<Wars>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
+
+                    _ = _cocApi.WarQueueRestartAsync();
+
+                    throw e;
+                }
+            });
+        }
+
+        internal void NewAttacksEvent(CurrentWar currentWar, List<Attack> attackApiModels)
+        {
+            if (attackApiModels.Count > 0)
+            {
+                NewAttacks?.Invoke(this, new ChangedEventArgs<CurrentWar, IReadOnlyList<Attack>>(currentWar, attackApiModels.ToImmutableArray()));
+            }
+        }
+
+        internal void NewWarEvent(CurrentWar currentWar) => NewWar?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        internal void WarChangedEvent(CurrentWar oldWar, CurrentWar newWar) => WarChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, CurrentWar>(oldWar, newWar));
+
+        internal void WarEndedEvent(CurrentWar currentWar) => WarEnded?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        internal void WarEndingSoonEvent(CurrentWar currentWar) => WarEndingSoon?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        internal void WarEndNotSeenEvent(CurrentWar currentWar) => WarEndNotSeen?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        internal void WarEndSeenEvent(CurrentWar currentWar) => WarEndSeen?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        internal void WarIsAccessibleChangedEvent(CurrentWar currentWar, bool canRead) => WarAccessibilityChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, bool>(currentWar, canRead));
+
+        internal void WarStartedEvent(CurrentWar currentWar) => WarStarted?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        internal void WarStartingSoonEvent(CurrentWar currentWar) => WarStartingSoon?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+
+        private async Task PopulateWars(Clan clan)
+        {
+            if (clan.DownloadCurrentWar && clan.IsWarLogPublic)
+            {
+                IWar? war = await _cocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
+
+                if (war is CurrentWar currentWar)
+                {
+                    if (_cocApi.Wars.QueuedWars.TryAdd(currentWar.WarKey, currentWar))
+                        NewWarEvent(currentWar);
+                }
+
+            }
+
+            if (clan.DownloadLeagueWars && _cocApi.Wars.IsDownloadingLeagueWars())
+            {
+                List<LeagueWar>? leagueWars = await _cocApi.Wars.GetLeagueWarsAsync(clan.ClanTag, false).ConfigureAwait(false);
+
+                foreach (LeagueWar leagueWar in leagueWars.EmptyIfNull())
+                {
+                    if(_cocApi.Wars.QueuedWars.TryAdd(leagueWar.WarKey, leagueWar))
+                        NewWarEvent(leagueWar);
+                }
+            }
+        }
+
+        private async Task Update(CurrentWar queued)
+        {
+            if (queued.IsExpired() == false)
+                return;
+
+            if (await _cocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
+            {
+                fetched.Update(_cocApi, queued);
+
+                _cocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
+            }
+        }
+
+        private void UpdateWarDictionary(IWar? war, string formattedTag)
+        {
+            if (war is LeagueWar leagueWar)
+            {
+                _cocApi.UpdateDictionary(CachedWars, leagueWar.WarTag, leagueWar);
+            }
+
+            if (war is CurrentWar currentWar)
+            {
+                if (currentWar.WarKey == GetActiveWar(currentWar.WarClans.First().ClanTag)?.WarKey)
+                {
+                    foreach (WarClan warClan in currentWar.WarClans)
+                        _cocApi.UpdateDictionary(CachedWars, warClan.ClanTag, currentWar);
+                }
+
+                _cocApi.UpdateDictionary(CachedWars, currentWar.WarKey, currentWar);
+            }
+            else
+            {
+                _cocApi.UpdateDictionary(CachedWars, formattedTag, war);
+            }
+        }
+    }
+}

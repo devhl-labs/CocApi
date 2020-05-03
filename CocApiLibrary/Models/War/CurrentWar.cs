@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
-//using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 using Newtonsoft.Json;
@@ -9,11 +7,21 @@ using Newtonsoft.Json;
 using devhl.CocApi.Converters;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Data;
+using devhl.CocApi.Exceptions;
 
 namespace devhl.CocApi.Models.War
 {
     public class CurrentWar : Downloadable, IInitialize, IWar, ICurrentWar
     {
+        public static string Url(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            return $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
+        }
+
         [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUtc { get; private set; }
@@ -298,31 +306,26 @@ namespace devhl.CocApi.Models.War
             return false;
         }
 
-        private readonly object _lockObject = new object();
-
         internal readonly object _announceWarLock = new object();
 
         internal void Update(CocApi cocApi, IWar? downloadedWar)
         {
-            lock (_lockObject)
+            PreUpdateAnnouncements(cocApi);
+
+            if (ReferenceEquals(this, downloadedWar) || downloadedWar == null) 
+                return;
+
+            if (downloadedWar is CurrentWar currentWar)
             {
-                PreUpdateAnnouncements(cocApi);
-
-                if (ReferenceEquals(this, downloadedWar)) return;
-
-                if (downloadedWar is CurrentWar currentWar)
-                {
-                    //the type of war should only be decided on the wars fist download
-                    //to prevent maintenance breaks from changing the type to random
-                    currentWar.WarType = this.WarType;
-                }
-
-                UpdateWar(cocApi, downloadedWar);
-
-                UpdateAttacks(cocApi, downloadedWar);
-
-                PostUpdateAnnouncements(cocApi, downloadedWar);
+                currentWar.WarType = this.WarType;
+                currentWar.Flags = Flags;
             }
+
+            UpdateWar(cocApi, downloadedWar);
+
+            UpdateAttacks(cocApi, downloadedWar);
+
+            PostUpdateAnnouncements(cocApi, downloadedWar);
         }
 
         private void PreUpdateAnnouncements(CocApi cocApi)
@@ -331,28 +334,28 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarStartingSoon = true;
 
-                cocApi.WarStartingSoonEvent(this);
+                cocApi.Wars.WarStartingSoonEvent(this);
             }
 
             if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUtc)
             {
                 Flags.WarEndingSoon = true;
 
-                cocApi.WarEndingSoonEvent(this);
+                cocApi.Wars.WarEndingSoonEvent(this);
             }
 
             if (!Flags.WarStarted && StartTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarStarted = true;
 
-                cocApi.WarStartedEvent(this);
+                cocApi.Wars.WarStartedEvent(this);
             }
 
             if (!Flags.WarEnded && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEnded = true;
 
-                cocApi.WarEndedEvent(this);
+                cocApi.Wars.WarEndedEvent(this);
             }
         }
 
@@ -364,27 +367,27 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarIsAccessible = false;
 
-                cocApi.WarIsAccessibleChangedEvent(this, false);
+                cocApi.Wars.WarIsAccessibleChangedEvent(this, false);
             }
             else if (!Flags.WarIsAccessible && currentWar != null && currentWar.WarKey == WarKey)
             {
                 Flags.WarIsAccessible = true;
 
-                cocApi.WarIsAccessibleChangedEvent(this, true);
+                cocApi.Wars.WarIsAccessibleChangedEvent(this, true);
             }
 
             if (!Flags.WarEndNotSeen && (currentWar == null || WarKey != currentWar.WarKey) && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEndNotSeen = true;
 
-                cocApi.WarEndNotSeenEvent(this);
+                cocApi.Wars.WarEndNotSeenEvent(this);
             }
 
             if (!Flags.WarEndSeen && State == WarState.InWar && currentWar?.State == WarState.WarEnded)
             {
                 Flags.WarEndSeen = true;
 
-                cocApi.WarEndSeenEvent(this);
+                cocApi.Wars.WarEndSeenEvent(this);
             }
         }
 
@@ -411,8 +414,6 @@ namespace devhl.CocApi.Models.War
                 if (attacker.Attacks.Count == 0) CreateMissedAttack(downloadedWar, attacker);
             }
         }
-
-
 
         private Attack CreateMissedAttack(CurrentWar downloadedWar, WarVillage downloadedWarVillage)
         {
@@ -451,34 +452,34 @@ namespace devhl.CocApi.Models.War
                 State != currentWar.State
             )
             {
-                cocApi.WarChangedEvent(this, currentWar);
+                cocApi.Wars.WarChangedEvent(this, currentWar);
             }
         }
 
         private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!(downloadedWar is CurrentWar currentWar) || currentWar.WarKey != WarKey) return; 
+            if (!(downloadedWar is CurrentWar downloadedCurrentWar) || downloadedCurrentWar.WarKey != WarKey) return; 
 
-            List<Attack> newAttacks = currentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
+            List<Attack> newAttacks = downloadedCurrentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
 
-            if (currentWar.State == WarState.WarEnded)
+            if (downloadedCurrentWar.State == WarState.WarEnded)
             {
-                foreach (var downloadedWarClan in currentWar.WarClans)
+                foreach (var downloadedWarClan in downloadedCurrentWar.WarClans)
                 {
                     if (this is LeagueWar)
                     {
-                        CreateMissedAttacksLeagueWar(currentWar, downloadedWarClan);
+                        CreateMissedAttacksLeagueWar(downloadedCurrentWar, downloadedWarClan);
                     }
                     else
                     {
-                        CreateMissedAttacksCurrentWar(currentWar, downloadedWarClan);
+                        CreateMissedAttacksCurrentWar(downloadedCurrentWar, downloadedWarClan);
                     }
                 }
             }
 
-            newAttacks.AddRange(currentWar.Attacks.Where(a => a.Missed == true));
+            newAttacks.AddRange(downloadedCurrentWar.Attacks.Where(a => a.Missed == true));
 
-            cocApi.NewAttacksEvent(currentWar, newAttacks);
+            cocApi.Wars.NewAttacksEvent(downloadedCurrentWar, newAttacks);
         }
 
         public override string ToString() => PreparationStartTimeUtc.ToString();

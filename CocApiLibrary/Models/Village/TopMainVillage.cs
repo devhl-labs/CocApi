@@ -8,6 +8,16 @@ namespace devhl.CocApi.Models.Village
 {
     public class TopMainVillage :TopVillage
     {
+        public static string Url(int? locationId)
+        {
+            string location = "global";
+
+            if (locationId != null)
+                location = locationId.ToString();
+
+            return $"https://api.clashofclans.com/v1/locations/{location}/rankings/players";
+        }
+
         [JsonProperty("trophies")]
         public long Trophies { get; private set; }
 

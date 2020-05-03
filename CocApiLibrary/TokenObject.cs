@@ -30,10 +30,6 @@ namespace devhl.CocApi
                 {
                     _clearRateLimitTimer.Start();
 
-                    //_cocApi.Logger?.LogWarning(LoggingEvents.IsRateLimited, "{source} Token is rate limited.", _source);
-
-                    //_ = _cocApi.Logger?.LogAsync<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
-
                     _cocApi.LogEvent<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
                 }
             }
@@ -53,7 +49,7 @@ namespace devhl.CocApi
             _clearRateLimitTimer.Elapsed += ClearRateLimit;
         }
 
-        public async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
+        public async Task<TokenObject> GetTokenAsync()
         {
             TimeSpan timeSpan = DateTime.UtcNow - LastUsedUtc;
 
@@ -65,9 +61,7 @@ namespace devhl.CocApi
 
                 if (!notified)
                 {
-                    //_ = _cocApi.Logger?.LogAsync<TokenObject>($"Preemptive rate limit downloading {endPoint}.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
-
-                    _cocApi.LogEvent<TokenObject>($"Preemptive rate limit downloading {endPoint}.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
+                    _cocApi.LogEvent<TokenObject>($"Preemptive rate limit triggered.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
 
                     notified = true;
                 }

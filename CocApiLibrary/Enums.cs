@@ -113,11 +113,15 @@ namespace devhl.CocApi
         CurrentWar,
         LeagueGroup,
         LeagueWar,
-        WarLog,
+        WarLogEntries,
         VillageLeagues,
         Locations,
         Labels,
-        WarLeagues
+        WarLeagues,
+        TopBuilderVillages,
+        TopMainVillages,
+        TopBuilderClans,
+        TopMainClans
     }
 
     public enum DownloadLeagueWars
@@ -146,9 +150,12 @@ namespace devhl.CocApi
         HttpResponseError,
         HttpResponseStatusCodeSuccessful,
         HttpResponseStatusCodeUnsuccessful,
-        UpdateServiceStarted,
-        UpdateServiceEnding,
-        CrashDetected
+        ClanUpdateStarted,
+        ClanUpdateEnded,
+        QueueCrashed,
+        WarUpdateStarted,
+        WarUpdateEnded,
+        VillageUpdateEnded
     }
 
     public enum LogLevel

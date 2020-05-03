@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,12 +38,12 @@ namespace devhl.CocApi
 
         public static ConcurrentBag<WebResponseTimer> WebResponseTimers { get; } = new ConcurrentBag<WebResponseTimer>();
 
-        public static async Task<Downloadable> GetDownloadableAsync<TValue>(EndPoint endPoint, string encodedUrl, CancellationToken cancellationToken) where TValue : Downloadable, new()
+        public static async Task<IDownloadable?> GetDownloadableAsync<TValue>(string encodedUrl, TokenObject token, CancellationToken cancellationToken) where TValue : IDownloadable /*, new()*/
         {
+            EndPoint endPoint = GetEndPoint<TValue>();
+
             try
             {
-                TokenObject token = await GetTokenAsync(endPoint, encodedUrl).ConfigureAwait(false);
-
                 using HttpResponseMessage response = await GetHttpResponseAsync(endPoint, encodedUrl, token, cancellationToken).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
@@ -58,6 +59,56 @@ namespace devhl.CocApi
             {
                 return ErrorInResponse(e, encodedUrl, endPoint);
             }
+        }
+
+        private static EndPoint GetEndPoint<T>()
+        {
+            if (typeof(T) == typeof(CurrentWar))
+                return EndPoint.CurrentWar;
+
+            if (typeof(T) == typeof(LeagueWar))
+                return EndPoint.LeagueWar;
+
+            if (typeof(T) == typeof(LeagueGroup))
+                return EndPoint.LeagueGroup;
+
+            if (typeof(T) == typeof(Clan))
+                return EndPoint.Clan;
+
+            if (typeof(T) == typeof(Village))
+                return EndPoint.Village;
+
+            if (typeof(T) == typeof(Paginated<Clan>))
+                return EndPoint.Clans;
+
+            if (typeof(T) == typeof(Paginated<Label>))
+                return EndPoint.Labels;
+
+            if (typeof(T) == typeof(Paginated<Location>))
+                return EndPoint.Locations;
+
+            if (typeof(T) == typeof(Paginated<WarLeague>))
+                return EndPoint.WarLeagues;
+
+            if (typeof(T) == typeof(Paginated<WarLogEntry>))
+                return EndPoint.WarLogEntries;
+
+            if (typeof(T) == typeof(Paginated<TopBuilderVillage>))
+                return EndPoint.TopBuilderVillages;
+
+            if (typeof(T) == typeof(Paginated<TopMainVillage>))
+                return EndPoint.TopMainVillages;
+
+            if (typeof(T) == typeof(Paginated<TopBuilderClan>))
+                return EndPoint.TopBuilderClans;
+
+            if (typeof(T) == typeof(Paginated<TopMainClan>))
+                return EndPoint.TopMainClans;
+
+            if (typeof(T) == typeof(Paginated<League>))
+                return EndPoint.VillageLeagues;
+
+            throw new CocApiException("End point not found.");            
         }
 
         public static ConcurrentBag<WebResponseTimer> GetTimers() => WebResponseTimers;
@@ -98,18 +149,14 @@ namespace devhl.CocApi
             };
         }
 
-        private static Downloadable ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
+        private static IDownloadable ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
         {
             if (e is ServerResponseException serverResponse)
             {
-                //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
-
                 _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
             }
             else
             {
-                //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
-
                 _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
             }
 
@@ -171,8 +218,9 @@ namespace devhl.CocApi
             return response;
         }
 
-        private static async Task<TokenObject> GetTokenAsync(EndPoint endPoint, string url)
+        internal static async Task<TokenObject> GetTokenAsync()
         {
+
             await SemaphoreSlim.WaitAsync().ConfigureAwait(false);
 
             try
@@ -180,7 +228,7 @@ namespace devhl.CocApi
                 while (_tokenObjects.All(x => x.IsRateLimited))
                     await Task.Delay(50).ConfigureAwait(false);
 
-                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync(endPoint, url).ConfigureAwait(false);
+                return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -188,27 +236,35 @@ namespace devhl.CocApi
             }
         }
 
-        private static void InitializeCacheExpiration(Downloadable result, HttpResponseMessage? response)
+        private static void InitializeCacheExpiration(IDownloadable iDownloadable, HttpResponseMessage? response)
         {
-            result.DownloadedAtUtc = DateTime.UtcNow;
+            Downloadable downloadable = (Downloadable) iDownloadable;
+
+            downloadable.DownloadedAtUtc = DateTime.UtcNow;
 
             if (response == null || response.Headers == null || response.Headers.Date == null) return;
-            
-            result.DownloadedAtUtc = response.Headers.Date.Value.UtcDateTime;
+
+            downloadable.DownloadedAtUtc = response.Headers.Date.Value.UtcDateTime;
 
             if (response.Headers.CacheControl != null && response.Headers.CacheControl.MaxAge != null)
             {
                 //adding 3 seconds incase the server clock is different than our clock
-                result.ServerExpirationUtc = response.Headers.Date.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
+                downloadable.ServerExpirationUtc = response.Headers.Date.Value.DateTime.Add(response.Headers.CacheControl.MaxAge.Value) + TimeSpan.FromSeconds(3);
             }            
         }
 
-        private static void InitializeDownloadableProperties(Downloadable result, string encodedURL)
+        private static void InitializeDownloadableProperties(IDownloadable iDownloadable, string encodedURL)
         {
-            result.EncodedUrl = encodedURL;
+            Downloadable downloadable = (Downloadable)iDownloadable;
 
-            switch (result)
+            downloadable.EncodedUrl = encodedURL;
+
+            switch (downloadable)
             {
+                //case ServiceUnavailable serviceUnavailable:  //todo didn't i get rid of this?
+                //    serviceUnavailable.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.ServiceUnavailableTimeToLive);
+                //    break;
+
                 case LeagueWar leagueWarApiModel:
                     if (leagueWarApiModel.State == WarState.WarEnded)
                     {
@@ -236,7 +292,7 @@ namespace devhl.CocApi
                 case LeagueGroup leagueGroupApiModel:
                     if (leagueGroupApiModel.State == LeagueState.WarsEnded)
                     {
-                        leagueGroupApiModel.LocalExpirationUtc = DateTime.UtcNow.AddHours(6);
+                        leagueGroupApiModel.LocalExpirationUtc = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(1).Subtract(new TimeSpan(0, 0, 0, 0, 1));
                     }
                     else
                     {
@@ -266,12 +322,12 @@ namespace devhl.CocApi
                     break;
 
                 default:
-                    result.LocalExpirationUtc = DateTime.UtcNow;
+                    downloadable.LocalExpirationUtc = DateTime.UtcNow;
                     break;
             }
         }
 
-        private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : Downloadable, new()
+        private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : IDownloadable /*, new()*/
         {
             InitializeDownloadableProperties(result, encodedUrl);
 
@@ -280,10 +336,8 @@ namespace devhl.CocApi
             if (result is IInitialize initialize) initialize.Initialize(_cocApi);
         }
 
-        private static Downloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : Downloadable, new()
+        private static IDownloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : IDownloadable /*, new()*/
         {
-            //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
-
             _cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
 
             _cocApi.IsAvailable = true;
@@ -315,19 +369,21 @@ namespace devhl.CocApi
             }
         }
 
-        private static Downloadable UnSuccessfulResponse(HttpResponseMessage response, string encodedUrl, EndPoint endPoint, TokenObject token)
+        private static IDownloadable? UnSuccessfulResponse(HttpResponseMessage response, string encodedUrl, EndPoint endPoint, TokenObject token)
         {
             string responseText = response.Content.ReadAsStringAsync().Result;
 
             ResponseMessage ex = JsonConvert.DeserializeObject<ResponseMessage>(responseText);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            //if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            //{
+                //throw new BadRequestException(ex, response.StatusCode);
+
+                //_cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{ex.Reason}: {ex.Message}");
+            //}
+            if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
-                throw new BadRequestException(ex, response.StatusCode);
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
-            {
-                if (endPoint == EndPoint.CurrentWar)
+                if (endPoint == EndPoint.CurrentWar || endPoint == EndPoint.WarLogEntries) //todo the WarLog method does not return an interface
                 {
                     var privateWar = new PrivateWarLog();
 
@@ -336,7 +392,9 @@ namespace devhl.CocApi
                     return privateWar;
                 }
 
-                throw new ForbiddenException(ex, response.StatusCode);
+                //throw new ForbiddenException(ex, response.StatusCode);
+
+                //_cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{ex.Reason}: {ex.Message}");
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.NotFound && endPoint == EndPoint.LeagueGroup)
             {
@@ -344,46 +402,56 @@ namespace devhl.CocApi
 
                 InitializeResult(leagueGroupNotFound, response, encodedUrl);
 
-                //_ = _cocApi.Logger?.LogAsync("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
-
                 _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
 
                 return leagueGroupNotFound;
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new NotFoundException(ex, response.StatusCode);
-            }
+            //else if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            //{
+                //throw new NotFoundException(ex, response.StatusCode);
+
+                //_cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{ex.Reason}: {ex.Message}");
+            //}
             else if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
             {
                 token.IsRateLimited = true;
 
-                throw new TooManyRequestsException(ex, response.StatusCode);
+                //throw new TooManyRequestsException(ex, response.StatusCode);
             }
-            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-            {
-                throw new InternalServerErrorException(ex, response.StatusCode);
-            }
+            //else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            //{
+                //throw new InternalServerErrorException(ex, response.StatusCode);
+            //}
             else if (response.StatusCode == System.Net.HttpStatusCode.BadGateway)
             {
                 _cocApi.IsAvailable = false;
 
-                throw new BadGateWayException(ex, response.StatusCode);
+                //throw new BadGateWayException(ex, response.StatusCode);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
             {
                 _cocApi.IsAvailable = false;
 
-                throw new ServiceUnavailableException(ex, response.StatusCode);
+                //ServiceUnavailable serviceUnavailable = new ServiceUnavailable();
+
+                //InitializeResult(serviceUnavailable, response, encodedUrl);
+
+                //return serviceUnavailable;
+
+                //throw new ServiceUnavailableException(ex, response.StatusCode);
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.GatewayTimeout)
             {
                 _cocApi.IsAvailable = false;
 
-                throw new GatewayTimeoutException(ex, response.StatusCode);
+                //throw new GatewayTimeoutException(ex, response.StatusCode);
             }
 
-            throw new ServerResponseException(ex, response.StatusCode);
+            //throw new ServerResponseException(ex, response.StatusCode);
+
+            _cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{ex.Reason}: {ex.Message}");
+
+            return null;
         }
     }
 }

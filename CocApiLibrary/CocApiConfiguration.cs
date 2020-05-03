@@ -8,26 +8,15 @@ namespace devhl.CocApi
 {
     public sealed class CocApiConfiguration
     {
-        /// <summary>
-        /// Set this to true if you want to store HTTP responses in memory.
-        /// </summary>
-        public bool CacheHttpResponses { get; set; } = true;
+        ///// <summary>
+        ///// Set this to true if you want to store HTTP responses in memory.
+        ///// </summary>
+        //public bool CacheHttpResponses { get; set; } = true;
 
-        /// <summary>
-        /// Controls whether any clan will download league wars.
-        /// Set it to Auto to only download on the first week of the month.
-        /// </summary>
-        public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.Auto;
-
-        /// <summary>
-        /// Controls whether any clan will be able to download villages.
-        /// </summary>
-        public bool DownloadVillages { get; set; } = false;
-
-        /// <summary>
-        /// Controls whether any clan will download the current war.
-        /// </summary>
-        public bool DownloadCurrentWar { get; set; } = true;
+        ///// <summary>
+        ///// Controls whether any clan will be able to download villages.
+        ///// </summary>
+        //public bool DownloadVillages { get; set; } = false;
 
         /// <summary>
         /// List of tokens used to query the SC Api
@@ -89,6 +78,5 @@ namespace devhl.CocApi
         /// This property defines how often to check if a clan has joined CWL.
         /// </summary>
         public TimeSpan LeagueGroupNotFoundTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
-
     }
 }

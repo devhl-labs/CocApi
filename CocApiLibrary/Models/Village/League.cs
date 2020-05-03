@@ -4,6 +4,9 @@ namespace devhl.CocApi.Models.Village
 {
     public class League : IInitialize
     {
+        public static string Url() => "https://api.clashofclans.com/v1/leagues?limit=500";
+        
+
         [JsonProperty]
         public int Id { get; internal set; }
 

@@ -7,12 +7,21 @@ using System.Linq;
 using Newtonsoft.Json;
 
 using devhl.CocApi.Converters;
+using devhl.CocApi.Exceptions;
 //using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.War
 {
     public class LeagueGroup : Downloadable, ILeagueGroup, IInitialize
     {
+        public static string Url(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            return $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(formattedTag)}/currentwar/leaguegroup";
+        }
+
         [JsonProperty]
         public LeagueState State { get; private set; }
 
