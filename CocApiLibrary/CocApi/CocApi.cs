@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 namespace devhl.CocApi
 {
@@ -136,7 +137,7 @@ namespace devhl.CocApi
         /// </summary>
         public void Dispose()
         {
-            foreach (ClanUpdateService updateService in Clans._clanUpdateServices)
+            foreach (ClanUpdateGroup updateService in Clans._clanUpdateServices)
             {
                 updateService.StopUpdating();
             }

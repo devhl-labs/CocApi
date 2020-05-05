@@ -43,10 +43,10 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<Clan, IReadOnlyList<ClanVillage>>>? ClanVillagesLeft;
         public event AsyncEventHandler<ChangedEventArgs<Clan, IReadOnlyList<RoleChange>>>? ClanVillagesRoleChanged;
         public event AsyncEventHandler<ChangedEventArgs<Clan, WarLeague?>>? WarLeagueChanged;
-        public event AsyncEventHandler<ClanDonationEventArgs>? ClanDonation;
+        public event AsyncEventHandler<DonationEventArgs>? ClanDonation;
         public event AsyncEventHandler<LabelsChangedEventArgs<Clan, ClanLabel>>? ClanLabelsChanged;
 
-        internal readonly List<ClanUpdateService> _clanUpdateServices = new List<ClanUpdateService>();
+        internal readonly List<ClanUpdateGroup> _clanUpdateServices = new List<ClanUpdateGroup>();
 
         private readonly CocApi _cocApi;
 
@@ -108,20 +108,20 @@ namespace devhl.CocApi
             return fetched ?? queued;
         }
 
-        public void Queue(string clanTag)
+        public void Queue(string clanTag, Clan? clan = null)
         {
             try
             {
                 if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
                     throw new InvalidTagException(clanTag);
 
-                Queued.TryAdd(formattedTag, null);
+                Queued.TryAdd(formattedTag, clan);
 
                 foreach (var updater in _clanUpdateServices)
                     if (updater.ClanTags.Contains(formattedTag))
                         return;
 
-                ClanUpdateService clanUpdateService = _clanUpdateServices.OrderBy(c => c.ClanTags.Count).First();
+                ClanUpdateGroup clanUpdateService = _clanUpdateServices.OrderBy(c => c.ClanTags.Count).First();
 
                 clanUpdateService.ClanTags.Add(formattedTag);
             }
@@ -143,13 +143,26 @@ namespace devhl.CocApi
 
         public void Queue(IEnumerable<IClan> clans)
         {
-            foreach (IClan clan in clans)
-                Queue(clan.ClanTag);
+            foreach(IClan iClan in clans)
+            {
+                Clan clan = new Clan
+                {
+                    ClanTag = iClan.ClanTag,
+                    Name = iClan.Name,
+                    BadgeUrl = iClan.BadgeUrl
+                };
+
+                Queue(clan.ClanTag, clan);
+            }
+
+            //foreach (IClan clan in clans)
+            //    Queue(clan.ClanTag);
         }
+
 
         public void StopQueue()
         {
-            foreach (ClanUpdateService updateService in _clanUpdateServices)
+            foreach (ClanUpdateGroup updateService in _clanUpdateServices)
                 updateService.StopUpdating();
         }
 
@@ -157,7 +170,7 @@ namespace devhl.CocApi
         {
             var tasks = new List<Task>();
 
-            foreach (ClanUpdateService clanUpdateService in _clanUpdateServices)
+            foreach (ClanUpdateGroup clanUpdateService in _clanUpdateServices)
             {
                 tasks.Add(clanUpdateService.StopUpdatingAsync());
             }
@@ -171,7 +184,7 @@ namespace devhl.CocApi
 
         public void StartQueue()
         {
-            foreach (ClanUpdateService clanUpdateService in _clanUpdateServices.Where(u => !u.UpdatingClans))
+            foreach (ClanUpdateGroup clanUpdateService in _clanUpdateServices.Where(u => !u.UpdatingClans))
                 clanUpdateService.StartQueue();
         }
 
@@ -225,13 +238,13 @@ namespace devhl.CocApi
             {
                 if (_cocApi.CocApiConfiguration.NumberOfUpdaters < 1)
                 {
-                    _clanUpdateServices.Add(new ClanUpdateService(_cocApi));
+                    _clanUpdateServices.Add(new ClanUpdateGroup(_cocApi));
                 }
                 else
                 {
                     for (int i = 0; i < _cocApi.CocApiConfiguration.NumberOfUpdaters; i++)
                     {
-                        _clanUpdateServices.Add(new ClanUpdateService(_cocApi));
+                        _clanUpdateServices.Add(new ClanUpdateGroup(_cocApi));
                     }
                 }
             }
@@ -245,7 +258,7 @@ namespace devhl.CocApi
         {
             if (received.Count > 0 || donated.Count > 0)
             {
-                ClanDonation?.Invoke(this, new ClanDonationEventArgs(fetched, received.ToImmutableArray(), donated.ToImmutableArray()));
+                ClanDonation?.Invoke(this, new DonationEventArgs(fetched, received.ToImmutableArray(), donated.ToImmutableArray()));
             }
         }
 

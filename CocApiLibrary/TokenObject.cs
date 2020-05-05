@@ -7,7 +7,7 @@ namespace devhl.CocApi
     internal sealed class TokenObject
     {
         private bool _isRateLimited = false;
-        private readonly System.Timers.Timer _clearRateLimitTimer = new System.Timers.Timer();
+        private readonly Timer _clearRateLimitTimer = new Timer();
         private readonly TimeSpan _tokenTimeOut;
         private readonly CocApi _cocApi;
 

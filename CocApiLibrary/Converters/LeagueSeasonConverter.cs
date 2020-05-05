@@ -22,8 +22,6 @@ namespace devhl.CocApi.Converters
     {
         public override bool CanConvert(Type objectType)
         {
-            //if (objectType == typeof(DateTime)) return true;
-
             if (objectType == typeof(string)) return true;
 
             return false;

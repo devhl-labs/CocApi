@@ -32,7 +32,7 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<Village, int>>? DefenseWinsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, int>>? ExpLevelChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Troop>>>? HeroesChanged;
-        public event AsyncEventHandler<ModelEventArgs<Village>>? ReachedLegendsLeague;
+        public event AsyncEventHandler<ChangedEventArgs<Village>>? ReachedLegendsLeague;
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Spell>>>? SpellsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Troop>>>? TroopsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, int>>? TrophiesChanged;
@@ -111,7 +111,7 @@ namespace devhl.CocApi
             LabelsChanged?.Invoke(this, new LabelsChangedEventArgs<Village, VillageLabel>(village, addedLabels.ToImmutableArray(), removedLabels.ToImmutableArray()));
         }
 
-        internal void VillageReachedLegendsLeagueEvent(Village village) => ReachedLegendsLeague?.Invoke(this, new ModelEventArgs<Village>(village));
+        internal void VillageReachedLegendsLeagueEvent(Village village) => ReachedLegendsLeague?.Invoke(this, new ChangedEventArgs<Village>(village));
          
         internal void VillageSpellsChangedEvent(Village village, List<Spell> spells) => SpellsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Spell>>(village, spells.ToImmutableArray()));
 

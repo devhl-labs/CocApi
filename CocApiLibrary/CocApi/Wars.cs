@@ -16,7 +16,7 @@ namespace devhl.CocApi
     public sealed class Wars
     {
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar, IReadOnlyList<Attack>>>? NewAttacks;
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? NewWar;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? NewWar;
         /// <summary>
         /// Fires if the following properties change:
         /// <list type="bullet">
@@ -34,19 +34,19 @@ namespace devhl.CocApi
         /// <summary>
         /// Fires when the <see cref="CurrentWar.EndTimeUtc"/> has elapsed.  The Api may or may not show the war end when this event occurs.
         /// </summary>
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEnded;
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEndingSoon;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarEnded;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarEndingSoon;
         /// <summary>
         /// Fires when the war is not accessible and the end time has passed.
         /// This war may still become available if one of the clans does not spin and opens their war log.
         /// </summary>
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEndNotSeen;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarEndNotSeen;
         /// <summary>
         /// Fires when the Api shows <see cref="CurrentWar.State"/> is <see cref="Enums.WarState.WarEnded"/>
         /// </summary>
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarEndSeen;
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarStarted;
-        public event AsyncEventHandler<ModelEventArgs<CurrentWar>>? WarStartingSoon;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarEndSeen;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStarted;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStartingSoon;
 
         private readonly CocApi _cocApi;
 
@@ -432,23 +432,23 @@ namespace devhl.CocApi
             }
         }
 
-        internal void NewWarEvent(CurrentWar currentWar) => NewWar?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void NewWarEvent(CurrentWar currentWar) => NewWar?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
         internal void WarChangedEvent(CurrentWar oldWar, CurrentWar newWar) => WarChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, CurrentWar>(oldWar, newWar));
 
-        internal void WarEndedEvent(CurrentWar currentWar) => WarEnded?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void WarEndedEvent(CurrentWar currentWar) => WarEnded?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarEndingSoonEvent(CurrentWar currentWar) => WarEndingSoon?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void WarEndingSoonEvent(CurrentWar currentWar) => WarEndingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarEndNotSeenEvent(CurrentWar currentWar) => WarEndNotSeen?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void WarEndNotSeenEvent(CurrentWar currentWar) => WarEndNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarEndSeenEvent(CurrentWar currentWar) => WarEndSeen?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void WarEndSeenEvent(CurrentWar currentWar) => WarEndSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
         internal void WarIsAccessibleChangedEvent(CurrentWar currentWar, bool canRead) => WarAccessibilityChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, bool>(currentWar, canRead));
 
-        internal void WarStartedEvent(CurrentWar currentWar) => WarStarted?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void WarStartedEvent(CurrentWar currentWar) => WarStarted?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarStartingSoonEvent(CurrentWar currentWar) => WarStartingSoon?.Invoke(this, new ModelEventArgs<CurrentWar>(currentWar));
+        internal void WarStartingSoonEvent(CurrentWar currentWar) => WarStartingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
         private async Task PopulateWars(Clan clan)
         {

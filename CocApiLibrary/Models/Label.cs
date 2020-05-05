@@ -11,10 +11,10 @@ namespace devhl.CocApi.Models
         public static string VillageUrl() => $"https://api.clashofclans.com/v1/labels/players?limit=10000";
 
         [JsonProperty]
-        public int Id { get; private set; }
+        public int Id { get; internal set; }
 
         [JsonProperty]
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
 
         [JsonProperty("IconUrls")]

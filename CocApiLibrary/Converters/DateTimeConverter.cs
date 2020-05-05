@@ -24,8 +24,6 @@ namespace devhl.CocApi.Converters
     {
         public override bool CanConvert(Type objectType)
         {
-            //if (objectType == typeof(DateTime)) return true;
-
             if (objectType == typeof(string)) return true;
 
             return false;
@@ -33,8 +31,6 @@ namespace devhl.CocApi.Converters
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            //return reader.Value?.ToString().ToDateTime();
-
             DateTime result = DateTime.ParseExact(reader.Value?.ToString(), "yyyyMMdd'T'HHmmss.fff'Z'", null);
 
             result = DateTime.SpecifyKind(result, DateTimeKind.Utc);

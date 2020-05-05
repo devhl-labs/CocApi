@@ -5,6 +5,20 @@ using System.Text;
 
 namespace devhl.CocApi
 {
+    public class ChangedEventArgs<T> : EventArgs
+    {
+#nullable disable
+
+        public T Fetched { get; }
+
+        public ChangedEventArgs(T fetched)
+        {
+            Fetched = fetched;
+        }
+    }
+
+
+
     public class ChangedEventArgs<T1, T2> : EventArgs
     {
 #nullable disable

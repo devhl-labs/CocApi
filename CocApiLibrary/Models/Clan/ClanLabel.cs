@@ -2,6 +2,6 @@
 {
     public class ClanLabel : Label
     {
-        public string ClanTag { get; set; } = string.Empty;
+        public string ClanTag { get; internal set; } = string.Empty;
     }
 }

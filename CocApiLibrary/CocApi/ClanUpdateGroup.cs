@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace devhl.CocApi
 {
-    internal sealed class ClanUpdateService
+    internal sealed class ClanUpdateGroup
     {
         private readonly CocApi _cocApi;
 
         private bool _stopRequested = false;
 
-        public ClanUpdateService(CocApi cocApi) => _cocApi = cocApi;
+        public ClanUpdateGroup(CocApi cocApi) => _cocApi = cocApi;
 
         public ConcurrentBag<string> ClanTags { get; } = new ConcurrentBag<string>();
 
@@ -91,7 +91,7 @@ namespace devhl.CocApi
 
                     UpdatingClans = false;
 
-                    _cocApi.LogEvent<ClanUpdateService>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
+                    _cocApi.LogEvent<ClanUpdateGroup>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
 
                     _ = _cocApi.ClanQueueRestartAsync();
 

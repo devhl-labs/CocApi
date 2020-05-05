@@ -3,8 +3,6 @@
 
 using Newtonsoft.Json;
 
-//using static devhl.CocApi.Enums;
-
 namespace devhl.CocApi.Converters
 {
     //internal class LeagueStateConverter : JsonConverter<LeagueState>

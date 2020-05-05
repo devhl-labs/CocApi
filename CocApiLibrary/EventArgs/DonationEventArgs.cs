@@ -5,7 +5,7 @@ using System.Text;
 
 namespace devhl.CocApi
 {
-    public class ClanDonationEventArgs : EventArgs
+    public class DonationEventArgs : EventArgs
     {
 #nullable disable
 
@@ -15,7 +15,7 @@ namespace devhl.CocApi
         
         public IReadOnlyList<Donation> Gave { get; }
 
-        public ClanDonationEventArgs(Clan fetched, IReadOnlyList<Donation> received, IReadOnlyList<Donation> gave)
+        public DonationEventArgs(Clan fetched, IReadOnlyList<Donation> received, IReadOnlyList<Donation> gave)
         {
             Fetched = fetched;
 

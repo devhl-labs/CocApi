@@ -152,6 +152,9 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty]
         public WarLeague? WarLeague { get; private set; }
 
+        [JsonProperty]
+        public int WarLeagueId { get; internal set; }
+
         public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();        
 
         internal void Update(CocApi cocApi, Clan? storedClan)
@@ -284,21 +287,22 @@ namespace devhl.CocApi.Models.Clan
 
         private void UpdateLocation(CocApi cocApi, Clan storedClan)
         {
-            if (storedClan.Location == null && Location != null)
-            {
+            if (storedClan.LocationId != LocationId)
                 cocApi.Clans.LocationChangedEvent(storedClan, this);
-                return;
-            }
+            //if (storedClan.Location == null && Location != null)
+            //{
+            //    cocApi.Clans.LocationChangedEvent(storedClan, this);
+            //    return;
+            //}
 
-            if (storedClan.Location == null && Location != null ||
-                storedClan.Location?.CountryCode != Location?.CountryCode ||
-                storedClan.Location?.Id != Location?.Id ||
-                storedClan.Location?.IsCountry != Location?.IsCountry ||
-                storedClan.Location?.Name != Location?.Name)
-            {
-                cocApi.Clans.LocationChangedEvent(storedClan, this);
-            }
-
+            //if (storedClan.Location == null && Location != null ||
+            //    storedClan.Location?.CountryCode != Location?.CountryCode ||
+            //    storedClan.Location?.Id != Location?.Id ||
+            //    storedClan.Location?.IsCountry != Location?.IsCountry ||
+            //    storedClan.Location?.Name != Location?.Name)
+            //{
+            //    cocApi.Clans.LocationChangedEvent(storedClan, this);
+            //}
         }
 
         private void UpdateBadge(CocApi cocApi, Clan storedClan)
@@ -404,9 +408,14 @@ namespace devhl.CocApi.Models.Clan
                 clanVillage.Initialize(cocApi);
             }
 
-            if (BadgeUrl != null) BadgeUrl.ClanTag = ClanTag;
+            if (BadgeUrl != null) 
+                BadgeUrl.ClanTag = ClanTag;
 
-            if (Location != null) LocationId = Location.Id;
+            if (Location != null) 
+                LocationId = Location.Id;
+
+            if (WarLeague != null)
+                WarLeagueId = WarLeague.Id;
         }
 
         public override string ToString() => $"{ClanTag} {Name}";
