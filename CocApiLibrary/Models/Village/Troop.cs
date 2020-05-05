@@ -9,16 +9,16 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public int Level { get; private set; }
+        public int Level { get; internal set; }
 
         [JsonProperty]
-        public int MaxLevel { get; private set; }
+        public int MaxLevel { get; internal set; }
 
         [JsonProperty]
-        public VillageType Village { get; private set; }
+        public VillageType Village { get; internal set; }
 
         [JsonProperty]
         public bool IsHero { get; internal set; }   

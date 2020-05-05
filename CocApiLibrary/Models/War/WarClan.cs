@@ -32,16 +32,16 @@ namespace devhl.CocApi.Models.War
         public IEnumerable<WarVillage>? WarVillages { get; internal set; }
 
         [JsonProperty("attacks")]
-        public int AttackCount { get; private set; }
+        public int AttackCount { get; internal set; }
 
         [JsonProperty]
         public int DefenseCount { get; internal set; }
 
         [JsonProperty]
-        public int Stars { get; private set; }
+        public int Stars { get; internal set; }
 
         [JsonProperty]
-        public decimal DestructionPercentage { get; private set; }
+        public decimal DestructionPercentage { get; internal set; }
 
         [JsonProperty]
         public Result Result { get; internal set; }

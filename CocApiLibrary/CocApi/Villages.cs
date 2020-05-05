@@ -52,8 +52,6 @@ namespace devhl.CocApi
 
         private ConcurrentDictionary<string, Village?> Queued { get; } = new ConcurrentDictionary<string, Village?>();
 
-        internal ConcurrentDictionary<string, Village> Fetched { get; } = new ConcurrentDictionary<string, Village>();
-
         public async Task<Village?> FetchAsync(string villageTag, CancellationToken? cancellationToken = null)
             => await _cocApi.FetchAsync<Village>(Village.Url(villageTag), cancellationToken) as Village;
 
@@ -85,9 +83,6 @@ namespace devhl.CocApi
 
             Village? fetched = await FetchAsync(formattedTag, cancellationToken);
 
-            if (fetched != null)
-                _cocApi.UpdateDictionary(Fetched, fetched.VillageTag, fetched);
-
             return fetched ?? queued;
         }
 
@@ -95,15 +90,15 @@ namespace devhl.CocApi
 
         internal void OnVillageAchievementsChanged(Village village, List<Achievement> achievements) => AchievementsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Achievement>>(village, achievements.ToImmutableArray()));
 
-        internal void VillageChangedEvent(Village oldVillage, Village newVillage) => VillageChanged?.Invoke(this, new ChangedEventArgs<Village, Village>(oldVillage, newVillage));
+        internal void OnVillageChanged(Village oldVillage, Village newVillage) => VillageChanged?.Invoke(this, new ChangedEventArgs<Village, Village>(oldVillage, newVillage));
 
-        internal void VillageDefenseWinsChangedEvent(Village village, int increase) => DefenseWinsChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
+        internal void OnVillageDefenseWinsChanged(Village village, int increase) => DefenseWinsChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
 
-        internal void VillageExpLevelChangedEvent(Village village, int increase) => ExpLevelChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
+        internal void OnVillageExpLevelChanged(Village village, int increase) => ExpLevelChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
 
-        internal void VillageHeroesChangedEvent(Village village, List<Troop> heroes) => HeroesChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Troop>>(village, heroes.ToImmutableArray()));
+        internal void OnVillageHeroesChanged(Village village, List<Troop> heroes) => HeroesChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Troop>>(village, heroes.ToImmutableArray()));
 
-        internal void VillageLabelsChangedEvent(Village village, List<VillageLabel> addedLabels, List<VillageLabel> removedLabels)
+        internal void OnVillageLabelsChanged(Village village, List<VillageLabel> addedLabels, List<VillageLabel> removedLabels)
         {
             if (addedLabels.Count == 0 && removedLabels.Count == 0)
                 return;
@@ -111,19 +106,19 @@ namespace devhl.CocApi
             LabelsChanged?.Invoke(this, new LabelsChangedEventArgs<Village, VillageLabel>(village, addedLabels.ToImmutableArray(), removedLabels.ToImmutableArray()));
         }
 
-        internal void VillageReachedLegendsLeagueEvent(Village village) => ReachedLegendsLeague?.Invoke(this, new ChangedEventArgs<Village>(village));
+        internal void OnVillageReachedLegendsLeague(Village village) => ReachedLegendsLeague?.Invoke(this, new ChangedEventArgs<Village>(village));
          
-        internal void VillageSpellsChangedEvent(Village village, List<Spell> spells) => SpellsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Spell>>(village, spells.ToImmutableArray()));
+        internal void OnVillageSpellsChanged(Village village, List<Spell> spells) => SpellsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Spell>>(village, spells.ToImmutableArray()));
 
-        internal void VillageTroopsChangedEvent(Village village, List<Troop> troops) => TroopsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Troop>>(village, troops.ToImmutableArray()));
+        internal void OnVillageTroopsChanged(Village village, List<Troop> troops) => TroopsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Troop>>(village, troops.ToImmutableArray()));
 
-        internal void VillageTrophiesChangedEvent(Village village, int increase) => TrophiesChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
+        internal void OnVillageTrophiesChanged(Village village, int increase) => TrophiesChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
 
-        internal void VillageVersusBattleWinCountChangedEvent(Village village, int increase) => VersusBattleWinCountChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
+        internal void OnVillageVersusBattleWinCountChanged(Village village, int increase) => VersusBattleWinCountChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
 
-        internal void VillageVersusBattleWinsChangedEvent(Village village, int increase) => VersusBattleWinsChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
+        internal void OnVillageVersusBattleWinsChanged(Village village, int increase) => VersusBattleWinsChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
 
-        internal void VillageVersusTrophiesChangedEvent(Village village, int increase) => VersusTrophiesChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
+        internal void OnVillageVersusTrophiesChanged(Village village, int increase) => VersusTrophiesChanged?.Invoke(this, new ChangedEventArgs<Village, int>(village, increase));
 
 
 
@@ -226,18 +221,22 @@ namespace devhl.CocApi
                 _cocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
         }
 
-        public void Queue(string villageTag, string clanTag)
+        private void Queue(string villageTag, Village? village) => Queued.TryAdd(villageTag, village);
+
+        public void Queue(string villageTag) => Queue(villageTag, null);
+
+        public void Queue(Village village) => Queue(village.VillageTag, village);
+
+        public void Queue(IEnumerable<string> villageTags)
         {
-            Village village = new Village
-            {
-                VillageTag = villageTag,
-
-                ClanTag = clanTag
-            };
-
-            Queued.TryAdd(villageTag, village);
+            foreach (string villageTag in villageTags)
+                Queue(villageTag, null);
         }
 
-
+        public void Queue(IEnumerable<Village> villages)
+        {
+            foreach (Village village in villages)
+                Queue(village.VillageTag, village);
+        }
     }
 }

@@ -10,10 +10,10 @@ namespace devhl.CocApi.Models.War
     public class WarVillage : IVillage, IWarVillage
     {
         [JsonProperty("Tag")]
-        public string VillageTag { get; private set; } = string.Empty;
+        public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public string ClanTag { get; internal set; } = string.Empty;
@@ -28,10 +28,10 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public int TownHallLevel { get; private set; }
+        public int TownHallLevel { get; internal set; }
 
         [JsonProperty("mapPosition")]
-        public int RosterPosition { get; private set; }
+        public int RosterPosition { get; internal set; }
 
         [JsonProperty]
         public int MapPosition { get; internal set; }

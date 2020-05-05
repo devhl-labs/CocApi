@@ -96,19 +96,19 @@ namespace devhl.CocApi.Models.Clan
         /// Controls whether this clan will download villages.
         /// </summary>
         [JsonProperty]
-        public bool DownloadClanVillages { get; set; } = true;
+        public bool QueueClanVillages { get; set; } = true;
 
         /// <summary>
         /// Controls whether this clan will download league wars.
         /// </summary>
         [JsonProperty]
-        public bool DownloadLeagueWars { get; set; } = true;
+        public bool QueueLeagueWars { get; set; } = true;
 
         /// <summary>
         /// Controls whether this clan will download the current war.
         /// </summary>
         [JsonProperty]        
-        public bool DownloadCurrentWar { get; set; } = true;
+        public bool QueueCurrentWar { get; set; } = true;
 
         [JsonProperty("memberList")]
         public IList<ClanVillage>? Villages { get; internal set; }
@@ -161,11 +161,11 @@ namespace devhl.CocApi.Models.Clan
         {
             if (storedClan == null || ReferenceEquals(this, storedClan)) return;
 
-            DownloadClanVillages = storedClan.DownloadClanVillages;
+            QueueClanVillages = storedClan.QueueClanVillages;
 
-            DownloadCurrentWar = storedClan.DownloadCurrentWar;
+            QueueCurrentWar = storedClan.QueueCurrentWar;
 
-            DownloadLeagueWars = storedClan.DownloadLeagueWars;
+            QueueLeagueWars = storedClan.QueueLeagueWars;
 
             UpdateClan(cocApi, storedClan);
 
@@ -203,7 +203,7 @@ namespace devhl.CocApi.Models.Clan
                         
                 if (oldClanVillage.Name != newClanVillage.Name)
                 {
-                    cocApi.Clans.ClanVillageNameChangedEvent(newClanVillage, oldClanVillage.Name);
+                    cocApi.Clans.OnClanVillageNameChanged(newClanVillage, oldClanVillage.Name);
                 }
 
                 if (oldClanVillage.Role != newClanVillage.Role)
@@ -212,7 +212,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.Clans.ClanVillagesLeagueChangedEvent(this, leagueChanges);
+            cocApi.Clans.OnClanVillagesLeagueChanged(this, leagueChanges);
 
             cocApi.Clans.OnClanVillagesRoleChanged(this, roleChanges);
         }
@@ -288,7 +288,7 @@ namespace devhl.CocApi.Models.Clan
         private void UpdateLocation(CocApi cocApi, Clan storedClan)
         {
             if (storedClan.LocationId != LocationId)
-                cocApi.Clans.LocationChangedEvent(storedClan, this);
+                cocApi.Clans.OnLocationChanged(storedClan, this);
             //if (storedClan.Location == null && Location != null)
             //{
             //    cocApi.Clans.LocationChangedEvent(storedClan, this);
@@ -326,12 +326,12 @@ namespace devhl.CocApi.Models.Clan
         {
             if (storedClan.ClanPoints != ClanPoints)
             {
-                cocApi.Clans.ClanPointsChangedEvent(this, ClanPoints - storedClan.ClanPoints);
+                cocApi.Clans.OnClanPointsChanged(this, ClanPoints - storedClan.ClanPoints);
             }
 
             if (storedClan.ClanVersusPoints != ClanVersusPoints)
             {
-                cocApi.Clans.ClanVersusPointsChangedEvent(this, ClanVersusPoints - storedClan.ClanVersusPoints);
+                cocApi.Clans.OnClanVersusPointsChanged(this, ClanVersusPoints - storedClan.ClanVersusPoints);
             }
 
             if (ClanLevel != storedClan.ClanLevel ||

@@ -11,25 +11,25 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public int Stars { get; private set; }
+        public int Stars { get; internal set; }
 
         [JsonProperty]
-        public int Value { get; private set; }
+        public int Value { get; internal set; }
 
         [JsonProperty]
-        public int Target { get; private set; }
+        public int Target { get; internal set; }
 
         [JsonProperty]
-        public string CompletionInfo { get; private set; } = string.Empty;
+        public string CompletionInfo { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public VillageType Village { get; private set; }
+        public VillageType Village { get; internal set; }
 
         [JsonProperty]
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string Info { get; private set; } = string.Empty;
+        public string Info { get; internal set; } = string.Empty;
 
         public void Initialize(CocApi cocApi)
         {            

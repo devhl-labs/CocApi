@@ -23,7 +23,7 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public string Name { get; private set; } = string.Empty;
+        public string Name { get; internal set; } = string.Empty;
 
 #pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 
@@ -34,52 +34,52 @@ namespace devhl.CocApi.Models.Village
 #pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 
         [JsonProperty]
-        public int TownHallLevel { get; private set; }
+        public int TownHallLevel { get; internal set; }
 
         [JsonProperty]
-        public int TownHallWeaponLevel { get; private set; }
+        public int TownHallWeaponLevel { get; internal set; }
 
         [JsonProperty]
-        public int ExpLevel { get; private set; }
+        public int ExpLevel { get; internal set; }
 
         [JsonProperty]
-        public int Trophies { get; private set; }
+        public int Trophies { get; internal set; }
 
         [JsonProperty]
-        public int BestTrophies { get; }
+        public int BestTrophies { get; internal set; }
 
         [JsonProperty]
-        public int WarStars { get; private set; }
+        public int WarStars { get; internal set; }
 
         [JsonProperty]
-        public int AttackWins { get; private set; }
+        public int AttackWins { get; internal set; }
 
         [JsonProperty]
-        public int DefenseWins { get; private set; }
+        public int DefenseWins { get; internal set; }
 
         [JsonProperty]
-        public LegendLeagueStatistics? LegendStatistics { get; private set; }
+        public LegendLeagueStatistics? LegendStatistics { get; internal set; }
 
         [JsonProperty]
-        public int BuilderHallLevel { get; private set; }
+        public int BuilderHallLevel { get; internal set; }
 
         [JsonProperty]
-        public int VersusTrophies { get; private set; }
+        public int VersusTrophies { get; internal set; }
 
         [JsonProperty]
-        public int BestVersusTrophies { get; private set; }
+        public int BestVersusTrophies { get; internal set; }
 
         [JsonProperty]
-        public int VersusBattleWins { get; private set; }
+        public int VersusBattleWins { get; internal set; }
 
         [JsonProperty]
-        public Role Role { get; private set; } = Role.Unknown;
+        public Role Role { get; internal set; } = Role.Unknown;
 
         [JsonProperty]
-        public int Donations { get; private set; }
+        public int Donations { get; internal set; }
 
         [JsonProperty]
-        public int DonationsReceived { get; private set; }
+        public int DonationsReceived { get; internal set; }
 
         [JsonProperty]
         public VillageClan? Clan { get; private set; }
@@ -87,14 +87,14 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public League? League { get; internal set; }
 
-        public int LeagueId { get; private set; }
+        public int LeagueId { get; internal set; }
 
         [JsonProperty]
         public IEnumerable<Achievement>? Achievements { get; internal set; }
 
 
         [JsonProperty]
-        public int VersusBattleWinCount { get; private set; }
+        public int VersusBattleWinCount { get; internal set; }
 
         [JsonProperty("Troop")]
         internal IEnumerable<Troop>? Soldiers { get; set; }
@@ -103,7 +103,7 @@ namespace devhl.CocApi.Models.Village
         internal IEnumerable<Troop>? Heroes { get; set; }
 
         [JsonProperty]
-        public IList<Troop> Troops { get; internal set; } = new List<Troop>();
+        public IList<Troop>? Troops { get; internal set; }
 
         [JsonProperty]
         public IEnumerable<VillageLabel>? Labels { get; internal set; }
@@ -153,7 +153,7 @@ namespace devhl.CocApi.Models.Village
 
             if (LegendStatistics == null && downloadedVillage.LegendStatistics != null)
             {
-                cocApi.Villages.VillageReachedLegendsLeagueEvent(downloadedVillage);
+                cocApi.Villages.OnVillageReachedLegendsLeague(downloadedVillage);
             }
         }
 
@@ -195,7 +195,7 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            cocApi.Villages.VillageLabelsChangedEvent(this, added, removed);
+            cocApi.Villages.OnVillageLabelsChanged(this, added, removed);
         }
 
         private void UpdateVillageSpells(CocApi cocApi, Village storedVillage)
@@ -214,7 +214,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newSpells.Count > 0)
             {
-                cocApi.Villages.VillageSpellsChangedEvent(this, newSpells);
+                cocApi.Villages.OnVillageSpellsChanged(this, newSpells);
             }
         }
 
@@ -235,7 +235,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newTroops.Count > 0)
             {
-                cocApi.Villages.VillageHeroesChangedEvent(this, newTroops);
+                cocApi.Villages.OnVillageHeroesChanged(this, newTroops);
             }
         }
 
@@ -256,7 +256,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newTroops.Count > 0)
             {
-                cocApi.Villages.VillageTroopsChangedEvent(this, newTroops);
+                cocApi.Villages.OnVillageTroopsChanged(this, newTroops);
             }
         }
 
@@ -294,7 +294,7 @@ namespace devhl.CocApi.Models.Village
                 storedVillage.WarStars != WarStars
                 )
             {
-                cocApi.Villages.VillageChangedEvent(storedVillage, this);
+                cocApi.Villages.OnVillageChanged(storedVillage, this);
             }
         }
 
@@ -308,7 +308,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (storedVillage.DefenseWins != DefenseWins)
             {
-                cocApi.Villages.VillageDefenseWinsChangedEvent(this, DefenseWins - storedVillage.DefenseWins);
+                cocApi.Villages.OnVillageDefenseWinsChanged(this, DefenseWins - storedVillage.DefenseWins);
             }
         }
 
@@ -316,7 +316,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (storedVillage.ExpLevel != ExpLevel)
             {
-                cocApi.Villages.VillageExpLevelChangedEvent(this, ExpLevel - storedVillage.ExpLevel);
+                cocApi.Villages.OnVillageExpLevelChanged(this, ExpLevel - storedVillage.ExpLevel);
             }
         }
 
@@ -324,7 +324,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (storedVillage.Trophies != Trophies)
             {
-                cocApi.Villages.VillageTrophiesChangedEvent(this, Trophies - storedVillage.Trophies);
+                cocApi.Villages.OnVillageTrophiesChanged(this, Trophies - storedVillage.Trophies);
             }
         }
 
@@ -332,7 +332,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (storedVillage.VersusBattleWinCount != VersusBattleWinCount)
             {
-                cocApi.Villages.VillageVersusBattleWinCountChangedEvent(this, VersusBattleWinCount - storedVillage.VersusBattleWinCount);
+                cocApi.Villages.OnVillageVersusBattleWinCountChanged(this, VersusBattleWinCount - storedVillage.VersusBattleWinCount);
             }
         }
 
@@ -340,7 +340,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (storedVillage.VersusBattleWins != VersusBattleWins)
             {
-                cocApi.Villages.VillageVersusBattleWinsChangedEvent(this, VersusBattleWins - storedVillage.VersusBattleWins);
+                cocApi.Villages.OnVillageVersusBattleWinsChanged(this, VersusBattleWins - storedVillage.VersusBattleWins);
             }
         }
 
@@ -348,7 +348,7 @@ namespace devhl.CocApi.Models.Village
         {
             if (storedVillage.VersusTrophies != VersusTrophies)
             {
-                cocApi.Villages.VillageVersusTrophiesChangedEvent(this, VersusTrophies - storedVillage.VersusTrophies);
+                cocApi.Villages.OnVillageVersusTrophiesChanged(this, VersusTrophies - storedVillage.VersusTrophies);
             }
         }
 
@@ -395,6 +395,8 @@ namespace devhl.CocApi.Models.Village
 
             foreach (var hero in Heroes.EmptyIfNull())
             {
+                Troops ??= new List<Troop>();
+
                 Troops.Add(hero);
 
                 hero.VillageTag = VillageTag;
@@ -404,6 +406,8 @@ namespace devhl.CocApi.Models.Village
 
             foreach (var troop in Soldiers.EmptyIfNull())
             {
+                Troops ??= new List<Troop>();
+
                 Troops.Add(troop);
 
                 troop.VillageTag = VillageTag;

@@ -25,19 +25,19 @@ namespace devhl.CocApi.Models.War
 #pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
 
         [JsonProperty]
-        public int? Stars { get; private set; }
+        public int? Stars { get; internal set; }
 
         [JsonProperty]
         public int? StarsGained { get; internal set; }
 
         [JsonProperty]
-        public int? DestructionPercentage { get; private set; }
+        public int? DestructionPercentage { get; internal set; }
 
         [JsonProperty]
-        public int? Order { get; private set; }
+        public int? Order { get; internal set; }
 
         [JsonProperty]
-        public bool? Fresh { get; internal set; } = false;
+        public bool Fresh { get; internal set; }
 
         [JsonProperty]
         public string AttackerClanTag { get; internal set; } = string.Empty;
@@ -57,8 +57,8 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public int? DefenderTownHallLevel { get; internal set; }
 
-        [JsonProperty]
-        public bool Missed { get; internal set; }
+        //[JsonProperty]
+        //public bool Missed { get; internal set; }
 
         public override string ToString() => $"{AttackerClanTag} {AttackerTag}";
     }

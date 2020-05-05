@@ -57,11 +57,9 @@ namespace devhl.CocApi
 
         internal ConcurrentDictionary<string, Clan?> Queued { get; } = new ConcurrentDictionary<string, Clan?>();
 
-        internal ConcurrentDictionary<string, Clan> Fetched { get; } = new ConcurrentDictionary<string, Clan>();
-
         internal ConcurrentDictionary<string, Village?> QueuedVillage { get; } = new ConcurrentDictionary<string, Village?>();
 
-        internal bool DownloadingClanVillages { get; private set; } = false;
+        public bool QueueClanVillages { get; set; } = false;
 
         public async Task<Clan?> FetchAsync(string clanTag, CancellationToken? cancellationToken = null)
         {
@@ -95,20 +93,17 @@ namespace devhl.CocApi
             if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
 
-            Clan? queued = Get(clanTag);
+            Clan? queued = Get(formattedTag);
 
             if (queued != null && (allowExpiredItem || queued.IsExpired() == false))
                 return queued;
 
-            Clan? fetched = await FetchAsync(clanTag, cancellationToken).ConfigureAwait(false);
-
-            if (fetched != null)
-                _cocApi.UpdateDictionary(Fetched, formattedTag, fetched);
+            Clan? fetched = await FetchAsync(formattedTag, cancellationToken).ConfigureAwait(false);
 
             return fetched ?? queued;
         }
 
-        public void Queue(string clanTag, Clan? clan = null)
+        private void Queue(string clanTag, Clan? clan)
         {
             try
             {
@@ -133,32 +128,21 @@ namespace devhl.CocApi
             }
         }
 
-        public void Queue(IClan clan) => Queue(clan.ClanTag);
+        public void Queue(string clanTag) => Queue(clanTag, null);
+
+        public void Queue(Clan clan) => Queue(clan.ClanTag, clan);
 
         public void Queue(IEnumerable<string> clanTags)
         {
             foreach (string clanTag in clanTags)
-                Queue(clanTag);
+                Queue(clanTag, null);
         }
 
-        public void Queue(IEnumerable<IClan> clans)
+        public void Queue(IEnumerable<Clan> clans)
         {
-            foreach(IClan iClan in clans)
-            {
-                Clan clan = new Clan
-                {
-                    ClanTag = iClan.ClanTag,
-                    Name = iClan.Name,
-                    BadgeUrl = iClan.BadgeUrl
-                };
-
+            foreach(Clan clan in clans)
                 Queue(clan.ClanTag, clan);
-            }
-
-            //foreach (IClan clan in clans)
-            //    Queue(clan.ClanTag);
         }
-
 
         public void StopQueue()
         {
@@ -180,25 +164,21 @@ namespace devhl.CocApi
             await t.ConfigureAwait(false);
         }
 
-        public void DownloadClanVillages(bool enabled = true) => DownloadingClanVillages = enabled;
-
         public void StartQueue()
         {
-            foreach (ClanUpdateGroup clanUpdateService in _clanUpdateServices.Where(u => !u.UpdatingClans))
+            foreach (ClanUpdateGroup clanUpdateService in _clanUpdateServices.Where(u => !u.QueueRunning))
                 clanUpdateService.StartQueue();
         }
-
-        public void UpdateClanVillages() => DownloadingClanVillages = true;
 
         internal void OnBadgeUrlChanged(Clan queued, Clan fetched) => ClanBadgeUrlChanged?.Invoke(this, new ChangedEventArgs<Clan, Clan>(fetched, queued));
 
         internal void OnClanChanged(Clan queued, Clan fetched) => ClanChanged?.Invoke(this, new ChangedEventArgs<Clan, Clan>(fetched, queued));
 
-        internal void ClanPointsChangedEvent(Clan fetched, int increase) => ClanPointsChanged?.Invoke(this, new ChangedEventArgs<Clan, int>(fetched, increase));
+        internal void OnClanPointsChanged(Clan fetched, int increase) => ClanPointsChanged?.Invoke(this, new ChangedEventArgs<Clan, int>(fetched, increase));
 
-        internal void ClanVersusPointsChangedEvent(Clan fetched, int increase) => ClanVersusPointsChanged?.Invoke(this, new ChangedEventArgs<Clan, int>(fetched, increase));
+        internal void OnClanVersusPointsChanged(Clan fetched, int increase) => ClanVersusPointsChanged?.Invoke(this, new ChangedEventArgs<Clan, int>(fetched, increase));
 
-        internal void ClanVillageNameChangedEvent(ClanVillage fetched, string oldName) => ClanVillageNameChanged?.Invoke(this, new ChangedEventArgs<ClanVillage, string>(fetched, oldName));
+        internal void OnClanVillageNameChanged(ClanVillage fetched, string oldName) => ClanVillageNameChanged?.Invoke(this, new ChangedEventArgs<ClanVillage, string>(fetched, oldName));
 
         internal void OnClanVillagesJoined(Clan fetched, List<ClanVillage> fetchedClanVillages)
         {
@@ -208,7 +188,7 @@ namespace devhl.CocApi
             }
         }
 
-        internal void ClanVillagesLeagueChangedEvent(Clan fetched, List<LeagueChange> leagueChanges)
+        internal void OnClanVillagesLeagueChanged(Clan fetched, List<LeagueChange> leagueChanges)
         {
             if (leagueChanges.Count > 0)
             {
@@ -270,7 +250,7 @@ namespace devhl.CocApi
             ClanLabelsChanged?.Invoke(this, new LabelsChangedEventArgs<Clan, ClanLabel>(fetched, added.ToImmutableArray(), removed.ToImmutableArray()));
         }
 
-        internal void LocationChangedEvent(Clan queued, Clan fetched) => ClanLocationChanged?.Invoke(this, new ChangedEventArgs<Clan, Clan>(fetched, queued));
+        internal void OnLocationChanged(Clan queued, Clan fetched) => ClanLocationChanged?.Invoke(this, new ChangedEventArgs<Clan, Clan>(fetched, queued));
 
         internal void OnWarLeagueChanged(Clan fetched, WarLeague? queuedWarLeague)
         {
@@ -300,22 +280,22 @@ namespace devhl.CocApi
             return queued;
         }
 
-        internal async Task<Village?> GetVillageAsync(string villageTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
-        {
-            if (CocApi.TryGetValidTag(villageTag, out string formattedTag) == false)
-                throw new InvalidTagException(villageTag);
+        //internal async Task<Village?> GetVillageAsync(string villageTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
+        //{
+        //    if (CocApi.TryGetValidTag(villageTag, out string formattedTag) == false)
+        //        throw new InvalidTagException(villageTag);
 
-            Village? queued = GetVillage(formattedTag);
+        //    Village? queued = GetVillage(formattedTag);
 
-            if (queued != null && (allowExpiredItem || queued.IsExpired() == false))
-                return queued;
+        //    if (queued != null && (allowExpiredItem || queued.IsExpired() == false))
+        //        return queued;
 
-            Village? fetched = await _cocApi.Villages.FetchAsync(formattedTag, cancellationToken);
+        //    Village? fetched = await _cocApi.Villages.FetchAsync(formattedTag, cancellationToken);
 
-            if (fetched != null)
-                _cocApi.UpdateDictionary(_cocApi.Clans.QueuedVillage, fetched.VillageTag, fetched);
+        //    if (fetched != null)
+        //        _cocApi.UpdateDictionary(_cocApi.Clans.QueuedVillage, fetched.VillageTag, fetched);
 
-            return fetched ?? queued;
-        }
+        //    return fetched ?? queued;
+        //}
     }
 }

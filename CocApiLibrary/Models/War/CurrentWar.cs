@@ -24,17 +24,17 @@ namespace devhl.CocApi.Models.War
 
         [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime EndTimeUtc { get; private set; }
+        public DateTime EndTimeUtc { get; internal set; }
 
 
         [JsonProperty("preparationStartTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime PreparationStartTimeUtc { get; private set; }
+        public DateTime PreparationStartTimeUtc { get; internal set; }
 
 
         [JsonProperty("startTime")]
         [JsonConverter(typeof(DateTimeConverter))]
-        public DateTime StartTimeUtc { get; private set; }
+        public DateTime StartTimeUtc { get; internal set; }
 
 
         [JsonProperty]
@@ -49,7 +49,7 @@ namespace devhl.CocApi.Models.War
 
 
         [JsonProperty]
-        public WarState State { get; private set; }
+        public WarState State { get; internal set; }
 
 
         [JsonProperty]
@@ -62,7 +62,7 @@ namespace devhl.CocApi.Models.War
         /// This value is used internally to identify unique wars.
         /// </summary>
         [JsonProperty]
-        public string WarKey { get; private set; } = string.Empty;
+        public string WarKey { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public WarType WarType { get; internal set; } = WarType.Random;
@@ -334,28 +334,28 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarStartingSoon = true;
 
-                cocApi.Wars.WarStartingSoonEvent(this);
+                cocApi.Wars.OnWarStartingSoon(this);
             }
 
             if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUtc)
             {
                 Flags.WarEndingSoon = true;
 
-                cocApi.Wars.WarEndingSoonEvent(this);
+                cocApi.Wars.OnWarEndingSoon(this);
             }
 
             if (!Flags.WarStarted && StartTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarStarted = true;
 
-                cocApi.Wars.WarStartedEvent(this);
+                cocApi.Wars.OnWarStarted(this);
             }
 
             if (!Flags.WarEnded && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEnded = true;
 
-                cocApi.Wars.WarEndedEvent(this);
+                cocApi.Wars.OnWarEnded(this);
             }
         }
 
@@ -367,52 +367,43 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarIsAccessible = false;
 
-                cocApi.Wars.WarIsAccessibleChangedEvent(this, false);
+                cocApi.Wars.OnWarIsAccessibleChanged(this, false);
             }
             else if (!Flags.WarIsAccessible && currentWar != null && currentWar.WarKey == WarKey)
             {
                 Flags.WarIsAccessible = true;
 
-                cocApi.Wars.WarIsAccessibleChangedEvent(this, true);
+                cocApi.Wars.OnWarIsAccessibleChanged(this, true);
             }
 
             if (!Flags.WarEndNotSeen && (currentWar == null || WarKey != currentWar.WarKey) && EndTimeUtc < DateTime.UtcNow)
             {
                 Flags.WarEndNotSeen = true;
 
-                cocApi.Wars.WarEndNotSeenEvent(this);
+                cocApi.Wars.OnWarEndNotSeen(this);
             }
 
             if (!Flags.WarEndSeen && State == WarState.InWar && currentWar?.State == WarState.WarEnded)
             {
                 Flags.WarEndSeen = true;
 
-                cocApi.Wars.WarEndSeenEvent(this);
+                cocApi.Wars.OnWarEndSeen(this);
             }
         }
 
-        private void CreateMissedAttacksCurrentWar(CurrentWar downloadedWar, WarClan downloadedWarClan)
+        private void CreateMissedAttacks(CurrentWar downloadedWar, WarClan downloadedWarClan, int numberOfAttacksAllowed)
         {
             foreach (var downloadedWarVillage in downloadedWarClan.WarVillages.EmptyIfNull())
             {
                 downloadedWarVillage.Attacks ??= new List<Attack>();
 
-                if (downloadedWarVillage.Attacks.Count() == 0) CreateMissedAttack(downloadedWar, downloadedWarVillage);
-
-                if (downloadedWarVillage.Attacks.Count() == 1) CreateMissedAttack(downloadedWar, downloadedWarVillage);
+                while(downloadedWarVillage.Attacks.Count() < numberOfAttacksAllowed)
+                {
+                    CreateMissedAttack(downloadedWar, downloadedWarVillage);
+                }
             }
 
             return;
-        }
-
-        private void CreateMissedAttacksLeagueWar(CurrentWar downloadedWar, WarClan downloadedWarClan)
-        {
-            foreach (var attacker in downloadedWarClan.WarVillages.EmptyIfNull())
-            {
-                attacker.Attacks ??= new List<Attack>();
-
-                if (attacker.Attacks.Count == 0) CreateMissedAttack(downloadedWar, attacker);
-            }
         }
 
         private Attack CreateMissedAttack(CurrentWar downloadedWar, WarVillage downloadedWarVillage)
@@ -427,7 +418,7 @@ namespace devhl.CocApi.Models.War
 
                 AttackerTownHallLevel = downloadedWarVillage.TownHallLevel,
 
-                Missed = true,
+                //Missed = true,
 
                 PreparationStartTimeUtc = PreparationStartTimeUtc,
 
@@ -452,15 +443,18 @@ namespace devhl.CocApi.Models.War
                 State != currentWar.State
             )
             {
-                cocApi.Wars.WarChangedEvent(this, currentWar);
+                cocApi.Wars.OnWarChanged(this, currentWar);
             }
         }
 
         private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!(downloadedWar is CurrentWar downloadedCurrentWar) || downloadedCurrentWar.WarKey != WarKey) return; 
+            if (!(downloadedWar is CurrentWar downloadedCurrentWar) || downloadedCurrentWar.WarKey != WarKey) return;
 
-            List<Attack> newAttacks = downloadedCurrentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
+            //doing it this way so the ClanBuilder does not require builders for WarVillages
+            int attacks = WarClans[0].AttackCount + WarClans[1].AttackCount;
+
+            List<Attack> newAttacks = downloadedCurrentWar.Attacks.Where(a => a.Order > attacks).ToList();
 
             if (downloadedCurrentWar.State == WarState.WarEnded)
             {
@@ -468,18 +462,18 @@ namespace devhl.CocApi.Models.War
                 {
                     if (this is LeagueWar)
                     {
-                        CreateMissedAttacksLeagueWar(downloadedCurrentWar, downloadedWarClan);
+                        CreateMissedAttacks(downloadedCurrentWar, downloadedWarClan, 1);
                     }
                     else
                     {
-                        CreateMissedAttacksCurrentWar(downloadedCurrentWar, downloadedWarClan);
+                        CreateMissedAttacks(downloadedCurrentWar, downloadedWarClan, 2);
                     }
                 }
             }
 
-            newAttacks.AddRange(downloadedCurrentWar.Attacks.Where(a => a.Missed == true));
+            newAttacks.AddRange(downloadedCurrentWar.Attacks.Where(a => a.DefenderTag == null));
 
-            cocApi.Wars.NewAttacksEvent(downloadedCurrentWar, newAttacks);
+            cocApi.Wars.OnNewAttacks(downloadedCurrentWar, newAttacks);
         }
 
         public override string ToString() => PreparationStartTimeUtc.ToString();

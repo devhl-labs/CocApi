@@ -75,9 +75,9 @@ namespace devhl.CocApi.Models.Clan
                 Name = Name,
                 LocationId = LocationId,
                 ClanLevel = ClanLevel,
-                DownloadClanVillages = DownloadClanVillages,
-                DownloadLeagueWars = DownloadLeagueWars,
-                DownloadCurrentWar = DownloadCurrentWar,
+                QueueClanVillages = DownloadClanVillages,
+                QueueLeagueWars = DownloadLeagueWars,
+                QueueCurrentWar = DownloadCurrentWar,
                 Recruitment = Recruitment,
                 Description = Description,
                 ClanPoints = ClanPoints,
@@ -91,10 +91,9 @@ namespace devhl.CocApi.Models.Clan
                 VillageCount = VillageCount,
                 WarFrequency = WarFrequency,
                 WarLeagueId = WarLeagueId,
-                ServerExpirationUtc = ServerExpirationUtc
+                ServerExpirationUtc = ServerExpirationUtc,
+                BadgeUrl = BadgeUrl?.Build()
             };
-
-            clan.BadgeUrl = BadgeUrl?.Build();
 
             List<ClanLabel>? clanLabels = null;
 
@@ -102,9 +101,7 @@ namespace devhl.CocApi.Models.Clan
             {
                 clanLabels = new List<ClanLabel>();
                 foreach(ClanLabelBuilder clanLabelBuilder in Labels)
-                {
                     clanLabels.Add(clanLabelBuilder.Build());
-                }
             }
             clan.Labels = clanLabels;
 
@@ -114,35 +111,12 @@ namespace devhl.CocApi.Models.Clan
             {
                 clanVillages = new List<ClanVillage>();
                 foreach(ClanVillageBuilder clanVillageBuilder in Villages)
-                {
                     clanVillages.Add(clanVillageBuilder.Build());
-                }
             }
 
             clan.Villages = clanVillages;
 
             return clan;
-        }
-
-        public ClanBuilder WithBadgeUrl(BadgeUrlBuilder badgeUrlBuilder)
-        {
-            BadgeUrl = badgeUrlBuilder;
-
-            return this;
-        }
-
-        public ClanBuilder WithClanLabelBuilder(IEnumerable<ClanLabelBuilder> clanLabelBuilder)
-        {
-            Labels = clanLabelBuilder;
-
-            return this;
-        }
-
-        public ClanBuilder WithClanMembers(IList<ClanVillageBuilder> clanVillageBuilders)
-        {
-            Villages = clanVillageBuilders;
-
-            return this;
         }
     }
 }

@@ -69,10 +69,14 @@ namespace devhl.CocApi
 
         internal ConcurrentDictionary<string, ILeagueGroup?> LeagueGroups { get; } = new ConcurrentDictionary<string, ILeagueGroup?>();
 
-        internal ConcurrentDictionary<string, IWar?> FetchedWars { get; } = new ConcurrentDictionary<string, IWar?>();
-
+        /// <summary>
+        /// One war will appear in this dictionary multiple times using both clantags, warkey, and wartag
+        /// </summary>
         internal ConcurrentDictionary<string, IWar?> CachedWars { get; } = new ConcurrentDictionary<string, IWar?>();
 
+        /// <summary>
+        /// Wars will appear one time with the WarKey as the key
+        /// </summary>
         internal ConcurrentDictionary<string, CurrentWar> QueuedWars { get; } = new ConcurrentDictionary<string, CurrentWar>();
 
         public async Task<IWar?> FetchAsync<T>(string tag, CancellationToken? cancellationToken = null) where T : CurrentWar
@@ -424,7 +428,18 @@ namespace devhl.CocApi
             });
         }
 
-        internal void NewAttacksEvent(CurrentWar currentWar, List<Attack> attackApiModels)
+        public void Queue(CurrentWar currentWar)
+        {
+            QueuedWars.TryAdd(currentWar.WarKey, currentWar);
+        }
+
+        public void Queue(IEnumerable<CurrentWar> currentWars)
+        {
+            foreach (CurrentWar currentWar in currentWars)
+                Queue(currentWar);
+        }
+
+        internal void OnNewAttacks(CurrentWar currentWar, List<Attack> attackApiModels)
         {
             if (attackApiModels.Count > 0)
             {
@@ -432,46 +447,46 @@ namespace devhl.CocApi
             }
         }
 
-        internal void NewWarEvent(CurrentWar currentWar) => NewWar?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnNewWar(CurrentWar currentWar) => NewWar?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarChangedEvent(CurrentWar oldWar, CurrentWar newWar) => WarChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, CurrentWar>(oldWar, newWar));
+        internal void OnWarChanged(CurrentWar oldWar, CurrentWar newWar) => WarChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, CurrentWar>(oldWar, newWar));
 
-        internal void WarEndedEvent(CurrentWar currentWar) => WarEnded?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnWarEnded(CurrentWar currentWar) => WarEnded?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarEndingSoonEvent(CurrentWar currentWar) => WarEndingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnWarEndingSoon(CurrentWar currentWar) => WarEndingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarEndNotSeenEvent(CurrentWar currentWar) => WarEndNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnWarEndNotSeen(CurrentWar currentWar) => WarEndNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarEndSeenEvent(CurrentWar currentWar) => WarEndSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnWarEndSeen(CurrentWar currentWar) => WarEndSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarIsAccessibleChangedEvent(CurrentWar currentWar, bool canRead) => WarAccessibilityChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, bool>(currentWar, canRead));
+        internal void OnWarIsAccessibleChanged(CurrentWar currentWar, bool canRead) => WarAccessibilityChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, bool>(currentWar, canRead));
 
-        internal void WarStartedEvent(CurrentWar currentWar) => WarStarted?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnWarStarted(CurrentWar currentWar) => WarStarted?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
-        internal void WarStartingSoonEvent(CurrentWar currentWar) => WarStartingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
+        internal void OnWarStartingSoon(CurrentWar currentWar) => WarStartingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
         private async Task PopulateWars(Clan clan)
         {
-            if (clan.DownloadCurrentWar && clan.IsWarLogPublic)
+            if (clan.QueueCurrentWar && clan.IsWarLogPublic)
             {
                 IWar? war = await _cocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
 
                 if (war is CurrentWar currentWar)
                 {
                     if (_cocApi.Wars.QueuedWars.TryAdd(currentWar.WarKey, currentWar))
-                        NewWarEvent(currentWar);
+                        OnNewWar(currentWar);
                 }
 
             }
 
-            if (clan.DownloadLeagueWars && _cocApi.Wars.IsDownloadingLeagueWars())
+            if (clan.QueueLeagueWars && _cocApi.Wars.IsDownloadingLeagueWars())
             {
                 List<LeagueWar>? leagueWars = await _cocApi.Wars.GetLeagueWarsAsync(clan.ClanTag, false).ConfigureAwait(false);
 
                 foreach (LeagueWar leagueWar in leagueWars.EmptyIfNull())
                 {
                     if(_cocApi.Wars.QueuedWars.TryAdd(leagueWar.WarKey, leagueWar))
-                        NewWarEvent(leagueWar);
+                        OnNewWar(leagueWar);
                 }
             }
         }
@@ -483,7 +498,7 @@ namespace devhl.CocApi
 
             if (await _cocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
             {
-                fetched.Update(_cocApi, queued);
+                queued.Update(_cocApi, fetched);
 
                 _cocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
             }
@@ -498,7 +513,7 @@ namespace devhl.CocApi
 
             if (war is CurrentWar currentWar)
             {
-                if (currentWar.WarKey == GetActiveWar(currentWar.WarClans.First().ClanTag)?.WarKey)
+                if (currentWar.State == WarState.Preparation || currentWar.State == WarState.InWar || currentWar.WarKey == GetActiveWar(currentWar.WarClans.First().ClanTag)?.WarKey)
                 {
                     foreach (WarClan warClan in currentWar.WarClans)
                         _cocApi.UpdateDictionary(CachedWars, warClan.ClanTag, currentWar);
@@ -506,10 +521,8 @@ namespace devhl.CocApi
 
                 _cocApi.UpdateDictionary(CachedWars, currentWar.WarKey, currentWar);
             }
-            else
-            {
-                _cocApi.UpdateDictionary(CachedWars, formattedTag, war);
-            }
+
+            _cocApi.UpdateDictionary(CachedWars, formattedTag, war);
         }
     }
 }

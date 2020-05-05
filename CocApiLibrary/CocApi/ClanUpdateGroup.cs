@@ -18,7 +18,7 @@ namespace devhl.CocApi
 
         public ConcurrentBag<string> ClanTags { get; } = new ConcurrentBag<string>();
 
-        public bool UpdatingClans { get; private set; } = false;
+        public bool QueueRunning { get; private set; } = false;
 
         public void StopUpdating() => _stopRequested = false;
 
@@ -32,7 +32,7 @@ namespace devhl.CocApi
 
             _ = Task.Run(async () =>
             {
-                while (UpdatingClans)
+                while (QueueRunning)
                     await Task.Delay(100).ConfigureAwait(false);
 
                 tsc.SetResult(true);
@@ -45,10 +45,10 @@ namespace devhl.CocApi
         {
             _stopRequested = false;
 
-            if (UpdatingClans)
+            if (QueueRunning)
                 return;
 
-            UpdatingClans = true;
+            QueueRunning = true;
 
             Task.Run(async () =>
             {
@@ -81,7 +81,7 @@ namespace devhl.CocApi
                         _cocApi.Clans.QueueCompletedEvent();
                     }
 
-                    UpdatingClans = false;
+                    QueueRunning = false;
 
                     _cocApi.LogEvent<CocApi>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.ClanUpdateEnded);
                 }
@@ -89,7 +89,7 @@ namespace devhl.CocApi
                 {
                     _stopRequested = false;
 
-                    UpdatingClans = false;
+                    QueueRunning = false;
 
                     _cocApi.LogEvent<ClanUpdateGroup>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
 
@@ -149,7 +149,7 @@ namespace devhl.CocApi
 
         private async Task UpdateClanVillagesAsync(Clan queued)
         {
-            if (_cocApi.Clans.DownloadingClanVillages == false || queued.DownloadClanVillages == false)
+            if (_cocApi.Clans.QueueClanVillages == false || queued.QueueClanVillages == false)
                 return;
 
             List<Task> tasks = new List<Task>();

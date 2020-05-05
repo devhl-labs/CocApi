@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
-//using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
 namespace devhl.CocApi.Models.Village
@@ -12,92 +10,69 @@ namespace devhl.CocApi.Models.Village
         public string VillageTag { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public Village? Village { get; private set; }
+        public Village? Village { get; internal set; }
 
         [JsonProperty]
-        public int LegendTrophies { get; private set; }
+        public int LegendTrophies { get; internal set; }
 
         [JsonProperty]
-        public LegendLeagueResult? BestSeason { get; private set; }
-
-
-        [JsonProperty]
-        public LegendLeagueResult? PreviousVersusSeason { get; private set; }
+        public LegendLeagueResult? BestSeason { get; internal set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? CurrentSeason { get; private set; }
+        public LegendLeagueResult? PreviousVersusSeason { get; internal set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? CurrentVersusSeason { get; private set; }
+        public LegendLeagueResult? CurrentSeason { get; internal set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? BestVersusSeason { get; private set; }
+        public LegendLeagueResult? CurrentVersusSeason { get; internal set; }
 
 
         [JsonProperty]
-        public LegendLeagueResult? PreviousSeason { get; private set; } 
+        public LegendLeagueResult? BestVersusSeason { get; internal set; }
+
 
         [JsonProperty]
-        public IList<LegendLeagueResult> Results { get; private set; } = new List<LegendLeagueResult>();
+        public LegendLeagueResult? PreviousSeason { get; internal set; } 
+
+        //[JsonProperty]
+        //public IList<LegendLeagueResult> Results { get; internal set; } = new List<LegendLeagueResult>();
 
         public void Initialize(CocApi cocApi)
         {
-            if (PreviousSeason != null)
-            {
-                if (!Results.Any(l => l.Id == PreviousSeason.Id))
-                {
-                    Results.Add(PreviousSeason);
-                }
-            }
+            //if (PreviousSeason != null)
+                //Results.Add(PreviousSeason);
 
             if (BestVersusSeason != null)
             {
                 BestVersusSeason.Village = VillageType.BuilderBase;
 
-                if (!Results.Any(l => l.Id == BestVersusSeason.Id))
-                {
-                    Results.Add(BestVersusSeason);
-                }
+                //Results.Add(BestVersusSeason);                
             }
 
             if (CurrentVersusSeason != null)
             {
                 CurrentVersusSeason.Village = VillageType.BuilderBase;
 
-                if (!Results.Any(l => l.Id == CurrentVersusSeason.Id))
-                {
-                    Results.Add(CurrentVersusSeason);
-                }
+                //Results.Add(CurrentVersusSeason);
             }
 
-            if (CurrentSeason != null)
-            {
-                if (!Results.Any(l => l.Id == CurrentSeason.Id))
-                {
-                    Results.Add(CurrentSeason);
-                }
-            }
+            //if (CurrentSeason != null)
+            //    Results.Add(CurrentSeason);
+
 
             if (PreviousVersusSeason != null)
             {
                 PreviousVersusSeason.Village = VillageType.BuilderBase;
 
-                if (!Results.Any(l => l.Id == PreviousVersusSeason.Id))
-                {
-                    Results.Add(PreviousVersusSeason);
-                }
+                //Results.Add(PreviousVersusSeason);
             }
 
-            if (BestSeason != null)
-            {
-                if (!Results.Any(l => l.Id == BestSeason.Id))
-                {
-                    Results.Add(BestSeason);
-                }
-            }
+            //if (BestSeason != null)
+                //Results.Add(BestSeason);            
         }
     }
 }
