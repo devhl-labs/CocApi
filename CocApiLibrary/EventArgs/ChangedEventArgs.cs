@@ -34,4 +34,24 @@ namespace devhl.CocApi
             Value = value;
         }
     }
+
+    public class ChangedEventArgs<T1, T2, T3> : EventArgs
+    {
+#nullable disable
+
+        public T1 Fetched { get; }
+
+        public T2 FetchedValue { get; }
+
+        public T3 StoredValue { get; }
+
+        public ChangedEventArgs(T1 fetched, T2 fetchedValue, T3 storedValue)
+        {
+            Fetched = fetched;
+
+            FetchedValue = fetchedValue;
+
+            StoredValue = storedValue;
+        }
+    }
 }

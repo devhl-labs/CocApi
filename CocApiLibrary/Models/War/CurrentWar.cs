@@ -373,7 +373,7 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarIsAccessible = true;
 
-                cocApi.Wars.OnWarIsAccessibleChanged(this, true);
+                cocApi.Wars.OnWarIsAccessibleChanged(currentWar, true);
             }
 
             if (!Flags.WarEndNotSeen && (currentWar == null || WarKey != currentWar.WarKey) && EndTimeUtc < DateTime.UtcNow)
@@ -443,7 +443,7 @@ namespace devhl.CocApi.Models.War
                 State != currentWar.State
             )
             {
-                cocApi.Wars.OnWarChanged(this, currentWar);
+                cocApi.Wars.OnWarChanged(currentWar, this);
             }
         }
 

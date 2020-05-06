@@ -78,7 +78,7 @@ namespace devhl.CocApi
                             await Task.Delay(50);
                         }
 
-                        _cocApi.Clans.QueueCompletedEvent();
+                        _cocApi.Clans.OnQueueCompletedEvent();
                     }
 
                     QueueRunning = false;

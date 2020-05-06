@@ -173,8 +173,6 @@ namespace devhl.CocApi.Models.Clan
 
             UpdateBadge(cocApi, storedClan);
 
-            UpdateLocation(cocApi, storedClan);
-
             AnnounceDonations(cocApi, storedClan);
 
             AnnounceVillageChanges(cocApi, storedClan);
@@ -190,31 +188,24 @@ namespace devhl.CocApi.Models.Clan
 
             List<RoleChange> roleChanges = new List<RoleChange>();
 
-            foreach (ClanVillage oldClanVillage in storedClan.Villages.EmptyIfNull())
+            foreach (ClanVillage queued in storedClan.Villages.EmptyIfNull())
             {
-                ClanVillage newClanVillage = Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
+                ClanVillage fetched = Villages.FirstOrDefault(m => m.VillageTag == queued.VillageTag);
 
-                if (newClanVillage == null) continue;
+                if (fetched == null) continue;
 
-                if ((oldClanVillage.League == null && newClanVillage.League != null) || (oldClanVillage.League != null && newClanVillage.League != null && oldClanVillage.League.Id != newClanVillage.League.Id))
+                if (queued.ClanRank != fetched.ClanRank ||
+                    queued.ExpLevel != fetched.ExpLevel ||
+                    queued.LeagueId != fetched.LeagueId ||
+                    queued.Name != fetched.Name ||
+                    queued.PreviousClanRank != fetched.PreviousClanRank ||
+                    queued.Role != fetched.Role ||
+                    queued.Trophies != fetched.Trophies ||
+                    queued.VersusTrophies != fetched.VersusTrophies)
                 {
-                    leagueChanges.Add(new LeagueChange { Village = newClanVillage, OldLeague = oldClanVillage.League });
-                }
-                        
-                if (oldClanVillage.Name != newClanVillage.Name)
-                {
-                    cocApi.Clans.OnClanVillageNameChanged(newClanVillage, oldClanVillage.Name);
-                }
-
-                if (oldClanVillage.Role != newClanVillage.Role)
-                {
-                    roleChanges.Add(new RoleChange { Village = newClanVillage, OldRole = oldClanVillage.Role });
+                    cocApi.Clans.OnClanVillageChanged(this, fetched, queued);
                 }
             }
-
-            cocApi.Clans.OnClanVillagesLeagueChanged(this, leagueChanges);
-
-            cocApi.Clans.OnClanVillagesRoleChanged(this, roleChanges);
         }
 
         private void AnnounceDonations(CocApi cocApi, Clan storedClan)
@@ -231,12 +222,12 @@ namespace devhl.CocApi.Models.Clan
 
                 if (oldClanVillage.DonationsReceived < newClanVillage.DonationsReceived)
                 {
-                    receiving.Add(new Donation { Village = newClanVillage, Increase = newClanVillage.DonationsReceived - oldClanVillage.DonationsReceived });
+                    receiving.Add(new Donation { Fetched = newClanVillage, Stored = oldClanVillage });
                 }
 
                 if (oldClanVillage.Donations < newClanVillage.Donations)
                 {
-                    donating.Add(new Donation { Village = newClanVillage, Increase = newClanVillage.Donations - oldClanVillage.Donations});
+                    donating.Add(new Donation { Fetched = newClanVillage, Stored = oldClanVillage});
                 }                 
             }
 
@@ -285,31 +276,11 @@ namespace devhl.CocApi.Models.Clan
             cocApi.Clans.OnLabelsChanged(this, added, removed);
         }
 
-        private void UpdateLocation(CocApi cocApi, Clan storedClan)
-        {
-            if (storedClan.LocationId != LocationId)
-                cocApi.Clans.OnLocationChanged(storedClan, this);
-            //if (storedClan.Location == null && Location != null)
-            //{
-            //    cocApi.Clans.LocationChangedEvent(storedClan, this);
-            //    return;
-            //}
-
-            //if (storedClan.Location == null && Location != null ||
-            //    storedClan.Location?.CountryCode != Location?.CountryCode ||
-            //    storedClan.Location?.Id != Location?.Id ||
-            //    storedClan.Location?.IsCountry != Location?.IsCountry ||
-            //    storedClan.Location?.Name != Location?.Name)
-            //{
-            //    cocApi.Clans.LocationChangedEvent(storedClan, this);
-            //}
-        }
-
         private void UpdateBadge(CocApi cocApi, Clan storedClan)
         {
             if (storedClan.BadgeUrl == null && BadgeUrl != null)
             {
-                cocApi.Clans.OnBadgeUrlChanged(this, storedClan);
+                cocApi.Clans.OnBadgeUrlChanged(storedClan, this);
                 return;
             }
 
@@ -318,22 +289,12 @@ namespace devhl.CocApi.Models.Clan
                 storedClan.BadgeUrl?.Medium != BadgeUrl?.Medium ||
                 storedClan.BadgeUrl?.Small != BadgeUrl?.Small)
             {
-                cocApi.Clans.OnBadgeUrlChanged(storedClan, this);
+                cocApi.Clans.OnBadgeUrlChanged(this, storedClan);
             }
         }
 
         private void UpdateClan(CocApi cocApi, Clan storedClan)
         {
-            if (storedClan.ClanPoints != ClanPoints)
-            {
-                cocApi.Clans.OnClanPointsChanged(this, ClanPoints - storedClan.ClanPoints);
-            }
-
-            if (storedClan.ClanVersusPoints != ClanVersusPoints)
-            {
-                cocApi.Clans.OnClanVersusPointsChanged(this, ClanVersusPoints - storedClan.ClanVersusPoints);
-            }
-
             if (ClanLevel != storedClan.ClanLevel ||
                 Description != storedClan.Description ||
                 IsWarLogPublic != storedClan.IsWarLogPublic ||
@@ -345,15 +306,14 @@ namespace devhl.CocApi.Models.Clan
                 WarLosses != storedClan.WarLosses ||
                 WarTies != storedClan.WarTies ||
                 WarWins != storedClan.WarWins ||
-                WarWinStreak != storedClan.WarWinStreak
+                WarWinStreak != storedClan.WarWinStreak ||
+                ClanPoints != storedClan.ClanPoints ||
+                ClanVersusPoints != storedClan.ClanVersusPoints||
+                LocationId != storedClan.LocationId || 
+                WarLeagueId != storedClan.WarLeagueId
             )
             {
-                cocApi.Clans.OnClanChanged(storedClan, this);
-            }
-
-            if (WarLeague?.Id != storedClan.WarLeague?.Id)
-            {
-                cocApi.Clans.OnWarLeagueChanged(this, WarLeague);
+                cocApi.Clans.OnClanChanged(this, storedClan);
             }
         }
 

@@ -25,7 +25,7 @@ namespace devhl.CocApi.Models.Village
                 Trophies = Trophies,
                 Id = Id,
                 Rank = Rank,
-                Village = Village
+                VillageType = Village
             };
 
             return legendLeagueResult;

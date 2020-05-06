@@ -6,18 +6,18 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Net.Http;
 
 namespace devhl.CocApi
 {
-    public delegate Task AsyncEventHandler(object sender, EventArgs e);
-    public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
-
     public delegate Task ApiIsAvailableChangedEventHandler(bool isAvailable);
+
+    public delegate Task AsyncEventHandler(object sender, EventArgs e);
+
+    public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
 
     public delegate Task LogEventHandler(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null);
 
-    public sealed class CocApi : IDisposable
+    public sealed partial class CocApi : IDisposable
     {
         private readonly List<CancellationTokenSource> _cancellationTokenSources = new List<CancellationTokenSource>();
         private readonly object _isAvailableLock = new object();
@@ -47,20 +47,18 @@ namespace devhl.CocApi
 
             Locations = new Locations(this);
 
+            Test = new Test(this);
+
             WebResponse.Initialize(this, CocApiConfiguration, cfg.Tokens);
 
             Clans.CreateClanUpdateServices();
         }
 
-        /// <summary>
-        /// Fires if you query the Api during an outage.
-        /// If the service is not available, you may still try to query the Api if you wish.
-        /// </summary>
         public event ApiIsAvailableChangedEventHandler? ApiIsAvailableChanged;
 
         public event LogEventHandler? Log;
 
-        public static Regex ValidTagCharacters { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
+
         public Clans Clans { get; set; }
 
         public bool IsAvailable
@@ -87,50 +85,14 @@ namespace devhl.CocApi
             }
         }
 
-        public Labels Labels { get; set; }
-        public Leagues Leagues { get; set; }
-        public Locations Locations { get; set; }
-        public Villages Villages { get; set; }
-        public Wars Wars { get; set; }
+        public Labels Labels { get; private set; }
+        public Leagues Leagues { get; private set; }
+        public Locations Locations { get; private set; }
+        public Villages Villages { get; private set; }
+        public Wars Wars { get; private set; }
+        public Test Test { get; private set; }
 
         internal CocApiConfiguration CocApiConfiguration { get; private set; } = new CocApiConfiguration();
-
-        public static bool IsValidTag(string tag)
-        {
-            if (string.IsNullOrEmpty(tag))
-            {
-                return false;
-            }
-
-            if (tag == "#0")
-            {
-                return false;
-            }
-
-            return ValidTagCharacters.IsMatch(tag);
-        }
-
-        public static bool TryGetValidTag(string userInput, out string formattedTag)
-        {
-            formattedTag = string.Empty;
-
-            if (string.IsNullOrEmpty(userInput))
-                return false;
-
-            formattedTag = userInput.ToUpper();
-
-            formattedTag = formattedTag.Replace("O", "0");
-
-            if (!formattedTag.StartsWith("#"))
-                formattedTag = $"#{formattedTag}";
-
-            var result = IsValidTag(formattedTag);
-
-            if (!result)
-                formattedTag = string.Empty;
-
-            return result;
-        }
 
         /// <summary>
         /// Disposes all disposable items.  Pending tasks will be canceled.
@@ -238,21 +200,6 @@ namespace devhl.CocApi
             });
         }
 
-        internal async Task WarQueueRestartAsync()
-        {
-            try
-            {
-                //wait to allow the updater to finish crashing
-                await Task.Delay(5000).ConfigureAwait(false);
-
-                Wars.StartQueue();
-            }
-            catch (Exception)
-            {
-                LogEvent<CocApi>($"The war queue crashed and could not be restarted.", LogLevel.Critical, LoggingEvent.QueueCrashed);
-            }
-        }
-
         internal async Task VillageQueueRestartAsync()
         {
             try
@@ -265,6 +212,21 @@ namespace devhl.CocApi
             catch (Exception)
             {
                 LogEvent<CocApi>($"The village queue crashed and could not be restarted.", LogLevel.Critical, LoggingEvent.QueueCrashed);
+            }
+        }
+
+        internal async Task WarQueueRestartAsync()
+        {
+            try
+            {
+                //wait to allow the updater to finish crashing
+                await Task.Delay(5000).ConfigureAwait(false);
+
+                Wars.StartQueue();
+            }
+            catch (Exception)
+            {
+                LogEvent<CocApi>($"The war queue crashed and could not be restarted.", LogLevel.Critical, LoggingEvent.QueueCrashed);
             }
         }
 

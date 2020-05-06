@@ -1,9 +1,6 @@
 ﻿using System;
-
 using Newtonsoft.Json;
-
 using devhl.CocApi.Converters;
-//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Village
 {
@@ -17,12 +14,12 @@ namespace devhl.CocApi.Models.Village
 
         [JsonProperty]
         [JsonConverter(typeof(LeagueSeasonConverter))]
-        public DateTime Id { get; internal set; } = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+        public DateTime Id { get; internal set; } //todo why was this default here? = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
 
         [JsonProperty]
         public int? Rank { get; internal set; }
 
         [JsonProperty]
-        public VillageType Village { get; internal set; } = VillageType.Home;
+        public VillageType VillageType { get; internal set; } = VillageType.Home;
     }
 }

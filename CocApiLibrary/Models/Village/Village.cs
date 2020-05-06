@@ -16,9 +16,6 @@ namespace devhl.CocApi.Models.Village
             return $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(formattedTag)}";
         }
 
-        //[JsonIgnore]
-        //internal ILogger? Logger { get; set; }
-
         [JsonProperty("Tag")]
         public string VillageTag { get; internal set; } = string.Empty;
 
@@ -124,18 +121,6 @@ namespace devhl.CocApi.Models.Village
 
             UpdateLabels(cocApi, storedVillage);
 
-            UpdateVillageDefenseWins(cocApi, storedVillage);
-
-            UpdateVillageExpLevel(cocApi, storedVillage);
-
-            UpdateVillageTrophies(cocApi, storedVillage);
-
-            UpdateVillageVersusBattleWinCount(cocApi, storedVillage);
-
-            UpdateVillageVersusBattleWins(cocApi, storedVillage);
-
-            UpdateVillageVersusTrophies(cocApi, storedVillage);
-
             UpdateVillageAchievements(cocApi, storedVillage);
 
             UpdateVillageTroops(cocApi, storedVillage);
@@ -151,9 +136,39 @@ namespace devhl.CocApi.Models.Village
         {
             if (LegendStatistics == null && downloadedVillage.LegendStatistics == null) return;
 
-            if (LegendStatistics == null && downloadedVillage.LegendStatistics != null)
+            if (LegendStatistics == null && downloadedVillage.LegendStatistics != null ||
+                LegendStatistics?.LegendTrophies != downloadedVillage.LegendStatistics?.LegendTrophies)
             {
-                cocApi.Villages.OnVillageReachedLegendsLeague(downloadedVillage);
+                cocApi.Villages.OnVillageLegendLeagueChanged(this, downloadedVillage);
+
+                return;
+            }
+
+            if (LegendStatistics?.BestSeason?.Id != downloadedVillage.LegendStatistics?.BestSeason?.Id ||
+                LegendStatistics?.BestSeason?.Rank != downloadedVillage.LegendStatistics?.BestSeason?.Rank ||
+                LegendStatistics?.BestSeason?.Trophies != downloadedVillage.LegendStatistics?.BestSeason?.Trophies ||
+
+                LegendStatistics?.PreviousVersusSeason?.Id != downloadedVillage.LegendStatistics?.PreviousVersusSeason?.Id ||
+                LegendStatistics?.PreviousVersusSeason?.Rank != downloadedVillage.LegendStatistics?.PreviousVersusSeason?.Rank ||
+                LegendStatistics?.PreviousVersusSeason?.Trophies != downloadedVillage.LegendStatistics?.PreviousVersusSeason?.Trophies ||
+
+                LegendStatistics?.CurrentSeason?.Id != downloadedVillage.LegendStatistics?.CurrentSeason?.Id ||
+                LegendStatistics?.CurrentSeason?.Rank != downloadedVillage.LegendStatistics?.CurrentSeason?.Rank ||
+                LegendStatistics?.CurrentSeason?.Trophies != downloadedVillage.LegendStatistics?.CurrentSeason?.Trophies ||
+
+                LegendStatistics?.CurrentVersusSeason?.Id != downloadedVillage.LegendStatistics?.CurrentVersusSeason?.Id ||
+                LegendStatistics?.CurrentVersusSeason?.Rank != downloadedVillage.LegendStatistics?.CurrentVersusSeason?.Rank ||
+                LegendStatistics?.CurrentVersusSeason?.Trophies != downloadedVillage.LegendStatistics?.CurrentVersusSeason?.Trophies ||
+
+                LegendStatistics?.BestVersusSeason?.Id != downloadedVillage.LegendStatistics?.BestVersusSeason?.Id ||
+                LegendStatistics?.BestVersusSeason?.Rank != downloadedVillage.LegendStatistics?.BestVersusSeason?.Rank ||
+                LegendStatistics?.BestVersusSeason?.Trophies != downloadedVillage.LegendStatistics?.BestVersusSeason?.Trophies ||
+
+                LegendStatistics?.PreviousSeason?.Id != downloadedVillage.LegendStatistics?.PreviousSeason?.Id ||
+                LegendStatistics?.PreviousSeason?.Rank != downloadedVillage.LegendStatistics?.PreviousSeason?.Rank ||
+                LegendStatistics?.PreviousSeason?.Trophies != downloadedVillage.LegendStatistics?.PreviousSeason?.Trophies)
+            {
+                cocApi.Villages.OnVillageLegendLeagueChanged(this, downloadedVillage);
             }
         }
 
@@ -291,64 +306,16 @@ namespace devhl.CocApi.Models.Village
                 storedVillage.BuilderHallLevel != BuilderHallLevel ||
                 storedVillage.TownHallLevel != TownHallLevel ||
                 storedVillage.TownHallWeaponLevel != TownHallWeaponLevel ||
-                storedVillage.WarStars != WarStars
-                )
+                storedVillage.WarStars != WarStars || 
+                storedVillage.DefenseWins != DefenseWins ||
+                storedVillage.ExpLevel != ExpLevel ||
+                storedVillage.Trophies != Trophies ||
+                storedVillage.VersusBattleWinCount != VersusBattleWinCount ||
+                storedVillage.VersusBattleWins != VersusBattleWins ||
+                storedVillage.VersusTrophies != VersusTrophies ||
+                storedVillage.ClanTag != ClanTag)
             {
-                cocApi.Villages.OnVillageChanged(storedVillage, this);
-            }
-        }
-
-        private void UpdateClan(CocApi cocApi, Village storedVillage)
-        {
-            if (ClanTag != storedVillage.ClanTag)
-                cocApi.Villages.OnClanChanged(this, storedVillage);
-        }
-
-        private void UpdateVillageDefenseWins(CocApi cocApi, Village storedVillage)
-        {
-            if (storedVillage.DefenseWins != DefenseWins)
-            {
-                cocApi.Villages.OnVillageDefenseWinsChanged(this, DefenseWins - storedVillage.DefenseWins);
-            }
-        }
-
-        private void UpdateVillageExpLevel(CocApi cocApi, Village storedVillage)
-        {
-            if (storedVillage.ExpLevel != ExpLevel)
-            {
-                cocApi.Villages.OnVillageExpLevelChanged(this, ExpLevel - storedVillage.ExpLevel);
-            }
-        }
-
-        private void UpdateVillageTrophies(CocApi cocApi, Village storedVillage)
-        {
-            if (storedVillage.Trophies != Trophies)
-            {
-                cocApi.Villages.OnVillageTrophiesChanged(this, Trophies - storedVillage.Trophies);
-            }
-        }
-
-        private void UpdateVillageVersusBattleWinCount(CocApi cocApi, Village storedVillage)
-        {
-            if (storedVillage.VersusBattleWinCount != VersusBattleWinCount)
-            {
-                cocApi.Villages.OnVillageVersusBattleWinCountChanged(this, VersusBattleWinCount - storedVillage.VersusBattleWinCount);
-            }
-        }
-
-        private void UpdateVillageVersusBattleWins(CocApi cocApi, Village storedVillage)
-        {
-            if (storedVillage.VersusBattleWins != VersusBattleWins)
-            {
-                cocApi.Villages.OnVillageVersusBattleWinsChanged(this, VersusBattleWins - storedVillage.VersusBattleWins);
-            }
-        }
-
-        private void UpdateVillageVersusTrophies(CocApi cocApi, Village storedVillage)
-        {
-            if (storedVillage.VersusTrophies != VersusTrophies)
-            {
-                cocApi.Villages.OnVillageVersusTrophiesChanged(this, VersusTrophies - storedVillage.VersusTrophies);
+                cocApi.Villages.OnVillageChanged(this, storedVillage);
             }
         }
 
@@ -459,10 +426,10 @@ namespace devhl.CocApi.Models.Village
         {
             foreach(var hero in Heroes.EmptyIfNull())
             {
-                if (hero.Name == "Barbarian King") hero.Order = 1;
-                if (hero.Name == "Archer Queen") hero.Order = 2;
-                if (hero.Name == "Grand Warden") hero.Order = 3;
-                if (hero.Name == "Royal Champion") hero.Order = 4;
+                if (hero.Name == CocApi.Heroes.BK) hero.Order = 1;
+                if (hero.Name == CocApi.Heroes.AQ) hero.Order = 2;
+                if (hero.Name == CocApi.Heroes.GW) hero.Order = 3;
+                if (hero.Name == CocApi.Heroes.RC) hero.Order = 4;
             }
 
             var i = 5;
@@ -470,7 +437,6 @@ namespace devhl.CocApi.Models.Village
             foreach(var hero in Heroes.Where(h => h.Order == 0))
             {
                 hero.Order = i;
-
                 i++;
             }
         }
