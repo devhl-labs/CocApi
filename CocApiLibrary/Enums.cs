@@ -43,7 +43,9 @@ namespace devhl.CocApi
         [EnumMember(Value = "inWar")]
         InWar,
         [EnumMember(Value = "warEnded")]
-        WarEnded            
+        WarEnded,
+        [EnumMember(Value = "warEndNotSeen")]
+        WarEndNotSeen
     }
 
     public enum LeagueState

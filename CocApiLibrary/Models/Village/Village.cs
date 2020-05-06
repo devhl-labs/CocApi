@@ -117,8 +117,6 @@ namespace devhl.CocApi.Models.Village
 
             UpdateVillage(cocApi, storedVillage);
 
-            UpdateClan(cocApi, storedVillage);
-
             UpdateLabels(cocApi, storedVillage);
 
             UpdateVillageAchievements(cocApi, storedVillage);

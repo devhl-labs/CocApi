@@ -325,10 +325,10 @@ namespace devhl.CocApi.Models.War
 
             UpdateAttacks(cocApi, downloadedWar);
 
-            PostUpdateAnnouncements(cocApi, downloadedWar);
+            WarEndSeenAnnouncement(cocApi, downloadedWar);
         }
 
-        private void PreUpdateAnnouncements(CocApi cocApi)
+        private void PreUpdateAnnouncements(CocApi cocApi, IWar? downloadedWar)
         {
             if (!Flags.WarStartingSoon && State == WarState.Preparation && DateTime.UtcNow > WarStartingSoonUtc)
             {
@@ -357,10 +357,7 @@ namespace devhl.CocApi.Models.War
 
                 cocApi.Wars.OnWarEnded(this);
             }
-        }
 
-        private void PostUpdateAnnouncements(CocApi cocApi, IWar? downloadedWar)
-        {
             CurrentWar? currentWar = downloadedWar as CurrentWar;
 
             if (Flags.WarIsAccessible && (downloadedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
@@ -380,10 +377,17 @@ namespace devhl.CocApi.Models.War
             {
                 Flags.WarEndNotSeen = true;
 
+                State = WarState.WarEndNotSeen;
+
                 cocApi.Wars.OnWarEndNotSeen(this);
             }
+        }
 
-            if (!Flags.WarEndSeen && State == WarState.InWar && currentWar?.State == WarState.WarEnded)
+        private void WarEndSeenAnnouncement(CocApi cocApi, IWar? downloadedWar)
+        {
+            CurrentWar? currentWar = downloadedWar as CurrentWar;
+
+            if (!Flags.WarEndSeen && (State == WarState.InWar || State == WarState.WarEndNotSeen) && currentWar?.WarKey == WarKey && currentWar?.State == WarState.WarEnded)
             {
                 Flags.WarEndSeen = true;
 
