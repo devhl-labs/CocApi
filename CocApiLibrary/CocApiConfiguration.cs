@@ -8,16 +8,6 @@ namespace devhl.CocApi
 {
     public sealed class CocApiConfiguration
     {
-        ///// <summary>
-        ///// Set this to true if you want to store HTTP responses in memory.
-        ///// </summary>
-        //public bool CacheHttpResponses { get; set; } = true;
-
-        ///// <summary>
-        ///// Controls whether any clan will be able to download villages.
-        ///// </summary>
-        //public bool DownloadVillages { get; set; } = false;
-
         /// <summary>
         /// List of tokens used to query the SC Api
         /// </summary>
@@ -29,9 +19,9 @@ namespace devhl.CocApi
         public int NumberOfUpdaters { get; set; } = 1;
 
         /// <summary>
-        /// Defines how quickly a SC Api token may be reused.  Default is 3 seconds for testing purposes.  
+        /// Defines how quickly a SC Api token may be reused. Default is 1 seconds for testing purposes. You may make it faster for production.
         /// </summary>
-        public TimeSpan TokenTimeOut { get; set; } = new TimeSpan(0, 0, 3);
+        public TimeSpan TokenTimeOut { get; set; } = new TimeSpan(0, 0, 1);
 
         /// <summary>
         /// Defines how long to wait for HTTP requests before throwing <see cref="ServerTookTooLongToRespondException"/>
@@ -41,7 +31,7 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan LeagueWarTimeToLive { get; set; } = new TimeSpan(0, 5, 0);
+        public TimeSpan LeagueWarTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
@@ -51,12 +41,12 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan NotInWarTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+        public TimeSpan NotInWarTimeToLive { get; set; } = new TimeSpan(0, 20, 00);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan PrivateWarLogTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+        public TimeSpan PrivateWarLogTimeToLive { get; set; } = new TimeSpan(0, 20, 00);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
@@ -66,7 +56,7 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan ClanTimeToLive { get; set; } = new TimeSpan(0, 10, 0);
+        public TimeSpan ClanTimeToLive { get; set; } = new TimeSpan(0, 0, 1);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.

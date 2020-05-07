@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace devhl.CocApi
 {
@@ -44,8 +45,8 @@ namespace devhl.CocApi
         InWar,
         [EnumMember(Value = "warEnded")]
         WarEnded,
-        [EnumMember(Value = "warEndNotSeen")]
-        WarEndNotSeen
+        //[EnumMember(Value = "warEndNotSeen")]
+        //WarEndNotSeen
     }
 
     public enum LeagueState
@@ -169,5 +170,21 @@ namespace devhl.CocApi
         Error,
         Critical,
         None
+    }
+
+    [Flags]
+    public enum WarAnnouncements
+    {
+        None = 0,
+        WarEndingSoon = 1,
+        WarStartingSoon = 2,
+        WarIsAccessible = 4,
+        WarEndNotSeen = 8,
+        WarAnnounced = 16,
+        WarStarted = 32,
+        WarEnded = 64,
+        AttacksNotSeen = 128,
+        AttacksMissed = 256,
+        WarEndSeen = 512
     }
 }

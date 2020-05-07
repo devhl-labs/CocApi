@@ -24,26 +24,26 @@ namespace devhl.CocApi.Models.War
 
         public WarState State { get; set; }
 
-        public IList<WarClanBuilder> WarClans { get; private set; } = new List<WarClanBuilder>();
+        public IList<WarClanBuilder> WarClans { get; set; } = new List<WarClanBuilder>();
 
         public IList<AttackBuilder> Attacks { get; set; } = new List<AttackBuilder>();
 
         /// <summary>
         /// This value is used internally to identify unique wars.
         /// </summary>
-        public string WarKey { get; private set; } = string.Empty;
+        internal string WarKey { get; private set; } = string.Empty;
 
         public WarType WarType { get; set; } = WarType.Random;
 
-        public DateTime WarEndingSoonUtc { get; internal set; }
+        public DateTime? WarEndingSoonUtc { get; set; }
 
-        public DateTime WarStartingSoonUtc { get; internal set; }
-
-        public CurrentWarFlagsBuilder Flags { get; set; } = new CurrentWarFlagsBuilder();
+        public DateTime? WarStartingSoonUtc { get; set; }
 
         public List<WarVillageBuilder> WarVillages { get; set; } = new List<WarVillageBuilder>();
 
         public string? WarTag { get; set; }
+
+        public WarAnnouncements WarAnnouncements {get;set;}
 
         public T Build<T>() where T : CurrentWar, new()
         {
@@ -53,7 +53,10 @@ namespace devhl.CocApi.Models.War
             if (WarClans == null || WarClans.Count != 2)
                 throw new CocApiException("WarClans must contain two members.");
 
-            WarClans = WarClans.OrderBy(x => x.ClanTag).ToList();
+            if (WarType == WarType.SCCWL && (WarTag == null || WarTag == "#0" || WarTag == string.Empty))
+                throw new CocApiException("WarTag is required for SCCWL wars.");
+
+                WarClans = WarClans.OrderBy(x => x.ClanTag).ToList();
 
             WarKey = $"{PreparationStartTimeUtc};{WarClans[0].ClanTag}";
 
@@ -65,19 +68,17 @@ namespace devhl.CocApi.Models.War
                 TeamSize = TeamSize,
                 State = State,
                 WarType = WarType,
-                WarKey = WarKey
+                WarKey = WarKey,
+                WarAnnouncements = WarAnnouncements
             };
 
             foreach (WarClanBuilder warClanBuilder in WarClans)
             {
                 war.WarClans.Add(warClanBuilder.Build(WarKey));
+            }         
 
-                
-            }
-
-
-            WarEndingSoonUtc = EndTimeUtc.AddHours(-1);
-            WarStartingSoonUtc = StartTimeUtc.AddHours(-1);
+            war.WarEndingSoonUtc = EndTimeUtc.AddHours(-1);
+            war.WarStartingSoonUtc = StartTimeUtc.AddHours(-1);
 
             if (war is LeagueWar leagueWar)
             {
@@ -92,8 +93,6 @@ namespace devhl.CocApi.Models.War
             foreach (AttackBuilder attackBuilder in Attacks)
                 war.Attacks.Add(attackBuilder.Build(WarKey, PreparationStartTimeUtc));
 
-            war.Flags = Flags.Build(WarKey);
-
             List<WarVillage> warVillages = new List<WarVillage>();
             foreach(WarVillageBuilder warVillageBuilder1 in WarVillages)
             {
@@ -102,20 +101,6 @@ namespace devhl.CocApi.Models.War
 
             war.WarClans[0].WarVillages = warVillages.Where(wv => wv.ClanTag == war.WarClans[0].ClanTag);
             war.WarClans[1].WarVillages = warVillages.Where(wv => wv.ClanTag == war.WarClans[1].ClanTag);
-
-            //foreach (WarVillageBuilder warVillageBuilder in WarVillages)
-            //{
-            //    WarClan warClan = war.WarClans.First(wc => wc.ClanTag == warVillageBuilder.ClanTag);
-
-            //    warClan.WarVillages ??= new List<WarVillage>();
-
-            //    WarVillage warVillage = warClan.WarVillages.add(warVillageBuilder.Build(WarKey)).First();
-
-            //    if (war.Attacks.Count(a => a.AttackerTag == warVillageBuilder.VillageTag) > 0)
-            //    {
-            //        warVillage.Attacks ??= war.Attacks.Where(a => a.AttackerTag == warVillage.VillageTag).ToList();
-            //    }
-            //}
 
             foreach(WarVillage warVillage2 in warVillages)
             {

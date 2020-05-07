@@ -73,14 +73,16 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public DateTime WarStartingSoonUtc { get; internal set; }
 
+        //[JsonProperty]
+        //public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
+
         [JsonProperty]
-        public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
+        public WarAnnouncements WarAnnouncements { get; set; }
 
         public void Initialize(CocApi cocApi)
         {
-            SetWarEndingSoonWarning();
-
-            SetWarStartingSoonWarning();
+            WarStartingSoonUtc = StartTimeUtc.AddHours(-1);
+            WarEndingSoonUtc = EndTimeUtc.AddHours(-1);
 
             if (Clan != null) WarClans.Add(Clan);
 
@@ -89,8 +91,6 @@ namespace devhl.CocApi.Models.War
             WarClans = WarClans.OrderBy(x => x.ClanTag).ToList();
 
             WarKey = $"{PreparationStartTimeUtc};{WarClans[0].ClanTag}";
-
-            Flags.WarKey = WarKey;
 
             TimeSpan timeSpan = StartTimeUtc - PreparationStartTimeUtc;
 
@@ -229,65 +229,6 @@ namespace devhl.CocApi.Models.War
             {
                 clan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == clan.ClanTag);
             }
-
-            if (PreparationStartTimeUtc != DateTime.MinValue)
-            {
-                Flags.WarIsAccessible = true;
-            }
-
-            if (State > WarState.Preparation)
-            {
-                //Flags.WarAnnounced = true;
-
-                Flags.WarStarted = true;
-
-                Flags.WarStartingSoon = true;
-            }
-
-            if (State > WarState.InWar)
-            {
-                Flags.AttacksMissed = true;
-
-                Flags.AttacksNotSeen = true;
-
-                Flags.WarEnded = true;
-
-                Flags.WarEndingSoon = true;
-
-                Flags.WarEndNotSeen = true;
-
-                Flags.WarEndSeen = true;
-            }
-
-            if (State == WarState.Preparation && WarStartingSoonUtc < DateTime.UtcNow)
-            {
-                Flags.WarStartingSoon = true;
-            }
-
-            if (State == WarState.InWar && WarEndingSoonUtc < DateTime.UtcNow)
-            {
-                Flags.WarEndingSoon = true;
-            }
-        }
-
-        private void SetWarEndingSoonWarning()
-        {
-            WarEndingSoonUtc = EndTimeUtc.AddHours(-1);
-
-            if (DateTime.UtcNow > WarEndingSoonUtc)
-            {
-                Flags.WarEndingSoon = true;
-            }
-        }
-
-        private void SetWarStartingSoonWarning()
-        {
-            WarStartingSoonUtc = StartTimeUtc.AddHours(-1);
-
-            if (DateTime.UtcNow > WarStartingSoonUtc)
-            {
-                Flags.WarStartingSoon = true;
-            }
         }
 
         public bool WarIsOverOrAllAttacksUsed()
@@ -310,7 +251,7 @@ namespace devhl.CocApi.Models.War
 
         internal void Update(CocApi cocApi, IWar? downloadedWar)
         {
-            PreUpdateAnnouncements(cocApi);
+            PreUpdateAnnouncements(cocApi, downloadedWar);
 
             if (ReferenceEquals(this, downloadedWar) || downloadedWar == null) 
                 return;
@@ -318,7 +259,7 @@ namespace devhl.CocApi.Models.War
             if (downloadedWar is CurrentWar currentWar)
             {
                 currentWar.WarType = this.WarType;
-                currentWar.Flags = Flags;
+                currentWar.WarAnnouncements = WarAnnouncements;
             }
 
             UpdateWar(cocApi, downloadedWar);
@@ -330,55 +271,46 @@ namespace devhl.CocApi.Models.War
 
         private void PreUpdateAnnouncements(CocApi cocApi, IWar? downloadedWar)
         {
-            if (!Flags.WarStartingSoon && State == WarState.Preparation && DateTime.UtcNow > WarStartingSoonUtc)
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarStartingSoon) == false && DateTime.UtcNow > WarStartingSoonUtc && DateTime.UtcNow < StartTimeUtc)
             {
-                Flags.WarStartingSoon = true;
-
+                WarAnnouncements |= WarAnnouncements.WarStartingSoon;
                 cocApi.Wars.OnWarStartingSoon(this);
             }
 
-            if (!Flags.WarEndingSoon && State == WarState.InWar && DateTime.UtcNow > WarEndingSoonUtc)
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndingSoon) == false && DateTime.UtcNow > WarEndingSoonUtc && DateTime.UtcNow < EndTimeUtc)
             {
-                Flags.WarEndingSoon = true;
-
+                WarAnnouncements |= WarAnnouncements.WarEndingSoon;
                 cocApi.Wars.OnWarEndingSoon(this);
             }
 
-            if (!Flags.WarStarted && StartTimeUtc < DateTime.UtcNow)
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarStarted) == false && DateTime.UtcNow > StartTimeUtc && DateTime.UtcNow < EndTimeUtc)
             {
-                Flags.WarStarted = true;
-
+                WarAnnouncements |= WarAnnouncements.WarStarted;
                 cocApi.Wars.OnWarStarted(this);
             }
 
-            if (!Flags.WarEnded && EndTimeUtc < DateTime.UtcNow)
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEnded) == false && DateTime.UtcNow > EndTimeUtc && DateTime.UtcNow.AddHours(1).Day == EndTimeUtc.Day)
             {
-                Flags.WarEnded = true;
-
+                WarAnnouncements |= WarAnnouncements.WarEnded;
                 cocApi.Wars.OnWarEnded(this);
             }
 
             CurrentWar? currentWar = downloadedWar as CurrentWar;
 
-            if (Flags.WarIsAccessible && (downloadedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarIsAccessible) && (downloadedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
             {
-                Flags.WarIsAccessible = false;
-
+                WarAnnouncements &= ~WarAnnouncements.WarIsAccessible;
                 cocApi.Wars.OnWarIsAccessibleChanged(this, false);
             }
-            else if (!Flags.WarIsAccessible && currentWar != null && currentWar.WarKey == WarKey)
+            else if (WarAnnouncements.HasFlag(WarAnnouncements.WarIsAccessible) == false && currentWar != null && currentWar.WarKey == WarKey)
             {
-                Flags.WarIsAccessible = true;
-
+                WarAnnouncements |= WarAnnouncements.WarIsAccessible;
                 cocApi.Wars.OnWarIsAccessibleChanged(currentWar, true);
             }
 
-            if (!Flags.WarEndNotSeen && (currentWar == null || WarKey != currentWar.WarKey) && EndTimeUtc < DateTime.UtcNow)
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndNotSeen) == false && (currentWar == null || WarKey != currentWar.WarKey) && DateTime.UtcNow > EndTimeUtc && DateTime.UtcNow.Day == EndTimeUtc.Day)
             {
-                Flags.WarEndNotSeen = true;
-
-                State = WarState.WarEndNotSeen;
-
+                WarAnnouncements |= WarAnnouncements.WarEndNotSeen;
                 cocApi.Wars.OnWarEndNotSeen(this);
             }
         }
@@ -387,11 +319,11 @@ namespace devhl.CocApi.Models.War
         {
             CurrentWar? currentWar = downloadedWar as CurrentWar;
 
-            if (!Flags.WarEndSeen && (State == WarState.InWar || State == WarState.WarEndNotSeen) && currentWar?.WarKey == WarKey && currentWar?.State == WarState.WarEnded)
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndSeen) == false && State != WarState.WarEnded && currentWar?.WarKey == WarKey && currentWar?.State == WarState.WarEnded)
             {
-                Flags.WarEndSeen = true;
-
-                cocApi.Wars.OnWarEndSeen(this);
+                WarAnnouncements |= WarAnnouncements.WarEndSeen;
+                WarAnnouncements &= ~WarAnnouncements.WarEndNotSeen;
+                cocApi.Wars.OnWarEndSeen(currentWar);
             }
         }
 
@@ -421,8 +353,6 @@ namespace devhl.CocApi.Models.War
                 AttackerTag = downloadedWarVillage.VillageTag,
 
                 AttackerTownHallLevel = downloadedWarVillage.TownHallLevel,
-
-                //Missed = true,
 
                 PreparationStartTimeUtc = PreparationStartTimeUtc,
 

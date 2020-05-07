@@ -261,18 +261,14 @@ namespace devhl.CocApi
 
             switch (downloadable)
             {
-                //case ServiceUnavailable serviceUnavailable:  //todo didn't i get rid of this?
-                //    serviceUnavailable.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.ServiceUnavailableTimeToLive);
-                //    break;
-
-                case LeagueWar leagueWarApiModel:
-                    if (leagueWarApiModel.State == WarState.WarEnded)
+                case LeagueWar leagueWar:
+                    if (leagueWar.State == WarState.WarEnded)
                     {
-                        leagueWarApiModel.LocalExpirationUtc = DateTime.MaxValue;
+                        leagueWar.LocalExpirationUtc = DateTime.MaxValue;
                     }
                     else
                     {
-                        leagueWarApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
+                        leagueWar.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueWarTimeToLive);
                     }
 
                     break;
@@ -289,14 +285,14 @@ namespace devhl.CocApi
 
                     break;
 
-                case LeagueGroup leagueGroupApiModel:
-                    if (leagueGroupApiModel.State == LeagueState.WarsEnded)
+                case LeagueGroup leagueGroup:
+                    if (leagueGroup.State == LeagueState.WarsEnded)
                     {
-                        leagueGroupApiModel.LocalExpirationUtc = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(1).Subtract(new TimeSpan(0, 0, 0, 0, 1));
+                        leagueGroup.LocalExpirationUtc = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(1).Subtract(new TimeSpan(0, 0, 0, 0, 1));
                     }
                     else
                     {
-                        leagueGroupApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
+                        leagueGroup.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupTimeToLive);
                     }
 
                     break;
@@ -305,12 +301,12 @@ namespace devhl.CocApi
                     leagueGroupNotFound.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.LeagueGroupNotFoundTimeToLive);
                     break;
 
-                case Clan clanApiModel:
-                    clanApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
+                case Clan clan:
+                    clan.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.ClanTimeToLive);
                     break;
 
-                case Village villageApiModel:
-                    villageApiModel.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
+                case Village village:
+                    village.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.VillageTimeToLive);
                     break;
 
                 case NotInWar notInWar:

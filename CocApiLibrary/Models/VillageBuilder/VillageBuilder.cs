@@ -122,42 +122,45 @@ namespace devhl.CocApi.Models.Village
 
             if (Achievements != null)
             {
-                village.Achievements = new List<Achievement>();
+                List<Achievement> achievements = new List<Achievement>();
                 foreach (AchievementBuilder achievement in Achievements)
-                    village.Achievements.Append(achievement.Build());
+                    achievements.Add(achievement.Build());
+                village.Achievements = achievements;
             }
 
             if (Troops != null)
             {
-                village.Troops = new List<Troop>();
+                List<Troop> troops = new List<Troop>();
                 foreach (TroopBuilder troop in Troops)
-                    village.Troops.Add(troop.Build());
+                    troops.Add(troop.Build());
+                village.Troops = troops;
 
+                List<Troop> heroes = new List<Troop>();
                 foreach(TroopBuilder hero in Troops.Where(t => t.IsHero))
-                {
-                    village.Heroes ??= new List<Troop>();
-                    village.Heroes.Append(hero.Build());
-                }
+                    heroes.Add(hero.Build());
+                village.Heroes = heroes;
 
+                List<Troop> soldiers = new List<Troop>();
                 foreach(TroopBuilder soldier in Troops.Where(t => t.IsHero == false))
-                {
-                    village.Soldiers ??= new List<Troop>();
-                    village.Soldiers.Append(soldier.Build());
-                }
+                    soldiers.Add(soldier.Build());
+                village.Soldiers = soldiers;
+                
             }
 
             if (Labels != null)
             {
-                village.Labels = new List<VillageLabel>();
+                List<VillageLabel> labels = new List<VillageLabel>();
                 foreach (VillageLabelBuilder villageLabelBuilder in Labels)
-                    village.Labels.Append(villageLabelBuilder.Build());
+                    labels.Add(villageLabelBuilder.Build());
+                village.Labels = labels;
             }           
             
             if (Spells != null)
             {
-                village.Spells = new List<Spell>();
+                List<Spell> spells = new List<Spell>();
                 foreach (SpellBuilder spellBuilder in Spells)
-                    village.Spells.Append(spellBuilder.Build());
+                    spells.Add(spellBuilder.Build());
+                village.Spells = spells;
             }
 
             return village;
