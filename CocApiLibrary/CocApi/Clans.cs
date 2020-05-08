@@ -14,7 +14,7 @@ namespace devhl.CocApi
 {
     public sealed class Clans
     {
-        internal readonly List<ClanUpdateGroup> _clanUpdateServices = new List<ClanUpdateGroup>();
+        internal List<ClanUpdateGroup> ClanUpdateGroups { get; } = new List<ClanUpdateGroup>();
 
         private readonly CocApi _cocApi;
 
@@ -104,13 +104,13 @@ namespace devhl.CocApi
 
         public void StartQueue()
         {
-            foreach (ClanUpdateGroup clanUpdateService in _clanUpdateServices.Where(u => !u.QueueRunning))
-                clanUpdateService.StartQueue();
+            foreach (ClanUpdateGroup clanUpdateGroup in ClanUpdateGroups.Where(u => !u.QueueRunning))
+                clanUpdateGroup.StartQueue();
         }
 
         public void StopQueue()
         {
-            foreach (ClanUpdateGroup updateService in _clanUpdateServices)
+            foreach (ClanUpdateGroup updateService in ClanUpdateGroups)
                 updateService.StopUpdating();
         }
 
@@ -118,7 +118,7 @@ namespace devhl.CocApi
         {
             var tasks = new List<Task>();
 
-            foreach (ClanUpdateGroup clanUpdateService in _clanUpdateServices)
+            foreach (ClanUpdateGroup clanUpdateService in ClanUpdateGroups)
             {
                 tasks.Add(clanUpdateService.StopUpdatingAsync());
             }
@@ -134,13 +134,13 @@ namespace devhl.CocApi
             {
                 if (_cocApi.CocApiConfiguration.NumberOfUpdaters < 1)
                 {
-                    _clanUpdateServices.Add(new ClanUpdateGroup(_cocApi));
+                    ClanUpdateGroups.Add(new ClanUpdateGroup(_cocApi));
                 }
                 else
                 {
                     for (int i = 0; i < _cocApi.CocApiConfiguration.NumberOfUpdaters; i++)
                     {
-                        _clanUpdateServices.Add(new ClanUpdateGroup(_cocApi));
+                        ClanUpdateGroups.Add(new ClanUpdateGroup(_cocApi));
                     }
                 }
             }
@@ -209,11 +209,11 @@ namespace devhl.CocApi
 
                 Queued.TryAdd(formattedTag, clan);
 
-                foreach (var updater in _clanUpdateServices)
+                foreach (var updater in ClanUpdateGroups)
                     if (updater.ClanTags.Contains(formattedTag))
                         return;
 
-                ClanUpdateGroup clanUpdateService = _clanUpdateServices.OrderBy(c => c.ClanTags.Count).First();
+                ClanUpdateGroup clanUpdateService = ClanUpdateGroups.OrderBy(c => c.ClanTags.Count).First();
 
                 clanUpdateService.ClanTags.Add(formattedTag);
             }

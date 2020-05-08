@@ -13,7 +13,7 @@ namespace devhl.CocApi.Models.Clan
         public ClanVillage Fetched { get; internal set; }
 
         [JsonProperty]
-        public ClanVillage Stored { get; internal set; }
+        public ClanVillage Queued { get; internal set; }
 
         public override string ToString()
         {

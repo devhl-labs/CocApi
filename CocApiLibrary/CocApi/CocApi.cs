@@ -99,7 +99,7 @@ namespace devhl.CocApi
         /// </summary>
         public void Dispose()
         {
-            foreach (ClanUpdateGroup updateService in Clans._clanUpdateServices)
+            foreach (ClanUpdateGroup updateService in Clans.ClanUpdateGroups)
             {
                 updateService.StopUpdating();
             }

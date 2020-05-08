@@ -141,7 +141,7 @@ namespace devhl.CocApi
             Village? fetched = await _cocApi.Villages.FetchAsync(village.VillageTag).ConfigureAwait(false);
 
             if (queued != null && fetched != null)
-                fetched.Update(_cocApi, queued);
+                queued.Update(_cocApi, fetched);
 
             if (fetched != null)
                 _cocApi.UpdateDictionary(_cocApi.Clans.QueuedVillage, fetched.VillageTag, fetched);

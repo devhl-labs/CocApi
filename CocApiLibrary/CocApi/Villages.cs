@@ -202,7 +202,7 @@ namespace devhl.CocApi
 
             if (fetched != null)
             {
-                fetched.Update(_cocApi, queued);
+                queued.Update(_cocApi, fetched);
 
                 _cocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
             }

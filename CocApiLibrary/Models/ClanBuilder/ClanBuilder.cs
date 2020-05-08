@@ -21,9 +21,9 @@ namespace devhl.CocApi.Models.Clan
 
         //public LocationBuilder? Location { get; set; }  //shouldn't be needed because we have the LocationId
 
-        public int? LocationId { get; set; } 
+        public int? LocationId { get; set; }
 
-        public IEnumerable<ClanLabelBuilder>? Labels { get; set; }
+        public List<ClanLabelBuilder>? Labels { get; set; } = new List<ClanLabelBuilder>();
 
         public int ClanLevel { get; set; }
 
@@ -33,7 +33,7 @@ namespace devhl.CocApi.Models.Clan
        
         public bool DownloadCurrentWar { get; set; } = true;
 
-        public IList<ClanVillageBuilder>? Villages { get; set; }
+        public List<ClanVillageBuilder>? Villages { get; set; } = new List<ClanVillageBuilder>();
 
         public RecruitmentType Recruitment { get; set; }
 

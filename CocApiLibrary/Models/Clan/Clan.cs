@@ -153,81 +153,79 @@ namespace devhl.CocApi.Models.Clan
         public WarLeague? WarLeague { get; private set; }
 
         [JsonProperty]
-        public int WarLeagueId { get; internal set; }
+        public int WarLeagueId { get; internal set; }      
 
-        public ConcurrentDictionary<string, CurrentWar> Wars { get; internal set; } = new ConcurrentDictionary<string, CurrentWar>();        
-
-        internal void Update(CocApi cocApi, Clan? storedClan)
+        internal void Update(CocApi cocApi, Clan? fetched)
         {
-            if (storedClan == null || ReferenceEquals(this, storedClan)) return;
+            if (fetched == null || ReferenceEquals(this, fetched)) return;
 
-            QueueClanVillages = storedClan.QueueClanVillages;
+            QueueClanVillages = fetched.QueueClanVillages;
 
-            QueueCurrentWar = storedClan.QueueCurrentWar;
+            QueueCurrentWar = fetched.QueueCurrentWar;
 
-            QueueLeagueWars = storedClan.QueueLeagueWars;
+            QueueLeagueWars = fetched.QueueLeagueWars;
 
-            UpdateClan(cocApi, storedClan);
+            UpdateClan(cocApi, fetched);
 
-            UpdateLabels(cocApi, storedClan);
+            UpdateLabels(cocApi, fetched);
 
-            UpdateBadge(cocApi, storedClan);
+            UpdateBadge(cocApi, fetched);
 
-            AnnounceDonations(cocApi, storedClan);
+            AnnounceDonations(cocApi, fetched);
 
-            AnnounceVillageChanges(cocApi, storedClan);
+            AnnounceVillageChanges(cocApi, fetched);
 
-            VillagesLeft(cocApi, storedClan);
+            VillagesLeft(cocApi, fetched);
 
-            VillagesJoined(cocApi, storedClan);            
+            VillagesJoined(cocApi, fetched);            
         }
 
-        private void AnnounceVillageChanges(CocApi cocApi, Clan storedClan)
+        private void AnnounceVillageChanges(CocApi cocApi, Clan fetched)
         {
             List<LeagueChange> leagueChanges = new List<LeagueChange>();
 
             List<RoleChange> roleChanges = new List<RoleChange>();
 
-            foreach (ClanVillage queued in storedClan.Villages.EmptyIfNull())
+            foreach (ClanVillage queuedVillage in fetched.Villages.EmptyIfNull())
             {
-                ClanVillage fetched = Villages.FirstOrDefault(m => m.VillageTag == queued.VillageTag);
+                ClanVillage fetchedVillage = Villages.EmptyIfNull().FirstOrDefault(m => m.VillageTag == queuedVillage.VillageTag);
 
-                if (fetched == null) continue;
+                if (fetchedVillage == null) continue;
 
-                if (queued.ClanRank != fetched.ClanRank ||
-                    queued.ExpLevel != fetched.ExpLevel ||
-                    queued.LeagueId != fetched.LeagueId ||
-                    queued.Name != fetched.Name ||
-                    queued.PreviousClanRank != fetched.PreviousClanRank ||
-                    queued.Role != fetched.Role ||
-                    queued.Trophies != fetched.Trophies ||
-                    queued.VersusTrophies != fetched.VersusTrophies)
+                if (queuedVillage.ClanRank != fetchedVillage.ClanRank ||
+                    queuedVillage.ExpLevel != fetchedVillage.ExpLevel ||
+                    queuedVillage.LeagueId != fetchedVillage.LeagueId ||
+                    queuedVillage.Name != fetchedVillage.Name ||
+                    queuedVillage.PreviousClanRank != fetchedVillage.PreviousClanRank ||
+                    queuedVillage.Role != fetchedVillage.Role ||
+                    queuedVillage.Trophies != fetchedVillage.Trophies ||
+                    queuedVillage.VersusTrophies != fetchedVillage.VersusTrophies)
                 {
-                    cocApi.Clans.OnClanVillageChanged(this, fetched, queued);
+                    cocApi.Clans.OnClanVillageChanged(this, fetchedVillage, queuedVillage);
                 }
             }
         }
 
-        private void AnnounceDonations(CocApi cocApi, Clan storedClan)
+        private void AnnounceDonations(CocApi cocApi, Clan fetched)
         {
             List<Donation> receiving = new List<Donation>();
 
             List<Donation> donating = new List<Donation>();
 
-            foreach (ClanVillage oldClanVillage in storedClan.Villages.EmptyIfNull())
+            foreach (ClanVillage queuedClanVillage in fetched.Villages.EmptyIfNull())
             {
-                ClanVillage? newClanVillage = Villages.FirstOrDefault(m => m.VillageTag == oldClanVillage.VillageTag);
+                ClanVillage? fetchedClanVillage = Villages.EmptyIfNull().FirstOrDefault(m => m.VillageTag == queuedClanVillage.VillageTag);
 
-                if (newClanVillage == null) continue;
+                if (fetchedClanVillage == null) continue;
 
-                if (oldClanVillage.DonationsReceived < newClanVillage.DonationsReceived)
+                if (queuedClanVillage.DonationsReceived < fetchedClanVillage.DonationsReceived)
                 {
-                    receiving.Add(new Donation { Fetched = newClanVillage, Stored = oldClanVillage });
+                    receiving.Add(new Donation { Fetched = fetchedClanVillage, Queued = queuedClanVillage });
                 }
 
-                if (oldClanVillage.Donations < newClanVillage.Donations)
+                if (queuedClanVillage.Donations < fetchedClanVillage.Donations)
                 {
-                    donating.Add(new Donation { Fetched = newClanVillage, Stored = oldClanVillage});
+                    donating.Add(new Donation { Fetched = fetchedClanVillage, Queued = queuedClanVillage});
                 }                 
             }
 
@@ -235,100 +233,92 @@ namespace devhl.CocApi.Models.Clan
 
         }
 
-        private void UpdateLabels(CocApi cocApi, Clan storedClan)
+        private void UpdateLabels(CocApi cocApi, Clan fetched)
         {
             List<ClanLabel> added = new List<ClanLabel>();
 
             List<ClanLabel> removed = new List<ClanLabel>();
 
-            foreach(var oldLabel in storedClan.Labels.EmptyIfNull())
+            foreach(var queuedLabel in Labels.EmptyIfNull())
             {
-                if (!Labels.Any(l => l.Id == oldLabel.Id))
+                if (!fetched.Labels.EmptyIfNull().Any(l => l.Id == queuedLabel.Id))
                 {
-                    removed.Add(oldLabel);
+                    removed.Add(queuedLabel);
                 }
             }
 
-            foreach(var newLabel in Labels.EmptyIfNull())
+            foreach(var fetchedLabel in fetched.Labels.EmptyIfNull())
             {
-                if (!storedClan.Labels.Any(l => l.Id == newLabel.Id))
+                if (!Labels.EmptyIfNull().Any(l => l.Id == fetchedLabel.Id))
                 {
-                    added.Add(newLabel);
+                    added.Add(fetchedLabel);
                 }
             }
 
-            if (storedClan.Labels == null && Labels != null && added.Count == 0)
+            if (Labels == null && fetched.Labels != null && added.Count == 0)
             {
-                foreach(var newLabel in Labels)
+                foreach(var fetchedLabel in fetched.Labels)
                 {
-                    added.Add(newLabel);
+                    added.Add(fetchedLabel);
                 }
             }
 
-            if (Labels == null && storedClan.Labels != null && removed.Count == 0)
+            if (fetched.Labels == null && Labels != null && removed.Count == 0)
             {
-                foreach(var removedLabel in storedClan.Labels)
+                foreach(var queuedLabel in Labels)
                 {
-                    removed.Add(removedLabel);
+                    removed.Add(queuedLabel);
                 }
             }
 
             cocApi.Clans.OnLabelsChanged(this, added, removed);
         }
 
-        private void UpdateBadge(CocApi cocApi, Clan storedClan)
+        private void UpdateBadge(CocApi cocApi, Clan fetched)
         {
-            if (storedClan.BadgeUrl == null && BadgeUrl != null)
+            if (fetched.BadgeUrl == null && BadgeUrl != null |
+                fetched.BadgeUrl?.Large != BadgeUrl?.Large ||
+                fetched.BadgeUrl?.Medium != BadgeUrl?.Medium ||
+                fetched.BadgeUrl?.Small != BadgeUrl?.Small)
             {
-                cocApi.Clans.OnBadgeUrlChanged(storedClan, this);
-                return;
-            }
-
-            if (storedClan.BadgeUrl == null && BadgeUrl != null |
-                storedClan.BadgeUrl?.Large != BadgeUrl?.Large ||
-                storedClan.BadgeUrl?.Medium != BadgeUrl?.Medium ||
-                storedClan.BadgeUrl?.Small != BadgeUrl?.Small)
-            {
-                cocApi.Clans.OnBadgeUrlChanged(this, storedClan);
+                cocApi.Clans.OnBadgeUrlChanged(this, fetched);
             }
         }
 
-        private void UpdateClan(CocApi cocApi, Clan storedClan)
+        private void UpdateClan(CocApi cocApi, Clan fetched)
         {
-            if (ClanLevel != storedClan.ClanLevel ||
-                Description != storedClan.Description ||
-                IsWarLogPublic != storedClan.IsWarLogPublic ||
-                VillageCount != storedClan.VillageCount ||
-                Name != storedClan.Name ||
-                RequiredTrophies != storedClan.RequiredTrophies ||
-                Recruitment != storedClan.Recruitment ||
-                WarFrequency != storedClan.WarFrequency ||
-                WarLosses != storedClan.WarLosses ||
-                WarTies != storedClan.WarTies ||
-                WarWins != storedClan.WarWins ||
-                WarWinStreak != storedClan.WarWinStreak ||
-                ClanPoints != storedClan.ClanPoints ||
-                ClanVersusPoints != storedClan.ClanVersusPoints||
-                LocationId != storedClan.LocationId || 
-                WarLeagueId != storedClan.WarLeagueId
+            if (ClanLevel != fetched.ClanLevel ||
+                Description != fetched.Description ||
+                IsWarLogPublic != fetched.IsWarLogPublic ||
+                VillageCount != fetched.VillageCount ||
+                Name != fetched.Name ||
+                RequiredTrophies != fetched.RequiredTrophies ||
+                Recruitment != fetched.Recruitment ||
+                WarFrequency != fetched.WarFrequency ||
+                WarLosses != fetched.WarLosses ||
+                WarTies != fetched.WarTies ||
+                WarWins != fetched.WarWins ||
+                WarWinStreak != fetched.WarWinStreak ||
+                ClanPoints != fetched.ClanPoints ||
+                ClanVersusPoints != fetched.ClanVersusPoints||
+                LocationId != fetched.LocationId || 
+                WarLeagueId != fetched.WarLeagueId
             )
             {
-                cocApi.Clans.OnClanChanged(this, storedClan);
+                cocApi.Clans.OnClanChanged(this, fetched);
             }
         }
 
-        private void VillagesJoined(CocApi cocApi, Clan storedClan)
+        private void VillagesJoined(CocApi cocApi, Clan fetched)
         {
             List<ClanVillage> newVillages = new List<ClanVillage>();
 
-            if (Villages == null)
-            {
+            if (fetched.Villages == null)
                 return;
-            }
 
-            foreach (ClanVillage clanVillage in Villages)
+            foreach (ClanVillage clanVillage in fetched.Villages.EmptyIfNull())
             {
-                if (storedClan.Villages?.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
+                if (Villages?.EmptyIfNull().Any(m => m.VillageTag == clanVillage.VillageTag) == false)
                 {
                     newVillages.Add(clanVillage);
                 }
@@ -337,13 +327,13 @@ namespace devhl.CocApi.Models.Clan
             cocApi.Clans.OnClanVillagesJoined(this, newVillages);
         }
 
-        private void VillagesLeft(CocApi cocApi, Clan storedClan)
+        private void VillagesLeft(CocApi cocApi, Clan fetched)
         {
             List<ClanVillage> leftVillages = new List<ClanVillage>();
 
-            foreach (ClanVillage clanVillage in storedClan.Villages.EmptyIfNull())
+            foreach (ClanVillage clanVillage in Villages.EmptyIfNull())
             {
-                if (Villages.Any(m => m.VillageTag == clanVillage.VillageTag) == false)
+                if (fetched.Villages.EmptyIfNull().Any(m => m.VillageTag == clanVillage.VillageTag) == false)
                 {
                     leftVillages.Add(clanVillage);
                 }

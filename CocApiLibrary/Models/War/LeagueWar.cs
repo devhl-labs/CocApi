@@ -8,7 +8,7 @@ namespace devhl.CocApi.Models.War
 {
     public class LeagueWar : CurrentWar, IInitialize, IWar
     {
-        public static string Url(string warTag)
+        public static new string Url(string warTag)
         {
             if (CocApi.TryGetValidTag(warTag, out string formattedTag) == false)
                 throw new InvalidTagException(warTag);
