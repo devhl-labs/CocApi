@@ -153,11 +153,11 @@ namespace devhl.CocApi
         {
             if (e is ServerResponseException serverResponse)
             {
-                _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}");
+                _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(ErrorInResponse), LogLevel.Debug, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {serverResponse.HttpStatusCode} {e.Message}"));
             }
             else
             {
-                _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseError, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}");
+                _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(ErrorInResponse), LogLevel.Debug, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {e.Message}"));
             }
 
             if (e is TaskCanceledException && endPoint == EndPoint.LeagueGroup)
@@ -334,7 +334,7 @@ namespace devhl.CocApi
 
         private static IDownloadable SuccessfulResponse<TValue>(HttpResponseMessage response, string encodedUrl) where TValue : IDownloadable /*, new()*/
         {
-            _cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeSuccessful, encodedUrl.Replace("https://api.clashofclans.com/v1", ""));
+            _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(SuccessfulResponse), LogLevel.Information, encodedUrl.Replace("https://api.clashofclans.com/v1", "")));
 
             _cocApi.IsAvailable = true;
 
@@ -371,12 +371,6 @@ namespace devhl.CocApi
 
             ResponseMessage ex = JsonConvert.DeserializeObject<ResponseMessage>(responseText);
 
-            //if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
-            //{
-                //throw new BadRequestException(ex, response.StatusCode);
-
-                //_cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{ex.Reason}: {ex.Message}");
-            //}
             if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
                 if (endPoint == EndPoint.CurrentWar || endPoint == EndPoint.WarLogEntries) //todo the WarLog method does not return an interface
@@ -398,7 +392,7 @@ namespace devhl.CocApi
 
                 InitializeResult(leagueGroupNotFound, response, encodedUrl);
 
-                _cocApi.LogEvent("WebResponse", LogLevel.Debug, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found");
+                _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(UnSuccessfulResponse), LogLevel.Debug, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} league group not found"));
 
                 return leagueGroupNotFound;
             }
@@ -445,7 +439,7 @@ namespace devhl.CocApi
 
             //throw new ServerResponseException(ex, response.StatusCode);
 
-            _cocApi.LogEvent("WebResponse", LogLevel.Information, LoggingEvent.HttpResponseStatusCodeUnsuccessful, $"{ex.Reason}: {ex.Message}");
+            _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(UnSuccessfulResponse), LogLevel.Information, $"{ex.Reason}: {ex.Message}"));
 
             return null;
         }

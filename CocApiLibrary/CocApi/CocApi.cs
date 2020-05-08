@@ -3,19 +3,17 @@ using devhl.CocApi.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace devhl.CocApi
 {
-    public delegate Task ApiIsAvailableChangedEventHandler(bool isAvailable);
-
+    public delegate Task ApiIsAvailableChangedEventHandler(object sender, bool isAvailable);
     public delegate Task AsyncEventHandler(object sender, EventArgs e);
-
     public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
-
-    public delegate Task LogEventHandler(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null);
+    public delegate Task LogEventHandler(object sender, LogEventArgs log);
 
     public sealed partial class CocApi : IDisposable
     {
@@ -79,7 +77,7 @@ namespace devhl.CocApi
                     {
                         _isAvailable = value;
 
-                        ApiIsAvailableChanged?.Invoke(_isAvailable);
+                        ApiIsAvailableChanged?.Invoke(this, _isAvailable);
                     }
                 }
             }
@@ -141,7 +139,7 @@ namespace devhl.CocApi
             }
             catch (Exception)
             {
-                LogEvent<CocApi>($"A clan queue crashed and could not be restarted.", LogLevel.Critical, LoggingEvent.QueueCrashed);
+                OnLog(new LogEventArgs(nameof(CocApi), nameof(ClanQueueRestartAsync), LogLevel.Critical, LoggingEvent.QueueRestartFailed.ToString()));
             }
         }
 
@@ -173,15 +171,19 @@ namespace devhl.CocApi
             }
         }
 
-        internal void LogEvent(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null) => Log?.Invoke(source, logLevel, loggingEvent, message);
 
-        internal void LogEvent<T>(string? message, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, message);
 
-        internal void LogEvent<T>(Exception exception, LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, exception.Message);
+        //internal void LogEvent(string source, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown, string? message = null) => Log?.Invoke(source, logLevel, loggingEvent, message);
 
-        internal void LogEvent(string source, Exception exception, LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(source, logLevel, loggingEvent, exception.Message);
+        //internal void LogEvent<T>(string? message, LogLevel logLevel = LogLevel.Trace, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, message);
 
-        internal void LogEvent<T>(LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, null);
+        //internal void LogEvent<T>(Exception exception, LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, exception.Message);
+
+        //internal void LogEvent(string source, Exception exception, LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(source, logLevel, loggingEvent, exception.Message);
+
+        //internal void LogEvent<T>(LogLevel logLevel = LogLevel.Debug, LoggingEvent loggingEvent = LoggingEvent.Unknown) => LogEvent(typeof(T).Name, logLevel, loggingEvent, null);
+
+        internal void OnLog(LogEventArgs log) => Log?.Invoke(this, log);
 
         internal void UpdateDictionary<T>(ConcurrentDictionary<string, T> dictionary, string key, T downloadable) where T : class?, IDownloadable?
         {
@@ -211,7 +213,7 @@ namespace devhl.CocApi
             }
             catch (Exception)
             {
-                LogEvent<CocApi>($"The village queue crashed and could not be restarted.", LogLevel.Critical, LoggingEvent.QueueCrashed);
+                OnLog(new LogEventArgs(nameof(CocApi), nameof(VillageQueueRestartAsync), LogLevel.Critical, LoggingEvent.QueueRestartFailed.ToString()));
             }
         }
 
@@ -226,7 +228,7 @@ namespace devhl.CocApi
             }
             catch (Exception)
             {
-                LogEvent<CocApi>($"The war queue crashed and could not be restarted.", LogLevel.Critical, LoggingEvent.QueueCrashed);
+                OnLog(new LogEventArgs(nameof(CocApi), nameof(WarQueueRestartAsync), LogLevel.Critical, LoggingEvent.QueueRestartFailed.ToString()));
             }
         }
 

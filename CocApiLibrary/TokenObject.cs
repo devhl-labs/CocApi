@@ -30,7 +30,7 @@ namespace devhl.CocApi
                 {
                     _clearRateLimitTimer.Start();
 
-                    _cocApi.LogEvent<TokenObject>("Token is rate limited.", LogLevel.Critical, LoggingEvent.IsRateLimited);
+                    _cocApi.OnLog(new LogEventArgs(nameof(TokenObject), nameof(IsRateLimited), LogLevel.Warning, LoggingEvent.RateLimited.ToString()));
                 }
             }
         }
@@ -61,7 +61,7 @@ namespace devhl.CocApi
 
                 if (!notified)
                 {
-                    _cocApi.LogEvent<TokenObject>($"Preemptive rate limit triggered.", LogLevel.Trace, LoggingEvent.IsPremptiveRateLimited);
+                    _cocApi.OnLog(new LogEventArgs(nameof(TokenObject), nameof(GetTokenAsync), LogLevel.Trace, LoggingEvent.PreemptiveRateLimited.ToString()));
 
                     notified = true;
                 }

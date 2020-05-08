@@ -155,9 +155,9 @@ namespace devhl.CocApi.Models.Clan
         [JsonProperty]
         public int WarLeagueId { get; internal set; }      
 
-        internal void Update(CocApi cocApi, Clan? fetched)
+        internal void Update(CocApi cocApi, Clan fetched)
         {
-            if (fetched == null || ReferenceEquals(this, fetched)) return;
+            if (ReferenceEquals(this, fetched)) return;
 
             QueueClanVillages = fetched.QueueClanVillages;
 
@@ -182,6 +182,8 @@ namespace devhl.CocApi.Models.Clan
 
         private void AnnounceVillageChanges(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(AnnounceVillageChanges), fetched));
+
             List<LeagueChange> leagueChanges = new List<LeagueChange>();
 
             List<RoleChange> roleChanges = new List<RoleChange>();
@@ -201,13 +203,15 @@ namespace devhl.CocApi.Models.Clan
                     queuedVillage.Trophies != fetchedVillage.Trophies ||
                     queuedVillage.VersusTrophies != fetchedVillage.VersusTrophies)
                 {
-                    cocApi.Clans.OnClanVillageChanged(this, fetchedVillage, queuedVillage);
+                    cocApi.Clans.OnClanVillageChanged(fetched, fetchedVillage, queuedVillage);
                 }
             }
         }
 
         private void AnnounceDonations(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(AnnounceDonations), fetched));
+
             List<Donation> receiving = new List<Donation>();
 
             List<Donation> donating = new List<Donation>();
@@ -229,12 +233,14 @@ namespace devhl.CocApi.Models.Clan
                 }                 
             }
 
-            cocApi.Clans.OnDonation(this, receiving, donating);
+            cocApi.Clans.OnDonation(fetched, receiving, donating);
 
         }
 
         private void UpdateLabels(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(UpdateLabels), fetched));
+
             List<ClanLabel> added = new List<ClanLabel>();
 
             List<ClanLabel> removed = new List<ClanLabel>();
@@ -271,22 +277,26 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.Clans.OnLabelsChanged(this, added, removed);
+            cocApi.Clans.OnLabelsChanged(fetched, added, removed);
         }
 
         private void UpdateBadge(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(UpdateBadge), fetched));
+
             if (fetched.BadgeUrl == null && BadgeUrl != null |
                 fetched.BadgeUrl?.Large != BadgeUrl?.Large ||
                 fetched.BadgeUrl?.Medium != BadgeUrl?.Medium ||
                 fetched.BadgeUrl?.Small != BadgeUrl?.Small)
             {
-                cocApi.Clans.OnBadgeUrlChanged(this, fetched);
+                cocApi.Clans.OnBadgeUrlChanged(fetched, this);
             }
         }
 
         private void UpdateClan(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(UpdateClan), fetched));
+
             if (ClanLevel != fetched.ClanLevel ||
                 Description != fetched.Description ||
                 IsWarLogPublic != fetched.IsWarLogPublic ||
@@ -305,12 +315,14 @@ namespace devhl.CocApi.Models.Clan
                 WarLeagueId != fetched.WarLeagueId
             )
             {
-                cocApi.Clans.OnClanChanged(this, fetched);
+                cocApi.Clans.OnClanChanged(fetched, this);
             }
         }
 
         private void VillagesJoined(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(VillagesJoined), fetched));
+
             List<ClanVillage> newVillages = new List<ClanVillage>();
 
             if (fetched.Villages == null)
@@ -324,11 +336,13 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.Clans.OnClanVillagesJoined(this, newVillages);
+            cocApi.Clans.OnClanVillagesJoined(fetched, newVillages);
         }
 
         private void VillagesLeft(CocApi cocApi, Clan fetched)
         {
+            cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(VillagesLeft), fetched));
+
             List<ClanVillage> leftVillages = new List<ClanVillage>();
 
             foreach (ClanVillage clanVillage in Villages.EmptyIfNull())
@@ -339,7 +353,7 @@ namespace devhl.CocApi.Models.Clan
                 }
             }
 
-            cocApi.Clans.OnClanVillagesLeft(this, leftVillages);
+            cocApi.Clans.OnClanVillagesLeft(fetched, leftVillages);
         }
 
         public void Initialize(CocApi cocApi)

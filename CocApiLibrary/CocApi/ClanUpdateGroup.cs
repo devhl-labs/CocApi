@@ -52,50 +52,50 @@ namespace devhl.CocApi
 
             Task.Run(async () =>
             {
-                try
+            try
+            {
+                while (_stopRequested == false)
                 {
-                    while (_stopRequested == false)
+                    foreach (string clanTag in ClanTags)
                     {
-                        foreach (string clanTag in ClanTags)
+                        Clan? queued = _cocApi.Clans.Queued.GetValueOrDefault(clanTag);
+
+                        if (queued == null)
                         {
-                            Clan? queued = _cocApi.Clans.Queued.GetValueOrDefault(clanTag);
-
-                            if (queued == null)
-                            {
-                                queued = await PopulateClanAsync(clanTag).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                queued = await UpdateClanAsync(queued).ConfigureAwait(false);
-                            }
-
-                            if (queued != null)
-                                await UpdateClanVillagesAsync(queued);
-
-                            if (_stopRequested)
-                                break;
-
-                            await Task.Delay(50);
+                            queued = await PopulateClanAsync(clanTag).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            queued = await UpdateClanAsync(queued).ConfigureAwait(false);
                         }
 
-                        _cocApi.Clans.OnQueueCompletedEvent();
+                        if (queued != null)
+                            await UpdateClanVillagesAsync(queued);
+
+                        if (_stopRequested)
+                            break;
+
+                        await Task.Delay(50);
                     }
 
-                    QueueRunning = false;
-
-                    _cocApi.LogEvent<CocApi>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.ClanUpdateEnded);
+                    _cocApi.Clans.OnQueueCompletedEvent();
                 }
-                catch (Exception e)
-                {
-                    _stopRequested = false;
 
-                    QueueRunning = false;
+                QueueRunning = false;
 
-                    _cocApi.LogEvent<ClanUpdateGroup>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
+                _cocApi.OnLog(new LogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), LogLevel.Information));
+            }
+            catch (Exception e)
+            {
+                _stopRequested = false;
 
-                    _ = _cocApi.ClanQueueRestartAsync();
+                QueueRunning = false;
 
-                    throw e;
+                _cocApi.OnLog(new ExceptionLogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
+
+                _ = _cocApi.ClanQueueRestartAsync();
+
+                throw e;
                 }
             });
         }

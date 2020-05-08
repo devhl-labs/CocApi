@@ -4,10 +4,12 @@ using System;
 //using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
 using devhl.CocApi.Exceptions;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarLogEntry
+    public class WarLogEntry : IInitialize
     {
         public static string Url(string clanTag, int? limit = null, int? after = null, int? before = null)
         {
@@ -37,21 +39,65 @@ namespace devhl.CocApi.Models.War
         }
 
         [JsonProperty]
-        public Result Result { get; private set; }
+        [JsonConverter(typeof(ResultConverter))]
+        private Result Result { get; set; }
 
         [JsonProperty]
         public int TeamSize { get; private set; }
 
         [JsonProperty]
-        public WarClan? Clan { get; private set; }
+        private WarClan? Clan { get; set; }
 
         [JsonProperty]
-        public WarClan? Opponent { get; private set; }
+        private WarClan? Opponent { get; set; }
+
+        [JsonProperty]
+        public List<WarClan> WarClans { get; private set; } = new List<WarClan>();
 
         [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUtc { get; private set; }
 
         public override string ToString() => EndTimeUtc.ToString();
+
+        public void Initialize(CocApi cocApi)
+        {
+            if (Clan != null)
+            {
+                WarClans.Add(Clan);
+
+                if (Result == Result.Lose)
+                    Clan.Result = Result.Lose;
+
+                if (Result == Result.Win)
+                    Clan.Result = Result.Win;
+
+                if (Result == Result.Tie)
+                    Clan.Result = Result.Tie;
+
+                if (Result == Result.Null)
+                    Clan.Result = Result.Null;
+            }
+
+
+            if (Opponent != null)
+            {
+                WarClans.Add(Opponent);
+
+                if (Result == Result.Lose)
+                    Opponent.Result = Result.Lose;
+
+                if (Result == Result.Win)
+                    Opponent.Result = Result.Win;
+
+                if (Result == Result.Tie)
+                    Opponent.Result = Result.Tie;
+
+                if (Result == Result.Null)
+                    Opponent.Result = Result.Null;
+            }
+
+            WarClans = WarClans.OrderBy(wc => wc.ClanTag).ToList();
+        }
     }
 }

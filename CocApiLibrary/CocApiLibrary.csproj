@@ -6,12 +6,12 @@
     <Nullable>enable</Nullable>
     <Authors>devhl</Authors>
     <Product />
-    <Description>This is a View in Game library that will return responses from developer.clashofclans.com
+    <Description>This is a library that will return responses from developer.clashofclans.com
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</Description>
-    <Version>0.35.0-alpha</Version>
-    <AssemblyVersion>0.35.0.0</AssemblyVersion>
+    <Version>0.36.0-alpha</Version>
+    <AssemblyVersion>0.36.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
     <PackageId>CocApi</PackageId>
@@ -25,7 +25,7 @@ Use this feed to get Reflection while this is in prerelease.</Description>
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</PackageReleaseNotes>
-    <FileVersion>0.35.0.0</FileVersion>
+    <FileVersion>0.36.0.0</FileVersion>
     <ApplicationIcon />
     <AssemblyName>CocApi</AssemblyName>
     <RootNamespace>devhl.CocApi</RootNamespace>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 //using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
 using System.Linq;
+using devhl.CocApi.Converters;
 
 namespace devhl.CocApi.Models.War
 {
@@ -44,6 +45,7 @@ namespace devhl.CocApi.Models.War
         public decimal DestructionPercentage { get; internal set; }
 
         [JsonProperty]
+        [JsonConverter(typeof(ResultConverter))]
         public Result Result { get; internal set; }
 
         public void Initialize(CocApi cocApi)

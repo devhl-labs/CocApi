@@ -132,6 +132,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateLegendLeagueStatistics(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateLegendLeagueStatistics), fetched));
+
             if (LegendStatistics == null && fetched.LegendStatistics == null) return;
 
             if (LegendStatistics == null && fetched.LegendStatistics != null ||
@@ -172,6 +174,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateLabels(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateLabels), fetched));
+
             List<VillageLabel> added = new List<VillageLabel>();
 
             List<VillageLabel> removed = new List<VillageLabel>();
@@ -213,6 +217,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateVillageSpells(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateVillageSpells), fetched));
+
             List<Spell> newSpells = new List<Spell>();
 
             foreach(Spell spell in fetched.Spells.EmptyIfNull())
@@ -233,6 +239,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateVillageHeroes(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateVillageHeroes), fetched));
+
             List<Troop> newTroops = new List<Troop>();
 
             foreach (Troop troop in fetched.Heroes.EmptyIfNull())
@@ -254,6 +262,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateVillageTroops(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateVillageTroops), fetched));
+
             List<Troop> newTroops = new List<Troop>();
             
             foreach(Troop troop in fetched.Soldiers.EmptyIfNull())
@@ -275,6 +285,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateVillageAchievements(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateVillageAchievements), fetched));
+
             List<Achievement> newAchievements = new List<Achievement>();
 
             foreach(Achievement achievement in fetched.Achievements.EmptyIfNull())
@@ -298,6 +310,8 @@ namespace devhl.CocApi.Models.Village
 
         private void UpdateVillage(CocApi cocApi, Village fetched)
         {
+            cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateVillage), fetched));
+
             if (fetched.AttackWins != AttackWins ||
                 fetched.BestTrophies != BestTrophies ||
                 fetched.BestVersusTrophies != BestVersusTrophies ||

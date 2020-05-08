@@ -117,7 +117,7 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.LogEvent<Villages>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.VillageUpdateEnded);
+                    _cocApi.OnLog(new LogEventArgs(nameof(Villages), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
                 }
                 catch (Exception e)
                 {
@@ -125,7 +125,7 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.LogEvent<Villages>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
+                    _cocApi.OnLog(new ExceptionLogEventArgs(nameof(Villages), nameof(StartQueue), e));
 
                     _ = _cocApi.VillageQueueRestartAsync();
 

@@ -27,11 +27,11 @@ namespace devhl.CocApi.Models.Clan
 
         public int ClanLevel { get; set; }
 
-        public bool DownloadClanVillages { get; set; } = true;
+        public bool QueueClanVillages { get; set; } = true;
 
-        public bool DownloadLeagueWars { get; set; } = true;
+        public bool QueueLeagueWars { get; set; } = true;
        
-        public bool DownloadCurrentWar { get; set; } = true;
+        public bool QueueCurrentWar { get; set; } = true;
 
         public List<ClanVillageBuilder>? Villages { get; set; } = new List<ClanVillageBuilder>();
 
@@ -75,9 +75,9 @@ namespace devhl.CocApi.Models.Clan
                 Name = Name,
                 LocationId = LocationId,
                 ClanLevel = ClanLevel,
-                QueueClanVillages = DownloadClanVillages,
-                QueueLeagueWars = DownloadLeagueWars,
-                QueueCurrentWar = DownloadCurrentWar,
+                QueueClanVillages = QueueClanVillages,
+                QueueLeagueWars = QueueLeagueWars,
+                QueueCurrentWar = QueueCurrentWar,
                 Recruitment = Recruitment,
                 Description = Description,
                 ClanPoints = ClanPoints,

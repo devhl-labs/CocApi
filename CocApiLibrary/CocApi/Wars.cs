@@ -420,7 +420,7 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.LogEvent<Wars>(logLevel: LogLevel.Information, loggingEvent: LoggingEvent.WarUpdateEnded);
+                    _cocApi.OnLog(new LogEventArgs(nameof(Wars), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
                 }
                 catch (Exception e)
                 {
@@ -428,7 +428,7 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.LogEvent<Wars>(e, LogLevel.Critical, LoggingEvent.QueueCrashed);
+                    _cocApi.OnLog(new ExceptionLogEventArgs(nameof(Wars), nameof(StartQueue), e));
 
                     _ = _cocApi.WarQueueRestartAsync();
 
@@ -525,13 +525,36 @@ namespace devhl.CocApi
             if (queued.IsExpired() == false)
                 return;
 
+            WarLogEntry? warLogEntry = null;
+
             if (await _cocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
             {
-                queued.Update(_cocApi, fetched);
+                if (queued.State == WarState.InWar &&
+                    DateTime.UtcNow > queued.EndTimeUtc &&
+                    (fetched == null || (fetched is CurrentWar fetchedWar && fetchedWar.WarKey != queued.WarKey)))
+                {
+                    foreach(WarClan warClan in queued.WarClans)
+                    {
+                        Paginated<WarLogEntry>? logs = await _cocApi.Wars.FetchWarLogAsync(warClan.ClanTag);
 
-                fetched.WarAnnouncements = queued.WarAnnouncements;
+                        warLogEntry = logs?.Items.FirstOrDefault(e => e.EndTimeUtc == queued.EndTimeUtc && e.WarClans.First().Result != Result.Null);
 
-                _cocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
+                        if (warLogEntry != null)
+                            break;
+                    }
+                }
+
+                if (warLogEntry != null)
+                {
+                    queued.Update(_cocApi, warLogEntry);
+                }
+                else
+                {
+                    queued.Update(_cocApi, fetched);
+                }
+
+                if (fetched != null)
+                    _cocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
             }
         }
 

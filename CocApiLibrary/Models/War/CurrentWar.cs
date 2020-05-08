@@ -115,8 +115,8 @@ namespace devhl.CocApi.Models.War
                 {
                     if (WarClans[0].DestructionPercentage == WarClans[1].DestructionPercentage)
                     {
-                        WarClans[0].Result = Result.Draw;
-                        WarClans[1].Result = Result.Draw;
+                        WarClans[0].Result = Result.Tie;
+                        WarClans[1].Result = Result.Tie;
                     }
                     else if (WarClans[0].DestructionPercentage > WarClans[1].DestructionPercentage)
                     {
@@ -249,28 +249,30 @@ namespace devhl.CocApi.Models.War
 
         internal readonly object _announceWarLock = new object();
 
-        internal void Update(CocApi cocApi, IWar? downloadedWar)
+        internal void Update(CocApi cocApi, IWar? fetchedWar)
         {
-            PreUpdateAnnouncements(cocApi, downloadedWar);
+            PreUpdateAnnouncements(cocApi, fetchedWar);
 
-            if (ReferenceEquals(this, downloadedWar) || downloadedWar == null) 
+            if (ReferenceEquals(this, fetchedWar) || fetchedWar == null) 
                 return;
 
-            if (downloadedWar is CurrentWar currentWar)
+            if (fetchedWar is CurrentWar currentWar && WarKey == currentWar.WarKey)
             {
-                currentWar.WarType = this.WarType;
+                currentWar.WarType = WarType;
                 currentWar.WarAnnouncements = WarAnnouncements;
             }
 
-            UpdateWar(cocApi, downloadedWar);
+            UpdateWar(cocApi, fetchedWar);
 
-            UpdateAttacks(cocApi, downloadedWar);
+            UpdateAttacks(cocApi, fetchedWar);
 
-            WarEndSeenAnnouncement(cocApi, downloadedWar);
+            WarEndSeenAnnouncement(cocApi, fetchedWar);
         }
 
-        private void PreUpdateAnnouncements(CocApi cocApi, IWar? downloadedWar)
+        private void PreUpdateAnnouncements(CocApi cocApi, IWar? fetchedWar)
         {
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(PreUpdateAnnouncements), this, fetchedWar));
+
             if (WarAnnouncements.HasFlag(WarAnnouncements.WarStartingSoon) == false && DateTime.UtcNow > WarStartingSoonUtc && DateTime.UtcNow < StartTimeUtc)
             {
                 WarAnnouncements |= WarAnnouncements.WarStartingSoon;
@@ -295,9 +297,9 @@ namespace devhl.CocApi.Models.War
                 cocApi.Wars.OnWarEnded(this);
             }
 
-            CurrentWar? currentWar = downloadedWar as CurrentWar;
+            CurrentWar? currentWar = fetchedWar as CurrentWar;
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarIsAccessible) && (downloadedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarIsAccessible) && (fetchedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
             {
                 WarAnnouncements &= ~WarAnnouncements.WarIsAccessible;
                 cocApi.Wars.OnWarIsAccessibleChanged(this, false);
@@ -308,69 +310,83 @@ namespace devhl.CocApi.Models.War
                 cocApi.Wars.OnWarIsAccessibleChanged(currentWar, true);
             }
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndNotSeen) == false && (currentWar == null || WarKey != currentWar.WarKey) && DateTime.UtcNow > EndTimeUtc && DateTime.UtcNow.Day == EndTimeUtc.Day)
-            {
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndNotSeen) == false && 
+                (currentWar == null || WarKey != currentWar.WarKey) && 
+                DateTime.UtcNow > EndTimeUtc && 
+                DateTime.UtcNow.Day == EndTimeUtc.Day)
+            {              
                 WarAnnouncements |= WarAnnouncements.WarEndNotSeen;
                 cocApi.Wars.OnWarEndNotSeen(this);
             }
         }
 
-        private void WarEndSeenAnnouncement(CocApi cocApi, IWar? downloadedWar)
+        private void WarEndSeenAnnouncement(CocApi cocApi, IWar? fetchedWar)
         {
-            CurrentWar? currentWar = downloadedWar as CurrentWar;
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(WarEndSeenAnnouncement), this, fetchedWar));
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndSeen) == false && State != WarState.WarEnded && currentWar?.WarKey == WarKey && currentWar?.State == WarState.WarEnded)
+            CurrentWar? fetchedCurrentWar = fetchedWar as CurrentWar;
+
+            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndSeen) == false &&
+                WarKey == fetchedCurrentWar?.WarKey &&
+                State != WarState.WarEnded && 
+                fetchedCurrentWar.State == WarState.WarEnded)
             {
                 WarAnnouncements |= WarAnnouncements.WarEndSeen;
                 WarAnnouncements &= ~WarAnnouncements.WarEndNotSeen;
-                cocApi.Wars.OnWarEndSeen(currentWar);
+                cocApi.Wars.OnWarEndSeen(fetchedCurrentWar);
             }
         }
 
-        private void CreateMissedAttacks(CurrentWar downloadedWar, WarClan downloadedWarClan, int numberOfAttacksAllowed)
+        private void CreateMissedAttacks(CocApi cocApi, CurrentWar fetchedCurrentWar, WarClan fetchedWarClan, int numberOfAttacksAllowed)
         {
-            foreach (var downloadedWarVillage in downloadedWarClan.WarVillages.EmptyIfNull())
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(CreateMissedAttacks), this, fetchedCurrentWar));
+
+            foreach (var downloadedWarVillage in fetchedWarClan.WarVillages.EmptyIfNull())
             {
                 downloadedWarVillage.Attacks ??= new List<Attack>();
 
                 while(downloadedWarVillage.Attacks.Count() < numberOfAttacksAllowed)
                 {
-                    CreateMissedAttack(downloadedWar, downloadedWarVillage);
+                    CreateMissedAttack(cocApi, fetchedCurrentWar, downloadedWarVillage);
                 }
             }
 
             return;
         }
 
-        private Attack CreateMissedAttack(CurrentWar downloadedWar, WarVillage downloadedWarVillage)
+        private Attack CreateMissedAttack(CocApi cocApi, CurrentWar fetchedCurrentWar, WarVillage fetchedWarVillage)
         {
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(CreateMissedAttack), this, fetchedCurrentWar));
+
             Attack attack = new Attack
             {
-                AttackerClanTag = downloadedWarVillage.ClanTag,
+                AttackerClanTag = fetchedWarVillage.ClanTag,
 
-                AttackerMapPosition = downloadedWarVillage.RosterPosition,
+                AttackerMapPosition = fetchedWarVillage.RosterPosition,
 
-                AttackerTag = downloadedWarVillage.VillageTag,
+                AttackerTag = fetchedWarVillage.VillageTag,
 
-                AttackerTownHallLevel = downloadedWarVillage.TownHallLevel,
+                AttackerTownHallLevel = fetchedWarVillage.TownHallLevel,
 
                 PreparationStartTimeUtc = PreparationStartTimeUtc,
 
                 WarKey = WarKey,
 
-                DefenderClanTag = WarClans.First(c => c.ClanTag != downloadedWarVillage.ClanTag).ClanTag
+                DefenderClanTag = WarClans.First(c => c.ClanTag != fetchedWarVillage.ClanTag).ClanTag
             };
 
-            downloadedWar.Attacks.Add(attack);
+            fetchedCurrentWar.Attacks.Add(attack);
 
-            downloadedWarVillage.Attacks?.Add(attack);
+            fetchedWarVillage.Attacks?.Add(attack);
 
             return attack;
         }
 
-        private void UpdateWar(CocApi cocApi, IWar? downloadedWar)
+        private void UpdateWar(CocApi cocApi, IWar? fetchedWar)
         {
-            if (!(downloadedWar is CurrentWar currentWar) || currentWar.WarKey != WarKey) return;
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(UpdateWar), this, fetchedWar));
+
+            if (!(fetchedWar is CurrentWar currentWar) || currentWar.WarKey != WarKey) return;
 
             if (EndTimeUtc != currentWar.EndTimeUtc ||
                 StartTimeUtc != currentWar.StartTimeUtc ||
@@ -381,9 +397,11 @@ namespace devhl.CocApi.Models.War
             }
         }
 
-        private void UpdateAttacks(CocApi cocApi, IWar? downloadedWar)
+        private void UpdateAttacks(CocApi cocApi, IWar? fetchedWar)
         {
-            if (!(downloadedWar is CurrentWar downloadedCurrentWar) || downloadedCurrentWar.WarKey != WarKey) return;
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(UpdateAttacks), this, fetchedWar));
+
+            if (!(fetchedWar is CurrentWar downloadedCurrentWar) || downloadedCurrentWar.WarKey != WarKey) return;
 
             //doing it this way so the ClanBuilder does not require builders for WarVillages
             int attacks = WarClans[0].AttackCount + WarClans[1].AttackCount;
@@ -396,11 +414,11 @@ namespace devhl.CocApi.Models.War
                 {
                     if (this is LeagueWar)
                     {
-                        CreateMissedAttacks(downloadedCurrentWar, downloadedWarClan, 1);
+                        CreateMissedAttacks(cocApi, downloadedCurrentWar, downloadedWarClan, 1);
                     }
                     else
                     {
-                        CreateMissedAttacks(downloadedCurrentWar, downloadedWarClan, 2);
+                        CreateMissedAttacks(cocApi, downloadedCurrentWar, downloadedWarClan, 2);
                     }
                 }
             }
@@ -411,5 +429,38 @@ namespace devhl.CocApi.Models.War
         }
 
         public override string ToString() => PreparationStartTimeUtc.ToString();
+
+
+
+
+
+
+
+
+
+
+        internal void Update(CocApi cocApi, WarLogEntry warLogEntry)
+        {
+            UpdateAttacks(cocApi, warLogEntry);
+
+            if (Attacks.Count() == warLogEntry.WarClans.Sum(wc => wc.AttackCount))
+            { 
+                
+            }
+            else
+            {
+
+            }
+        }
+
+        private void UpdateAttacks(CocApi cocApi, WarLogEntry warLogEntry)
+        {
+            //foreach(WarClan storedWarClan in WarClans)
+            //{
+            //    WarClan fetched = warLogEntry.WarClans.First(wc => wc.ClanTag == storedWarClan.ClanTag);
+
+            //    if (storedWarClan.AttackCount != fetched.AttackCount
+            //}
+        }
     }
 }

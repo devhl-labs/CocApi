@@ -68,12 +68,12 @@ namespace devhl.CocApi
     {
         [EnumMember(Value = "lose")]
         Lose = -1,
-        [EnumMember(Value = "unknown")]
-        Unknown = 0,
+        [EnumMember(Value = null)]
+        Null = 0,
         [EnumMember(Value = "win")]
         Win = 1,
-        [EnumMember(Value = "draw")]
-        Draw = 2
+        [EnumMember(Value = "tie")]
+        Tie = 2
     }
 
     public enum WarType
@@ -143,22 +143,47 @@ namespace devhl.CocApi
         Auto = 2
     }
 
+    //public enum LoggingEvent
+    //{
+    //    Unknown,
+    //    UpdatingClan,
+    //    IsRateLimited,
+    //    IsPremptiveRateLimited,
+    //    InvalidTag,
+    //    HttpResponseError,
+    //    HttpResponseStatusCodeSuccessful,
+    //    HttpResponseStatusCodeUnsuccessful,
+    //    ClanUpdateStarted,
+    //    ClanUpdateEnded,
+    //    QueueCrashed,
+    //    WarUpdateStarted,
+    //    WarUpdateEnded,
+    //    VillageUpdateEnded
+    //}
+
     public enum LoggingEvent
     {
         Unknown,
-        UpdatingClan,
-        IsRateLimited,
-        IsPremptiveRateLimited,
-        InvalidTag,
-        HttpResponseError,
-        HttpResponseStatusCodeSuccessful,
-        HttpResponseStatusCodeUnsuccessful,
-        ClanUpdateStarted,
-        ClanUpdateEnded,
-        QueueCrashed,
-        WarUpdateStarted,
-        WarUpdateEnded,
-        VillageUpdateEnded
+        QueueExited,
+        QueueRestartFailed,
+        Exception,
+        RateLimited,
+        PreemptiveRateLimited
+
+
+        //UpdatingClan,
+        //IsRateLimited,
+        //IsPremptiveRateLimited,
+        //InvalidTag,
+        //HttpResponseError,
+        //HttpResponseStatusCodeSuccessful,
+        //HttpResponseStatusCodeUnsuccessful,
+        //ClanUpdateStarted,
+        //ClanUpdateEnded,
+        //QueueCrashed,
+        //WarUpdateStarted,
+        //WarUpdateEnded,
+        //VillageUpdateEnded
     }
 
     public enum LogLevel
@@ -185,6 +210,7 @@ namespace devhl.CocApi
         WarEnded = 64,
         AttacksNotSeen = 128,
         AttacksMissed = 256,
-        WarEndSeen = 512
+        WarEndSeen = 512,
+        WarLogSearched = 1024
     }
 }
