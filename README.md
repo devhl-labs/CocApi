@@ -14,7 +14,7 @@ The queued clan will contain whatever is already stored in memory.
 The queuedAsync clan will return what is in memory.  If nothing is found or if the object is expired, it will query the API.
 The fetchedAsync clan will only return what the API returns.
 
-## [CocApiConsoleTest](/CocApiConsoleTest)
+## [Using CocApi](/CocApiConsoleTest/Program.cs)
 The test program shows you how to set up the library.
 The library can grab SC API objects on command.
 It can also automatically keep these objects up to date by polling the API.
@@ -22,10 +22,6 @@ When an object changes, it will fire an event which you can subscribe to.
 There are also a few static methods in this class that may be useful.
 The test program will output the following:<br/><br/>
 ![Test Program console output](/images/console.jpg)\
-
-## [CocApi](/CocApiLibrary/CocApi)
-The CocApi class is the entry point to this library.
-This program has the potential to consume a lot of memory if you queue many objects.
 
 ## [CocApiConfiguration](/CocApiLibrary/CocApiConfiguration.cs)
 This class can control how often your SC API token is used.
