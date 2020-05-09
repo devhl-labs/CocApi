@@ -29,7 +29,7 @@ When CocApi returns an IWar, you can cast it to the appropriate type when necess
 LeagueWar also inherits CurrentWar.  If you have to cast, ensure you start with LeagueWar.
 
 ## ILeagueGroup
-This empty interface is implemented by LeagueGroup and LeagueGroupNotFound.  Clans that are not in CWL war will return a LeagueGroupNotFound.
+This empty interface is implemented by LeagueGroup and LeagueGroupNotFound.
 
 ## The Log Event
 Log events with a source of WebResponse represent a request sent to the API.
