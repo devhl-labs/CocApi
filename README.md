@@ -10,6 +10,9 @@ Clan? queued = cocApi.Clans.Get("#clanTag");
 Clan? queuedAsync = await cocApi.Clans.GetAsync("#clanTag");
 Clan? fetchedAsync = await cocApi.Clans.FetchAsync("#clanTag");
 ```
+The queued clan will contain whatever is already stored in memory.
+The queuedAsync clan will return what is in memory.  If nothing is found or if the object is expired, it will query the API.
+The fetchedAsync clan will only return what the API returns.
 
 ## [CocApiConsoleTest](/CocApiConsoleTest)
 The test program shows you how to set up the library.
@@ -19,10 +22,6 @@ When an object changes, it will fire an event which you can subscribe to.
 There are also a few static methods in this class that may be useful.
 The test program will output the following:<br/><br/>
 ![Test Program console output](/images/console.jpg)\
-
-The queued clan will contain whatever is already stored in memory.
-The queuedAsync clan will return what is in memory.  If nothing is found or if the object is expired, it will query the API.
-The fetchedAsync clan will only return what the API returns.
 
 ## [CocApi](/CocApiLibrary/CocApi)
 The CocApi class is the entry point to this library.
