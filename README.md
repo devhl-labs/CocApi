@@ -4,6 +4,13 @@ A wrapper for [developer.clashofclans.com](https://developer.clashofclans.com/#/
 ## Help  
 ![Discord Banner 2](https://discordapp.com/api/guilds/701245583444279328/widget.png?style=banner2)
 
+## Using the library
+```
+Clan? queued = cocApi.Clans.Get("#clanTag");
+Clan? queuedAsync = await cocApi.Clans.GetAsync("#clanTag");
+Clan? fetchedAsync = await cocApi.Clans.FetchAsync("#clanTag");
+```
+
 ## [CocApiConsoleTest](/CocApiConsoleTest)
 The test program shows you how to set up the library.
 The library can grab SC API objects on command.
@@ -13,11 +20,6 @@ There are also a few static methods in this class that may be useful.
 The test program will output the following:<br/><br/>
 ![Test Program console output](/images/console.jpg)\
 
-## Using the library
-```Clan? queued = cocApi.Clans.Get("#clanTag");
-Clan? queuedAsync = await cocApi.Clans.GetAsync("#clanTag");
-Clan? fetchedAsync = await cocApi.Clans.FetchAsync("#clanTag");
-```
 The queued clan will contain whatever is already stored in memory.
 The queuedAsync clan will return what is in memory.  If nothing is found or if the object is expired, it will query the API.
 The fetchedAsync clan will only return what the API returns.
