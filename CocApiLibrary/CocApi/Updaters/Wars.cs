@@ -429,7 +429,7 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.OnLog(new ExceptionLogEventArgs(nameof(Wars), nameof(StartQueue), e));
+                    _cocApi.OnLog(new ExceptionEventArgs(nameof(Wars), nameof(StartQueue), e));
 
                     _ = _cocApi.WarQueueRestartAsync();
 

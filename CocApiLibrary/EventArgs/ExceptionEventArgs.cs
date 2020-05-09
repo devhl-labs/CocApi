@@ -6,11 +6,11 @@ using System.Text;
 
 namespace devhl.CocApi
 {
-    public class ExceptionLogEventArgs : LogEventArgs
+    public class ExceptionEventArgs : LogEventArgs
     {
         public Exception Exception { get; internal set; }
 
-        public ExceptionLogEventArgs(string source, string method, Exception exception) : base(source, method, LogLevel.Error, exception.Message)
+        public ExceptionEventArgs(string source, string method, Exception exception) : base(source, method, LogLevel.Error, exception.Message)
         {
             Exception = exception;
         }

@@ -125,7 +125,7 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.OnLog(new ExceptionLogEventArgs(nameof(Villages), nameof(StartQueue), e));
+                    _cocApi.OnLog(new ExceptionEventArgs(nameof(Villages), nameof(StartQueue), e));
 
                     _ = _cocApi.VillageQueueRestartAsync();
 

@@ -91,7 +91,7 @@ namespace devhl.CocApi
 
                 QueueRunning = false;
 
-                _cocApi.OnLog(new ExceptionLogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
+                _cocApi.OnLog(new ExceptionEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
 
                 _ = _cocApi.ClanQueueRestartAsync();
 
