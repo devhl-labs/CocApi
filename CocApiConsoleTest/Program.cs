@@ -59,9 +59,9 @@ namespace CocApiConsoleTest
             cocApi.Clans.Queue(clans); //optionally use the ClanBuilder object and Build method to insert Clan object loaded from your database
                                        //events will fire as if your program was never restarted
 
-            cocApi.Clans.QueueClanVillages = false; //events in cocApi.Villages will fire on ClanVillages in clans that are in the clan queue
+            cocApi.Clans.QueueClanVillages = true; //events in cocApi.Villages will fire on ClanVillages in clans that are in the clan queue
 
-            cocApi.Wars.DownloadLeagueWars = DownloadLeagueWars.False; //league wars will download at the beginning of the month only
+            cocApi.Wars.DownloadLeagueWars = DownloadLeagueWars.Auto; //league wars will download at the beginning of the month only
 
             //cocApi.Villages.Queue("#00000"); //you may watch individual villages as well. this queue may take a long time if there are many villages
 

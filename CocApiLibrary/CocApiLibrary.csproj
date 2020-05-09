@@ -34,15 +34,6 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
   <ItemGroup>
     <Compile Remove="jsonconverterattribute.cs" />
     <Compile Remove="SCDateTimeConverterAttribute.cs" />
-    <!--<Compile Update="CocApi.Events.GetModelOrDefaultAsync.cs">
-      <DependentUpon>CocApi.Events.cs</DependentUpon>
-    </Compile>
-    <Compile Update="CocApi.GetModelOrDefault.cs">
-      <DependentUpon>CocApi.cs</DependentUpon>
-    </Compile>
-    <Compile Update="CocApi.Events.cs">
-      <DependentUpon>CocApi.cs</DependentUpon>
-    </Compile>-->
   </ItemGroup>
 
   <ItemGroup>
