@@ -38,8 +38,8 @@ The API allows about 10 requests per second per key.
 ## [WebResponse](/CocApiLibrary/WebResponse.cs)
 If it prints to the ILogger, that indicates that the library is polling the API.
 
-## [IWar](/CocApiLibrary/Models/War/IWar.cs)
-This interface is implemented by [CurrentWar](/CocApiLibrary/Models/War/CurrentWar.cs), [LeagueWar](/CocApiLibrary/Models/War/LeagueWar.cs), [NotInWar](/CocApiLibrary/Models/War/NotInWar.cs) and [PrivateWarLog](/CocApiLibrary/Models/War/PrivateWarLog.cs).
+## IWar
+This empty interface is implemented by [CurrentWar](/CocApiLibrary/Models/War/CurrentWar.cs), [LeagueWar](/CocApiLibrary/Models/War/LeagueWar.cs), [NotInWar](/CocApiLibrary/Models/War/NotInWar.cs) and [PrivateWarLog](/CocApiLibrary/Models/War/PrivateWarLog.cs).
 When CocApi returns an IWar, you can cast it to the appropriate type when necessary.
 LeagueWar also inherits CurrentWar.  If you have to cast, ensure you start with LeagueWar.
 
