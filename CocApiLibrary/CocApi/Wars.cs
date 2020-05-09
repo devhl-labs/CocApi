@@ -60,6 +60,7 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarEndSeen;
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStarted;
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStartingSoon;
+        public event AsyncEventHandler<ChangedEventArgs<CurrentWar, WarLogEntry>>? FinalAttacksNotSeen;
         public event AsyncEventHandler? WarQueueCompleted;
 
         /// <summary>
@@ -481,8 +482,8 @@ namespace devhl.CocApi
         internal void OnWarEndNotSeen(CurrentWar fetched)
             => WarEndNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(fetched));
 
-        internal void OnWarEndSeen(CurrentWar fetched)
-            => WarEndSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(fetched));
+        internal void OnWarEndSeen(CurrentWar currentWar)
+            => WarEndSeen?.Invoke(this, new ChangedEventArgs<CurrentWar>(currentWar));
 
         internal void OnWarIsAccessibleChanged(CurrentWar currentWar, bool isAccessible)
             => WarAccessibilityChanged?.Invoke(this, new ChangedEventArgs<CurrentWar, bool>(currentWar, isAccessible));
@@ -494,6 +495,8 @@ namespace devhl.CocApi
             => WarStartingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(fetched));
 
         internal void OnWarQueueCompleted() => WarQueueCompleted?.Invoke(this, EventArgs.Empty);
+
+        internal void OnFinalAttacksNotSeen(CurrentWar storedWar, WarLogEntry warLogEntry) => FinalAttacksNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar, WarLogEntry>(storedWar, warLogEntry));
 
         private async Task PopulateWars(Clan clan)
         {
@@ -529,7 +532,9 @@ namespace devhl.CocApi
 
             if (await _cocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
             {
-                if (queued.State == WarState.InWar &&
+                if ((queued.Announcements.HasFlag(Announcements.WarEndSeen) == false && 
+                    queued.Announcements.HasFlag(Announcements.WarLogSearched) == false) &&
+                    queued.State == WarState.InWar &&
                     DateTime.UtcNow > queued.EndTimeUtc &&
                     (fetched == null || (fetched is CurrentWar fetchedWar && fetchedWar.WarKey != queued.WarKey)))
                 {

@@ -77,7 +77,7 @@ namespace devhl.CocApi.Models.War
         //public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
 
         [JsonProperty]
-        public WarAnnouncements WarAnnouncements { get; set; }
+        public Announcements Announcements { get; set; }
 
         public void Initialize(CocApi cocApi)
         {
@@ -146,7 +146,7 @@ namespace devhl.CocApi.Models.War
                 clan.WarKey = WarKey;
 
                 clan.Initialize(cocApi);
-
+                
                 clan.WarVillages = clan.WarVillages.OrderBy(wv => wv.RosterPosition);
 
                 int i = 1;
@@ -226,9 +226,7 @@ namespace devhl.CocApi.Models.War
             }
 
             foreach (WarClan clan in WarClans)
-            {
-                clan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == clan.ClanTag);
-            }
+                clan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == clan.ClanTag);            
         }
 
         public bool WarIsOverOrAllAttacksUsed()
@@ -256,10 +254,10 @@ namespace devhl.CocApi.Models.War
             if (ReferenceEquals(this, fetchedWar) || fetchedWar == null) 
                 return;
 
-            if (fetchedWar is CurrentWar currentWar && WarKey == currentWar.WarKey)
+            if (fetchedWar is CurrentWar fetchedCurrentWar && WarKey == fetchedCurrentWar.WarKey)
             {
-                currentWar.WarType = WarType;
-                currentWar.WarAnnouncements = WarAnnouncements;
+                fetchedCurrentWar.WarType = WarType;
+                fetchedCurrentWar.Announcements = Announcements;
             }
 
             UpdateWar(cocApi, fetchedWar);
@@ -273,49 +271,50 @@ namespace devhl.CocApi.Models.War
         {
             cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(PreUpdateAnnouncements), this, fetchedWar));
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarStartingSoon) == false && DateTime.UtcNow > WarStartingSoonUtc && DateTime.UtcNow < StartTimeUtc)
+            if (Announcements.HasFlag(Announcements.WarStartingSoon) == false && DateTime.UtcNow > WarStartingSoonUtc && DateTime.UtcNow < StartTimeUtc)
             {
-                WarAnnouncements |= WarAnnouncements.WarStartingSoon;
+                Announcements |= Announcements.WarStartingSoon;
                 cocApi.Wars.OnWarStartingSoon(this);
             }
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndingSoon) == false && DateTime.UtcNow > WarEndingSoonUtc && DateTime.UtcNow < EndTimeUtc)
+            if (Announcements.HasFlag(Announcements.WarEndingSoon) == false && DateTime.UtcNow > WarEndingSoonUtc && DateTime.UtcNow < EndTimeUtc)
             {
-                WarAnnouncements |= WarAnnouncements.WarEndingSoon;
+                Announcements |= Announcements.WarEndingSoon;
                 cocApi.Wars.OnWarEndingSoon(this);
             }
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarStarted) == false && DateTime.UtcNow > StartTimeUtc && DateTime.UtcNow < EndTimeUtc)
+            if (Announcements.HasFlag(Announcements.WarStarted) == false && DateTime.UtcNow > StartTimeUtc && DateTime.UtcNow < EndTimeUtc)
             {
-                WarAnnouncements |= WarAnnouncements.WarStarted;
+                Announcements |= Announcements.WarStarted;
                 cocApi.Wars.OnWarStarted(this);
             }
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEnded) == false && DateTime.UtcNow > EndTimeUtc && DateTime.UtcNow.AddHours(1).Day == EndTimeUtc.Day)
+            if (Announcements.HasFlag(Announcements.WarEnded) == false && DateTime.UtcNow > EndTimeUtc && DateTime.UtcNow.AddHours(1).Day == EndTimeUtc.Day)
             {
-                WarAnnouncements |= WarAnnouncements.WarEnded;
+                Announcements |= Announcements.WarEnded;
                 cocApi.Wars.OnWarEnded(this);
             }
 
             CurrentWar? currentWar = fetchedWar as CurrentWar;
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarIsAccessible) && (fetchedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
+            if (Announcements.HasFlag(Announcements.WarIsAccessible) && (fetchedWar is PrivateWarLog || currentWar?.WarKey != WarKey))
             {
-                WarAnnouncements &= ~WarAnnouncements.WarIsAccessible;
+                Announcements &= ~Announcements.WarIsAccessible;
                 cocApi.Wars.OnWarIsAccessibleChanged(this, false);
             }
-            else if (WarAnnouncements.HasFlag(WarAnnouncements.WarIsAccessible) == false && currentWar != null && currentWar.WarKey == WarKey)
+            else if (Announcements.HasFlag(Announcements.WarIsAccessible) == false && currentWar != null && currentWar.WarKey == WarKey)
             {
-                WarAnnouncements |= WarAnnouncements.WarIsAccessible;
+                Announcements |= Announcements.WarIsAccessible;
                 cocApi.Wars.OnWarIsAccessibleChanged(currentWar, true);
             }
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndNotSeen) == false && 
+            if (Announcements.HasFlag(Announcements.WarEndNotSeen) == false && 
                 (currentWar == null || WarKey != currentWar.WarKey) && 
                 DateTime.UtcNow > EndTimeUtc && 
-                DateTime.UtcNow.Day == EndTimeUtc.Day)
+                DateTime.UtcNow.Day == EndTimeUtc.Day &&
+                WarIsOverOrAllAttacksUsed() == false)
             {              
-                WarAnnouncements |= WarAnnouncements.WarEndNotSeen;
+                Announcements |= Announcements.WarEndNotSeen;
                 cocApi.Wars.OnWarEndNotSeen(this);
             }
         }
@@ -326,14 +325,23 @@ namespace devhl.CocApi.Models.War
 
             CurrentWar? fetchedCurrentWar = fetchedWar as CurrentWar;
 
-            if (WarAnnouncements.HasFlag(WarAnnouncements.WarEndSeen) == false &&
-                WarKey == fetchedCurrentWar?.WarKey &&
+            if (Announcements.HasFlag(Announcements.WarEndSeen))
+                return;
+
+            if (WarIsOverOrAllAttacksUsed() == true ||
+                (WarKey == fetchedCurrentWar?.WarKey &&
                 State != WarState.WarEnded && 
-                fetchedCurrentWar.State == WarState.WarEnded)
+                fetchedCurrentWar.State == WarState.WarEnded))
             {
-                WarAnnouncements |= WarAnnouncements.WarEndSeen;
-                WarAnnouncements &= ~WarAnnouncements.WarEndNotSeen;
-                cocApi.Wars.OnWarEndSeen(fetchedCurrentWar);
+                Announcements |= Announcements.WarEndSeen;
+                Announcements &= ~Announcements.WarEndNotSeen;
+                if (fetchedCurrentWar != null)
+                {
+                    fetchedCurrentWar.Announcements |= Announcements.WarEndSeen;
+                    fetchedCurrentWar.Announcements &= ~Announcements.WarEndNotSeen;
+                }
+                LocalExpirationUtc = DateTime.MaxValue;
+                cocApi.Wars.OnWarEndSeen(fetchedCurrentWar ?? this);
             }
         }
 
@@ -430,37 +438,65 @@ namespace devhl.CocApi.Models.War
 
         public override string ToString() => PreparationStartTimeUtc.ToString();
 
-
-
-
-
-
-
-
-
-
         internal void Update(CocApi cocApi, WarLogEntry warLogEntry)
         {
-            UpdateAttacks(cocApi, warLogEntry);
+            cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(Update), this, null));
+
+            Announcements |= Announcements.WarLogSearched;
 
             if (Attacks.Count() == warLogEntry.WarClans.Sum(wc => wc.AttackCount))
-            { 
-                
+            {
+                foreach (WarClan warClan in WarClans)
+                {
+                    if (this is LeagueWar)
+                    {
+                        CreateMissedAttacks(cocApi, this, warClan, 1);
+                    }
+                    else
+                    {
+                        CreateMissedAttacks(cocApi, this, warClan, 2);
+                    }
+
+                    WarClan fetchedWarClan = warLogEntry.WarClans.First(wc => wc.ClanTag == warClan.ClanTag);
+
+                    warClan.AttackCount = Attacks.Count(a => a.AttackerClanTag == warClan.ClanTag);
+
+                    warClan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == warClan.ClanTag);
+
+                    warClan.Result = fetchedWarClan.Result;
+
+                    warClan.Stars = fetchedWarClan.Stars;
+
+                    warClan.DestructionPercentage = fetchedWarClan.DestructionPercentage;
+                }
+
+                State = WarState.WarEnded;
+                LocalExpirationUtc = DateTime.MaxValue;
+                Announcements |= Announcements.WarEndSeen;
+
+                cocApi.Wars.OnNewAttacks(this, Attacks.Where(a => a.DefenderTag == null).ToList());
+                cocApi.Wars.OnWarEndSeen(this);
             }
             else
             {
+                foreach(WarClan warClan in WarClans)
+                {
+                    WarClan fetchedWarClan = warLogEntry.WarClans.First(wc => wc.ClanTag == warClan.ClanTag);
 
+                    warClan.AttackCount = Attacks.Count(a => a.AttackerClanTag == warClan.ClanTag);
+
+                    warClan.DefenseCount = Attacks.Count(a => a.DefenderClanTag == warClan.ClanTag);
+
+                    warClan.Result = fetchedWarClan.Result;
+
+                    warClan.Stars = fetchedWarClan.Stars;
+
+                    warClan.DestructionPercentage = fetchedWarClan.DestructionPercentage;
+
+                }
+
+                cocApi.Wars.OnFinalAttacksNotSeen(this, warLogEntry);
             }
-        }
-
-        private void UpdateAttacks(CocApi cocApi, WarLogEntry warLogEntry)
-        {
-            //foreach(WarClan storedWarClan in WarClans)
-            //{
-            //    WarClan fetched = warLogEntry.WarClans.First(wc => wc.ClanTag == storedWarClan.ClanTag);
-
-            //    if (storedWarClan.AttackCount != fetched.AttackCount
-            //}
         }
     }
 }

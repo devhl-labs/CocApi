@@ -198,7 +198,7 @@ namespace devhl.CocApi
     }
 
     [Flags]
-    public enum WarAnnouncements
+    public enum Announcements
     {
         None = 0,
         WarEndingSoon = 1,

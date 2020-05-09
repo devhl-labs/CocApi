@@ -43,7 +43,7 @@ namespace devhl.CocApi.Models.War
 
         public string? WarTag { get; set; }
 
-        public WarAnnouncements WarAnnouncements {get;set;}
+        public Announcements Announcements {get;set;}
 
         public T Build<T>() where T : CurrentWar, new()
         {
@@ -69,7 +69,7 @@ namespace devhl.CocApi.Models.War
                 State = State,
                 WarType = WarType,
                 WarKey = WarKey,
-                WarAnnouncements = WarAnnouncements
+                Announcements = Announcements
             };
 
             foreach (WarClanBuilder warClanBuilder in WarClans)

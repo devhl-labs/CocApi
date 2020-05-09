@@ -57,7 +57,7 @@ namespace devhl.CocApi
 
         public void OnWarStartingSoon(CurrentWar fetched) => _cocApi.Wars.OnWarStartingSoon(fetched);
 
-
+        public void OnFinalAttacksNotSeen(CurrentWar storedWar, WarLogEntry warLogEntry) => _cocApi.Wars.OnFinalAttacksNotSeen(storedWar, warLogEntry);
 
 
 
