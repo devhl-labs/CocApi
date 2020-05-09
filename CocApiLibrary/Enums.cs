@@ -143,24 +143,6 @@ namespace devhl.CocApi
         Auto = 2
     }
 
-    //public enum LoggingEvent
-    //{
-    //    Unknown,
-    //    UpdatingClan,
-    //    IsRateLimited,
-    //    IsPremptiveRateLimited,
-    //    InvalidTag,
-    //    HttpResponseError,
-    //    HttpResponseStatusCodeSuccessful,
-    //    HttpResponseStatusCodeUnsuccessful,
-    //    ClanUpdateStarted,
-    //    ClanUpdateEnded,
-    //    QueueCrashed,
-    //    WarUpdateStarted,
-    //    WarUpdateEnded,
-    //    VillageUpdateEnded
-    //}
-
     public enum LoggingEvent
     {
         Unknown,
@@ -169,21 +151,6 @@ namespace devhl.CocApi
         Exception,
         RateLimited,
         PreemptiveRateLimited
-
-
-        //UpdatingClan,
-        //IsRateLimited,
-        //IsPremptiveRateLimited,
-        //InvalidTag,
-        //HttpResponseError,
-        //HttpResponseStatusCodeSuccessful,
-        //HttpResponseStatusCodeUnsuccessful,
-        //ClanUpdateStarted,
-        //ClanUpdateEnded,
-        //QueueCrashed,
-        //WarUpdateStarted,
-        //WarUpdateEnded,
-        //VillageUpdateEnded
     }
 
     public enum LogLevel

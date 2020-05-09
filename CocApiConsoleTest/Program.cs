@@ -6,91 +6,43 @@ using Microsoft.Extensions.DependencyInjection;
 
 using devhl.CocApi;
 
-
 namespace CocApiConsoleTest
 {
     class Program
     {
-        private static CocApi? _cocApi = null;
-
         public static async Task Main(string[] args)
         {
             var services = ConfigureServices();
 
-            ILogger logger = services.GetRequiredService<ILogger>();
-
-            await logger.LogAsync<Program>("Press CTRL-C to exit");
-
             Console.CancelKeyPress += (s, e) => DoExitStuff(services);
 
-            await ConfigureCocApi(services);
+            LogService logService = services.GetRequiredService<LogService>();
+
+            logService.Log(LogLevel.Information, nameof(Program), null, "Press CTRL-C to exit");
+
+            ConfigureCocApi(services);
 
             services.GetRequiredService<EventHandlerService>();
 
             await Task.Delay(-1);
 
-            if (args == null) { } //remove the warning
-        }     
+            if (args == null) { }
+        }
 
         public static IServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
-                .AddSingleton<ILogger, LogService>()
+                .AddSingleton<LogService>()
                 .AddSingleton<CocApi>()
+                .AddSingleton(GetCocApiConfiguration)
                 .AddSingleton<EventHandlerService>()
                 .BuildServiceProvider();
         }
 
-        private static async Task ConfigureCocApi(IServiceProvider serviceProvider)
+        private static void ConfigureCocApi(IServiceProvider services)
         {
-            CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
-            {
-                /*
-                 *  These times are rather conservative incase the key you provide is 
-                 *  used elsewhere.  In production you can make these whatever you want.
-                 *  You will certainly want the TokenTimeOut to be much faster,
-                 *  perhaps half a second.
-                 *  
-                 *  Strongly recommend you print some things to your ILogger
-                 *  so you can get warned of preemptive rate limits and rate limits.
-                 *  
-                 *  Preemptive rate limits are okay but tell you that you maxing out your TokenTimeOut.
-                 *  Rate Limits are bad!  They indicate SC is throttling your token.
-                 *  Preemptive rate limits are not the same as rate limits.
-                 *  
-                 *  Preemptive rate limits come from the TokenObject.
-                 *  Rate Limits are actual errors that come from WebResponse.
-                 *  
-                 *  This program will honor cache expirations as well, 
-                 *  so polling the API may wait longer than the time to live.
-                 *  
-                 *  Do not hard code these values.  Store them in a json file instead.
-                 */
+            CocApi cocApi = services.GetRequiredService<CocApi>();
 
-                CacheHttpResponses = true,
-                DownloadCurrentWar = true,
-                DownloadVillages = false,
-                NumberOfUpdaters = 1,
-                DownloadLeagueWars = DownloadLeagueWars.False,
-                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5),
-                TokenTimeOut = TimeSpan.FromSeconds(1),
-
-                ClanTimeToLive = TimeSpan.FromMinutes(5),
-                CurrentWarTimeToLive = TimeSpan.FromSeconds(15),
-                NotInWarTimeToLive = TimeSpan.FromSeconds(15),
-                PrivateWarLogTimeToLive = TimeSpan.FromSeconds(15),
-                LeagueGroupTimeToLive = TimeSpan.FromHours(1),
-                LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
-                LeagueWarTimeToLive = TimeSpan.FromSeconds(15),
-                VillageTimeToLive = TimeSpan.FromHours(1)                
-            };
-
-            cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
-
-            _cocApi = serviceProvider.GetRequiredService<CocApi>();
-
-             await _cocApi.InitializeAsync(cocApiConfiguration);          
-            
             List<string> clans = new List<string>
             {
                 "#8J82PV0C",   // FYSB Unbuckled
@@ -104,18 +56,57 @@ namespace CocApiConsoleTest
                 "#R09C9RR0",   // Parathanon
             };
 
-            _cocApi.WatchClans(clans);
+            cocApi.Clans.Queue(clans); //optionally use the ClanBuilder object and Build method to insert Clan object loaded from your database
+                                       //events will fire as if your program was never restarted
 
-            _cocApi.StartUpdatingClans();
+            cocApi.Clans.QueueClanVillages = false; //events in cocApi.Villages will fire on ClanVillages in clans that are in the clan queue
 
-            return;
+            cocApi.Wars.DownloadLeagueWars = DownloadLeagueWars.False; //league wars will download at the beginning of the month only
+
+            //cocApi.Villages.Queue("#00000"); //you may watch individual villages as well. this queue may take a long time if there are many villages
+
+            cocApi.Clans.StartQueue();
+
+            cocApi.Wars.StartQueue();
+        }
+
+        private static CocApiConfiguration GetCocApiConfiguration(IServiceProvider serviceProvider)
+        {
+            CocApiConfiguration cocApiConfiguration = new CocApiConfiguration
+            {
+                //Do not hard code these values
+                //Store them in a json file instead.
+                
+                NumberOfUpdaters = 1,  //list of clans to be updated can be split across multiple tasks to process faster
+                TimeToWaitForWebRequests = TimeSpan.FromSeconds(5), //how long to wait on an HTTP response before canceling the task
+                TokenTimeOut = TimeSpan.FromSeconds(1), //how long to wait before reusing a token, helps us avoid a rate limit from sc
+
+                //minimum time to consider an object valid
+                //if you want updates as fast as sc will provide them
+                //do not provide a value for time to live
+                LeagueGroupTimeToLive = TimeSpan.FromHours(1),
+                LeagueGroupNotFoundTimeToLive = TimeSpan.FromHours(1),
+                VillageTimeToLive = TimeSpan.FromHours(1)
+            };
+
+            cocApiConfiguration.Tokens.Add(File.ReadAllText(@"E:\Desktop\token.txt"));
+
+            return cocApiConfiguration;
         }
 
         private static void DoExitStuff(IServiceProvider services)
         {
-            services.GetRequiredService<ILogger>().LogAsync<Program>("Quiting, please wait...");
+            services.GetRequiredService<LogService>().Log(LogLevel.Information, nameof(Program), null, "Quiting, please wait...");
 
-            _cocApi?.Dispose();
+            CocApi cocApi = services.GetRequiredService<CocApi>();
+
+            cocApi.Clans.StopQueue();
+
+            cocApi.Wars.StopQueue();
+
+            cocApi.Villages.StopQueue();
+
+            cocApi.Dispose();
 
             Environment.Exit(0);
         }

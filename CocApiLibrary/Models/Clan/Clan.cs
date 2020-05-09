@@ -188,9 +188,9 @@ namespace devhl.CocApi.Models.Clan
 
             List<RoleChange> roleChanges = new List<RoleChange>();
 
-            foreach (ClanVillage queuedVillage in fetched.Villages.EmptyIfNull())
+            foreach (ClanVillage queuedVillage in Villages.EmptyIfNull())
             {
-                ClanVillage fetchedVillage = Villages.EmptyIfNull().FirstOrDefault(m => m.VillageTag == queuedVillage.VillageTag);
+                ClanVillage fetchedVillage = fetched.Villages.EmptyIfNull().FirstOrDefault(m => m.VillageTag == queuedVillage.VillageTag);
 
                 if (fetchedVillage == null) continue;
 
@@ -216,9 +216,9 @@ namespace devhl.CocApi.Models.Clan
 
             List<Donation> donating = new List<Donation>();
 
-            foreach (ClanVillage queuedClanVillage in fetched.Villages.EmptyIfNull())
+            foreach (ClanVillage queuedClanVillage in Villages.EmptyIfNull())
             {
-                ClanVillage? fetchedClanVillage = Villages.EmptyIfNull().FirstOrDefault(m => m.VillageTag == queuedClanVillage.VillageTag);
+                ClanVillage? fetchedClanVillage = fetched.Villages.EmptyIfNull().FirstOrDefault(m => m.VillageTag == queuedClanVillage.VillageTag);
 
                 if (fetchedClanVillage == null) continue;
 

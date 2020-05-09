@@ -20,16 +20,11 @@ namespace devhl.CocApi
 
         public bool IsExpired()
         {
-            if (ServerExpirationUtc != null && DateTime.UtcNow < ServerExpirationUtc.Value)
-            {
+            if (DateTime.UtcNow < LocalExpirationUtc)
                 return false;
-            }
-            else if (ServerExpirationUtc != null)
-            {
-                return true;
-            }
 
-            if (DateTime.UtcNow < LocalExpirationUtc) return false;
+            if (ServerExpirationUtc != null && DateTime.UtcNow < ServerExpirationUtc.Value)
+                return false;
 
             return true;
         }

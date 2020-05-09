@@ -14,166 +14,83 @@ namespace CocApiConsoleTest
 {
     public class EventHandlerService
     {
-        private readonly ILogger _logger;
+        private LogService LogService { get; }
 
-        private readonly CocApi _cocApi;
-
-        public EventHandlerService(ILogger logger, CocApi cocApi)
+        public EventHandlerService(LogService logger, CocApi cocApi)
         {
-            _logger = logger;
+            LogService = logger;
 
-            _cocApi = cocApi;
+            cocApi.Clans.ClanChanged += Clans_ClanChanged;
 
-            _cocApi.ClanChanged += ClanChanged;
+            cocApi.Wars.NewAttacks += Wars_NewAttacks;
 
-            _cocApi.ApiIsAvailableChanged += IsAvailableChanged;
+            cocApi.Clans.ClanDonation += Clans_ClanDonation;
 
-            _cocApi.VillagesJoined += MembersJoined;
+            cocApi.Clans.ClanVillageChanged += Clans_ClanVillageChanged;
 
-            _cocApi.ClanBadgeUrlChanged += ClanBadgeUrlChanged;
+            cocApi.Clans.ClanVillagesJoined += Clans_ClanVillagesJoined;
 
-            _cocApi.ClanLocationChanged += ClanLocationChanged;
+            cocApi.Clans.ClanVillagesLeft += Clans_ClanVillagesLeft;
 
-            _cocApi.NewAttacks += NewAttacks;
-
-            _cocApi.ClanPointsChanged += ClanPointsChanged;
-
-            _cocApi.ClanVersusPointsChanged += ClanVersusPointsChanged;
-
-            _cocApi.NewWar += NewWar;
-
-            _cocApi.WarIsAccessibleChanged += WarIsAccessibleChanged;
-
-            _cocApi.LeagueGroupTeamSizeChanged += LeagueSizeChangeDetected;
-
-            _cocApi.VillageReachedLegendsLeague += VillageReachedLegendsLeague;
-
-            _cocApi.ClanVillageNameChanged += ClanVillageNameChanged;
-
-            _cocApi.ClanVillagesLeagueChanged += ClanVillagesLeagueChanged;
-
-            _cocApi.ClanVillagesRoleChanged += ClanVillagesRoleChanged;
-
-            _cocApi.WarStarted += WarStarted;
-
-            _cocApi.WarStartingSoon += WarStartingSoon;
+            cocApi.Log += CocApi_Log;
         }
 
-        public Task WarStartingSoon(CurrentWar currentWar)
+        private Task Clans_ClanVillagesLeft(object sender, ChangedEventArgs<Clan, IReadOnlyList<ClanVillage>> e)
         {
-            _logger.LogAsync<EventHandlerService>("War starting soon");
+            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, "left");
 
             return Task.CompletedTask;
         }
 
-        public Task WarStarted(CurrentWar currentWar)
+        private Task Clans_ClanVillagesJoined(object sender, ChangedEventArgs<Clan, IReadOnlyList<ClanVillage>> e)
         {
-            _logger.LogAsync<EventHandlerService>("War started");
+            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, "joined");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesLeagueChanged(Clan oldClan, IReadOnlyList<LeagueChange> leagueChanged)
+        private Task Clans_ClanVillageChanged(object sender, ChangedEventArgs<Clan, ClanVillage, ClanVillage> e)
         {
-            _logger.LogAsync<EventHandlerService>($"League changed {leagueChanged.First().Village.Name}");
+            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, "clanvillage changed");
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillagesRoleChanged(Clan clan, IReadOnlyList<RoleChange> roleChanges)
+        private Task CocApi_Log(object sender, LogEventArgs log)
         {
-            _logger.LogAsync<EventHandlerService>($"New role: {roleChanges.First().Village.Name}");
+            //LogEventArgs may be cast to ClanEventArgs, CurrentWarEventArgs, ExceptionLogEventArgs, or VillageEventArgs
+            //though you should not have to do this unless there is a problem
+
+            //ignore the trace logs unless there is a problem
+            if (log.LogLevel == devhl.CocApi.LogLevel.Trace)
+                return Task.CompletedTask;
+
+            LogService.Log(LogLevel.Information, log.Source, null, log.Message);
 
             return Task.CompletedTask;
         }
 
-        public Task ClanVillageNameChanged(ClanVillage oldMember, string newName)
+        private Task Wars_NewAttacks(object sender, ChangedEventArgs<CurrentWar, IReadOnlyList<Attack>> e)
         {
-            _logger.LogAsync<EventHandler>($"New name: {newName}");
+            //e.Fetched refers to the newly downloaded object
+            //e.Stored refers to the object stored in memory that is queued for download
+            //the fetched item is generally provided when available
+
+            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, $"{e.Value.Count()} new attacks in war between {e.Fetched.WarClans[0].Name} and {e.Fetched.WarClans[1].Name}");
 
             return Task.CompletedTask;
         }
 
-        public Task VillageReachedLegendsLeague(Village villageApiModel)
+        private Task Clans_ClanChanged(object sender, ChangedEventArgs<Clan, Clan> e)
         {
-            _logger.LogAsync<EventHandlerService>($"Village reached legends: {villageApiModel.Name}");
+            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, $"{e.Fetched.ClanTag} {e.Fetched.Name} changed event");
 
             return Task.CompletedTask;
         }
 
-        public Task WarIsAccessibleChanged(CurrentWar currentWar)
+        private Task Clans_ClanDonation(object sender, DonationEventArgs e)
         {
-            _logger.LogAsync<EventHandlerService>($"War is accessible changed:{currentWar.Flags.WarIsAccessible}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task NewWar(CurrentWar currentWar)
-        {
-            _logger.LogAsync<EventHandlerService>($"New War: {currentWar.WarKey}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task ClanVersusPointsChanged(Clan oldClan, int newClanVersusPoints)
-        {
-            _logger.LogAsync<EventHandlerService>($"{oldClan.ClanTag} {oldClan.Name} new clan versus points: {newClanVersusPoints}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task ClanPointsChanged(Clan oldClan, int newClanPoints)
-        {
-            _logger.LogAsync<EventHandlerService>($"{oldClan.ClanTag} {oldClan.Name} new clan points: {newClanPoints}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task ClanLocationChanged(Clan oldClan, Clan newClan)
-        {
-            _logger.LogAsync<EventHandlerService>(newClan.Location?.Name);
-
-            return Task.CompletedTask;
-        }
-
-        public Task ClanBadgeUrlChanged(Clan oldClan, Clan newClan)
-        {
-            _logger.LogAsync<EventHandlerService>(newClan.BadgeUrl?.Large);
-
-            return Task.CompletedTask;
-        }
-
-        public Task ClanChanged(Clan oldClan, Clan newClan)
-        {
-            _logger.LogAsync<EventHandlerService>($"{oldClan.ClanTag} {oldClan.Name} changed.");
-
-            return Task.CompletedTask;
-        }
-
-        public Task NewAttacks(CurrentWar currentWar, IReadOnlyList<Attack> attackApiModels)
-        {
-            _logger.LogAsync<EventHandlerService>($"new attacks: {attackApiModels.Count()}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task MembersJoined(Clan clanApiModel, IReadOnlyList<ClanVillage> memberListApiModels)
-        {
-            _logger.LogAsync<EventHandlerService>($"{memberListApiModels.Count()} members joined.");
-
-            return Task.CompletedTask;
-        }
-
-        public Task IsAvailableChanged(bool isAvailable)
-        {
-            _logger.LogAsync<EventHandlerService>($"CocApi isAvailable: {isAvailable}");
-
-            return Task.CompletedTask;
-        }
-
-        public Task LeagueSizeChangeDetected(LeagueGroup leagueGroupApiModel)
-        {
-            _logger.LogAsync<EventHandlerService>($"League Size changed: {leagueGroupApiModel.TeamSize}");
+            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, $"new donations in ${e.Fetched.ClanTag} {e.Fetched.Name}");
 
             return Task.CompletedTask;
         }

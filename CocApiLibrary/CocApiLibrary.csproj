@@ -13,7 +13,7 @@ Use this feed to get Reflection while this is in prerelease.</Description>
     <Version>0.36.0-alpha</Version>
     <AssemblyVersion>0.36.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageProjectUrl>https://github.com/devhl-labs/CocApi</PackageProjectUrl>
+    <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
     <PackageId>CocApi</PackageId>
     <Copyright>2019</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

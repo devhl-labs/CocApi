@@ -212,7 +212,7 @@ namespace devhl.CocApi.Models.Village
                 }
             }
 
-            cocApi.Villages.OnVillageLabelsChanged(this, added, removed);
+            cocApi.Villages.OnVillageLabelsChanged(fetched, added, removed);
         }
 
         private void UpdateVillageSpells(CocApi cocApi, Village fetched)
@@ -233,7 +233,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newSpells.Count > 0)
             {
-                cocApi.Villages.OnVillageSpellsChanged(this, newSpells);
+                cocApi.Villages.OnVillageSpellsChanged(fetched, newSpells);
             }
         }
 
@@ -256,7 +256,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newTroops.Count > 0)
             {
-                cocApi.Villages.OnVillageHeroesChanged(this, newTroops);
+                cocApi.Villages.OnVillageHeroesChanged(fetched, newTroops);
             }
         }
 
@@ -279,7 +279,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newTroops.Count > 0)
             {
-                cocApi.Villages.OnVillageTroopsChanged(this, newTroops);
+                cocApi.Villages.OnVillageTroopsChanged(fetched, newTroops);
             }
         }
 
@@ -304,7 +304,7 @@ namespace devhl.CocApi.Models.Village
 
             if (newAchievements.Count > 0)
             {
-                cocApi.Villages.OnVillageAchievementsChanged(this, newAchievements);
+                cocApi.Villages.OnVillageAchievementsChanged(fetched, newAchievements);
             }            
         }
 
@@ -327,7 +327,7 @@ namespace devhl.CocApi.Models.Village
                 fetched.VersusTrophies != VersusTrophies ||
                 fetched.ClanTag != ClanTag)
             {
-                cocApi.Villages.OnVillageChanged(this, fetched);
+                cocApi.Villages.OnVillageChanged(fetched, fetched);
             }
         }
 
