@@ -67,7 +67,9 @@ namespace CocApiConsoleTest
 
             cocApi.Clans.StartQueue();
 
-            cocApi.Wars.StartQueue();
+            cocApi.Wars.StartQueue();  //this will watch all wars for all clans in the clan queue plus any war that you load with the Queue method
+
+            //cocApi.Villages.StartQueue(); // only start monitoring the objects you care about
         }
 
         private static CocApiConfiguration GetCocApiConfiguration(IServiceProvider serviceProvider)
