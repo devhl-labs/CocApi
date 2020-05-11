@@ -159,11 +159,11 @@ namespace devhl.CocApi.Models.Clan
         {
             if (ReferenceEquals(this, fetched)) return;
 
-            QueueClanVillages = fetched.QueueClanVillages;
+            fetched.QueueClanVillages = QueueClanVillages;
 
-            QueueCurrentWar = fetched.QueueCurrentWar;
+            fetched.QueueCurrentWar = QueueCurrentWar;
 
-            QueueLeagueWars = fetched.QueueLeagueWars;
+            fetched.QueueLeagueWars = QueueLeagueWars;
 
             UpdateClan(cocApi, fetched);
 
