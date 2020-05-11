@@ -149,8 +149,7 @@ namespace devhl.CocApi
         QueueExited,
         QueueRestartFailed,
         Exception,
-        RateLimited,
-        PreemptiveRateLimited
+        RateLimited
     }
 
     public enum LogLevel

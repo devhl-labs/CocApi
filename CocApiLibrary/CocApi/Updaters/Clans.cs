@@ -14,8 +14,6 @@ namespace devhl.CocApi
 {
     public sealed class Clans
     {
-        internal List<ClanUpdateGroup> ClanUpdateGroups { get; } = new List<ClanUpdateGroup>();
-
         private readonly CocApi _cocApi;
 
         internal Clans(CocApi cocApi)
@@ -40,6 +38,7 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<Clan, IReadOnlyList<ClanVillage>>>? ClanVillagesLeft;
 
         public bool QueueClanVillages { get; set; } = false;
+        internal List<ClanUpdateGroup> ClanUpdateGroups { get; } = new List<ClanUpdateGroup>();
         internal ConcurrentDictionary<string, Clan?> Queued { get; } = new ConcurrentDictionary<string, Clan?>();
 
         internal ConcurrentDictionary<string, Village?> QueuedVillage { get; } = new ConcurrentDictionary<string, Village?>();

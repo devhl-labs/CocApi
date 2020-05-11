@@ -31,12 +31,12 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan LeagueWarTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+        public TimeSpan LeagueWarTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan CurrentWarTimeToLive { get; set; } = new TimeSpan(0, 0, 15);
+        public TimeSpan CurrentWarTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
@@ -56,12 +56,12 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan ClanTimeToLive { get; set; } = new TimeSpan(0, 0, 1);
+        public TimeSpan ClanTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan VillageTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+        public TimeSpan VillageTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.

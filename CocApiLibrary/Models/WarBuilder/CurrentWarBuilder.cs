@@ -73,9 +73,7 @@ namespace devhl.CocApi.Models.War
             };
 
             foreach (WarClanBuilder warClanBuilder in WarClans)
-            {
-                war.WarClans.Add(warClanBuilder.Build(WarKey));
-            }         
+                war.WarClans.Add(warClanBuilder.Build(WarKey));       
 
             war.WarEndingSoonUtc = EndTimeUtc.AddHours(-1);
             war.WarStartingSoonUtc = StartTimeUtc.AddHours(-1);
@@ -95,17 +93,13 @@ namespace devhl.CocApi.Models.War
 
             List<WarVillage> warVillages = new List<WarVillage>();
             foreach(WarVillageBuilder warVillageBuilder1 in WarVillages)
-            {
                 warVillages.Add(warVillageBuilder1.Build(WarKey));
-            }
 
             war.WarClans[0].WarVillages = warVillages.Where(wv => wv.ClanTag == war.WarClans[0].ClanTag);
             war.WarClans[1].WarVillages = warVillages.Where(wv => wv.ClanTag == war.WarClans[1].ClanTag);
 
             foreach(WarVillage warVillage2 in warVillages)
-            {
                 warVillage2.Attacks = war.Attacks.Where(a => a.AttackerTag == warVillage2.VillageTag).ToList();
-            }
 
             return war;
         }

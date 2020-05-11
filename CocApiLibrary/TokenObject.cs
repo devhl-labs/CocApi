@@ -53,18 +53,9 @@ namespace devhl.CocApi
         {
             TimeSpan timeSpan = DateTime.UtcNow - LastUsedUtc;
 
-            bool notified = false;
-
             while (timeSpan.TotalMilliseconds < _tokenTimeOut.TotalMilliseconds)
             {
                 await Task.Delay(50).ConfigureAwait(false);
-
-                if (!notified)
-                {
-                    _cocApi.OnLog(new LogEventArgs(nameof(TokenObject), nameof(GetTokenAsync), LogLevel.Trace, LoggingEvent.PreemptiveRateLimited.ToString()));
-
-                    notified = true;
-                }
 
                 timeSpan = DateTime.UtcNow - LastUsedUtc;
             }

@@ -5,6 +5,19 @@ using System.Text;
 
 namespace devhl.CocApi
 {
+    //public class ClanChangedEventArgs : ChangedEventArgs<Clan>
+    //{
+    //    public ClanChangedEventArgs(Clan fetched) : base(fetched) { }
+    //}
+
+    //public class ClanChangedEventArgs<T> : ChangedEventArgs<Clan, T>
+    //{
+    //    public ClanChangedEventArgs(Clan fetched, T value) : base(fetched, value)
+    //    {
+
+    //    }
+    //}
+
     public class ChangedEventArgs<T> : EventArgs
     {
 #nullable disable

@@ -22,14 +22,10 @@ namespace devhl.CocApi
         public static bool IsValidTag(string tag)
         {
             if (string.IsNullOrEmpty(tag))
-            {
                 return false;
-            }
 
             if (tag == "#0")
-            {
                 return false;
-            }
 
             return ValidTagCharacters.IsMatch(tag);
         }

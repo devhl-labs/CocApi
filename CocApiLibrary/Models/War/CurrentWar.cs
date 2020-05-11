@@ -73,11 +73,8 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public DateTime WarStartingSoonUtc { get; internal set; }
 
-        //[JsonProperty]
-        //public CurrentWarFlags Flags { get; internal set; } = new CurrentWarFlags();
-
         [JsonProperty]
-        public Announcements Announcements { get; set; }
+        public Announcements Announcements { get; internal set; }
 
         public void Initialize(CocApi cocApi)
         {
@@ -245,7 +242,7 @@ namespace devhl.CocApi.Models.War
             return false;
         }
 
-        internal readonly object _announceWarLock = new object();
+        //internal readonly object _announceWarLock = new object();
 
         internal void Update(CocApi cocApi, IWar? fetchedWar)
         {
@@ -323,10 +320,10 @@ namespace devhl.CocApi.Models.War
         {
             cocApi.OnLog(new CurrentWarLogEventArgs(nameof(CurrentWar), nameof(WarEndSeenAnnouncement), this, fetchedWar));
 
-            CurrentWar? fetchedCurrentWar = fetchedWar as CurrentWar;
-
             if (Announcements.HasFlag(Announcements.WarEndSeen))
                 return;
+
+            CurrentWar? fetchedCurrentWar = fetchedWar as CurrentWar;
 
             if (WarIsOverOrAllAttacksUsed() == true ||
                 (WarKey == fetchedCurrentWar?.WarKey &&
@@ -411,10 +408,7 @@ namespace devhl.CocApi.Models.War
 
             if (!(fetchedWar is CurrentWar downloadedCurrentWar) || downloadedCurrentWar.WarKey != WarKey) return;
 
-            //doing it this way so the ClanBuilder does not require builders for WarVillages
-            int attacks = WarClans[0].AttackCount + WarClans[1].AttackCount;
-
-            List<Attack> newAttacks = downloadedCurrentWar.Attacks.Where(a => a.Order > attacks).ToList();
+            List<Attack> newAttacks = downloadedCurrentWar.Attacks.Where(a => a.Order > Attacks.Count).ToList();
 
             if (downloadedCurrentWar.State == WarState.WarEnded)
             {
