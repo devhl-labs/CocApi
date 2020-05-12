@@ -13,13 +13,13 @@ namespace devhl.CocApi
 {
     public sealed class Villages
     {
-        private readonly CocApi _cocApi;
+        private CocApi CocApi { get; }
 
-        private bool _stopRequested = false;
+        private bool StopRequested { get; set; } = false;
 
         public Villages(CocApi cocApi)
         {
-            _cocApi = cocApi;
+            CocApi = cocApi;
         }
 
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Achievement>>>? AchievementsChanged;
@@ -35,13 +35,13 @@ namespace devhl.CocApi
         private ConcurrentDictionary<string, Village?> Queued { get; } = new ConcurrentDictionary<string, Village?>();
 
         public async Task<Village?> FetchAsync(string villageTag, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Village>(Village.Url(villageTag), cancellationToken) as Village;
+            => await CocApi.FetchAsync<Village>(Village.Url(villageTag), cancellationToken) as Village;
 
         public async Task<Paginated<TopBuilderVillage>?> FetchTopBuilderVillagesAsync(int? locationId = null, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<TopBuilderVillage>>(TopBuilderVillage.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopBuilderVillage>;
+            => await CocApi.FetchAsync<Paginated<TopBuilderVillage>>(TopBuilderVillage.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopBuilderVillage>;
 
         public async Task<Paginated<TopMainVillage>?> FetchTopMainVillagesAsync(int? locationId = null, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<TopMainVillage>>(TopMainVillage.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopMainVillage>;
+            => await CocApi.FetchAsync<Paginated<TopMainVillage>>(TopMainVillage.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopMainVillage>;
 
         public Village? Get(string villageTag)
         {
@@ -86,7 +86,7 @@ namespace devhl.CocApi
 
         public void StartQueue()
         {
-            _stopRequested = false;
+            StopRequested = false;
 
             if (QueueRunning)
                 return;
@@ -97,7 +97,7 @@ namespace devhl.CocApi
             {
                 try
                 {
-                    while (_stopRequested == false)
+                    while (StopRequested == false)
                     {
                         foreach (var entry in Queued)
                         {
@@ -118,28 +118,28 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.OnLog(new LogEventArgs(nameof(Villages), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
+                    CocApi.OnLog(new LogEventArgs(nameof(Villages), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
                 }
                 catch (Exception e)
                 {
-                    _stopRequested = false;
+                    StopRequested = false;
 
                     QueueRunning = false;
 
-                    _cocApi.OnLog(new ExceptionEventArgs(nameof(Villages), nameof(StartQueue), e));
+                    CocApi.OnLog(new ExceptionEventArgs(nameof(Villages), nameof(StartQueue), e));
 
-                    _ = _cocApi.VillageQueueRestartAsync();
+                    _ = CocApi.VillageQueueRestartAsync();
 
                     throw e;
                 }
             });
         }
 
-        public void StopQueue() => _stopRequested = true;
+        public void StopQueue() => StopRequested = true;
 
         public Task StopQueueAsync()
         {
-            _stopRequested = true;
+            StopRequested = true;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
 
@@ -189,7 +189,7 @@ namespace devhl.CocApi
             Village? fetched = await FetchAsync(villageTag).ConfigureAwait(false);
 
             if (fetched != null)
-                _cocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
+                CocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
         }
 
         private void Queue(string villageTag, Village? village) => Queued.TryAdd(villageTag, village);
@@ -203,9 +203,9 @@ namespace devhl.CocApi
 
             if (fetched != null)
             {
-                queued.Update(_cocApi, fetched);
+                queued.Update(CocApi, fetched);
 
-                _cocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
+                CocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
             }
         }
 

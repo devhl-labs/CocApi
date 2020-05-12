@@ -15,13 +15,13 @@ namespace devhl.CocApi
 {
     public sealed class Wars
     {
-        private readonly CocApi _cocApi;
+        private CocApi CocApi { get; }
 
-        private bool _stopRequested = false;
+        private bool StopRequested { get; set; }
 
         public Wars(CocApi cocApi)
         {
-            _cocApi = cocApi;
+            CocApi = cocApi;
 
             //_warUpdateService = new WarUpdateService(_cocApi);
         }
@@ -69,7 +69,7 @@ namespace devhl.CocApi
         /// </summary>
         public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.Auto;
 
-        public bool QueueRunning { get; private set; } = false;
+        public bool QueueRunning { get; private set; }
 
         /// <summary>
         /// One war will appear in this dictionary multiple times using both clantags, warkey, and wartag
@@ -90,7 +90,7 @@ namespace devhl.CocApi
 
             if (typeof(T) == typeof(LeagueWar))
             {
-                if (!(await _cocApi.FetchAsync<LeagueWar>(LeagueWar.Url(formattedTag), cancellationToken) is IWar war))
+                if (!(await CocApi.FetchAsync<LeagueWar>(LeagueWar.Url(formattedTag), cancellationToken) is IWar war))
                     return null;
 
                 if (war is LeagueWar leagueWar)
@@ -103,7 +103,7 @@ namespace devhl.CocApi
                 return war;
             }
 
-            return await _cocApi.FetchAsync<CurrentWar>(CurrentWar.Url(formattedTag), cancellationToken) as IWar;
+            return await CocApi.FetchAsync<CurrentWar>(CurrentWar.Url(formattedTag), cancellationToken) as IWar;
         }
 
         public async Task<ILeagueGroup?> FetchLeagueGroupAsync(string clanTag, CancellationToken? cancellationToken = null)
@@ -111,14 +111,14 @@ namespace devhl.CocApi
             if (!CocApi.TryGetValidTag(clanTag, out string formattedTag))
                 throw new InvalidTagException(clanTag);
 
-            return await _cocApi.FetchAsync<LeagueGroup>(LeagueGroup.Url(formattedTag), cancellationToken) as ILeagueGroup;
+            return await CocApi.FetchAsync<LeagueGroup>(LeagueGroup.Url(formattedTag), cancellationToken) as ILeagueGroup;
         }
 
         public async Task<Paginated<WarLeague>?> FetchWarLeaguesAsync(CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<WarLeague>>(WarLeague.Url(), cancellationToken).ConfigureAwait(false) as Paginated<WarLeague>;
+            => await CocApi.FetchAsync<Paginated<WarLeague>>(WarLeague.Url(), cancellationToken).ConfigureAwait(false) as Paginated<WarLeague>;
 
         public async Task<Paginated<WarLogEntry>?> FetchWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<WarLogEntry>>(WarLogEntry.Url(clanTag, limit, after, before), cancellationToken).ConfigureAwait(false) as Paginated<WarLogEntry>;
+            => await CocApi.FetchAsync<Paginated<WarLogEntry>>(WarLogEntry.Url(clanTag, limit, after, before), cancellationToken).ConfigureAwait(false) as Paginated<WarLogEntry>;
 
         public IWar? Get(string tag)
         {
@@ -136,7 +136,7 @@ namespace devhl.CocApi
 
             IWar? war = Get(formattedTag);
 
-            if (_cocApi.Wars.IsDownloadingLeagueWars() == false)
+            if (CocApi.Wars.IsDownloadingLeagueWars() == false)
                 return war as CurrentWar;
 
             if (war is CurrentWar currentWar && (currentWar.State == WarState.Preparation || currentWar.State == WarState.InWar))
@@ -251,11 +251,11 @@ namespace devhl.CocApi
             if (fetched is LeagueGroup leagueGroup)
             {
                 foreach (var clan in leagueGroup.Clans.EmptyIfNull())
-                    _cocApi.UpdateDictionary(LeagueGroups, clan.ClanTag, leagueGroup);
+                    CocApi.UpdateDictionary(LeagueGroups, clan.ClanTag, leagueGroup);
             }
             else if (fetched != null)
             {
-                _cocApi.UpdateDictionary(LeagueGroups, formattedTag, fetched);
+                CocApi.UpdateDictionary(LeagueGroups, formattedTag, fetched);
             }
 
             return fetched ?? cached;
@@ -382,7 +382,7 @@ namespace devhl.CocApi
 
         public void StartQueue()
         {
-            _stopRequested = false;
+            StopRequested = false;
 
             if (QueueRunning)
                 return;
@@ -393,11 +393,11 @@ namespace devhl.CocApi
             {
                 try
                 {
-                    while (_stopRequested == false)
+                    while (StopRequested == false)
                     {
-                        foreach (Clan? clan in _cocApi.Clans.Queued.Values)
+                        foreach (Clan? clan in CocApi.Clans.Queued.Values)
                         {
-                            if (_stopRequested)
+                            if (StopRequested)
                                 break;
 
                             if (clan == null)
@@ -406,9 +406,9 @@ namespace devhl.CocApi
                             await PopulateWars(clan).ConfigureAwait(false);
                         }
 
-                        foreach (CurrentWar storedWar in _cocApi.Wars.QueuedWars.Values)
+                        foreach (CurrentWar storedWar in CocApi.Wars.QueuedWars.Values)
                         {
-                            if (_stopRequested)
+                            if (StopRequested)
                                 break;
 
                             await Update(storedWar).ConfigureAwait(false);
@@ -421,28 +421,28 @@ namespace devhl.CocApi
 
                     QueueRunning = false;
 
-                    _cocApi.OnLog(new LogEventArgs(nameof(Wars), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
+                    CocApi.OnLog(new LogEventArgs(nameof(Wars), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
                 }
                 catch (Exception e)
                 {
-                    _stopRequested = false;
+                    StopRequested = false;
 
                     QueueRunning = false;
 
-                    _cocApi.OnLog(new ExceptionEventArgs(nameof(Wars), nameof(StartQueue), e));
+                    CocApi.OnLog(new ExceptionEventArgs(nameof(Wars), nameof(StartQueue), e));
 
-                    _ = _cocApi.WarQueueRestartAsync();
+                    _ = CocApi.WarQueueRestartAsync();
 
                     throw e;
                 }
             });
         }
 
-        public void StopQueue() => _stopRequested = true;
+        public void StopQueue() => StopRequested = true;
 
         public Task StopQueueAsync()
         {
-            _stopRequested = true;
+            StopRequested = true;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
 
@@ -502,22 +502,22 @@ namespace devhl.CocApi
         {
             if (clan.QueueCurrentWar && clan.IsWarLogPublic)
             {
-                IWar? war = await _cocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
+                IWar? war = await CocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
 
                 if (war is CurrentWar currentWar)
                 {
-                    if (_cocApi.Wars.QueuedWars.TryAdd(currentWar.WarKey, currentWar))
+                    if (CocApi.Wars.QueuedWars.TryAdd(currentWar.WarKey, currentWar))
                         OnNewWar(currentWar);
                 }
             }
 
-            if (clan.QueueLeagueWars && _cocApi.Wars.IsDownloadingLeagueWars())
+            if (clan.QueueLeagueWars && CocApi.Wars.IsDownloadingLeagueWars())
             {
-                List<LeagueWar>? leagueWars = await _cocApi.Wars.GetLeagueWarsAsync(clan.ClanTag, false).ConfigureAwait(false);
+                List<LeagueWar>? leagueWars = await CocApi.Wars.GetLeagueWarsAsync(clan.ClanTag, false).ConfigureAwait(false);
 
                 foreach (LeagueWar leagueWar in leagueWars.EmptyIfNull())
                 {
-                    if (_cocApi.Wars.QueuedWars.TryAdd(leagueWar.WarKey, leagueWar))
+                    if (CocApi.Wars.QueuedWars.TryAdd(leagueWar.WarKey, leagueWar))
                         OnNewWar(leagueWar);
                 }
             }
@@ -530,7 +530,7 @@ namespace devhl.CocApi
 
             WarLogEntry? warLogEntry = null;
 
-            if (await _cocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
+            if (await CocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
             {
                 if ((queued.Announcements.HasFlag(Announcements.WarEndSeen) == false && 
                     queued.Announcements.HasFlag(Announcements.WarLogSearched) == false) &&
@@ -540,7 +540,7 @@ namespace devhl.CocApi
                 {
                     foreach(WarClan warClan in queued.WarClans)
                     {
-                        Paginated<WarLogEntry>? logs = await _cocApi.Wars.FetchWarLogAsync(warClan.ClanTag);
+                        Paginated<WarLogEntry>? logs = await CocApi.Wars.FetchWarLogAsync(warClan.ClanTag);
 
                         warLogEntry = logs?.Items.FirstOrDefault(e => e.EndTimeUtc == queued.EndTimeUtc && e.WarClans.First().Result != Result.Null);
 
@@ -551,15 +551,15 @@ namespace devhl.CocApi
 
                 if (warLogEntry != null)
                 {
-                    queued.Update(_cocApi, warLogEntry);
+                    queued.Update(CocApi, warLogEntry);
                 }
                 else
                 {
-                    queued.Update(_cocApi, fetched);
+                    queued.Update(CocApi, fetched);
                 }
 
                 if (fetched != null)
-                    _cocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
+                    CocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
             }
         }
 
@@ -567,7 +567,7 @@ namespace devhl.CocApi
         {
             if (war is LeagueWar leagueWar)
             {
-                _cocApi.UpdateDictionary(CachedWars, leagueWar.WarTag, leagueWar);
+                CocApi.UpdateDictionary(CachedWars, leagueWar.WarTag, leagueWar);
             }
 
             if (war is CurrentWar currentWar)
@@ -575,13 +575,13 @@ namespace devhl.CocApi
                 if (currentWar.State == WarState.Preparation || currentWar.State == WarState.InWar || currentWar.WarKey == GetActiveWar(currentWar.WarClans.First().ClanTag)?.WarKey)
                 {
                     foreach (WarClan warClan in currentWar.WarClans)
-                        _cocApi.UpdateDictionary(CachedWars, warClan.ClanTag, currentWar);
+                        CocApi.UpdateDictionary(CachedWars, warClan.ClanTag, currentWar);
                 }
 
-                _cocApi.UpdateDictionary(CachedWars, currentWar.WarKey, currentWar);
+                CocApi.UpdateDictionary(CachedWars, currentWar.WarKey, currentWar);
             }
 
-            _cocApi.UpdateDictionary(CachedWars, formattedTag, war);
+            CocApi.UpdateDictionary(CachedWars, formattedTag, war);
         }
     }
 }

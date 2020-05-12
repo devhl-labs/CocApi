@@ -14,8 +14,6 @@ namespace CocApiConsoleTest
         {
             var services = ConfigureServices();
 
-            Console.CancelKeyPress += (s, e) => DoExitStuff(services);
-
             LogService logService = services.GetRequiredService<LogService>();
 
             logService.Log(LogLevel.Information, nameof(Program), null, "Press CTRL-C to exit");
@@ -24,7 +22,9 @@ namespace CocApiConsoleTest
 
             services.GetRequiredService<EventHandlerService>();
 
-            await Task.Delay(-1);
+            WaitForExit();
+
+            await CleanupAsync(services);
 
             if (args == null) { }
         }
@@ -37,6 +37,17 @@ namespace CocApiConsoleTest
                 .AddSingleton(GetCocApiConfiguration)
                 .AddSingleton<EventHandlerService>()
                 .BuildServiceProvider();
+        }
+
+        private static void WaitForExit()
+        {
+            string input;
+
+            do
+            {
+                input = Console.ReadLine();
+            }
+            while (input != "quit" && input != "exit" && input != "stop");
         }
 
         private static void ConfigureCocApi(IServiceProvider services)
@@ -96,21 +107,19 @@ namespace CocApiConsoleTest
             return cocApiConfiguration;
         }
 
-        private static void DoExitStuff(IServiceProvider services)
+        private static async Task CleanupAsync(IServiceProvider services)
         {
             services.GetRequiredService<LogService>().Log(LogLevel.Information, nameof(Program), null, "Quiting, please wait...");
 
             CocApi cocApi = services.GetRequiredService<CocApi>();
 
-            cocApi.Clans.StopQueue();
+            await cocApi.Clans.StopQueueAsync();
 
-            cocApi.Wars.StopQueue();
+            await cocApi.Wars.StopQueueAsync();
 
-            cocApi.Villages.StopQueue();
+            await cocApi.Villages.StopQueueAsync();
 
             cocApi.Dispose();
-
-            Environment.Exit(0);
         }
     }
 }

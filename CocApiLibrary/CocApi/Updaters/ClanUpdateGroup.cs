@@ -10,21 +10,21 @@ namespace devhl.CocApi
 {
     internal sealed class ClanUpdateGroup
     {
-        private readonly CocApi _cocApi;
+        private CocApi CocApi { get; }
 
-        private bool _stopRequested = false;
+        private bool StopRequested { get; set; }
 
-        public ClanUpdateGroup(CocApi cocApi) => _cocApi = cocApi;
+        public ClanUpdateGroup(CocApi cocApi) => CocApi = cocApi;
 
         public ConcurrentBag<string> ClanTags { get; } = new ConcurrentBag<string>();
 
         public bool QueueRunning { get; private set; } = false;
 
-        public void StopUpdating() => _stopRequested = true;
+        public void StopUpdating() => StopRequested = true;
 
         public Task StopUpdatingAsync()
         {
-            _stopRequested = true;
+            StopRequested = true;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
 
@@ -43,7 +43,7 @@ namespace devhl.CocApi
 
         public void StartQueue()
         {
-            _stopRequested = false;
+            StopRequested = false;
 
             if (QueueRunning)
                 return;
@@ -54,14 +54,14 @@ namespace devhl.CocApi
             {
             try
             {
-                while (_stopRequested == false)
+                while (StopRequested == false)
                 {
                     foreach (string clanTag in ClanTags)
                     {
-                        if (_stopRequested)
+                        if (StopRequested)
                             break;
 
-                        Clan? queued = _cocApi.Clans.Queued.GetValueOrDefault(clanTag);
+                        Clan? queued = CocApi.Clans.Queued.GetValueOrDefault(clanTag);
 
                         if (queued == null)
                         {
@@ -78,22 +78,22 @@ namespace devhl.CocApi
                         await Task.Delay(50);
                     }
 
-                    _cocApi.Clans.OnQueueCompletedEvent();
+                    CocApi.Clans.OnQueueCompletedEvent();
                 }
 
                 QueueRunning = false;
 
-                _cocApi.OnLog(new LogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), LogLevel.Information));
+                CocApi.OnLog(new LogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
             }
             catch (Exception e)
             {
-                _stopRequested = false;
+                StopRequested = false;
 
                 QueueRunning = false;
 
-                _cocApi.OnLog(new ExceptionEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
+                CocApi.OnLog(new ExceptionEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
 
-                _ = _cocApi.ClanQueueRestartAsync();
+                _ = CocApi.ClanQueueRestartAsync();
 
                 throw e;
                 }
@@ -105,13 +105,13 @@ namespace devhl.CocApi
             if (queued.IsExpired() == false)
                 return queued;
 
-            Clan? fetched = await _cocApi.Clans.FetchAsync(queued.ClanTag).ConfigureAwait(false);
+            Clan? fetched = await CocApi.Clans.FetchAsync(queued.ClanTag).ConfigureAwait(false);
 
             if (fetched != null)
             {
-                queued.Update(_cocApi, fetched);
+                queued.Update(CocApi, fetched);
 
-                _cocApi.UpdateDictionary(_cocApi.Clans.Queued, fetched.ClanTag, fetched);
+                CocApi.UpdateDictionary(CocApi.Clans.Queued, fetched.ClanTag, fetched);
             }
 
             return fetched ?? queued;
@@ -119,10 +119,10 @@ namespace devhl.CocApi
 
         private async Task<Clan?> PopulateClanAsync(string clanTag)
         {
-            Clan? fetched = await _cocApi.Clans.FetchAsync(clanTag).ConfigureAwait(false);
+            Clan? fetched = await CocApi.Clans.FetchAsync(clanTag).ConfigureAwait(false);
 
             if (fetched != null)
-                _cocApi.UpdateDictionary(_cocApi.Clans.Queued, fetched.ClanTag, fetched);
+                CocApi.UpdateDictionary(CocApi.Clans.Queued, fetched.ClanTag, fetched);
 
             return fetched;
         }
@@ -130,26 +130,26 @@ namespace devhl.CocApi
         private async Task UpdateClanVillageAsync(ClanVillage village)
         {
             //if this village is being watched, dont update it here to prevent events from firing twice
-            if (_cocApi.Villages.QueueRunning && _cocApi.Villages.Get(village.VillageTag) != null)
+            if (CocApi.Villages.QueueRunning && CocApi.Villages.Get(village.VillageTag) != null)
                 return;
 
-            Village? queued = _cocApi.Clans.GetVillage(village.VillageTag);
+            Village? queued = CocApi.Clans.GetVillage(village.VillageTag);
 
             if (queued?.IsExpired() == false)
                 return;
 
-            Village? fetched = await _cocApi.Villages.FetchAsync(village.VillageTag).ConfigureAwait(false);
+            Village? fetched = await CocApi.Villages.FetchAsync(village.VillageTag).ConfigureAwait(false);
 
             if (queued != null && fetched != null)
-                queued.Update(_cocApi, fetched);
+                queued.Update(CocApi, fetched);
 
             if (fetched != null)
-                _cocApi.UpdateDictionary(_cocApi.Clans.QueuedVillage, fetched.VillageTag, fetched);
+                CocApi.UpdateDictionary(CocApi.Clans.QueuedVillage, fetched.VillageTag, fetched);
         }
 
         private async Task UpdateClanVillagesAsync(Clan queued)
         {
-            if (_cocApi.Clans.QueueClanVillages == false || queued.QueueClanVillages == false)
+            if (CocApi.Clans.QueueClanVillages == false || queued.QueueClanVillages == false)
                 return;
 
             List<Task> tasks = new List<Task>();

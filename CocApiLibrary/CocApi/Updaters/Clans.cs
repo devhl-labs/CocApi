@@ -14,11 +14,11 @@ namespace devhl.CocApi
 {
     public sealed class Clans
     {
-        private readonly CocApi _cocApi;
+        private CocApi CocApi { get; }
 
         internal Clans(CocApi cocApi)
         {
-            _cocApi = cocApi;
+            CocApi = cocApi;
         }
 
         public event AsyncEventHandler<ChangedEventArgs<Clan, Clan>>? ClanBadgeUrlChanged;
@@ -48,17 +48,17 @@ namespace devhl.CocApi
             if (!CocApi.TryGetValidTag(clanTag, out string formattedTag))
                 throw new InvalidTagException(clanTag);
 
-            return await _cocApi.FetchAsync<Clan>(Clan.Url(formattedTag), cancellationToken) as Clan;
+            return await CocApi.FetchAsync<Clan>(Clan.Url(formattedTag), cancellationToken) as Clan;
         }
 
         public async Task<Paginated<Clan>?> FetchAsync(ClanQueryOptions clanQueryOptions, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<Clan>>(Clan.Url(clanQueryOptions), cancellationToken).ConfigureAwait(false) as Paginated<Clan>;
+            => await CocApi.FetchAsync<Paginated<Clan>>(Clan.Url(clanQueryOptions), cancellationToken).ConfigureAwait(false) as Paginated<Clan>;
 
         public async Task<Paginated<TopBuilderClan>?> FetchTopBuilderClansAsync(int? locationId = null, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<TopBuilderClan>>(TopBuilderClan.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopBuilderClan>;
+            => await CocApi.FetchAsync<Paginated<TopBuilderClan>>(TopBuilderClan.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopBuilderClan>;
 
         public async Task<Paginated<TopMainClan>?> FetchTopMainClansAsync(int? locationId = null, CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<TopMainClan>>(TopMainClan.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopMainClan>;
+            => await CocApi.FetchAsync<Paginated<TopMainClan>>(TopMainClan.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopMainClan>;
 
         public Clan? Get(string clanTag)
         {
@@ -131,15 +131,15 @@ namespace devhl.CocApi
         {
             try
             {
-                if (_cocApi.CocApiConfiguration.NumberOfUpdaters < 1)
+                if (CocApi.CocApiConfiguration.NumberOfUpdaters < 1)
                 {
-                    ClanUpdateGroups.Add(new ClanUpdateGroup(_cocApi));
+                    ClanUpdateGroups.Add(new ClanUpdateGroup(CocApi));
                 }
                 else
                 {
-                    for (int i = 0; i < _cocApi.CocApiConfiguration.NumberOfUpdaters; i++)
+                    for (int i = 0; i < CocApi.CocApiConfiguration.NumberOfUpdaters; i++)
                     {
-                        ClanUpdateGroups.Add(new ClanUpdateGroup(_cocApi));
+                        ClanUpdateGroups.Add(new ClanUpdateGroup(CocApi));
                     }
                 }
             }
