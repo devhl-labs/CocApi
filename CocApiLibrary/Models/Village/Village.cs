@@ -312,23 +312,8 @@ namespace devhl.CocApi.Models.Village
         {
             cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateVillage), fetched));
 
-            if (fetched.AttackWins != AttackWins ||
-                fetched.BestTrophies != BestTrophies ||
-                fetched.BestVersusTrophies != BestVersusTrophies ||
-                fetched.BuilderHallLevel != BuilderHallLevel ||
-                fetched.TownHallLevel != TownHallLevel ||
-                fetched.TownHallWeaponLevel != TownHallWeaponLevel ||
-                fetched.WarStars != WarStars || 
-                fetched.DefenseWins != DefenseWins ||
-                fetched.ExpLevel != ExpLevel ||
-                fetched.Trophies != Trophies ||
-                fetched.VersusBattleWinCount != VersusBattleWinCount ||
-                fetched.VersusBattleWins != VersusBattleWins ||
-                fetched.VersusTrophies != VersusTrophies ||
-                fetched.ClanTag != ClanTag)
-            {
+            if (cocApi.Villages.IsChanged(fetched, this))
                 cocApi.Villages.OnVillageChanged(fetched, fetched);
-            }
         }
 
         public void Initialize(CocApi cocApi)

@@ -223,5 +223,31 @@ namespace devhl.CocApi
                 throw new CocApiException(e.Message, e);
             }
         }
+
+        public Func<Clan, Clan, bool> IsClanChanged { get; set; } = new Func<Clan, Clan, bool>((fetched, stored) =>
+        {
+            if (stored.ClanLevel != fetched.ClanLevel ||
+                stored.Description != fetched.Description ||
+                stored.IsWarLogPublic != fetched.IsWarLogPublic ||
+                stored.VillageCount != fetched.VillageCount ||
+                stored.Name != fetched.Name ||
+                stored.RequiredTrophies != fetched.RequiredTrophies ||
+                stored.Recruitment != fetched.Recruitment ||
+                stored.WarFrequency != fetched.WarFrequency ||
+                stored.WarLosses != fetched.WarLosses ||
+                stored.WarTies != fetched.WarTies ||
+                stored.WarWins != fetched.WarWins ||
+                stored.WarWinStreak != fetched.WarWinStreak ||
+                stored.ClanPoints != fetched.ClanPoints ||
+                stored.ClanVersusPoints != fetched.ClanVersusPoints ||
+                stored.LocationId != fetched.LocationId ||
+                stored.WarLeagueId != fetched.WarLeagueId
+)
+            {
+                return true;
+            }
+
+            return false;
+        });
     }
 }

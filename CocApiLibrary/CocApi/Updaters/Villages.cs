@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -207,5 +208,31 @@ namespace devhl.CocApi
                 _cocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
             }
         }
+
+        public Func<Village, Village, bool> IsChanged { get; set; } = new Func<Village, Village, bool>((fetched, stored) =>
+        {
+            if (fetched.AttackWins != stored.AttackWins ||
+                fetched.BestTrophies != stored.BestTrophies ||
+                fetched.BestVersusTrophies != stored.BestVersusTrophies ||
+                fetched.BuilderHallLevel != stored.BuilderHallLevel ||
+                fetched.TownHallLevel != stored.TownHallLevel ||
+                fetched.TownHallWeaponLevel != stored.TownHallWeaponLevel ||
+                fetched.WarStars != stored.WarStars ||
+                fetched.DefenseWins != stored.DefenseWins ||
+                fetched.ExpLevel != stored.ExpLevel ||
+                fetched.Trophies != stored.Trophies ||
+                fetched.VersusBattleWinCount != stored.VersusBattleWinCount ||
+                fetched.VersusBattleWins != stored.VersusBattleWins ||
+                fetched.VersusTrophies != stored.VersusTrophies ||
+                fetched.Name != stored.Name ||
+                fetched.LeagueId != stored.LeagueId ||
+                fetched.Role != stored.Role ||
+                fetched.ClanTag != stored.ClanTag)
+            {
+                return true;
+            }
+
+            return false;
+        });
     }
 }

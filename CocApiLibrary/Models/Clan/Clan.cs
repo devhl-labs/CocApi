@@ -297,26 +297,8 @@ namespace devhl.CocApi.Models.Clan
         {
             cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(UpdateClan), fetched));
 
-            if (ClanLevel != fetched.ClanLevel ||
-                Description != fetched.Description ||
-                IsWarLogPublic != fetched.IsWarLogPublic ||
-                VillageCount != fetched.VillageCount ||
-                Name != fetched.Name ||
-                RequiredTrophies != fetched.RequiredTrophies ||
-                Recruitment != fetched.Recruitment ||
-                WarFrequency != fetched.WarFrequency ||
-                WarLosses != fetched.WarLosses ||
-                WarTies != fetched.WarTies ||
-                WarWins != fetched.WarWins ||
-                WarWinStreak != fetched.WarWinStreak ||
-                ClanPoints != fetched.ClanPoints ||
-                ClanVersusPoints != fetched.ClanVersusPoints||
-                LocationId != fetched.LocationId || 
-                WarLeagueId != fetched.WarLeagueId
-            )
-            {
+            if (cocApi.Clans.IsClanChanged(fetched, this))
                 cocApi.Clans.OnClanChanged(fetched, this);
-            }
         }
 
         private void VillagesJoined(CocApi cocApi, Clan fetched)
