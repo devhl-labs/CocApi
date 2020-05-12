@@ -5,7 +5,7 @@ namespace CocApiConsoleTest
 {
     public class LogService
     {
-        private static readonly object _logLock = new object();
+        private static object LogLock { get; } = new object();
 
         private static void ResetConsoleColor()
         {
@@ -60,7 +60,7 @@ namespace CocApiConsoleTest
 
         public void Log(LogLevel logLevel, string source, string? method, string? message)
         {
-            lock (_logLock)
+            lock (LogLock)
             {
                 PrintLogLevel(logLevel);
 

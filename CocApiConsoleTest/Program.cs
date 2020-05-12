@@ -28,7 +28,6 @@ namespace CocApiConsoleTest
 
             if (args == null) { }
         }
-
         public static IServiceProvider ConfigureServices()
         {
             return new ServiceCollection()
