@@ -397,21 +397,21 @@ namespace devhl.CocApi
                     {
                         foreach (Clan? clan in _cocApi.Clans.Queued.Values)
                         {
+                            if (_stopRequested)
+                                break;
+
                             if (clan == null)
                                 continue;
 
                             await PopulateWars(clan).ConfigureAwait(false);
-
-                            if (_stopRequested)
-                                break;
                         }
 
                         foreach (CurrentWar storedWar in _cocApi.Wars.QueuedWars.Values)
                         {
-                            await Update(storedWar).ConfigureAwait(false);
-
                             if (_stopRequested)
                                 break;
+
+                            await Update(storedWar).ConfigureAwait(false);
                         }
 
                         OnWarQueueCompleted();
@@ -438,11 +438,11 @@ namespace devhl.CocApi
             });
         }
 
-        public void StopQueue() => _stopRequested = false;
+        public void StopQueue() => _stopRequested = true;
 
         public Task StopQueueAsync()
         {
-            _stopRequested = false;
+            _stopRequested = true;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
 

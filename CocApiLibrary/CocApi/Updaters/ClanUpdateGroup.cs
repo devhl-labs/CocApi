@@ -20,11 +20,11 @@ namespace devhl.CocApi
 
         public bool QueueRunning { get; private set; } = false;
 
-        public void StopUpdating() => _stopRequested = false;
+        public void StopUpdating() => _stopRequested = true;
 
         public Task StopUpdatingAsync()
         {
-            _stopRequested = false;
+            _stopRequested = true;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
 
@@ -58,6 +58,9 @@ namespace devhl.CocApi
                 {
                     foreach (string clanTag in ClanTags)
                     {
+                        if (_stopRequested)
+                            break;
+
                         Clan? queued = _cocApi.Clans.Queued.GetValueOrDefault(clanTag);
 
                         if (queued == null)
@@ -71,9 +74,6 @@ namespace devhl.CocApi
 
                         if (queued != null)
                             await UpdateClanVillagesAsync(queued);
-
-                        if (_stopRequested)
-                            break;
 
                         await Task.Delay(50);
                     }

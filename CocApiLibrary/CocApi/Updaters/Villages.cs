@@ -139,7 +139,7 @@ namespace devhl.CocApi
 
         public Task StopQueueAsync()
         {
-            _stopRequested = false;
+            _stopRequested = true;
 
             TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
 
