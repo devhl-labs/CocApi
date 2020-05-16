@@ -29,7 +29,7 @@ namespace devhl.CocApi
 
         public event AsyncEventHandler<LabelsChangedEventArgs<Clan, ClanLabel>>? ClanLabelsChanged;
 
-        public event AsyncEventHandler? ClanQueueCompleted;
+        public event AsyncEventHandler? QueuePopulated;
 
         public event AsyncEventHandler<ChangedEventArgs<Clan, ClanVillage, ClanVillage>>? ClanVillageChanged;
 
@@ -197,7 +197,11 @@ namespace devhl.CocApi
             ClanLabelsChanged?.Invoke(this, new LabelsChangedEventArgs<Clan, ClanLabel>(fetched, added.ToImmutableArray(), removed.ToImmutableArray()));
         }
 
-        internal void OnQueueCompletedEvent() => ClanQueueCompleted?.Invoke(this, EventArgs.Empty);
+        internal void OnQueuePopulated()
+        {
+            if (ClanUpdateGroups.All(c => c.QueueIsPopulated))           
+                QueuePopulated?.Invoke(this, EventArgs.Empty);                           
+        }
 
         private void Queue(string clanTag, Clan? clan)
         {

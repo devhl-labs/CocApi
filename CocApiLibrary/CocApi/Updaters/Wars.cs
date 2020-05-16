@@ -61,7 +61,7 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStarted;
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStartingSoon;
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar, WarLogEntry>>? FinalAttacksNotSeen;
-        public event AsyncEventHandler? WarQueueCompleted;
+        public event AsyncEventHandler? QueuePopulated;
 
         /// <summary>
         /// Controls whether any clan will download league wars.
@@ -414,7 +414,7 @@ namespace devhl.CocApi
                             await Update(storedWar).ConfigureAwait(false);
                         }
 
-                        OnWarQueueCompleted();
+                        OnQueuePopulated();
 
                         await Task.Delay(50);
                     }
@@ -494,7 +494,11 @@ namespace devhl.CocApi
         internal void OnWarStartingSoon(CurrentWar fetched)
             => WarStartingSoon?.Invoke(this, new ChangedEventArgs<CurrentWar>(fetched));
 
-        internal void OnWarQueueCompleted() => WarQueueCompleted?.Invoke(this, EventArgs.Empty);
+        internal void OnQueuePopulated()
+        {
+            if (CocApi.Clans.ClanUpdateGroups.All(g => g.QueueIsPopulated))
+                QueuePopulated?.Invoke(this, EventArgs.Empty);
+        }
 
         internal void OnFinalAttacksNotSeen(CurrentWar storedWar, WarLogEntry warLogEntry) => FinalAttacksNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar, WarLogEntry>(storedWar, warLogEntry));
 

@@ -29,7 +29,7 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Spell>>>? SpellsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Troop>>>? TroopsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, Village>>? VillageChanged;
-        public event AsyncEventHandler? VillageQueueCompleted;
+        public event AsyncEventHandler? QueuePopulated;
 
         public bool QueueRunning { get; private set; }
         private ConcurrentDictionary<string, Village?> Queued { get; } = new ConcurrentDictionary<string, Village?>();
@@ -113,7 +113,7 @@ namespace devhl.CocApi
                             await Task.Delay(50);
                         }
 
-                        OnVillageQueueCompleted();
+                        OnQueuePopulated();
                     }
 
                     QueueRunning = false;
@@ -182,7 +182,8 @@ namespace devhl.CocApi
         internal void OnVillageTroopsChanged(Village fetched, List<Troop> troops) 
             => TroopsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Troop>>(fetched, troops.ToImmutableArray()));
 
-        internal void OnVillageQueueCompleted() => VillageQueueCompleted?.Invoke(this, EventArgs.Empty);
+        internal void OnQueuePopulated() => QueuePopulated?.Invoke(this, EventArgs.Empty);
+        
 
         private async Task PopulateVillageAsync(string villageTag)
         {

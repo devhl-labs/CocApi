@@ -41,6 +41,8 @@ namespace devhl.CocApi
             return tsc.Task;
         }
 
+        public bool QueueIsPopulated { get; private set; }
+
         public void StartQueue()
         {
             StopRequested = false;
@@ -52,50 +54,55 @@ namespace devhl.CocApi
 
             Task.Run(async () =>
             {
-            try
-            {
-                while (StopRequested == false)
+                try
                 {
-                    foreach (string clanTag in ClanTags)
+                    while (StopRequested == false)
                     {
-                        if (StopRequested)
-                            break;
-
-                        Clan? queued = CocApi.Clans.Queued.GetValueOrDefault(clanTag);
-
-                        if (queued == null)
+                        foreach (string clanTag in ClanTags)
                         {
-                            queued = await PopulateClanAsync(clanTag).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            queued = await UpdateClanAsync(queued).ConfigureAwait(false);
+                            if (StopRequested)
+                                break;
+
+                            Clan? queued = CocApi.Clans.Queued.GetValueOrDefault(clanTag);
+
+                            if (queued == null)
+                            {
+                                queued = await PopulateClanAsync(clanTag).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                queued = await UpdateClanAsync(queued).ConfigureAwait(false);
+                            }
+
+                            if (queued != null)
+                                await UpdateClanVillagesAsync(queued);
+
+                            await Task.Delay(50);
                         }
 
-                        if (queued != null)
-                            await UpdateClanVillagesAsync(queued);
+                        //if (QueueIsPopulated == false)
+                        //{
+                            QueueIsPopulated = true;
 
-                        await Task.Delay(50);
+                            CocApi.Clans.OnQueuePopulated();
+                        //}
                     }
 
-                    CocApi.Clans.OnQueueCompletedEvent();
+                    QueueRunning = false;
+
+                    CocApi.OnLog(new LogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
                 }
+                catch (Exception e)
+                {
+                    StopRequested = false;
 
-                QueueRunning = false;
+                    QueueRunning = false;
 
-                CocApi.OnLog(new LogEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
-            }
-            catch (Exception e)
-            {
-                StopRequested = false;
+                    CocApi.OnLog(new ExceptionEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
 
-                QueueRunning = false;
+                    _ = CocApi.ClanQueueRestartAsync();
 
-                CocApi.OnLog(new ExceptionEventArgs(nameof(ClanUpdateGroup), nameof(StartQueue), e));
-
-                _ = CocApi.ClanQueueRestartAsync();
-
-                throw e;
+                    throw e;
                 }
             });
         }
