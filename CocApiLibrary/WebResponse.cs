@@ -149,7 +149,7 @@ namespace devhl.CocApi
             };
         }
 
-        private static IDownloadable ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
+        private static IDownloadable? ErrorInResponse(Exception e, string encodedUrl, EndPoint endPoint)
         {
             if (e is ServerResponseException serverResponse)
             {
@@ -171,17 +171,11 @@ namespace devhl.CocApi
             }
             else if (e is TaskCanceledException)
             {
-                ResponseMessage responseMessageApiModel = new ResponseMessage
-                {
-                    Message = e.Message,
-
-                    Reason = e.ToString()
-                };
-
-                throw new ServerTookTooLongToRespondException(responseMessageApiModel, null);
+                return null;
             }
 
-            if (e is CocApiException) throw e;
+            if (e is CocApiException)
+                throw e;
 
             throw new CocApiException(e.Message, e);
         }
