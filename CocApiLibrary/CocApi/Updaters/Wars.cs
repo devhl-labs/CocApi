@@ -175,7 +175,14 @@ namespace devhl.CocApi
             CachedWars.TryGetValue(formattedTag, out IWar? cached);
 
             if (cached != null && (allowExpiredItem || cached.IsExpired() == false))
-                return cached;
+            {
+                if (!(cached is CurrentWar currentWar))
+                    return cached;
+
+                //if the war should be over lets not return the cached item
+                if (DateTime.UtcNow < currentWar.EndTimeUtc || DateTime.UtcNow < currentWar.ServerExpirationUtc)
+                    return cached;
+            }
 
             IWar? fetched = await FetchAsync<T>(formattedTag, cancellationToken).ConfigureAwait(false);
 

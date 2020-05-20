@@ -10,8 +10,8 @@
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</Description>
-    <Version>0.41.0-alpha</Version>
-    <AssemblyVersion>0.41.0.0</AssemblyVersion>
+    <Version>0.42.0-alpha</Version>
+    <AssemblyVersion>0.42.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
     <PackageId>CocApi</PackageId>
@@ -25,7 +25,7 @@ Use this feed to get Reflection while this is in prerelease.</Description>
 
 https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
 Use this feed to get Reflection while this is in prerelease.</PackageReleaseNotes>
-    <FileVersion>0.41.0.0</FileVersion>
+    <FileVersion>0.42.0.0</FileVersion>
     <ApplicationIcon />
     <AssemblyName>CocApi</AssemblyName>
     <RootNamespace>devhl.CocApi</RootNamespace>

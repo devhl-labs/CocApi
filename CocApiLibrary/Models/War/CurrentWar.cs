@@ -242,8 +242,6 @@ namespace devhl.CocApi.Models.War
             return false;
         }
 
-        //internal readonly object _announceWarLock = new object();
-
         internal void Update(CocApi cocApi, IWar? fetchedWar)
         {
             PreUpdateAnnouncements(cocApi, fetchedWar);
@@ -332,12 +330,15 @@ namespace devhl.CocApi.Models.War
             {
                 Announcements |= Announcements.WarEndSeen;
                 Announcements &= ~Announcements.WarEndNotSeen;
+                LocalExpirationUtc = DateTime.MaxValue;
+                
                 if (fetchedCurrentWar != null)
                 {
                     fetchedCurrentWar.Announcements |= Announcements.WarEndSeen;
                     fetchedCurrentWar.Announcements &= ~Announcements.WarEndNotSeen;
+                    fetchedCurrentWar.LocalExpirationUtc = DateTime.MaxValue;
                 }
-                LocalExpirationUtc = DateTime.MaxValue;
+                
                 cocApi.Wars.OnWarEndSeen(fetchedCurrentWar ?? this);
             }
         }
