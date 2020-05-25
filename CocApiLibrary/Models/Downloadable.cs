@@ -12,8 +12,8 @@ namespace devhl.CocApi
         [JsonProperty]
         public DateTime LocalExpirationUtc { get; internal set; }
 
-        [JsonProperty]
-        public string EncodedUrl { get; internal set; } = string.Empty;
+        //[JsonProperty]
+        //public string EncodedUrl { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public DateTime? ServerExpirationUtc { get; internal set; }

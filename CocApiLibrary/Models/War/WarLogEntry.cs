@@ -1,7 +1,5 @@
 ﻿using devhl.CocApi.Converters;
 using System;
-
-//using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
 using devhl.CocApi.Exceptions;
 using System.Collections.Generic;
@@ -9,8 +7,17 @@ using System.Linq;
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarLogEntry : IInitialize
+    public class WarLogEntry : Downloadable, IInitialize, IWar
     {
+        public WarLogEntry()
+        {
+            ServerExpirationUtc = DateTime.MaxValue;
+
+            LocalExpirationUtc = DateTime.MaxValue;
+
+            DownloadedAtUtc = DateTime.UtcNow;
+        }
+
         public static string Url(string clanTag, int? limit = null, int? after = null, int? before = null)
         {
             if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
@@ -46,13 +53,13 @@ namespace devhl.CocApi.Models.War
         public int TeamSize { get; private set; }
 
         [JsonProperty]
-        private WarClan? Clan { get; set; }
+        public WarLogEntryClan? Clan { get; private set; }
 
         [JsonProperty]
-        private WarClan? Opponent { get; set; }
+        public WarLogEntryClan? Opponent { get; private set; }
 
         [JsonProperty]
-        public List<WarClan> WarClans { get; private set; } = new List<WarClan>();
+        public List<WarLogEntryClan> WarClans { get; private set; } = new List<WarLogEntryClan>();
 
         [JsonProperty("endTime")]
         [JsonConverter(typeof(DateTimeConverter))]
@@ -97,7 +104,8 @@ namespace devhl.CocApi.Models.War
                     Opponent.Result = Result.Null;
             }
 
-            WarClans = WarClans.OrderBy(wc => wc.ClanTag).ToList();
+            if (WarClans.All(wc => wc.ClanTag != null))
+                WarClans = WarClans.OrderBy(wc => wc.ClanTag).ToList();
         }
     }
 }

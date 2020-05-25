@@ -340,7 +340,7 @@ namespace devhl.CocApi.Models.Clan
 
         public void Initialize(CocApi cocApi)
         {
-            EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(ClanTag)}";
+            //EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(ClanTag)}";
 
             if (!string.IsNullOrEmpty(ClanTag) && Labels != null)
             {

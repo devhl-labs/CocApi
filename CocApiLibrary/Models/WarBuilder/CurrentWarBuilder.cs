@@ -28,10 +28,10 @@ namespace devhl.CocApi.Models.War
 
         public IList<AttackBuilder> Attacks { get; set; } = new List<AttackBuilder>();
 
-        /// <summary>
-        /// This value is used internally to identify unique wars.
-        /// </summary>
-        internal string WarKey { get; private set; } = string.Empty;
+        ///// <summary>
+        ///// This value is used internally to identify unique wars.
+        ///// </summary>
+        //internal string WarKey { get; private set; } = string.Empty;
 
         public WarType WarType { get; set; } = WarType.Random;
 
@@ -44,6 +44,8 @@ namespace devhl.CocApi.Models.War
         public string? WarTag { get; set; }
 
         public Announcements Announcements {get;set;}
+
+        public string WarKey() => $"{PreparationStartTimeUtc};{WarClans[0].ClanTag}";
 
         public T Build<T>() where T : CurrentWar, new()
         {
@@ -58,7 +60,7 @@ namespace devhl.CocApi.Models.War
 
                 WarClans = WarClans.OrderBy(x => x.ClanTag).ToList();
 
-            WarKey = $"{PreparationStartTimeUtc};{WarClans[0].ClanTag}";
+            //WarKey = $"{PreparationStartTimeUtc};{WarClans[0].ClanTag}";
 
             T war = new T
             {
@@ -68,12 +70,12 @@ namespace devhl.CocApi.Models.War
                 TeamSize = TeamSize,
                 State = State,
                 WarType = WarType,
-                WarKey = WarKey,
+                //WarKey = WarKey,
                 Announcements = Announcements
             };
 
             foreach (WarClanBuilder warClanBuilder in WarClans)
-                war.WarClans.Add(warClanBuilder.Build(WarKey));       
+                war.WarClans.Add(warClanBuilder.Build(WarKey()));       
 
             war.WarEndingSoonUtc = EndTimeUtc.AddHours(-1);
             war.WarStartingSoonUtc = StartTimeUtc.AddHours(-1);
@@ -89,11 +91,11 @@ namespace devhl.CocApi.Models.War
             Attacks = Attacks.OrderBy(a => a.Order).ToList();
 
             foreach (AttackBuilder attackBuilder in Attacks)
-                war.Attacks.Add(attackBuilder.Build(WarKey, PreparationStartTimeUtc));
+                war.Attacks.Add(attackBuilder.Build(WarKey(), PreparationStartTimeUtc));
 
             List<WarVillage> warVillages = new List<WarVillage>();
             foreach(WarVillageBuilder warVillageBuilder1 in WarVillages)
-                warVillages.Add(warVillageBuilder1.Build(WarKey));
+                warVillages.Add(warVillageBuilder1.Build(WarKey()));
 
             war.WarClans[0].WarVillages = warVillages.Where(wv => wv.ClanTag == war.WarClans[0].ClanTag);
             war.WarClans[1].WarVillages = warVillages.Where(wv => wv.ClanTag == war.WarClans[1].ClanTag);

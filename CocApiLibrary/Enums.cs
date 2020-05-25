@@ -174,9 +174,9 @@ namespace devhl.CocApi
         WarAnnounced = 16,
         WarStarted = 32,
         WarEnded = 64,
-        AttacksNotSeen = 128,
+        NotUsed = 128,
         AttacksMissed = 256,
         WarEndSeen = 512,
-        WarLogSearched = 1024
+        AddedToWarLog = 1024
     }
 }

@@ -68,5 +68,11 @@ namespace devhl.CocApi
         /// This property defines how often to check if a clan has joined CWL.
         /// </summary>
         public TimeSpan LeagueGroupNotFoundTimeToLive { get; set; } = new TimeSpan(1, 0, 0);
+
+        /// <summary>
+        /// Defines how long to wait before an HTTP request is considered expired.
+        /// This property defines how often to download the war log.
+        /// </summary>
+        public TimeSpan WarLogTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
     }
 }

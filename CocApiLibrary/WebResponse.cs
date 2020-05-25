@@ -247,14 +247,16 @@ namespace devhl.CocApi
             }            
         }
 
-        private static void InitializeDownloadableProperties(IDownloadable iDownloadable, string encodedURL)
+        private static void InitializeDownloadableProperties(IDownloadable iDownloadable)
         {
             Downloadable downloadable = (Downloadable)iDownloadable;
 
-            downloadable.EncodedUrl = encodedURL;
-
             switch (downloadable)
             {
+                case Paginated<WarLogEntry> warLog:
+                    warLog.LocalExpirationUtc = DateTime.UtcNow.Add(_cfg.WarLogTimeToLive);
+
+                    break;
                 case LeagueWar leagueWar:
                     if (leagueWar.State == WarState.WarEnded)
                     {
@@ -319,7 +321,7 @@ namespace devhl.CocApi
 
         private static void InitializeResult<T>(T result, HttpResponseMessage? response, string encodedUrl) where T : IDownloadable /*, new()*/
         {
-            InitializeDownloadableProperties(result, encodedUrl);
+            InitializeDownloadableProperties(result);
 
             InitializeCacheExpiration(result, response);
 
@@ -433,7 +435,7 @@ namespace devhl.CocApi
 
             //throw new ServerResponseException(ex, response.StatusCode);
 
-            _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(UnSuccessfulResponse), LogLevel.Information, $"{ex.Reason}: {ex.Message}"));
+            _cocApi.OnLog(new LogEventArgs(nameof(WebResponse), nameof(UnSuccessfulResponse), LogLevel.Warning, $"{encodedUrl.Replace("https://api.clashofclans.com/v1", "")} {ex.Reason}: {ex.Message}"));
 
             return null;
         }

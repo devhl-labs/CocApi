@@ -8,7 +8,7 @@ namespace devhl.CocApi.Models
 
         DateTime LocalExpirationUtc { get; }
 
-        string EncodedUrl { get; }
+        //string EncodedUrl { get; }
 
         DateTime? ServerExpirationUtc { get; }
 

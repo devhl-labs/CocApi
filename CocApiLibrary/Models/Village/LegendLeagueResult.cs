@@ -14,7 +14,7 @@ namespace devhl.CocApi.Models.Village
 
         [JsonProperty]
         [JsonConverter(typeof(LeagueSeasonConverter))]
-        public DateTime Id { get; internal set; } //todo why was this default here? = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day);
+        public DateTime Id { get; internal set; }
 
         [JsonProperty]
         public int? Rank { get; internal set; }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -60,7 +61,7 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarEndSeen;
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStarted;
         public event AsyncEventHandler<ChangedEventArgs<CurrentWar>>? WarStartingSoon;
-        public event AsyncEventHandler<ChangedEventArgs<CurrentWar, WarLogEntry>>? FinalAttacksNotSeen;
+        public event AsyncEventHandler<ChangedEventArgs<WarLogEntry, CurrentWar>>? AddedToWarLog;
         public event AsyncEventHandler? QueuePopulated;
 
         /// <summary>
@@ -70,6 +71,10 @@ namespace devhl.CocApi
         public DownloadLeagueWars DownloadLeagueWars { get; set; } = DownloadLeagueWars.Auto;
 
         public bool QueueRunning { get; private set; }
+
+        internal ConcurrentDictionary<string, Paginated<WarLogEntry>> PaginatedWarLogs { get; } = new ConcurrentDictionary<string, Paginated<WarLogEntry>>();
+
+        internal ConcurrentDictionary<string, WarLogEntry> WarLogs { get; } = new ConcurrentDictionary<string, WarLogEntry>();
 
         /// <summary>
         /// One war will appear in this dictionary multiple times using both clantags, warkey, and wartag
@@ -116,6 +121,63 @@ namespace devhl.CocApi
 
         public async Task<Paginated<WarLeague>?> FetchWarLeaguesAsync(CancellationToken? cancellationToken = null)
             => await CocApi.FetchAsync<Paginated<WarLeague>>(WarLeague.Url(), cancellationToken).ConfigureAwait(false) as Paginated<WarLeague>;
+
+        public Paginated<WarLogEntry>? GetWarLog(string clanTag)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            PaginatedWarLogs.TryGetValue(formattedTag, out Paginated<WarLogEntry>? cached);
+
+            return cached;
+        }
+
+        public async Task<Paginated<WarLogEntry>?> GetWarLogAsync(string clanTag, bool allowExpired = true, CancellationToken? cancellationToken = null)
+        {
+            if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new InvalidTagException(clanTag);
+
+            Paginated<WarLogEntry>? warLog = GetWarLog(formattedTag);
+
+            if (warLog != null && (allowExpired || warLog.IsExpired() == false))
+                return warLog;
+
+            warLog = await FetchWarLogAsync(formattedTag, null, null, null, cancellationToken);
+
+            if (warLog != null)
+            {
+                PaginatedWarLogs.AddOrUpdate(formattedTag, warLog, (_, old) =>
+                {
+                   return (warLog.ServerExpirationUtc > old.ServerExpirationUtc) ? warLog : old;
+                });
+
+                foreach(WarLogEntry warLogEntry in warLog.Items.EmptyIfNull())
+                {
+                    if (warLogEntry.Clan == null || warLogEntry.Clan.ClanTag == null)
+                        continue;
+
+                    WarLogs.TryAdd($"{warLogEntry.EndTimeUtc};{warLogEntry.Clan.ClanTag}", warLogEntry);
+                }
+            }
+
+            return warLog;
+        }
+
+        public List<WarLogEntry>? GetWarLogEntries(string clanTag, string opponentTag, DateTime endTimeUtc)
+        {
+            List<WarLogEntry> warLogEntries = new List<WarLogEntry>();
+
+            if (WarLogs.TryGetValue($"{endTimeUtc};{clanTag}", out WarLogEntry clan))
+                warLogEntries.Add(clan);
+
+            if (WarLogs.TryGetValue($"{endTimeUtc};{opponentTag}", out WarLogEntry opponent))
+                warLogEntries.Add(opponent);
+
+            if (warLogEntries.Count == 0)
+                return null;
+
+            return warLogEntries;
+        }
 
         public async Task<Paginated<WarLogEntry>?> FetchWarLogAsync(string clanTag, int? limit = null, int? after = null, int? before = null, CancellationToken? cancellationToken = null)
             => await CocApi.FetchAsync<Paginated<WarLogEntry>>(WarLogEntry.Url(clanTag, limit, after, before), cancellationToken).ConfigureAwait(false) as Paginated<WarLogEntry>;
@@ -174,14 +236,26 @@ namespace devhl.CocApi
 
             CachedWars.TryGetValue(formattedTag, out IWar? cached);
 
-            if (cached != null && (allowExpiredItem || cached.IsExpired() == false))
+            if (cached is CurrentWar currentWar)
             {
-                if (!(cached is CurrentWar currentWar))
+                if (currentWar.IsExpired() == false)
+                {
                     return cached;
-
-                //if the war should be over lets not return the cached item
-                if (DateTime.UtcNow < currentWar.EndTimeUtc || DateTime.UtcNow < currentWar.ServerExpirationUtc)
+                }
+                else if (DateTime.UtcNow > currentWar.EndTimeUtc &&
+                    DateTime.UtcNow < currentWar.EndTimeUtc.AddMinutes(10) &&
+                    DateTime.UtcNow < currentWar.ServerExpirationUtc)
+                {
                     return cached;
+                }
+                else if (DateTime.UtcNow < currentWar.StartTimeUtc.AddMinutes(-10))
+                {
+                    return cached;
+                }
+            }
+            else if (cached != null && (allowExpiredItem || cached.IsExpired() == false))
+            {
+                return cached;
             }
 
             IWar? fetched = await FetchAsync<T>(formattedTag, cancellationToken).ConfigureAwait(false);
@@ -197,7 +271,7 @@ namespace devhl.CocApi
 
             if (storedWar is LeagueWar leagueWar)
             {
-                war = await GetAsync<LeagueWar>(leagueWar.WarTag, false, cancellationToken);
+                war = await GetAsync<LeagueWar>(leagueWar.WarTag, false, cancellationToken).ConfigureAwait(false);
 
                 UpdateWarDictionary(war, leagueWar.WarTag);
 
@@ -209,25 +283,51 @@ namespace devhl.CocApi
 
                 foreach (WarClan warClan in storedWar.WarClans)
                 {
-                    war = await GetAsync<CurrentWar>(warClan.ClanTag, false, cancellationToken);
+                    war = await GetAsync<CurrentWar>(warClan.ClanTag, false, cancellationToken).ConfigureAwait(false);
 
-                    if (war is CurrentWar currentWar && currentWar.WarKey == storedWar.WarKey)
-                        return war;
+                    if (war is CurrentWar currentWar && currentWar.WarKey() == storedWar.WarKey()) 
+                    {
+                        if (currentWar.State == WarState.WarEnded)
+                            return currentWar;
+
+                        if (DateTime.UtcNow < currentWar.EndTimeUtc)
+                            return currentWar;
+
+                        wars.Add(war);
+                    }
 
                     if (war != null)
                         wars.Add(war);
                 }
 
+                if (wars.Where(w => w is CurrentWar cw && cw.WarKey() == storedWar.WarKey())
+                                              .OrderByDescending(w => w.ServerExpirationUtc)
+                                              .FirstOrDefault() is CurrentWar currentWar1)
+                    return currentWar1;
+
+                List<WarLogEntry>? warLogs = GetWarLogEntries(storedWar.WarClans[0].ClanTag, storedWar.WarClans[1].ClanTag, storedWar.EndTimeUtc);
+
+                if (warLogs != null)
+                {
+                    WarLogEntry? warLog = warLogs.FirstOrDefault(wl => wl.Clan != null &&
+                                                                       wl.Clan.ClanTag != null &&
+                                                                       wl.Opponent != null &&
+                                                                       wl.Opponent.ClanTag != null);
+                    if (warLog != null) return warLog;
+
+                    return warLogs.First(wl => wl.Clan != null && wl.Clan.ClanTag != null);
+                }
+
                 if (wars.Any(w => w is CurrentWar currentWar1 &&
-                    currentWar1.WarKey != storedWar.WarKey &&
+                    currentWar1.WarKey() != storedWar.WarKey() &&
                     currentWar1.PreparationStartTimeUtc > storedWar.PreparationStartTimeUtc))
                     return new NotInWar();
 
-                if (wars.Any(w => w is NotInWar))
-                    return wars.First(w => w is NotInWar);
-
                 if (wars.Any(w => w is PrivateWarLog))
                     return wars.First(w => w is PrivateWarLog);
+
+                if (wars.Any(w => w is NotInWar))
+                    return wars.First(w => w is NotInWar);
             }
 
             return null;
@@ -378,7 +478,7 @@ namespace devhl.CocApi
 
         public void Queue(CurrentWar currentWar)
         {
-            QueuedWars.TryAdd(currentWar.WarKey, currentWar);
+            QueuedWars.TryAdd(currentWar.WarKey(), currentWar);
         }
 
         public void Queue(IEnumerable<CurrentWar> currentWars)
@@ -418,7 +518,7 @@ namespace devhl.CocApi
                             if (StopRequested)
                                 break;
 
-                            await Update(storedWar).ConfigureAwait(false);
+                            Update(storedWar);
                         }
 
                         OnQueuePopulated();
@@ -507,19 +607,39 @@ namespace devhl.CocApi
                 QueuePopulated?.Invoke(this, EventArgs.Empty);
         }
 
-        internal void OnFinalAttacksNotSeen(CurrentWar storedWar, WarLogEntry warLogEntry) => FinalAttacksNotSeen?.Invoke(this, new ChangedEventArgs<CurrentWar, WarLogEntry>(storedWar, warLogEntry));
+        internal void OnAddedToWarLog(WarLogEntry warLogEntry, CurrentWar storedWar) => AddedToWarLog?.Invoke(this, new ChangedEventArgs<WarLogEntry, CurrentWar>(warLogEntry, storedWar));
 
         private async Task PopulateWars(Clan clan)
         {
-            if (clan.QueueCurrentWar && clan.IsWarLogPublic)
+            if (clan.QueueCurrentWar)
             {
-                IWar? war = await CocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
+                IWar? war = null;
+
+                if (clan.IsWarLogPublic)
+                {
+                    war = await CocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, allowExpiredItem: false).ConfigureAwait(false);
+                }
+                else
+                {
+                    war = GetActiveWar(clan.ClanTag);
+
+                    if (war is CurrentWar currentWar1)
+                        war = await CocApi.Wars.GetAsync<CurrentWar>(currentWar1.WarClans.First(wc => wc.ClanTag != clan.ClanTag).ClanTag, false).ConfigureAwait(false);
+                }
 
                 if (war is CurrentWar currentWar)
                 {
-                    if (CocApi.Wars.QueuedWars.TryAdd(currentWar.WarKey, currentWar))
+                    if (CocApi.Wars.QueuedWars.TryAdd(currentWar.WarKey(), currentWar))
                         OnNewWar(currentWar);
+
+                    if (DateTime.UtcNow > currentWar.EndTimeUtc &&
+                        currentWar.State != WarState.WarEnded &&
+                        clan.IsWarLogPublic)
+                        await CocApi.Wars.GetAsync<CurrentWar>(currentWar.WarClans.First(wc => wc.ClanTag != clan.ClanTag).ClanTag, allowExpiredItem: false).ConfigureAwait(false);
                 }
+
+                if (!(war is PrivateWarLog))
+                    await GetWarLogAsync(clan.ClanTag);
             }
 
             if (clan.QueueLeagueWars && CocApi.Wars.IsDownloadingLeagueWars())
@@ -527,50 +647,31 @@ namespace devhl.CocApi
                 List<LeagueWar>? leagueWars = await CocApi.Wars.GetLeagueWarsAsync(clan.ClanTag, false).ConfigureAwait(false);
 
                 foreach (LeagueWar leagueWar in leagueWars.EmptyIfNull())
-                {
-                    if (CocApi.Wars.QueuedWars.TryAdd(leagueWar.WarKey, leagueWar))
+                    if (CocApi.Wars.QueuedWars.TryAdd(leagueWar.WarKey(), leagueWar))
                         OnNewWar(leagueWar);
-                }
             }
         }
 
-        private async Task Update(CurrentWar queued)
+        private void Update(CurrentWar queued)
         {
-            if (queued.IsExpired() == false)
-                return;
+            if (CachedWars.TryGetValue(queued.WarKey(), out IWar? fetched))
+                queued.Update(CocApi, fetched);
 
-            WarLogEntry? warLogEntry = null;
-
-            if (await CocApi.Wars.GetCurrentWarAsync(queued).ConfigureAwait(false) is CurrentWar fetched)
+            if (WarLogs.TryGetValue($"{queued.EndTimeUtc};{queued.WarClans[0].ClanLevel}", out WarLogEntry entry))
+            {                 
+                queued.Update(CocApi, entry);
+            }
+            else
             {
-                if ((queued.Announcements.HasFlag(Announcements.WarEndSeen) == false && 
-                    queued.Announcements.HasFlag(Announcements.WarLogSearched) == false) &&
-                    queued.State == WarState.InWar &&
-                    DateTime.UtcNow > queued.EndTimeUtc &&
-                    (fetched == null || (fetched is CurrentWar fetchedWar && fetchedWar.WarKey != queued.WarKey)))
+                if (WarLogs.TryGetValue($"{queued.EndTimeUtc};{queued.WarClans[1].ClanLevel}", out entry))
                 {
-                    foreach(WarClan warClan in queued.WarClans)
-                    {
-                        Paginated<WarLogEntry>? logs = await CocApi.Wars.FetchWarLogAsync(warClan.ClanTag);
-
-                        warLogEntry = logs?.Items.FirstOrDefault(e => e.EndTimeUtc == queued.EndTimeUtc && e.WarClans.First().Result != Result.Null);
-
-                        if (warLogEntry != null)
-                            break;
-                    }
+                    queued.Update(CocApi, entry);
                 }
+            }
 
-                if (warLogEntry != null)
-                {
-                    queued.Update(CocApi, warLogEntry);
-                }
-                else
-                {
-                    queued.Update(CocApi, fetched);
-                }
-
-                if (fetched != null)
-                    CocApi.UpdateDictionary(QueuedWars, fetched.WarKey, fetched);
+            if (fetched is CurrentWar fetchedWar)
+            {
+                CocApi.UpdateDictionary(QueuedWars, fetchedWar.WarKey(), fetchedWar);
             }
         }
 
@@ -583,13 +684,13 @@ namespace devhl.CocApi
 
             if (war is CurrentWar currentWar)
             {
-                if (currentWar.State == WarState.Preparation || currentWar.State == WarState.InWar || currentWar.WarKey == GetActiveWar(currentWar.WarClans.First().ClanTag)?.WarKey)
+                if (currentWar.State == WarState.Preparation || currentWar.State == WarState.InWar || currentWar.WarKey() == GetActiveWar(currentWar.WarClans.First().ClanTag)?.WarKey())
                 {
                     foreach (WarClan warClan in currentWar.WarClans)
                         CocApi.UpdateDictionary(CachedWars, warClan.ClanTag, currentWar);
                 }
 
-                CocApi.UpdateDictionary(CachedWars, currentWar.WarKey, currentWar);
+                CocApi.UpdateDictionary(CachedWars, currentWar.WarKey(), currentWar);
             }
 
             CocApi.UpdateDictionary(CachedWars, formattedTag, war);
