@@ -1,5 +1,6 @@
 ﻿using devhl.CocApi.Exceptions;
 using devhl.CocApi.Models;
+//using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Data.SQLite;
 
 namespace devhl.CocApi
 {
@@ -23,6 +25,30 @@ namespace devhl.CocApi
 
         public CocApi(CocApiConfiguration cfg)
         {
+            //SQLiteConnection.CreateFile("MyDatabase.sqlite");
+
+            //SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.sqlite;Version=3;");
+
+            //m_dbConnection.Open();
+
+            //string sql = "create table highscores (name varchar(20), score int)";
+
+            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+
+            //command.ExecuteNonQuery();
+
+            //string sql = "insert into highscores (name, score) values ('Me', 9001)";
+
+            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
+            //command.ExecuteNonQuery();
+
+            //m_dbConnection.Close();
+
+
+
+
+
+
             if (cfg != null)
             {
                 CocApiConfiguration = cfg;

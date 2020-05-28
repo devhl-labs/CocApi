@@ -12,6 +12,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Cache;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.Serialization;
@@ -191,10 +193,10 @@ namespace devhl.CocApi
             stopwatch.Start();
 
             HttpResponseMessage response;
-
+            
             try
-            {
-                 response = await HttpClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
+            {             
+                response = await HttpClient.GetAsync(encodedUrl, cts.Token).ConfigureAwait(false);
             }
             catch (Exception)
             {
