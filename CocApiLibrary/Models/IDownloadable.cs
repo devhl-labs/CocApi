@@ -10,8 +10,10 @@ namespace devhl.CocApi.Models
 
         //string EncodedUrl { get; }
 
-        DateTime? ServerExpirationUtc { get; }
+        DateTime ServerExpirationUtc { get; }
 
         bool IsExpired();
+
+        DateTime EffectiveExpiration();
     }
 }

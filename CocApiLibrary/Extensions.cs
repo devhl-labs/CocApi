@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -19,5 +20,7 @@ namespace devhl.CocApi
                 return @enum.ToString();
             return attr.Value;
         }
+
+        public static string ToJson(this object obj) => JsonConvert.SerializeObject(obj);
     }
 }

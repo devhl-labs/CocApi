@@ -16,17 +16,19 @@ namespace devhl.CocApi
         //public string EncodedUrl { get; internal set; } = string.Empty;
 
         [JsonProperty]
-        public DateTime? ServerExpirationUtc { get; internal set; }
+        public DateTime ServerExpirationUtc { get; internal set; } = DateTime.UtcNow;
 
         public bool IsExpired()
         {
             if (DateTime.UtcNow < LocalExpirationUtc)
                 return false;
 
-            if (ServerExpirationUtc != null && DateTime.UtcNow < ServerExpirationUtc.Value)
+            if (DateTime.UtcNow < ServerExpirationUtc)
                 return false;
 
             return true;
         }
+
+        public DateTime EffectiveExpiration() => (LocalExpirationUtc > ServerExpirationUtc) ? LocalExpirationUtc : ServerExpirationUtc;
     }
 }

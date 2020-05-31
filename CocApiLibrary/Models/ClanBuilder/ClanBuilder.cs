@@ -63,7 +63,7 @@ namespace devhl.CocApi.Models.Clan
 
         public int WarLeagueId { get; set; }
 
-        public DateTime? ServerExpirationUtc { get; set; }
+        public DateTime ServerExpirationUtc { get; set; }
 
         public override string ToString() => $"{ClanTag} {Name}";
 

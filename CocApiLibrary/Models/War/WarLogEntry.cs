@@ -11,7 +11,7 @@ namespace devhl.CocApi.Models.War
     {
         public WarLogEntry()
         {
-            ServerExpirationUtc = DateTime.MaxValue;
+            //ServerExpirationUtc = DateTime.MaxValue;
 
             LocalExpirationUtc = DateTime.MaxValue;
 

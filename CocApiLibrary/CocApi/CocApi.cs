@@ -9,6 +9,16 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Data.SQLite;
+using Dapper.SqlWriter;
+using devhl.CocApi.Models.Cache;
+using System.IO;
+using devhl.CocApi.Models.Clan;
+using Newtonsoft.Json;
+using System.CodeDom;
+using System.Globalization;
+using devhl.CocApi.Models.War;
+using System.Linq;
+using devhl.CocApi.Updaters;
 
 namespace devhl.CocApi
 {
@@ -25,30 +35,6 @@ namespace devhl.CocApi
 
         public CocApi(CocApiConfiguration cfg)
         {
-            //SQLiteConnection.CreateFile("MyDatabase.sqlite");
-
-            //SQLiteConnection m_dbConnection = new SQLiteConnection("Data Source=MyDatabase.sqlite;Version=3;");
-
-            //m_dbConnection.Open();
-
-            //string sql = "create table highscores (name varchar(20), score int)";
-
-            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-
-            //command.ExecuteNonQuery();
-
-            //string sql = "insert into highscores (name, score) values ('Me', 9001)";
-
-            //SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
-            //command.ExecuteNonQuery();
-
-            //m_dbConnection.Close();
-
-
-
-
-
-
             if (cfg != null)
             {
                 CocApiConfiguration = cfg;
@@ -76,12 +62,284 @@ namespace devhl.CocApi
             WebResponse.Initialize(this, CocApiConfiguration, cfg.Tokens);
 
             Clans.CreateClanUpdateServices();
+
+            //DownloadWars = true;
+
+            RegisterClasses();
         }
 
         public event ApiIsAvailableChangedEventHandler? ApiIsAvailableChanged;
 
         public event LogEventHandler? Log;
 
+#nullable disable
+
+        private SqlWriter SqlWriter { get; set; }
+
+#nullable enable
+
+        private void RegisterClasses()
+        {
+            SqlWriterConfiguration config = new SqlWriterConfiguration { SlowQueryWarning = TimeSpan.FromSeconds(5) };
+            
+            SQLiteConnection connection = new SQLiteConnection($"Data Source={Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"CocApiDatabase.sqlite")}");
+
+            SqlWriter = new SqlWriter(connection, config)
+            {
+                ToTableName = ToTableName,
+            };
+
+            SqlWriter.AddPropertyMap(new PropertyMap(typeof(DateTime), DateTimeToDatabase));
+
+            SqlWriter.AddPropertyMap(new PropertyMap(typeof(DateTime?), DateTimeToDatabase));
+
+            SqlWriter.Register<CachedClan>().Key(c => c.ClanTag);
+
+            SqlWriter.Register<CachedWar>().Key(w => w.PrepStartTime).Key(w => w.ClanTag).Key(w => w.OpponentTag);
+
+            SqlWriter.Register<CachedVillage>().Key(v => v.VillageTag);
+
+            SqlWriter.Register<CachedClanWar>().Key(cw => cw.ClanTag).Key(cw => cw.PrepStartTime);
+
+            NewUpdater = new NewUpdater(this, SqlWriter);
+
+            _ = NewUpdater.UpdateAsync();
+        }
+
+        private object? DateTimeToDatabase(object arg)
+        {
+            if (arg == null)
+                return null;
+
+            DateTime dte = (DateTime)arg;
+
+            return dte.ToString("s", CultureInfo.InvariantCulture);
+        }
+
+        private string ToTableName(string arg) => arg["Cached".Length..];
+
+        public NewUpdater NewUpdater { get; set; }
+
+        //private ConcurrentDictionary<string, CachedClan> UpdatingClans { get; set; } = new ConcurrentDictionary<string, CachedClan>();
+
+        //private ConcurrentDictionary<string, CachedWar> UpdatingWars { get; set; } = new ConcurrentDictionary<string, CachedWar>();
+
+        //private bool IsRunning { get; set; }
+
+        //private bool StopRequested { get; set; }
+
+        //public async Task UpdateAsync()
+        //{
+        //    if (IsRunning)
+        //        return;
+
+        //    IsRunning = true;
+
+        //    StopRequested = false;
+
+        //    while (!StopRequested)
+        //    {
+        //        for (int i = 0; i < CocApiConfiguration.NumberOfUpdaters; i++)
+        //        {
+        //            await UpdateClans();
+        //        }
+        //    }
+
+
+        //    IsRunning = false;
+        //}
+
+        //public bool DownloadWars { get; set; }
+
+        //private async Task UpdateWars(CachedClan cachedClan)
+        //{
+        //    if (DownloadWars == false || cachedClan.DownloadWars == false)
+        //        return;
+
+        //    IEnumerable<CachedWar> cachedWars = await SqlWriter.Select<CachedWar>()
+        //                                                 .Where(w => (w.ClanTag == cachedClan.ClanTag ||
+        //                                                             w.OpponentTag == cachedClan.ClanTag) &&
+        //                                                             w.WarTag == null)
+        //                                                 .QueryAsync();
+
+        //    foreach(CachedWar cachedWar in cachedWars)
+        //    {
+        //        if (StopRequested)
+        //            return;
+
+        //        try
+        //        {
+        //            if (UpdatingWars.TryAdd(cachedWar.WarKey(), cachedWar))
+        //                await UpdateWar(cachedWar);
+        //        }
+        //        finally
+        //        {
+        //            UpdatingWars.TryRemove(cachedWar.WarKey(), out CachedWar _);
+        //        }
+
+        //        await Task.Delay(50);
+        //    }
+
+        //    if (cachedWars.Count() == 0 && cachedClan.IsWarLogPublic)
+        //    {
+        //        IWar? war = await Wars.FetchAsync<CurrentWar>(cachedClan.ClanTag);
+
+        //        if (war is CurrentWar fetchedWar)
+        //        {
+        //            CachedWar cachedWar = new CachedWar(fetchedWar, cachedClan.ClanTag);
+
+        //            if (UpdatingWars.TryAdd(cachedWar.WarKey(), cachedWar))
+        //            {
+        //                try
+        //                {
+        //                    await SqlWriter.Insert(cachedWar).ExecuteAsync();
+
+        //                    Wars.OnNewWar(fetchedWar);
+        //                }
+        //                finally
+        //                {
+        //                    UpdatingWars.TryRemove(cachedWar.WarKey(), out CachedWar _);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private async Task UpdateWar(CachedWar cachedWar)
+        //{
+        //    //todo lookup war log entry if needed
+        //    IWar? war = null;
+
+        //    string tagUsed = cachedWar.ClanTag;
+
+        //    if (cachedWar.ClanUpdatesAt == null || DateTime.UtcNow > cachedWar.ClanUpdatesAt)
+        //        war = await Wars.FetchAsync<CurrentWar>(cachedWar.ClanTag);
+
+        //    if (war == null && (cachedWar.OpponentUpdatesAt == null || DateTime.UtcNow > cachedWar.OpponentUpdatesAt))
+        //    {
+        //        war = await Wars.FetchAsync<CurrentWar>(cachedWar.OpponentTag);
+
+        //        tagUsed = cachedWar.OpponentTag;
+        //    }
+
+        //    if (cachedWar.Json != null)
+        //    {
+        //        CurrentWar currentWar = JsonConvert.DeserializeObject<CurrentWar>(cachedWar.Json);
+
+        //        currentWar.Update(this, war);
+        //    }
+
+        //    if (war is CurrentWar fetchedWar)
+        //    {
+        //        if (fetchedWar.WarKey() == cachedWar.WarKey())
+        //        {
+        //            cachedWar.Json = JsonConvert.SerializeObject(fetchedWar);
+
+        //            await SqlWriter.Update(cachedWar).ExecuteAsync();
+        //        }
+        //        else
+        //        {
+        //            CachedWar cachedWar1 = new CachedWar(fetchedWar, tagUsed);
+
+        //            if (UpdatingWars.TryAdd(cachedWar1.WarKey(), cachedWar1))
+        //            {
+        //                try
+        //                {
+        //                    await SqlWriter.Insert(cachedWar1).ExecuteAsync();
+
+        //                    Wars.OnNewWar(fetchedWar);
+        //                }
+        //                finally
+        //                {
+        //                    UpdatingWars.TryRemove(cachedWar1.WarKey(), out CachedWar _);
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private bool UpdateIsAvailable(CachedWar cachedWar)
+        //{
+        //    //todo make this more sophisticated
+
+        //    if (cachedWar.ClanUpdatesAt == null || cachedWar.OpponentUpdatesAt == null)
+        //        return true;
+
+        //    if (DateTime.UtcNow > cachedWar.ClanUpdatesAt || DateTime.UtcNow > cachedWar.OpponentUpdatesAt)
+        //        return true;
+
+        //    return false;
+        //}
+
+
+        //private async Task UpdateClans()
+        //{
+        //    //todo dont run this query inside the for loop
+        //    IEnumerable<CachedClan> cachedClans = await SqlWriter.Select<CachedClan>()
+        //                   .OrderByDesc(c => c.ClanUpdatesAt)
+        //                   .Limit(100)
+        //                   .QueryAsync();
+
+        //    foreach (CachedClan cachedClan in cachedClans)
+        //    {
+        //        if (StopRequested)
+        //            return;
+
+        //        if (UpdatingClans.TryAdd(cachedClan.ClanTag, cachedClan))
+        //        {
+        //            try
+        //            {
+        //                await UpdateClan(cachedClan);
+
+        //                await UpdateWars(cachedClan);
+        //            }
+        //            finally
+        //            {
+        //                UpdatingClans.TryRemove(cachedClan.ClanTag, out CachedClan _);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private async Task UpdateClan(CachedClan cachedClan)
+        //{
+        //    if (cachedClan.Download == false || DateTime.UtcNow < cachedClan.ClanUpdatesAt)
+        //        return;
+
+        //    Clan? fetchedClan = await Clans.FetchAsync(cachedClan.ClanTag);
+
+        //    if (cachedClan.Json != null && fetchedClan != null)
+        //    {
+        //        Clan storedClan = JsonConvert.DeserializeObject<Clan>(cachedClan.Json);
+
+        //        storedClan.Update(this, fetchedClan);
+        //    }
+
+        //    if (fetchedClan != null)
+        //    {
+        //        cachedClan.Json = JsonConvert.SerializeObject(fetchedClan);
+
+        //        cachedClan.IsWarLogPublic = fetchedClan.IsWarLogPublic;
+
+        //        if (fetchedClan.ServerExpirationUtc.HasValue)
+        //            cachedClan.ClanUpdatesAt = fetchedClan.ServerExpirationUtc.Value;
+                
+        //        await SqlWriter.Update(cachedClan).ExecuteAsync();
+
+        //        await Task.Delay(50);
+        //    }
+        //}
+
+        //public async Task AddClan(string clanTag, bool downloadVillages, bool downloadWars, bool downloadCwl, bool download = true)
+        //{
+        //    CachedClan cachedClan = new CachedClan { ClanTag = clanTag, 
+        //                                             Download = download, 
+        //                                             DownloadCwl = downloadCwl, 
+        //                                             DownloadVillages = downloadVillages, 
+        //                                             DownloadWars = downloadWars };
+
+        //    await SqlWriter.Insert(cachedClan).QueryFirstAsync();
+        //}
 
         public Clans Clans { get; set; }
 
