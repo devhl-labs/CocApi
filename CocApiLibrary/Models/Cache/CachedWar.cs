@@ -23,8 +23,6 @@ namespace devhl.CocApi.Models.Cache
 
         public string? WarTag { get; set; }
 
-        public DateTime ProcessedAt { get; set; }
-
         public WarState WarState { get; set; }
 
         public bool IsFinal { get; set; }
@@ -42,6 +40,15 @@ namespace devhl.CocApi.Models.Cache
 
             return $"{PrepStartTime};{tags[0]}";
         }
+
+        public bool IsAvailableByClan { get; set; }
+
+        public bool IsAvailableByOpponent { get; set; }
+
+        public Announcements Announcements { get; set; }
+
+        public int Id { get; set; }
+
 
 #nullable disable
 
@@ -69,7 +76,7 @@ namespace devhl.CocApi.Models.Cache
             }
         }
 
-        public CachedWar(CurrentWar currentWar)
+        public CachedWar(CurrentWar currentWar, string clanTag)
         {
             ClanTag = currentWar.WarClans[0].ClanTag;
 
@@ -84,7 +91,34 @@ namespace devhl.CocApi.Models.Cache
             if (currentWar is LeagueWar leagueWar)
                 WarTag = leagueWar.WarTag;
 
-            Json = JsonConvert.SerializeObject(currentWar);
+            if (clanTag == ClanTag)
+                IsAvailableByClan = true;
+
+            if (clanTag == OpponentTag)
+                IsAvailableByOpponent = true;
+
+            Json = currentWar.ToJson();
+        }
+
+        public CachedWar(LeagueWar leagueWar)
+        {
+            ClanTag = leagueWar.WarClans[0].ClanTag;
+
+            OpponentTag = leagueWar.WarClans[1].ClanTag;
+
+            PrepStartTime = leagueWar.PreparationStartTimeUtc;
+
+            WarState = leagueWar.State;
+
+            EndTime = leagueWar.EndTimeUtc;
+
+            WarTag = leagueWar.WarTag;
+
+            IsAvailableByClan = true;
+
+            IsAvailableByOpponent = true;
+
+            Json = leagueWar.ToJson();
         }
 
 #nullable disable

@@ -9,6 +9,8 @@ namespace devhl.CocApi.Models.Village
 {
     public class TopVillage : IVillage, IInitialize
     {
+        //todo why doesn't this have a url property?
+
         [JsonProperty("tag")]
         public string VillageTag { get; private set; } = string.Empty;
 

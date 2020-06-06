@@ -15,7 +15,7 @@ namespace devhl.CocApi.Models.Clan
             if (locationId != null)
                 location = locationId.ToString();
 
-            return $"https://api.clashofclans.com/v1/locations/{location}/rankings/clans-versus";
+            return $"{location}/rankings/clans-versus";
         }
 
         [JsonProperty("clanVersusPoints")]

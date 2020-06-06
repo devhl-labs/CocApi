@@ -13,7 +13,7 @@ namespace devhl.CocApi.Models.War
         {
             //ServerExpirationUtc = DateTime.MaxValue;
 
-            LocalExpirationUtc = DateTime.MaxValue;
+            //LocalExpirationUtc = DateTime.MaxValue;
 
             DownloadedAtUtc = DateTime.UtcNow;
         }
@@ -23,7 +23,7 @@ namespace devhl.CocApi.Models.War
             if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
 
-            string url = $"https://api.clashofclans.com/v1/clans/";
+            string url = $"clans/";
 
             url = $"{url}{Uri.EscapeDataString(formattedTag)}/warlog?";
 

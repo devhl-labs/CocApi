@@ -8,6 +8,8 @@ namespace devhl.CocApi
 {
     public sealed class CocApiConfiguration
     {
+        public string ClashApiBaseAddress { get; set; } = "https://api.clashofclans.com/v1/";
+
         /// <summary>
         /// List of tokens used to query the SC Api
         /// </summary>
@@ -16,7 +18,9 @@ namespace devhl.CocApi
         /// <summary>
         /// If you watch many clans increase this number for faster updates.
         /// </summary>
-        public int NumberOfUpdaters { get; set; } = 1;
+        public int ConcurrentUpdates { get; set; } = 1;
+
+        public TimeSpan DelayBetweenUpdates { get; set; } = TimeSpan.FromMilliseconds(50);
 
         /// <summary>
         /// Defines how quickly a SC Api token may be reused. Default is 1 seconds for testing purposes. You may make it faster for production.
@@ -74,5 +78,9 @@ namespace devhl.CocApi
         /// This property defines how often to download the war log.
         /// </summary>
         public TimeSpan WarLogTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
+
+        public string? DatabasePath { get; set; }
+
+        public string DatabaseName { get; set; } = "CocApiDatabase.sqlite";
     }
 }

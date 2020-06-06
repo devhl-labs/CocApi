@@ -13,7 +13,7 @@ namespace devhl.CocApi.Models.Village
             if (CocApi.TryGetValidTag(villageTag, out string formattedTag) == false)
                 throw new InvalidTagException(villageTag);
 
-            return $"https://api.clashofclans.com/v1/players/{Uri.EscapeDataString(formattedTag)}";
+            return $"players/{Uri.EscapeDataString(formattedTag)}";
         }
 
         [JsonProperty("Tag")]
@@ -22,13 +22,11 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public string Name { get; internal set; } = string.Empty;
 
-#pragma warning disable CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
-
         [JsonProperty]
+#pragma warning disable CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
         public string? ClanTag { get; internal set; }
 
-
-#pragma warning restore CS8613 // Nullability of reference types in return type doesn't match implicitly implemented member.
+#pragma warning restore CS8766 // Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
 
         [JsonProperty]
         public int TownHallLevel { get; internal set; }

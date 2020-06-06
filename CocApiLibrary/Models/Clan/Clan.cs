@@ -16,7 +16,7 @@ namespace devhl.CocApi.Models.Clan
             if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
 
-            return $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(formattedTag)}";
+            return $"clans/{Uri.EscapeDataString(formattedTag)}";
         }
 
         public static string Url(ClanQueryOptions clanQueryOptions)
@@ -24,7 +24,7 @@ namespace devhl.CocApi.Models.Clan
             if (clanQueryOptions.ClanName == null || clanQueryOptions.ClanName.Length < 3)
                 throw new ArgumentException("The clan name must be longer than three characters.");
 
-            string url = $"https://api.clashofclans.com/v1/clans?";
+            string url = $"clans?";
 
             if (clanQueryOptions.ClanName != null)
                 url = $"{url}name={Uri.EscapeDataString(clanQueryOptions.ClanName)}&";
@@ -297,7 +297,7 @@ namespace devhl.CocApi.Models.Clan
         {
             cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(UpdateClan), fetched));
 
-            if (cocApi.Clans.IsClanChanged(fetched, this))
+            if (cocApi.Clans.IsChanged(fetched, this))
                 cocApi.Clans.OnClanChanged(fetched, this);
         }
 

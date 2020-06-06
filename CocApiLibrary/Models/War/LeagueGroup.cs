@@ -19,7 +19,7 @@ namespace devhl.CocApi.Models.War
             if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
 
-            return $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(formattedTag)}/currentwar/leaguegroup";
+            return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar/leaguegroup";
         }
 
         [JsonProperty]

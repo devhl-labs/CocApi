@@ -3,6 +3,14 @@ using System.Runtime.Serialization;
 
 namespace devhl.CocApi
 {
+    public enum CacheOption
+    {
+        AllowAny,
+        AllowExpiredServerResponse,
+        //AllowLocallyExpired,
+        FetchIfExpired
+    }
+
     public enum WarFrequency
     {
         [EnumMember(Value = "unknown")]
@@ -127,21 +135,21 @@ namespace devhl.CocApi
         TopMainClans
     }
 
-    public enum DownloadLeagueWars
-    {
-        /// <summary>
-        /// False will never download league wars.
-        /// </summary>
-        False = 0,
-        /// <summary>
-        /// True will download league wars always.
-        /// </summary>
-        True = 1,
-        /// <summary>
-        /// Auto will download league wars only during the beginning of the month.
-        /// </summary>
-        Auto = 2
-    }
+    //public enum DownloadCwl
+    //{
+    //    /// <summary>
+    //    /// False will never download league wars.
+    //    /// </summary>
+    //    False = 0,
+    //    /// <summary>
+    //    /// True will download league wars always.
+    //    /// </summary>
+    //    True = 1,
+    //    /// <summary>
+    //    /// Auto will download league wars only during the beginning of the month.
+    //    /// </summary>
+    //    Auto = 2
+    //}
 
     public enum LoggingEvent
     {

@@ -7,9 +7,12 @@ namespace devhl.CocApi
     internal sealed class TokenObject
     {
         private bool _isRateLimited = false;
-        private readonly Timer _clearRateLimitTimer = new Timer();
-        private readonly TimeSpan _tokenTimeOut;
-        private readonly CocApi _cocApi;
+
+        private Timer ClearRateLimitTimer { get; } = new Timer();
+
+        private TimeSpan TokenTimeOut { get; set; }
+
+        private CocApi CocApi { get; }
 
         public string Token { get; }
 
@@ -28,32 +31,29 @@ namespace devhl.CocApi
 
                 if (value)
                 {
-                    _clearRateLimitTimer.Start();
+                    ClearRateLimitTimer.Start();
 
-                    _cocApi.OnLog(new LogEventArgs(nameof(TokenObject), nameof(IsRateLimited), LogLevel.Warning, LoggingEvent.RateLimited.ToString()));
+                    CocApi.OnLog(new LogEventArgs(nameof(TokenObject), nameof(IsRateLimited), LogLevel.Warning, LoggingEvent.RateLimited.ToString()));
                 }
             }
         }
 
-
-
-
         public TokenObject(CocApi cocApi, string token, TimeSpan tokenTimeOut)
         {
-            _cocApi = cocApi; 
+            CocApi = cocApi; 
             Token = token;
-            _tokenTimeOut = tokenTimeOut;
+            TokenTimeOut = tokenTimeOut;
 
-            _clearRateLimitTimer.AutoReset = false;
-            _clearRateLimitTimer.Interval = 5000;
-            _clearRateLimitTimer.Elapsed += ClearRateLimit;
+            ClearRateLimitTimer.AutoReset = false;
+            ClearRateLimitTimer.Interval = 5000;
+            ClearRateLimitTimer.Elapsed += ClearRateLimit;
         }
 
         public async Task<TokenObject> GetTokenAsync()
         {
             TimeSpan timeSpan = DateTime.UtcNow - LastUsedUtc;
 
-            while (timeSpan.TotalMilliseconds < _tokenTimeOut.TotalMilliseconds)
+            while (timeSpan.TotalMilliseconds < TokenTimeOut.TotalMilliseconds)
             {
                 await Task.Delay(50).ConfigureAwait(false);
 
@@ -64,11 +64,6 @@ namespace devhl.CocApi
 
             return this;
         }
-
-
-
-
-
 
         private void ClearRateLimit(object sender, ElapsedEventArgs e) => IsRateLimited = false;
     }

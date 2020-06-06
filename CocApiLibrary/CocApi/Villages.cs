@@ -1,6 +1,8 @@
 ﻿using devhl.CocApi.Exceptions;
 using devhl.CocApi.Models;
+using devhl.CocApi.Models.Cache;
 using devhl.CocApi.Models.Village;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -15,8 +17,6 @@ namespace devhl.CocApi
     {
         private CocApi CocApi { get; }
 
-        private bool StopRequested { get; set; } = false;
-
         public Villages(CocApi cocApi)
         {
             CocApi = cocApi;
@@ -29,13 +29,9 @@ namespace devhl.CocApi
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Spell>>>? SpellsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, IReadOnlyList<Troop>>>? TroopsChanged;
         public event AsyncEventHandler<ChangedEventArgs<Village, Village>>? VillageChanged;
-        public event AsyncEventHandler? QueuePopulated;
-
-        public bool QueueRunning { get; private set; }
-        private ConcurrentDictionary<string, Village?> Queued { get; } = new ConcurrentDictionary<string, Village?>();
 
         public async Task<Village?> FetchAsync(string villageTag, CancellationToken? cancellationToken = null)
-            => await CocApi.FetchAsync<Village>(Village.Url(villageTag), cancellationToken) as Village;
+            => await CocApi.FetchAsync<Village>(Village.Url(villageTag), cancellationToken).ConfigureAwait(false) as Village;
 
         public async Task<Paginated<TopBuilderVillage>?> FetchTopBuilderVillagesAsync(int? locationId = null, CancellationToken? cancellationToken = null)
             => await CocApi.FetchAsync<Paginated<TopBuilderVillage>>(TopBuilderVillage.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopBuilderVillage>;
@@ -43,117 +39,50 @@ namespace devhl.CocApi
         public async Task<Paginated<TopMainVillage>?> FetchTopMainVillagesAsync(int? locationId = null, CancellationToken? cancellationToken = null)
             => await CocApi.FetchAsync<Paginated<TopMainVillage>>(TopMainVillage.Url(locationId), cancellationToken).ConfigureAwait(false) as Paginated<TopMainVillage>;
 
-        public Village? Get(string villageTag)
+        public async Task<Village?> GetAsync(string villageTag)
         {
             if (CocApi.TryGetValidTag(villageTag, out string formattedTag) == false)
                 throw new InvalidTagException(villageTag);
 
-            Queued.TryGetValue(formattedTag, out Village? queued);
+            string path = Village.Url(formattedTag);
 
-            return queued;
+            Cache? cache = await CocApi.SqlWriter.Select<Cache>()
+                                                .Where(c => c.Path == path)
+                                                .QueryFirstOrDefaultAsync()
+                                                .ConfigureAwait(false);
+
+            if (cache == null)
+                return null;
+
+            return JsonConvert.DeserializeObject<Village>(cache.Json);
+
+            //Queued.TryGetValue(formattedTag, out Village? queued);
+
+            //return queued;
         }
 
-        public async Task<Village?> GetAsync(string villageTag, bool allowExpiredItem = true, CancellationToken? cancellationToken = null)
+        public async Task<Village?> GetOrFetchAsync(string villageTag, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
         {
             if (CocApi.TryGetValidTag(villageTag, out string formattedTag) == false)
                 throw new InvalidTagException(villageTag);
 
-            Village? queued = Get(formattedTag);
+            Village? queued = await GetAsync(formattedTag).ConfigureAwait(false);
 
-            if (queued != null && (allowExpiredItem || queued.IsExpired() == false))
+            if (queued == null)
+                return await FetchAsync(formattedTag, cancellationToken).ConfigureAwait(false);
+
+            if (cacheOption == CacheOption.AllowAny)
                 return queued;
 
-            Village? fetched = await FetchAsync(formattedTag, cancellationToken);
+            //if (cacheOption == CacheOption.AllowLocallyExpired || queued.IsLocallyExpired(CocApi.CocApiConfiguration.VillageTimeToLive) == false)
+            //    return queued;
+
+            if (cacheOption == CacheOption.AllowExpiredServerResponse && queued.IsLocallyExpired(CocApi.CocApiConfiguration.VillageTimeToLive) == false)
+                return queued;
+
+            Village? fetched = await FetchAsync(formattedTag, cancellationToken).ConfigureAwait(false);
 
             return fetched ?? queued;
-        }
-
-        public void Queue(string villageTag) => Queue(villageTag, null);
-
-        public void Queue(Village village) => Queue(village.VillageTag, village);
-
-        public void Queue(IEnumerable<string> villageTags)
-        {
-            foreach (string villageTag in villageTags)
-                Queue(villageTag, null);
-        }
-
-        public void Queue(IEnumerable<Village> villages)
-        {
-            foreach (Village village in villages)
-                Queue(village.VillageTag, village);
-        }
-
-        public void StartQueue()
-        {
-            StopRequested = false;
-
-            if (QueueRunning)
-                return;
-
-            QueueRunning = true;
-
-            Task.Run(async () =>
-            {
-                try
-                {
-                    while (StopRequested == false)
-                    {
-                        foreach (var entry in Queued)
-                        {
-                            if (entry.Value == null)
-                            {
-                                await PopulateVillageAsync(entry.Key).ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await UpdateVillageAsync(entry.Value).ConfigureAwait(false);
-                            }
-
-                            await Task.Delay(50);
-                        }
-
-                        OnQueuePopulated();
-                    }
-
-                    QueueRunning = false;
-
-                    CocApi.OnLog(new LogEventArgs(nameof(Villages), nameof(StartQueue), LogLevel.Information, LoggingEvent.QueueExited.ToString()));
-                }
-                catch (Exception e)
-                {
-                    StopRequested = false;
-
-                    QueueRunning = false;
-
-                    CocApi.OnLog(new ExceptionEventArgs(nameof(Villages), nameof(StartQueue), e));
-
-                    _ = CocApi.VillageQueueRestartAsync();
-
-                    throw e;
-                }
-            });
-        }
-
-        public void StopQueue() => StopRequested = true;
-
-        public Task StopQueueAsync()
-        {
-            StopRequested = true;
-
-            TaskCompletionSource<bool> tsc = new TaskCompletionSource<bool>();
-
-            Task task = tsc.Task;
-
-            _ = Task.Run(async () =>
-            {
-                while (QueueRunning)
-                    await Task.Delay(100).ConfigureAwait(false);
-
-                tsc.SetResult(true);
-            });
-
-            return tsc.Task;
         }
 
         internal void OnVillageAchievementsChanged(Village fetched, List<Achievement> achievements) 
@@ -181,34 +110,6 @@ namespace devhl.CocApi
 
         internal void OnVillageTroopsChanged(Village fetched, List<Troop> troops) 
             => TroopsChanged?.Invoke(this, new ChangedEventArgs<Village, IReadOnlyList<Troop>>(fetched, troops.ToImmutableArray()));
-
-        internal void OnQueuePopulated() => QueuePopulated?.Invoke(this, EventArgs.Empty);
-        
-
-        private async Task PopulateVillageAsync(string villageTag)
-        {
-            Village? fetched = await FetchAsync(villageTag).ConfigureAwait(false);
-
-            if (fetched != null)
-                CocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
-        }
-
-        private void Queue(string villageTag, Village? village) => Queued.TryAdd(villageTag, village);
-
-        private async Task UpdateVillageAsync(Village queued)
-        {
-            if (queued.IsExpired() == false)
-                return;
-
-            Village? fetched = await FetchAsync(queued.VillageTag).ConfigureAwait(false);
-
-            if (fetched != null)
-            {
-                queued.Update(CocApi, fetched);
-
-                CocApi.UpdateDictionary(Queued, fetched.VillageTag, fetched);
-            }
-        }
 
         public Func<Village, Village, bool> IsChanged { get; set; } = new Func<Village, Village, bool>((fetched, stored) =>
         {

@@ -15,7 +15,7 @@ namespace devhl.CocApi.Models.Village
             if (locationId != null)
                 location = locationId.ToString();
 
-            return $"https://api.clashofclans.com/v1/locations/{location}/rankings/players-versus";
+            return $"{location}/rankings/players-versus";
         }
 
         [JsonProperty("versusTrophies")]

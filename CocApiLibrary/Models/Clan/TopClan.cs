@@ -8,6 +8,8 @@ namespace devhl.CocApi.Models.Clan
 {
     public class TopClan : IClan
     {
+        //todo why doesn't this have a url property???
+
         [JsonProperty("tag")]
         public string ClanTag { get; internal set; } = string.Empty;
 

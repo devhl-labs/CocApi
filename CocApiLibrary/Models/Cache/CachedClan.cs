@@ -13,10 +13,6 @@ namespace devhl.CocApi.Models.Cache
     {
         public string ClanTag { get; set; } = string.Empty;
 
-        public string? ClanJson { get; set; }
-
-        public DateTime ClanUpdatesAt { get; set; }
-
         public bool DownloadClan { get; set; }
 
         public bool DownloadVillages { get; set; }
@@ -25,16 +21,6 @@ namespace devhl.CocApi.Models.Cache
 
         public bool DownloadCwl { get; set; }
 
-        public bool IsWarLogPublic { get; set; }
-
-        public DateTime WarUpdatesAt { get; set; }
-
-        public Clan.Clan? ToClan()
-        {
-            if (ClanJson == null)
-                return null;
-
-            return JsonConvert.DeserializeObject<Clan.Clan>(ClanJson);
-        }
+        public int Id { get; set; }
     }
 }

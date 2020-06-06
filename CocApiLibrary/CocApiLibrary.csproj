@@ -64,7 +64,7 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="CocApiDatabase.sqlite">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="MyDatabase.sqlite">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

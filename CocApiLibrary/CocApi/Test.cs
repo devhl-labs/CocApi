@@ -30,13 +30,9 @@ namespace devhl.CocApi
 
         public void OnVillageTroopsChanged(Village fetched, List<Troop> troops) => _cocApi.Villages.OnVillageTroopsChanged(fetched, troops);
 
-        public void OnVillageQueueCompleted() => _cocApi.Villages.OnQueuePopulated();
-
 
 
         // wars
-        public void OnWarQueueCompleted() => _cocApi.Wars.OnQueuePopulated();
-
         public void OnNewAttacks(CurrentWar fetched, List<Attack> attacks) => _cocApi.Wars.OnNewAttacks(fetched, attacks);
 
         public void OnNewWar(CurrentWar fetched) => _cocApi.Wars.OnNewWar(fetched);
@@ -76,6 +72,5 @@ namespace devhl.CocApi
 
         public void OnLabelsChanged(Clan fetched, List<ClanLabel> added, List<ClanLabel> removed) => _cocApi.Clans.OnLabelsChanged(fetched, added, removed);
 
-        public void OnQueueCompletedEvent() => _cocApi.Clans.OnQueuePopulated();
     }
 }

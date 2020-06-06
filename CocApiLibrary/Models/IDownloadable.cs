@@ -6,14 +6,17 @@ namespace devhl.CocApi.Models
     {
         DateTime DownloadedAtUtc { get; }
 
-        DateTime LocalExpirationUtc { get; }
+        //DateTime LocalExpirationUtc { get; }
 
         //string EncodedUrl { get; }
 
         DateTime ServerExpirationUtc { get; }
 
-        bool IsExpired();
+        bool IsLocallyExpired(TimeSpan additionToServerExpiration);
 
-        DateTime EffectiveExpiration();
+        //DateTime LocalExpiration();
+
+        bool ServerResponseIsExpired();
+
     }
 }

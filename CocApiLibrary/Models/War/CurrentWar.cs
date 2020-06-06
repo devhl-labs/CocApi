@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Data;
 using devhl.CocApi.Exceptions;
+//using System.Text.Json.Serialization;
 
 namespace devhl.CocApi.Models.War
 {
@@ -19,7 +20,7 @@ namespace devhl.CocApi.Models.War
             if (CocApi.TryGetValidTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
 
-            return $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
+            return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
         [JsonProperty("endTime")]
@@ -74,9 +75,6 @@ namespace devhl.CocApi.Models.War
 
         [JsonProperty]
         public DateTime WarStartingSoonUtc { get; internal set; }
-
-        [JsonProperty]
-        public Announcements Announcements { get; internal set; }
 
         public void Initialize(CocApi cocApi)
         {
@@ -181,9 +179,9 @@ namespace devhl.CocApi.Models.War
 
             foreach (var attack in Attacks)
             {
-                attack.WarKey = WarKey();
+                //attack.WarKey = WarKey();
 
-                attack.PreparationStartTimeUtc = PreparationStartTimeUtc;
+                //attack.PreparationStartTimeUtc = PreparationStartTimeUtc;
 
                 var attacksThisBase = Attacks.Where(a => a.AttackerClanTag == attack.AttackerClanTag && 
                                                          a.DefenderTag == attack.DefenderTag && 
@@ -244,8 +242,13 @@ namespace devhl.CocApi.Models.War
             return false;
         }
 
-        internal void Update(CocApi cocApi, IWar? fetchedWar)
+        [JsonProperty]
+        public Announcements Announcements { get; private set; }
+
+        internal void Update(CocApi cocApi, IWar? fetchedWar, Announcements announcements)
         {
+            Announcements = announcements;
+
             PreUpdateAnnouncements(cocApi, fetchedWar);
 
             if (ReferenceEquals(this, fetchedWar) || fetchedWar == null) 
@@ -300,7 +303,6 @@ namespace devhl.CocApi.Models.War
             else if (Announcements.HasFlag(Announcements.WarIsAccessible) == false && currentWar != null && currentWar.WarKey() == WarKey())
             {
                 Announcements |= Announcements.WarIsAccessible;
-                currentWar.Announcements |= Announcements.WarIsAccessible;
                 cocApi.Wars.OnWarIsAccessibleChanged(currentWar, true);
             }
 
@@ -308,16 +310,12 @@ namespace devhl.CocApi.Models.War
                 fetchedWar is NotInWar &&
                 DateTime.UtcNow > EndTimeUtc &&
                 WarIsOverOrAllAttacksUsed() == false)
-            {              
+            {
                 Announcements |= Announcements.WarEndNotSeen;
 
                 if (DateTime.UtcNow.Day == EndTimeUtc.Day)
                     cocApi.Wars.OnWarEndNotSeen(this);
             }
-
-            //we have to do this here so that events fired while updating both stored and fetched will be the same
-            if (currentWar != null)
-                currentWar.Announcements |= Announcements;
         }
 
         private void WarEndSeenAnnouncement(CocApi cocApi, IWar? fetchedWar)
@@ -337,9 +335,6 @@ namespace devhl.CocApi.Models.War
                 fetchedCurrentWar.State == WarState.WarEnded))
             {
                 Announcements |= Announcements.WarEndSeen;
-
-                if (fetchedCurrentWar != null)
-                    fetchedCurrentWar.Announcements |= Announcements.WarEndSeen;
 
                 cocApi.Wars.OnWarEndSeen(fetchedCurrentWar ?? this);
             }
@@ -385,9 +380,9 @@ namespace devhl.CocApi.Models.War
 
                 AttackerTownHallLevel = fetchedWarVillage.TownHallLevel,
 
-                PreparationStartTimeUtc = PreparationStartTimeUtc,
+                //PreparationStartTimeUtc = PreparationStartTimeUtc,
 
-                WarKey = WarKey(),
+                //WarKey = WarKey(),
 
                 DefenderClanTag = WarClans.First(c => c.ClanTag != fetchedWarVillage.ClanTag).ClanTag
             };
@@ -407,8 +402,7 @@ namespace devhl.CocApi.Models.War
             {
                 if (EndTimeUtc != currentWar.EndTimeUtc ||
                     StartTimeUtc != currentWar.StartTimeUtc ||
-                    State != currentWar.State ||
-                    Announcements != Announcements
+                    State != currentWar.State
                 )
                 {
                     cocApi.Wars.OnWarChanged(currentWar, this);

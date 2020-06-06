@@ -13,7 +13,7 @@ namespace devhl.CocApi.Models.War
             if (CocApi.TryGetValidTag(warTag, out string formattedTag) == false)
                 throw new InvalidTagException(warTag);
 
-            return $"https://api.clashofclans.com/v1/clanwarleagues/wars/{Uri.EscapeDataString(formattedTag)}";
+            return $"clanwarleagues/wars/{Uri.EscapeDataString(formattedTag)}";
         }
 
         [JsonProperty]
@@ -30,15 +30,6 @@ namespace devhl.CocApi.Models.War
             base.Initialize(cocApi);
 
             WarType = WarType.SCCWL;
-
-            LeagueGroup? iLeagueGroup = cocApi.Wars.GetLeagueGroup(WarClans[0].ClanTag) as LeagueGroup;
-
-            iLeagueGroup ??= cocApi.Wars.GetLeagueGroup(WarClans[1].ClanTag) as LeagueGroup;
-
-            if (iLeagueGroup is LeagueGroup leagueGroup)
-            {
-                GroupKey = leagueGroup.GroupKey;
-            }
         }
     }
 }

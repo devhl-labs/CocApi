@@ -4,6 +4,8 @@ namespace devhl.CocApi
 {
     public sealed partial class CocApi
     {
+        internal const string DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
         public static class Heroes
         {
             public const string BK = "Barbarian King";
