@@ -1,6 +1,4 @@
-﻿//using System.ComponentModel.DataAnnotations;
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Clan
 {
@@ -14,11 +12,6 @@ namespace devhl.CocApi.Models.Clan
 
         [JsonProperty]
         public BadgeUrl? BadgeUrl { get; internal set; }
-
-        public void Initialize(CocApi cocApi)
-        {
-
-        }
 
         public override string ToString()
         {

@@ -7,14 +7,11 @@ namespace devhl.CocApi
 {
     public sealed class Leagues
     {
-        private readonly CocApi _cocApi;
+        private CocApi CocApi { get; }
 
-        public Leagues(CocApi cocApi)
-        {
-            _cocApi = cocApi;
-        }
+        public Leagues(CocApi cocApi) => CocApi = cocApi;
 
-        public async Task<Paginated<League>?> FetchAsync(CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<League>>(League.Url(), cancellationToken).ConfigureAwait(false) as Paginated<League>;
+        public async Task<Paginated<League>?> GetAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+            => await CocApi.GetOrFetchAsync<Paginated<League>>(League.Url(), cacheOption, cancellationToken).ConfigureAwait(false);
     }
 }

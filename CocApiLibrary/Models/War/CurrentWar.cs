@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Data;
 using devhl.CocApi.Exceptions;
-//using System.Text.Json.Serialization;
 
 namespace devhl.CocApi.Models.War
 {
@@ -86,8 +85,6 @@ namespace devhl.CocApi.Models.War
             if (Opponent != null) WarClans.Add(Opponent);
 
             WarClans = WarClans.OrderBy(x => x.ClanTag).ToList();
-
-            //WarKey = $"{PreparationStartTimeUtc};{WarClans[0].ClanTag}";
 
             TimeSpan timeSpan = StartTimeUtc - PreparationStartTimeUtc;
 
@@ -179,10 +176,6 @@ namespace devhl.CocApi.Models.War
 
             foreach (var attack in Attacks)
             {
-                //attack.WarKey = WarKey();
-
-                //attack.PreparationStartTimeUtc = PreparationStartTimeUtc;
-
                 var attacksThisBase = Attacks.Where(a => a.AttackerClanTag == attack.AttackerClanTag && 
                                                          a.DefenderTag == attack.DefenderTag && 
                                                          a.Order < attack.Order).ToList();

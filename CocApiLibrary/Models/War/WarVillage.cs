@@ -1,7 +1,5 @@
 ﻿using devhl.CocApi.Models.Village;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
-//using System.ComponentModel.DataAnnotations.Schema;
 
 using Newtonsoft.Json;
 
@@ -18,15 +16,6 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public string ClanTag { get; internal set; } = string.Empty;
 
-
-
-
-
-
-
-
-
-
         [JsonProperty]
         public int TownHallLevel { get; internal set; }
 
@@ -39,9 +28,6 @@ namespace devhl.CocApi.Models.War
 
         [JsonProperty]
         public IList<Attack>? Attacks { get; internal set; }
-
-        [JsonProperty]
-        public string WarKey { get; internal set; } = string.Empty;
 
         public override string ToString() => $"{VillageTag} {Name}";
     }

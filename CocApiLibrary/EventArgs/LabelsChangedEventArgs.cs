@@ -1,21 +1,21 @@
-﻿using devhl.CocApi.Models.Clan;
+﻿using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text;
 
 namespace devhl.CocApi
 {
-    public class LabelsChangedEventArgs<T1, T2> : EventArgs
+    public class LabelsChangedEventArgs<T> : EventArgs
     {
-#nullable disable
+        public T Fetched { get; }
 
-        public T1 Fetched { get; }
-
-        public IReadOnlyList<T2> Added { get; }
+        public ImmutableArray<Label> Added { get; }
         
-        public IReadOnlyList<T2> Removed { get; }
+        public ImmutableArray<Label> Removed { get; }
 
-        public LabelsChangedEventArgs(T1 fetched, IReadOnlyList<T2> added, IReadOnlyList<T2> removed)
+        public LabelsChangedEventArgs(T fetched, ImmutableArray<Label> added, ImmutableArray<Label> removed)
         {
             Fetched = fetched;
 

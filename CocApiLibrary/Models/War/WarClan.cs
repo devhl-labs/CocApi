@@ -1,16 +1,12 @@
 ﻿using devhl.CocApi.Models.Clan;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
-//using System.ComponentModel.DataAnnotations.Schema;
-
-//using static devhl.CocApi.Enums;
 using Newtonsoft.Json;
 using System.Linq;
 using devhl.CocApi.Converters;
 
 namespace devhl.CocApi.Models.War
 {
-    public class WarClan : IClan, IWarClan
+    public class WarClan : IClan, IWarClan, IInitialize
     {
         [JsonProperty("Tag")]
         public string ClanTag { get; internal set; } = string.Empty;
@@ -50,16 +46,11 @@ namespace devhl.CocApi.Models.War
 
         public void Initialize(CocApi cocApi)
         {
-            if (BadgeUrl != null) BadgeUrl.ClanTag = ClanTag;
-
             WarVillages = WarVillages.ToList().OrderBy(wv => wv.RosterPosition);
 
-            foreach (var warVillage in WarVillages.EmptyIfNull())
-            {
+            foreach (var warVillage in WarVillages.EmptyIfNull())            
                 warVillage.ClanTag = ClanTag;
-
-                warVillage.WarKey = WarKey;
-            }
+            
         }
 
         public override string ToString() => $"{ClanTag} {Name}";

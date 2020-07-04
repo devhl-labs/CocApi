@@ -21,22 +21,8 @@ namespace devhl.CocApi.Models.War
         [JsonProperty]
         public int ClanLevel { get; private set; }
 
-        [JsonProperty]
-        public string GroupId { get; internal set; } = string.Empty;
-
-        /// <summary>
-        /// This is the season and the clan tag
-        /// </summary>
-        [JsonProperty]
-        public string LeagueClanKey { get; internal set; } = string.Empty;
-
         [JsonProperty("members")]
         public IEnumerable<LeagueVillage>? Villages { get; internal set; }
-
-        public void Initialize(CocApi cocApi)
-        {
-
-        }
 
         public override string ToString() => $"{ClanTag} {Name}";
     }

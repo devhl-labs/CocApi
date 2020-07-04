@@ -29,6 +29,9 @@ namespace devhl.CocApi
             if (tag == "#0")
                 return false;
 
+            if (tag.Length < 4)
+                return false;
+
             return ValidTagCharacters.IsMatch(tag);
         }
 
@@ -38,6 +41,15 @@ namespace devhl.CocApi
 
             if (string.IsNullOrEmpty(userInput))
                 return false;
+
+            if (userInput.StartsWith("\"") && userInput.EndsWith("\"") && userInput.Length > 2)
+                userInput = userInput[1..^1];
+
+            else if (userInput.StartsWith("`") && userInput.EndsWith("`") && userInput.Length > 2)
+                userInput = userInput[1..^1];
+
+            else if (userInput.StartsWith("'") && userInput.EndsWith("'") && userInput.Length > 2)
+                userInput = userInput[1..^1];
 
             formattedTag = userInput.ToUpper();
 

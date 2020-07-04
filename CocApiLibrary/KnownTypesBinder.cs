@@ -20,7 +20,6 @@ namespace devhl.CocApi
             KnownTypes.Add(typeof(Clan));
             KnownTypes.Add(typeof(BadgeUrl));
             KnownTypes.Add(typeof(Location));
-            KnownTypes.Add(typeof(ClanLabel));
             KnownTypes.Add(typeof(ClanVillage));
             KnownTypes.Add(typeof(Donation));
             KnownTypes.Add(typeof(LeagueChange));
@@ -43,7 +42,6 @@ namespace devhl.CocApi
             KnownTypes.Add(typeof(Troop));
             KnownTypes.Add(typeof(Village));
             KnownTypes.Add(typeof(VillageClan));
-            KnownTypes.Add(typeof(VillageLabel));
 
             //war
             KnownTypes.Add(typeof(Attack));
@@ -60,6 +58,7 @@ namespace devhl.CocApi
             KnownTypes.Add(typeof(WarLogEntry));
             KnownTypes.Add(typeof(WarLogEntryClan));
             KnownTypes.Add(typeof(WarVillage));
+            KnownTypes.Add(typeof(WarLog));
 
             //other
             KnownTypes.Add(typeof(Cursor));
@@ -79,7 +78,6 @@ namespace devhl.CocApi
             KnownTypes.Add(typeof(Paginated<Clan>));
             KnownTypes.Add(typeof(Paginated<TopMainVillage>));
             KnownTypes.Add(typeof(Paginated<TopBuilderVillage>));
-            KnownTypes.Add(typeof(Paginated<WarLogEntry>));
             KnownTypes.Add(typeof(Paginated<WarLeague>));
         }
 
@@ -101,8 +99,6 @@ namespace devhl.CocApi
                 return typeof(Paginated<TopMainVillage>);
             if (typeName == GetName(typeof(Paginated<TopBuilderVillage>)))
                 return typeof(Paginated<TopBuilderVillage>);
-            if (typeName == GetName(typeof(Paginated<WarLogEntry>)))
-                return typeof(Paginated<WarLogEntry>);
             if (typeName == GetName(typeof(Paginated<WarLeague>)))
                 return typeof(Paginated<WarLeague>);
 
@@ -138,9 +134,6 @@ namespace devhl.CocApi
             if (serializedType == typeof(Paginated<TopBuilderVillage>))
                 typeName = GetName(typeof(Paginated<TopBuilderVillage>));
 
-            if (serializedType == typeof(Paginated<WarLogEntry>))
-                typeName = GetName(typeof(Paginated<WarLogEntry>));
-
             if (serializedType == typeof(Paginated<WarLeague>))
                 typeName = GetName(typeof(Paginated<WarLeague>));
         }
@@ -170,9 +163,6 @@ namespace devhl.CocApi
 
             if (type == typeof(Paginated<TopBuilderVillage>))
                 return $"Paginated<{typeof(TopBuilderVillage).Name}>";
-
-            if (type == typeof(Paginated<WarLogEntry>))
-                return $"Paginated<{typeof(WarLogEntry).Name}>";
 
             if (type == typeof(Paginated<WarLeague>))
                 return $"Paginated<{typeof(WarLeague).Name}>";

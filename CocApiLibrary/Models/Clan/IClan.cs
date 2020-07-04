@@ -1,6 +1,6 @@
 ﻿namespace devhl.CocApi.Models.Clan
 {
-    public interface IClan : IInitialize
+    public interface IClan
     {
         string ClanTag { get; }
 

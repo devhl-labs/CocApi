@@ -1,10 +1,8 @@
-﻿//using System.ComponentModel.DataAnnotations.Schema;
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models
 {
-    public class Label : IInitialize
+    public class Label
     {
         public static string ClanUrl() => $"labels/clans?limit=10000";
 
@@ -19,12 +17,6 @@ namespace devhl.CocApi.Models
 
         [JsonProperty("IconUrls")]
         public LabelUrl? LabelUrl { get; internal set; }
-
-
-        public void Initialize(CocApi cocApi)
-        {
-            if (LabelUrl != null) LabelUrl.Id = Id;
-        }
 
         public override string ToString() => Name;
     }

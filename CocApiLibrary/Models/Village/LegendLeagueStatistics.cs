@@ -4,11 +4,8 @@ using System.Linq;
 
 namespace devhl.CocApi.Models.Village
 {
-    public class LegendLeagueStatistics : IInitialize
+    public class LegendLeagueStatistics
     {
-        [JsonProperty]
-        public string VillageTag { get; internal set; } = string.Empty;
-
         [JsonProperty]
         public int LegendTrophies { get; internal set; }
 
@@ -29,17 +26,5 @@ namespace devhl.CocApi.Models.Village
 
         [JsonProperty]
         public LegendLeagueResult? PreviousSeason { get; internal set; } 
-
-        public void Initialize(CocApi cocApi)
-        {
-            if (BestVersusSeason != null)
-                BestVersusSeason.VillageType = VillageType.BuilderBase;
-
-            if (CurrentVersusSeason != null)
-                CurrentVersusSeason.VillageType = VillageType.BuilderBase;
-
-            if (PreviousVersusSeason != null)
-                PreviousVersusSeason.VillageType = VillageType.BuilderBase;           
-        }
     }
 }

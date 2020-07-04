@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-//using System.ComponentModel.DataAnnotations.Schema;
-
-//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Village
 {

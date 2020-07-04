@@ -2,7 +2,7 @@
 
 namespace devhl.CocApi.Models.Village
 {
-    public class League : IInitialize
+    public class League
     {
         public static string Url() => "leagues?limit=500";
         
@@ -15,11 +15,6 @@ namespace devhl.CocApi.Models.Village
 
         [JsonProperty("iconUrls")]
         public LeagueIcon? LeagueIcon { get; internal set; }
-
-        public void Initialize(CocApi cocApi)
-        {
-            if (LeagueIcon != null) LeagueIcon.LeaugeId = Id;
-        }
 
         public override string ToString() => Name;
     }

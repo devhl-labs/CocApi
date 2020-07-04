@@ -11,10 +11,6 @@ namespace devhl.CocApi.Models.War
     {
         public WarLogEntry()
         {
-            //ServerExpirationUtc = DateTime.MaxValue;
-
-            //LocalExpirationUtc = DateTime.MaxValue;
-
             DownloadedAtUtc = DateTime.UtcNow;
         }
 
@@ -65,6 +61,10 @@ namespace devhl.CocApi.Models.War
         [JsonConverter(typeof(DateTimeConverter))]
         public DateTime EndTimeUtc { get; private set; }
 
+        [JsonProperty]
+        public WarType WarType { get; private set; } = WarType.Random;
+
+
         public override string ToString() => EndTimeUtc.ToString();
 
         public void Initialize(CocApi cocApi)
@@ -106,6 +106,12 @@ namespace devhl.CocApi.Models.War
 
             if (WarClans.All(wc => wc.ClanTag != null))
                 WarClans = WarClans.OrderBy(wc => wc.ClanTag).ToList();
+
+            if (WarClans.Any(wc => wc.DestructionPercentage > 100))
+                WarType = WarType.SCCWL;
+
+            else if (WarClans.All(wc => wc.ExpEarned == 0))
+                WarType = WarType.Friendly;
         }
     }
 }

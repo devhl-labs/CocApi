@@ -82,11 +82,8 @@ namespace devhl.CocApi.Models.Village
         [JsonProperty]
         public League? League { get; internal set; }
 
-        public int LeagueId { get; internal set; }
-
         [JsonProperty]
         public IEnumerable<Achievement>? Achievements { get; internal set; }
-
 
         [JsonProperty]
         public int VersusBattleWinCount { get; internal set; }
@@ -101,7 +98,7 @@ namespace devhl.CocApi.Models.Village
         public IList<Troop>? Troops { get; internal set; }
 
         [JsonProperty]
-        public IEnumerable<VillageLabel>? Labels { get; internal set; }
+        public IEnumerable<Label>? Labels { get; internal set; }
 
         [JsonProperty]
         public IEnumerable<Spell>? Spells { get; internal set; }
@@ -174,9 +171,9 @@ namespace devhl.CocApi.Models.Village
         {
             cocApi.OnLog(new VillageLogEventArgs(nameof(Village), nameof(UpdateLabels), fetched));
 
-            List<VillageLabel> added = new List<VillageLabel>();
+            List<Label> added = new List<Label>();
 
-            List<VillageLabel> removed = new List<VillageLabel>();
+            List<Label> removed = new List<Label>();
 
             foreach(var newLabel in fetched.Labels.EmptyIfNull())
             {
@@ -318,35 +315,8 @@ namespace devhl.CocApi.Models.Village
         {
             VillageTag = VillageTag.ToUpper();
 
-            if (Clan != null)
-            {
-                ClanTag = Clan.ClanTag;
-            }
-
-            if (League != null)
-            {
-                LeagueId = League.Id;
-            }
-
-            if (LegendStatistics != null)
-            {
-                LegendStatistics.VillageTag = VillageTag;
-
-                LegendStatistics.Initialize(cocApi);
-
-                if (LegendStatistics.BestSeason != null) LegendStatistics.BestSeason.VillageTag = VillageTag;
-
-                if (LegendStatistics.CurrentSeason != null) LegendStatistics.CurrentSeason.VillageTag = VillageTag;
-
-                if (LegendStatistics.PreviousVersusSeason != null) LegendStatistics.PreviousVersusSeason.VillageTag = VillageTag;
-
-                if (LegendStatistics.PreviousVersusSeason != null) LegendStatistics.PreviousVersusSeason.VillageTag = VillageTag;
-            }
-
-            foreach (var spell in Spells.EmptyIfNull())
-            {
-                spell.VillageTag = VillageTag;
-            }
+            if (Clan != null)            
+                ClanTag = Clan.ClanTag;            
 
             SetOrderOfHeroes();
 
@@ -361,8 +331,6 @@ namespace devhl.CocApi.Models.Village
 
                 Troops.Add(hero);
 
-                hero.VillageTag = VillageTag;
-
                 hero.IsHero = true;
             }
 
@@ -372,8 +340,6 @@ namespace devhl.CocApi.Models.Village
 
                 Troops.Add(troop);
 
-                troop.VillageTag = VillageTag;
-
                 troop.IsHero = false;
             }
 
@@ -382,13 +348,6 @@ namespace devhl.CocApi.Models.Village
                 achievement.VillageTag = VillageTag;
 
                 achievement.Initialize(cocApi);
-            }
-
-            foreach (var label in Labels.EmptyIfNull())
-            {
-                label.VillageTag = VillageTag;
-
-                label.Initialize(cocApi);
             }
         }
 

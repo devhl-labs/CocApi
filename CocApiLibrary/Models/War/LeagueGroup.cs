@@ -22,6 +22,13 @@ namespace devhl.CocApi.Models.War
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar/leaguegroup";
         }
 
+        public static string WarTag(string url)
+        {
+            url = url.Replace("clans/", "").Replace("/currentwar/leaguegroup", "");
+
+            return Uri.UnescapeDataString(url);
+        }
+
         [JsonProperty]
         public LeagueState State { get; private set; }
 
@@ -43,34 +50,14 @@ namespace devhl.CocApi.Models.War
         /// This is the season and the first clan tag where the clans are sorted alphabetically.
         /// </summary>
 
-        [JsonProperty]
-        public string GroupKey { get; internal set; } = string.Empty;
+        public string GroupKey() => $"{Season:MM/yyyy};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
 
 
         public void Initialize(CocApi cocApi)
         {
-            GroupKey = $"{Season:MM/yyyy};{Clans.OrderBy(c => c.ClanTag).First().ClanTag}";
-
-            foreach (var leagueClan in Clans.EmptyIfNull())
-            {
-                leagueClan.GroupId = GroupKey;
-
-                leagueClan.LeagueClanKey = $"{Season};{leagueClan.ClanTag}";
-
-                foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())
-                {
-                    leagueVillage.ClanTag = leagueClan.ClanTag;
-
-                    leagueVillage.LeagueClanKey = leagueClan.LeagueClanKey;
-                }
-            }
-
-            foreach (var round in Rounds.EmptyIfNull())
-            {
-                round.RoundKey = $"{Season};{Clans.OrderBy(c => c.ClanTag).First().ClanTag};{Rounds!.IndexOf(round)}";
-
-                round.GroupKey = GroupKey;
-            }
+            foreach (LeagueClan leagueClan in Clans.EmptyIfNull())            
+                foreach (var leagueVillage in leagueClan.Villages.EmptyIfNull())                
+                    leagueVillage.ClanTag = leagueClan.ClanTag; 
         }
 
         public override string ToString() => Season.ToString();

@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Clan
 {
     public class TopClan : IClan
     {
-        //todo why doesn't this have a url property???
-
         [JsonProperty("tag")]
         public string ClanTag { get; internal set; } = string.Empty;
 
@@ -33,10 +27,6 @@ namespace devhl.CocApi.Models.Clan
 
         [JsonProperty("previousRank")]
         public int PreviousRank { get; internal set; }
-
-        public void Initialize(CocApi cocApi)
-        {
-        }
 
         public override string ToString()
         {

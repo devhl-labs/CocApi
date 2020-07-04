@@ -1,4 +1,5 @@
-﻿using devhl.CocApi.Models.Clan;
+﻿using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
 using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace devhl.CocApi
 
         public void OnVillageHeroesChanged(Village fetched, List<Troop> heroes) => _cocApi.Villages.OnVillageHeroesChanged(fetched, heroes);
 
-        public void OnVillageLabelsChanged(Village fetched, List<VillageLabel> added, List<VillageLabel> removed) => _cocApi.Villages.OnVillageLabelsChanged(fetched, added, removed);
+        public void OnVillageLabelsChanged(Village fetched, List<Label> added, List<Label> removed) => _cocApi.Villages.OnVillageLabelsChanged(fetched, added, removed);
 
         public void OnVillageLegendLeagueChanged(Village fetched, Village queued) => _cocApi.Villages.OnVillageLegendLeagueChanged(fetched, queued);
 
@@ -70,7 +71,7 @@ namespace devhl.CocApi
 
         public void OnDonation(Clan fetched, List<Donation> received, List<Donation> donated) => _cocApi.Clans.OnDonation(fetched, received, donated);
 
-        public void OnLabelsChanged(Clan fetched, List<ClanLabel> added, List<ClanLabel> removed) => _cocApi.Clans.OnLabelsChanged(fetched, added, removed);
+        public void OnLabelsChanged(Clan fetched, List<Label> added, List<Label> removed) => _cocApi.Clans.OnLabelsChanged(fetched, added, removed);
 
     }
 }

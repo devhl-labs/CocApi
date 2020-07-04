@@ -1,5 +1,4 @@
 ﻿using devhl.CocApi.Models.Clan;
-//using System.ComponentModel.DataAnnotations;
 
 using Newtonsoft.Json;
 
@@ -18,10 +17,6 @@ namespace devhl.CocApi.Models.Village
 
         [JsonProperty]
         public int ClanLevel { get; private set; }
-
-        public void Initialize(CocApi cocApi)
-        {
-        }
 
         public override string ToString() => $"{ClanTag} {Name}";
     }

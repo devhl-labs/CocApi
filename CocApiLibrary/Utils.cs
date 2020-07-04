@@ -9,7 +9,7 @@ using System.Runtime.Serialization;
 
 namespace devhl.CocApi
 {
-    public static class Statics
+    public static class Utils
     {
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
 
@@ -24,7 +24,7 @@ namespace devhl.CocApi
             return attr.Value;
         }
 
-        public static string ToJson(this object obj)
+        public static string ToJson(this object? obj)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings
             {

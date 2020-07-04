@@ -60,7 +60,7 @@ namespace devhl.CocApi
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
         /// </summary>
-        public TimeSpan ClanTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
+        public TimeSpan ClansTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
 
         /// <summary>
         /// Defines how long to wait before an HTTP request is considered expired.
@@ -78,6 +78,39 @@ namespace devhl.CocApi
         /// This property defines how often to download the war log.
         /// </summary>
         public TimeSpan WarLogTimeToLive { get; set; } = new TimeSpan(0, 0, 0);
+
+
+
+        //Paginated Options
+        //public TimeSpan Clans { get; set; } = new TimeSpan(1, 0, 0);
+
+        public TimeSpan TopBuilderClans { get; set; } = new TimeSpan(1, 0, 0);
+
+        public TimeSpan TopMainClans { get; set; } = new TimeSpan(1, 0, 0);
+
+
+        public TimeSpan Labels { get; set; } = new TimeSpan(1, 0, 0);
+
+        public TimeSpan Leagues { get; set; } = new TimeSpan(1, 0, 0);
+
+
+        public TimeSpan Locations { get; set; } = new TimeSpan(1, 0, 0);
+
+        public TimeSpan TopMainVillages { get; set; } = new TimeSpan(1, 0, 0);
+
+        public TimeSpan TopBuilderVillages { get; set; } = new TimeSpan(1, 0, 0);
+
+        public TimeSpan WarLeagues { get; set; } = new TimeSpan(1, 0, 0);
+
+
+
+
+
+
+
+
+
+
 
         public string? DatabasePath { get; set; }
 

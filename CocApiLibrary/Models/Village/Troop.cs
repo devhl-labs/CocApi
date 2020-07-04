@@ -1,13 +1,9 @@
 ﻿using Newtonsoft.Json;
-//using static devhl.CocApi.Enums;
 
 namespace devhl.CocApi.Models.Village
 {
     public class Troop
     {
-        [JsonProperty]
-        public string VillageTag { get; internal set; } = string.Empty;
-
         [JsonProperty]
         public string Name { get; internal set; } = string.Empty;
 

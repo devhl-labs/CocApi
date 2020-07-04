@@ -33,7 +33,7 @@ namespace devhl.CocApi.Updaters
 
         private ConcurrentDictionary<string, IVillage> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, IVillage>();
 
-        private ConcurrentDictionary<string, CurrentWar> UpdatingWar { get; set; } = new ConcurrentDictionary<string, CurrentWar>();
+        private ConcurrentDictionary<string, CurrentWar?> UpdatingWar { get; set; } = new ConcurrentDictionary<string, CurrentWar?>();
 
         public async Task StartAsync()
         {
@@ -46,7 +46,7 @@ namespace devhl.CocApi.Updaters
 
                 StopRequested = false;
 
-                CocApi.OnLog(new LogEventArgs(nameof(Updater), nameof(StartAsync), LogLevel.Information, $"Started with {CocApi.CocApiConfiguration.Tokens.Count} tokens and {CocApi.CocApiConfiguration.TokenTimeOut.TotalMilliseconds} ms token timeout."));
+                CocApi.OnLog(new LogEventArgs(nameof(Updater), nameof(StartAsync), LogLevel.Information));
 
                 int clanId = 0;
 
@@ -124,6 +124,8 @@ namespace devhl.CocApi.Updaters
             {
                 CocApi.OnLog(new ExceptionEventArgs(nameof(Updater), nameof(StartAsync), e));
 
+                IsRunning = false;
+
                 _ = StartAsync();
             }
         }
@@ -140,12 +142,12 @@ namespace devhl.CocApi.Updaters
 
         private async Task<Clan?> GetClanAsync(CachedClan cachedClan)
         {
-            Clan? clan = await CocApi.Clans.GetOrFetchAsync(cachedClan.ClanTag).ConfigureAwait(false);
+            Clan? clan = await CocApi.Clans.GetAsync(cachedClan.ClanTag).ConfigureAwait(false);
 
-            if (clan == null || clan.IsLocallyExpired(CocApi.CocApiConfiguration.ClanTimeToLive) == false)
+            if (clan == null || clan.IsLocallyExpired(CocApi.CocApiConfiguration.ClansTimeToLive) == false)
                 return clan;
 
-            Clan? fetched = await CocApi.Clans.FetchAsync(cachedClan.ClanTag).ConfigureAwait(false);
+            Clan? fetched = await CocApi.Clans.GetAsync(cachedClan.ClanTag, CacheOption.ServerOnly).ConfigureAwait(false);
 
             if (fetched == null)
                 return clan;
@@ -203,7 +205,7 @@ namespace devhl.CocApi.Updaters
 
         private async Task UpdateClanWar(Clan clan)
         {
-            IWar? war = await CocApi.Wars.GetOrFetchAsync<CurrentWar>(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
+            IWar? war = await CocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
 
             if (!(war is CurrentWar currentWar))
                 return;
@@ -274,7 +276,7 @@ namespace devhl.CocApi.Updaters
                     //ignore DownloadCurrentWar because the war is over and we need the ending
                     if (cachedClan == null || cachedClan.DownloadCurrentWar == false)
                     {
-                        IWar? war = await CocApi.Wars.GetOrFetchAsync<CurrentWar>(warClan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
+                        IWar? war = await CocApi.Wars.GetAsync<CurrentWar>(warClan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
 
                         if (war is NotInWar || (war is CurrentWar currentWar && currentWar.WarKey() != storedWar.WarKey()))
                         {
@@ -317,7 +319,7 @@ namespace devhl.CocApi.Updaters
             {
                 foreach (WarClan warClan in storedWar.WarClans.EmptyIfNull())
                 {
-                    Paginated<WarLogEntry>? warLogs = await CocApi.Wars.GetOrFetchWarLogAsync(warClan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
+                    WarLog? warLogs = await CocApi.Wars.GetWarLogAsync(warClan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) as WarLog;
 
                     warlogEntry = warLogs?.Items.FirstOrDefault(l => l.EndTimeUtc == storedWar.EndTimeUtc);
 
@@ -369,42 +371,36 @@ namespace devhl.CocApi.Updaters
 
         private async Task UpdateCwl(Clan clan)
         {
-            if (!(await CocApi.Wars.GetOrFetchLeagueGroupAsync(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) is LeagueGroup leagueGroup))
+            if (!(await CocApi.Wars.GetAsync(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) is LeagueGroup leagueGroup))
                 return;
 
             foreach (Round round in leagueGroup.Rounds.EmptyIfNull())
             {
                 foreach (string warTag in round.WarTags.EmptyIfNull().Where(w => w != "#0"))
                 {
-                    LeagueWar? leagueWar = await CocApi.Wars.GetAsync<LeagueWar>(warTag).ConfigureAwait(false) as LeagueWar;
-
-                    if (leagueWar != null)
-                        return;
-
-                    leagueWar = await CocApi.Wars.GetAsync<LeagueWar>(warTag).ConfigureAwait(false) as LeagueWar;
-
-                    if (leagueWar != null && leagueWar.Announcements.HasFlag(Announcements.WarAnnounced) == false)
-                        continue;
-
-                    leagueWar ??= await CocApi.Wars.FetchAsync<LeagueWar>(warTag).ConfigureAwait(false) as LeagueWar;
-
-                    if (leagueWar == null || UpdatingWar.TryAdd(leagueWar.WarKey(), leagueWar) == false)
-                        return;
-
                     try
                     {
-                        CachedWar cachedWar = new CachedWar(leagueWar);
+                        if (UpdatingWar.TryAdd(warTag, null) == false)
+                            continue;
+
+                        if ((await CocApi.Wars.GetAsync<LeagueWar>(warTag, CacheOption.CacheOnly).ConfigureAwait(false) is LeagueWar leagueWar))
+                            continue;
+
+                        if (!(await CocApi.Wars.GetAsync<LeagueWar>(warTag, CacheOption.ServerOnly).ConfigureAwait(false) is LeagueWar fetched))
+                            continue;
+
+                        CachedWar cachedWar = new CachedWar(fetched);
 
                         await SqlWriter.Insert(cachedWar).ExecuteAsync().ConfigureAwait(false);
 
-                        CocApi.Wars.OnNewWar(leagueWar);
+                        CocApi.Wars.OnNewWar(fetched);
 
-                        if (leagueWar.WarClans.Any(wc => wc.ClanTag == clan.ClanTag))
+                        if (fetched.WarClans.Any(wc => wc.ClanTag == clan.ClanTag))
                             break;
                     }
-                    catch (Exception)
+                    finally
                     {
-                        UpdatingWar.TryRemove(leagueWar.WarKey(), out _);
+                        UpdatingWar.TryRemove(warTag, out _);
                     }
                 }
             }
@@ -417,7 +413,7 @@ namespace devhl.CocApi.Updaters
 
             try
             {
-                if (!(await CocApi.Wars.GetOrFetchAsync<LeagueWar>(cachedWar.WarTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) is LeagueWar fetchedWar))
+                if (!(await CocApi.Wars.GetAsync<LeagueWar>(cachedWar.WarTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) is LeagueWar fetchedWar))
                     return;
 
                 storedWar.Update(CocApi, fetchedWar, cachedWar.Announcements);
@@ -451,12 +447,12 @@ namespace devhl.CocApi.Updaters
 
             try
             {
-                Village? stored = await CocApi.Villages.GetOrFetchAsync(clanVillage.VillageTag).ConfigureAwait(false);
+                Village? stored = await CocApi.Villages.GetAsync(clanVillage.VillageTag).ConfigureAwait(false);
 
                 if (stored == null || stored.IsLocallyExpired(CocApi.CocApiConfiguration.VillageTimeToLive) == false)
                     return;
 
-                Village? fetched = await CocApi.Villages.FetchAsync(clanVillage.VillageTag).ConfigureAwait(false);
+                Village? fetched = await CocApi.Villages.GetAsync(clanVillage.VillageTag, CacheOption.ServerOnly).ConfigureAwait(false);
 
                 if (fetched != null)
                     stored.Update(CocApi, fetched);
@@ -469,7 +465,7 @@ namespace devhl.CocApi.Updaters
 
         private async Task UpdateVillage(CachedVillage cachedVillage)
         {
-            Village? storedVillage = await CocApi.Villages.GetOrFetchAsync(cachedVillage.VillageTag).ConfigureAwait(false);
+            Village? storedVillage = await CocApi.Villages.GetAsync(cachedVillage.VillageTag).ConfigureAwait(false);
 
             if (storedVillage == null || storedVillage.IsLocallyExpired(CocApi.CocApiConfiguration.VillageTimeToLive) == false)
                 return;
@@ -479,7 +475,7 @@ namespace devhl.CocApi.Updaters
 
             try
             {
-                Village? fetched = await CocApi.Villages.FetchAsync(cachedVillage.VillageTag).ConfigureAwait(false);
+                Village? fetched = await CocApi.Villages.GetAsync(cachedVillage.VillageTag, CacheOption.ServerOnly).ConfigureAwait(false);
 
                 if (fetched != null)
                     storedVillage.Update(CocApi, fetched);

@@ -1,7 +1,5 @@
-﻿using devhl.CocApi.Models.Village;
-using devhl.CocApi.Models.War;
+﻿using devhl.CocApi.Models.War;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 
 namespace devhl.CocApi.Models
@@ -24,5 +22,9 @@ namespace devhl.CocApi.Models
                 }
             }
         }
+    }
+
+    public class WarLog : Paginated<WarLogEntry>, IWar
+    {
     }
 }

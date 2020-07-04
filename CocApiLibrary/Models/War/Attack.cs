@@ -4,15 +4,9 @@ using System;
 
 namespace devhl.CocApi.Models.War
 {
-    public class Attack : /*IInitialize,*/ IAttack
+    public class Attack : IAttack
     {
-        //[JsonProperty]
-        //public DateTime PreparationStartTimeUtc { get; internal set; }
-
         public DateTime DownloadedUtc { get; internal set; } = DateTime.UtcNow;
-
-        //[JsonProperty]
-        //public string WarKey { get; internal set; } = string.Empty;
 
         [JsonProperty]
         public string AttackerTag { get; internal set; } = string.Empty;

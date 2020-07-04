@@ -3,46 +3,46 @@ using devhl.CocApi.Exceptions;
 using devhl.CocApi.Models;
 using devhl.CocApi.Models.Cache;
 using devhl.CocApi.Models.Clan;
+using devhl.CocApi.Models.Village;
 using devhl.CocApi.Models.War;
 using devhl.CocApi.Updaters;
 
-//using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Data.SQLite;
+using System.Configuration;
+using System.Data.Entity.Infrastructure.Interception;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using static Dapper.SqlWriter.SqlWriter;
 
 namespace devhl.CocApi
 {
     public delegate Task ApiIsAvailableChangedEventHandler(object sender, bool isAvailable);
-
     public delegate Task AsyncEventHandler(object sender, EventArgs e);
-
     public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
-
     public delegate Task LogEventHandler(object sender, LogEventArgs log);
-
     public delegate Task SlowQueryEventHandler(object sender, SlowQueryEventArgs e);
+    public delegate Task QueryFailureEventHandler(object sender, QueryFailureEventArgs e);
 
-    public sealed partial class CocApi : IDisposable
+    public sealed partial class CocApi
     {
         private volatile bool _isAvailable = true;
+        private readonly WebResponse _webResponse;
 
-        public CocApi(CocApiConfiguration cfg)
+        public CocApi(CocApiConfiguration config)
         {
-            if (cfg != null)
-            {
-                CocApiConfiguration = cfg;
-            }
+            CocApiConfiguration = config;
 
-            if (cfg == null || cfg.Tokens.Count == 0)
-            {
+            if (config != null)
+                CocApiConfiguration = config;           
+
+            if (config == null || config.Tokens.Count == 0)
                 throw new CocApiException("You did not provide any tokens to access the SC Api.");
-            }
 
             Villages = new Villages(this);
 
@@ -58,7 +58,7 @@ namespace devhl.CocApi
 
             Test = new Test(this);
 
-            WebResponse.Initialize(this, CocApiConfiguration, cfg.Tokens);
+            _webResponse = new WebResponse(this, CocApiConfiguration, config.Tokens);
 
             ConfigureSqlWriter();
 
@@ -66,10 +66,9 @@ namespace devhl.CocApi
         }
 
         public event ApiIsAvailableChangedEventHandler? ApiIsAvailableChanged;
-
         public event LogEventHandler? Log;
-
         public event SlowQueryEventHandler? SlowQuery;
+        public event QueryFailureEventHandler? QueryFailure;
 
         public Clans Clans { get; set; }
 
@@ -98,11 +97,17 @@ namespace devhl.CocApi
         }
 
         public Labels Labels { get; }
+
         public Leagues Leagues { get; }
+
         public Locations Locations { get; }
+
         public Test Test { get; }
+
         public Villages Villages { get; }
+
         public Wars Wars { get; }
+
         internal CocApiConfiguration CocApiConfiguration { get; } = new CocApiConfiguration();
 
 #nullable disable
@@ -112,6 +117,7 @@ namespace devhl.CocApi
 #nullable enable
 
         internal Updater Updater { get; }
+
         private List<CancellationTokenSource> CancellationTokenSources { get; } = new List<CancellationTokenSource>();
 
         private object IsAvailableLock { get; } = new object();
@@ -141,7 +147,7 @@ namespace devhl.CocApi
             }
         }
 
-        public async Task AddClanOrUpdateClanAsync(string clanTag, bool downloadClan, bool downloadWars, bool downloadCwl, bool downloadVillages)
+        public async Task AddOrUpdateClanAsync(string clanTag, bool downloadClan, bool downloadWars, bool downloadCwl, bool downloadVillages)
         {
             if (TryGetValidTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
@@ -188,35 +194,12 @@ namespace devhl.CocApi
         }
 
         /// <summary>
-        /// Disposes all disposable items.  Pending tasks will be canceled.
-        /// </summary>
-        public void Dispose()
-        {
-            foreach (CancellationTokenSource cancellationTokenSource in CancellationTokenSources)
-            {
-                try
-                {
-                    cancellationTokenSource.Cancel();
-                }
-                catch (Exception)
-                {
-                }
-
-                cancellationTokenSource.Dispose();
-            }
-
-            WebResponse.HttpClient.Dispose();
-
-            WebResponse.SemaphoreSlim.Dispose();
-        }
-
-        /// <summary>
         /// Use this to get statistics on how long the Api takes to respond for diffent and points.
         /// </summary>
         /// <returns></returns>
-        public ImmutableList<WebResponseTimer> GetTimers() => WebResponse.GetTimers().ToImmutableList();
+        public ImmutableList<WebResponseTimer> GetTimers() => _webResponse.GetTimers().ToImmutableList();
 
-        public string GetTokenStatus() => WebResponse.GetTokenStatus();
+        public string GetTokenStatus() => _webResponse.GetTokenStatus();
 
         public async Task RemoveVillage(string villageTag)
         {
@@ -226,37 +209,17 @@ namespace devhl.CocApi
                            .ConfigureAwait(false);
         }
 
-        public void Start() => _ = Updater.StartAsync();
+        public void Start()
+        {
+            OnLog(new LogEventArgs(nameof(CocApi), nameof(CocApi), LogLevel.Information, $"Tokens:          {CocApiConfiguration.Tokens.Count} tokens"));
+            OnLog(new LogEventArgs(nameof(CocApi), nameof(CocApi), LogLevel.Information, $"TokenTimeOut:    {CocApiConfiguration.TokenTimeOut.TotalMilliseconds}ms"));
+            OnLog(new LogEventArgs(nameof(CocApi), nameof(CocApi), LogLevel.Information, $"Request Timeout: {CocApiConfiguration.TimeToWaitForWebRequests.TotalMilliseconds}ms"));
+            OnLog(new LogEventArgs(nameof(CocApi), nameof(CocApi), LogLevel.Information, $"DatabasePath:    {Path.Combine(CocApiConfiguration.DatabasePath ?? AppDomain.CurrentDomain.BaseDirectory, CocApiConfiguration.DatabaseName)}"));
+
+            _ = Updater.StartAsync();
+        }
 
         public async Task StopAsync() => await Updater.StopAsync().ConfigureAwait(false);
-
-        //internal async Task<IDownloadable?> FetchAsync<TResult>(string url, CancellationToken? cancellationToken = null) where TResult : class, IDownloadable
-        //{
-        //    try
-        //    {
-        //        using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken ?? new CancellationToken());
-
-        //        TokenObject token = await WebResponse.GetTokenAsync().ConfigureAwait(false);
-
-        //        AddCancellationTokenSource(cts);
-
-        //        if (cancellationToken == null)
-        //            cts.CancelAfter(CocApiConfiguration.TimeToWaitForWebRequests);
-
-        //        IDownloadable? result = await WebResponse.GetDownloadableAsync<TResult>(url, token, cts.Token).ConfigureAwait(false);
-
-        //        RemoveCancellationTokenSource(cts);
-
-        //        return result;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        if (e is CocApiException)
-        //            throw;
-
-        //        throw new CocApiException(e.Message, e);
-        //    }
-        //}
 
         internal async Task<T?> FetchAsync<T>(string url, CancellationToken? cancellationToken = null) where T : class, IDownloadable
         {
@@ -264,16 +227,24 @@ namespace devhl.CocApi
             {
                 using CancellationTokenSource cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken ?? new CancellationToken());
 
-                TokenObject token = await WebResponse.GetTokenAsync().ConfigureAwait(false);
+                TokenObject token = await _webResponse.GetTokenAsync().ConfigureAwait(false);
 
                 AddCancellationTokenSource(cts);
 
                 if (cancellationToken == null)
                     cts.CancelAfter(CocApiConfiguration.TimeToWaitForWebRequests);
 
-                T? result = await WebResponse.GetDownloadableAsync<T>(url, token, cts.Token).ConfigureAwait(false) as T;
+                T? result = await _webResponse.GetDownloadableAsync<T>(url, token, cts.Token).ConfigureAwait(false) as T;
 
                 RemoveCancellationTokenSource(cts);
+
+                if (typeof(T) == typeof(LeagueWar) && result is NotInWar)
+                {
+                        await SqlWriter.Update<CachedWar>()
+                                       .Where(w => w.WarTag == LeagueWar.WarTagFromUrl(url))
+                                       .Set(w => w.IsFinal == true)
+                                       .ExecuteAsync();
+                }
 
                 return result;
             }
@@ -315,13 +286,9 @@ namespace devhl.CocApi
 
         private void ConfigureSqlWriter()
         {
-            SqlWriterConfiguration config = new SqlWriterConfiguration { SlowQueryWarning = TimeSpan.FromSeconds(5) };
-
             string path = $"Data Source={Path.Combine(CocApiConfiguration.DatabasePath ?? AppDomain.CurrentDomain.BaseDirectory, CocApiConfiguration.DatabaseName)}";
 
-            SQLiteConnection connection = new SQLiteConnection(path);
-
-            SqlWriter = new SqlWriter(connection, config)
+            SqlWriter = new SqlWriter(new SqlWriterConfiguration(path))
             {
                 ToTableName = ToTableName,
             };
@@ -339,6 +306,8 @@ namespace devhl.CocApi
             SqlWriter.Register<Cache>().Key(c => c.Path);
 
             SqlWriter.SlowQuery += OnSlowQuery;
+
+            SqlWriter.QueryFailure += OnQueryFailure;
         }
 
         private object? DateTimeToDatabase(object arg)
@@ -354,6 +323,13 @@ namespace devhl.CocApi
         private Task OnSlowQuery(object sender, SlowQueryEventArgs e)
         {
             SlowQuery?.Invoke(sender, e);
+
+            return Task.CompletedTask;
+        }
+
+        private Task OnQueryFailure(object sender, QueryFailureEventArgs e)
+        {
+            QueryFailure?.Invoke(sender, e);
 
             return Task.CompletedTask;
         }
@@ -383,7 +359,13 @@ namespace devhl.CocApi
 
         internal async Task<T?> GetOrFetchAsync<T>(string path, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null) where T : class, IDownloadable 
         {
+            if (cacheOption == CacheOption.ServerOnly)
+                return await FetchAsync<T>(path, cancellationToken).ConfigureAwait(false);
+
             T? cached = await GetAsync<T>(path).ConfigureAwait(false);
+
+            if (cacheOption == CacheOption.CacheOnly)
+                return cached;
 
             if (cached == null)
                 return await FetchAsync<T>(path, cancellationToken).ConfigureAwait(false);
@@ -391,7 +373,7 @@ namespace devhl.CocApi
             if (cacheOption == CacheOption.AllowAny)
                 return cached;
 
-            if (cacheOption == CacheOption.AllowExpiredServerResponse && cached.IsLocallyExpired(GetTTL(cached)) == false) //todo fix this time to live
+            if (cacheOption == CacheOption.AllowExpiredServerResponse && cached.IsLocallyExpired(GetTTL(cached)) == false)
                 return cached;
 
             T? fetched = await FetchAsync<T>(path, cancellationToken).ConfigureAwait(false);
@@ -402,7 +384,72 @@ namespace devhl.CocApi
         internal TimeSpan GetTTL<T>(T cached)
         {
             if (typeof(T) == typeof(Clan))
-                return CocApiConfiguration.ClanTimeToLive;
+                return CocApiConfiguration.ClansTimeToLive;
+
+            if (typeof(T) == typeof(Village))
+                return CocApiConfiguration.VillageTimeToLive;
+
+            if (typeof(T) == typeof(Paginated<Label>))
+                return CocApiConfiguration.Labels;
+            if (typeof(T) == typeof(Paginated<League>))
+                return CocApiConfiguration.Leagues;
+            if (typeof(T) == typeof(Paginated<Location>))
+                return CocApiConfiguration.Locations;
+            if (typeof(T) == typeof(Paginated<TopMainClan>))
+                return CocApiConfiguration.TopMainClans;
+            if (typeof(T) == typeof(Paginated<TopBuilderClan>))
+                return CocApiConfiguration.TopBuilderClans;
+            if (typeof(T) == typeof(Paginated<Clan>))
+                return CocApiConfiguration.ClansTimeToLive;
+            if (typeof(T) == typeof(Paginated<TopMainVillage>))
+                return CocApiConfiguration.TopMainVillages;
+            if (typeof(T) == typeof(Paginated<TopBuilderVillage>))
+                return CocApiConfiguration.TopBuilderVillages;
+            //if (typeof(T) == typeof(Paginated<WarLogEntry>))
+            //    throw new NotImplementedException("use WarLog class instead");
+            //    //return CocApiConfiguration.WarLogTimeToLive;
+            if (typeof(T) == typeof(Paginated<WarLeague>))
+                return CocApiConfiguration.WarLeagues;
+
+            if (cached is IWar war)
+            {
+                if (war is NotInWar)
+                    return CocApiConfiguration.NotInWarTimeToLive;
+
+                if (war is PrivateWarLog)
+                    return CocApiConfiguration.PrivateWarLogTimeToLive;
+
+                if (war is CurrentWar currentWar && currentWar.State == WarState.Preparation)
+                    return currentWar.StartTimeUtc - DateTime.UtcNow;
+
+                if (war is LeagueWar)
+                    return CocApiConfiguration.LeagueWarTimeToLive;
+
+                if (war is CurrentWar)
+                    return CocApiConfiguration.CurrentWarTimeToLive;
+
+                if (war is WarLog)
+                    return CocApiConfiguration.WarLogTimeToLive;
+            }
+
+            if (cached is LeagueGroup leagueGroup)
+            {
+                if (leagueGroup.State == LeagueState.WarsEnded)
+                    return new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(1).Subtract(new TimeSpan(0, 0, 0, 0, 1)).AddHours(8) - DateTime.UtcNow;
+
+                return CocApiConfiguration.LeagueGroupTimeToLive;
+            }
+
+            if (cached is LeagueGroupNotFound)
+            {
+                if (DateTime.UtcNow.Day > 9)
+                    return new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1).AddMonths(1).Subtract(new TimeSpan(0, 0, 0, 0, 1)).AddHours(8) - DateTime.UtcNow;
+
+                return CocApiConfiguration.LeagueGroupNotFoundTimeToLive;
+            }
+
+
+            OnLog(new LogEventArgs(nameof(CocApi), nameof(GetTTL), LogLevel.Debug, "Class not handled."));
 
             return TimeSpan.FromSeconds(0);
         }

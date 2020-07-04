@@ -1,4 +1,7 @@
 ﻿using devhl.CocApi.Models;
+using devhl.CocApi.Models.Clan;
+using Newtonsoft.Json.Serialization;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,17 +9,14 @@ namespace devhl.CocApi
 {
     public sealed class Labels
     {
-        private readonly CocApi _cocApi;
+        private CocApi CocApi { get; }
 
-        public Labels(CocApi cocApi)
-        {
-            _cocApi = cocApi;
-        }
+        public Labels(CocApi cocApi) => CocApi = cocApi;
 
-        public async Task<Paginated<Label>?> FetchClanLabelsAsync(CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<Label>>(Label.ClanUrl(), cancellationToken).ConfigureAwait(false) as Paginated<Label>;
+        public async Task<Paginated<Label>?> GetClanLabelsAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+            => await CocApi.GetOrFetchAsync<Paginated<Label>>(Label.ClanUrl(), cacheOption, cancellationToken).ConfigureAwait(false);
 
-        public async Task<Paginated<Label>?> FetchVillageLabelsAsync(CancellationToken? cancellationToken = null)
-            => await _cocApi.FetchAsync<Paginated<Label>>(Label.VillageUrl(), cancellationToken).ConfigureAwait(false) as Paginated<Label>;
+        public async Task<Paginated<Label>?> GetVillageLabelsAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+            => await CocApi.GetOrFetchAsync<Paginated<Label>>(Label.VillageUrl(), cacheOption, cancellationToken).ConfigureAwait(false);
     }
 }

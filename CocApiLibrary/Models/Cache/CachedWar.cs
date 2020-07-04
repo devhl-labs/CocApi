@@ -130,6 +130,13 @@ namespace devhl.CocApi.Models.Cache
 
 #nullable enable
 
-        public CurrentWar ToCurrentWar() => JsonConvert.DeserializeObject<CurrentWar>(Json);
+        //public CurrentWar ToCurrentWar()
+        //{
+        //    //if (this is LeagueWar leagueWar)
+        //    //    return 
+        //    //JsonConvert.DeserializeObject<CurrentWar>(Json);
+
+        //    return this.ToJson();
+        //}
     }
 }

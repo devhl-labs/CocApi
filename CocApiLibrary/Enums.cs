@@ -5,9 +5,20 @@ namespace devhl.CocApi
 {
     public enum CacheOption
     {
+
+        /// <summary>
+        /// Returns whatever is in the cache regardless of how old it is.
+        /// </summary>
         AllowAny,
+        CacheOnly,
+        ServerOnly,
+        /// <summary>
+        /// Returns an item from cache as long as it has not exceeded the time to live as seen in <see cref="CocApiConfiguration"/> where time to live timespan is added to the server's expiration.
+        /// </summary>
         AllowExpiredServerResponse,
-        //AllowLocallyExpired,
+        /// <summary>
+        /// Queries the server if the server expiration has passed.
+        /// </summary>
         FetchIfExpired
     }
 
@@ -135,22 +146,6 @@ namespace devhl.CocApi
         TopMainClans
     }
 
-    //public enum DownloadCwl
-    //{
-    //    /// <summary>
-    //    /// False will never download league wars.
-    //    /// </summary>
-    //    False = 0,
-    //    /// <summary>
-    //    /// True will download league wars always.
-    //    /// </summary>
-    //    True = 1,
-    //    /// <summary>
-    //    /// Auto will download league wars only during the beginning of the month.
-    //    /// </summary>
-    //    Auto = 2
-    //}
-
     public enum LoggingEvent
     {
         Unknown,
@@ -179,7 +174,7 @@ namespace devhl.CocApi
         WarStartingSoon = 2,
         WarIsAccessible = 4,
         WarEndNotSeen = 8,
-        WarAnnounced = 16,
+        NotUsed2 = 16,
         WarStarted = 32,
         WarEnded = 64,
         NotUsed = 128,

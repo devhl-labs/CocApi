@@ -20,7 +20,7 @@ namespace devhl.CocApi.Models.Clan
         /// It does not appear when looking up locations.
         /// </summary>
         [JsonProperty]
-        public string CountryCode { get; internal set; } = string.Empty;
+        public string? CountryCode { get; internal set; }
 
         public override string ToString()
         {

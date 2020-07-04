@@ -22,9 +22,7 @@ namespace devhl.CocApi.Models.War
 
         int? DestructionPercentage { get; }
 
-        //bool Fresh { get; }
-
-        //bool Missed { get; }
+        bool Fresh { get; }
 
         int? Order { get; }
 

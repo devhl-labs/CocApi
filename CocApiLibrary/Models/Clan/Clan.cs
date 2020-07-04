@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace devhl.CocApi.Models.Clan
 {
-    public class Clan : Downloadable, IClan
+    public class Clan : Downloadable, IClan, IInitialize
     {
         public static string Url(string clanTag)
         {
@@ -84,10 +84,7 @@ namespace devhl.CocApi.Models.Clan
         public Location? Location { get; internal set; }
 
         [JsonProperty]
-        public int? LocationId { get; internal set; } 
-
-        [JsonProperty]
-        public IEnumerable<ClanLabel>? Labels { get; internal set; }
+        public IEnumerable<Label>? Labels { get; internal set; }
 
         [JsonProperty]
         public int ClanLevel { get; internal set; }
@@ -150,10 +147,7 @@ namespace devhl.CocApi.Models.Clan
         public WarFrequency WarFrequency { get; internal set; }
 
         [JsonProperty]
-        public WarLeague? WarLeague { get; private set; }
-
-        [JsonProperty]
-        public int WarLeagueId { get; internal set; }      
+        public WarLeague? WarLeague { get; private set; }      
 
         internal void Update(CocApi cocApi, Clan fetched)
         {
@@ -196,7 +190,7 @@ namespace devhl.CocApi.Models.Clan
 
                 if (queuedVillage.ClanRank != fetchedVillage.ClanRank ||
                     queuedVillage.ExpLevel != fetchedVillage.ExpLevel ||
-                    queuedVillage.LeagueId != fetchedVillage.LeagueId ||
+                    queuedVillage.League?.Id != fetchedVillage.League?.Id ||
                     queuedVillage.Name != fetchedVillage.Name ||
                     queuedVillage.PreviousClanRank != fetchedVillage.PreviousClanRank ||
                     queuedVillage.Role != fetchedVillage.Role ||
@@ -241,9 +235,9 @@ namespace devhl.CocApi.Models.Clan
         {
             cocApi.OnLog(new ClanLogEventArgs(nameof(Clan), nameof(UpdateLabels), fetched));
 
-            List<ClanLabel> added = new List<ClanLabel>();
+            List<Label> added = new List<Label>();
 
-            List<ClanLabel> removed = new List<ClanLabel>();
+            List<Label> removed = new List<Label>();
 
             foreach(var queuedLabel in Labels.EmptyIfNull())
             {
@@ -338,32 +332,12 @@ namespace devhl.CocApi.Models.Clan
             cocApi.Clans.OnClanVillagesLeft(fetched, leftVillages);
         }
 
+        public override string ToString() => $"{ClanTag} {Name}";
+
         public void Initialize(CocApi cocApi)
         {
-            //EncodedUrl = $"https://api.clashofclans.com/v1/clans/{Uri.EscapeDataString(ClanTag)}";
-
-            if (!string.IsNullOrEmpty(ClanTag) && Labels != null)
-            {
-                foreach(var label in Labels) label.ClanTag = ClanTag;
-            }
-
-            foreach (var clanVillage in Villages.EmptyIfNull())
-            {
+            foreach (ClanVillage clanVillage in Villages.EmptyIfNull())
                 clanVillage.ClanTag = ClanTag;
-
-                clanVillage.Initialize(cocApi);
-            }
-
-            if (BadgeUrl != null) 
-                BadgeUrl.ClanTag = ClanTag;
-
-            if (Location != null) 
-                LocationId = Location.Id;
-
-            if (WarLeague != null)
-                WarLeagueId = WarLeague.Id;
         }
-
-        public override string ToString() => $"{ClanTag} {Name}";
     }
 }
