@@ -1,0 +1,4 @@
+{
+	"targetFramework": "netstandard2.1",
+	"packageName": "CocApi"
+}

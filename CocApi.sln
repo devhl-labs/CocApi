@@ -3,9 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29021.104
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CocApiLibrary", "CocApiLibrary\CocApiLibrary.csproj", "{CEB1FA95-249A-46F7-A2A7-1D5235422DFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CocApi.Cache", "src\CocApi.Cache\CocApi.Cache.csproj", "{CEB1FA95-249A-46F7-A2A7-1D5235422DFE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CocApiConsoleTest", "CocApiConsoleTest\CocApiConsoleTest.csproj", "{4992D324-C6E1-4B75-BD0B-EFE045796471}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CocApi.Test", "src\CocApi.Test\CocApi.Test.csproj", "{4992D324-C6E1-4B75-BD0B-EFE045796471}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CocApi", "src\CocApi\CocApi.csproj", "{7F5D13F1-6796-44F4-862D-85ED6925FFC0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{32A27739-27F1-4AA7-8097-9B10989F96A2}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +28,10 @@ Global
 		{4992D324-C6E1-4B75-BD0B-EFE045796471}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4992D324-C6E1-4B75-BD0B-EFE045796471}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4992D324-C6E1-4B75-BD0B-EFE045796471}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F5D13F1-6796-44F4-862D-85ED6925FFC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F5D13F1-6796-44F4-862D-85ED6925FFC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F5D13F1-6796-44F4-862D-85ED6925FFC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F5D13F1-6796-44F4-862D-85ED6925FFC0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
