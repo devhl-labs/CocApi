@@ -38,8 +38,6 @@ namespace CocApi.Cache
             _clansApi = clansApi;
         }
 
-        public event AsyncEventHandler<ChangedEventArgs<Clan>>? ClanUpdatedNOT;
-
         public event AsyncEventHandler<ChangedEventArgs<Clan>>? ClanUpdated;
 
         //public event AsyncEventHandler<DonationEventArgs>? ClanDonation;
@@ -60,30 +58,17 @@ namespace CocApi.Cache
         internal void OnClanUpdated(Clan stored, Clan fetched)
             => ClanUpdated?.Invoke(this, new ChangedEventArgs<Clan>(stored, fetched));
 
-        internal void OnClanUpdatedNOT(Clan stored, Clan fetched)
-            => ClanUpdatedNOT?.Invoke(this, new ChangedEventArgs<Clan>(stored, fetched));
+        public async Task<Clan?> GetAsync(string tag) => await _cocApi.GetAsync<Clan>(Clan.Url(tag));
 
-        public async Task<Clan?> GetAsync(string tag)
-        {
-            CachedItem? result = await GetWithHttpInfoAsync(tag);
+        public async Task<CachedItem?> GetWithHttpInfoAsync(string tag) => await _cocApi.GetWithHttpInfoAsync(Clan.Url(tag));
 
-            if (result == null)
-                return null;
+        public async Task<CachedItem?> GetCurrentWarWithHttpInfoAsync(string tag) => await _cocApi.GetWithHttpInfoAsync(ClanWar.Url(tag));
 
-            return JsonConvert.DeserializeObject<Clan>(result.Raw);
-        }
+        public async Task<ClanWar?> GetCurrentWarAsync(string tag) => await _cocApi.GetAsync<ClanWar>(ClanWar.Url(tag));
 
-        public async Task<CachedItem?> GetWithHttpInfoAsync(string tag)
-        {
-            if (Clash.TryGetValidTag(tag, out string formattedTag) == false)
-                throw new InvalidTagException(tag);
 
-            using var scope = _services.CreateScope();
 
-            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-            return await dbContext.Items.Where(i => i.Path == Clan.Url(formattedTag)).FirstOrDefaultAsync().ConfigureAwait(false);
-        }
 
         //internal void OnBadgeUrlChanged(Clan fetched, Clan queued) => ClanBadgeUrlChanged?.Invoke(this, new ChangedEventArgs<Clan>(fetched, queued));
 
@@ -358,12 +343,11 @@ namespace CocApi.Cache
                 if (cachedClan.DownloadClan)
                     tasks.Add(UpdateClanAsync(cachedClan, dbContext));
 
-                //todo uncomment
-                //if (DownloadCurrentWars && cachedClan.DownloadCurrentWar)
-                //    tasks.Add(UpdateClanWar(clan));
+                if (DownloadCurrentWars && cachedClan.DownloadCurrentWar)
+                    tasks.Add(UpdateClanWar(cachedClan.ClanTag));
 
-                //if (DownloadCwl && cachedClan.DownloadCwl)
-                //    tasks.Add(UpdateCwl(clan));
+                if (DownloadCwl && cachedClan.DownloadCwl)
+                    tasks.Add(UpdateCwl(cachedClan.ClanTag));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
@@ -387,9 +371,9 @@ namespace CocApi.Cache
             if (string.IsNullOrEmpty(cachedItem.Raw) == false)
                 storedClan = JsonConvert.DeserializeObject<Clan>(cachedItem.Raw);
 
-            ApiResponse<Clan> response = await _cocApi.ClansApi.GetClanWithHttpInfoAsync(cachedClan.ClanTag);
+            ApiResponse<Clan> apiResponse = await _cocApi.ClansApi.GetClanWithHttpInfoAsync(cachedClan.ClanTag);
 
-            CachedItem responseItem = response.ToCachedItem(_cocApiConfiguration.VillageTimeToLive, Clan.Url(cachedClan.ClanTag));
+            CachedItem responseItem = apiResponse.ToCachedItem(_cocApiConfiguration.VillageTimeToLive, Clan.Url(cachedClan.ClanTag));
 
             if (cachedItem.ServerExpirationDate == responseItem.ServerExpirationDate)
                 return;
@@ -402,12 +386,10 @@ namespace CocApi.Cache
 
             dbContext.Items.Update(cachedItem);
 
-            Clan fetchedClan = JsonConvert.DeserializeObject<Clan>(response.RawContent);
+            Clan fetchedClan = JsonConvert.DeserializeObject<Clan>(apiResponse.RawContent);
 
             if (storedClan != null && _cocApi.IsEqual(storedClan, fetchedClan) == false)
                 ClanUpdated?.Invoke(this, new ChangedEventArgs<Clan>(storedClan, fetchedClan));
-            else
-                ClanUpdatedNOT?.Invoke(this, new ChangedEventArgs<Clan>(storedClan, fetchedClan));
 
             if (DownloadClanVillages && cachedClan.DownloadVillages)
                 await UpdatePlayersAsync(fetchedClan, dbContext).ConfigureAwait(false);
@@ -423,98 +405,124 @@ namespace CocApi.Cache
             await Task.WhenAll().ConfigureAwait(false);
         }
 
-        //private async Task UpdateClanWar(Clan clan)
-        //{
-        //    IWar? war = await CocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
+        private async Task UpdateClanWar(string tag, CacheContext dbContext)
+        {
+            CachedItem? cachedItem = await _cocApi.ClansCache.GetCurrentWarWithHttpInfoAsync(tag);
 
-        //    if (!(war is CurrentWar currentWar))
-        //        return;
+            if (cachedItem != null && (cachedItem.IsLocallyExpired() == false || cachedItem.IsServerExpired() == false))
+                return;
 
-        //    if (UpdatingWar.TryAdd(currentWar.WarKey(), currentWar) == false)
-        //        return;
+            cachedItem ??= new CachedItem();
 
-        //    try
-        //    {
-        //        CachedWar? cachedWar = await CocApi.SqlWriter.Select<CachedWar>()
-        //                                                    .Where(w => w.PrepStartTime == currentWar.PreparationStartTimeUtc &&
-        //                                                                w.ClanTag == currentWar.WarClans[0].ClanTag)
-        //                                                    .QuerySingleOrDefaultAsync()
-        //                                                    .ConfigureAwait(false);
+            ApiResponse<ClanWar> apiResponse = await _cocApi.ClansApi.GetCurrentWarWithHttpInfoAsync(tag);
 
-        //        if (cachedWar != null)
-        //            return;
+            CachedItem responseItem = apiResponse.ToCachedItem(_cocApiConfiguration.CurrentWarTimeToLive, ClanWar.Url(tag));
 
-        //        await SqlWriter.Update<CachedWar>()
-        //                        .Where(w => w.ClanTag == clan.ClanTag)
-        //                        .Set(w => w.IsAvailableByClan == false)
-        //                        .ExecuteAsync()
-        //                        .ConfigureAwait(false);
+            if (cachedItem.ServerExpirationDate == responseItem.ServerExpirationDate)
+                return;
 
-        //        await SqlWriter.Update<CachedWar>()
-        //                        .Where(w => w.OpponentTag == clan.ClanTag)
-        //                        .Set(w => w.IsAvailableByOpponent == false)
-        //                        .ExecuteAsync()
-        //                        .ConfigureAwait(false);
+            cachedItem.DownloadDate = responseItem.DownloadDate;
+            cachedItem.ServerExpirationDate = responseItem.ServerExpirationDate;
+            cachedItem.LocalExpirationDate = responseItem.LocalExpirationDate;
+            cachedItem.Raw = responseItem.Raw;
+            cachedItem.Path = responseItem.Path;
 
-        //        cachedWar = new CachedWar
-        //        {
-        //            ClanTag = currentWar.WarClans[0].ClanTag,
-        //            EndTime = currentWar.EndTimeUtc,
-        //            IsFinal = false,
-        //            Json = currentWar.ToJson(),
-        //            OpponentTag = currentWar.WarClans[1].ClanTag,
-        //            PrepStartTime = currentWar.PreparationStartTimeUtc,
-        //            WarState = currentWar.State,
-        //            IsAvailableByClan = true,
-        //            IsAvailableByOpponent = true
-        //        };
+            dbContext.Items.Update(cachedItem);
 
-        //        await SqlWriter.Insert(cachedWar).ExecuteAsync().ConfigureAwait(false);
 
-        //        CocApi.Wars.OnNewWar(currentWar);
-        //    }
-        //    finally
-        //    {
-        //        UpdatingWar.TryRemove(currentWar.WarKey(), out _);
-        //    }
-        //}
 
-        //private async Task UpdateCwl(Clan clan)
-        //{
-        //    if (!(await CocApi.Wars.GetLeagueGroupAsync(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) is LeagueGroup leagueGroup))
-        //        return;
 
-        //    foreach (Round round in leagueGroup.Rounds.EmptyIfNull())
-        //    {
-        //        foreach (string warTag in round.WarTags.EmptyIfNull().Where(w => w != "#0"))
-        //        {
-        //            try
-        //            {
-        //                if (UpdatingWar.TryAdd(warTag, null) == false)
-        //                    continue;
 
-        //                if ((await CocApi.Wars.GetAsync<LeagueWar>(warTag, CacheOption.CacheOnly).ConfigureAwait(false) is LeagueWar leagueWar))
-        //                    continue;
+            IWar ? war = await CocApi.Wars.GetAsync<CurrentWar>(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false);
 
-        //                if (!(await CocApi.Wars.GetAsync<LeagueWar>(warTag, CacheOption.ServerOnly).ConfigureAwait(false) is LeagueWar fetched))
-        //                    continue;
+            if (!(war is CurrentWar currentWar))
+                return;
 
-        //                CachedWar cachedWar = new CachedWar(fetched);
+            if (UpdatingWar.TryAdd(currentWar.WarKey(), currentWar) == false)
+                return;
 
-        //                await SqlWriter.Insert(cachedWar).ExecuteAsync().ConfigureAwait(false);
+            try
+            {
+                CachedWar? cachedWar = await CocApi.SqlWriter.Select<CachedWar>()
+                                                            .Where(w => w.PrepStartTime == currentWar.PreparationStartTimeUtc &&
+                                                                        w.ClanTag == currentWar.WarClans[0].ClanTag)
+                                                            .QuerySingleOrDefaultAsync()
+                                                            .ConfigureAwait(false);
 
-        //                CocApi.Wars.OnNewWar(fetched);
+                if (cachedWar != null)
+                    return;
 
-        //                if (fetched.WarClans.Any(wc => wc.ClanTag == clan.ClanTag))
-        //                    break;
-        //            }
-        //            finally
-        //            {
-        //                UpdatingWar.TryRemove(warTag, out _);
-        //            }
-        //        }
-        //    }
-        //}
+                await SqlWriter.Update<CachedWar>()
+                                .Where(w => w.ClanTag == clan.ClanTag)
+                                .Set(w => w.IsAvailableByClan == false)
+                                .ExecuteAsync()
+                                .ConfigureAwait(false);
+
+                await SqlWriter.Update<CachedWar>()
+                                .Where(w => w.OpponentTag == clan.ClanTag)
+                                .Set(w => w.IsAvailableByOpponent == false)
+                                .ExecuteAsync()
+                                .ConfigureAwait(false);
+
+                cachedWar = new CachedWar
+                {
+                    ClanTag = currentWar.WarClans[0].ClanTag,
+                    EndTime = currentWar.EndTimeUtc,
+                    IsFinal = false,
+                    Json = currentWar.ToJson(),
+                    OpponentTag = currentWar.WarClans[1].ClanTag,
+                    PrepStartTime = currentWar.PreparationStartTimeUtc,
+                    WarState = currentWar.State,
+                    IsAvailableByClan = true,
+                    IsAvailableByOpponent = true
+                };
+
+                await SqlWriter.Insert(cachedWar).ExecuteAsync().ConfigureAwait(false);
+
+                CocApi.Wars.OnNewWar(currentWar);
+            }
+            finally
+            {
+                UpdatingWar.TryRemove(currentWar.WarKey(), out _);
+            }
+        }
+
+        private async Task UpdateCwl(Clan clan)
+        {
+            if (!(await CocApi.Wars.GetLeagueGroupAsync(clan.ClanTag, CacheOption.AllowExpiredServerResponse).ConfigureAwait(false) is LeagueGroup leagueGroup))
+                return;
+
+            foreach (Round round in leagueGroup.Rounds.EmptyIfNull())
+            {
+                foreach (string warTag in round.WarTags.EmptyIfNull().Where(w => w != "#0"))
+                {
+                    try
+                    {
+                        if (UpdatingWar.TryAdd(warTag, null) == false)
+                            continue;
+
+                        if ((await CocApi.Wars.GetAsync<LeagueWar>(warTag, CacheOption.CacheOnly).ConfigureAwait(false) is LeagueWar leagueWar))
+                            continue;
+
+                        if (!(await CocApi.Wars.GetAsync<LeagueWar>(warTag, CacheOption.ServerOnly).ConfigureAwait(false) is LeagueWar fetched))
+                            continue;
+
+                        CachedWar cachedWar = new CachedWar(fetched);
+
+                        await SqlWriter.Insert(cachedWar).ExecuteAsync().ConfigureAwait(false);
+
+                        CocApi.Wars.OnNewWar(fetched);
+
+                        if (fetched.WarClans.Any(wc => wc.ClanTag == clan.ClanTag))
+                            break;
+                    }
+                    finally
+                    {
+                        UpdatingWar.TryRemove(warTag, out _);
+                    }
+                }
+            }
+        }
 
         private async Task UpdatePlayer(ClanMember member, CacheContext dbContext) 
             => await _cocApi.PlayersCache.UpdatePlayerAsync(member.Tag, dbContext);

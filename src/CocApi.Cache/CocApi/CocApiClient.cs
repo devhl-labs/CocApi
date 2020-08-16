@@ -17,6 +17,7 @@ using CocApi.Cache.Updaters;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace CocApi.Cache
 {
@@ -151,5 +152,24 @@ namespace CocApi.Cache
         public virtual bool IsEqual(Player stored, Player fetched) => stored.Equals(fetched);
 
         public virtual bool IsEqual(Clan stored, Clan fetched) => stored.Equals(fetched);
+
+        internal async Task<T?> GetAsync<T>(string path) where T : class
+        {
+            CachedItem? result = await GetWithHttpInfoAsync(path);
+
+            if (result == null)
+                return null;
+
+            return JsonConvert.DeserializeObject<T>(result.Raw);
+        }
+
+        public async Task<CachedItem?> GetWithHttpInfoAsync(string path)
+        {
+            using var scope = services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            return await dbContext.Items.Where(i => i.Path == path).FirstOrDefaultAsync().ConfigureAwait(false);
+        }
     }
 }

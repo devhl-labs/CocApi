@@ -27,6 +27,10 @@ namespace CocApi.Api
     public partial class LabelsApi
     {
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
+        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
+        public event QueryResultEventHandler QueryResult;
+        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
+        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LabelsApi"/> class.
@@ -157,7 +161,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetClanLabelsWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -167,7 +170,6 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
-
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -193,14 +195,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LabelsObject>("/labels/clans", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanLabels", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/labels/clans", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/labels/clans", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -232,7 +251,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetPlayerLabelsWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -242,7 +260,6 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
-
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -268,14 +285,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LabelsObject>("/labels/players", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetPlayerLabels", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/labels/players", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/labels/players", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

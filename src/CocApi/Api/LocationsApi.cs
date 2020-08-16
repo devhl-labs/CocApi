@@ -27,6 +27,10 @@ namespace CocApi.Api
     public partial class LocationsApi
     {
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
+        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
+        public event QueryResultEventHandler QueryResult;
+        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
+        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationsApi"/> class.
@@ -163,7 +167,6 @@ namespace CocApi.Api
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetClanRanking");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -174,14 +177,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -200,14 +202,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanRanking>>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanRanking", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -245,7 +264,6 @@ namespace CocApi.Api
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetClanVersusRanking");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -256,14 +274,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -282,14 +299,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanVersusRanking>>("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanVersusRanking", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -321,7 +355,6 @@ namespace CocApi.Api
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetLocation");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -332,28 +365,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<Location>("/locations/{locationId}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetLocation", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/locations/{locationId}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/locations/{locationId}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -385,7 +434,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (LocationList)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>> GetLocationsWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -395,7 +443,6 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
-
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -421,14 +468,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LocationList>("/locations", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetLocations", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/locations", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/locations", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -466,7 +530,6 @@ namespace CocApi.Api
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetPlayerRanking");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -477,14 +540,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -503,14 +565,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/locations/{locationId}/rankings/players", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetPlayerRanking", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -548,7 +627,6 @@ namespace CocApi.Api
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetPlayerVersusRanking");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -559,14 +637,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -585,14 +662,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<PlayerVersusRanking>>("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetPlayerVersusRanking", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

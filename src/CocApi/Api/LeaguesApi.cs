@@ -27,6 +27,10 @@ namespace CocApi.Api
     public partial class LeaguesApi
     {
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
+        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
+        public event QueryResultEventHandler QueryResult;
+        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
+        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LeaguesApi"/> class.
@@ -157,7 +161,6 @@ namespace CocApi.Api
             if (leagueId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'leagueId' when calling LeaguesApi->GetLeague");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -168,28 +171,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //.ParameterToString(leagueId));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<League>("/leagues/{leagueId}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetLeague", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/leagues/{leagueId}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/leagues/{leagueId}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -233,7 +252,6 @@ namespace CocApi.Api
             if (seasonId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'seasonId' when calling LeaguesApi->GetLeagueSeasonRankings");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -244,15 +262,14 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter
-            localVarRequestOptions.PathParameters.Add("seasonId", CocApi.Client.ClientUtils.ParameterToString(seasonId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //.ParameterToString(leagueId));
+            localVarRequestOptions.PathParameters.Add("seasonId", CocApi.Client.ClientUtils.ParameterToString(seasonId)); // path parameter  //.ParameterToString(seasonId));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -271,14 +288,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetLeagueSeasonRankings", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -316,7 +350,6 @@ namespace CocApi.Api
             if (leagueId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'leagueId' when calling LeaguesApi->GetLeagueSeasons");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -327,14 +360,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //.ParameterToString(leagueId));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -353,14 +385,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LeagueSeasonList>("/leagues/{leagueId}/seasons", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetLeagueSeasons", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -392,7 +441,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (LeagueList)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueList>> GetLeaguesWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -402,7 +450,6 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
-
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -428,14 +475,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LeagueList>("/leagues", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetLeagues", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/leagues", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/leagues", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -467,7 +531,6 @@ namespace CocApi.Api
             if (leagueId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'leagueId' when calling LeaguesApi->GetWarLeague");
 
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -478,28 +541,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter
+            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //.ParameterToString(leagueId));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<WarLeague>("/warleagues/{leagueId}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetWarLeague", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/warleagues/{leagueId}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -531,7 +610,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (List&lt;WarLeague&gt;)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -541,7 +619,6 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
-
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -567,14 +644,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<WarLeague>>("/warleagues", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetWarLeagues", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/warleagues", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/warleagues", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

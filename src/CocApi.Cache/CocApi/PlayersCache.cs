@@ -22,13 +22,9 @@ namespace CocApi.Cache
         private readonly PlayersApi _playersApi;
 
         public event AsyncEventHandler<ChangedEventArgs<Player>>? PlayerUpdated;
-        public event AsyncEventHandler<ChangedEventArgs<Player>>? PlayerUpdatedNOT;
 
         internal void OnPlayerUpdated(Player stored, Player fetched)
             => PlayerUpdated?.Invoke(this, new ChangedEventArgs<Player>(stored, fetched));
-
-        internal void OnPlayerUpdatedNOT(Player fetched, Player queued)
-            => PlayerUpdatedNOT?.Invoke(this, new ChangedEventArgs<Player>(fetched, queued));
 
         public async Task AddAsync(string tag)
         {
@@ -78,24 +74,10 @@ namespace CocApi.Cache
             _playersApi = playersApi;
         }
 
-        public async Task<Player?> GetAsync(string tag)
-        {
-            CachedItem result = await GetWithHttpInfoAsync(tag);
+        public async Task<Player?> GetAsync(string tag) => await _cocApi.GetAsync<Player>(Player.Url(tag));
 
-            return JsonConvert.DeserializeObject<Player>(result.Raw);
-        }
+        public async Task<CachedItem?> GetWithHttpInfoAsync(string tag) => await _cocApi.GetWithHttpInfoAsync(Player.Url(tag));
 
-        public async Task<CachedItem> GetWithHttpInfoAsync(string tag)
-        {
-            if (Clash.TryGetValidTag(tag, out string formattedTag) == false)
-                throw new InvalidTagException(tag);
-
-            using var scope = _services.CreateScope();
-
-            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
-
-            return await dbContext.Items.Where(i => i.Path == Player.Url(formattedTag)).FirstOrDefaultAsync().ConfigureAwait(false);
-        }
 
 
 
@@ -199,9 +181,9 @@ namespace CocApi.Cache
 
             try
             {
-                ApiResponse<Player> response = await _cocApi.PlayersApi.GetPlayerWithHttpInfoAsync(tag);
+                ApiResponse<Player> apiResponse = await _cocApi.PlayersApi.GetPlayerWithHttpInfoAsync(tag);
 
-                CachedItem responseItem = response.ToCachedItem(_cocApiConfiguration.VillageTimeToLive, Player.Url(tag));
+                CachedItem responseItem = apiResponse.ToCachedItem(_cocApiConfiguration.VillageTimeToLive, Player.Url(tag));
 
                 if (cachedItem.ServerExpirationDate == responseItem.ServerExpirationDate)
                     return;
@@ -214,12 +196,10 @@ namespace CocApi.Cache
 
                 dbContext.Items.Update(cachedItem);
 
-                Player fetchedPlayer = JsonConvert.DeserializeObject<Player>(response.RawContent);
+                Player fetchedPlayer = JsonConvert.DeserializeObject<Player>(apiResponse.RawContent);
 
                 if (storedPlayer != null && _cocApi.IsEqual(storedPlayer, fetchedPlayer) == false)
                     PlayerUpdated?.Invoke(this, new ChangedEventArgs<Player>(storedPlayer, fetchedPlayer));
-                else
-                    PlayerUpdatedNOT?.Invoke(this, new ChangedEventArgs<Player>(storedPlayer, fetchedPlayer));
             }
             finally
             {

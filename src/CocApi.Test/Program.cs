@@ -7,6 +7,10 @@ using System.IO;
 using CocApi.Model;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.Encodings.Web;
+using System.Web;
+using System.Net;
+using System.Text;
 
 namespace CocApi.Test
 {
@@ -28,11 +32,11 @@ namespace CocApi.Test
 
             client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
 
-            client.PlayersCache.PlayerUpdatedNOT += PlayerUpdater_PlayerUpdatedNOT;
-
             client.ClansCache.ClanUpdated += ClansCache_ClanUpdated;
 
-            client.ClansCache.ClanUpdatedNOT += ClansCache_ClanUpdatedNOT;
+            client.PlayersApi.QueryResult += QueryResult;
+
+            client.ClansApi.QueryResult += QueryResult;
 
             await client.PlayersCache.AddAsync("#29GPU9CUJ"); //squirrel man
 
@@ -129,9 +133,14 @@ namespace CocApi.Test
             ////if (args == null) { }
         }
 
-        private static Task ClansCache_ClanUpdatedNOT(object sender, ChangedEventArgs<Clan> e)
+        private static Task QueryResult(object sender, QueryResultEventArgs log)
         {
-            LogService.Log(LogLevel.Debug, nameof(Program), null, "Clan NOT updated");
+            string seconds = ((int)log.QueryResult.Stopwatch.Elapsed.TotalSeconds).ToString();           
+
+            if (log.QueryResult is QuerySuccess)
+                LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl());
+            else
+                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl());
 
             return Task.CompletedTask;
         }
@@ -139,13 +148,6 @@ namespace CocApi.Test
         private static Task ClansCache_ClanUpdated(object sender, ChangedEventArgs<Clan> e)
         {
             LogService.Log(LogLevel.Debug, nameof(Program), null, "Clan updated");
-
-            return Task.CompletedTask;
-        }
-
-        private static Task PlayerUpdater_PlayerUpdatedNOT(object sender, ChangedEventArgs<Player> e)
-        {
-            LogService.Log(LogLevel.Debug, nameof(Program), null, "Player NOT updated");
 
             return Task.CompletedTask;
         }

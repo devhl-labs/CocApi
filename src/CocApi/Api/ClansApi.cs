@@ -27,6 +27,10 @@ namespace CocApi.Api
     public partial class ClansApi
     {
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
+        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
+        public event QueryResultEventHandler QueryResult;
+        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
+        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
@@ -158,6 +162,9 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClan");
 
 
+            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(clanTag);
+
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -168,28 +175,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(clanTag)); // path parameter
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<Clan>("/clans/{clanTag}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClan", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clans/{clanTag}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -228,6 +251,9 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanMembers");
 
 
+            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(clanTag);
+
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -238,14 +264,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(clanTag)); // path parameter
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -264,14 +289,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanMember>>("/clans/{clanTag}/members", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanMembers", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -304,6 +346,9 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanWarLeagueGroup");
 
 
+            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(clanTag);
+
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -314,28 +359,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(clanTag)); // path parameter
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWarLeagueGroup>("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanWarLeagueGroup", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -368,6 +429,9 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'warTag' when calling ClansApi->GetClanWarLeagueWar");
 
 
+            if (Clash.TryGetValidTag(warTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(warTag);
+
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -378,28 +442,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(warTag)); // path parameter
+            localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(warTag));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clanwarleagues/wars/{warTag}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanWarLeagueWar", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -438,6 +518,9 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanWarLog");
 
 
+            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(clanTag);
+
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -448,14 +531,13 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(clanTag)); // path parameter
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -474,14 +556,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWarLog>("/clans/{clanTag}/warlog", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetClanWarLog", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -514,6 +613,9 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetCurrentWar");
 
 
+            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(clanTag);
+
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -524,28 +626,44 @@ namespace CocApi.Api
                 "application/json"
             };
 
-
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(clanTag)); // path parameter
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clans/{clanTag}/currentwar", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("GetCurrentWar", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -593,7 +711,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (List&lt;Clan&gt;)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<Clan>>> SearchClansWithHttpInfoAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
         {
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -603,7 +720,6 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
-
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -661,14 +777,31 @@ namespace CocApi.Api
             
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<Clan>>("/clans", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("SearchClans", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("/clans", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("/clans", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

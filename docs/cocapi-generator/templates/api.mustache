@@ -20,6 +20,10 @@ namespace {{packageName}}.{{apiPackage}}
     {{>visibility}} partial class {{classname}}
     {
         private {{packageName}}.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
+        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
+        public event QueryResultEventHandler QueryResult;
+        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
+        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}"/> class.
@@ -165,6 +169,9 @@ namespace {{packageName}}.{{apiPackage}}
             {{/required}}
             {{/allParams}}
 
+            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+                throw new CocApi.InvalidTagException(clanTag);
+
             {{packageName}}.Client.RequestOptions localVarRequestOptions = new {{packageName}}.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -180,7 +187,6 @@ namespace {{packageName}}.{{apiPackage}}
                 {{/produces}}
             };
 
-
             var localVarContentType = {{packageName}}.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
@@ -189,7 +195,7 @@ namespace {{packageName}}.{{apiPackage}}
             
             {{#pathParams}}
             {{#required}}
-            localVarRequestOptions.PathParameters.Add("{{baseName}}", {{packageName}}.Client.ClientUtils.ParameterToString({{paramName}})); // path parameter
+            localVarRequestOptions.PathParameters.Add("{{baseName}}", {{packageName}}.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString({{paramName}}));
             {{/required}}
             {{^required}}
             if ({{paramName}} != null)
@@ -292,14 +298,31 @@ namespace {{packageName}}.{{apiPackage}}
             {{/authMethods}}
 
             // make the HTTP request
-
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.{{#lambda.titlecase}}{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}{{/lambda.titlecase}}Async<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>("{{{path}}}", localVarRequestOptions, this.Configuration);
+            stopwatch.Stop();
 
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("{{operationId}}", localVarResponse);
-                if (_exception != null) throw _exception;
+                if (_exception != null) 
+                {
+                    QueryException queryException = new QueryException("{{{path}}}", localVarRequestOptions, stopwatch, _exception);
+
+                    QueryResults.Add(queryException);
+
+                    OnQueryResult(new QueryResultEventArgs(queryException));
+
+                    throw _exception;
+                }
             }
+
+            QuerySuccess querySuccess = new QuerySuccess("{{{path}}}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+
+            QueryResults.Add(querySuccess);
+
+            OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
