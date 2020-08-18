@@ -9,11 +9,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi;
 using CocApi.Api;
+using CocApi.Cache.CocApi;
 using CocApi.Cache.Exceptions;
 using CocApi.Cache.Models.Cache;
 //using CocApi.Cache.Models.Clans;
 using CocApi.Cache.Models.Villages;
-using CocApi.Cache.Updaters;
+//using CocApi.Cache.Updaters;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,10 @@ using Newtonsoft.Json;
 
 namespace CocApi.Cache
 {
+    public delegate Task AsyncEventHandler(object sender, EventArgs e);
+    public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
+    public delegate Task LogEventHandler(object sender, LogEventArgs log);
+
     public class CocApiClient
     {
         internal IServiceProvider services;
@@ -42,9 +47,9 @@ namespace CocApi.Cache
         {
             _cocApiConfiguration = cocApiConfiguration;
 
-            services = new ServiceCollection().AddDbContext<CacheContext>(o => o.UseSqlite(_cocApiConfiguration.ConnectionString)).BuildServiceProvider();
+            services = new ServiceCollection().AddDbContext<CachedContext>(o => o.UseSqlite(_cocApiConfiguration.ConnectionString)).BuildServiceProvider();
 
-            CacheContext cacheContext = services.GetRequiredService<CacheContext>();
+            CachedContext cacheContext = services.GetRequiredService<CachedContext>();
 
             cacheContext.Database.Migrate();
 
@@ -153,23 +158,28 @@ namespace CocApi.Cache
 
         public virtual bool IsEqual(Clan stored, Clan fetched) => stored.Equals(fetched);
 
-        internal async Task<T?> GetAsync<T>(string path) where T : class
-        {
-            CachedItem? result = await GetWithHttpInfoAsync(path);
+        //internal async Task<T?> GetAsync<T>(string path) where T : class
+        //{
+        //    T? result = await GetWithHttpInfoAsync<T>(path);
 
-            if (result == null)
-                return null;
+        //    if (result == null)
+        //        return null;
 
-            return JsonConvert.DeserializeObject<T>(result.Raw);
-        }
+        //    return JsonConvert.DeserializeObject<T>(result.r);
+        //}
 
-        public async Task<CachedItem?> GetWithHttpInfoAsync(string path)
-        {
-            using var scope = services.CreateScope();
+        //public async Task<CachedItem_newnew<TApi>?> GetWithHttpInfoAsync<TApi>(string tag) /*where TCache : CachedItem_newnew<TApi>*/ where TApi : class
+        //{
+        //    using var scope = services.CreateScope();
 
-            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+        //    CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-            return await dbContext.Items.Where(i => i.Path == path).FirstOrDefaultAsync().ConfigureAwait(false);
-        }
+        //    //return await dbContext.Items.Where(i => i.Path == path).FirstOrDefaultAsync().ConfigureAwait(false);
+
+        //    if (typeof(TApi) == typeof(Player))
+        //        return await dbContext.Players.Where(i => i.Tag == tag).FirstOrDefaultAsync().ConfigureAwait(false);
+
+        //    throw new Exception("Unhandled");
+        //}
     }
 }

@@ -11,7 +11,7 @@ namespace CocApi.Cache
 
         public Leagues(CocApiClient_old cocApi) => CocApi = cocApi;
 
-        public async Task<Paginated<League>?> GetAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
-            => await CocApi.GetOrFetchAsync<Paginated<League>>(League.Url(), cacheOption, cancellationToken).ConfigureAwait(false);
+        //public async Task<Paginated<League>?> GetAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+        //    => await CocApi.GetOrFetchAsync<Paginated<League>>(League.Url(), cacheOption, cancellationToken).ConfigureAwait(false);
     }
 }

@@ -61,7 +61,7 @@ namespace CocApi.Client
     /// <summary>
     /// API Response
     /// </summary>
-    public class ApiResponse<T> : IApiResponse
+    public partial class ApiResponse<T> : IApiResponse
     {
         #region Properties
         

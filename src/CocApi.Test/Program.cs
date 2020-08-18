@@ -28,6 +28,8 @@ namespace CocApi.Test
 
             CocApiClient client = new CocApiClient(GetCocApiConfiguration());
 
+            client.Log += Client_Log;
+
             //var a = await client.PlayersApi.GetPlayerWithHttpInfoAsync("#VC8VY8Y8");
 
             client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
@@ -38,13 +40,15 @@ namespace CocApi.Test
 
             client.ClansApi.QueryResult += QueryResult;
 
-            await client.PlayersCache.AddAsync("#29GPU9CUJ"); //squirrel man
+            await client.PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
 
             client.PlayersCache.Start();
 
             await client.ClansCache.AddAsync("#8J82PV0C"); //fysb unbuckled
 
             await client.ClansCache.AddAsync("#28RUGUYJU"); //devhls lab
+
+            await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
 
             client.ClansCache.Start();
 
@@ -131,6 +135,13 @@ namespace CocApi.Test
             //////await CleanupAsync(services);
 
             ////if (args == null) { }
+        }
+
+        private static Task Client_Log(object sender, LogEventArgs log)
+        {
+            LogService.Log(LogLevel.Debug, log.Source, log.Method, log.Message);
+
+            return Task.CompletedTask;
         }
 
         private static Task QueryResult(object sender, QueryResultEventArgs log)

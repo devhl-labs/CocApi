@@ -14,27 +14,26 @@ namespace CocApi.Cache
 {
     public static class Utils
     {
-        public static CachedItem ToCachedItem<T>(this ApiResponse<T> response, TimeSpan localExpiration, string path)
-        {
-            string downloadDateString = response.Headers.First(h => h.Key == "Date").Value.First();
-            DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
-            string cacheControlString = response.Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
-            double cacheControl = double.Parse(cacheControlString);
-            DateTime serverExpiration = downloadDate.AddSeconds(cacheControl);
+        //public static CachedItem_newnew<T> ToCachedItem<T>(this ApiResponse<T> response, TimeSpan localExpiration) where T : class
+        //{
+        //    string downloadDateString = response.Headers.First(h => h.Key == "Date").Value.First();
+        //    DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
+        //    string cacheControlString = response.Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
+        //    double cacheControl = double.Parse(cacheControlString);
+        //    DateTime serverExpiration = downloadDate.AddSeconds(cacheControl);
 
-            CachedItem result = new CachedItem
-            {
-                DownloadDate = downloadDate,
-                Raw = response.RawContent,
-                ServerExpirationDate = serverExpiration
-            };
+        //    CachedItem_newnew<T> result = new CachedItem_newnew<T>
+        //    {
+        //        DownloadDate = downloadDate,
+        //        RawContent = response.RawContent,
+        //        ServerExpirationDate = serverExpiration,
+        //        Data = response.Data
+        //    };
 
-            result.LocalExpirationDate = result.DownloadDate.Add(localExpiration);
+        //    result.LocalExpirationDate = result.DownloadDate.Add(localExpiration);
 
-            result.Path = path;
-
-            return result;
-        }
+        //    return result;
+        //}
 
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
 

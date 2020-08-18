@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace CocApi
 {
@@ -62,6 +63,20 @@ namespace CocApi
                 formattedTag = string.Empty;
 
             return result;
+        }
+
+        public static bool IsCwlEnabled()
+        {
+            int day = DateTime.UtcNow.Day;
+
+            if (day > 0 && day < 11)            
+                return true;          
+
+            //add three hours to the end to ensure we get everything
+            if (day == 11 && DateTime.UtcNow.Hour < 3)            
+                return true;                      
+
+            return false;
         }
     }
 }

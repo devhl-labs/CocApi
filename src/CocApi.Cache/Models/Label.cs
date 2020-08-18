@@ -19,5 +19,10 @@ namespace CocApi.Cache.Models
         public LabelUrl? LabelUrl { get; internal set; }
 
         public override string ToString() => Name;
+
+        public Label()
+        {
+
+        }
     }
 }

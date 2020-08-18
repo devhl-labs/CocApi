@@ -1,54 +1,33 @@
-﻿using Dapper.SqlWriter;
-using CocApi.Cache.Models.Wars;
-using Newtonsoft.Json;
-using System;
-using System.CodeDom.Compiler;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using CocApi.Client;
+using CocApi.Model;
+using RestSharp.Extensions;
 
 namespace CocApi.Cache.Models.Cache
 {
-    public class CachedWar : DBObject
+    public class CachedWar : CachedItem<ClanWar>
     {
-        public int Id { get; set; }
+        public string ClanTag { get; set; }
 
-        public string ClanTag { get; set; } = string.Empty;
+        public string OpponentTag { get; set; }
 
-        public string OpponentTag { get; set; } = string.Empty;
+        public DateTime? PrepStartTime { get; set; }
 
-        public string Json { get; set; }
-
-        public DateTime PrepStartTime { get; set; }
-
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public string? WarTag { get; set; }
 
-        public WarState WarState { get; set; }
+        public ClanWar.StateEnum State { get; set; } = ClanWar.StateEnum.NotInWar;
 
         public bool IsFinal { get; set; }
 
-        public string WarKey()
-        {
-            List<string> tags = new List<string>
-            {
-                ClanTag,
+        public bool? IsAvailableByClan { get; set; }
 
-                OpponentTag
-            };
-
-            tags = tags.OrderBy(t => t).ToList();
-
-            return $"{PrepStartTime};{tags[0]}";
-        }
-
-        public bool IsAvailableByClan { get; set; }
-
-        public bool IsAvailableByOpponent { get; set; }
+        public bool? IsAvailableByOpponent { get; set; }
 
         public Announcements Announcements { get; set; }
-
 
 #nullable disable
 
@@ -64,61 +43,16 @@ namespace CocApi.Cache.Models.Cache
                     return _clanTags;
 
                 _clanTags = new List<string>
-                {
-                    ClanTag,
+                        {
+                            ClanTag,
 
-                    OpponentTag
-                };
+                            OpponentTag
+                        };
 
                 _clanTags = _clanTags.OrderBy(t => t).ToList();
 
                 return _clanTags;
             }
-        }
-
-        public CachedWar(CurrentWar currentWar, string clanTag)
-        {
-            ClanTag = currentWar.WarClans[0].ClanTag;
-
-            OpponentTag = currentWar.WarClans[1].ClanTag;
-
-            PrepStartTime = currentWar.PreparationStartTimeUtc;
-
-            WarState = currentWar.State;
-
-            EndTime = currentWar.EndTimeUtc;
-
-            if (currentWar is LeagueWar leagueWar)
-                WarTag = leagueWar.WarTag;
-
-            if (clanTag == ClanTag)
-                IsAvailableByClan = true;
-
-            if (clanTag == OpponentTag)
-                IsAvailableByOpponent = true;
-
-            Json = currentWar.ToJson();
-        }
-
-        public CachedWar(LeagueWar leagueWar)
-        {
-            ClanTag = leagueWar.WarClans[0].ClanTag;
-
-            OpponentTag = leagueWar.WarClans[1].ClanTag;
-
-            PrepStartTime = leagueWar.PreparationStartTimeUtc;
-
-            WarState = leagueWar.State;
-
-            EndTime = leagueWar.EndTimeUtc;
-
-            WarTag = leagueWar.WarTag;
-
-            IsAvailableByClan = true;
-
-            IsAvailableByOpponent = true;
-
-            Json = leagueWar.ToJson();
         }
 
 #nullable disable
@@ -130,13 +64,74 @@ namespace CocApi.Cache.Models.Cache
 
 #nullable enable
 
-        //public CurrentWar ToCurrentWar()
-        //{
-        //    //if (this is LeagueWar leagueWar)
-        //    //    return 
-        //    //JsonConvert.DeserializeObject<CurrentWar>(Json);
+        public CachedWar(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string? warTag = null) : base(apiResponse, localExpiration)
+        {
+            ClanTag = apiResponse.Data.Clans.First().Value.Tag;
 
-        //    return this.ToJson();
+            OpponentTag = apiResponse.Data.Clans.Skip(1).First().Value.Tag;
+
+            PrepStartTime = apiResponse.Data.PreparationStartTime;
+
+            EndTime = apiResponse.Data.EndTime;
+
+            State = apiResponse.Data.State;
+
+            WarTag = warTag;
+
+            if (cachedClan.Tag == apiResponse.Data.Clans.First().Value.Tag)
+                IsAvailableByClan = true;
+            else
+                IsAvailableByOpponent = true;
+        }
+
+        //public void UpdateFromResponse(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
+        //{
+        //    base.UpdateFromResponse(apiResponse, localExpiration);
+
+        //    UpdateFromResponse(apiResponse, localExpiration);
+
+        //    State = apiResponse.Data.State;
+
+        //    EndTime = apiResponse.Data.EndTime;
+
+        //    State = apiResponse.Data.State;
+
+        //    if (cachedClan.Tag == apiResponse.Data.Clans.First().Value.Tag)
+        //        IsAvailableByClan = true;
+        //    else
+        //        IsAvailableByOpponent = true;
         //}
+
+        public override bool Equals(object? obj)
+        {
+            return obj is CachedWar war &&
+                   Id == war.Id &&
+                   RawContent == war.RawContent &&
+                   Downloaded == war.Downloaded &&
+                   ServerExpiration == war.ServerExpiration &&
+                   LocalExpiration == war.LocalExpiration &&
+                   EqualityComparer<ClanWar?>.Default.Equals(Data, war.Data) &&
+                   ClanTag == war.ClanTag &&
+                   OpponentTag == war.OpponentTag &&
+                   PrepStartTime == war.PrepStartTime &&
+                   EndTime == war.EndTime &&
+                   WarTag == war.WarTag &&
+                   State == war.State &&
+                   IsFinal == war.IsFinal &&
+                   IsAvailableByClan == war.IsAvailableByClan &&
+                   IsAvailableByOpponent == war.IsAvailableByOpponent &&
+                   Announcements == war.Announcements &&
+                   EqualityComparer<List<string>>.Default.Equals(_clanTags, war._clanTags) &&
+                   EqualityComparer<List<string>>.Default.Equals(ClanTags, war.ClanTags);
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(PrepStartTime);
+            hash.Add(ClanTags.First());
+            hash.Add(ClanTags.Skip(1).First());
+            return hash.ToHashCode();
+        }
     }
 }

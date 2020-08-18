@@ -40,12 +40,12 @@ namespace CocApi.Cache
             KnownTypes.Add(typeof(TopMainVillage));
             KnownTypes.Add(typeof(TopVillage));
             KnownTypes.Add(typeof(Troop));
-            KnownTypes.Add(typeof(Village));
+            //KnownTypes.Add(typeof(Village));
             KnownTypes.Add(typeof(VillageClan));
 
             //war
             KnownTypes.Add(typeof(Attack));
-            KnownTypes.Add(typeof(CurrentWar));
+            //KnownTypes.Add(typeof(CurrentWar));
             KnownTypes.Add(typeof(LeagueClan));
             KnownTypes.Add(typeof(LeagueGroup));
             KnownTypes.Add(typeof(LeagueGroupNotFound));

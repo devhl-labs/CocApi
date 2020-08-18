@@ -42,17 +42,17 @@ namespace CocApi.Cache
 
 
 
-        public async Task<Paginated<Clan>?> GetAsync(ClanQueryOptions clanQueryOptions, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
-            => await CocApi.GetOrFetchAsync<Paginated<Clan>>(Clan.Url(clanQueryOptions), cacheOption, cancellationToken);
+        //public async Task<Paginated<Clan>?> GetAsync(ClanQueryOptions clanQueryOptions, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+        //    => await CocApi.GetOrFetchAsync<Paginated<Clan>>(Clan.Url(clanQueryOptions), cacheOption, cancellationToken);
 
-        public async Task<Paginated<TopBuilderClan>?> GetTopBuilderClansAsync(int? locationId = null, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
-            => await CocApi.GetOrFetchAsync<Paginated<TopBuilderClan>>(TopBuilderClan.Url(locationId), cacheOption, cancellationToken).ConfigureAwait(false);
+        //public async Task<Paginated<TopBuilderClan>?> GetTopBuilderClansAsync(int? locationId = null, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+        //    => await CocApi.GetOrFetchAsync<Paginated<TopBuilderClan>>(TopBuilderClan.Url(locationId), cacheOption, cancellationToken).ConfigureAwait(false);
 
-        public async Task<Paginated<TopMainClan>?> GetTopMainClansAsync(int? locationId = null, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
-            => await CocApi.GetOrFetchAsync<Paginated<TopMainClan>>(TopMainClan.Url(locationId), cacheOption, cancellationToken).ConfigureAwait(false);
+        //public async Task<Paginated<TopMainClan>?> GetTopMainClansAsync(int? locationId = null, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+        //    => await CocApi.GetOrFetchAsync<Paginated<TopMainClan>>(TopMainClan.Url(locationId), cacheOption, cancellationToken).ConfigureAwait(false);
 
-        public async Task<Clan?> GetAsync(string clanTag, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
-            => await CocApi.GetOrFetchAsync<Clan>(Clan.Url(clanTag), cacheOption, cancellationToken).ConfigureAwait(false);
+        //public async Task<Clan?> GetAsync(string clanTag, CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+        //    => await CocApi.GetOrFetchAsync<Clan>(Clan.Url(clanTag), cacheOption, cancellationToken).ConfigureAwait(false);
 
 
 

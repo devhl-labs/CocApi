@@ -12,7 +12,7 @@ namespace CocApi.Cache
 
         public Locations(CocApiClient_old cocApi) => CocApi = cocApi;
 
-        public async Task<Paginated<Location>?> GetAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
-            => await CocApi.GetOrFetchAsync<Paginated<Location>>(Location.Url(), cacheOption, cancellationToken).ConfigureAwait(false);
+        //public async Task<Paginated<Location>?> GetAsync(CacheOption cacheOption = CacheOption.AllowAny, CancellationToken? cancellationToken = null)
+        //    => await CocApi.GetOrFetchAsync<Paginated<Location>>(Location.Url(), cacheOption, cancellationToken).ConfigureAwait(false);
     }
 }

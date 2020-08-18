@@ -70,16 +70,16 @@ namespace CocApi.Test
         //    return Task.CompletedTask;
         //}
 
-        private Task Wars_NewAttacks(object sender, ChangedEventArgs<CurrentWar, IReadOnlyList<Attack>> e)
-        {
-            //e.Fetched refers to the newly downloaded object
-            //e.Stored refers to the object stored in memory that is queued for download
-            //the fetched item is generally provided when available
+        //private Task Wars_NewAttacks(object sender, ChangedEventArgs<CurrentWar, IReadOnlyList<Attack>> e)
+        //{
+        //    //e.Fetched refers to the newly downloaded object
+        //    //e.Stored refers to the object stored in memory that is queued for download
+        //    //the fetched item is generally provided when available
 
-            LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, $"{e.Value.Count()} new attacks in war between {e.Fetched.WarClans[0].Name} and {e.Fetched.WarClans[1].Name}");
+        //    LogService.Log(LogLevel.Information, nameof(EventHandlerService), null, $"{e.Value.Count()} new attacks in war between {e.Fetched.WarClans[0].Name} and {e.Fetched.WarClans[1].Name}");
 
-            return Task.CompletedTask;
-        }
+        //    return Task.CompletedTask;
+        //}
 
         private Task Clans_ClanChanged(object sender, ChangedEventArgs<Clan, Clan> e)
         {

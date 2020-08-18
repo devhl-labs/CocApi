@@ -1,91 +1,78 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Net.Security;
-using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
 using CocApi.Client;
 using Newtonsoft.Json;
-using SQLitePCL;
 
 namespace CocApi.Cache.Models.Cache
 {
-    public class CachedItem_old
+    public class CachedItem<T> where T : class
     {
         public int Id { get; set; }
 
-        public string Path { get; set; } = string.Empty;
+        public string? RawContent { get; set; }
 
-        public string Json { get; set; } = string.Empty;
-
-        public EndPoint EndPoint { get; set; }
+        public DateTime Downloaded { get; set; }
 
         public DateTime ServerExpiration { get; set; }
 
-        public CachedItem_old()
+        public DateTime LocalExpiration { get; set; }
+
+        private T? _data;
+
+        [NotMapped]
+        public T? Data
         {
+            get
+            {
+                if (RawContent == null)
+                    return null;
 
+                if (_data == null)
+                    _data = JsonConvert.DeserializeObject<T>(RawContent);
+
+                return _data;
+            }
+
+            internal set { _data = value; }
         }
-
-        public CachedItem_old(string path, string json, EndPoint endPoint, DateTime serverExpiration)
-        {
-            Path = path;
-
-            Json = json;
-            
-            EndPoint = endPoint;
-
-            ServerExpiration = serverExpiration;
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public class CachedItem
-    {
-        public int Id { get; set; }
-
-        public string Path { get; set; } = string.Empty;
-
-        public string Raw { get; set; } = string.Empty;
-
-        public DateTime DownloadDate { get; set; }
-
-        public DateTime ServerExpirationDate { get; set; }
-
-        public DateTime LocalExpirationDate { get; set; }
 
         public CachedItem()
         {
 
         }
 
-        public CachedItem(string path, string raw, DateTime downloadDate, DateTime serverExpirationDate, DateTime localExpirationDate)
+        public CachedItem(ApiResponse<T> response, TimeSpan localExpiration)
         {
-            Path = path;
+            string downloadDateString = response.Headers.First(h => h.Key == "Date").Value.First();
+            DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
+            string cacheControlString = response.Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
+            double cacheControl = double.Parse(cacheControlString);
+            DateTime serverExpiration = downloadDate.AddSeconds(cacheControl);
 
-            Raw = raw;
-
-            DownloadDate = downloadDate;
-
-            ServerExpirationDate = serverExpirationDate;
-
-            LocalExpirationDate = localExpirationDate;
+            Downloaded = downloadDate;
+            RawContent = response.RawContent;
+            ServerExpiration = serverExpiration;
+            Data = response.Data;  
+            LocalExpiration = Downloaded.Add(localExpiration);
         }
 
-        public bool IsServerExpired() => DateTime.UtcNow > ServerExpirationDate.AddSeconds(1);        
+        protected void UpdateFromResponse(ApiResponse<T> responseItem, TimeSpan localExpiration)
+        {
+            RawContent = responseItem.RawContent;
 
-        public bool IsLocallyExpired() => DateTime.UtcNow > LocalExpirationDate;        
+            Downloaded = responseItem.Downloaded;
+
+            ServerExpiration = responseItem.ServerExpiration;
+
+            LocalExpiration = responseItem.LocalExpiration(localExpiration);
+
+            Data = responseItem.Data;
+        }
+
+        public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(1);
+
+        public bool IsLocallyExpired() => DateTime.UtcNow > LocalExpiration;
     }
 }
