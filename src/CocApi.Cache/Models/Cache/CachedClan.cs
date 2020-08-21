@@ -33,7 +33,7 @@ namespace CocApi.Cache.Models.Cache
 
         }
 
-        internal new void UpdateFromResponse(ApiResponse<Clan> responseItem, TimeSpan localExpiration)
+        internal new void UpdateFromResponse(ApiResponse<Clan>? responseItem, TimeSpan localExpiration)
         {
             base.UpdateFromResponse(responseItem, localExpiration);
         }

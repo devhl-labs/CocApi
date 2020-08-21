@@ -59,7 +59,7 @@ namespace CocApi.Cache
                 _tokenObjects.Add(new TokenObject(this, token, _cocApiConfiguration.TokenTimeOut));
             
             configuration.UserAgent = nameof(CocApiClient);
-
+            
             configuration.DateTimeFormat = "yyyyMMdd'T'HHmmss.fff'Z'";
 
             configuration.Timeout = _cocApiConfiguration.TimeToWaitForWebRequests.Milliseconds;

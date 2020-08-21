@@ -10,17 +10,17 @@ namespace CocApi.Cache.Models.Cache
     {
         public string Tag { get; set; }
 
-        public string? Season { get; set; }
+        public DateTime? Season { get; set; }
 
         public ClanWarLeagueGroup.StateEnum? State { get; set; }
 
-        public void UpdateFrom(ApiResponse<ClanWarLeagueGroup> apiResponse, TimeSpan localExpiration)
+        public void UpdateFrom(ApiResponse<ClanWarLeagueGroup>? apiResponse, TimeSpan localExpiration)
         {
             base.UpdateFromResponse(apiResponse, localExpiration);
 
-            Season = apiResponse.Data.Season;
+            Season = apiResponse?.Data.Season;
 
-            State = apiResponse.Data.State;
+            State = apiResponse?.Data.State;
         }
     }
 }

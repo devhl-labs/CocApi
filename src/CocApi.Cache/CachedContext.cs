@@ -17,6 +17,8 @@ namespace CocApi.Cache
 
         public DbSet<CachedClanWarLeagueGroup> Groups { get; set; }
 
+        public DbSet<CachedClanWarLog> WarLogs { get; set; }
+
         public CachedContext(DbContextOptions options) : base(options)
         {
 
@@ -30,15 +32,21 @@ namespace CocApi.Cache
 
             builder.Entity<CachedClanWar>().HasIndex(p => p.Tag).IsUnique();
 
-            builder.Entity<CachedWar>().HasIndex(p => new { p.PrepStartTime, p.OpponentTag }).IsUnique();
+            builder.Entity<CachedClanWar>().HasIndex(p => new { p.Tag, p.PreparationStartTime }).IsUnique();
 
-            builder.Entity<CachedWar>().HasIndex(p => new { p.PrepStartTime, p.ClanTag }).IsUnique();
+            builder.Entity<CachedWar>().HasIndex(p => new { p.PreparationStartTime, p.OpponentTag }).IsUnique();
+
+            builder.Entity<CachedWar>().HasIndex(p => new { p.PreparationStartTime, p.ClanTag }).IsUnique();
 
             builder.Entity<CachedWar>().HasIndex(p => p.OpponentTag);
 
             builder.Entity<CachedWar>().HasIndex(p => p.ClanTag);
 
+            builder.Entity<CachedWar>().HasIndex(p => p.WarTag);
+
             builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.Tag).IsUnique();
+
+            builder.Entity<CachedClanWarLog>().HasIndex(p => p.Tag).IsUnique();
         }
     }
 

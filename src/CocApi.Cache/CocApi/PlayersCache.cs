@@ -215,7 +215,7 @@ namespace CocApi.Cache
 
             try
             {
-                ApiResponse<Player> apiResponse = await _cocApi.PlayersApi.GetPlayerWithHttpInfoAsync(cachedPlayer.Tag);
+                ApiResponse<Player> apiResponse = await _cocApi.PlayersApi.GetPlayerWithHttpInfoOrDefaultAsync(cachedPlayer.Tag);
 
                 if (cachedPlayer.ServerExpiration >= apiResponse.ServerExpiration)
                     return;

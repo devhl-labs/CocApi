@@ -5,7 +5,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Tag** | **string** |  | [optional] 
 **State** | **string** |  | [optional] 
-**Season** | **string** |  | [optional] 
+**Season** | **DateTime** |  | [optional] 
 **Clans** | [**List&lt;ClanWarLeagueClan&gt;**](ClanWarLeagueClan.md) |  | [optional] 
 **Rounds** | [**List&lt;ClanWarLeagueRound&gt;**](ClanWarLeagueRound.md) |  | [optional] 
 

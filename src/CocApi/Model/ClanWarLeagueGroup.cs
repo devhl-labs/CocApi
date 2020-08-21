@@ -70,7 +70,7 @@ namespace CocApi.Model
         /// <param name="season">season.</param>
         /// <param name="clans">clans.</param>
         /// <param name="rounds">rounds.</param>
-        public ClanWarLeagueGroup(string tag = default(string), StateEnum? state = default(StateEnum?), string season = default(string), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
+        public ClanWarLeagueGroup(string tag = default(string), StateEnum? state = default(StateEnum?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
         {
             this.Tag = tag;
             this.State = state;
@@ -89,7 +89,7 @@ namespace CocApi.Model
         /// Gets or Sets Season
         /// </summary>
         [DataMember(Name="season", EmitDefaultValue=false)]
-        public string Season { get; set; }
+        public DateTime Season { get; set; }
 
         /// <summary>
         /// Gets or Sets Clans

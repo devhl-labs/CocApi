@@ -43,13 +43,24 @@ namespace {{packageName}}.Client
                 {
                     OverrideSpecifiedNames = true
                 }
-            }
+            },
+            Converters = GetConverters()
         };
+
+        private static List<JsonConverter> GetConverters()
+        {
+            List<JsonConverter> results = new List<JsonConverter>
+            {
+                new SuperCellDateConverter { DateTimeFormats = new List<string> { "yyyyMMdd'T'HHmmss.fff'Z'", "yyyy'-'MM" } }
+            };
+
+            return results;
+        }
 
         public CustomJsonCodec(IReadableConfiguration configuration)
         {
             _configuration = configuration;
-            _serializerSettings.DateFormatString = _configuration.DateTimeFormat;  // added
+            //_serializerSettings.DateFormatString = _configuration.DateTimeFormat;
         }
 
         public CustomJsonCodec(JsonSerializerSettings serializerSettings, IReadableConfiguration configuration)
@@ -60,7 +71,7 @@ namespace {{packageName}}.Client
 
         public string Serialize(object obj)
         {
-            var result = JsonConvert.SerializeObject(obj, _serializerSettings);
+            var result = JsonConvert.SerializeObject(obj, Clash.JsonSerializerSettings /* _serializerSettings */);
             return result;
         }
 
@@ -121,7 +132,7 @@ namespace {{packageName}}.Client
             // at this point, it must be a model (json)
             try
             {
-                return JsonConvert.DeserializeObject(response.Content, type, _serializerSettings);
+                return JsonConvert.DeserializeObject(response.Content, type, Clash.JsonSerializerSettings /* _serializerSettings */);
             }
             catch (Exception e)
             {

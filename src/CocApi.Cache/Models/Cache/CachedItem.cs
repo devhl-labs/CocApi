@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace CocApi.Cache.Models.Cache
                     return null;
 
                 if (_data == null)
-                    _data = JsonConvert.DeserializeObject<T>(RawContent);
+                    _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
 
                 return _data;
             }
@@ -58,20 +59,20 @@ namespace CocApi.Cache.Models.Cache
             LocalExpiration = Downloaded.Add(localExpiration);
         }
 
-        protected void UpdateFromResponse(ApiResponse<T> responseItem, TimeSpan localExpiration)
+        protected void UpdateFromResponse(ApiResponse<T>? responseItem, TimeSpan localExpiration)
         {
-            RawContent = responseItem.RawContent;
+            RawContent = responseItem?.RawContent;
 
-            Downloaded = responseItem.Downloaded;
+            Downloaded = responseItem?.Downloaded ?? DateTime.UtcNow;
 
-            ServerExpiration = responseItem.ServerExpiration;
+            ServerExpiration = responseItem?.ServerExpiration ?? DateTime.UtcNow;
 
-            LocalExpiration = responseItem.LocalExpiration(localExpiration);
+            LocalExpiration = responseItem?.LocalExpiration(localExpiration) ?? DateTime.UtcNow.Add(localExpiration);
 
-            Data = responseItem.Data;
+            Data = responseItem?.Data;
         }
 
-        public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(1);
+        public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);
 
         public bool IsLocallyExpired() => DateTime.UtcNow > LocalExpiration;
     }

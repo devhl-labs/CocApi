@@ -146,7 +146,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerWithHttpInfoAsync(playerTag);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -215,6 +214,39 @@ namespace CocApi.Api
             OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
+        }
+
+        /// <summary>
+        /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="playerTag">Tag of the player.</param>
+        /// <returns>Task of ApiResponse (Player)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerWithHttpInfoOrDefaultAsync (string playerTag)
+        {
+            try
+            {
+                return await GetPlayerWithHttpInfoAsync (playerTag);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="playerTag">Tag of the player.</param>
+        /// <returns>Task of Player</returns>
+        public async System.Threading.Tasks.Task<Player> GetPlayerOrDefaultAsync (string playerTag)
+        {
+             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerWithHttpInfoOrDefaultAsync(playerTag);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
         }
 
     }

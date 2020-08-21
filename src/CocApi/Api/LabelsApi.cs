@@ -148,7 +148,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<LabelsObject> localVarResponse = await GetClanLabelsWithHttpInfoAsync(limit, after, before);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -224,6 +223,43 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// List clan labels List clan labels
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of ApiResponse (LabelsObject)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetClanLabelsWithHttpInfoOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+            try
+            {
+                return await GetClanLabelsWithHttpInfoOrDefaultAsync (limit, after, before);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// List clan labels List clan labels
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of LabelsObject</returns>
+        public async System.Threading.Tasks.Task<LabelsObject> GetClanLabelsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+             CocApi.Client.ApiResponse<LabelsObject> localVarResponse = await GetClanLabelsWithHttpInfoOrDefaultAsync(limit, after, before);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -238,7 +274,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<LabelsObject> localVarResponse = await GetPlayerLabelsWithHttpInfoAsync(limit, after, before);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -312,6 +347,43 @@ namespace CocApi.Api
             OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
+        }
+
+        /// <summary>
+        /// List player labels List player labels
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of ApiResponse (LabelsObject)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetPlayerLabelsWithHttpInfoOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+            try
+            {
+                return await GetPlayerLabelsWithHttpInfoOrDefaultAsync (limit, after, before);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// List player labels List player labels
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of LabelsObject</returns>
+        public async System.Threading.Tasks.Task<LabelsObject> GetPlayerLabelsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+             CocApi.Client.ApiResponse<LabelsObject> localVarResponse = await GetPlayerLabelsWithHttpInfoOrDefaultAsync(limit, after, before);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
         }
 
     }

@@ -67,7 +67,7 @@ namespace CocApi.Model
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum State { get; set; }
+        public StateEnum? State { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWar" /> class.
         /// </summary>
@@ -78,7 +78,7 @@ namespace CocApi.Model
         /// <param name="state">state.</param>
         /// <param name="endTime">endTime.</param>
         /// <param name="preparationStartTime">preparationStartTime.</param>
-        public ClanWar(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), StateEnum state = default(StateEnum), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
+        public ClanWar(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), StateEnum? state = default(StateEnum?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
         {
             this.Clan = clan;
             this.TeamSize = teamSize;

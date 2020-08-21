@@ -11,6 +11,7 @@ using System.Text.Encodings.Web;
 using System.Web;
 using System.Net;
 using System.Text;
+using CocApi.Client;
 
 namespace CocApi.Test
 {
@@ -27,14 +28,14 @@ namespace CocApi.Test
             LogService.Log(LogLevel.Information, nameof(Program), null, "Press CTRL-C to exit");
 
             CocApiClient client = new CocApiClient(GetCocApiConfiguration());
-
+            
             client.Log += Client_Log;
-
-            //var a = await client.PlayersApi.GetPlayerWithHttpInfoAsync("#VC8VY8Y8");
 
             client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
 
             client.ClansCache.ClanUpdated += ClansCache_ClanUpdated;
+
+            client.ClansCache.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
 
             client.PlayersApi.QueryResult += QueryResult;
 
@@ -137,6 +138,13 @@ namespace CocApi.Test
             ////if (args == null) { }
         }
 
+        private static Task ClansCache_ClanWarLogUpdated(object sender, ChangedEventArgs<ClanWarLog> e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "War log updated");
+
+            return Task.CompletedTask;
+        }
+
         private static Task Client_Log(object sender, LogEventArgs log)
         {
             LogService.Log(LogLevel.Debug, log.Source, log.Method, log.Message);
@@ -148,10 +156,16 @@ namespace CocApi.Test
         {
             string seconds = ((int)log.QueryResult.Stopwatch.Elapsed.TotalSeconds).ToString();           
 
+            if (log.QueryResult is QueryException exception)
+            {
+                if (exception.Exception is ApiException apiException)
+                    LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl(), apiException.ErrorContent.ToString());
+                else
+                    LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl(), exception.Exception.Message);
+            }
+
             if (log.QueryResult is QuerySuccess)
                 LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl());
-            else
-                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl());
 
             return Task.CompletedTask;
         }

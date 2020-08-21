@@ -23,13 +23,13 @@ namespace CocApi.Model
             return Uri.UnescapeDataString(url);
         }
 
-        [NotMapped]
-        public DateTime SeasonDate
-        {
-            get
-            {
-                return DateTime.ParseExact(Season, "yyyy'-'MM", CultureInfo.InvariantCulture);
-            }
-        }
+        //[NotMapped]
+        //public DateTime SeasonDate
+        //{
+        //    get
+        //    {
+        //        return DateTime.ParseExact(Season, "yyyy'-'MM", CultureInfo.InvariantCulture);
+        //    }
+        //}
     }
 }

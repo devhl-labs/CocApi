@@ -146,7 +146,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<Clan> localVarResponse = await GetClanWithHttpInfoAsync(clanTag);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -217,6 +216,39 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <returns>Task of ApiResponse (Clan)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>> GetClanWithHttpInfoOrDefaultAsync (string clanTag)
+        {
+            try
+            {
+                return await GetClanWithHttpInfoAsync (clanTag);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <returns>Task of Clan</returns>
+        public async System.Threading.Tasks.Task<Clan> GetClanOrDefaultAsync (string clanTag)
+        {
+             CocApi.Client.ApiResponse<Clan> localVarResponse = await GetClanWithHttpInfoOrDefaultAsync(clanTag);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -232,7 +264,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<List<ClanMember>> localVarResponse = await GetClanMembersWithHttpInfoAsync(clanTag, limit, after, before);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -318,6 +349,45 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// List clan members List clan members.
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of ApiResponse (List&lt;ClanMember&gt;)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>> GetClanMembersWithHttpInfoOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+            try
+            {
+                return await GetClanMembersWithHttpInfoAsync (clanTag, limit, after, before);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// List clan members List clan members.
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of List&lt;ClanMember&gt;</returns>
+        public async System.Threading.Tasks.Task<List<ClanMember>> GetClanMembersOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+             CocApi.Client.ApiResponse<List<ClanMember>> localVarResponse = await GetClanMembersWithHttpInfoOrDefaultAsync(clanTag, limit, after, before);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -330,7 +400,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<ClanWarLeagueGroup> localVarResponse = await GetClanWarLeagueGroupWithHttpInfoAsync(clanTag);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -401,6 +470,39 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <returns>Task of ApiResponse (ClanWarLeagueGroup)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLeagueGroup>> GetClanWarLeagueGroupWithHttpInfoOrDefaultAsync (string clanTag)
+        {
+            try
+            {
+                return await GetClanWarLeagueGroupWithHttpInfoAsync (clanTag);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <returns>Task of ClanWarLeagueGroup</returns>
+        public async System.Threading.Tasks.Task<ClanWarLeagueGroup> GetClanWarLeagueGroupOrDefaultAsync (string clanTag)
+        {
+             CocApi.Client.ApiResponse<ClanWarLeagueGroup> localVarResponse = await GetClanWarLeagueGroupWithHttpInfoOrDefaultAsync(clanTag);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -413,7 +515,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetClanWarLeagueWarWithHttpInfoAsync(warTag);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -484,6 +585,39 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="warTag">Tag of the war.</param>
+        /// <returns>Task of ApiResponse (ClanWar)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetClanWarLeagueWarWithHttpInfoOrDefaultAsync (string warTag)
+        {
+            try
+            {
+                return await GetClanWarLeagueWarWithHttpInfoAsync (warTag);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="warTag">Tag of the war.</param>
+        /// <returns>Task of ClanWar</returns>
+        public async System.Threading.Tasks.Task<ClanWar> GetClanWarLeagueWarOrDefaultAsync (string warTag)
+        {
+             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetClanWarLeagueWarWithHttpInfoOrDefaultAsync(warTag);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -499,7 +633,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<ClanWarLog> localVarResponse = await GetClanWarLogWithHttpInfoAsync(clanTag, limit, after, before);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -585,6 +718,45 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of ApiResponse (ClanWarLog)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLog>> GetClanWarLogWithHttpInfoOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+            try
+            {
+                return await GetClanWarLogWithHttpInfoAsync (clanTag, limit, after, before);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <returns>Task of ClanWarLog</returns>
+        public async System.Threading.Tasks.Task<ClanWarLog> GetClanWarLogOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        {
+             CocApi.Client.ApiResponse<ClanWarLog> localVarResponse = await GetClanWarLogWithHttpInfoOrDefaultAsync(clanTag, limit, after, before);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -597,7 +769,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetCurrentWarWithHttpInfoAsync(clanTag);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -668,6 +839,39 @@ namespace CocApi.Api
             return localVarResponse;
         }
 
+        /// <summary>
+        /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <returns>Task of ApiResponse (ClanWar)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetCurrentWarWithHttpInfoOrDefaultAsync (string clanTag)
+        {
+            try
+            {
+                return await GetCurrentWarWithHttpInfoAsync (clanTag);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="clanTag">Tag of the clan.</param>
+        /// <returns>Task of ClanWar</returns>
+        public async System.Threading.Tasks.Task<ClanWar> GetCurrentWarOrDefaultAsync (string clanTag)
+        {
+             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetCurrentWarWithHttpInfoOrDefaultAsync(clanTag);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
+        }
+
 
 
         /// <summary>
@@ -690,7 +894,6 @@ namespace CocApi.Api
         {
              CocApi.Client.ApiResponse<List<Clan>> localVarResponse = await SearchClansWithHttpInfoAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
              return localVarResponse.Data;
-
         }
 
         /// <summary>
@@ -804,6 +1007,59 @@ namespace CocApi.Api
             OnQueryResult(new QueryResultEventArgs(querySuccess));
 
             return localVarResponse;
+        }
+
+        /// <summary>
+        /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="name">Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional)</param>
+        /// <param name="warFrequency">Filter by clan war frequency (optional)</param>
+        /// <param name="locationId">Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional)</param>
+        /// <param name="minMembers">Filter by minimum number of clan members (optional)</param>
+        /// <param name="maxMembers">Filter by maximum number of clan members (optional)</param>
+        /// <param name="minClanPoints">Filter by minimum amount of clan points. (optional)</param>
+        /// <param name="minClanLevel">Filter by minimum clan level. (optional)</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
+        /// <returns>Task of ApiResponse (List&lt;Clan&gt;)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<Clan>>> SearchClansWithHttpInfoOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
+        {
+            try
+            {
+                return await SearchClansWithHttpInfoOrDefaultAsync (name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
+            }
+            catch(ApiException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
+        /// </summary>
+        /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
+        /// <param name="name">Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional)</param>
+        /// <param name="warFrequency">Filter by clan war frequency (optional)</param>
+        /// <param name="locationId">Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional)</param>
+        /// <param name="minMembers">Filter by minimum number of clan members (optional)</param>
+        /// <param name="maxMembers">Filter by maximum number of clan members (optional)</param>
+        /// <param name="minClanPoints">Filter by minimum amount of clan points. (optional)</param>
+        /// <param name="minClanLevel">Filter by minimum clan level. (optional)</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
+        /// <returns>Task of List&lt;Clan&gt;</returns>
+        public async System.Threading.Tasks.Task<List<Clan>> SearchClansOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
+        {
+             CocApi.Client.ApiResponse<List<Clan>> localVarResponse = await SearchClansWithHttpInfoOrDefaultAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
+             if (localVarResponse == null)
+                return null;
+
+             return localVarResponse.Data;
         }
 
     }

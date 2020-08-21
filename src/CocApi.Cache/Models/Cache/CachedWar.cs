@@ -13,13 +13,13 @@ namespace CocApi.Cache.Models.Cache
 
         public string OpponentTag { get; set; }
 
-        public DateTime? PrepStartTime { get; set; }
+        public DateTime? PreparationStartTime { get; set; }
 
         public DateTime? EndTime { get; set; }
 
         public string? WarTag { get; set; }
 
-        public ClanWar.StateEnum State { get; set; } = ClanWar.StateEnum.NotInWar;
+        public ClanWar.StateEnum? State { get; set; }
 
         public bool IsFinal { get; set; }
 
@@ -70,7 +70,7 @@ namespace CocApi.Cache.Models.Cache
 
             OpponentTag = apiResponse.Data.Clans.Skip(1).First().Value.Tag;
 
-            PrepStartTime = apiResponse.Data.PreparationStartTime;
+            PreparationStartTime = apiResponse.Data.PreparationStartTime;
 
             EndTime = apiResponse.Data.EndTime;
 
@@ -113,7 +113,7 @@ namespace CocApi.Cache.Models.Cache
                    EqualityComparer<ClanWar?>.Default.Equals(Data, war.Data) &&
                    ClanTag == war.ClanTag &&
                    OpponentTag == war.OpponentTag &&
-                   PrepStartTime == war.PrepStartTime &&
+                   PreparationStartTime == war.PreparationStartTime &&
                    EndTime == war.EndTime &&
                    WarTag == war.WarTag &&
                    State == war.State &&
@@ -128,7 +128,7 @@ namespace CocApi.Cache.Models.Cache
         public override int GetHashCode()
         {
             HashCode hash = new HashCode();
-            hash.Add(PrepStartTime);
+            hash.Add(PreparationStartTime);
             hash.Add(ClanTags.First());
             hash.Add(ClanTags.Skip(1).First());
             return hash.ToHashCode();

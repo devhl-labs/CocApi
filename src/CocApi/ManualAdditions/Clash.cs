@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace CocApi
 {
@@ -78,5 +81,29 @@ namespace CocApi
 
             return false;
         }
+
+        public static List<JsonConverter> JsonConverters()
+        {
+            List<JsonConverter> results = new List<JsonConverter>
+            {
+                new SuperCellDateConverter { DateTimeFormats = new List<string> { "yyyyMMdd'T'HHmmss.fff'Z'", "yyyy'-'MM" } }
+            };
+
+            return results;
+        }
+
+        public static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            // OpenAPI generated types generally hide default constructors.
+            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy
+                {
+                    OverrideSpecifiedNames = true
+                }
+            },
+            Converters = JsonConverters()
+        };
     }
 }

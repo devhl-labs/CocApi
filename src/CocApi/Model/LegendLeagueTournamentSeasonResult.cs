@@ -37,7 +37,7 @@ namespace CocApi.Model
         /// <param name="trophies">trophies.</param>
         /// <param name="id">id.</param>
         /// <param name="rank">rank.</param>
-        public LegendLeagueTournamentSeasonResult(int trophies = default(int), string id = default(string), int rank = default(int))
+        public LegendLeagueTournamentSeasonResult(int trophies = default(int), DateTime id = default(DateTime), int rank = default(int))
         {
             this.Trophies = trophies;
             this.Id = id;
@@ -54,7 +54,7 @@ namespace CocApi.Model
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public string Id { get; set; }
+        public DateTime Id { get; set; }
 
         /// <summary>
         /// Gets or Sets Rank

@@ -109,7 +109,7 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("State")
+                    b.Property<int?>("State")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
@@ -139,7 +139,7 @@ namespace CocApi.Cache.Migrations
                     b.Property<string>("RawContent")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Season")
+                    b.Property<DateTime?>("Season")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
@@ -158,6 +158,36 @@ namespace CocApi.Cache.Migrations
                         .IsUnique();
 
                     b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedClanWarLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Downloaded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LocalExpiration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RawContent")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ServerExpiration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tag")
+                        .IsUnique();
+
+                    b.ToTable("WarLogs");
                 });
 
             modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedWar", b =>
@@ -204,7 +234,7 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("State")
+                    b.Property<int?>("State")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("WarTag")

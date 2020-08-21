@@ -47,13 +47,24 @@ namespace CocApi.Client
                 {
                     OverrideSpecifiedNames = true
                 }
-            }
+            },
+            Converters = GetConverters()
         };
+
+        private static List<JsonConverter> GetConverters()
+        {
+            List<JsonConverter> results = new List<JsonConverter>
+            {
+                new SuperCellDateConverter { DateTimeFormats = new List<string> { "yyyyMMdd'T'HHmmss.fff'Z'", "yyyy'-'MM" } }
+            };
+
+            return results;
+        }
 
         public CustomJsonCodec(IReadableConfiguration configuration)
         {
             _configuration = configuration;
-            _serializerSettings.DateFormatString = _configuration.DateTimeFormat;  // added
+            //_serializerSettings.DateFormatString = _configuration.DateTimeFormat;  // added
         }
 
         public CustomJsonCodec(JsonSerializerSettings serializerSettings, IReadableConfiguration configuration)
