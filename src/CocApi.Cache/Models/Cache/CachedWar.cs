@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using CocApi.Client;
 using CocApi.Model;
 using RestSharp.Extensions;
@@ -23,9 +24,9 @@ namespace CocApi.Cache.Models.Cache
 
         public bool IsFinal { get; set; }
 
-        public bool? IsAvailableByClan { get; set; }
+        public HttpStatusCode? StatusCodeClan { get; set; }
 
-        public bool? IsAvailableByOpponent { get; set; }
+        public HttpStatusCode? StatusCodeOpponent { get; set; }
 
         public Announcements Announcements { get; set; }
 
@@ -79,50 +80,64 @@ namespace CocApi.Cache.Models.Cache
             WarTag = warTag;
 
             if (cachedClan.Tag == apiResponse.Data.Clans.First().Value.Tag)
-                IsAvailableByClan = true;
+                StatusCodeClan = apiResponse.StatusCode;
             else
-                IsAvailableByOpponent = true;
+                StatusCodeOpponent = apiResponse.StatusCode;
         }
 
-        //public void UpdateFromResponse(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
-        //{
-        //    base.UpdateFromResponse(apiResponse, localExpiration);
+        public void UpdateFromCache(CachedClanWar cachedClanWar)
+        {
+            RawContent = cachedClanWar.RawContent;
 
-        //    UpdateFromResponse(apiResponse, localExpiration);
+            Downloaded = cachedClanWar.Downloaded;
 
-        //    State = apiResponse.Data.State;
+            ServerExpiration = cachedClanWar.ServerExpiration;
 
-        //    EndTime = apiResponse.Data.EndTime;
+            LocalExpiration = cachedClanWar.LocalExpiration;
 
-        //    State = apiResponse.Data.State;
+            if (cachedClanWar.Data != null)
+            {
+                Data = cachedClanWar.Data;
+                
+                State = cachedClanWar.Data.State;
 
-        //    if (cachedClan.Tag == apiResponse.Data.Clans.First().Value.Tag)
-        //        IsAvailableByClan = true;
-        //    else
-        //        IsAvailableByOpponent = true;
-        //}
+                EndTime = cachedClanWar.Data.EndTime;
+            }
+        }
+
+
 
         public override bool Equals(object? obj)
         {
-            return obj is CachedWar war &&
-                   Id == war.Id &&
-                   RawContent == war.RawContent &&
-                   Downloaded == war.Downloaded &&
-                   ServerExpiration == war.ServerExpiration &&
-                   LocalExpiration == war.LocalExpiration &&
-                   EqualityComparer<ClanWar?>.Default.Equals(Data, war.Data) &&
-                   ClanTag == war.ClanTag &&
-                   OpponentTag == war.OpponentTag &&
-                   PreparationStartTime == war.PreparationStartTime &&
-                   EndTime == war.EndTime &&
+            if (Data == null ||
+                !(obj is CachedWar war) ||
+                war.PreparationStartTime != PreparationStartTime ||
+                war.Data == null ||
+                Data.PreparationStartTime != war.Data.PreparationStartTime)
+                throw new ArgumentException();
+
+            return /*obj is CachedWar war &&*/
+                   //Id == war.Id &&
+                   //RawContent == war.RawContent &&
+                   //Downloaded == war.Downloaded &&
+                   //ServerExpiration == war.ServerExpiration &&
+                   //LocalExpiration == war.LocalExpiration &&
+                   //EqualityComparer<ClanWar?>.Default.Equals(Data, war.Data) &&
+                   //ClanTag == war.ClanTag &&
+                   //OpponentTag == war.OpponentTag &&
+                   //Data.PreparationStartTime == war.Data.PreparationStartTime &&
+                   Data.EndTime == war.Data.EndTime &&
+                   Data.StartTime == war.Data.StartTime &&
                    WarTag == war.WarTag &&
-                   State == war.State &&
+                   Data.State == war.Data.State &&
                    IsFinal == war.IsFinal &&
-                   IsAvailableByClan == war.IsAvailableByClan &&
-                   IsAvailableByOpponent == war.IsAvailableByOpponent &&
-                   Announcements == war.Announcements &&
-                   EqualityComparer<List<string>>.Default.Equals(_clanTags, war._clanTags) &&
-                   EqualityComparer<List<string>>.Default.Equals(ClanTags, war.ClanTags);
+                   //StatusCodeClan == war.StatusCodeClan &&
+                   //StatusCodeOpponent == war.StatusCodeOpponent &&
+                   //Announcements == war.Announcements &&
+                   //EqualityComparer<List<string>>.Default.Equals(_clanTags, war._clanTags) &&
+                   EqualityComparer<List<string>>.Default.Equals(ClanTags, war.ClanTags) &&
+                   Data.Clans.First().Value.Attacks == war.Data.Clans.First(c => c.Key == Data.Clans.First().Key).Value.Attacks &&
+                   Data.Clans.Skip(1).First().Value.Attacks == war.Data.Clans.First(c => c.Key == Data.Clans.Skip(1).First().Key).Value.Attacks;
         }
 
         public override int GetHashCode()

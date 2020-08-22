@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CachedContext))]
-    [Migration("20200820165051_Migration3")]
-    partial class Migration3
+    [Migration("20200822190019_Migration0")]
+    partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,10 +34,14 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
                         .IsRequired()
@@ -76,10 +80,14 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
                         .IsRequired()
@@ -105,13 +113,20 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("LocalExpiration")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("PreparationStartTime")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("RawContent")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("State")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StatusCode")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
@@ -121,6 +136,9 @@ namespace CocApi.Cache.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Tag")
+                        .IsUnique();
+
+                    b.HasIndex("Tag", "PreparationStartTime")
                         .IsUnique();
 
                     b.ToTable("ClanWars");
@@ -139,6 +157,7 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Season")
@@ -148,6 +167,9 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("State")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StatusCode")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
@@ -175,10 +197,14 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Tag")
                         .IsRequired()
@@ -211,12 +237,6 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime?>("EndTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool?>("IsAvailableByClan")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool?>("IsAvailableByOpponent")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("IsFinal")
                         .HasColumnType("INTEGER");
 
@@ -227,16 +247,26 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("PrepStartTime")
+                    b.Property<DateTime?>("PreparationStartTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("State")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("StatusCodeClan")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("StatusCodeOpponent")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("WarTag")
@@ -248,10 +278,12 @@ namespace CocApi.Cache.Migrations
 
                     b.HasIndex("OpponentTag");
 
-                    b.HasIndex("PrepStartTime", "ClanTag")
+                    b.HasIndex("WarTag");
+
+                    b.HasIndex("PreparationStartTime", "ClanTag")
                         .IsUnique();
 
-                    b.HasIndex("PrepStartTime", "OpponentTag")
+                    b.HasIndex("PreparationStartTime", "OpponentTag")
                         .IsUnique();
 
                     b.ToTable("Wars");

@@ -733,7 +733,7 @@ namespace CocApi.Api
             {
                 return await GetClanWarLogWithHttpInfoAsync (clanTag, limit, after, before);
             }
-            catch(ApiException)
+            catch(ApiException e)
             {
                 return null;
             }

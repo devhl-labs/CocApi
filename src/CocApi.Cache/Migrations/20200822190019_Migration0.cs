@@ -13,10 +13,11 @@ namespace CocApi.Cache.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    RawContent = table.Column<string>(type: "TEXT", nullable: true),
+                    RawContent = table.Column<string>(type: "TEXT", nullable: false),
                     Downloaded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ServerExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: false),
                     Download = table.Column<bool>(type: "INTEGER", nullable: false),
                     DownloadMembers = table.Column<bool>(type: "INTEGER", nullable: false),
@@ -34,12 +35,14 @@ namespace CocApi.Cache.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    RawContent = table.Column<string>(type: "TEXT", nullable: true),
+                    RawContent = table.Column<string>(type: "TEXT", nullable: false),
                     Downloaded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ServerExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: false),
-                    State = table.Column<int>(type: "INTEGER", nullable: true)
+                    State = table.Column<int>(type: "INTEGER", nullable: true),
+                    PreparationStartTime = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,10 +55,11 @@ namespace CocApi.Cache.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    RawContent = table.Column<string>(type: "TEXT", nullable: true),
+                    RawContent = table.Column<string>(type: "TEXT", nullable: false),
                     Downloaded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ServerExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: false),
                     Season = table.Column<DateTime>(type: "TEXT", nullable: true),
                     State = table.Column<int>(type: "INTEGER", nullable: true)
@@ -71,10 +75,11 @@ namespace CocApi.Cache.Migrations
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    RawContent = table.Column<string>(type: "TEXT", nullable: true),
+                    RawContent = table.Column<string>(type: "TEXT", nullable: false),
                     Downloaded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ServerExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: false),
                     Download = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
@@ -84,24 +89,43 @@ namespace CocApi.Cache.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "WarLogs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    RawContent = table.Column<string>(type: "TEXT", nullable: false),
+                    Downloaded = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ServerExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
+                    Tag = table.Column<string>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WarLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Wars",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    RawContent = table.Column<string>(type: "TEXT", nullable: true),
+                    RawContent = table.Column<string>(type: "TEXT", nullable: false),
                     Downloaded = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ServerExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
                     LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     ClanTag = table.Column<string>(type: "TEXT", nullable: false),
                     OpponentTag = table.Column<string>(type: "TEXT", nullable: false),
-                    PrepStartTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    PreparationStartTime = table.Column<DateTime>(type: "TEXT", nullable: true),
                     EndTime = table.Column<DateTime>(type: "TEXT", nullable: true),
                     WarTag = table.Column<string>(type: "TEXT", nullable: true),
                     State = table.Column<int>(type: "INTEGER", nullable: true),
                     IsFinal = table.Column<bool>(type: "INTEGER", nullable: false),
-                    IsAvailableByClan = table.Column<bool>(type: "INTEGER", nullable: true),
-                    IsAvailableByOpponent = table.Column<bool>(type: "INTEGER", nullable: true),
+                    StatusCodeClan = table.Column<int>(type: "INTEGER", nullable: true),
+                    StatusCodeOpponent = table.Column<int>(type: "INTEGER", nullable: true),
                     Announcements = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -122,6 +146,12 @@ namespace CocApi.Cache.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClanWars_Tag_PreparationStartTime",
+                table: "ClanWars",
+                columns: new[] { "Tag", "PreparationStartTime" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Groups_Tag",
                 table: "Groups",
                 column: "Tag",
@@ -130,6 +160,12 @@ namespace CocApi.Cache.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Players_Tag",
                 table: "Players",
+                column: "Tag",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WarLogs_Tag",
+                table: "WarLogs",
                 column: "Tag",
                 unique: true);
 
@@ -144,16 +180,21 @@ namespace CocApi.Cache.Migrations
                 column: "OpponentTag");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wars_PrepStartTime_ClanTag",
+                name: "IX_Wars_PreparationStartTime_ClanTag",
                 table: "Wars",
-                columns: new[] { "PrepStartTime", "ClanTag" },
+                columns: new[] { "PreparationStartTime", "ClanTag" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Wars_PrepStartTime_OpponentTag",
+                name: "IX_Wars_PreparationStartTime_OpponentTag",
                 table: "Wars",
-                columns: new[] { "PrepStartTime", "OpponentTag" },
+                columns: new[] { "PreparationStartTime", "OpponentTag" },
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wars_WarTag",
+                table: "Wars",
+                column: "WarTag");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -169,6 +210,9 @@ namespace CocApi.Cache.Migrations
 
             migrationBuilder.DropTable(
                 name: "Players");
+
+            migrationBuilder.DropTable(
+                name: "WarLogs");
 
             migrationBuilder.DropTable(
                 name: "Wars");

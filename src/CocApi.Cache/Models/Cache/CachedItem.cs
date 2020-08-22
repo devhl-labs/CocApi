@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using CocApi.Client;
 using Newtonsoft.Json;
 
@@ -12,7 +12,7 @@ namespace CocApi.Cache.Models.Cache
     {
         public int Id { get; set; }
 
-        public string? RawContent { get; set; }
+        public string RawContent { get; set; } = string.Empty;
 
         public DateTime Downloaded { get; set; }
 
@@ -20,16 +20,15 @@ namespace CocApi.Cache.Models.Cache
 
         public DateTime LocalExpiration { get; set; }
 
-        private T? _data;
+        public HttpStatusCode StatusCode { get; set; }
+
+        private T _data;
 
         [NotMapped]
-        public T? Data
+        public T Data
         {
             get
             {
-                if (RawContent == null)
-                    return null;
-
                 if (_data == null)
                     _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
 
@@ -57,11 +56,12 @@ namespace CocApi.Cache.Models.Cache
             ServerExpiration = serverExpiration;
             Data = response.Data;  
             LocalExpiration = Downloaded.Add(localExpiration);
+            StatusCode = response.StatusCode;
         }
 
         protected void UpdateFromResponse(ApiResponse<T>? responseItem, TimeSpan localExpiration)
         {
-            RawContent = responseItem?.RawContent;
+            RawContent = responseItem?.RawContent ?? RawContent;
 
             Downloaded = responseItem?.Downloaded ?? DateTime.UtcNow;
 
@@ -69,7 +69,21 @@ namespace CocApi.Cache.Models.Cache
 
             LocalExpiration = responseItem?.LocalExpiration(localExpiration) ?? DateTime.UtcNow.Add(localExpiration);
 
-            Data = responseItem?.Data;
+            Data = responseItem?.Data ?? Data;
+        }
+
+        protected void UpdateFromResponse(ApiException apiException, TimeSpan localExpiration)
+        {
+            if (string.IsNullOrEmpty(RawContent))
+                RawContent = apiException.ErrorContent.ToString();
+
+            StatusCode = (HttpStatusCode) apiException.ErrorCode;
+
+            Downloaded = DateTime.UtcNow;
+
+            ServerExpiration = DateTime.UtcNow;
+
+            LocalExpiration = DateTime.UtcNow.Add(localExpiration);
         }
 
         public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);

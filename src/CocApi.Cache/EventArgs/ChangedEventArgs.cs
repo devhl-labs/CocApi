@@ -1,4 +1,5 @@
 ﻿using CocApi.Cache.Models.Clans;
+using CocApi.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -60,6 +61,34 @@ namespace CocApi.Cache
             FetchedValue = fetchedValue;
 
             StoredValue = storedValue;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+    public class ClanWarUpdatedEventArgs : EventArgs
+    {
+        public ClanWar Fetched { get; }
+
+        public ClanWar Stored { get; }
+
+        public Model.Clan Clan { get; }
+
+        public ClanWarUpdatedEventArgs(Model.Clan clan, ClanWar stored, ClanWar fetched)
+        {
+            Clan = clan;
+
+            Fetched = fetched;
+
+            Stored = stored;
         }
     }
 }
