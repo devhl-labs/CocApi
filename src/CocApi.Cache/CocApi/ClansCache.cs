@@ -499,9 +499,6 @@ namespace CocApi.Cache
                 if (log.Data != null && log.Data.Equals(apiResponse.Data) == false)
                     ClanWarLogUpdated?.Invoke(this, new ChangedEventArgs<ClanWarLog>(log.Data, apiResponse.Data));
 
-                if (log.Data != apiResponse.Data)
-                    ClanWarLogUpdated?.Invoke(this, new ChangedEventArgs<ClanWarLog>(log.Data, apiResponse.Data));
-
                 log.UpdateFromResponse(apiResponse, _cocApiConfiguration.WarLogTimeToLive);
             }
             catch (ApiException e)
