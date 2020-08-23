@@ -40,11 +40,20 @@ namespace CocApi.Cache
                 return services.GetRequiredService<ClansApi>();
             }         
         }
+
         public ClansCache ClansCache
         {
             get
             {
                 return services.GetRequiredService<ClansCache>();
+            }
+        }
+
+        public ClansCacheMonitor ClansCacheUpdater
+        {
+            get
+            {
+                return services.GetRequiredService<ClansCacheMonitor>();
             }
         }
         public PlayersCache PlayersCache
@@ -87,7 +96,7 @@ namespace CocApi.Cache
 
         public CocApiClient(CocApiConfiguration cocApiConfiguration)
         {
-            services = ServiceProviderBuilder(cocApiConfiguration);
+            services = BuildServiceProvider(cocApiConfiguration);
 
             services.GetRequiredService<CachedContext>().Database.Migrate();
         }
@@ -110,7 +119,7 @@ namespace CocApi.Cache
             return configuration;
         }
 
-        private IServiceProvider ServiceProviderBuilder(CocApiConfiguration cocApiConfiguration)
+        private IServiceProvider BuildServiceProvider(CocApiConfiguration cocApiConfiguration)
         {
             return new ServiceCollection()
                 .AddDbContext<CachedContext>(o =>
@@ -118,12 +127,14 @@ namespace CocApi.Cache
                 .AddSingleton(cocApiConfiguration)
                 .AddSingleton(this)
                 .AddSingleton<ClansApi>()
-                .AddSingleton<ClansCache>()
+                .AddSingleton<ClansCacheMonitor>()
                 .AddSingleton<PlayersApi>()
                 .AddSingleton<PlayersCache>()
                 .AddSingleton<LeaguesApi>()
                 .AddSingleton<LocationsApi>()
                 .AddSingleton<LabelsApi>()
+                .AddScoped<WarLogUpdater>()
+                .AddScoped<ClansCache>()
                 .AddSingleton(ConfigurationBuilder)
                 .BuildServiceProvider();
         }

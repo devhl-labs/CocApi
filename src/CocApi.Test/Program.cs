@@ -33,9 +33,9 @@ namespace CocApi.Test
 
             client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
 
-            client.ClansCache.ClanUpdated += ClansCache_ClanUpdated;
+            client.ClansCacheUpdater.ClanUpdated += ClansCache_ClanUpdated;
 
-            client.ClansCache.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
+            client.ClansCacheUpdater.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
 
             client.PlayersApi.QueryResult += QueryResult;
 
@@ -51,7 +51,7 @@ namespace CocApi.Test
 
             await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
 
-            client.ClansCache.Start();
+            client.ClansCacheUpdater.Start();
 
             //var b = a.Headers.First(h => h.Key == "Date");
 
