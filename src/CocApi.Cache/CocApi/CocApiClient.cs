@@ -17,6 +17,7 @@ using CocApi.Cache.Models.Villages;
 //using CocApi.Cache.Updaters;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -33,56 +34,101 @@ namespace CocApi.Cache
 
         internal void OnLog(LogEventArgs log) => Log?.Invoke(this, log);
 
-        public ClansApi ClansApi;
-        public ClansCache ClansCache;
-        public PlayersCache PlayersCache;
-        public PlayersApi PlayersApi;
-        public LeaguesApi LeaguesApi;
-        public LocationsApi LocationsApi;
-        public LabelsApi LabelsApi;
+        public ClansApi ClansApi { 
+            get
+            {
+                return services.GetRequiredService<ClansApi>();
+            }         
+        }
+        public ClansCache ClansCache
+        {
+            get
+            {
+                return services.GetRequiredService<ClansCache>();
+            }
+        }
+        public PlayersCache PlayersCache
+        {
+            get
+            {
+                return services.GetRequiredService<PlayersCache>();
+            }
+        }
+        public PlayersApi PlayersApi
+        {
+            get
+            {
+                return services.GetRequiredService<PlayersApi>();
+            }
+        }
+        public LeaguesApi LeaguesApi
+        {
+            get
+            {
+                return services.GetRequiredService<LeaguesApi>();
+            }
+        }
+        public LocationsApi LocationsApi
+        {
+            get
+            {
+                return services.GetRequiredService<LocationsApi>();
+            }
+        }
+        public LabelsApi LabelsApi
+        {
+            get
+            {
+                return services.GetRequiredService<LabelsApi>();
+            }
+        }
 
         private readonly List<TokenObject> _tokenObjects = new List<TokenObject>();
 
         public CocApiClient(CocApiConfiguration cocApiConfiguration)
         {
-            _cocApiConfiguration = cocApiConfiguration;
+            services = ServiceProviderBuilder(cocApiConfiguration);
 
-            services = new ServiceCollection().AddDbContext<CachedContext>(o => o.UseSqlite(_cocApiConfiguration.ConnectionString)).BuildServiceProvider();
+            services.GetRequiredService<CachedContext>().Database.Migrate();
+        }
 
-            CachedContext cacheContext = services.GetRequiredService<CachedContext>();
-
-            cacheContext.Database.Migrate();
-
+        private Client.Configuration ConfigurationBuilder(IServiceProvider services)
+        {
             Client.Configuration configuration = new Client.Configuration();
 
-            foreach (string token in _cocApiConfiguration.Tokens)
-                _tokenObjects.Add(new TokenObject(this, token, _cocApiConfiguration.TokenTimeOut));
-            
-            configuration.UserAgent = nameof(CocApiClient);
-            
-            configuration.DateTimeFormat = "yyyyMMdd'T'HHmmss.fff'Z'";
+            CocApiConfiguration cocApiConfiguration = services.GetRequiredService<CocApiConfiguration>();
 
-            configuration.Timeout = _cocApiConfiguration.TimeToWaitForWebRequests.Milliseconds;
+            foreach (string token in cocApiConfiguration.Tokens)
+                _tokenObjects.Add(new TokenObject(this, token, cocApiConfiguration.TokenTimeOut));
+
+            configuration.UserAgent = nameof(CocApiClient);
+
+            configuration.Timeout = cocApiConfiguration.TimeToWaitForWebRequests.Milliseconds;
 
             configuration.GetTokenAsync = GetTokenAsync;
 
-            ClansApi = new ClansApi(configuration);
+            return configuration;
+        }
 
-            ClansCache = new ClansCache(this, cocApiConfiguration, services, ClansApi);
-
-            PlayersApi = new PlayersApi(configuration);
-
-            PlayersCache = new PlayersCache(this, cocApiConfiguration, services, PlayersApi);
-
-            LeaguesApi = new LeaguesApi(configuration);
-
-            LocationsApi = new LocationsApi(configuration);
-
-            LabelsApi = new LabelsApi(configuration);
+        private IServiceProvider ServiceProviderBuilder(CocApiConfiguration cocApiConfiguration)
+        {
+            return new ServiceCollection()
+                .AddDbContext<CachedContext>(o =>
+                    o.UseSqlite(cocApiConfiguration.ConnectionString))
+                .AddSingleton(cocApiConfiguration)
+                .AddSingleton(this)
+                .AddSingleton<ClansApi>()
+                .AddSingleton<ClansCache>()
+                .AddSingleton<PlayersApi>()
+                .AddSingleton<PlayersCache>()
+                .AddSingleton<LeaguesApi>()
+                .AddSingleton<LocationsApi>()
+                .AddSingleton<LabelsApi>()
+                .AddSingleton(ConfigurationBuilder)
+                .BuildServiceProvider();
         }
 
         private readonly SemaphoreSlim _tokenSemaphore = new SemaphoreSlim(1, 1);
-        private readonly CocApiConfiguration _cocApiConfiguration;
 
         internal async Task<string> GetTokenAsync()
         {
@@ -98,88 +144,8 @@ namespace CocApi.Cache
             }
         }
 
-        //public async Task AddClanAsync(string clanTag, bool downloadClan = true, bool downloadWars = true, bool downloadCwl = true, bool downloadVillages = false)
-        //{
-        //    if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
-        //        throw new InvalidTagException(clanTag);
-
-        //    using var scope = services.CreateScope();
-
-        //    CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
-
-        //    CachedClan cachedClan = await cacheContext.Clans.Where(c => c.ClanTag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
-
-        //    if (cachedClan == null)
-        //    {
-        //        cachedClan = new CachedClan
-        //        {
-        //            ClanTag = formattedTag,
-        //            DownloadClan = downloadClan,
-        //            DownloadCwl = downloadCwl,
-        //            DownloadVillages = downloadVillages,
-        //            DownloadCurrentWar = downloadWars
-        //        };
-
-        //        cacheContext.Clans.Update(cachedClan);
-
-        //        await cacheContext.SaveChangesAsync().ConfigureAwait(false);
-        //    }
-        //}
-
-        //public async Task AddOrUpdateClanAsync(string clanTag, bool downloadClan, bool downloadWars, bool downloadCwl, bool downloadVillages)
-        //{
-        //    if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
-        //        throw new InvalidTagException(clanTag);
-
-        //    using var scope = services.CreateScope();
-
-        //    CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
-
-        //    CachedClan cachedClan = await cacheContext.Clans.Where(c => c.ClanTag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
-
-        //    cachedClan ??= new CachedClan();
-
-        //    cachedClan.ClanTag = formattedTag;
-
-        //    cachedClan.DownloadVillages = downloadVillages;
-
-        //    cachedClan.DownloadCurrentWar = downloadWars;
-
-        //    cachedClan.DownloadCwl = downloadCwl;
-
-        //    cachedClan.DownloadClan = downloadClan;
-
-        //    cacheContext.Clans.Update(cachedClan);
-
-        //    await cacheContext.SaveChangesAsync().ConfigureAwait(false);
-        //}
-
         public virtual bool IsEqual(Player stored, Player fetched) => stored.Equals(fetched);
 
         public virtual bool IsEqual(Clan stored, Clan fetched) => stored.Equals(fetched);
-
-        //internal async Task<T?> GetAsync<T>(string path) where T : class
-        //{
-        //    T? result = await GetWithHttpInfoAsync<T>(path);
-
-        //    if (result == null)
-        //        return null;
-
-        //    return JsonConvert.DeserializeObject<T>(result.r);
-        //}
-
-        //public async Task<CachedItem_newnew<TApi>?> GetWithHttpInfoAsync<TApi>(string tag) /*where TCache : CachedItem_newnew<TApi>*/ where TApi : class
-        //{
-        //    using var scope = services.CreateScope();
-
-        //    CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
-
-        //    //return await dbContext.Items.Where(i => i.Path == path).FirstOrDefaultAsync().ConfigureAwait(false);
-
-        //    if (typeof(TApi) == typeof(Player))
-        //        return await dbContext.Players.Where(i => i.Tag == tag).FirstOrDefaultAsync().ConfigureAwait(false);
-
-        //    throw new Exception("Unhandled");
-        //}
     }
 }
