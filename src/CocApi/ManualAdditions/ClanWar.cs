@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace CocApi.Model
@@ -14,6 +16,8 @@ namespace CocApi.Model
 
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
+
+        public string WarTag { get; set; }
 
         public override int GetHashCode()
         {
@@ -43,52 +47,73 @@ namespace CocApi.Model
             }
         }
 
-        public bool Equals(ClanWar input)
+        private readonly List<ClanWarAttack> _allAttacks = new List<ClanWarAttack>();
+
+        public List<ClanWarAttack> AllAttacks
         {
-            if (input == null)
+            get
+            {
+                if (_allAttacks.Count == 0)
+                    foreach (WarClan warClan in Clans.Values)
+                        foreach (ClanWarMember member in warClan.Members)
+                            foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                                _allAttacks.Add(attack);
+
+                return _allAttacks;
+            }
+        }
+
+        public bool HasWarUpdated(ClanWar clanWar)
+        {
+            if (IsSameWar(clanWar) == false)
+                throw new ArgumentException();
+
+            if (Clans.First().Value.Attacks != clanWar.Clans.First().Value.Attacks)
+                return true;
+
+            if (Clans.Skip(1).First().Value.Attacks != clanWar.Clans.Skip(1).First().Value.Attacks)
+                return true;
+
+            if (EndTime != clanWar.EndTime)
+                return true;
+
+            if (StartTime != clanWar.StartTime)
+                return true;
+
+            if (State != clanWar.State)
+                return true;
+
+            return false;
+        }
+
+        public bool IsSameWar(ClanWar clanWar)
+        {
+            if (ReferenceEquals(this, clanWar))
+                return true;
+
+            if (PreparationStartTime != clanWar.PreparationStartTime)
                 return false;
 
-            return
-                //(
-                //    this.Clan == input.Clan ||
-                //    (this.Clan != null &&
-                //    this.Clan.Equals(input.Clan))
-                //) &&
-                (
-                    this.TeamSize == input.TeamSize ||
-                    this.TeamSize.Equals(input.TeamSize)
-                ) &&
-                //(
-                //    this.Opponent == input.Opponent ||
-                //    (this.Opponent != null &&
-                //    this.Opponent.Equals(input.Opponent))
-                //) &&
-                (
-                    this.StartTime == input.StartTime ||
-                    (this.StartTime != null &&
-                    this.StartTime.Equals(input.StartTime))
-                ) &&
-                (
-                    this.State == input.State ||
-                    this.State.Equals(input.State)
-                ) &&
-                (
-                    this.EndTime == input.EndTime ||
-                    (this.EndTime != null &&
-                    this.EndTime.Equals(input.EndTime))
-                ) &&
-                (
-                    this.PreparationStartTime == input.PreparationStartTime ||
-                    (this.PreparationStartTime != null &&
-                    this.PreparationStartTime.Equals(input.PreparationStartTime))
-                ) &&
-                (
-                    this.Clans.First().Value.Attacks == input.Clans.First().Value.Attacks
-                ) &&
-                (
-                    this.Clans.Skip(1).First().Value.Attacks == input.Clans.Skip(1).First().Value.Attacks
-                )              
-                ;
+            if (Clan.Tag == clanWar.Clan.Tag)
+                return true;
+
+            if (Clan.Tag == clanWar.Opponent.Tag)
+                return true;
+
+            return false;
         }
+
+        public static List<ClanWarAttack> NewAttacks(ClanWar stored, ClanWar fetched)
+        {
+            List<ClanWarAttack> attacks = new List<ClanWarAttack>();
+
+            foreach (ClanWarAttack attack in fetched.AllAttacks)
+                if (stored.AllAttacks.Count(a => a.AttackerTag == attack.AttackerTag && a.DefenderTag == attack.DefenderTag) == 0)
+                    attacks.Add(attack);
+
+            return attacks;
+        }
+
+        public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
     }
 }

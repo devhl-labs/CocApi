@@ -31,95 +31,33 @@ namespace CocApi.Test
             
             client.Log += Client_Log;
 
-            client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
-
-            client.ClansCacheUpdater.ClanUpdated += ClansCache_ClanUpdated;
-
-            client.ClansCacheUpdater.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
-
             client.PlayersApi.QueryResult += QueryResult;
-
             client.ClansApi.QueryResult += QueryResult;
 
-            await client.PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
+            client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
 
-            client.PlayersCache.Start();
+            client.ClansCache.ClanUpdated += ClansCache_ClanUpdated;
+            client.ClansCache.ClanWarAdded += ClansCache_ClanWarAdded;
+            client.ClansCache.ClanWarEndingSoon += ClansCache_ClanWarEndingSoon;
+            client.ClansCache.ClanWarEndNotSeen += ClansCache_ClanWarEndNotSeen;
+            client.ClansCache.ClanWarLeagueGroupUpdated += ClansCache_ClanWarLeagueGroupUpdated;
+            client.ClansCache.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
+            client.ClansCache.ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
+            client.ClansCache.ClanWarUpdated += ClansCache_ClanWarUpdated;
 
-            await client.ClansCache.AddAsync("#8J82PV0C"); //fysb unbuckled
+
+            //await client.PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
+
+            //client.PlayersCache.Start();
+
+            await client.ClansCache.UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
+            await client.ClansCache.AddAsync("#22G0JJR8"); //fysb
 
             await client.ClansCache.AddAsync("#28RUGUYJU"); //devhls lab
 
-            await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
+            //await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
 
-            client.ClansCacheUpdater.Start();
-
-            //var b = a.Headers.First(h => h.Key == "Date");
-
-            //var c = b.Value;
-
-            //var d = c.First();
-
-            //Console.WriteLine();
-
-            //await client.AddClanAsync("#8J82PV0C");
-
-            //await client.AddOrUpdateClanAsync("#8J82PV0C", false, false, false, false);
-
-            //await client.RemoveVillage("#8J82PV0C");
-
-            //await client.AddVillage("#8J82PV0C");
-
-            //var war = await cocApiClient.Clans.GetCurrentWarAsync("#8J82PV0C");
-
-            ////await Task.Delay(100);
-
-            ////ClanWar? privateWar = await cocApiClient.Clans.GetCurrentWarAsync("#22G0JJR8");
-
-            ////await Task.Delay(100);
-
-            //var clan = await cocApiClient.Clans.GetClanAsync("#8J82PV0C");
-
-            ////await Task.Delay(100);
-
-            //var group = await cocApiClient.Clans.GetClanWarLeagueGroupAsync("#8J82PV0C");
-
-            ////await Task.Delay(100);
-
-            //var tag = group.Rounds.First().WarTags.First();
-
-            //ClanWar? leagueWar = await cocApiClient.Clans.GetClanWarLeagueWarAsync(tag);
-
-            ////await Task.Delay(100);
-
-            //var log = await cocApiClient.Clans.GetClanWarLogAsync("#8J82PV0C");
-
-            ////await Task.Delay(100);
-
-            //var village = await cocApiClient.Players.GetPlayerAsync("#VC8VY8Y8");
-
-            ////await Task.Delay(100);
-
-            //LeagueList? league = await cocApiClient.LeaguesApi.GetLeaguesAsync();
-
-            ////await Task.Delay(100);
-
-            //LeagueSeasonList? season = await cocApiClient.LeaguesApi.GetLeagueSeasonsAsync(league.Items.Last().Id.ToString());
-
-            ////await Task.Delay(100);
-
-            //PlayerRankingList playerRanking = await cocApiClient.LeaguesApi.GetLeagueSeasonRankingsAsync(league.Items.Last().Id.ToString(), season.Items.First().Id);
-
-            ////await Task.Delay(100);
-
-            //var locations = await cocApiClient.LocationsApi.GetLocationsAsync();
-
-            ////await Task.Delay(100);
-
-            //var labels = await cocApiClient.LabelsApi.GetClanLabelsAsync();
-
-            ////await Task.Delay(100);
-
-            //var labels2 = await cocApiClient.LabelsApi.GetPlayerLabelsAsync();
+            client.ClansCache.Start();
 
             //var services = ConfigureServices();
 
@@ -138,7 +76,49 @@ namespace CocApi.Test
             ////if (args == null) { }
         }
 
-        private static Task ClansCache_ClanWarLogUpdated(object sender, ChangedEventArgs<ClanWarLog> e)
+        private static Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
+
+            return Task.CompletedTask;
+        }
+
+        private static Task ClansCache_ClanWarStartingSoon(object sender, ClanWarEventArgs e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "War starting soon");
+
+            return Task.CompletedTask;
+        }
+
+        private static Task ClansCache_ClanWarEndNotSeen(object sender, ClanWarEventArgs e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "War war end not seen");
+
+            return Task.CompletedTask;
+        }
+
+        private static Task ClansCache_ClanWarEndingSoon(object sender, ClanWarEventArgs e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "War ending soon");
+
+            return Task.CompletedTask;
+        }
+
+        private static Task ClansCache_ClanWarAdded(object sender, ClanWarEventArgs e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "New war");
+
+            return Task.CompletedTask;
+        }
+
+        private static Task ClansCache_ClanWarLeagueGroupUpdated(object sender, ClanWarLeagueGroupUpdatedEventArgs e)
+        {
+            LogService.Log(LogLevel.Debug, nameof(Program), null, "Group updated");
+
+            return Task.CompletedTask;
+        }
+
+        private static Task ClansCache_ClanWarLogUpdated(object sender, ClanWarLogUpdatedEventArgs e)
         {
             LogService.Log(LogLevel.Debug, nameof(Program), null, "War log updated");
 
@@ -170,14 +150,25 @@ namespace CocApi.Test
             return Task.CompletedTask;
         }
 
-        private static Task ClansCache_ClanUpdated(object sender, ChangedEventArgs<Clan> e)
+        private static Task ClansCache_ClanUpdated(object sender, ClanUpdatedEventArgs e)
         {
-            LogService.Log(LogLevel.Debug, nameof(Program), null, "Clan updated");
+            var donations = Clan.Donations(e.Stored, e.Fetched);
+
+            if (donations.Count > 0)            
+                LogService.Log(LogLevel.Debug, nameof(Program), null, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));            
+            else
+                LogService.Log(LogLevel.Debug, nameof(Program), null, "Clan updated");
+
+            foreach(ClanMember member in Clan.ClanMembersLeft(e.Stored, e.Fetched))
+                Console.WriteLine(member.Name + " left");
+
+            foreach (ClanMember member in Clan.ClanMembersJoined(e.Stored, e.Fetched))
+                Console.WriteLine(member.Name + " joined");
 
             return Task.CompletedTask;
         }
 
-        private static Task PlayerUpdater_PlayerUpdated(object sender, ChangedEventArgs<Player> e)
+        private static Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)
         {
             LogService.Log(LogLevel.Debug, nameof(Program), null, "Player updated");
 
@@ -188,9 +179,9 @@ namespace CocApi.Test
         {
             return new ServiceCollection()
                 .AddSingleton<LogService>()
-                .AddSingleton<CocApiClient_old>()
+                .AddSingleton<CocApiClient>()
                 //.AddSingleton(GetCocApiConfiguration)
-                .AddSingleton<EventHandlerService>()
+                //.AddSingleton<EventHandlerService>()
                 .BuildServiceProvider();
         }
 

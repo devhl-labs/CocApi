@@ -1,8 +1,4 @@
-﻿using CocApi.Cache.Models.Clans;
-using CocApi.Cache.Models.Villages;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace CocApi.Cache
 {

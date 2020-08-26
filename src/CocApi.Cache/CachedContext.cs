@@ -1,5 +1,4 @@
-﻿using CocApi.Cache.CocApi;
-using CocApi.Cache.Models.Cache;
+﻿using CocApi.Cache.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 

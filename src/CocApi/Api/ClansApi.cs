@@ -523,7 +523,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetClanWarLeagueWarWithHttpInfoAsync (string warTag)
+        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarWithHttpInfoAsync (string warTag)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
@@ -581,6 +581,8 @@ namespace CocApi.Api
             QueryResults.Add(querySuccess);
 
             OnQueryResult(new QueryResultEventArgs(querySuccess));
+
+            localVarResponse.Data.WarTag = warTag;
 
             return localVarResponse;
         }

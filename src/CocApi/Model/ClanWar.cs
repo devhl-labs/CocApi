@@ -168,46 +168,46 @@ namespace CocApi.Model
         /// </summary>
         /// <param name="input">Instance of ClanWar to be compared</param>
         /// <returns>Boolean</returns>
-        //public bool Equals(ClanWar input)
-        //{
-        //    if (input == null)
-        //        return false;
+        public bool Equals(ClanWar input)
+        {
+            if (input == null)
+                return false;
 
-        //    return 
-        //        (
-        //            this.Clan == input.Clan ||
-        //            (this.Clan != null &&
-        //            this.Clan.Equals(input.Clan))
-        //        ) && 
-        //        (
-        //            this.TeamSize == input.TeamSize ||
-        //            this.TeamSize.Equals(input.TeamSize)
-        //        ) && 
-        //        (
-        //            this.Opponent == input.Opponent ||
-        //            (this.Opponent != null &&
-        //            this.Opponent.Equals(input.Opponent))
-        //        ) && 
-        //        (
-        //            this.StartTime == input.StartTime ||
-        //            (this.StartTime != null &&
-        //            this.StartTime.Equals(input.StartTime))
-        //        ) && 
-        //        (
-        //            this.State == input.State ||
-        //            this.State.Equals(input.State)
-        //        ) && 
-        //        (
-        //            this.EndTime == input.EndTime ||
-        //            (this.EndTime != null &&
-        //            this.EndTime.Equals(input.EndTime))
-        //        ) && 
-        //        (
-        //            this.PreparationStartTime == input.PreparationStartTime ||
-        //            (this.PreparationStartTime != null &&
-        //            this.PreparationStartTime.Equals(input.PreparationStartTime))
-        //        );
-        //}
+            return
+                (
+                    this.Clan == input.Clan ||
+                    (this.Clan != null &&
+                    this.Clan.Equals(input.Clan))
+                ) &&
+                (
+                    this.TeamSize == input.TeamSize ||
+                    this.TeamSize.Equals(input.TeamSize)
+                ) &&
+                (
+                    this.Opponent == input.Opponent ||
+                    (this.Opponent != null &&
+                    this.Opponent.Equals(input.Opponent))
+                ) &&
+                (
+                    this.StartTime == input.StartTime ||
+                    (this.StartTime != null &&
+                    this.StartTime.Equals(input.StartTime))
+                ) &&
+                (
+                    this.State == input.State ||
+                    this.State.Equals(input.State)
+                ) &&
+                (
+                    this.EndTime == input.EndTime ||
+                    (this.EndTime != null &&
+                    this.EndTime.Equals(input.EndTime))
+                ) &&
+                (
+                    this.PreparationStartTime == input.PreparationStartTime ||
+                    (this.PreparationStartTime != null &&
+                    this.PreparationStartTime.Equals(input.PreparationStartTime))
+                );
+        }
 
         ///// <summary>
         ///// Gets the hash code

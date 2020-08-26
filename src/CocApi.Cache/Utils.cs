@@ -1,6 +1,4 @@
 ﻿using CocApi.Cache.Models;
-using CocApi.Cache.Models.Cache;
-using CocApi.Cache.Models.Clans;
 using CocApi.Client;
 using Newtonsoft.Json;
 using System;
@@ -48,26 +46,26 @@ namespace CocApi.Cache
             return attr.Value;
         }
 
-        public static string ToJson(this object? obj)
-        {
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.Objects,
-                SerializationBinder = new KnownTypesBinder()                
-            };
+        //public static string ToJson(this object? obj)
+        //{
+        //    JsonSerializerSettings settings = new JsonSerializerSettings
+        //    {
+        //        TypeNameHandling = TypeNameHandling.Objects,
+        //        SerializationBinder = new KnownTypesBinder()                
+        //    };
 
-            return JsonConvert.SerializeObject(obj, settings);
-        }
+        //    return JsonConvert.SerializeObject(obj, settings);
+        //}
 
-        public static T? Deserialize<T>(this string str) where T : class
-        {
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                TypeNameHandling = TypeNameHandling.All,
-                SerializationBinder = new KnownTypesBinder()
-            };
+        //public static T? Deserialize<T>(this string str) where T : class
+        //{
+        //    JsonSerializerSettings settings = new JsonSerializerSettings
+        //    {
+        //        TypeNameHandling = TypeNameHandling.All,
+        //        SerializationBinder = new KnownTypesBinder()
+        //    };
 
-            return JsonConvert.DeserializeObject<T>(str, settings);
-        }
+        //    return JsonConvert.DeserializeObject<T>(str, settings);
+        //}
     }
 }
