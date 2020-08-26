@@ -186,7 +186,7 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; internal set; }
 
         /// <summary>
         /// Gets or Sets IsWarLogPublic

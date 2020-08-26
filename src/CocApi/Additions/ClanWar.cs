@@ -11,7 +11,7 @@ namespace CocApi.Model
     {
         public static string Url(string clanTag)
         {
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
                 throw new InvalidTagException(clanTag);
 
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";

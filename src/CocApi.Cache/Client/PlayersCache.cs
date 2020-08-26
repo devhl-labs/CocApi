@@ -1,17 +1,14 @@
-﻿using CocApi.Api;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CocApi.Api;
 using CocApi.Cache.Models;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using SQLitePCL;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CocApi.Cache
 {
@@ -19,18 +16,28 @@ namespace CocApi.Cache
     {
         private readonly CocApiClient _cocApi;
         private readonly CocApiConfiguration _cocApiConfiguration;
-        private readonly IServiceProvider _services;
         private readonly PlayersApi _playersApi;
+        private readonly IServiceProvider _services;
+
+        public PlayersCache(CocApiClient cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, PlayersApi playersApi)
+        {
+            _cocApi = cocApi;
+            _cocApiConfiguration = cocApiConfiguration;
+            _services = serviceProvider;
+            _playersApi = playersApi;
+        }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
-        internal void OnPlayerUpdated(Player stored, Player fetched)
-            => PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched));
+        internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, CachedPlayer?>();
+
+        private bool IsRunning { get; set; }
+
+        private bool StopRequested { get; set; }
 
         public async Task<CachedPlayer> AddAsync(string tag, bool download = true)
         {
-            if (Clash.TryGetValidTag(tag, out string formattedTag) == false)
-                throw new InvalidTagException(tag);
+            string formattedTag = Clash.FormatTag(tag);
 
             using var scope = _services.CreateScope();
 
@@ -53,50 +60,7 @@ namespace CocApi.Cache
             return cachedPlayer;
         }
 
-        public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
-        {
-            if (Clash.TryGetValidTag(tag, out string formattedTag) == false)
-                throw new InvalidTagException(tag);
-
-            using var scope = _services.CreateScope();
-
-            CachedContext cacheContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
-
-            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
-
-            if (cachedPlayer != null && cachedPlayer.Download == download)
-                return cachedPlayer;
-
-            cachedPlayer ??= new CachedPlayer();
-            cachedPlayer.Tag = formattedTag;
-            cachedPlayer.Download = download;
-            cacheContext.Players.Update(cachedPlayer);
-
-            await cacheContext.SaveChangesAsync().ConfigureAwait(false);
-
-            return cachedPlayer;
-        }
-
-        public PlayersCache(CocApiClient cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, PlayersApi playersApi)
-        {
-            _cocApi = cocApi;
-            _cocApiConfiguration = cocApiConfiguration;
-            _services = serviceProvider;
-            _playersApi = playersApi;
-        }
-
-        //public async Task<Player?> GetAsync(string tag) => await _cocApi.GetAsync<Player>(Player.Url(tag));
-
-        //public async Task<CachedItem?> GetWithHttpInfoAsync(string tag) => await _cocApi.GetWithHttpInfoAsync(Player.Url(tag));
-
-        internal async Task<Player> GetAsync(string tag)
-        {
-            CachedPlayer result = await GetWithHttpInfoAsync(tag);
-
-            return result.Data;
-        }
-
-        public async Task<CachedPlayer> GetWithHttpInfoAsync(string tag)
+        public async Task<CachedPlayer> GetCacheAsync(string tag)
         {
             using var scope = _services.CreateScope();
 
@@ -105,14 +69,7 @@ namespace CocApi.Cache
             return await dbContext.Players.Where(i => i.Tag == tag).FirstAsync().ConfigureAwait(false);
         }
 
-        public async Task<Player?> GetFirstOrDefaultAsync(string tag)
-        {
-            CachedPlayer? result = await GetWithHttpInfoFirstOrDefaultAsync(tag);
-
-            return result?.Data;
-        }
-
-        public async Task<CachedPlayer?> GetWithHttpInfoFirstOrDefaultAsync(string tag)
+        public async Task<CachedPlayer?> GetCacheOrDefaultAsync(string tag)
         {
             using var scope = _services.CreateScope();
 
@@ -121,22 +78,24 @@ namespace CocApi.Cache
             return await dbContext.Players.Where(i => i.Tag == tag).FirstOrDefaultAsync().ConfigureAwait(false);
         }
 
+        public async Task<Player> GetOrFetchPlayerAsync(string tag)
+        {
+            return (await GetCacheOrDefaultAsync(tag).ConfigureAwait(false))?.Data
+                ?? await _playersApi.GetPlayerAsync(tag).ConfigureAwait(false);
+        }
 
+        public async Task<Player?> GetOrFetchPlayerOrDefaultAsync(string tag)
+        {
+            return (await GetCacheOrDefaultAsync(tag).ConfigureAwait(false))?.Data
+                ?? await _playersApi.GetPlayerOrDefaultAsync(tag).ConfigureAwait(false);
+        }
 
+        public async Task<Player?> GetPlayerOrDefaultAsync(string tag)
+        {
+            CachedPlayer? result = await GetCacheOrDefaultAsync(tag);
 
-
-
-
-
-
-
-
-
-        private bool IsRunning { get; set; }
-
-        private bool StopRequested { get; set; }
-
-        internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, CachedPlayer?>();
+            return result?.Data;
+        }
 
         public void Start()
         {
@@ -201,6 +160,39 @@ namespace CocApi.Cache
             while (IsRunning)
                 await Task.Delay(500).ConfigureAwait(false);
         }
+
+        public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
+        {
+            string formattedTag = Clash.FormatTag(tag);
+
+            using var scope = _services.CreateScope();
+
+            CachedContext cacheContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
+
+            if (cachedPlayer != null && cachedPlayer.Download == download)
+                return cachedPlayer;
+
+            cachedPlayer ??= new CachedPlayer();
+            cachedPlayer.Tag = formattedTag;
+            cachedPlayer.Download = download;
+            cacheContext.Players.Update(cachedPlayer);
+
+            await cacheContext.SaveChangesAsync().ConfigureAwait(false);
+
+            return cachedPlayer;
+        }
+
+        internal async Task<Player> GetAsync(string tag)
+        {
+            CachedPlayer result = await GetCacheAsync(tag);
+
+            return result.Data;
+        }
+
+        internal void OnPlayerUpdated(Player stored, Player fetched)
+                                                                                                                    => PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched));
 
         internal async Task UpdatePlayerAsync(CachedPlayer cachedPlayer)
         {

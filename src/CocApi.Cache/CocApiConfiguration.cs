@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using CocApi.Cache.Exceptions;
-using Newtonsoft.Json;
-
 namespace CocApi.Cache
 {
     public sealed class CocApiConfiguration

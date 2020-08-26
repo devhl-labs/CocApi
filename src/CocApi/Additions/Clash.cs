@@ -38,12 +38,28 @@ namespace CocApi
             return TagRegEx.IsMatch(tag);
         }
 
-        public static bool TryGetValidTag(string userInput, out string formattedTag)
+        public static bool TryFormatTag(string userInput, out string formattedTag)
         {
-            formattedTag = string.Empty;
+            try
+            {
+                formattedTag = FormatTag(userInput);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                formattedTag = null;
+
+                return false;
+            }
+        }
+
+        public static string FormatTag(string userInput)
+        {
+            string formattedTag = string.Empty;
 
             if (string.IsNullOrEmpty(userInput))
-                return false;
+                throw new InvalidTagException(userInput);
 
             if (userInput.StartsWith("\"") && userInput.EndsWith("\"") && userInput.Length > 2)
                 userInput = userInput[1..^1];
@@ -61,12 +77,10 @@ namespace CocApi
             if (!formattedTag.StartsWith("#"))
                 formattedTag = $"#{formattedTag}";
 
-            var result = IsValidTag(formattedTag);
+            if (IsValidTag(formattedTag) == false)
+                throw new InvalidTagException(userInput);
 
-            if (!result)
-                formattedTag = string.Empty;
-
-            return result;
+            return formattedTag;
         }
 
         public static bool IsCwlEnabled()

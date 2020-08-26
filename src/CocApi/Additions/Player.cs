@@ -8,7 +8,7 @@ namespace CocApi.Model
     {
         public static string Url(string villageTag)
         {
-            if (Clash.TryGetValidTag(villageTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(villageTag, out string formattedTag) == false)
                 throw new InvalidTagException(villageTag);
 
             return $"players/{Uri.EscapeDataString(formattedTag)}";

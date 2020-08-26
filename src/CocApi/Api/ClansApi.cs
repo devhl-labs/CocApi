@@ -161,7 +161,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClan");
 
 
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -282,7 +282,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanMembers");
 
 
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -415,7 +415,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanWarLeagueGroup");
 
 
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -530,7 +530,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'warTag' when calling ClansApi->GetClanWarLeagueWar");
 
 
-            if (Clash.TryGetValidTag(warTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(warTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(warTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -653,7 +653,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanWarLog");
 
 
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -786,7 +786,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetCurrentWar");
 
 
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();

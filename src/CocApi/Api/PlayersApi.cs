@@ -161,7 +161,7 @@ namespace CocApi.Api
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'playerTag' when calling PlayersApi->GetPlayer");
 
 
-            if (Clash.TryGetValidTag(playerTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(playerTag, out string formattedTag) == false)
                 throw new CocApi.InvalidTagException(playerTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
