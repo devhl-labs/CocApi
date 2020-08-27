@@ -44,7 +44,7 @@ namespace CocApi.Model
         /// Gets or Sets Token
         /// </summary>
         [DataMember(Name="token", EmitDefaultValue=false)]
-        public string Token { get; set; }
+        public string Token { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

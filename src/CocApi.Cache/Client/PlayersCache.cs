@@ -14,12 +14,12 @@ namespace CocApi.Cache
 {
     public class PlayersCache
     {
-        private readonly CocApiClient _cocApi;
+        private readonly CocApiClientBase _cocApi;
         private readonly CocApiConfiguration _cocApiConfiguration;
         private readonly PlayersApi _playersApi;
         private readonly IServiceProvider _services;
 
-        public PlayersCache(CocApiClient cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, PlayersApi playersApi)
+        public PlayersCache(CocApiClientBase cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, PlayersApi playersApi)
         {
             _cocApi = cocApi;
             _cocApiConfiguration = cocApiConfiguration;
@@ -208,15 +208,19 @@ namespace CocApi.Cache
 
                 CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-                ApiResponse<Player> apiResponse = await _cocApi.PlayersApi.GetPlayerWithHttpInfoOrDefaultAsync(cachedPlayer.Tag);
+                try
+                {
+                     ApiResponse<Player>? apiResponse = await _cocApi.PlayersApi.GetPlayerResponseAsync(cachedPlayer.Tag);
 
-                if (cachedPlayer.ServerExpiration >= apiResponse.ServerExpiration)
-                    return;
+                    if (cachedPlayer.Data != null && _cocApi.HasUpdated(cachedPlayer.Data, apiResponse.Data) == false)
+                        OnPlayerUpdated(cachedPlayer.Data, apiResponse.Data);
 
-                if (cachedPlayer.Data != null && _cocApi.IsEqual(cachedPlayer.Data, apiResponse.Data) == false)
-                    OnPlayerUpdated(cachedPlayer.Data, apiResponse.Data);
-
-                cachedPlayer.UpdateFromResponse(apiResponse, _cocApiConfiguration.VillageTimeToLive);
+                    cachedPlayer.UpdateFrom(apiResponse, _cocApi.TimeToLive(cachedPlayer, apiResponse));
+                }
+                catch (ApiException e)
+                {
+                    cachedPlayer.UpdateFrom(e, _cocApi.TimeToLive(cachedPlayer, e));
+                }
 
                 dbContext.Players.Update(cachedPlayer);
 

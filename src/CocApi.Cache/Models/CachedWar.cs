@@ -4,51 +4,50 @@ using System.Linq;
 using System.Net;
 using CocApi.Client;
 using CocApi.Model;
-using RestSharp.Extensions;
 
 namespace CocApi.Cache.Models
 {
     public class CachedWar : CachedItem<ClanWar>
     {
-        public string ClanTag { get; set; }
+        public string ClanTag { get; internal set; }
 
-        public string OpponentTag { get; set; }
+        public string OpponentTag { get; internal set; }
 
-        public DateTime? PreparationStartTime { get; set; }
+        public DateTime? PreparationStartTime { get; internal set; }
 
-        public DateTime? EndTime { get; set; }
+        public DateTime? EndTime { get; internal set; }
 
-        public string? WarTag { get; set; }
+        public string? WarTag { get; internal set; }
 
-        public ClanWar.StateEnum? State { get; set; }
+        public ClanWar.StateEnum? State { get; internal set; }
 
-        public bool IsFinal { get; set; }
+        public bool IsFinal { get; internal set; }
 
-        public HttpStatusCode? StatusCodeOpponent { get; set; }
+        public HttpStatusCode? StatusCodeOpponent { get; internal set; }
 
-        public Announcements Announcements { get; set; }
+        public Announcements Announcements { get; internal set; }
+
+        public ClanWar.TypeEnum Type { get; internal set; }
 
 #nullable disable
 
-        private List<string> _clanTags;
+        private SortedSet<string> _clanTags;
 
 #nullable enable
 
-        public List<string> ClanTags
+        public SortedSet<string> ClanTags
         {
             get
             {
                 if (_clanTags != null)
                     return _clanTags;
 
-                _clanTags = new List<string>
-                        {
-                            ClanTag,
+                _clanTags = new SortedSet<string>
+                {
+                    ClanTag,
 
-                            OpponentTag
-                        };
-
-                _clanTags = _clanTags.OrderBy(t => t).ToList();
+                    OpponentTag
+                };
 
                 return _clanTags;
             }
@@ -79,13 +78,15 @@ namespace CocApi.Cache.Models
 
             RawContent = apiResponse.RawContent;
 
+            Type = apiResponse.Data.Type;
+
             if (cachedClan.Tag == apiResponse.Data.Clans.First().Value.Tag)
                 StatusCode = apiResponse.StatusCode;
             else
                 StatusCodeOpponent = apiResponse.StatusCode;
         }
 
-        public void UpdateFrom(CachedClanWar cachedClanWar)
+        internal void UpdateFrom(CachedClanWar cachedClanWar)
         {
             RawContent = cachedClanWar.RawContent;
 
@@ -105,7 +106,7 @@ namespace CocApi.Cache.Models
             }
         }
 
-        public void UpdateFrom(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
+        internal void UpdateFrom(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
@@ -121,6 +122,10 @@ namespace CocApi.Cache.Models
 
         }
 
+        internal new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
+        {
+            base.UpdateFrom(apiException, localExpiration);
+        }
         public bool AllAttacksUsed()
         {
             int totalMembers = Data.TeamSize * 2;
@@ -135,6 +140,7 @@ namespace CocApi.Cache.Models
             return totalAttacks == attacks;
         }
 
+        //todo is anything calling this?
         public override bool Equals(object? obj)
         {
             if (Data == null ||
@@ -163,7 +169,7 @@ namespace CocApi.Cache.Models
                    //StatusCodeOpponent == war.StatusCodeOpponent &&
                    //Announcements == war.Announcements &&
                    //EqualityComparer<List<string>>.Default.Equals(_clanTags, war._clanTags) &&
-                   EqualityComparer<List<string>>.Default.Equals(ClanTags, war.ClanTags) &&
+                   EqualityComparer<SortedSet<string>>.Default.Equals(ClanTags, war.ClanTags) &&
                    Data.Clans.First().Value.Attacks == war.Data.Clans.First(c => c.Key == Data.Clans.First().Key).Value.Attacks &&
                    Data.Clans.Skip(1).First().Value.Attacks == war.Data.Clans.First(c => c.Key == Data.Clans.Skip(1).First().Key).Value.Attacks;
         }

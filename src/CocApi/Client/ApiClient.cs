@@ -64,7 +64,7 @@ namespace CocApi.Client
         public CustomJsonCodec(IReadableConfiguration configuration)
         {
             _configuration = configuration;
-            //_serializerSettings.DateFormatString = _configuration.DateTimeFormat;  // added
+            //_serializerSettings.DateFormatString = _configuration.DateTimeFormat;
         }
 
         public CustomJsonCodec(JsonSerializerSettings serializerSettings, IReadableConfiguration configuration)
@@ -75,7 +75,7 @@ namespace CocApi.Client
 
         public string Serialize(object obj)
         {
-            var result = JsonConvert.SerializeObject(obj, _serializerSettings);
+            var result = JsonConvert.SerializeObject(obj, Clash.JsonSerializerSettings /* _serializerSettings */);
             return result;
         }
 
@@ -136,7 +136,7 @@ namespace CocApi.Client
             // at this point, it must be a model (json)
             try
             {
-                return JsonConvert.DeserializeObject(response.Content, type, _serializerSettings);
+                return JsonConvert.DeserializeObject(response.Content, type, Clash.JsonSerializerSettings /* _serializerSettings */);
             }
             catch (Exception e)
             {

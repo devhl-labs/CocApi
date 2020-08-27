@@ -167,8 +167,7 @@ namespace {{packageName}}.{{apiPackage}}
             {{/required}}
             {{/allParams}}
 
-            if (Clash.TryGetValidTag(clanTag, out string formattedTag) == false)
-                throw new CocApi.InvalidTagException(clanTag);
+            string formattedTag = Clash.FormatTag(clanTag);
 
             {{packageName}}.Client.RequestOptions localVarRequestOptions = new {{packageName}}.Client.RequestOptions();
 

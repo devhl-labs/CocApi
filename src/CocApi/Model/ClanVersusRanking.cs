@@ -46,13 +46,13 @@ namespace CocApi.Model
         /// Gets or Sets ClanVersusPoints
         /// </summary>
         [DataMember(Name="clanVersusPoints", EmitDefaultValue=false)]
-        public int ClanVersusPoints { get; set; }
+        public int ClanVersusPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ClanPoints
         /// </summary>
         [DataMember(Name="clanPoints", EmitDefaultValue=false)]
-        public int ClanPoints { get; set; }
+        public int ClanPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

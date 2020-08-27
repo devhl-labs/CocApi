@@ -12,9 +12,30 @@ using System.Web;
 using System.Net;
 using System.Text;
 using CocApi.Client;
+using Newtonsoft.Json;
+using System.Security.Cryptography.X509Certificates;
+using CocApi.Cache.Models;
 
 namespace CocApi.Test
 {
+    public class Client : CocApiClientBase
+    {
+        public Client(CocApiConfiguration cocApiConfiguration) : base(cocApiConfiguration)
+        {
+            
+        }
+
+        public override bool HasUpdated(Clan stored, Clan fetched)
+        {
+            return base.HasUpdated(stored, fetched);
+        }
+
+        public override TimeSpan TimeToLive(CachedPlayer cachedPlayer, ApiResponse<Player> apiResponse)
+        {
+            return TimeSpan.FromMinutes(1);
+        }
+    }
+
     class Program
     {
         public static LogService LogService { get; set; }
@@ -27,7 +48,7 @@ namespace CocApi.Test
 
             LogService.Log(LogLevel.Information, nameof(Program), null, "Press CTRL-C to exit");
 
-            CocApiClient client = new CocApiClient(GetCocApiConfiguration());
+            Client client = new Client(GetCocApiConfiguration());
             
             client.Log += Client_Log;
 
@@ -46,16 +67,16 @@ namespace CocApi.Test
             client.ClansCache.ClanWarUpdated += ClansCache_ClanWarUpdated;
 
 
-            //await client.PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
+            await client.PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
 
-            //client.PlayersCache.Start();
+            client.PlayersCache.Start();
 
             await client.ClansCache.UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
             await client.ClansCache.AddAsync("#22G0JJR8"); //fysb
 
             await client.ClansCache.AddAsync("#28RUGUYJU"); //devhls lab
 
-            //await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
+            await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
 
             client.ClansCache.Start();
 
@@ -179,7 +200,7 @@ namespace CocApi.Test
         {
             return new ServiceCollection()
                 .AddSingleton<LogService>()
-                .AddSingleton<CocApiClient>()
+                .AddSingleton<CocApiClientBase>()
                 //.AddSingleton(GetCocApiConfiguration)
                 //.AddSingleton<EventHandlerService>()
                 .BuildServiceProvider();

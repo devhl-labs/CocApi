@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CachedContext))]
-    [Migration("20200825233905_Migration0")]
+    [Migration("20200826175621_Migration0")]
     partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,44 +18,7 @@ namespace CocApi.Cache.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.0-preview.7.20365.15");
 
-            modelBuilder.Entity("CocApi.Cache.CocApi.CachedPlayer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("Download")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Downloaded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("LocalExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RawContent")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ServerExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Tag")
-                        .IsUnique();
-
-                    b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedClan", b =>
+            modelBuilder.Entity("CocApi.Cache.Models.CachedClan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +64,7 @@ namespace CocApi.Cache.Migrations
                     b.ToTable("Clans");
                 });
 
-            modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedClanWar", b =>
+            modelBuilder.Entity("CocApi.Cache.Models.CachedClanWar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +107,7 @@ namespace CocApi.Cache.Migrations
                     b.ToTable("ClanWars");
                 });
 
-            modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedClanWarLeagueGroup", b =>
+            modelBuilder.Entity("CocApi.Cache.Models.CachedClanWarLeagueGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -184,7 +147,7 @@ namespace CocApi.Cache.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedClanWarLog", b =>
+            modelBuilder.Entity("CocApi.Cache.Models.CachedClanWarLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -218,7 +181,44 @@ namespace CocApi.Cache.Migrations
                     b.ToTable("WarLogs");
                 });
 
-            modelBuilder.Entity("CocApi.Cache.Models.Cache.CachedWar", b =>
+            modelBuilder.Entity("CocApi.Cache.Models.CachedPlayer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Download")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Downloaded")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LocalExpiration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("RawContent")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ServerExpiration")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tag")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Tag")
+                        .IsUnique();
+
+                    b.ToTable("Players");
+                });
+
+            modelBuilder.Entity("CocApi.Cache.Models.CachedWar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -264,6 +264,9 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("StatusCodeOpponent")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("WarTag")

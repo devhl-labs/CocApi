@@ -89,30 +89,4 @@ namespace CocApi.Model
 
         public List<ClanMember> ClanMembersJoined(Clan fetched) => ClanMembersJoined(this, fetched);
     }
-
-    public class Donation
-    {
-        public ClanMember ClanMember { get; }
-
-        public int OldValue { get; }
-
-        public int NewValue { get; }
-
-        public Donation(ClanMember clanMember, int oldValue, int newValue)
-        {
-            ClanMember = clanMember;
-
-            OldValue = oldValue;
-
-            NewValue = newValue;
-        }
-
-        public int Quanity
-        {
-            get
-            {
-                return NewValue - OldValue;
-            }
-        }
-    }
 }

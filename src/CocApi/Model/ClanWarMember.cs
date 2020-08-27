@@ -56,43 +56,43 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets MapPosition
         /// </summary>
         [DataMember(Name="mapPosition", EmitDefaultValue=false)]
-        public int MapPosition { get; set; }
+        public int MapPosition { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets TownhallLevel
         /// </summary>
         [DataMember(Name="townhallLevel", EmitDefaultValue=false)]
-        public int TownhallLevel { get; set; }
+        public int TownhallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets OpponentAttacks
         /// </summary>
         [DataMember(Name="opponentAttacks", EmitDefaultValue=false)]
-        public int OpponentAttacks { get; set; }
+        public int OpponentAttacks { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BestOpponentAttack
         /// </summary>
         [DataMember(Name="bestOpponentAttack", EmitDefaultValue=false)]
-        public ClanWarAttack BestOpponentAttack { get; set; }
+        public ClanWarAttack BestOpponentAttack { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Attacks
         /// </summary>
         [DataMember(Name="attacks", EmitDefaultValue=false)]
-        public List<ClanWarAttack> Attacks { get; set; }
+        public List<ClanWarAttack> Attacks { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

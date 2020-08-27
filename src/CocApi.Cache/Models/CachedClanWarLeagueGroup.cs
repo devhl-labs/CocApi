@@ -8,13 +8,13 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
-        public string Tag { get; set; }
+        public string Tag { get; internal set; }
 
-        public DateTime? Season { get; set; }
+        public DateTime? Season { get; internal set; }
 
-        public ClanWarLeagueGroup.StateEnum? State { get; set; }
+        public ClanWarLeagueGroup.StateEnum? State { get; internal set; }
 
-        public void UpdateFrom(ApiResponse<ClanWarLeagueGroup>? apiResponse, TimeSpan localExpiration)
+        internal new void UpdateFrom(ApiResponse<ClanWarLeagueGroup> apiResponse, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
@@ -22,6 +22,7 @@ namespace CocApi.Cache.Models
 
             State = apiResponse?.Data.State;
         }
+
         public new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiException, localExpiration);

@@ -144,7 +144,7 @@ namespace CocApi.Api
         /// <returns>Task of Player</returns>
         public async System.Threading.Tasks.Task<Player> GetPlayerAsync (string playerTag)
         {
-             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerWithHttpInfoAsync(playerTag);
+             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(playerTag);
              return localVarResponse.Data;
         }
 
@@ -154,15 +154,13 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerWithHttpInfoAsync (string playerTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseAsync (string playerTag)
         {
             // verify the required parameter 'playerTag' is set
             if (playerTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'playerTag' when calling PlayersApi->GetPlayer");
 
-
-            if (Clash.TryFormatTag(playerTag, out string formattedTag) == false)
-                throw new CocApi.InvalidTagException(playerTag);
+            string formattedTag = Clash.FormatTag(playerTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -222,11 +220,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerWithHttpInfoOrDefaultAsync (string playerTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseOrDefaultAsync (string playerTag)
         {
             try
             {
-                return await GetPlayerWithHttpInfoAsync (playerTag);
+                return await GetPlayerResponseAsync (playerTag);
             }
             catch(ApiException)
             {
@@ -242,7 +240,7 @@ namespace CocApi.Api
         /// <returns>Task of Player</returns>
         public async System.Threading.Tasks.Task<Player> GetPlayerOrDefaultAsync (string playerTag)
         {
-             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerWithHttpInfoOrDefaultAsync(playerTag);
+             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag);
              if (localVarResponse == null)
                 return null;
 

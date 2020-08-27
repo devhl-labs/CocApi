@@ -67,7 +67,7 @@ namespace CocApi.Model
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
-        public RoleEnum? Role { get; set; }
+        public RoleEnum? Role { get; internal set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>
@@ -131,151 +131,151 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public PlayerClan Clan { get; set; }
+        public PlayerClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets League
         /// </summary>
         [DataMember(Name="league", EmitDefaultValue=false)]
-        public League League { get; set; }
+        public League League { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets AttackWins
         /// </summary>
         [DataMember(Name="attackWins", EmitDefaultValue=false)]
-        public int AttackWins { get; set; }
+        public int AttackWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets DefenseWins
         /// </summary>
         [DataMember(Name="defenseWins", EmitDefaultValue=false)]
-        public int DefenseWins { get; set; }
+        public int DefenseWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets TownHallLevel
         /// </summary>
         [DataMember(Name="townHallLevel", EmitDefaultValue=false)]
-        public int TownHallLevel { get; set; }
+        public int TownHallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets TownHallWeaponLevel
         /// </summary>
         [DataMember(Name="townHallWeaponLevel", EmitDefaultValue=false)]
-        public int TownHallWeaponLevel { get; set; }
+        public int TownHallWeaponLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets VersusBattleWins
         /// </summary>
         [DataMember(Name="versusBattleWins", EmitDefaultValue=false)]
-        public int VersusBattleWins { get; set; }
+        public int VersusBattleWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets LegendStatistics
         /// </summary>
         [DataMember(Name="legendStatistics", EmitDefaultValue=false)]
-        public PlayerLegendStatistics LegendStatistics { get; set; }
+        public PlayerLegendStatistics LegendStatistics { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Troops
         /// </summary>
         [DataMember(Name="troops", EmitDefaultValue=false)]
-        public List<PlayerItemLevel> Troops { get; set; }
+        public List<PlayerItemLevel> Troops { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Heroes
         /// </summary>
         [DataMember(Name="heroes", EmitDefaultValue=false)]
-        public List<PlayerItemLevel> Heroes { get; set; }
+        public List<PlayerItemLevel> Heroes { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Spells
         /// </summary>
         [DataMember(Name="spells", EmitDefaultValue=false)]
-        public List<PlayerItemLevel> Spells { get; set; }
+        public List<PlayerItemLevel> Spells { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Labels
         /// </summary>
         [DataMember(Name="labels", EmitDefaultValue=false)]
-        public List<Label> Labels { get; set; }
+        public List<Label> Labels { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ExpLevel
         /// </summary>
         [DataMember(Name="expLevel", EmitDefaultValue=false)]
-        public int ExpLevel { get; set; }
+        public int ExpLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Trophies
         /// </summary>
         [DataMember(Name="trophies", EmitDefaultValue=false)]
-        public int Trophies { get; set; }
+        public int Trophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BestTrophies
         /// </summary>
         [DataMember(Name="bestTrophies", EmitDefaultValue=false)]
-        public int BestTrophies { get; set; }
+        public int BestTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Donations
         /// </summary>
         [DataMember(Name="donations", EmitDefaultValue=false)]
-        public int Donations { get; set; }
+        public int Donations { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets DonationsReceived
         /// </summary>
         [DataMember(Name="donationsReceived", EmitDefaultValue=false)]
-        public int DonationsReceived { get; set; }
+        public int DonationsReceived { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BuilderHallLevel
         /// </summary>
         [DataMember(Name="builderHallLevel", EmitDefaultValue=false)]
-        public int BuilderHallLevel { get; set; }
+        public int BuilderHallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets VersusTrophies
         /// </summary>
         [DataMember(Name="versusTrophies", EmitDefaultValue=false)]
-        public int VersusTrophies { get; set; }
+        public int VersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BestVersusTrophies
         /// </summary>
         [DataMember(Name="bestVersusTrophies", EmitDefaultValue=false)]
-        public int BestVersusTrophies { get; set; }
+        public int BestVersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets WarStars
         /// </summary>
         [DataMember(Name="warStars", EmitDefaultValue=false)]
-        public int WarStars { get; set; }
+        public int WarStars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Achievements
         /// </summary>
         [DataMember(Name="achievements", EmitDefaultValue=false)]
-        public List<PlayerAchievementProgress> Achievements { get; set; }
+        public List<PlayerAchievementProgress> Achievements { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets VersusBattleWinCount
         /// </summary>
         [DataMember(Name="versusBattleWinCount", EmitDefaultValue=false)]
-        public int VersusBattleWinCount { get; set; }
+        public int VersusBattleWinCount { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

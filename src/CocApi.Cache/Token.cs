@@ -12,7 +12,7 @@ namespace CocApi.Cache
 
         private TimeSpan TokenTimeOut { get; set; }
 
-        private CocApiClient CocApiClient { get; }
+        private CocApiClientBase CocApiClient { get; }
 
         private readonly string _token;
 
@@ -38,7 +38,7 @@ namespace CocApi.Cache
             }
         }
 
-        public Token(CocApiClient cocApiClient, string token, TimeSpan tokenTimeOut)
+        public Token(CocApiClientBase cocApiClient, string token, TimeSpan tokenTimeOut)
         {
             CocApiClient = cocApiClient; 
             _token = token;

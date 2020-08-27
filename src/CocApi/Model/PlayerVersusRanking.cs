@@ -58,49 +58,49 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public PlayerRankingClan Clan { get; set; }
+        public PlayerRankingClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets VersusBattleWins
         /// </summary>
         [DataMember(Name="versusBattleWins", EmitDefaultValue=false)]
-        public int VersusBattleWins { get; set; }
+        public int VersusBattleWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ExpLevel
         /// </summary>
         [DataMember(Name="expLevel", EmitDefaultValue=false)]
-        public int ExpLevel { get; set; }
+        public int ExpLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [DataMember(Name="rank", EmitDefaultValue=false)]
-        public int Rank { get; set; }
+        public int Rank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets PreviousRank
         /// </summary>
         [DataMember(Name="previousRank", EmitDefaultValue=false)]
-        public int PreviousRank { get; set; }
+        public int PreviousRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets VersusTrophies
         /// </summary>
         [DataMember(Name="versusTrophies", EmitDefaultValue=false)]
-        public int VersusTrophies { get; set; }
+        public int VersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

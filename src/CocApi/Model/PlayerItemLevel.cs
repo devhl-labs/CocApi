@@ -50,25 +50,25 @@ namespace CocApi.Model
         /// Gets or Sets Level
         /// </summary>
         [DataMember(Name="level", EmitDefaultValue=false)]
-        public int Level { get; set; }
+        public int Level { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; set; }
+        public Object Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets MaxLevel
         /// </summary>
         [DataMember(Name="maxLevel", EmitDefaultValue=false)]
-        public int MaxLevel { get; set; }
+        public int MaxLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Village
         /// </summary>
         [DataMember(Name="village", EmitDefaultValue=false)]
-        public string Village { get; set; }
+        public string Village { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -48,19 +48,19 @@ namespace CocApi.Model
         /// Gets or Sets Trophies
         /// </summary>
         [DataMember(Name="trophies", EmitDefaultValue=false)]
-        public int Trophies { get; set; }
+        public int Trophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public DateTime Id { get; set; }
+        public DateTime Id { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [DataMember(Name="rank", EmitDefaultValue=false)]
-        public int Rank { get; set; }
+        public int Rank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

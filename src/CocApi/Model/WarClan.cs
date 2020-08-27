@@ -60,55 +60,55 @@ namespace CocApi.Model
         /// Gets or Sets DestructionPercentage
         /// </summary>
         [DataMember(Name="destructionPercentage", EmitDefaultValue=false)]
-        public Object DestructionPercentage { get; set; }
+        public Object DestructionPercentage { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BadgeUrls
         /// </summary>
         [DataMember(Name="badgeUrls", EmitDefaultValue=false)]
-        public ClanBadgeUrls BadgeUrls { get; set; }
+        public ClanBadgeUrls BadgeUrls { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ClanLevel
         /// </summary>
         [DataMember(Name="clanLevel", EmitDefaultValue=false)]
-        public int ClanLevel { get; set; }
+        public int ClanLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Attacks
         /// </summary>
         [DataMember(Name="attacks", EmitDefaultValue=false)]
-        public int Attacks { get; set; }
+        public int Attacks { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Stars
         /// </summary>
         [DataMember(Name="stars", EmitDefaultValue=false)]
-        public int Stars { get; set; }
+        public int Stars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ExpEarned
         /// </summary>
         [DataMember(Name="expEarned", EmitDefaultValue=false)]
-        public int ExpEarned { get; set; }
+        public int ExpEarned { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [DataMember(Name="members", EmitDefaultValue=false)]
-        public List<ClanWarMember> Members { get; set; }
+        public List<ClanWarMember> Members { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

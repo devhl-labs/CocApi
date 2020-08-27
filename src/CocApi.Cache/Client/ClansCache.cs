@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Models;
@@ -16,11 +15,11 @@ namespace CocApi.Cache
     public sealed class ClansCache
     {
         private readonly ClansApi _clansApi;
-        private readonly CocApiClient _cocApi;
+        private readonly CocApiClientBase _cocApi;
         private readonly CocApiConfiguration _cocApiConfiguration;
         private readonly IServiceProvider _services;
 
-        public ClansCache(CocApiClient cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, ClansApi clansApi/*, CachedContext dbContext*/)
+        public ClansCache(CocApiClientBase cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, ClansApi clansApi/*, CachedContext dbContext*/)
         {
             _cocApi = cocApi;
             _cocApiConfiguration = cocApiConfiguration;
@@ -79,6 +78,31 @@ namespace CocApi.Cache
             return;
         }
 
+        public async Task<ClanWar?> GetActiveClanWarAsync(string tag)
+        {
+            string formattedTag = Clash.FormatTag(tag);
+
+            using var scope = _services.CreateScope();
+
+            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+            var cache = await dbContext.Wars.Where(i =>
+                (i.ClanTag == formattedTag ||
+                i.OpponentTag == formattedTag))
+                .OrderByDescending(w => w.PreparationStartTime)
+                .ToListAsync().ConfigureAwait(false);
+
+            if (cache.Count == 0)
+                return null;
+
+            foreach (var item in cache)
+                item.Data.Type = item.Type;
+
+            return cache.FirstOrDefault(c => c.State == ClanWar.StateEnum.InWar)?.Data
+                ?? cache.FirstOrDefault(c => c.State == ClanWar.StateEnum.Preparation)?.Data
+                ?? cache.First().Data;
+        }
+
         public async Task<CachedClan> GetCacheAsync(string tag)
         {
             using var scope = _services.CreateScope();
@@ -109,6 +133,31 @@ namespace CocApi.Cache
             CachedClan? result = await GetCacheOrDefaultAsync(tag).ConfigureAwait(false);
 
             return result?.Data;
+        }
+
+        public async Task<List<ClanWar>> GetClanWarsAsync(string tag)
+        {
+            string formattedTag = Clash.FormatTag(tag);
+
+            using var scope = _services.CreateScope();
+
+            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+            var cache = await dbContext.Wars.Where(i =>
+                i.ClanTag == formattedTag ||
+                i.OpponentTag == formattedTag)
+                .ToListAsync().ConfigureAwait(false);
+
+            List<ClanWar> clanWars = new List<ClanWar>();
+
+            foreach (var item in cache)
+            {
+                item.Data.Type = item.Type;
+
+                clanWars.Add(item.Data);
+            }
+
+            return clanWars;
         }
 
         public async Task<Clan> GetOrFetchClanAsync(string tag)
@@ -319,7 +368,7 @@ namespace CocApi.Cache
 
         private bool IsNewWar(CachedClanWar cachedClanWar, ApiResponse<ClanWar> apiResponse)
         {
-            if (apiResponse == null || apiResponse.Data.PreparationStartTime == DateTime.MinValue)
+            if (apiResponse == null || apiResponse.Data.State == ClanWar.StateEnum.NotInWar)
                 return false;
 
             if (cachedClanWar.Data == null)
@@ -366,41 +415,44 @@ namespace CocApi.Cache
             if (cachedClan.Download == false || cachedClan.IsServerExpired() == false || cachedClan.IsLocallyExpired() == false)
                 return;
 
-            ApiResponse<Clan> apiResponse = await _cocApi.ClansApi.GetClanWithHttpInfoAsync(cachedClan.Tag);
-
-            if (cachedClan.ServerExpiration >= apiResponse.ServerExpiration)
-                return;
-
-            if (cachedClan.Data != null && _cocApi.IsEqual(cachedClan.Data, apiResponse.Data) == false)
-                OnClanUpdated(cachedClan.Data, apiResponse.Data);
-
-            cachedClan.UpdateFrom(apiResponse, _cocApiConfiguration.ClansTimeToLive);
-
             using var scope = _services.CreateScope();
 
             CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-            dbContext.Clans.Update(cachedClan);
-
-            await dbContext.SaveChangesAsync();
-
             List<Task> tasks = new List<Task>();
 
-            if (DownloadCurrentWars && cachedClan.DownloadCurrentWar && apiResponse.Data.IsWarLogPublic)
+            try
             {
+                ApiResponse<Clan> apiResponse = await _cocApi.ClansApi.GetClanResponseAsync(cachedClan.Tag);
+
+                if (cachedClan.Data != null && _cocApi.HasUpdated(cachedClan.Data, apiResponse.Data) == false)
+                    OnClanUpdated(cachedClan.Data, apiResponse.Data);
+
+                cachedClan.UpdateFrom(apiResponse, _cocApi.TimeToLive(cachedClan, apiResponse));
+
                 tasks.Add(UpdateClanWar(cachedClan));
 
                 tasks.Add(UpdateWarLog(cachedClan));
+
+                tasks.Add(UpdateMembersAsync(cachedClan));
+            }
+            catch (ApiException e)
+            {
+                cachedClan.UpdateFrom(e, _cocApi.TimeToLive(cachedClan, e));
             }
 
-            if (DownloadMembers && cachedClan.DownloadMembers)
-                tasks.Add(UpdateMembersAsync(cachedClan));
+            dbContext.Clans.Update(cachedClan);
+
+            await dbContext.SaveChangesAsync();
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
         private async Task UpdateClanWar(CachedClan cachedClan)
         {
+            if (!DownloadCurrentWars || !cachedClan.DownloadCurrentWar || !cachedClan.Data.IsWarLogPublic)
+                return;
+
             using var scope = _services.CreateScope();
 
             CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
@@ -410,12 +462,25 @@ namespace CocApi.Cache
             if (cachedClanWar.IsLocallyExpired() == false || cachedClanWar.IsServerExpired() == false)
                 return;
 
-            ApiResponse<ClanWar>? apiResponse = await _cocApi.ClansApi.GetCurrentWarWithHttpInfoOrDefaultAsync(cachedClan.Tag);
+            ApiResponse<ClanWar>? apiResponse = null;
 
-            if (IsNewWar(cachedClanWar, apiResponse))
-                await InsertNewWarAsync(cachedClan, apiResponse);
+            try
+            {
+                apiResponse = await _cocApi.ClansApi.GetCurrentWarResponseAsync(cachedClan.Tag);
 
-            cachedClanWar.UpdateFrom(apiResponse, _cocApiConfiguration.CurrentWarTimeToLive); //todo better ttl
+                if (IsNewWar(cachedClanWar, apiResponse))
+                {
+                    await InsertNewWarAsync(cachedClan, apiResponse);
+
+                    cachedClanWar.Type = apiResponse.Data.Type;
+                }
+
+                cachedClanWar.UpdateFrom(apiResponse, _cocApi.TimeToLive(cachedClanWar, apiResponse));
+            }
+            catch (ApiException e)
+            {
+                cachedClanWar.UpdateFrom(e, _cocApi.TimeToLive(cachedClanWar, e));
+            }
 
             dbContext.ClanWars.Update(cachedClanWar);
 
@@ -436,23 +501,20 @@ namespace CocApi.Cache
             if (group.IsLocallyExpired() == false || group.IsServerExpired() == false)
                 return;
 
+            List<Task> tasks = new List<Task>();
+
             ApiResponse<ClanWarLeagueGroup>? apiResponse = null;
 
             try
             {
-                apiResponse = await _cocApi.ClansApi.GetClanWarLeagueGroupWithHttpInfoAsync(cachedClan.Tag).ConfigureAwait(false);
+                apiResponse = await _cocApi.ClansApi.GetClanWarLeagueGroupResponseAsync(cachedClan.Tag).ConfigureAwait(false);
+                group.UpdateFrom(apiResponse, _cocApi.TimeToLive(group, apiResponse));
+                dbContext.Groups.Update(group);
+                tasks.Add(dbContext.SaveChangesAsync());
             }
             catch (ApiException e)
             {
-                group.UpdateFrom(e, _cocApiConfiguration.LeagueGroupNotFoundTimeToLive);
-            }
-            catch (Exception)
-            {
-                group.UpdateFrom(apiResponse, _cocApiConfiguration.LeagueGroupNotFoundTimeToLive);
-            }
-
-            if (apiResponse == null)
-            {
+                group.UpdateFrom(e, _cocApi.TimeToLive(group, e));
                 dbContext.Groups.Update(group);
                 await dbContext.SaveChangesAsync().ConfigureAwait(false);
                 return;
@@ -461,18 +523,13 @@ namespace CocApi.Cache
             if (group.Data != null && group.Data.Equals(apiResponse.Data) == false)
                 OnClanWarLeagueGroupUpdated(cachedClan.Data, group.Data, apiResponse.Data);
 
-            List<Task> tasks = new List<Task>();
-
             foreach (var round in apiResponse.Data.Rounds)
-                foreach (var warTag in round.WarTags)
+                foreach (var warTag in round.WarTags.Where(w => w != "#0"))
                 {
-                    if (warTag == "#0")
-                        break;
-
                     if (group.Data != null && group.Data.Rounds.Any(r => r.WarTags.Any(w => w == warTag)))
                         break;
 
-                    ApiResponse<ClanWar>? clanWar = await _clansApi.GetClanWarLeagueWarWithHttpInfoOrDefaultAsync(warTag).ConfigureAwait(false);
+                    ApiResponse<ClanWar>? clanWar = await _clansApi.GetClanWarLeagueWarResponseOrDefaultAsync(warTag).ConfigureAwait(false);
 
                     if (clanWar == null || clanWar.Data.State == ClanWar.StateEnum.NotInWar)
                         continue;
@@ -484,12 +541,6 @@ namespace CocApi.Cache
                         break;
                     }
                 }
-
-            group.UpdateFrom(apiResponse, _cocApiConfiguration.LeagueGroupTimeToLive);
-
-            dbContext.Groups.Update(group);
-
-            tasks.Add(dbContext.SaveChangesAsync());
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
@@ -525,7 +576,7 @@ namespace CocApi.Cache
 
         private async Task UpdateMembersAsync(CachedClan cachedClan)
         {
-            if (cachedClan.Data == null)
+            if (cachedClan.Data == null || !DownloadMembers || !cachedClan.DownloadMembers)
                 return;
 
             List<Task> tasks = new List<Task>();
@@ -558,12 +609,20 @@ namespace CocApi.Cache
                 }
                 else if (cachedWar.WarTag != null && (cachedWar.IsLocallyExpired() == false || cachedWar.IsServerExpired() == false))
                 {
-                    ApiResponse<ClanWar> apiResponse = await _clansApi.GetClanWarLeagueWarWithHttpInfoAsync(cachedWar.WarTag);
+                    try
+                    {
+                        ApiResponse<ClanWar> apiResponse = await _clansApi.GetClanWarLeagueWarResponseAsync(cachedWar.WarTag);
 
-                    if (cachedWar.Data.HasWarUpdated(apiResponse.Data))
-                        OnClanWarUpdated(cachedClan.Data, cachedWar.Data, cachedClanWar.Data);
+                        if (cachedWar.Data.HasWarUpdated(apiResponse.Data))
+                            OnClanWarUpdated(cachedClan.Data, cachedWar.Data, cachedClanWar.Data);
 
-                    cachedWar.UpdateFrom(cachedClan, apiResponse, _cocApiConfiguration.CurrentWarTimeToLive);
+                        cachedWar.UpdateFrom(cachedClan, apiResponse, _cocApi.TimeToLive(cachedClanWar, apiResponse));
+                    }
+                    catch (ApiException e)
+                    {
+                        cachedWar.UpdateFrom(e, _cocApi.TimeToLive(cachedClanWar, e));
+                    }
+
                 }
 
                 SendWarAnnouncements(cachedWar);
@@ -580,7 +639,7 @@ namespace CocApi.Cache
 
         private async Task UpdateWarLog(CachedClan cachedClan)
         {
-            if (cachedClan.Data?.IsWarLogPublic != true)
+            if (!DownloadCurrentWars || !cachedClan.DownloadCurrentWar || !cachedClan.Data.IsWarLogPublic)
                 return;
 
             using var scope = _services.CreateScope();
@@ -594,16 +653,16 @@ namespace CocApi.Cache
 
             try
             {
-                ApiResponse<ClanWarLog> apiResponse = await _cocApi.ClansApi.GetClanWarLogWithHttpInfoAsync(cachedClan.Tag);
+                ApiResponse<ClanWarLog> apiResponse = await _cocApi.ClansApi.GetClanWarLogResponseAsync(cachedClan.Tag);
 
                 if (log.Data != null && log.Data.Equals(apiResponse.Data) == false)
                     OnClanWarLogUpdated(log.Data, apiResponse.Data);
 
-                log.UpdateFromResponse(apiResponse, _cocApiConfiguration.WarLogTimeToLive);
+                log.UpdateFrom(apiResponse, _cocApi.TimeToLive(log, apiResponse));
             }
             catch (ApiException e)
             {
-                log.UpdateFromResponse(e, _cocApiConfiguration.PrivateWarLogTimeToLive);
+                log.UpdateFrom(e, _cocApi.TimeToLive(log, e));
             }
 
             dbContext.WarLogs.Update(log);

@@ -48,19 +48,19 @@ namespace CocApi.Model
         /// Gets or Sets Small
         /// </summary>
         [DataMember(Name="small", EmitDefaultValue=false)]
-        public string Small { get; set; }
+        public string Small { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Medium
         /// </summary>
         [DataMember(Name="medium", EmitDefaultValue=false)]
-        public string Medium { get; set; }
+        public string Medium { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Large
         /// </summary>
         [DataMember(Name="large", EmitDefaultValue=false)]
-        public string Large { get; set; }
+        public string Large { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -115,5 +115,15 @@ namespace CocApi.Model
         }
 
         public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
+
+        public enum TypeEnum
+        {
+            Unknown,
+            Random,
+            Friendly,
+            SCCWL
+        }
+
+        public TypeEnum Type { get; set; }
     }
 }

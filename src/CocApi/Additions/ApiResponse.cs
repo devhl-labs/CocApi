@@ -28,10 +28,5 @@ namespace CocApi.Client
                 return Downloaded.AddSeconds(cacheControl);
             }
         }
-
-        public DateTime LocalExpiration(TimeSpan localExpiration)
-        {
-            return Downloaded.Add(localExpiration);
-        }
     }
 }

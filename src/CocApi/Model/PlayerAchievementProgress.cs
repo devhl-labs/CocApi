@@ -56,43 +56,43 @@ namespace CocApi.Model
         /// Gets or Sets Stars
         /// </summary>
         [DataMember(Name="stars", EmitDefaultValue=false)]
-        public int Stars { get; set; }
+        public int Stars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Value
         /// </summary>
         [DataMember(Name="value", EmitDefaultValue=false)]
-        public int Value { get; set; }
+        public int Value { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; set; }
+        public Object Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Target
         /// </summary>
         [DataMember(Name="target", EmitDefaultValue=false)]
-        public int Target { get; set; }
+        public int Target { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Info
         /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
-        public Object Info { get; set; }
+        public Object Info { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets CompletionInfo
         /// </summary>
         [DataMember(Name="completionInfo", EmitDefaultValue=false)]
-        public Object CompletionInfo { get; set; }
+        public Object CompletionInfo { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Village
         /// </summary>
         [DataMember(Name="village", EmitDefaultValue=false)]
-        public string Village { get; set; }
+        public string Village { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

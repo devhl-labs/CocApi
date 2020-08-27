@@ -50,25 +50,25 @@ namespace CocApi.Model
         /// Gets or Sets Reason
         /// </summary>
         [DataMember(Name="reason", EmitDefaultValue=false)]
-        public string Reason { get; set; }
+        public string Reason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Message
         /// </summary>
         [DataMember(Name="message", EmitDefaultValue=false)]
-        public string Message { get; set; }
+        public string Message { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [DataMember(Name="type", EmitDefaultValue=false)]
-        public string Type { get; set; }
+        public string Type { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Detail
         /// </summary>
         [DataMember(Name="detail", EmitDefaultValue=false)]
-        public Object Detail { get; set; }
+        public Object Detail { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

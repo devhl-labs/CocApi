@@ -52,31 +52,31 @@ namespace CocApi.Model
         /// Gets or Sets Order
         /// </summary>
         [DataMember(Name="order", EmitDefaultValue=false)]
-        public int Order { get; set; }
+        public int Order { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets AttackerTag
         /// </summary>
         [DataMember(Name="attackerTag", EmitDefaultValue=false)]
-        public string AttackerTag { get; set; }
+        public string AttackerTag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets DefenderTag
         /// </summary>
         [DataMember(Name="defenderTag", EmitDefaultValue=false)]
-        public string DefenderTag { get; set; }
+        public string DefenderTag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Stars
         /// </summary>
         [DataMember(Name="stars", EmitDefaultValue=false)]
-        public int Stars { get; set; }
+        public int Stars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets DestructionPercentage
         /// </summary>
         [DataMember(Name="destructionPercentage", EmitDefaultValue=false)]
-        public int DestructionPercentage { get; set; }
+        public int DestructionPercentage { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

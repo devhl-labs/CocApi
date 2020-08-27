@@ -15,6 +15,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Xml;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -144,7 +145,7 @@ namespace CocApi.Api
         /// <returns>Task of League</returns>
         public async System.Threading.Tasks.Task<League> GetLeagueAsync (string leagueId)
         {
-             CocApi.Client.ApiResponse<League> localVarResponse = await GetLeagueWithHttpInfoAsync(leagueId);
+             CocApi.Client.ApiResponse<League> localVarResponse = await GetLeagueResponseAsync(leagueId);
              return localVarResponse.Data;
         }
 
@@ -154,7 +155,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <returns>Task of ApiResponse (League)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<League>> GetLeagueWithHttpInfoAsync (string leagueId)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<League>> GetLeagueResponseAsync (string leagueId)
         {
             // verify the required parameter 'leagueId' is set
             if (leagueId == null)
@@ -218,11 +219,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <returns>Task of ApiResponse (League)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<League>> GetLeagueWithHttpInfoOrDefaultAsync (string leagueId)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<League>> GetLeagueResponseOrDefaultAsync (string leagueId)
         {
             try
             {
-                return await GetLeagueWithHttpInfoOrDefaultAsync (leagueId);
+                return await GetLeagueResponseAsync (leagueId);
             }
             catch(ApiException)
             {
@@ -238,7 +239,7 @@ namespace CocApi.Api
         /// <returns>Task of League</returns>
         public async System.Threading.Tasks.Task<League> GetLeagueOrDefaultAsync (string leagueId)
         {
-             CocApi.Client.ApiResponse<League> localVarResponse = await GetLeagueWithHttpInfoOrDefaultAsync(leagueId);
+             CocApi.Client.ApiResponse<League> localVarResponse = await GetLeagueResponseOrDefaultAsync(leagueId);
              if (localVarResponse == null)
                 return null;
 
@@ -259,7 +260,7 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList> GetLeagueSeasonRankingsAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetLeagueSeasonRankingsWithHttpInfoAsync(leagueId, seasonId, limit, after, before);
+             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before);
              return localVarResponse.Data;
         }
 
@@ -273,12 +274,11 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (PlayerRankingList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetLeagueSeasonRankingsWithHttpInfoAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetLeagueSeasonRankingsResponseAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             // verify the required parameter 'leagueId' is set
             if (leagueId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'leagueId' when calling LeaguesApi->GetLeagueSeasonRankings");
-
             // verify the required parameter 'seasonId' is set
             if (seasonId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'seasonId' when calling LeaguesApi->GetLeagueSeasonRankings");
@@ -358,11 +358,11 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (PlayerRankingList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetLeagueSeasonRankingsWithHttpInfoOrDefaultAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetLeagueSeasonRankingsResponseOrDefaultAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
-                return await GetLeagueSeasonRankingsWithHttpInfoOrDefaultAsync (leagueId, seasonId, limit, after, before);
+                return await GetLeagueSeasonRankingsResponseAsync (leagueId, seasonId, limit, after, before);
             }
             catch(ApiException)
             {
@@ -382,7 +382,7 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList> GetLeagueSeasonRankingsOrDefaultAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetLeagueSeasonRankingsWithHttpInfoOrDefaultAsync(leagueId, seasonId, limit, after, before);
+             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetLeagueSeasonRankingsResponseOrDefaultAsync(leagueId, seasonId, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -402,7 +402,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueSeasonList</returns>
         public async System.Threading.Tasks.Task<LeagueSeasonList> GetLeagueSeasonsAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LeagueSeasonList> localVarResponse = await GetLeagueSeasonsWithHttpInfoAsync(leagueId, limit, after, before);
+             CocApi.Client.ApiResponse<LeagueSeasonList> localVarResponse = await GetLeagueSeasonsResponseAsync(leagueId, limit, after, before);
              return localVarResponse.Data;
         }
 
@@ -415,7 +415,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LeagueSeasonList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueSeasonList>> GetLeagueSeasonsWithHttpInfoAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueSeasonList>> GetLeagueSeasonsResponseAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             // verify the required parameter 'leagueId' is set
             if (leagueId == null)
@@ -494,11 +494,11 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LeagueSeasonList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueSeasonList>> GetLeagueSeasonsWithHttpInfoOrDefaultAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueSeasonList>> GetLeagueSeasonsResponseOrDefaultAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
-                return await GetLeagueSeasonsWithHttpInfoOrDefaultAsync (leagueId, limit, after, before);
+                return await GetLeagueSeasonsResponseAsync (leagueId, limit, after, before);
             }
             catch(ApiException)
             {
@@ -517,7 +517,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueSeasonList</returns>
         public async System.Threading.Tasks.Task<LeagueSeasonList> GetLeagueSeasonsOrDefaultAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LeagueSeasonList> localVarResponse = await GetLeagueSeasonsWithHttpInfoOrDefaultAsync(leagueId, limit, after, before);
+             CocApi.Client.ApiResponse<LeagueSeasonList> localVarResponse = await GetLeagueSeasonsResponseOrDefaultAsync(leagueId, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -536,7 +536,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueList</returns>
         public async System.Threading.Tasks.Task<LeagueList> GetLeaguesAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LeagueList> localVarResponse = await GetLeaguesWithHttpInfoAsync(limit, after, before);
+             CocApi.Client.ApiResponse<LeagueList> localVarResponse = await GetLeaguesResponseAsync(limit, after, before);
              return localVarResponse.Data;
         }
 
@@ -548,7 +548,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LeagueList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueList>> GetLeaguesWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueList>> GetLeaguesResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -621,11 +621,11 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LeagueList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueList>> GetLeaguesWithHttpInfoOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueList>> GetLeaguesResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
-                return await GetLeaguesWithHttpInfoOrDefaultAsync (limit, after, before);
+                return await GetLeaguesResponseAsync (limit, after, before);
             }
             catch(ApiException)
             {
@@ -643,7 +643,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueList</returns>
         public async System.Threading.Tasks.Task<LeagueList> GetLeaguesOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LeagueList> localVarResponse = await GetLeaguesWithHttpInfoOrDefaultAsync(limit, after, before);
+             CocApi.Client.ApiResponse<LeagueList> localVarResponse = await GetLeaguesResponseOrDefaultAsync(limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -660,7 +660,7 @@ namespace CocApi.Api
         /// <returns>Task of WarLeague</returns>
         public async System.Threading.Tasks.Task<WarLeague> GetWarLeagueAsync (string leagueId)
         {
-             CocApi.Client.ApiResponse<WarLeague> localVarResponse = await GetWarLeagueWithHttpInfoAsync(leagueId);
+             CocApi.Client.ApiResponse<WarLeague> localVarResponse = await GetWarLeagueResponseAsync(leagueId);
              return localVarResponse.Data;
         }
 
@@ -670,7 +670,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <returns>Task of ApiResponse (WarLeague)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<WarLeague>> GetWarLeagueWithHttpInfoAsync (string leagueId)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<WarLeague>> GetWarLeagueResponseAsync (string leagueId)
         {
             // verify the required parameter 'leagueId' is set
             if (leagueId == null)
@@ -734,11 +734,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <returns>Task of ApiResponse (WarLeague)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<WarLeague>> GetWarLeagueWithHttpInfoOrDefaultAsync (string leagueId)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<WarLeague>> GetWarLeagueResponseOrDefaultAsync (string leagueId)
         {
             try
             {
-                return await GetWarLeagueWithHttpInfoOrDefaultAsync (leagueId);
+                return await GetWarLeagueResponseAsync (leagueId);
             }
             catch(ApiException)
             {
@@ -754,7 +754,7 @@ namespace CocApi.Api
         /// <returns>Task of WarLeague</returns>
         public async System.Threading.Tasks.Task<WarLeague> GetWarLeagueOrDefaultAsync (string leagueId)
         {
-             CocApi.Client.ApiResponse<WarLeague> localVarResponse = await GetWarLeagueWithHttpInfoOrDefaultAsync(leagueId);
+             CocApi.Client.ApiResponse<WarLeague> localVarResponse = await GetWarLeagueResponseOrDefaultAsync(leagueId);
              if (localVarResponse == null)
                 return null;
 
@@ -773,7 +773,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;WarLeague&gt;</returns>
         public async System.Threading.Tasks.Task<List<WarLeague>> GetWarLeaguesAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesWithHttpInfoAsync(limit, after, before);
+             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesResponseAsync(limit, after, before);
              return localVarResponse.Data;
         }
 
@@ -785,7 +785,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;WarLeague&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesWithHttpInfoAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -858,11 +858,11 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;WarLeague&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesWithHttpInfoOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
-                return await GetWarLeaguesWithHttpInfoOrDefaultAsync (limit, after, before);
+                return await GetWarLeaguesResponseAsync (limit, after, before);
             }
             catch(ApiException)
             {
@@ -880,7 +880,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;WarLeague&gt;</returns>
         public async System.Threading.Tasks.Task<List<WarLeague>> GetWarLeaguesOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesWithHttpInfoOrDefaultAsync(limit, after, before);
+             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesResponseOrDefaultAsync(limit, after, before);
              if (localVarResponse == null)
                 return null;
 

@@ -44,7 +44,7 @@ namespace CocApi.Model
         /// Gets or Sets Items
         /// </summary>
         [DataMember(Name="items", EmitDefaultValue=false)]
-        public List<ClanWarLogEntry> Items { get; set; }
+        public List<ClanWarLogEntry> Items { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

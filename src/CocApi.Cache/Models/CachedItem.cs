@@ -10,17 +10,17 @@ namespace CocApi.Cache.Models
 {
     public class CachedItem<T> where T : class
     {
-        public int Id { get; set; }
+        public int Id { get; internal set; }
 
-        public string RawContent { get; set; } = string.Empty;
+        public string RawContent { get; internal set; } = string.Empty;
 
-        public DateTime Downloaded { get; set; }
+        public DateTime Downloaded { get; internal set; }
 
-        public DateTime ServerExpiration { get; set; }
+        public DateTime ServerExpiration { get; internal set; }
 
-        public DateTime LocalExpiration { get; set; }
+        public DateTime LocalExpiration { get; internal set; }
 
-        public HttpStatusCode StatusCode { get; set; }
+        public HttpStatusCode StatusCode { get; internal set; }
 
         private T _data;
 
@@ -59,24 +59,23 @@ namespace CocApi.Cache.Models
             StatusCode = response.StatusCode;
         }
 
-        protected void UpdateFrom(ApiResponse<T>? responseItem, TimeSpan localExpiration)
+        protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
-            RawContent = responseItem?.RawContent ?? RawContent;
+            StatusCode = apiResponse.StatusCode;
 
-            Downloaded = responseItem?.Downloaded ?? DateTime.UtcNow;
+            RawContent = apiResponse?.RawContent ?? RawContent;
 
-            ServerExpiration = responseItem?.ServerExpiration ?? DateTime.UtcNow;
+            Downloaded = apiResponse?.Downloaded ?? DateTime.UtcNow;
 
-            LocalExpiration = responseItem?.LocalExpiration(localExpiration) ?? DateTime.UtcNow.Add(localExpiration);
+            ServerExpiration = apiResponse?.ServerExpiration ?? DateTime.UtcNow;
 
-            Data = responseItem?.Data ?? Data;
+            LocalExpiration = Downloaded.Add(localExpiration);
+
+            Data = apiResponse?.Data ?? Data;
         }
 
         protected void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
         {
-            if (string.IsNullOrEmpty(RawContent))
-                RawContent = apiException.ErrorContent.ToString();
-
             StatusCode = (HttpStatusCode) apiException.ErrorCode;
 
             Downloaded = DateTime.UtcNow;

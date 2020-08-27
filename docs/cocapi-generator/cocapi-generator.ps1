@@ -18,7 +18,7 @@ Move-Item -Path Client -Destination ..\..
 Move-Item -Path Model -Destination ..\..
 Move-Item -Path CocApi.csproj -Destination ..\..
 if (Test-Path -Path $deleted\CocApi){
-    Move-Item -Path $deleted\CocApi\ManualAdditions -Destination ..\..
+    Move-Item -Path $deleted\CocApi\Additions -Destination ..\..
 }
 Set-Location ..\..
 Move-Item -Path src -Destination $deleted

@@ -61,7 +61,7 @@ namespace CocApi.Model
         /// Gets or Sets Result
         /// </summary>
         [DataMember(Name="result", EmitDefaultValue=false)]
-        public ResultEnum? Result { get; set; }
+        public ResultEnum? Result { get; internal set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLogEntry" /> class.
         /// </summary>
@@ -83,25 +83,25 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public WarClan Clan { get; set; }
+        public WarClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets TeamSize
         /// </summary>
         [DataMember(Name="teamSize", EmitDefaultValue=false)]
-        public int TeamSize { get; set; }
+        public int TeamSize { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Opponent
         /// </summary>
         [DataMember(Name="opponent", EmitDefaultValue=false)]
-        public WarClan Opponent { get; set; }
+        public WarClan Opponent { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets EndTime
         /// </summary>
         [DataMember(Name="endTime", EmitDefaultValue=false)]
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

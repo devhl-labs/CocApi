@@ -79,7 +79,7 @@ namespace CocApi.Model
         /// Gets or Sets WarFrequency
         /// </summary>
         [DataMember(Name="warFrequency", EmitDefaultValue=false)]
-        public WarFrequencyEnum? WarFrequency { get; set; }
+        public WarFrequencyEnum? WarFrequency { get; private set; }
         /// <summary>
         /// Defines Type
         /// </summary>
@@ -110,7 +110,7 @@ namespace CocApi.Model
         /// Gets or Sets Type
         /// </summary>
         [DataMember(Name="type", EmitDefaultValue=false)]
-        public TypeEnum? Type { get; set; }
+        public TypeEnum? Type { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="Clan" /> class.
         /// </summary>
@@ -162,109 +162,109 @@ namespace CocApi.Model
         /// Gets or Sets WarLeague
         /// </summary>
         [DataMember(Name="warLeague", EmitDefaultValue=false)]
-        public WarLeague WarLeague { get; set; }
+        public WarLeague WarLeague { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets MemberList
         /// </summary>
         [DataMember(Name="memberList", EmitDefaultValue=false)]
-        public List<ClanMember> MemberList { get; set; }
+        public List<ClanMember> MemberList { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets RequiredTrophies
         /// </summary>
         [DataMember(Name="requiredTrophies", EmitDefaultValue=false)]
-        public int RequiredTrophies { get; set; }
+        public int RequiredTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ClanVersusPoints
         /// </summary>
         [DataMember(Name="clanVersusPoints", EmitDefaultValue=false)]
-        public int ClanVersusPoints { get; set; }
+        public int ClanVersusPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; internal set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets IsWarLogPublic
         /// </summary>
         [DataMember(Name="isWarLogPublic", EmitDefaultValue=false)]
-        public bool IsWarLogPublic { get; set; }
+        public bool IsWarLogPublic { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ClanLevel
         /// </summary>
         [DataMember(Name="clanLevel", EmitDefaultValue=false)]
-        public int ClanLevel { get; set; }
+        public int ClanLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets WarWinStreak
         /// </summary>
         [DataMember(Name="warWinStreak", EmitDefaultValue=false)]
-        public int WarWinStreak { get; set; }
+        public int WarWinStreak { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets WarWins
         /// </summary>
         [DataMember(Name="warWins", EmitDefaultValue=false)]
-        public int WarWins { get; set; }
+        public int WarWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets WarTies
         /// </summary>
         [DataMember(Name="warTies", EmitDefaultValue=false)]
-        public int WarTies { get; set; }
+        public int WarTies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets WarLosses
         /// </summary>
         [DataMember(Name="warLosses", EmitDefaultValue=false)]
-        public int WarLosses { get; set; }
+        public int WarLosses { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ClanPoints
         /// </summary>
         [DataMember(Name="clanPoints", EmitDefaultValue=false)]
-        public int ClanPoints { get; set; }
+        public int ClanPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Labels
         /// </summary>
         [DataMember(Name="labels", EmitDefaultValue=false)]
-        public List<Label> Labels { get; set; }
+        public List<Label> Labels { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Location
         /// </summary>
         [DataMember(Name="location", EmitDefaultValue=false)]
-        public Location Location { get; set; }
+        public Location Location { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [DataMember(Name="members", EmitDefaultValue=false)]
-        public int Members { get; set; }
+        public int Members { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Description
         /// </summary>
         [DataMember(Name="description", EmitDefaultValue=false)]
-        public string Description { get; set; }
+        public string Description { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BadgeUrls
         /// </summary>
         [DataMember(Name="badgeUrls", EmitDefaultValue=false)]
-        public ClanBadgeUrls BadgeUrls { get; set; }
+        public ClanBadgeUrls BadgeUrls { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

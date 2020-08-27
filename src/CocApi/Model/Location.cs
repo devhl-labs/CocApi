@@ -52,31 +52,31 @@ namespace CocApi.Model
         /// Gets or Sets LocalizedName
         /// </summary>
         [DataMember(Name="localizedName", EmitDefaultValue=false)]
-        public string LocalizedName { get; set; }
+        public string LocalizedName { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public int Id { get; set; }
+        public int Id { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets IsCountry
         /// </summary>
         [DataMember(Name="isCountry", EmitDefaultValue=false)]
-        public bool IsCountry { get; set; }
+        public bool IsCountry { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets CountryCode
         /// </summary>
         [DataMember(Name="countryCode", EmitDefaultValue=false)]
-        public string CountryCode { get; set; }
+        public string CountryCode { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -61,7 +61,7 @@ namespace CocApi.Model
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum? State { get; set; }
+        public StateEnum? State { get; internal set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
         /// </summary>
@@ -83,25 +83,25 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Season
         /// </summary>
         [DataMember(Name="season", EmitDefaultValue=false)]
-        public DateTime Season { get; set; }
+        public DateTime Season { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Clans
         /// </summary>
         [DataMember(Name="clans", EmitDefaultValue=false)]
-        public List<ClanWarLeagueClan> Clans { get; set; }
+        public List<ClanWarLeagueClan> Clans { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Rounds
         /// </summary>
         [DataMember(Name="rounds", EmitDefaultValue=false)]
-        public List<ClanWarLeagueRound> Rounds { get; set; }
+        public List<ClanWarLeagueRound> Rounds { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

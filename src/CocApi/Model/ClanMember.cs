@@ -64,67 +64,67 @@ namespace CocApi.Model
         /// Gets or Sets League
         /// </summary>
         [DataMember(Name="league", EmitDefaultValue=false)]
-        public League League { get; set; }
+        public League League { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; set; }
+        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; set; }
+        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
-        public string Role { get; set; }
+        public string Role { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ExpLevel
         /// </summary>
         [DataMember(Name="expLevel", EmitDefaultValue=false)]
-        public int ExpLevel { get; set; }
+        public int ExpLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets ClanRank
         /// </summary>
         [DataMember(Name="clanRank", EmitDefaultValue=false)]
-        public int ClanRank { get; set; }
+        public int ClanRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets PreviousClanRank
         /// </summary>
         [DataMember(Name="previousClanRank", EmitDefaultValue=false)]
-        public int PreviousClanRank { get; set; }
+        public int PreviousClanRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Donations
         /// </summary>
         [DataMember(Name="donations", EmitDefaultValue=false)]
-        public int Donations { get; set; }
+        public int Donations { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets DonationsReceived
         /// </summary>
         [DataMember(Name="donationsReceived", EmitDefaultValue=false)]
-        public int DonationsReceived { get; set; }
+        public int DonationsReceived { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Trophies
         /// </summary>
         [DataMember(Name="trophies", EmitDefaultValue=false)]
-        public int Trophies { get; set; }
+        public int Trophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets VersusTrophies
         /// </summary>
         [DataMember(Name="versusTrophies", EmitDefaultValue=false)]
-        public int VersusTrophies { get; set; }
+        public int VersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

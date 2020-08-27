@@ -125,7 +125,8 @@ namespace CocApi.Cache.Migrations
                     State = table.Column<int>(type: "INTEGER", nullable: true),
                     IsFinal = table.Column<bool>(type: "INTEGER", nullable: false),
                     StatusCodeOpponent = table.Column<int>(type: "INTEGER", nullable: true),
-                    Announcements = table.Column<int>(type: "INTEGER", nullable: false)
+                    Announcements = table.Column<int>(type: "INTEGER", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {

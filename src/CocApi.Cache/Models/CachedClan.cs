@@ -1,11 +1,4 @@
-﻿using Dapper.SqlWriter;
-//using CocApi.Cache.Models.Clans;
-//using CocApi.Cache.Models.Wars;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using CocApi.Model;
 using CocApi.Client;
 
@@ -13,15 +6,15 @@ namespace CocApi.Cache.Models
 {
     public class CachedClan : CachedItem<Clan>
     {
-        public string Tag { get; set; } = string.Empty;
+        public string Tag { get; internal set; } = string.Empty;
 
-        public bool Download { get; set; }
+        public bool Download { get; internal set; }
 
-        public bool DownloadMembers { get; set; }
+        public bool DownloadMembers { get; internal set; }
 
-        public bool DownloadCurrentWar { get; set; }
+        public bool DownloadCurrentWar { get; internal set; }
 
-        public bool DownloadCwl { get; set; }
+        public bool DownloadCwl { get; internal set; }
 
         public CachedClan(ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
@@ -33,9 +26,14 @@ namespace CocApi.Cache.Models
 
         }
 
-        internal new void UpdateFrom(ApiResponse<Clan>? responseItem, TimeSpan localExpiration)
+        internal new void UpdateFrom(ApiResponse<Clan> responseItem, TimeSpan localExpiration)
         {
             base.UpdateFrom(responseItem, localExpiration);
+        }
+
+        internal new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
+        {
+            base.UpdateFrom(apiException, localExpiration);
         }
     }
 

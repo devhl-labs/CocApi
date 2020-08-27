@@ -54,37 +54,37 @@ namespace CocApi.Model
         /// Gets or Sets CurrentSeason
         /// </summary>
         [DataMember(Name="currentSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult CurrentSeason { get; set; }
+        public LegendLeagueTournamentSeasonResult CurrentSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets PreviousVersusSeason
         /// </summary>
         [DataMember(Name="previousVersusSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult PreviousVersusSeason { get; set; }
+        public LegendLeagueTournamentSeasonResult PreviousVersusSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BestVersusSeason
         /// </summary>
         [DataMember(Name="bestVersusSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult BestVersusSeason { get; set; }
+        public LegendLeagueTournamentSeasonResult BestVersusSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets LegendTrophies
         /// </summary>
         [DataMember(Name="legendTrophies", EmitDefaultValue=false)]
-        public int LegendTrophies { get; set; }
+        public int LegendTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets PreviousSeason
         /// </summary>
         [DataMember(Name="previousSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult PreviousSeason { get; set; }
+        public LegendLeagueTournamentSeasonResult PreviousSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets BestSeason
         /// </summary>
         [DataMember(Name="bestSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult BestSeason { get; set; }
+        public LegendLeagueTournamentSeasonResult BestSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object

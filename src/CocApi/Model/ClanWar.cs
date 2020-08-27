@@ -67,7 +67,7 @@ namespace CocApi.Model
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum? State { get; set; }
+        public StateEnum? State { get; internal set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWar" /> class.
         /// </summary>
@@ -93,37 +93,37 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public WarClan Clan { get; set; }
+        public WarClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets TeamSize
         /// </summary>
         [DataMember(Name="teamSize", EmitDefaultValue=false)]
-        public int TeamSize { get; set; }
+        public int TeamSize { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets Opponent
         /// </summary>
         [DataMember(Name="opponent", EmitDefaultValue=false)]
-        public WarClan Opponent { get; set; }
+        public WarClan Opponent { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets StartTime
         /// </summary>
         [DataMember(Name="startTime", EmitDefaultValue=false)]
-        public DateTime StartTime { get; set; }
+        public DateTime StartTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets EndTime
         /// </summary>
         [DataMember(Name="endTime", EmitDefaultValue=false)]
-        public DateTime EndTime { get; set; }
+        public DateTime EndTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Gets or Sets PreparationStartTime
         /// </summary>
         [DataMember(Name="preparationStartTime", EmitDefaultValue=false)]
-        public DateTime PreparationStartTime { get; set; }
+        public DateTime PreparationStartTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -173,54 +173,41 @@ namespace CocApi.Model
             if (input == null)
                 return false;
 
-            return
+            return 
                 (
                     this.Clan == input.Clan ||
                     (this.Clan != null &&
                     this.Clan.Equals(input.Clan))
-                ) &&
+                ) && 
                 (
                     this.TeamSize == input.TeamSize ||
                     this.TeamSize.Equals(input.TeamSize)
-                ) &&
+                ) && 
                 (
                     this.Opponent == input.Opponent ||
                     (this.Opponent != null &&
                     this.Opponent.Equals(input.Opponent))
-                ) &&
+                ) && 
                 (
                     this.StartTime == input.StartTime ||
                     (this.StartTime != null &&
                     this.StartTime.Equals(input.StartTime))
-                ) &&
+                ) && 
                 (
                     this.State == input.State ||
                     this.State.Equals(input.State)
-                ) &&
+                ) && 
                 (
                     this.EndTime == input.EndTime ||
                     (this.EndTime != null &&
                     this.EndTime.Equals(input.EndTime))
-                ) &&
+                ) && 
                 (
                     this.PreparationStartTime == input.PreparationStartTime ||
                     (this.PreparationStartTime != null &&
                     this.PreparationStartTime.Equals(input.PreparationStartTime))
                 );
         }
-
-        ///// <summary>
-        ///// Gets the hash code
-        ///// </summary>
-        ///// <returns>Hash code</returns>
-        //public override int GetHashCode()
-        //{
-        //    unchecked // Overflow is fine, just wrap
-        //    {
-        //        int hashCode = 41;
-        //        return hashCode;
-        //    }
-        //}
 
         /// <summary>
         /// To validate all properties of the instance

@@ -44,7 +44,7 @@ namespace CocApi.Model
         /// Gets or Sets WarTags
         /// </summary>
         [DataMember(Name="warTags", EmitDefaultValue=false)]
-        public List<string> WarTags { get; set; }
+        public List<string> WarTags { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
 
         /// <summary>
         /// Returns the string presentation of the object
