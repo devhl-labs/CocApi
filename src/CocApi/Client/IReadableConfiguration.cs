@@ -109,7 +109,7 @@ namespace CocApi.Client
         /// <summary>
         /// Dynamically change the bearer token
         /// </summary>
-        Func<System.Threading.Tasks.Task<string>> GetTokenAsync { get; set; }
+        //Func<System.Threading.Tasks.Task<string>> GetTokenAsync { get; set; }
 		
     }
 }

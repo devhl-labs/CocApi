@@ -411,7 +411,7 @@ namespace CocApi.Client
                 AccessToken = second.AccessToken ?? first.AccessToken,
                 TempFolderPath = second.TempFolderPath ?? first.TempFolderPath,
                 DateTimeFormat = second.DateTimeFormat ?? first.DateTimeFormat,
-				GetTokenAsync = second.GetTokenAsync ?? first.GetTokenAsync
+				//GetTokenAsync = second.GetTokenAsync ?? first.GetTokenAsync
             };
             return config;
         }
@@ -422,7 +422,7 @@ namespace CocApi.Client
         /// <summary>
         /// Dynamically change the bearer token
         /// </summary>
-        public Func<System.Threading.Tasks.Task<string>> GetTokenAsync { get; set; } = DefaultPrefixProvider;
+        //public Func<System.Threading.Tasks.Task<string>> GetTokenAsync { get; set; } = DefaultPrefixProvider;
 
         private static System.Threading.Tasks.Task<string> DefaultPrefixProvider()
         {

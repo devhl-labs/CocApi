@@ -26,6 +26,7 @@ namespace CocApi.Api
     /// </summary>
     public partial class ClansApi
     {
+        private CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -60,10 +61,14 @@ namespace CocApi.Api
         /// using Configuration object
         /// </summary>
         /// <param name="configuration">An instance of Configuration</param>
+        /// <param name="tokenProvider">An instance of TokenProvider</param>
         /// <returns></returns>
-        public ClansApi(CocApi.Client.Configuration configuration)
+        public ClansApi(CocApi.Client.Configuration configuration, CocApi.TokenProvider tokenProvider)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
+            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
+
+            _tokenProvider = tokenProvider;
 
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
@@ -159,7 +164,6 @@ namespace CocApi.Api
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClan");
-
             string formattedTag = Clash.FormatTag(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -181,7 +185,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -278,7 +282,6 @@ namespace CocApi.Api
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanMembers");
-
             string formattedTag = Clash.FormatTag(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -312,7 +315,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -409,7 +412,6 @@ namespace CocApi.Api
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanWarLeagueGroup");
-
             string formattedTag = Clash.FormatTag(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -431,7 +433,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -517,7 +519,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseOrDefaultAsync(string warTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
@@ -544,7 +546,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(warTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -641,7 +643,6 @@ namespace CocApi.Api
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetClanWarLog");
-
             string formattedTag = Clash.FormatTag(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -675,7 +676,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -772,7 +773,6 @@ namespace CocApi.Api
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetCurrentWar");
-
             string formattedTag = Clash.FormatTag(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -794,7 +794,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -964,7 +964,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request

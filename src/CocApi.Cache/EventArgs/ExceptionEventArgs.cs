@@ -6,7 +6,7 @@ namespace CocApi.Cache
     {
         public Exception Exception { get; internal set; }
 
-        public ExceptionEventArgs(string source, string method, Exception exception) : base(source, method, LogLevel.Error, exception.Message)
+        public ExceptionEventArgs(string method, Exception exception) : base(method, LogLevel.Error, exception.Message)
         {
             Exception = exception;
         }

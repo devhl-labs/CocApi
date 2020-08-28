@@ -7,38 +7,18 @@ using System.IO;
 using CocApi.Model;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using System.Web;
-using System.Net;
-using System.Text;
 using CocApi.Client;
-using Newtonsoft.Json;
-using System.Security.Cryptography.X509Certificates;
-using CocApi.Cache.Models;
+using CocApi.Api;
 
 namespace CocApi.Test
 {
-    public class Client : CocApiClientBase
-    {
-        public Client(CocApiConfiguration cocApiConfiguration) : base(cocApiConfiguration)
-        {
-            
-        }
-
-        public override bool HasUpdated(Clan stored, Clan fetched)
-        {
-            return base.HasUpdated(stored, fetched);
-        }
-
-        public override TimeSpan TimeToLive(CachedPlayer cachedPlayer, ApiResponse<Player> apiResponse)
-        {
-            return TimeSpan.FromMinutes(1);
-        }
-    }
-
     class Program
     {
         public static LogService LogService { get; set; }
+
+        public static PlayersCache PlayersCache { get; set; }
+
+        public static ClansCache ClansCache { get; set; }
 
         public static async Task Main(string[] args)
         {
@@ -48,37 +28,58 @@ namespace CocApi.Test
 
             LogService.Log(LogLevel.Information, nameof(Program), null, "Press CTRL-C to exit");
 
-            Client client = new Client(GetCocApiConfiguration());
-            
-            client.Log += Client_Log;
+            //CacheConfiguration client = new CacheConfiguration(GetCocApiConfiguration());
 
-            client.PlayersApi.QueryResult += QueryResult;
-            client.ClansApi.QueryResult += QueryResult;
+            CacheConfiguration cacheConfiguration = new CacheConfiguration();
 
-            client.PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
-
-            client.ClansCache.ClanUpdated += ClansCache_ClanUpdated;
-            client.ClansCache.ClanWarAdded += ClansCache_ClanWarAdded;
-            client.ClansCache.ClanWarEndingSoon += ClansCache_ClanWarEndingSoon;
-            client.ClansCache.ClanWarEndNotSeen += ClansCache_ClanWarEndNotSeen;
-            client.ClansCache.ClanWarLeagueGroupUpdated += ClansCache_ClanWarLeagueGroupUpdated;
-            client.ClansCache.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
-            client.ClansCache.ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
-            client.ClansCache.ClanWarUpdated += ClansCache_ClanWarUpdated;
+            Configuration configuration = new Configuration();
 
 
-            await client.PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
+            List<string> tokens = new List<string>
+            {
+                File.ReadAllText(@"E:\Desktop\token.txt")
+            };
 
-            client.PlayersCache.Start();
+            TokenProvider tokenProvider = new TokenProvider(tokens, TimeSpan.FromSeconds(1));
 
-            await client.ClansCache.UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
-            await client.ClansCache.AddAsync("#22G0JJR8"); //fysb
+            PlayersApi playersApi = new PlayersApi(configuration, tokenProvider);
 
-            await client.ClansCache.AddAsync("#28RUGUYJU"); //devhls lab
+            ClansApi clansApi = new ClansApi(configuration, tokenProvider);
 
-            await client.ClansCache.AddAsync("#2C8V29YJ"); // russian clan
+            PlayersCache = new PlayersCache(cacheConfiguration, playersApi, tokenProvider);
 
-            client.ClansCache.Start();
+            ClansCache = new ClansCache(cacheConfiguration, clansApi, tokenProvider, PlayersCache);
+
+            //client.Log += Client_Log;
+
+
+            playersApi.QueryResult += QueryResult;
+            clansApi.QueryResult += QueryResult;
+
+            PlayersCache.PlayerUpdated += PlayerUpdater_PlayerUpdated;
+
+            ClansCache.ClanUpdated += ClansCache_ClanUpdated;
+            ClansCache.ClanWarAdded += ClansCache_ClanWarAdded;
+            ClansCache.ClanWarEndingSoon += ClansCache_ClanWarEndingSoon;
+            ClansCache.ClanWarEndNotSeen += ClansCache_ClanWarEndNotSeen;
+            ClansCache.ClanWarLeagueGroupUpdated += ClansCache_ClanWarLeagueGroupUpdated;
+            ClansCache.ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
+            ClansCache.ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
+            ClansCache.ClanWarUpdated += ClansCache_ClanWarUpdated;
+
+
+            await PlayersCache.UpdateAsync("#29GPU9CUJ"); //squirrel man
+
+            //PlayersCache.StartAsync();
+
+            await ClansCache.UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
+            await ClansCache.AddAsync("#22G0JJR8"); //fysb
+
+            await ClansCache.AddAsync("#28RUGUYJU"); //devhls lab
+
+            await ClansCache.AddAsync("#2C8V29YJ"); // russian clan
+
+            await ClansCache.StartAsync();
 
             //var services = ConfigureServices();
 
@@ -148,7 +149,7 @@ namespace CocApi.Test
 
         private static Task Client_Log(object sender, LogEventArgs log)
         {
-            LogService.Log(LogLevel.Debug, log.Source, log.Method, log.Message);
+            LogService.Log(LogLevel.Debug, sender.GetType().Name, log.Method, log.Message);;
 
             return Task.CompletedTask;
         }
@@ -200,7 +201,7 @@ namespace CocApi.Test
         {
             return new ServiceCollection()
                 .AddSingleton<LogService>()
-                .AddSingleton<CocApiClientBase>()
+                .AddSingleton<CacheConfiguration>()
                 //.AddSingleton(GetCocApiConfiguration)
                 //.AddSingleton<EventHandlerService>()
                 .BuildServiceProvider();

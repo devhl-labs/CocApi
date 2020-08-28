@@ -67,7 +67,7 @@ namespace CocApi.Model
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
-        public RoleEnum? Role { get; internal set; }
+        public RoleEnum? Role { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>

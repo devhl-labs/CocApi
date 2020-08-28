@@ -61,7 +61,7 @@ namespace CocApi.Model
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum? State { get; internal set; }
+        public StateEnum? State { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
         /// </summary>

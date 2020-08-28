@@ -67,7 +67,7 @@ namespace CocApi.Model
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum? State { get; internal set; }
+        public StateEnum? State { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWar" /> class.
         /// </summary>
@@ -208,6 +208,19 @@ namespace CocApi.Model
                     this.PreparationStartTime.Equals(input.PreparationStartTime))
                 );
         }
+
+        ///// <summary>
+        ///// Gets the hash code
+        ///// </summary>
+        ///// <returns>Hash code</returns>
+        //public override int GetHashCode()
+        //{
+        //    unchecked // Overflow is fine, just wrap
+        //    {
+        //        int hashCode = 41;
+        //        return hashCode;
+        //    }
+        //}
 
         /// <summary>
         /// To validate all properties of the instance

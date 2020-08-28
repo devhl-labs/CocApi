@@ -61,7 +61,7 @@ namespace CocApi.Model
         /// Gets or Sets Result
         /// </summary>
         [DataMember(Name="result", EmitDefaultValue=false)]
-        public ResultEnum? Result { get; internal set; }
+        public ResultEnum? Result { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLogEntry" /> class.
         /// </summary>

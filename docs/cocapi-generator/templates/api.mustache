@@ -19,6 +19,7 @@ namespace {{packageName}}.{{apiPackage}}
     /// </summary>
     {{>visibility}} partial class {{classname}}
     {
+        private {{packageName}}.TokenProvider _tokenProvider;
         private {{packageName}}.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -53,10 +54,14 @@ namespace {{packageName}}.{{apiPackage}}
         /// using Configuration object
         /// </summary>
         /// <param name="configuration">An instance of Configuration</param>
+        /// <param name="tokenProvider">An instance of TokenProvider</param>
         /// <returns></returns>
-        public {{classname}}({{packageName}}.Client.Configuration configuration)
+        public {{classname}}({{packageName}}.Client.Configuration configuration, {{packageName}}.TokenProvider tokenProvider)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
+            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
+
+            _tokenProvider = tokenProvider;
 
             this.Configuration = {{packageName}}.Client.Configuration.MergeConfigurations(
                 {{packageName}}.Client.GlobalConfiguration.Instance,
@@ -166,7 +171,6 @@ namespace {{packageName}}.{{apiPackage}}
             {{/vendorExtensions.x-csharp-value-type}}
             {{/required}}
             {{/allParams}}
-
             string formattedTag = Clash.FormatTag(clanTag);
 
             {{packageName}}.Client.RequestOptions localVarRequestOptions = new {{packageName}}.Client.RequestOptions();
@@ -259,7 +263,7 @@ namespace {{packageName}}.{{apiPackage}}
             }
             {{/isKeyInCookie}}
             {{#isKeyInHeader}}
-            localVarRequestOptions.HeaderParameters.Add("{{keyParamName}}", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("{{keyParamName}}", "Bearer " + await _tokenProvider.GetTokenAsync());
             
             {{/isKeyInHeader}}
             {{#isKeyInQuery}}

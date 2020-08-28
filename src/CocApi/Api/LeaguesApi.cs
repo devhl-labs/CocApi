@@ -15,7 +15,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
-using System.Xml;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -27,6 +26,7 @@ namespace CocApi.Api
     /// </summary>
     public partial class LeaguesApi
     {
+        private CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -61,10 +61,14 @@ namespace CocApi.Api
         /// using Configuration object
         /// </summary>
         /// <param name="configuration">An instance of Configuration</param>
+        /// <param name="tokenProvider">An instance of TokenProvider</param>
         /// <returns></returns>
-        public LeaguesApi(CocApi.Client.Configuration configuration)
+        public LeaguesApi(CocApi.Client.Configuration configuration, CocApi.TokenProvider tokenProvider)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
+            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
+
+            _tokenProvider = tokenProvider;
 
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
@@ -180,7 +184,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //.ParameterToString(leagueId));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -315,7 +319,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -452,7 +456,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -580,7 +584,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -695,7 +699,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //.ParameterToString(leagueId));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -817,7 +821,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request

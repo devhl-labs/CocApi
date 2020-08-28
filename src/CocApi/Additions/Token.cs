@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace CocApi.Cache
+namespace CocApi
 {
     internal sealed class Token
     {
@@ -11,8 +13,6 @@ namespace CocApi.Cache
         private Timer ClearRateLimitTimer { get; } = new Timer();
 
         private TimeSpan TokenTimeOut { get; set; }
-
-        private CacheConfiguration CocApiClient { get; }
 
         private readonly string _token;
 
@@ -33,14 +33,15 @@ namespace CocApi.Cache
                 {
                     ClearRateLimitTimer.Start();
 
-                    CocApiClient.OnLog(this, new LogEventArgs(nameof(IsRateLimited), LogLevel.Warning, "Rate Limited"));
+                    ////todo fix this
+                    //CocApiClient.OnLog(this, new LogEventArgs(nameof(IsRateLimited), LogLevel.Warning, "Rate Limited"));
                 }
             }
         }
 
-        public Token(CacheConfiguration cocApiClient, string token, TimeSpan tokenTimeOut)
+        public Token(/*CocApiClientBase cocApiClient,*/ string token, TimeSpan tokenTimeOut)
         {
-            CocApiClient = cocApiClient; 
+            //CocApiClient = cocApiClient;
             _token = token;
             TokenTimeOut = tokenTimeOut;
 

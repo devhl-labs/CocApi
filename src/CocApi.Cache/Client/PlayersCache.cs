@@ -14,17 +14,40 @@ namespace CocApi.Cache
 {
     public class PlayersCache
     {
-        private readonly CocApiClientBase _cocApi;
-        private readonly CocApiConfiguration _cocApiConfiguration;
+        private readonly CacheConfiguration _cacheConfiguration;
+        private readonly TokenProvider _tokenProvider;
+
+        //private readonly CocApiConfiguration _cocApiConfiguration;
         private readonly PlayersApi _playersApi;
         private readonly IServiceProvider _services;
 
-        public PlayersCache(CocApiClientBase cocApi, CocApiConfiguration cocApiConfiguration, IServiceProvider serviceProvider, PlayersApi playersApi)
+        public PlayersCache(CacheConfiguration cacheConfiguration, PlayersApi playersApi, TokenProvider tokenProvider)
         {
-            _cocApi = cocApi;
-            _cocApiConfiguration = cocApiConfiguration;
-            _services = serviceProvider;
+            _cacheConfiguration = cacheConfiguration;
+            _tokenProvider = tokenProvider;
             _playersApi = playersApi;
+            _services = BuildServiceProvider(cacheConfiguration.ConnectionString);
+            //_cocApiConfiguration = cocApiConfiguration;
+            //_services = serviceProvider;
+            //_playersApi = playersApi;
+        }
+
+        private IServiceProvider BuildServiceProvider(string connectionString)
+        {
+            return new ServiceCollection()
+                .AddDbContext<CachedContext>(o =>
+                    o.UseSqlite(connectionString))
+                //.AddSingleton(cocApiConfiguration)
+                //.AddSingleton(this)
+                //.AddSingleton<ClansApi>()
+                //.AddSingleton<ClansCache>()
+                //.AddSingleton<PlayersApi>()
+                //.AddSingleton<PlayersCache>()
+                //.AddSingleton<LeaguesApi>()
+                //.AddSingleton<LocationsApi>()
+                //.AddSingleton<LabelsApi>()
+                //.AddSingleton(ConfigurationBuilder)
+                .BuildServiceProvider();
         }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
@@ -97,10 +120,10 @@ namespace CocApi.Cache
             return result?.Data;
         }
 
-        public void Start()
+        public async Task StartAsync()
         {
-            Task.Run(async () =>
-            {
+            //Task.Run(async () =>
+            //{
                 try
                 {
                     if (IsRunning)
@@ -110,7 +133,7 @@ namespace CocApi.Cache
 
                     StopRequested = false;
 
-                    _cocApi.OnLog(new LogEventArgs(nameof(PlayersCache), nameof(Start), LogLevel.Information));
+                    _cacheConfiguration.OnLog(this, new LogEventArgs(nameof(StartAsync), LogLevel.Information));
 
                     int id = 0;
 
@@ -120,46 +143,55 @@ namespace CocApi.Cache
 
                         using var scope = _services.CreateScope();
 
-                        CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                        using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
                         List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
-                            v.Id > id).OrderBy(v => v.Id).Take(_cocApiConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
+                            v.Id > id).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
 
                         for (int i = 0; i < cachedPlayers.Count; i++)
                             tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
 
                         await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                        if (cachedPlayers.Count < _cocApiConfiguration.ConcurrentUpdates)
+                        if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
                             id = 0;
                         else
                             id = cachedPlayers.Max(v => v.Id);
 
-                        await Task.Delay(_cocApiConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
+                        await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
                     }
 
                     IsRunning = false;
                 }
                 catch (Exception e)
                 {
-                    _cocApi.OnLog(new ExceptionEventArgs(nameof(PlayersCache), nameof(Start), e));
+                    _cacheConfiguration.OnLog(this, new ExceptionEventArgs(nameof(StartAsync), e));
 
                     IsRunning = false;
 
-                    Start();
+                    //todo what to do when it errors?
+                    //StartAsync();
                 }
-            });
+            //});
         }
 
         public async Task StopAsync()
         {
             StopRequested = true;
 
-            _cocApi.OnLog(new LogEventArgs(nameof(PlayersCache), nameof(StopAsync), LogLevel.Information));
+            _cacheConfiguration.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
 
             while (IsRunning)
                 await Task.Delay(500).ConfigureAwait(false);
         }
+
+        public virtual bool HasUpdated(Player stored, Player fetched) => stored.Equals(fetched);
+
+        public virtual TimeSpan TimeToLive(CachedPlayer cachedPlayer, ApiResponse<Player> apiResponse)
+            => TimeSpan.FromSeconds(0);
+
+        public virtual TimeSpan TimeToLive(CachedPlayer cachedPlayer, ApiException apiException)
+            => TimeSpan.FromMinutes(0);
 
         public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
         {
@@ -210,16 +242,16 @@ namespace CocApi.Cache
 
                 try
                 {
-                     ApiResponse<Player>? apiResponse = await _cocApi.PlayersApi.GetPlayerResponseAsync(cachedPlayer.Tag);
+                     ApiResponse<Player>? apiResponse = await _playersApi.GetPlayerResponseAsync(cachedPlayer.Tag);
 
-                    if (cachedPlayer.Data != null && _cocApi.HasUpdated(cachedPlayer.Data, apiResponse.Data) == false)
+                    if (cachedPlayer.Data != null && HasUpdated(cachedPlayer.Data, apiResponse.Data) == false)
                         OnPlayerUpdated(cachedPlayer.Data, apiResponse.Data);
 
-                    cachedPlayer.UpdateFrom(apiResponse, _cocApi.TimeToLive(cachedPlayer, apiResponse));
+                    cachedPlayer.UpdateFrom(apiResponse, TimeToLive(cachedPlayer, apiResponse));
                 }
                 catch (ApiException e)
                 {
-                    cachedPlayer.UpdateFrom(e, _cocApi.TimeToLive(cachedPlayer, e));
+                    cachedPlayer.UpdateFrom(e, TimeToLive(cachedPlayer, e));
                 }
 
                 dbContext.Players.Update(cachedPlayer);

@@ -26,6 +26,7 @@ namespace CocApi.Api
     /// </summary>
     public partial class PlayersApi
     {
+        private CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -60,10 +61,14 @@ namespace CocApi.Api
         /// using Configuration object
         /// </summary>
         /// <param name="configuration">An instance of Configuration</param>
+        /// <param name="tokenProvider">An instance of TokenProvider</param>
         /// <returns></returns>
-        public PlayersApi(CocApi.Client.Configuration configuration)
+        public PlayersApi(CocApi.Client.Configuration configuration, CocApi.TokenProvider tokenProvider)
         {
             if (configuration == null) throw new ArgumentNullException("configuration");
+            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
+
+            _tokenProvider = tokenProvider;
 
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
@@ -159,7 +164,6 @@ namespace CocApi.Api
             // verify the required parameter 'playerTag' is set
             if (playerTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'playerTag' when calling PlayersApi->GetPlayer");
-
             string formattedTag = Clash.FormatTag(playerTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -181,7 +185,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(playerTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await this.Configuration.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
