@@ -85,7 +85,7 @@ namespace CocApi.Cache.Models
             LocalExpiration = DateTime.UtcNow.Add(localExpiration);
         }
 
-        public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(15);
+        public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);
 
         public bool IsLocallyExpired() => DateTime.UtcNow > LocalExpiration;
     }

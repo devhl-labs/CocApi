@@ -12,40 +12,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class PlayersCacheBase
+    public class PlayersCacheBase : ClientBase
     {
-        private readonly CacheConfiguration _cacheConfiguration;
-        private readonly TokenProvider _tokenProvider;
-
         private readonly PlayersApi _playersApi;
-        private readonly IServiceProvider _services;
 
-        internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
-        public event LogEventHandler? Log;
-
-        public PlayersCacheBase(CacheConfiguration cacheConfiguration, PlayersApi playersApi)
+        public PlayersCacheBase(CacheConfiguration cacheConfiguration, PlayersApi playersApi) 
+            : base (playersApi.TokenProvider, cacheConfiguration)
         {
-            _cacheConfiguration = cacheConfiguration;
-            _tokenProvider = playersApi.TokenProvider;
             _playersApi = playersApi;
-            _services = BuildServiceProvider(cacheConfiguration.ConnectionString);
-        }
-
-        private IServiceProvider BuildServiceProvider(string connectionString)
-        {
-            return new ServiceCollection()
-                .AddDbContext<CachedContext>(o =>
-                    o.UseSqlite(connectionString))
-                .BuildServiceProvider();
         }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
         internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, CachedPlayer?>();
-
-        private bool IsRunning { get; set; }
-
-        private bool StopRequested { get; set; }
 
         public async Task<CachedPlayer> AddAsync(string tag, bool download = true)
         {

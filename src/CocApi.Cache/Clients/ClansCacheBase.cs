@@ -13,31 +13,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class ClansCacheBase
+    public class ClansCacheBase : ClientBase
     {
         private readonly ClansApi _clansApi;
-        private readonly CacheConfiguration _cacheConfiguration;
-        private readonly TokenProvider _tokenProvider;
-        private readonly IServiceProvider _services;
         private readonly PlayersCacheBase? _playersCache;
 
-        internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
-        public event LogEventHandler? Log;
-
         public ClansCacheBase(CacheConfiguration cacheConfiguration, ClansApi clansApi)
+            : base(clansApi.TokenProvider, cacheConfiguration)
         {
-            _cacheConfiguration = cacheConfiguration;
-            _tokenProvider = clansApi.TokenProvider;
-            _services = BuildServiceProvider(cacheConfiguration.ConnectionString);
             _clansApi = clansApi;
-        }
-
-        private IServiceProvider BuildServiceProvider(string connectionString)
-        {
-            return new ServiceCollection()
-                .AddDbContext<CachedContext>(o =>
-                    o.UseSqlite(connectionString))
-                .BuildServiceProvider();
         }
 
         public ClansCacheBase(CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCacheBase playersCache)
@@ -49,19 +33,12 @@ namespace CocApi.Cache
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
-
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarAdded;
-
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarEndingSoon;
-
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarEndNotSeen;
-
         public event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
-
         public event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
-
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarStartingSoon;
-
         public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
         public bool DownloadCurrentWars { get; set; } = true;
@@ -69,10 +46,6 @@ namespace CocApi.Cache
         public bool DownloadCwl { get; set; } = true;
 
         public bool DownloadMembers { get; set; } = false;
-
-        private bool IsUpdatingClans { get; set; }
-
-        private bool StopUpdatingClansRequested { get; set; }
 
         private ConcurrentDictionary<string, CachedClan> UpdatingClans { get; set; } = new ConcurrentDictionary<string, CachedClan>();
 
@@ -199,12 +172,12 @@ namespace CocApi.Cache
             //{
                 try
                 {
-                    if (IsUpdatingClans)
+                    if (IsRunning)
                         return;
 
-                    IsUpdatingClans = true;
+                    IsRunning = true;
 
-                    StopUpdatingClansRequested = false;
+                    StopRequested = false;
 
                     OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
@@ -214,7 +187,7 @@ namespace CocApi.Cache
 
                     CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-                    while (!StopUpdatingClansRequested)
+                    while (!StopRequested)
                     {
                         List<Task> tasks = new List<Task>();
 
@@ -234,13 +207,13 @@ namespace CocApi.Cache
                         await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
                     }
 
-                    IsUpdatingClans = false;
+                    IsRunning = false;
                 }
                 catch (Exception e)
                 {
                     OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-                    IsUpdatingClans = false;
+                    IsRunning = false;
 
                     //todo what to do when it breaks;
                     //Start();
@@ -294,11 +267,11 @@ namespace CocApi.Cache
 
         public async Task StopAsync()
         {
-            StopUpdatingClansRequested = true;
+            StopRequested = true;
 
             OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
 
-            while (IsUpdatingClans)
+            while (IsRunning)
                 await Task.Delay(500).ConfigureAwait(false);
         }
 

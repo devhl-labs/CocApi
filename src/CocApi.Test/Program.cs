@@ -35,7 +35,6 @@ namespace CocApi.Test
             })
             .ConfigureServices(services =>
             {
-                //services.AddHostedService<PlayersCache>();
                 services.AddHostedService<ClansCache>();
             })
             .ConfigureLogging(c => c.ClearProviders());
