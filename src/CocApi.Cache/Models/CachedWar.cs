@@ -119,13 +119,13 @@ namespace CocApi.Cache.Models
                 StatusCode = apiResponse.StatusCode;
             else
                 StatusCodeOpponent = apiResponse.StatusCode;
-
         }
 
         internal new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiException, localExpiration);
         }
+
         public bool AllAttacksUsed()
         {
             int totalMembers = Data.TeamSize * 2;
@@ -138,40 +138,6 @@ namespace CocApi.Cache.Models
             int attacks = Data.Clan.Attacks + Data.Opponent.Attacks;
 
             return totalAttacks == attacks;
-        }
-
-        //todo is anything calling this?
-        public override bool Equals(object? obj)
-        {
-            if (Data == null ||
-                !(obj is CachedWar war) ||
-                war.PreparationStartTime != PreparationStartTime ||
-                war.Data == null ||
-                Data.PreparationStartTime != war.Data.PreparationStartTime)
-                throw new ArgumentException();
-
-            return /*obj is CachedWar war &&*/
-                   //Id == war.Id &&
-                   //RawContent == war.RawContent &&
-                   //Downloaded == war.Downloaded &&
-                   //ServerExpiration == war.ServerExpiration &&
-                   //LocalExpiration == war.LocalExpiration &&
-                   //EqualityComparer<ClanWar?>.Default.Equals(Data, war.Data) &&
-                   //ClanTag == war.ClanTag &&
-                   //OpponentTag == war.OpponentTag &&
-                   //Data.PreparationStartTime == war.Data.PreparationStartTime &&
-                   Data.EndTime == war.Data.EndTime &&
-                   Data.StartTime == war.Data.StartTime &&
-                   WarTag == war.WarTag &&
-                   Data.State == war.Data.State &&
-                   IsFinal == war.IsFinal &&
-                   //StatusCodeClan == war.StatusCodeClan &&
-                   //StatusCodeOpponent == war.StatusCodeOpponent &&
-                   //Announcements == war.Announcements &&
-                   //EqualityComparer<List<string>>.Default.Equals(_clanTags, war._clanTags) &&
-                   EqualityComparer<SortedSet<string>>.Default.Equals(ClanTags, war.ClanTags) &&
-                   Data.Clans.First().Value.Attacks == war.Data.Clans.First(c => c.Key == Data.Clans.First().Key).Value.Attacks &&
-                   Data.Clans.Skip(1).First().Value.Attacks == war.Data.Clans.First(c => c.Key == Data.Clans.Skip(1).First().Key).Value.Attacks;
         }
 
         public override int GetHashCode()

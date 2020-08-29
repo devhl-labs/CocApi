@@ -28,17 +28,10 @@ namespace CocApi.Test
         {
             await AddAsync("#29GPU9CUJ"); //squirrel man
 
-            await _playersApi.GetPlayerAsync("#YLY0LPQP");
-
             await Task.Run(() =>
             {
-                _ = RunAsync();
+                _ = RunAsync(cancellationToken);
             });
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            await StopAsync();
         }
 
         private Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)

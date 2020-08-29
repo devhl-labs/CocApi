@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Models;
@@ -88,59 +89,58 @@ namespace CocApi.Cache
             return result?.Data;
         }
 
-        public async Task RunAsync()
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
-            //Task.Run(async () =>
-            //{
-                try
+            try
+            {
+                if (IsRunning)
+                    return;
+
+                IsRunning = true;
+
+                StopRequested = false;
+
+                OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+
+                int id = 0;
+
+                while (!StopRequested)
                 {
-                    if (IsRunning)
-                        return;
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    IsRunning = true;
+                    List<Task> tasks = new List<Task>();
 
-                    StopRequested = false;
+                    using var scope = _services.CreateScope();
 
-                    OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+                    using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-                    int id = 0;
+                    List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
+                        v.Id > id).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
 
-                    while (!StopRequested)
-                    {
-                        List<Task> tasks = new List<Task>();
+                    for (int i = 0; i < cachedPlayers.Count; i++)
+                        tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
 
-                        using var scope = _services.CreateScope();
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                        using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                    if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
+                        id = 0;
+                    else
+                        id = cachedPlayers.Max(v => v.Id);
 
-                        List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
-                            v.Id > id).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
-
-                        for (int i = 0; i < cachedPlayers.Count; i++)
-                            tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
-
-                        await Task.WhenAll(tasks).ConfigureAwait(false);
-
-                        if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
-                            id = 0;
-                        else
-                            id = cachedPlayers.Max(v => v.Id);
-
-                        await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
-                    }
-
-                    IsRunning = false;
+                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
                 }
-                catch (Exception e)
-                {
-                    OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-                    IsRunning = false;
+                IsRunning = false;
+            }
+            catch (Exception e)
+            {
+                OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-                    //todo what to do when it errors?
-                    //StartAsync();
-                }
-            //});
+                IsRunning = false;
+
+                //todo what to do when it errors?
+                //StartAsync();
+            }
         }
 
         public async Task StopAsync()

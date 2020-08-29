@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,21 @@ namespace CocApi.Cache
                 .AddDbContext<CachedContext>(o =>
                     o.UseSqlite(connectionString))
                 .BuildServiceProvider();
+        }
+
+        public async Task StopAsync(CancellationToken cancellationToken)
+        {
+            StopRequested = true;
+
+            OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
+
+            while (IsRunning)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await Task.Delay(500).ConfigureAwait(false);
+            }
+
         }
     }
 

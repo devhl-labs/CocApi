@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Models;
@@ -36,15 +37,14 @@ namespace CocApi.Cache
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarAdded;
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarEndingSoon;
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarEndNotSeen;
+        public event AsyncEventHandler<ClanWarEventArgs>? ClanWarEnded;
         public event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
         public event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarStartingSoon;
         public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
         public bool DownloadCurrentWars { get; set; } = true;
-
         public bool DownloadCwl { get; set; } = true;
-
         public bool DownloadMembers { get; set; } = false;
 
         private ConcurrentDictionary<string, CachedClan> UpdatingClans { get; set; } = new ConcurrentDictionary<string, CachedClan>();
@@ -166,59 +166,58 @@ namespace CocApi.Cache
                 ?? await _clansApi.GetClanOrDefaultAsync(tag).ConfigureAwait(false);
         }
 
-        public async Task RunAsync()
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
-            //Task.Run(async () =>
-            //{
-                try
+            try
+            {
+                if (IsRunning)
+                    return;
+
+                IsRunning = true;
+
+                StopRequested = false;
+
+                OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+
+                int clanId = 0;
+
+                using var scope = _services.CreateScope();
+
+                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+                while (!StopRequested)
                 {
-                    if (IsRunning)
-                        return;
+                    cancellationToken.ThrowIfCancellationRequested();
 
-                    IsRunning = true;
+                    List<Task> tasks = new List<Task>();
 
-                    StopRequested = false;
+                    List<CachedClan> cachedClans = await dbContext.Clans.Where(v =>
+                        v.Id > clanId).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
 
-                    OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+                    for (int i = 0; i < cachedClans.Count; i++)
+                        tasks.Add(UpdateEntireClanAsync(cachedClans[i]));
 
-                    int clanId = 0;
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    using var scope = _services.CreateScope();
+                    if (cachedClans.Count < _cacheConfiguration.ConcurrentUpdates)
+                        clanId = 0;
+                    else
+                        clanId = cachedClans.Max(c => c.Id);
 
-                    CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
-
-                    while (!StopRequested)
-                    {
-                        List<Task> tasks = new List<Task>();
-
-                        List<CachedClan> cachedClans = await dbContext.Clans.Where(v =>
-                            v.Id > clanId).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
-
-                        for (int i = 0; i < cachedClans.Count; i++)
-                            tasks.Add(UpdateEntireClanAsync(cachedClans[i]));
-
-                        await Task.WhenAll(tasks).ConfigureAwait(false);
-
-                        if (cachedClans.Count < _cacheConfiguration.ConcurrentUpdates)
-                            clanId = 0;
-                        else
-                            clanId = cachedClans.Max(c => c.Id);
-
-                        await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
-                    }
-
-                    IsRunning = false;
+                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
                 }
-                catch (Exception e)
-                {
-                    OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-                    IsRunning = false;
+                IsRunning = false;
+            }
+            catch (Exception e)
+            {
+                OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-                    //todo what to do when it breaks;
-                    //Start();
-                }
-            //});
+                IsRunning = false;
+
+                //todo what to do when it breaks;
+                //Start();
+            }
         }
 
         public virtual bool HasUpdated(Clan stored, Clan fetched) => stored.Equals(fetched);
@@ -265,14 +264,12 @@ namespace CocApi.Cache
             return TimeSpan.FromSeconds(0);
         }
 
-        public async Task StopAsync()
+        public new async Task StopAsync(CancellationToken cancellationToken)
         {
-            StopRequested = true;
+            if (_playersCache != null)
+                await _playersCache.StopAsync(cancellationToken);
 
-            OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
-
-            while (IsRunning)
-                await Task.Delay(500).ConfigureAwait(false);
+            await base.StopAsync(cancellationToken);
         }
 
         public async Task UpdateAsync(string tag, bool downloadClan = true, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
@@ -316,7 +313,10 @@ namespace CocApi.Cache
             => ClanWarEndingSoon?.Invoke(this, new ClanWarEventArgs(clanWar));
 
         internal void OnClanWarEndNotSeen(ClanWar clanWar)
-                                                                                                                                                                                            => ClanWarEndNotSeen?.Invoke(this, new ClanWarEventArgs(clanWar));
+            => ClanWarEndNotSeen?.Invoke(this, new ClanWarEventArgs(clanWar));
+
+        internal void OnClanWarEnded(ClanWar clanWar)
+            => ClanWarEnded?.Invoke(this, new ClanWarEventArgs(clanWar));
 
         internal void OnClanWarLeagueGroupUpdated(Clan clan, ClanWarLeagueGroup stored, ClanWarLeagueGroup fetched)
             => ClanWarLeagueGroupUpdated?.Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(clan, stored, fetched));
@@ -437,6 +437,7 @@ namespace CocApi.Cache
                 OnClanWarEndingSoon(cachedWar.Data);
             }
 
+            //todo 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
                 cachedWar.State != ClanWar.StateEnum.WarEnded &&
                 cachedWar.IsFinal == true &&
@@ -446,6 +447,14 @@ namespace CocApi.Cache
             {
                 cachedWar.Announcements |= Announcements.WarEndNotSeen;
                 OnClanWarEndNotSeen(cachedWar.Data);
+            }
+
+            if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
+                cachedWar.EndTime < DateTime.UtcNow &&
+                cachedWar.EndTime.Value.Day == DateTime.UtcNow.Day)
+            {
+                cachedWar.Announcements |= Announcements.WarEnded;
+                OnClanWarEnded(cachedWar.Data);
             }
         }
 

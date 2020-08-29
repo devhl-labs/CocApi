@@ -45,20 +45,9 @@ namespace CocApi.Test
 
             await Task.Run(() =>
             {
-                _ = RunAsync();
-                _ = _playersCache.RunAsync();
+                _ = RunAsync(cancellationToken);
+                _ = _playersCache.RunAsync(cancellationToken);
             });
-        }
-
-        public async Task StopAsync(CancellationToken cancellationToken)
-        {
-            List<Task> tasks = new List<Task>
-            {
-                StopAsync(),
-                _playersCache.StopAsync()
-            };
-
-            await Task.WhenAll(tasks);
         }
 
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
