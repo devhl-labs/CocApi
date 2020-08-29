@@ -12,8 +12,6 @@ namespace CocApi.Cache
 
         private TimeSpan TokenTimeOut { get; set; }
 
-        private CacheConfiguration CocApiClient { get; }
-
         private readonly string _token;
 
         public DateTime LastUsedUtc { get; private set; }
@@ -32,15 +30,12 @@ namespace CocApi.Cache
                 if (value)
                 {
                     ClearRateLimitTimer.Start();
-
-                    CocApiClient.OnLog(this, new LogEventArgs(nameof(IsRateLimited), LogLevel.Warning, "Rate Limited"));
                 }
             }
         }
 
-        public Token(CacheConfiguration cocApiClient, string token, TimeSpan tokenTimeOut)
+        public Token(string token, TimeSpan tokenTimeOut)
         {
-            CocApiClient = cocApiClient; 
             _token = token;
             TokenTimeOut = tokenTimeOut;
 

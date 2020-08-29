@@ -24,9 +24,9 @@ namespace CocApi.Api
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class ClansApi
+    public sealed partial class ClansApi
     {
-        private CocApi.TokenProvider _tokenProvider;
+        public CocApi.TokenProvider TokenProvider { get; }
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -37,15 +37,7 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public ClansApi() : this((string) null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClansApi"/> class.
-        /// </summary>
-        /// <returns></returns>
-        public ClansApi(String basePath)
+        public ClansApi(CocApi.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
@@ -54,48 +46,7 @@ namespace CocApi.Api
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClansApi"/> class
-        /// using Configuration object
-        /// </summary>
-        /// <param name="configuration">An instance of Configuration</param>
-        /// <param name="tokenProvider">An instance of TokenProvider</param>
-        /// <returns></returns>
-        public ClansApi(CocApi.Client.Configuration configuration, CocApi.TokenProvider tokenProvider)
-        {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
-
-            _tokenProvider = tokenProvider;
-
-            this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
-                CocApi.Client.GlobalConfiguration.Instance,
-                configuration
-            );
-            this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
-            this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
-            ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClansApi"/> class
-        /// using a Configuration object and client instance.
-        /// </summary>
-        /// <param name="client">The client interface for synchronous API access.</param>
-        /// <param name="asyncClient">The client interface for asynchronous API access.</param>
-        /// <param name="configuration">The configuration object.</param>
-        public ClansApi(CocApi.Client.ISynchronousClient client,CocApi.Client.IAsynchronousClient asyncClient, CocApi.Client.IReadableConfiguration configuration)
-        {
-            if(client == null) throw new ArgumentNullException("client");
-            if(asyncClient == null) throw new ArgumentNullException("asyncClient");
-            if(configuration == null) throw new ArgumentNullException("configuration");
-
-            this.Client = client;
-            this.AsynchronousClient = asyncClient;
-            this.Configuration = configuration;
-            this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
+            this.TokenProvider = tokenProvider;
         }
 
         /// <summary>
@@ -185,7 +136,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -315,7 +266,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -433,7 +384,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -546,7 +497,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(warTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -676,7 +627,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -794,7 +745,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -964,7 +915,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request

@@ -17,7 +17,7 @@ namespace {{packageName}}.{{apiPackage}}
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    {{>visibility}} partial class {{classname}}
+    {{>visibility}} sealed partial class {{classname}}
     {
         private {{packageName}}.TokenProvider _tokenProvider;
         private {{packageName}}.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
@@ -30,15 +30,7 @@ namespace {{packageName}}.{{apiPackage}}
         /// Initializes a new instance of the <see cref="{{classname}}"/> class.
         /// </summary>
         /// <returns></returns>
-        public {{classname}}() : this((string) null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="{{classname}}"/> class.
-        /// </summary>
-        /// <returns></returns>
-        public {{classname}}(String basePath)
+        public {{classname}}({{packageName}}.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = {{packageName}}.Client.Configuration.MergeConfigurations(
                 {{packageName}}.Client.GlobalConfiguration.Instance,
@@ -47,52 +39,7 @@ namespace {{packageName}}.{{apiPackage}}
             this.Client = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = {{packageName}}.Client.Configuration.DefaultExceptionFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="{{classname}}"/> class
-        /// using Configuration object
-        /// </summary>
-        /// <param name="configuration">An instance of Configuration</param>
-        /// <param name="tokenProvider">An instance of TokenProvider</param>
-        /// <returns></returns>
-        public {{classname}}({{packageName}}.Client.Configuration configuration, {{packageName}}.TokenProvider tokenProvider)
-        {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
-
-            _tokenProvider = tokenProvider;
-
-            this.Configuration = {{packageName}}.Client.Configuration.MergeConfigurations(
-                {{packageName}}.Client.GlobalConfiguration.Instance,
-                configuration
-            );
-            this.Client = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
-            this.AsynchronousClient = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
-            ExceptionFactory = {{packageName}}.Client.Configuration.DefaultExceptionFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="{{classname}}"/> class
-        /// using a Configuration object and client instance.
-        /// </summary>
-        /// <param name="client">The client interface for synchronous API access.</param>{{#supportsAsync}}
-        /// <param name="asyncClient">The client interface for asynchronous API access.</param>{{/supportsAsync}}
-        /// <param name="configuration">The configuration object.</param>
-        public {{classname}}({{packageName}}.Client.ISynchronousClient client,{{#supportsAsync}}{{packageName}}.Client.IAsynchronousClient asyncClient,{{/supportsAsync}} {{packageName}}.Client.IReadableConfiguration configuration)
-        {
-            if(client == null) throw new ArgumentNullException("client");
-            {{#supportsAsync}}
-            if(asyncClient == null) throw new ArgumentNullException("asyncClient");
-            {{/supportsAsync}}
-            if(configuration == null) throw new ArgumentNullException("configuration");
-
-            this.Client = client;
-            {{#supportsAsync}}
-            this.AsynchronousClient = asyncClient;
-            {{/supportsAsync}}
-            this.Configuration = configuration;
-            this.ExceptionFactory = {{packageName}}.Client.Configuration.DefaultExceptionFactory;
+            this._tokenProvider = tokenProvider;
         }
 
         {{#supportsAsync}}

@@ -24,7 +24,7 @@ namespace CocApi.Api
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class LabelsApi
+    public sealed partial class LabelsApi
     {
         private CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
@@ -37,15 +37,7 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="LabelsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LabelsApi() : this((string) null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LabelsApi"/> class.
-        /// </summary>
-        /// <returns></returns>
-        public LabelsApi(String basePath)
+        public LabelsApi(CocApi.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
@@ -54,48 +46,7 @@ namespace CocApi.Api
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LabelsApi"/> class
-        /// using Configuration object
-        /// </summary>
-        /// <param name="configuration">An instance of Configuration</param>
-        /// <param name="tokenProvider">An instance of TokenProvider</param>
-        /// <returns></returns>
-        public LabelsApi(CocApi.Client.Configuration configuration, CocApi.TokenProvider tokenProvider)
-        {
-            if (configuration == null) throw new ArgumentNullException("configuration");
-            if (tokenProvider == null) throw new ArgumentNullException("tokenProvider");
-
-            _tokenProvider = tokenProvider;
-
-            this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
-                CocApi.Client.GlobalConfiguration.Instance,
-                configuration
-            );
-            this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
-            this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
-            ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LabelsApi"/> class
-        /// using a Configuration object and client instance.
-        /// </summary>
-        /// <param name="client">The client interface for synchronous API access.</param>
-        /// <param name="asyncClient">The client interface for asynchronous API access.</param>
-        /// <param name="configuration">The configuration object.</param>
-        public LabelsApi(CocApi.Client.ISynchronousClient client,CocApi.Client.IAsynchronousClient asyncClient, CocApi.Client.IReadableConfiguration configuration)
-        {
-            if(client == null) throw new ArgumentNullException("client");
-            if(asyncClient == null) throw new ArgumentNullException("asyncClient");
-            if(configuration == null) throw new ArgumentNullException("configuration");
-
-            this.Client = client;
-            this.AsynchronousClient = asyncClient;
-            this.Configuration = configuration;
-            this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
+            this._tokenProvider = tokenProvider;
         }
 
         /// <summary>

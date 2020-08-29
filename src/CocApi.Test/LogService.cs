@@ -158,6 +158,11 @@ namespace CocApi.Test
     {
         private static object LogLock { get; } = new object();
 
+        public LogService()
+        {
+            Log(LogLevel.Information, nameof(LogService), null, "Press CTRL-C to exit");
+        }
+
         private static void ResetConsoleColor()
         {
             Console.BackgroundColor = ConsoleColor.Black;

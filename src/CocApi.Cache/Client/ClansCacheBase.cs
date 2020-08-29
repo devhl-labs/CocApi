@@ -13,18 +13,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class ClansCache
+    public class ClansCacheBase
     {
         private readonly ClansApi _clansApi;
         private readonly CacheConfiguration _cacheConfiguration;
         private readonly TokenProvider _tokenProvider;
         private readonly IServiceProvider _services;
-        private readonly PlayersCache? _playersCache;
+        private readonly PlayersCacheBase? _playersCache;
 
-        public ClansCache(CacheConfiguration cacheConfiguration, ClansApi clansApi, TokenProvider tokenProvider)
+        internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
+        public event LogEventHandler? Log;
+
+        public ClansCacheBase(CacheConfiguration cacheConfiguration, ClansApi clansApi)
         {
             _cacheConfiguration = cacheConfiguration;
-            _tokenProvider = tokenProvider;
+            _tokenProvider = clansApi.TokenProvider;
             _services = BuildServiceProvider(cacheConfiguration.ConnectionString);
             _clansApi = clansApi;
         }
@@ -37,8 +40,8 @@ namespace CocApi.Cache
                 .BuildServiceProvider();
         }
 
-        public ClansCache(CacheConfiguration cacheConfiguration, ClansApi clansApi, TokenProvider tokenProvider, PlayersCache playersCache)
-            : this(cacheConfiguration, clansApi, tokenProvider)
+        public ClansCacheBase(CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCacheBase playersCache)
+            : this(cacheConfiguration, clansApi)
         {
             _playersCache = playersCache;
 
@@ -190,7 +193,7 @@ namespace CocApi.Cache
                 ?? await _clansApi.GetClanOrDefaultAsync(tag).ConfigureAwait(false);
         }
 
-        public async Task StartAsync()
+        public async Task RunAsync()
         {
             //Task.Run(async () =>
             //{
@@ -203,7 +206,7 @@ namespace CocApi.Cache
 
                     StopUpdatingClansRequested = false;
 
-                    _cacheConfiguration.OnLog(this, new LogEventArgs(nameof(StartAsync), LogLevel.Information));
+                    OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
                     int clanId = 0;
 
@@ -235,7 +238,7 @@ namespace CocApi.Cache
                 }
                 catch (Exception e)
                 {
-                    _cacheConfiguration.OnLog(this, new ExceptionEventArgs(nameof(StartAsync), e));
+                    OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
                     IsUpdatingClans = false;
 
@@ -293,7 +296,7 @@ namespace CocApi.Cache
         {
             StopUpdatingClansRequested = true;
 
-            _cacheConfiguration.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
+            OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
 
             while (IsUpdatingClans)
                 await Task.Delay(500).ConfigureAwait(false);
@@ -630,7 +633,7 @@ namespace CocApi.Cache
             }
         }
 
-        private async Task UpdateMember(ClanMember member, PlayersCache playersCache)
+        private async Task UpdateMember(ClanMember member, PlayersCacheBase playersCache)
         {
             CachedPlayer cachedPlayer = await playersCache.AddAsync(member.Tag, false);
 

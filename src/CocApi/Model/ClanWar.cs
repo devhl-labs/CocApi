@@ -209,19 +209,6 @@ namespace CocApi.Model
                 );
         }
 
-        ///// <summary>
-        ///// Gets the hash code
-        ///// </summary>
-        ///// <returns>Hash code</returns>
-        //public override int GetHashCode()
-        //{
-        //    unchecked // Overflow is fine, just wrap
-        //    {
-        //        int hashCode = 41;
-        //        return hashCode;
-        //    }
-        //}
-
         /// <summary>
         /// To validate all properties of the instance
         /// </summary>

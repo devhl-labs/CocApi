@@ -12,24 +12,23 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class PlayersCache
+    public class PlayersCacheBase
     {
         private readonly CacheConfiguration _cacheConfiguration;
         private readonly TokenProvider _tokenProvider;
 
-        //private readonly CocApiConfiguration _cocApiConfiguration;
         private readonly PlayersApi _playersApi;
         private readonly IServiceProvider _services;
 
-        public PlayersCache(CacheConfiguration cacheConfiguration, PlayersApi playersApi, TokenProvider tokenProvider)
+        internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
+        public event LogEventHandler? Log;
+
+        public PlayersCacheBase(CacheConfiguration cacheConfiguration, PlayersApi playersApi)
         {
             _cacheConfiguration = cacheConfiguration;
-            _tokenProvider = tokenProvider;
+            _tokenProvider = playersApi.TokenProvider;
             _playersApi = playersApi;
             _services = BuildServiceProvider(cacheConfiguration.ConnectionString);
-            //_cocApiConfiguration = cocApiConfiguration;
-            //_services = serviceProvider;
-            //_playersApi = playersApi;
         }
 
         private IServiceProvider BuildServiceProvider(string connectionString)
@@ -37,16 +36,6 @@ namespace CocApi.Cache
             return new ServiceCollection()
                 .AddDbContext<CachedContext>(o =>
                     o.UseSqlite(connectionString))
-                //.AddSingleton(cocApiConfiguration)
-                //.AddSingleton(this)
-                //.AddSingleton<ClansApi>()
-                //.AddSingleton<ClansCache>()
-                //.AddSingleton<PlayersApi>()
-                //.AddSingleton<PlayersCache>()
-                //.AddSingleton<LeaguesApi>()
-                //.AddSingleton<LocationsApi>()
-                //.AddSingleton<LabelsApi>()
-                //.AddSingleton(ConfigurationBuilder)
                 .BuildServiceProvider();
         }
 
@@ -120,7 +109,7 @@ namespace CocApi.Cache
             return result?.Data;
         }
 
-        public async Task StartAsync()
+        public async Task RunAsync()
         {
             //Task.Run(async () =>
             //{
@@ -133,7 +122,7 @@ namespace CocApi.Cache
 
                     StopRequested = false;
 
-                    _cacheConfiguration.OnLog(this, new LogEventArgs(nameof(StartAsync), LogLevel.Information));
+                    OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
                     int id = 0;
 
@@ -165,7 +154,7 @@ namespace CocApi.Cache
                 }
                 catch (Exception e)
                 {
-                    _cacheConfiguration.OnLog(this, new ExceptionEventArgs(nameof(StartAsync), e));
+                    OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
                     IsRunning = false;
 
@@ -179,7 +168,7 @@ namespace CocApi.Cache
         {
             StopRequested = true;
 
-            _cacheConfiguration.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
+            OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
 
             while (IsRunning)
                 await Task.Delay(500).ConfigureAwait(false);

@@ -58,7 +58,7 @@ namespace CocApi.Cache
                     //o.UseSqlite(cocApiConfiguration.ConnectionString))
         }
 
-        public event LogEventHandler? Log;
+        //public event LogEventHandler? Log;
 
         //public ClansApi ClansApi
         //{
@@ -130,7 +130,7 @@ namespace CocApi.Cache
         //    }
         //}
 
-        internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
+        //internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
 
         //private IServiceProvider BuildServiceProvider(CocApiConfiguration cocApiConfiguration)
         //{
