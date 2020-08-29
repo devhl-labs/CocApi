@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Test
 {
-    public class PlayersCache : PlayersCacheBase, IHostedService
+    public class PlayersCache : PlayersCacheBase
     {
         private readonly PlayersApi _playersApi;
         private readonly LogService _logService;
@@ -19,14 +19,16 @@ namespace CocApi.Test
         {
             _playersApi = playersApi;
             _logService = logService;
+
+            PlayerUpdated += PlayerUpdater_PlayerUpdated;
+            _playersApi.QueryResult += QueryResult;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            PlayerUpdated += PlayerUpdater_PlayerUpdated;
-            _playersApi.QueryResult += QueryResult;
-
             await AddAsync("#29GPU9CUJ"); //squirrel man
+
+            await _playersApi.GetPlayerAsync("#YLY0LPQP");
 
             await Task.Run(() =>
             {
@@ -36,10 +38,9 @@ namespace CocApi.Test
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            PlayerUpdated -= PlayerUpdater_PlayerUpdated;
-            _playersApi.QueryResult -= QueryResult;
             await StopAsync();
         }
+
         private Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)
         {
             _logService.Log(LogLevel.Debug, nameof(Program), null, "Player updated");

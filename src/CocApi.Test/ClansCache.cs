@@ -14,16 +14,17 @@ namespace CocApi.Test
 {
     public class ClansCache : ClansCacheBase, IHostedService
     {
+        private readonly ClansApi _clansApi;
+        private readonly PlayersCache _playersCache;
         private readonly LogService _logService;
 
         public ClansCache(CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
             : base(cacheConfiguration, clansApi, playersCache)
         {
+            _clansApi = clansApi;
+            _playersCache = playersCache;
             _logService = logService;
-        }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
             ClanUpdated += ClansCache_ClanUpdated;
             ClanWarAdded += ClansCache_ClanWarAdded;
             ClanWarEndingSoon += ClansCache_ClanWarEndingSoon;
@@ -32,7 +33,11 @@ namespace CocApi.Test
             ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
             ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
             ClanWarUpdated += ClansCache_ClanWarUpdated;
+            _clansApi.QueryResult += QueryResult;
+        }
 
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
             await UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
             await AddAsync("#22G0JJR8"); //fysb
             await AddAsync("#28RUGUYJU"); //devhls lab
@@ -41,23 +46,20 @@ namespace CocApi.Test
             await Task.Run(() =>
             {
                 _ = RunAsync();
+                _ = _playersCache.RunAsync();
             });
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            ClanUpdated -= ClansCache_ClanUpdated;
-            ClanWarAdded -= ClansCache_ClanWarAdded;
-            ClanWarEndingSoon -= ClansCache_ClanWarEndingSoon;
-            ClanWarEndNotSeen -= ClansCache_ClanWarEndNotSeen;
-            ClanWarLeagueGroupUpdated -= ClansCache_ClanWarLeagueGroupUpdated;
-            ClanWarLogUpdated -= ClansCache_ClanWarLogUpdated;
-            ClanWarStartingSoon -= ClansCache_ClanWarStartingSoon;
-            ClanWarUpdated -= ClansCache_ClanWarUpdated;
+            List<Task> tasks = new List<Task>
+            {
+                StopAsync(),
+                _playersCache.StopAsync()
+            };
 
-            await StopAsync();
+            await Task.WhenAll(tasks);
         }
-
 
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
         {
@@ -104,14 +106,6 @@ namespace CocApi.Test
         private Task ClansCache_ClanWarLogUpdated(object sender, ClanWarLogUpdatedEventArgs e)
         {
             _logService.Log(LogLevel.Debug, nameof(Program), null, "War log updated");
-
-            return Task.CompletedTask;
-        }
-
-        private Task Client_Log(object sender, LogEventArgs log)
-        {
-            _logService.Log(LogLevel.Debug, sender.GetType().Name, log.Method, log.Message);
-            ;
 
             return Task.CompletedTask;
         }
