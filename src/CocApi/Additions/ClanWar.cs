@@ -24,17 +24,17 @@ namespace CocApi.Model
             return HashCode.Combine(PreparationStartTime, Clans.Values.First().Tag, Clans.Values.Skip(1).First().Tag);
         }
 
-        private SortedDictionary<string, WarClan> _clans;
+        private SortedDictionary<string, WarClan> _clans = new SortedDictionary<string, WarClan>();
         
         public SortedDictionary<string, WarClan> Clans
         {
             get
             {
-                if (_clans != null)
+                if (_clans.Count > 0)
                     return _clans;
 
                 if (Clan == null || Clan.Tag == null || Opponent == null || Opponent.Tag == null)
-                    return null;
+                    return _clans;
 
                 _clans = new SortedDictionary<string, WarClan>
                 {
@@ -53,6 +53,9 @@ namespace CocApi.Model
         {
             get
             {
+                if (Clans.Count == 0)
+                    return _allAttacks;
+
                 if (_allAttacks.Count == 0)
                     foreach (WarClan warClan in Clans.Values)
                         foreach (ClanWarMember member in warClan.Members)
@@ -61,46 +64,6 @@ namespace CocApi.Model
 
                 return _allAttacks;
             }
-        }
-
-        public bool HasWarUpdated(ClanWar clanWar)
-        {
-            if (IsSameWar(clanWar) == false)
-                throw new ArgumentException();
-
-            if (Clans.First().Value.Attacks != clanWar.Clans.First().Value.Attacks)
-                return true;
-
-            if (Clans.Skip(1).First().Value.Attacks != clanWar.Clans.Skip(1).First().Value.Attacks)
-                return true;
-
-            if (EndTime != clanWar.EndTime)
-                return true;
-
-            if (StartTime != clanWar.StartTime)
-                return true;
-
-            if (State != clanWar.State)
-                return true;
-
-            return false;
-        }
-
-        public bool IsSameWar(ClanWar clanWar)
-        {
-            if (ReferenceEquals(this, clanWar))
-                return true;
-
-            if (PreparationStartTime != clanWar.PreparationStartTime)
-                return false;
-
-            if (Clan.Tag == clanWar.Clan.Tag)
-                return true;
-
-            if (Clan.Tag == clanWar.Opponent.Tag)
-                return true;
-
-            return false;
         }
 
         public static List<ClanWarAttack> NewAttacks(ClanWar stored, ClanWar fetched)

@@ -228,7 +228,7 @@ namespace CocApi.Cache
             return Task.CompletedTask;
         }
 
-        public virtual bool HasUpdated(CachedClan stored, CachedClan fetched)
+        private bool HasUpdated(CachedClan stored, CachedClan fetched)
         {
             if (stored.ServerExpiration > fetched.ServerExpiration)
                 return false;
@@ -236,29 +236,112 @@ namespace CocApi.Cache
             if (stored.Data == null || fetched.Data == null)
                 return false;
 
-            return !stored.Data.Equals(fetched.Data);
+            return HasUpdated(stored.Data, fetched.Data);
         }
 
-        public virtual bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
+        protected virtual bool HasUpdated(Clan stored, Clan fetched)
+            => !stored.Equals(fetched);
+
+        private bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
         {
             if (stored.ServerExpiration > fetched.ServerExpiration)
                 return false;
 
-            if (stored.Data == null && fetched.Data != null)
+            if (fetched.Data == null)
+                return false;
+
+            return HasUpdated(stored.Data, fetched.Data);
+        }
+
+        protected virtual bool HasUpdated(ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched)
+            => !fetched.Equals(stored);
+
+        private bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
+        {
+            if (stored.ServerExpiration > fetched.ServerExpiration)
+                return false;
+
+            if (fetched.Data == null)
+                return false;
+
+            return HasUpdated(stored.Data, fetched.Data);
+        }
+
+        protected virtual bool HasUpdated(ClanWarLog? stored, ClanWarLog fetched)
+        {
+            if (stored == null)
+                return false;
+
+            return !fetched.Equals(stored);
+        }
+
+        private bool HasUpdated(CachedWar stored, CachedClanWar fetched)
+        {
+            if (stored.ServerExpiration > fetched.ServerExpiration)
+                return false;
+
+            if (stored.Data == null
+                || fetched.Data == null
+                || IsSameWar(stored.Data, fetched.Data) == false)
+                throw new ArgumentException();
+
+            return HasUpdated(stored.Data, fetched.Data);
+        }
+
+        protected virtual bool HasUpdated(ClanWar stored, ClanWar fetched)
+        {
+            if (stored.Clans.First().Value.Attacks != fetched.Clans.First().Value.Attacks)
                 return true;
 
-            return !stored.Equals(fetched);
+            if (stored.Clans.Skip(1).First().Value.Attacks != fetched.Clans.Skip(1).First().Value.Attacks)
+                return true;
+
+            if (stored.EndTime != fetched.EndTime)
+                return true;
+
+            if (stored.StartTime != fetched.StartTime)
+                return true;
+
+            if (stored.State != fetched.State)
+                return true;
+
+            return false;
         }
 
-        public virtual bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
+        private bool HasUpdated(CachedWar stored, CachedWar fetched)
         {
+            if (ReferenceEquals(stored, fetched))
+                return false;
+
             if (stored.ServerExpiration > fetched.ServerExpiration)
                 return false;
 
-            if (stored.Data == null)
+            if (stored.Data == null
+                || fetched.Data == null
+                || IsSameWar(stored.Data, fetched.Data) == false)
+                throw new ArgumentException();
+
+            return HasUpdated(stored.Data, fetched.Data);
+        }
+
+        private bool IsSameWar(ClanWar? stored, ClanWar fetched)
+        {
+            if (ReferenceEquals(stored, fetched))
+                return true;
+
+            if (stored == null)
+                return true;
+
+            if (stored.PreparationStartTime != fetched.PreparationStartTime)
                 return false;
 
-            return !stored.Data.Equals(fetched.Data);
+            if (stored.Clan.Tag == fetched.Clan.Tag)
+                return true;
+
+            if (stored.Clan.Tag == fetched.Opponent.Tag)
+                return true;
+
+            return false;
         }
 
         public virtual TimeSpan ClanTimeToLive(ApiResponse<Clan> apiResponse)
@@ -450,6 +533,9 @@ namespace CocApi.Cache
 
         private void SendWarAnnouncements(CachedWar cachedWar)
         {
+            if (cachedWar.Data == null)
+                return;
+
             if (cachedWar.Announcements.HasFlag(Announcements.WarStartingSoon) == false &&
                 DateTime.UtcNow > cachedWar.Data.StartTime.AddHours(-1) &&
                 DateTime.UtcNow < cachedWar.Data.StartTime)
@@ -466,12 +552,11 @@ namespace CocApi.Cache
                 OnClanWarEndingSoon(cachedWar.Data);
             }
 
-            //todo 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
                 cachedWar.State != ClanWar.StateEnum.WarEnded &&
                 cachedWar.IsFinal == true &&
                 DateTime.UtcNow > cachedWar.EndTime &&
-                DateTime.UtcNow.Day == cachedWar.EndTime.Value.Day &&
+                DateTime.UtcNow.Day == cachedWar.EndTime.Day &&
                 cachedWar.AllAttacksUsed() == false)
             {
                 cachedWar.Announcements |= Announcements.WarEndNotSeen;
@@ -480,7 +565,7 @@ namespace CocApi.Cache
 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
                 cachedWar.EndTime < DateTime.UtcNow &&
-                cachedWar.EndTime.Value.Day == DateTime.UtcNow.Day)
+                cachedWar.EndTime.Day == DateTime.UtcNow.Day)
             {
                 cachedWar.Announcements |= Announcements.WarEnded;
                 OnClanWarEnded(cachedWar.Data);
@@ -504,7 +589,7 @@ namespace CocApi.Cache
 
             if (cachedClan.Data != null && 
                 fetched.Data != null && 
-                HasUpdated(cachedClan, fetched) == false)
+                HasUpdated(cachedClan, fetched))
                 OnClanUpdated(cachedClan.Data, fetched.Data);
 
             cachedClan.UpdateFrom(fetched);
@@ -588,7 +673,7 @@ namespace CocApi.Cache
                         if (group.Data != null && group.Data.Rounds.Any(r => r.WarTags.Any(w => w == warTag)))
                             break;
 
-                        CachedWar fetchedWar = await CachedWar.FromClanWarLeagueWarResponseAsync(warTag, this, _clansApi).ConfigureAwait(false);
+                        CachedWar fetchedWar = await CachedWar.FromClanWarLeagueWarResponseAsync(warTag, group.Season, this, _clansApi).ConfigureAwait(false);
 
                         if (fetchedWar.Data == null || fetchedWar.Data.State == ClanWar.StateEnum.NotInWar)
                             continue;
@@ -656,7 +741,10 @@ namespace CocApi.Cache
 
         private async Task UpdateWarAsync(CachedClan cachedClan, CachedWar cachedWar, CachedClanWar cachedClanWar)
         {
-            if (cachedWar.State == ClanWar.StateEnum.WarEnded || cachedWar.IsFinal)
+            if (cachedClan.Data == null 
+                || cachedWar.Data == null 
+                || cachedWar.State == ClanWar.StateEnum.WarEnded 
+                || cachedWar.IsFinal)
                 return;
 
             if (UpdatingWar.TryAdd(cachedWar.GetHashCode(), cachedWar) == false)
@@ -668,7 +756,9 @@ namespace CocApi.Cache
 
                 CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-                if (cachedWar.Data.IsSameWar(cachedClanWar.Data) && cachedWar.Data.HasWarUpdated(cachedClanWar.Data))
+                if (cachedClanWar.Data != null 
+                    && IsSameWar(cachedWar.Data, cachedClanWar.Data) 
+                    && HasUpdated(cachedWar, cachedClanWar))
                 {
                     OnClanWarUpdated(cachedClan.Data, cachedWar.Data, cachedClanWar.Data);
 
@@ -676,19 +766,16 @@ namespace CocApi.Cache
                 }
                 else if (cachedWar.WarTag != null && (cachedWar.IsLocallyExpired() == false || cachedWar.IsServerExpired() == false))
                 {
-                    try
-                    {
-                        ApiResponse<ClanWar> apiResponse = await _clansApi.GetClanWarLeagueWarResponseAsync(cachedWar.WarTag);
+                    CachedWar fetched = await CachedWar.FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, this, _clansApi).ConfigureAwait(false);
 
-                        if (cachedWar.Data.HasWarUpdated(apiResponse.Data))
-                            OnClanWarUpdated(cachedClan.Data, cachedWar.Data, cachedClanWar.Data);
-
-                        cachedWar.UpdateFrom(cachedClan.Tag, apiResponse, ClanWarTimeToLive(apiResponse));
-                    }
-                    catch (ApiException e)
+                    if (fetched.Data != null 
+                        && IsSameWar(cachedWar.Data, fetched.Data) 
+                        && HasUpdated(cachedWar, fetched))
                     {
-                        cachedWar.UpdateFrom(cachedClan.Tag, e, ClanWarTimeToLive(e));
+                        OnClanWarUpdated(cachedClan.Data, cachedWar.Data, fetched.Data);
                     }
+
+                    cachedWar.UpdateFrom(fetched);
                 }
                 else if(cachedWar.WarTag == null && cachedClanWar.StatusCode == HttpStatusCode.Forbidden && cachedWar.EndTime < DateTime.UtcNow)
                 {
@@ -700,13 +787,22 @@ namespace CocApi.Cache
                     {
                         CachedClanWar fetchedEnemy = await CachedClanWar.FromCurrentWarResponseAsync(enemyTag, this, _clansApi);
 
-                        if (cachedWar.Data.IsSameWar(fetchedEnemy.Data) && cachedWar.Data.HasWarUpdated(fetchedEnemy.Data))
+                        if (fetchedEnemy.Data != null 
+                            && (fetchedEnemy.Data.State == ClanWar.StateEnum.NotInWar
+                            || IsSameWar(cachedWar.Data, fetchedEnemy.Data) == false))
+                        {
+                            cachedWar.IsFinal = true;
+                        }
+
+                        if (fetchedEnemy.Data != null 
+                            && IsSameWar(cachedWar.Data, fetchedEnemy.Data) 
+                            && HasUpdated(cachedWar, fetchedEnemy))
                         {
                             OnClanWarUpdated(cachedClan.Data, cachedWar.Data, fetchedEnemy.Data);
 
                             cachedWar.UpdateFrom(fetchedEnemy);
 
-                            dbContext.ClanWars.Update(fetchedEnemy);
+                            dbContext.ClanWars.Update(fetchedEnemy);                            
                         }
                     }
                 }

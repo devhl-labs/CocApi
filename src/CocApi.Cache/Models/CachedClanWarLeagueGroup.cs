@@ -26,7 +26,7 @@ namespace CocApi.Cache.Models
 
         public string Tag { get; internal set; }
 
-        public DateTime? Season { get; internal set; }
+        public DateTime Season { get; internal set; }
 
         internal CachedClanWarLeagueGroup(string tag)
         {
@@ -38,7 +38,7 @@ namespace CocApi.Cache.Models
         {
             UpdateFrom(apiResponse, localExpiration);
 
-            Season = apiResponse?.Data.Season;
+            Season = apiResponse.Data.Season;
 
             State = apiResponse?.Data.State;
         }

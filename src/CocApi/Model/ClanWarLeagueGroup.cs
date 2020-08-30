@@ -144,7 +144,7 @@ namespace CocApi.Model
         /// </summary>
         /// <param name="input">Instance of ClanWarLeagueGroup to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ClanWarLeagueGroup input)
+        public bool Equals(ClanWarLeagueGroup? input)
         {
             if (input == null)
                 return false;

@@ -14,7 +14,11 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(tag);
 
-                return new CachedClanWar(tag, apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse));
+                CachedClanWar result = new CachedClanWar(tag, apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse));
+
+                result.Type = result.Data.Type;
+
+                return result;
             }
             catch (ApiException apiException)
             {

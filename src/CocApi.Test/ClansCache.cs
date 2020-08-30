@@ -36,6 +36,16 @@ namespace CocApi.Test
             _clansApi.QueryResult += QueryResult;
         }
 
+        public override TimeSpan ClanWarTimeToLive(ApiException apiException)
+        {
+            return base.ClanWarTimeToLive(apiException);
+        }
+
+        protected override bool HasUpdated(Clan stored, Clan fetched)
+        {
+            return base.HasUpdated(stored, fetched);
+        }
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
