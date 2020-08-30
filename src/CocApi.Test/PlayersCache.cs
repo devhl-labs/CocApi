@@ -24,19 +24,9 @@ namespace CocApi.Test
             _playersApi.QueryResult += QueryResult;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            await AddAsync("#29GPU9CUJ"); //squirrel man
-
-            await Task.Run(() =>
-            {
-                _ = RunAsync(cancellationToken);
-            });
-        }
-
         private Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "Player updated");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Player updated");
 
             return Task.CompletedTask;
         }

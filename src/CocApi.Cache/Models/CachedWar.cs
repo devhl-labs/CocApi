@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using CocApi.Api;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -9,6 +12,20 @@ namespace CocApi.Cache.Models
 {
     public class CachedWar : CachedItem<ClanWar>
     {
+        internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(string warTag, ClansCacheBase clansCacheBase, ClansApi clansApi)
+        {
+            try
+            {
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag);
+
+                return new CachedWar(apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse));
+            }
+            catch (ApiException e)
+            {
+                return new CachedWar(warTag, e, clansCacheBase.ClanWarTimeToLive(e));
+            }
+        }
+
         public string ClanTag { get; internal set; }
 
         public string OpponentTag { get; internal set; }
@@ -62,51 +79,91 @@ namespace CocApi.Cache.Models
 
 #nullable enable
 
-        public CachedWar(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string? warTag = null) : base(apiResponse, localExpiration)
+        public CachedWar(CachedClan cachedClan, CachedClanWar fetched, string? warTag = null)
+        {
+            if (fetched.Data == null)
+                throw new ArgumentException("Data should not be null.");
+
+            UpdateFrom(fetched);
+
+            ClanTag = fetched.Data.Clans.First().Value.Tag;
+
+            OpponentTag = fetched.Data.Clans.Skip(1).First().Value.Tag;
+
+            PreparationStartTime = fetched.Data.PreparationStartTime;
+
+            EndTime = fetched.Data.EndTime;
+
+            State = fetched.Data.State;
+
+            WarTag = warTag;
+
+            RawContent = fetched.RawContent;
+
+            Type = fetched.Data.Type;
+
+            if (cachedClan.Tag == fetched.Data.Clans.First().Value.Tag)
+                StatusCode = fetched.StatusCode;
+            else
+                StatusCodeOpponent = fetched.StatusCode;
+        }
+
+        public CachedWar(CachedClanWar cachedClanWar)
+        {
+            if (cachedClanWar.Data == null)
+                throw new ArgumentException("Data should not be null");
+
+            UpdateFrom(cachedClanWar);
+
+            ClanTag = cachedClanWar.Data.Clans.First().Value.Tag;
+
+            OpponentTag = cachedClanWar.Data.Clans.Skip(1).First().Value.Tag;
+        }
+
+        private CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
         {
             ClanTag = apiResponse.Data.Clans.First().Value.Tag;
 
             OpponentTag = apiResponse.Data.Clans.Skip(1).First().Value.Tag;
 
-            PreparationStartTime = apiResponse.Data.PreparationStartTime;
-
-            EndTime = apiResponse.Data.EndTime;
-
-            State = apiResponse.Data.State;
-
-            WarTag = warTag;
-
-            RawContent = apiResponse.RawContent;
-
-            Type = apiResponse.Data.Type;
-
-            if (cachedClan.Tag == apiResponse.Data.Clans.First().Value.Tag)
-                StatusCode = apiResponse.StatusCode;
-            else
-                StatusCodeOpponent = apiResponse.StatusCode;
+            UpdateFrom(apiResponse.Data.Clans.First().Value.Tag, apiResponse, localExpiration);
         }
 
-        internal void UpdateFrom(CachedClanWar cachedClanWar)
+        private CachedWar(string warTag, ApiException apiException, TimeSpan localExpiration)
         {
-            RawContent = cachedClanWar.RawContent;
+            WarTag = warTag;
 
-            Downloaded = cachedClanWar.Downloaded;
+            UpdateFrom(apiException, localExpiration);
+        }
 
-            ServerExpiration = cachedClanWar.ServerExpiration;
+        internal void UpdateFrom(CachedClanWar fetched)
+        {
+            if (ServerExpiration > fetched.ServerExpiration)
+                return;
 
-            LocalExpiration = cachedClanWar.LocalExpiration;
+            RawContent = fetched.RawContent;
 
-            if (cachedClanWar.Data != null)
+            Downloaded = fetched.Downloaded;
+
+            ServerExpiration = fetched.ServerExpiration;
+
+            LocalExpiration = fetched.LocalExpiration;
+
+            if (fetched.Data != null)
             {
-                Data = cachedClanWar.Data;
+                Data = fetched.Data;
                 
-                State = cachedClanWar.Data.State;
+                State = fetched.Data.State;
 
-                EndTime = cachedClanWar.Data.EndTime;
+                EndTime = fetched.Data.EndTime;
+
+                if (fetched.Data.State == ClanWar.StateEnum.WarEnded)
+                    IsFinal = true;
             }
         }
 
-        internal void UpdateFrom(CachedClan cachedClan, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
+        //todo remove these
+        internal void UpdateFrom(string clanTagContext, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
@@ -115,10 +172,20 @@ namespace CocApi.Cache.Models
             if (State == ClanWar.StateEnum.WarEnded)
                 IsFinal = true;
 
-            if (cachedClan.Tag == apiResponse.Data.Clan.Tag)
+            if (clanTagContext == apiResponse.Data.Clan.Tag)
                 StatusCode = apiResponse.StatusCode;
             else
                 StatusCodeOpponent = apiResponse.StatusCode;
+        }
+
+        internal void UpdateFrom(string clanTagContext, ApiException apiException, TimeSpan localExpiration)
+        {
+            if (clanTagContext == Data.Clan.Tag)
+                StatusCode = (HttpStatusCode)apiException.ErrorCode;
+            else
+                StatusCodeOpponent = (HttpStatusCode)apiException.ErrorCode;
+
+            UpdateFrom(apiException, localExpiration);
         }
 
         internal new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)

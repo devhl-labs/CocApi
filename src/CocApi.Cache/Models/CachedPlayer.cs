@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using CocApi.Api;
 using CocApi.Cache.Models;
 using CocApi.Client;
 using CocApi.Model;
@@ -10,27 +13,45 @@ namespace CocApi.Cache.Models
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        public string Tag { get; internal set; } = string.Empty;
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersCacheBase playersCacheBase, PlayersApi playersApi)
+        {
+            try
+            {
+                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag).ConfigureAwait(false);
+
+                return new CachedPlayer(apiResponse, playersCacheBase.TimeToLive(apiResponse));
+            }
+            catch (ApiException apiException)
+            {
+                return new CachedPlayer(tag, apiException, playersCacheBase.TimeToLive(apiException));
+            }
+        }
+
+        public string Tag { get; }
 
         public bool Download { get; internal set; }
 
-        public CachedPlayer(ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)
+        private CachedPlayer(ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
             Tag = response.Data.Tag;
         }
 
-        public CachedPlayer()
+        private CachedPlayer(string tag, ApiException apiException, TimeSpan localExpiration) : base (apiException, localExpiration)
         {
+            Tag = tag;
         }
 
-        internal new void UpdateFrom(ApiResponse<Player> apiResponse, TimeSpan localExpiration)
+        internal CachedPlayer(string tag)
         {
-            base.UpdateFrom(apiResponse, localExpiration);
+            Tag = tag;
         }
 
-        internal new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
+        internal void UpdateFrom(CachedPlayer fetched)
         {
-            base.UpdateFrom(apiException, localExpiration);
+            if (ServerExpiration > fetched.ServerExpiration)
+                return;
+
+            base.UpdateFrom(fetched);
         }
     }
 }

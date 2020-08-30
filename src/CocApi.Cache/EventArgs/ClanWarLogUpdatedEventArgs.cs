@@ -7,9 +7,9 @@ namespace CocApi.Cache
     {
         public ClanWarLog Fetched { get; }
 
-        public ClanWarLog Stored { get; }
+        public ClanWarLog? Stored { get; }
 
-        public ClanWarLogUpdatedEventArgs(ClanWarLog stored, ClanWarLog fetched)
+        public ClanWarLogUpdatedEventArgs(ClanWarLog? stored, ClanWarLog fetched)
         {
             Fetched = fetched;
 

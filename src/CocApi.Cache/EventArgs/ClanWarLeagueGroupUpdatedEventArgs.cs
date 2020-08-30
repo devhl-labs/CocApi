@@ -8,11 +8,11 @@ namespace CocApi.Cache
     {
         public ClanWarLeagueGroup Fetched { get; }
 
-        public ClanWarLeagueGroup Stored { get; }
+        public ClanWarLeagueGroup? Stored { get; }
 
         public Clan Clan { get; }
 
-        public ClanWarLeagueGroupUpdatedEventArgs(Model.Clan clan, ClanWarLeagueGroup stored, ClanWarLeagueGroup fetched)
+        public ClanWarLeagueGroupUpdatedEventArgs(Model.Clan clan, ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched)
         {
             Fetched = fetched;
 

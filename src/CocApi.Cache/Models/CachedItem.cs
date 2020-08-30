@@ -22,10 +22,10 @@ namespace CocApi.Cache.Models
 
         public HttpStatusCode StatusCode { get; internal set; }
 
-        private T _data;
+        private T? _data;
 
         [NotMapped]
-        public T Data
+        public T? Data
         {
             get
             {
@@ -43,46 +43,54 @@ namespace CocApi.Cache.Models
 
         }
 
-        public CachedItem(ApiResponse<T> response, TimeSpan localExpiration)
+        public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
-            string downloadDateString = response.Headers.First(h => h.Key == "Date").Value.First();
-            DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
-            string cacheControlString = response.Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
-            double cacheControl = double.Parse(cacheControlString);
-            DateTime serverExpiration = downloadDate.AddSeconds(cacheControl);
+            UpdateFrom(apiResponse, localExpiration);
+            //string downloadDateString = response.Headers.First(h => h.Key == "Date").Value.First();
+            //DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
+            //string cacheControlString = response.Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
+            //double cacheControl = double.Parse(cacheControlString);
+            //DateTime serverExpiration = downloadDate.AddSeconds(cacheControl);
 
-            Downloaded = downloadDate;
-            RawContent = response.RawContent;
-            ServerExpiration = serverExpiration;
-            Data = response.Data;  
-            LocalExpiration = Downloaded.Add(localExpiration);
-            StatusCode = response.StatusCode;
+            //Downloaded = downloadDate;
+            //RawContent = response.RawContent;
+            //ServerExpiration = serverExpiration;
+            //Data = response.Data;  
+            //LocalExpiration = Downloaded.Add(localExpiration);
+            //StatusCode = response.StatusCode;
+        }
+
+        public CachedItem(ApiException apiException, TimeSpan localExpiration)
+        {
+            UpdateFrom(apiException, localExpiration);
         }
 
         protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
             StatusCode = apiResponse.StatusCode;
-
             RawContent = apiResponse?.RawContent ?? RawContent;
-
             Downloaded = apiResponse?.Downloaded ?? DateTime.UtcNow;
-
             ServerExpiration = apiResponse?.ServerExpiration ?? DateTime.UtcNow;
-
             LocalExpiration = Downloaded.Add(localExpiration);
-
             Data = apiResponse?.Data ?? Data;
         }
 
         protected void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
         {
             StatusCode = (HttpStatusCode) apiException.ErrorCode;
-
             Downloaded = DateTime.UtcNow;
-
             ServerExpiration = DateTime.UtcNow;
-
             LocalExpiration = DateTime.UtcNow.Add(localExpiration);
+        }
+
+        protected void UpdateFrom<TValue>(CachedItem<TValue> fetched) where TValue : class
+        {
+            StatusCode = fetched.StatusCode;
+            RawContent = fetched.RawContent ?? RawContent;
+            Downloaded = fetched.Downloaded;
+            ServerExpiration = fetched.ServerExpiration;
+            LocalExpiration = fetched.LocalExpiration;
+            _data = null;
         }
 
         public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);

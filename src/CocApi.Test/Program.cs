@@ -30,7 +30,7 @@ namespace CocApi.Test
                 services.AddSingleton(GetPlayersApi);
                 services.AddSingleton(GetClansApi);
                 services.AddSingleton(GetCacheConfiguration);
-                services.AddSingleton(new LogService());
+                services.AddSingleton<LogService>();
                 services.AddSingleton<PlayersCache>();
             })
             .ConfigureServices(services =>

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using CocApi.Api;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -6,18 +8,47 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLog : CachedItem<ClanWarLog>
     {
-        public string Tag { get; internal set; } = string.Empty;
-
-
-        public new void UpdateFrom(ApiResponse<ClanWarLog> responseItem, TimeSpan localExpiration)
+        internal static async Task<CachedClanWarLog> FromClanWarLogResponseAsync(string tag, ClansCacheBase clansCacheBase, ClansApi clansApi)
         {
-            base.UpdateFrom(responseItem, localExpiration);
+            try
+            {
+                ApiResponse<ClanWarLog> apiResponse = await clansApi.GetClanWarLogResponseAsync(tag);
+
+                return new CachedClanWarLog(tag, apiResponse, clansCacheBase.ClanWarLogTimeToLive(apiResponse));
+            }
+            catch (ApiException apiException)
+            {
+                return new CachedClanWarLog(tag, apiException, clansCacheBase.ClanWarLogTimeToLive(apiException));
+            }
         }
 
-        public new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
+        public string Tag { get; internal set; } 
+
+        internal CachedClanWarLog(string tag)
         {
-            base.UpdateFrom(apiException, localExpiration);
+            Tag = tag;
         }
 
+        private CachedClanWarLog(string tag, ApiResponse<ClanWarLog> apiResponse, TimeSpan localExpiration)
+        {
+            Tag = tag;
+
+            UpdateFrom(apiResponse, localExpiration);
+        }
+
+        private CachedClanWarLog(string tag, ApiException apiException, TimeSpan localExpiration)
+        {
+            Tag = tag;
+
+            UpdateFrom(apiException, localExpiration);
+        }
+
+        internal void UpdateFrom(CachedClanWarLog fetched)
+        {
+            if (ServerExpiration > fetched.ServerExpiration)
+                return;
+
+            base.UpdateFrom(fetched);
+        }
     }
 }

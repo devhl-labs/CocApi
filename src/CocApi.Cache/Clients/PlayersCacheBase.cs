@@ -40,9 +40,8 @@ namespace CocApi.Cache
             if (cachedPlayer != null)
                 return cachedPlayer;
 
-            cachedPlayer = new CachedPlayer
+            cachedPlayer = new CachedPlayer(tag)
             {
-                Tag = formattedTag,
                 Download = download
             };
             cacheContext.Players.Update(cachedPlayer);
@@ -89,58 +88,63 @@ namespace CocApi.Cache
             return result?.Data;
         }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
+        public Task RunAsync(CancellationToken cancellationToken)
         {
-            try
+            _ = Task.Run(async () =>
             {
-                if (IsRunning)
-                    return;
-
-                IsRunning = true;
-
-                StopRequested = false;
-
-                OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
-
-                int id = 0;
-
-                while (!StopRequested)
+                try
                 {
-                    cancellationToken.ThrowIfCancellationRequested();
+                    if (IsRunning)
+                        return;
 
-                    List<Task> tasks = new List<Task>();
+                    IsRunning = true;
 
-                    using var scope = _services.CreateScope();
+                    StopRequested = false;
 
-                    using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                    OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
-                    List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
-                        v.Id > id).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
+                    int id = 0;
 
-                    for (int i = 0; i < cachedPlayers.Count; i++)
-                        tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
+                    while (!StopRequested)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                        List<Task> tasks = new List<Task>();
 
-                    if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
-                        id = 0;
-                    else
-                        id = cachedPlayers.Max(v => v.Id);
+                        using var scope = _services.CreateScope();
 
-                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
+                        using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+                        List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
+                            v.Id > id).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
+
+                        for (int i = 0; i < cachedPlayers.Count; i++)
+                            tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
+
+                        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                        if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
+                            id = 0;
+                        else
+                            id = cachedPlayers.Max(v => v.Id);
+
+                        await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
+                    }
+
+                    IsRunning = false;
                 }
+                catch (Exception e)
+                {
+                    OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-                IsRunning = false;
-            }
-            catch (Exception e)
-            {
-                OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
+                    IsRunning = false;
 
-                IsRunning = false;
+                    if (cancellationToken.IsCancellationRequested == false)
+                        _ = RunAsync(cancellationToken);
+                }
+            });
 
-                //todo what to do when it errors?
-                //StartAsync();
-            }
+            return Task.CompletedTask;
         }
 
         public async Task StopAsync()
@@ -153,12 +157,21 @@ namespace CocApi.Cache
                 await Task.Delay(500).ConfigureAwait(false);
         }
 
-        public virtual bool HasUpdated(Player stored, Player fetched) => stored.Equals(fetched);
+        public virtual bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
+        {
+            if (stored.ServerExpiration > fetched.ServerExpiration)
+                return false;
 
-        public virtual TimeSpan TimeToLive(CachedPlayer cachedPlayer, ApiResponse<Player> apiResponse)
+            if (stored.Data == null)
+                return false;
+
+            return !stored.Data.Equals(fetched.Data);
+        }
+
+        public virtual TimeSpan TimeToLive(ApiResponse<Player> apiResponse)
             => TimeSpan.FromSeconds(0);
 
-        public virtual TimeSpan TimeToLive(CachedPlayer cachedPlayer, ApiException apiException)
+        public virtual TimeSpan TimeToLive(ApiException apiException)
             => TimeSpan.FromMinutes(0);
 
         public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
@@ -169,13 +182,13 @@ namespace CocApi.Cache
 
             CachedContext cacheContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
+            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => 
+                v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (cachedPlayer != null && cachedPlayer.Download == download)
                 return cachedPlayer;
 
-            cachedPlayer ??= new CachedPlayer();
-            cachedPlayer.Tag = formattedTag;
+            cachedPlayer ??= new CachedPlayer(formattedTag);
             cachedPlayer.Download = download;
             cacheContext.Players.Update(cachedPlayer);
 
@@ -208,19 +221,12 @@ namespace CocApi.Cache
 
                 CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-                try
-                {
-                     ApiResponse<Player>? apiResponse = await _playersApi.GetPlayerResponseAsync(cachedPlayer.Tag);
+                CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, this, _playersApi);
+                    
+                if (cachedPlayer.Data != null && fetched.Data != null && HasUpdated(cachedPlayer, fetched))
+                    OnPlayerUpdated(cachedPlayer.Data, fetched.Data);
 
-                    if (cachedPlayer.Data != null && HasUpdated(cachedPlayer.Data, apiResponse.Data) == false)
-                        OnPlayerUpdated(cachedPlayer.Data, apiResponse.Data);
-
-                    cachedPlayer.UpdateFrom(apiResponse, TimeToLive(cachedPlayer, apiResponse));
-                }
-                catch (ApiException e)
-                {
-                    cachedPlayer.UpdateFrom(e, TimeToLive(cachedPlayer, e));
-                }
+                cachedPlayer.UpdateFrom(fetched);
 
                 dbContext.Players.Update(cachedPlayer);
 

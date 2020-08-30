@@ -470,7 +470,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
@@ -719,7 +719,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag)
         {
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)

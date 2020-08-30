@@ -32,16 +32,12 @@ namespace CocApi
                 if (value)
                 {
                     ClearRateLimitTimer.Start();
-
-                    ////todo fix this
-                    //CocApiClient.OnLog(this, new LogEventArgs(nameof(IsRateLimited), LogLevel.Warning, "Rate Limited"));
                 }
             }
         }
 
-        public Token(/*CocApiClientBase cocApiClient,*/ string token, TimeSpan tokenTimeOut)
+        public Token(string token, TimeSpan tokenTimeOut)
         {
-            //CocApiClient = cocApiClient;
             _token = token;
             TokenTimeOut = tokenTimeOut;
 

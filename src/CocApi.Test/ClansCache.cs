@@ -38,63 +38,61 @@ namespace CocApi.Test
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
+            await _playersCache.RunAsync(cancellationToken);
+
             await UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
             await AddAsync("#22G0JJR8"); //fysb
             await AddAsync("#28RUGUYJU"); //devhls lab
             await AddAsync("#2C8V29YJ"); // russian clan
-
-            await Task.Run(() =>
-            {
-                _ = RunAsync(cancellationToken);
-                _ = _playersCache.RunAsync(cancellationToken);
-            });
+            await RunAsync(cancellationToken);
         }
 
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarStartingSoon(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "War starting soon");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War starting soon");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarEndNotSeen(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "War war end not seen");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War war end not seen");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarEndingSoon(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "War ending soon");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War ending soon");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarAdded(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "New war");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "New war");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarLeagueGroupUpdated(object sender, ClanWarLeagueGroupUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "Group updated");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Group updated");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarLogUpdated(object sender, ClanWarLogUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, nameof(Program), null, "War log updated");
+            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War log updated");
 
             return Task.CompletedTask;
         }
@@ -122,9 +120,9 @@ namespace CocApi.Test
             var donations = Clan.Donations(e.Stored, e.Fetched);
 
             if (donations.Count > 0)
-                _logService.Log(LogLevel.Debug, nameof(Program), null, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));
+                _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));
             else
-                _logService.Log(LogLevel.Debug, nameof(Program), null, "Clan updated");
+                _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Clan updated");
 
             foreach (ClanMember member in Clan.ClanMembersLeft(e.Stored, e.Fetched))
                 Console.WriteLine(member.Name + " left");

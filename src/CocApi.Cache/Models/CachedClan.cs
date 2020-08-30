@@ -1,12 +1,28 @@
 ﻿using System;
 using CocApi.Model;
 using CocApi.Client;
+using System.Threading.Tasks;
+using CocApi.Api;
 
 namespace CocApi.Cache.Models
 {
     public class CachedClan : CachedItem<Clan>
     {
-        public string Tag { get; internal set; } = string.Empty;
+        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansCacheBase clansCacheBase, ClansApi clansApi)
+        {
+            try
+            {
+                ApiResponse<Clan> apiResponse = await clansApi.GetClanResponseAsync(tag).ConfigureAwait(false);
+
+                return new CachedClan(apiResponse, clansCacheBase.ClanTimeToLive(apiResponse));
+            }
+            catch (ApiException apiException)
+            {
+                return new CachedClan(tag, apiException, clansCacheBase.ClanTimeToLive(apiException));
+            }
+        }
+
+        public string Tag { get; internal set; }
 
         public bool Download { get; internal set; }
 
@@ -16,26 +32,27 @@ namespace CocApi.Cache.Models
 
         public bool DownloadCwl { get; internal set; }
 
-        public CachedClan(ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
+        private CachedClan(ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
             Tag = response.Data.Tag;
         }
 
-        public CachedClan()
+        private CachedClan(string tag, ApiException apiException, TimeSpan localExpiration) : base(apiException, localExpiration)
         {
-
+            Tag = tag;
         }
 
-        internal new void UpdateFrom(ApiResponse<Clan> responseItem, TimeSpan localExpiration)
+        internal CachedClan(string tag)
         {
-            base.UpdateFrom(responseItem, localExpiration);
+            Tag = tag;
         }
 
-        internal new void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
+        internal void UpdateFrom(CachedClan fetched)
         {
-            base.UpdateFrom(apiException, localExpiration);
+            if (ServerExpiration > fetched.ServerExpiration)
+                return;
+
+            base.UpdateFrom(fetched);
         }
     }
-
-
 }
