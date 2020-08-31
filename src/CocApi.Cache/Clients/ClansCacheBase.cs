@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class ClansCacheBase : ClientBase
+    public class ClansCacheBase : CacheBase
     {
         private readonly ClansApi _clansApi;
         private readonly PlayersCacheBase? _playersCache;

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CachedContext))]
-    [Migration("20200826175621_Migration0")]
+    [Migration("20200830201829_Migration0")]
     partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,6 +96,9 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Tag")
@@ -123,7 +126,7 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("Season")
+                    b.Property<DateTime>("Season")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
@@ -234,7 +237,7 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("Downloaded")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("EndTime")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsFinal")
@@ -247,11 +250,14 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("PreparationStartTime")
+                    b.Property<DateTime>("PreparationStartTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Season")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")

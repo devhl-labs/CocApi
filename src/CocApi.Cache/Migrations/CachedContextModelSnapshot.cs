@@ -124,7 +124,7 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("Season")
+                    b.Property<DateTime>("Season")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
@@ -235,7 +235,7 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("Downloaded")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("EndTime")
+                    b.Property<DateTime>("EndTime")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("IsFinal")
@@ -248,11 +248,14 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("PreparationStartTime")
+                    b.Property<DateTime>("PreparationStartTime")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RawContent")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("Season")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")

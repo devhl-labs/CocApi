@@ -42,7 +42,8 @@ namespace CocApi.Cache.Migrations
                     StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: false),
                     State = table.Column<int>(type: "INTEGER", nullable: true),
-                    PreparationStartTime = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    PreparationStartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,7 +62,7 @@ namespace CocApi.Cache.Migrations
                     LocalExpiration = table.Column<DateTime>(type: "TEXT", nullable: false),
                     StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     Tag = table.Column<string>(type: "TEXT", nullable: false),
-                    Season = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    Season = table.Column<DateTime>(type: "TEXT", nullable: false),
                     State = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
@@ -119,11 +120,12 @@ namespace CocApi.Cache.Migrations
                     StatusCode = table.Column<int>(type: "INTEGER", nullable: false),
                     ClanTag = table.Column<string>(type: "TEXT", nullable: false),
                     OpponentTag = table.Column<string>(type: "TEXT", nullable: false),
-                    PreparationStartTime = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    PreparationStartTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "TEXT", nullable: false),
                     WarTag = table.Column<string>(type: "TEXT", nullable: true),
                     State = table.Column<int>(type: "INTEGER", nullable: true),
                     IsFinal = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Season = table.Column<DateTime>(type: "TEXT", nullable: true),
                     StatusCodeOpponent = table.Column<int>(type: "INTEGER", nullable: true),
                     Announcements = table.Column<int>(type: "INTEGER", nullable: false),
                     Type = table.Column<int>(type: "INTEGER", nullable: false)

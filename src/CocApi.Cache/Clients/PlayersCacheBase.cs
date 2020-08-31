@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class PlayersCacheBase : ClientBase
+    public class PlayersCacheBase : CacheBase
     {
         private readonly PlayersApi _playersApi;
 
@@ -157,15 +157,20 @@ namespace CocApi.Cache
                 await Task.Delay(500).ConfigureAwait(false);
         }
 
-        public virtual bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
+        private bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
         {
             if (stored.ServerExpiration > fetched.ServerExpiration)
                 return false;
 
-            if (stored.Data == null)
+            if (stored.Data == null || fetched.Data == null)
                 return false;
 
-            return !stored.Data.Equals(fetched.Data);
+            return HasUpdated(stored.Data, fetched.Data);
+        }
+
+        protected virtual bool HasUpdated(Player stored, Player fetched)
+        {
+            return !stored.Equals(fetched);
         }
 
         public virtual TimeSpan TimeToLive(ApiResponse<Player> apiResponse)
