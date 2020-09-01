@@ -78,7 +78,7 @@ namespace CocApi.Model
 
             foreach (ClanMember fetchedMember in fetched.MemberList.EmptyIfNull())
             {
-                ClanMember storedMember = fetched.MemberList.FirstOrDefault(m => m.Tag == fetchedMember.Tag);
+                ClanMember storedMember = stored.MemberList.FirstOrDefault(m => m.Tag == fetchedMember.Tag);
 
                 if (storedMember == null)
                     results.Add(fetchedMember);

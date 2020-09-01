@@ -666,7 +666,7 @@ namespace CocApi.Cache
             if (fetched.Data != null && HasUpdated(group, fetched))
                 OnClanWarLeagueGroupUpdated(cachedClan.Data, group.Data, fetched.Data);
 
-            if (fetched.Data != null)
+            if (fetched.Data != null && fetched.Data.Season.Month == DateTime.UtcNow.Month)
                 foreach (var round in fetched.Data.Rounds)
                     foreach (var warTag in round.WarTags.Where(w => w != "#0"))
                     {

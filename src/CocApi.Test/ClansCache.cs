@@ -14,14 +14,12 @@ namespace CocApi.Test
 {
     public class ClansCache : ClansCacheBase, IHostedService
     {
-        private readonly ClansApi _clansApi;
         private readonly PlayersCache _playersCache;
         private readonly LogService _logService;
 
         public ClansCache(CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
             : base(cacheConfiguration, clansApi, playersCache)
         {
-            _clansApi = clansApi;
             _playersCache = playersCache;
             _logService = logService;
 
@@ -33,7 +31,7 @@ namespace CocApi.Test
             ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
             ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
             ClanWarUpdated += ClansCache_ClanWarUpdated;
-            _clansApi.QueryResult += QueryResult;
+            clansApi.QueryResult += QueryResult;
         }
 
         public override TimeSpan ClanWarTimeToLive(ApiException apiException)
