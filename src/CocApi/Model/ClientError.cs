@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClientError
     /// </summary>
     [DataContract]
-    public partial class ClientError :  IEquatable<ClientError>, IValidatableObject
+    public partial class ClientError :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientError" /> class.
@@ -50,25 +56,25 @@ namespace CocApi.Model
         /// Gets or Sets Reason
         /// </summary>
         [DataMember(Name="reason", EmitDefaultValue=false)]
-        public string Reason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Reason { get; private set; }
 
         /// <summary>
         /// Gets or Sets Message
         /// </summary>
         [DataMember(Name="message", EmitDefaultValue=false)]
-        public string Message { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Message { get; private set; }
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [DataMember(Name="type", EmitDefaultValue=false)]
-        public string Type { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Type { get; private set; }
 
         /// <summary>
         /// Gets or Sets Detail
         /// </summary>
         [DataMember(Name="detail", EmitDefaultValue=false)]
-        public Object Detail { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Object Detail { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -93,62 +99,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClientError);
-        }
-
-        /// <summary>
-        /// Returns true if ClientError instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClientError to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClientError input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Reason == input.Reason ||
-                    (this.Reason != null &&
-                    this.Reason.Equals(input.Reason))
-                ) && 
-                (
-                    this.Message == input.Message ||
-                    (this.Message != null &&
-                    this.Message.Equals(input.Message))
-                ) && 
-                (
-                    this.Type == input.Type ||
-                    (this.Type != null &&
-                    this.Type.Equals(input.Type))
-                ) && 
-                (
-                    this.Detail == input.Detail ||
-                    (this.Detail != null &&
-                    this.Detail.Equals(input.Detail))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

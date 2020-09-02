@@ -10,32 +10,26 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi.Model
+namespace CocApi
 {
-/// <summary>
-    /// Player
-    /// </summary>
-    [DataContract]
-    public partial class Player :  IEquatable<Player>, IValidatableObject
-    {
         /// <summary>
         /// Defines Role
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum RoleEnum
+        public enum Role
         {
             /// <summary>
             /// Enum Member for value: member
@@ -63,11 +57,23 @@ namespace CocApi.Model
 
         }
 
+}
+
+
+
+namespace CocApi.Model
+{
+    /// <summary>
+    /// Player
+    /// </summary>
+    [DataContract]
+    public partial class Player :  IValidatableObject
+    {
         /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
-        public RoleEnum? Role { get; private set; }
+        public Role? Role { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>
@@ -97,7 +103,7 @@ namespace CocApi.Model
         /// <param name="warStars">warStars.</param>
         /// <param name="achievements">achievements.</param>
         /// <param name="versusBattleWinCount">versusBattleWinCount.</param>
-        public Player(PlayerClan clan = default(PlayerClan), League league = default(League), RoleEnum? role = default(RoleEnum?), int attackWins = default(int), int defenseWins = default(int), int townHallLevel = default(int), int townHallWeaponLevel = default(int), int versusBattleWins = default(int), PlayerLegendStatistics legendStatistics = default(PlayerLegendStatistics), List<PlayerItemLevel> troops = default(List<PlayerItemLevel>), List<PlayerItemLevel> heroes = default(List<PlayerItemLevel>), List<PlayerItemLevel> spells = default(List<PlayerItemLevel>), List<Label> labels = default(List<Label>), string tag = default(string), string name = default(string), int expLevel = default(int), int trophies = default(int), int bestTrophies = default(int), int donations = default(int), int donationsReceived = default(int), int builderHallLevel = default(int), int versusTrophies = default(int), int bestVersusTrophies = default(int), int warStars = default(int), List<PlayerAchievementProgress> achievements = default(List<PlayerAchievementProgress>), int versusBattleWinCount = default(int))
+        public Player(PlayerClan clan = default(PlayerClan), League league = default(League), Role? role = default(Role?), int attackWins = default(int), int defenseWins = default(int), int townHallLevel = default(int), int townHallWeaponLevel = default(int), int versusBattleWins = default(int), PlayerLegendStatistics legendStatistics = default(PlayerLegendStatistics), List<PlayerItemLevel> troops = default(List<PlayerItemLevel>), List<PlayerItemLevel> heroes = default(List<PlayerItemLevel>), List<PlayerItemLevel> spells = default(List<PlayerItemLevel>), List<Label> labels = default(List<Label>), string tag = default(string), string name = default(string), int expLevel = default(int), int trophies = default(int), int bestTrophies = default(int), int donations = default(int), int donationsReceived = default(int), int builderHallLevel = default(int), int versusTrophies = default(int), int bestVersusTrophies = default(int), int warStars = default(int), List<PlayerAchievementProgress> achievements = default(List<PlayerAchievementProgress>), int versusBattleWinCount = default(int))
         {
             this.Clan = clan;
             this.League = league;
@@ -131,151 +137,151 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public PlayerClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public PlayerClan Clan { get; private set; }
 
         /// <summary>
         /// Gets or Sets League
         /// </summary>
         [DataMember(Name="league", EmitDefaultValue=false)]
-        public League League { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public League League { get; private set; }
 
         /// <summary>
         /// Gets or Sets AttackWins
         /// </summary>
         [DataMember(Name="attackWins", EmitDefaultValue=false)]
-        public int AttackWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int AttackWins { get; private set; }
 
         /// <summary>
         /// Gets or Sets DefenseWins
         /// </summary>
         [DataMember(Name="defenseWins", EmitDefaultValue=false)]
-        public int DefenseWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int DefenseWins { get; private set; }
 
         /// <summary>
         /// Gets or Sets TownHallLevel
         /// </summary>
         [DataMember(Name="townHallLevel", EmitDefaultValue=false)]
-        public int TownHallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int TownHallLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets TownHallWeaponLevel
         /// </summary>
         [DataMember(Name="townHallWeaponLevel", EmitDefaultValue=false)]
-        public int TownHallWeaponLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int TownHallWeaponLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets VersusBattleWins
         /// </summary>
         [DataMember(Name="versusBattleWins", EmitDefaultValue=false)]
-        public int VersusBattleWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int VersusBattleWins { get; private set; }
 
         /// <summary>
         /// Gets or Sets LegendStatistics
         /// </summary>
         [DataMember(Name="legendStatistics", EmitDefaultValue=false)]
-        public PlayerLegendStatistics LegendStatistics { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public PlayerLegendStatistics LegendStatistics { get; private set; }
 
         /// <summary>
         /// Gets or Sets Troops
         /// </summary>
         [DataMember(Name="troops", EmitDefaultValue=false)]
-        public List<PlayerItemLevel> Troops { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<PlayerItemLevel> Troops { get; private set; }
 
         /// <summary>
         /// Gets or Sets Heroes
         /// </summary>
         [DataMember(Name="heroes", EmitDefaultValue=false)]
-        public List<PlayerItemLevel> Heroes { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<PlayerItemLevel> Heroes { get; private set; }
 
         /// <summary>
         /// Gets or Sets Spells
         /// </summary>
         [DataMember(Name="spells", EmitDefaultValue=false)]
-        public List<PlayerItemLevel> Spells { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<PlayerItemLevel> Spells { get; private set; }
 
         /// <summary>
         /// Gets or Sets Labels
         /// </summary>
         [DataMember(Name="labels", EmitDefaultValue=false)]
-        public List<Label> Labels { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<Label> Labels { get; private set; }
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets ExpLevel
         /// </summary>
         [DataMember(Name="expLevel", EmitDefaultValue=false)]
-        public int ExpLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ExpLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets Trophies
         /// </summary>
         [DataMember(Name="trophies", EmitDefaultValue=false)]
-        public int Trophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Trophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets BestTrophies
         /// </summary>
         [DataMember(Name="bestTrophies", EmitDefaultValue=false)]
-        public int BestTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int BestTrophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets Donations
         /// </summary>
         [DataMember(Name="donations", EmitDefaultValue=false)]
-        public int Donations { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Donations { get; private set; }
 
         /// <summary>
         /// Gets or Sets DonationsReceived
         /// </summary>
         [DataMember(Name="donationsReceived", EmitDefaultValue=false)]
-        public int DonationsReceived { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int DonationsReceived { get; private set; }
 
         /// <summary>
         /// Gets or Sets BuilderHallLevel
         /// </summary>
         [DataMember(Name="builderHallLevel", EmitDefaultValue=false)]
-        public int BuilderHallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int BuilderHallLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets VersusTrophies
         /// </summary>
         [DataMember(Name="versusTrophies", EmitDefaultValue=false)]
-        public int VersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int VersusTrophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets BestVersusTrophies
         /// </summary>
         [DataMember(Name="bestVersusTrophies", EmitDefaultValue=false)]
-        public int BestVersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int BestVersusTrophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets WarStars
         /// </summary>
         [DataMember(Name="warStars", EmitDefaultValue=false)]
-        public int WarStars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int WarStars { get; private set; }
 
         /// <summary>
         /// Gets or Sets Achievements
         /// </summary>
         [DataMember(Name="achievements", EmitDefaultValue=false)]
-        public List<PlayerAchievementProgress> Achievements { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<PlayerAchievementProgress> Achievements { get; private set; }
 
         /// <summary>
         /// Gets or Sets VersusBattleWinCount
         /// </summary>
         [DataMember(Name="versusBattleWinCount", EmitDefaultValue=false)]
-        public int VersusBattleWinCount { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int VersusBattleWinCount { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -322,161 +328,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as Player);
-        }
-
-        /// <summary>
-        /// Returns true if Player instances are equal
-        /// </summary>
-        /// <param name="input">Instance of Player to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(Player input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Clan == input.Clan ||
-                    (this.Clan != null &&
-                    this.Clan.Equals(input.Clan))
-                ) && 
-                (
-                    this.League == input.League ||
-                    (this.League != null &&
-                    this.League.Equals(input.League))
-                ) && 
-                (
-                    this.Role == input.Role ||
-                    this.Role.Equals(input.Role)
-                ) && 
-                (
-                    this.AttackWins == input.AttackWins ||
-                    this.AttackWins.Equals(input.AttackWins)
-                ) && 
-                (
-                    this.DefenseWins == input.DefenseWins ||
-                    this.DefenseWins.Equals(input.DefenseWins)
-                ) && 
-                (
-                    this.TownHallLevel == input.TownHallLevel ||
-                    this.TownHallLevel.Equals(input.TownHallLevel)
-                ) && 
-                (
-                    this.TownHallWeaponLevel == input.TownHallWeaponLevel ||
-                    this.TownHallWeaponLevel.Equals(input.TownHallWeaponLevel)
-                ) && 
-                (
-                    this.VersusBattleWins == input.VersusBattleWins ||
-                    this.VersusBattleWins.Equals(input.VersusBattleWins)
-                ) && 
-                (
-                    this.LegendStatistics == input.LegendStatistics ||
-                    (this.LegendStatistics != null &&
-                    this.LegendStatistics.Equals(input.LegendStatistics))
-                ) && 
-                (
-                    this.Troops == input.Troops ||
-                    this.Troops != null &&
-                    input.Troops != null &&
-                    this.Troops.SequenceEqual(input.Troops)
-                ) && 
-                (
-                    this.Heroes == input.Heroes ||
-                    this.Heroes != null &&
-                    input.Heroes != null &&
-                    this.Heroes.SequenceEqual(input.Heroes)
-                ) && 
-                (
-                    this.Spells == input.Spells ||
-                    this.Spells != null &&
-                    input.Spells != null &&
-                    this.Spells.SequenceEqual(input.Spells)
-                ) && 
-                (
-                    this.Labels == input.Labels ||
-                    this.Labels != null &&
-                    input.Labels != null &&
-                    this.Labels.SequenceEqual(input.Labels)
-                ) && 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.ExpLevel == input.ExpLevel ||
-                    this.ExpLevel.Equals(input.ExpLevel)
-                ) && 
-                (
-                    this.Trophies == input.Trophies ||
-                    this.Trophies.Equals(input.Trophies)
-                ) && 
-                (
-                    this.BestTrophies == input.BestTrophies ||
-                    this.BestTrophies.Equals(input.BestTrophies)
-                ) && 
-                (
-                    this.Donations == input.Donations ||
-                    this.Donations.Equals(input.Donations)
-                ) && 
-                (
-                    this.DonationsReceived == input.DonationsReceived ||
-                    this.DonationsReceived.Equals(input.DonationsReceived)
-                ) && 
-                (
-                    this.BuilderHallLevel == input.BuilderHallLevel ||
-                    this.BuilderHallLevel.Equals(input.BuilderHallLevel)
-                ) && 
-                (
-                    this.VersusTrophies == input.VersusTrophies ||
-                    this.VersusTrophies.Equals(input.VersusTrophies)
-                ) && 
-                (
-                    this.BestVersusTrophies == input.BestVersusTrophies ||
-                    this.BestVersusTrophies.Equals(input.BestVersusTrophies)
-                ) && 
-                (
-                    this.WarStars == input.WarStars ||
-                    this.WarStars.Equals(input.WarStars)
-                ) && 
-                (
-                    this.Achievements == input.Achievements ||
-                    this.Achievements != null &&
-                    input.Achievements != null &&
-                    this.Achievements.SequenceEqual(input.Achievements)
-                ) && 
-                (
-                    this.VersusBattleWinCount == input.VersusBattleWinCount ||
-                    this.VersusBattleWinCount.Equals(input.VersusBattleWinCount)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

@@ -9,6 +9,7 @@ using CocApi.Cache;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 
 namespace CocApi.Test
 {
@@ -17,8 +18,8 @@ namespace CocApi.Test
         private readonly PlayersCache _playersCache;
         private readonly LogService _logService;
 
-        public ClansCache(CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
-            : base(cacheConfiguration, clansApi, playersCache)
+        public ClansCache(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
+            : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
             _logService = logService;
@@ -34,9 +35,9 @@ namespace CocApi.Test
             clansApi.QueryResult += QueryResult;
         }
 
-        public override TimeSpan ClanWarTimeToLive(ApiException apiException)
+        public override TimeSpan ClanWarTimeToLive(Exception exception)
         {
-            return base.ClanWarTimeToLive(apiException);
+            return base.ClanWarTimeToLive(exception);
         }
 
         protected override bool HasUpdated(Clan stored, Clan fetched)
@@ -86,7 +87,15 @@ namespace CocApi.Test
 
         private Task ClansCache_ClanWarAdded(object sender, ClanWarEventArgs e)
         {
+            //await Task.Delay(1);
+
             _logService.Log(LogLevel.Debug, this.GetType().Name, null, "New war");
+
+            string json = JsonConvert.SerializeObject(e.ClanWar, Clash.JsonSerializerSettings);
+
+            ClanWar clanWar = (ClanWar) JsonConvert.DeserializeObject(json, typeof(ClanWar), Clash.JsonSerializerSettings);
+
+            //throw new Exception();
 
             return Task.CompletedTask;
         }

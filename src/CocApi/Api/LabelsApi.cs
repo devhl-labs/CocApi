@@ -26,7 +26,7 @@ namespace CocApi.Api
     /// </summary>
     public sealed partial class LabelsApi
     {
-        private CocApi.TokenProvider _tokenProvider;
+        public CocApi.TokenProvider TokenProvider { get; }
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -37,16 +37,16 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="LabelsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LabelsApi(CocApi.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
+        public LabelsApi(CocApi.TokenProvider tokenProvider, TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
-                new CocApi.Client.Configuration { BasePath = basePath }
+                new CocApi.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
             );
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-            this._tokenProvider = tokenProvider;
+            this.TokenProvider = tokenProvider;
         }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -154,6 +154,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LabelsObject>("/labels/clans", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/labels/clans", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -187,7 +200,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetClanLabelsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>?> GetClanLabelsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -207,9 +220,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of LabelsObject</returns>
-        public async System.Threading.Tasks.Task<LabelsObject> GetClanLabelsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<LabelsObject?> GetClanLabelsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LabelsObject> localVarResponse = await GetClanLabelsResponseOrDefaultAsync(limit, after, before);
+             CocApi.Client.ApiResponse<LabelsObject>? localVarResponse = await GetClanLabelsResponseOrDefaultAsync(limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -272,7 +285,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -280,6 +293,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LabelsObject>("/labels/players", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/labels/players", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -313,7 +339,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetPlayerLabelsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>?> GetPlayerLabelsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -333,9 +359,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of LabelsObject</returns>
-        public async System.Threading.Tasks.Task<LabelsObject> GetPlayerLabelsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<LabelsObject?> GetPlayerLabelsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LabelsObject> localVarResponse = await GetPlayerLabelsResponseOrDefaultAsync(limit, after, before);
+             CocApi.Client.ApiResponse<LabelsObject>? localVarResponse = await GetPlayerLabelsResponseOrDefaultAsync(limit, after, before);
              if (localVarResponse == null)
                 return null;
 

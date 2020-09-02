@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// PlayerItemLevel
     /// </summary>
     [DataContract]
-    public partial class PlayerItemLevel :  IEquatable<PlayerItemLevel>, IValidatableObject
+    public partial class PlayerItemLevel :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerItemLevel" /> class.
@@ -50,25 +56,25 @@ namespace CocApi.Model
         /// Gets or Sets Level
         /// </summary>
         [DataMember(Name="level", EmitDefaultValue=false)]
-        public int Level { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Level { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Object Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets MaxLevel
         /// </summary>
         [DataMember(Name="maxLevel", EmitDefaultValue=false)]
-        public int MaxLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int MaxLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets Village
         /// </summary>
         [DataMember(Name="village", EmitDefaultValue=false)]
-        public string Village { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Village { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -93,60 +99,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as PlayerItemLevel);
-        }
-
-        /// <summary>
-        /// Returns true if PlayerItemLevel instances are equal
-        /// </summary>
-        /// <param name="input">Instance of PlayerItemLevel to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(PlayerItemLevel input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Level == input.Level ||
-                    this.Level.Equals(input.Level)
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.MaxLevel == input.MaxLevel ||
-                    this.MaxLevel.Equals(input.MaxLevel)
-                ) && 
-                (
-                    this.Village == input.Village ||
-                    (this.Village != null &&
-                    this.Village.Equals(input.Village))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

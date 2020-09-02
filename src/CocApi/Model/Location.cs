@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// Location
     /// </summary>
     [DataContract]
-    public partial class Location :  IEquatable<Location>, IValidatableObject
+    public partial class Location :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Location" /> class.
@@ -52,31 +58,31 @@ namespace CocApi.Model
         /// Gets or Sets LocalizedName
         /// </summary>
         [DataMember(Name="localizedName", EmitDefaultValue=false)]
-        public string LocalizedName { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string LocalizedName { get; private set; }
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public int Id { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Id { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets IsCountry
         /// </summary>
         [DataMember(Name="isCountry", EmitDefaultValue=false)]
-        public bool IsCountry { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public bool IsCountry { get; private set; }
 
         /// <summary>
         /// Gets or Sets CountryCode
         /// </summary>
         [DataMember(Name="countryCode", EmitDefaultValue=false)]
-        public string CountryCode { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string CountryCode { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -102,65 +108,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as Location);
-        }
-
-        /// <summary>
-        /// Returns true if Location instances are equal
-        /// </summary>
-        /// <param name="input">Instance of Location to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(Location input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.LocalizedName == input.LocalizedName ||
-                    (this.LocalizedName != null &&
-                    this.LocalizedName.Equals(input.LocalizedName))
-                ) && 
-                (
-                    this.Id == input.Id ||
-                    this.Id.Equals(input.Id)
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.IsCountry == input.IsCountry ||
-                    this.IsCountry.Equals(input.IsCountry)
-                ) && 
-                (
-                    this.CountryCode == input.CountryCode ||
-                    (this.CountryCode != null &&
-                    this.CountryCode.Equals(input.CountryCode))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

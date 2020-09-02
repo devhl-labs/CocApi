@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// PlayerAchievementProgress
     /// </summary>
     [DataContract]
-    public partial class PlayerAchievementProgress :  IEquatable<PlayerAchievementProgress>, IValidatableObject
+    public partial class PlayerAchievementProgress :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerAchievementProgress" /> class.
@@ -56,43 +62,43 @@ namespace CocApi.Model
         /// Gets or Sets Stars
         /// </summary>
         [DataMember(Name="stars", EmitDefaultValue=false)]
-        public int Stars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Stars { get; private set; }
 
         /// <summary>
         /// Gets or Sets Value
         /// </summary>
         [DataMember(Name="value", EmitDefaultValue=false)]
-        public int Value { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Value { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Object Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets Target
         /// </summary>
         [DataMember(Name="target", EmitDefaultValue=false)]
-        public int Target { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Target { get; private set; }
 
         /// <summary>
         /// Gets or Sets Info
         /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
-        public Object Info { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Object Info { get; private set; }
 
         /// <summary>
         /// Gets or Sets CompletionInfo
         /// </summary>
         [DataMember(Name="completionInfo", EmitDefaultValue=false)]
-        public Object CompletionInfo { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Object CompletionInfo { get; private set; }
 
         /// <summary>
         /// Gets or Sets Village
         /// </summary>
         [DataMember(Name="village", EmitDefaultValue=false)]
-        public string Village { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Village { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -120,74 +126,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as PlayerAchievementProgress);
-        }
-
-        /// <summary>
-        /// Returns true if PlayerAchievementProgress instances are equal
-        /// </summary>
-        /// <param name="input">Instance of PlayerAchievementProgress to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(PlayerAchievementProgress input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Stars == input.Stars ||
-                    this.Stars.Equals(input.Stars)
-                ) && 
-                (
-                    this.Value == input.Value ||
-                    this.Value.Equals(input.Value)
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.Target == input.Target ||
-                    this.Target.Equals(input.Target)
-                ) && 
-                (
-                    this.Info == input.Info ||
-                    (this.Info != null &&
-                    this.Info.Equals(input.Info))
-                ) && 
-                (
-                    this.CompletionInfo == input.CompletionInfo ||
-                    (this.CompletionInfo != null &&
-                    this.CompletionInfo.Equals(input.CompletionInfo))
-                ) && 
-                (
-                    this.Village == input.Village ||
-                    (this.Village != null &&
-                    this.Village.Equals(input.Village))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

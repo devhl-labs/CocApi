@@ -21,9 +21,9 @@ namespace CocApi.Cache.Models
 
                 return new CachedPlayer(apiResponse, playersCacheBase.TimeToLive(apiResponse));
             }
-            catch (ApiException apiException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedPlayer(tag, apiException, playersCacheBase.TimeToLive(apiException));
+                return new CachedPlayer(tag, e, playersCacheBase.TimeToLive(e));
             }
         }
 
@@ -36,7 +36,7 @@ namespace CocApi.Cache.Models
             Tag = response.Data.Tag;
         }
 
-        private CachedPlayer(string tag, ApiException apiException, TimeSpan localExpiration) : base (apiException, localExpiration)
+        private CachedPlayer(string tag, Exception e, TimeSpan localExpiration) : base (e, localExpiration)
         {
             Tag = tag;
         }

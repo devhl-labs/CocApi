@@ -8,7 +8,7 @@ namespace CocApi
 {
     public class SuperCellDateConverter : JsonConverter
     {
-        public List<string> DateTimeFormats { get; set; }
+        public List<string> DateTimeFormats { get; set; } = new List<string>();
 
         public override bool CanConvert(Type objectType)
         {
@@ -17,7 +17,12 @@ namespace CocApi
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
+            if (reader.Value is DateTime dte)
+                return dte;
+
             string dateString = (string)reader.Value;
+
+            //string dateString = reader.Value.ToString();
 
             foreach (string format in DateTimeFormats)
             {
@@ -35,7 +40,12 @@ namespace CocApi
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            throw new NotImplementedException();
+            DateTime dte = (DateTime)value;
+
+            if (dte.Day == 0 && dte.Minute == 0 && dte.Second == 0 && dte.Millisecond == 0)
+                writer.WriteValue(((DateTime)value).ToString("yyyy'-'MM"));
+            else
+                writer.WriteValue(((DateTime)value).ToString("yyyyMMdd'T'HHmmss.fff'Z'"));
         }
     }
 }

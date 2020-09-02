@@ -121,6 +121,6 @@ namespace CocApi
             Converters = JsonConverters()
         };
 
-        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> source) => source ?? Enumerable.Empty<T>();
+        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
     }
 }

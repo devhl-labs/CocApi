@@ -37,11 +37,11 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public ClansApi(CocApi.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
+        public ClansApi(CocApi.TokenProvider tokenProvider, TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
-                new CocApi.Client.Configuration { BasePath = basePath }
+                new CocApi.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
             );
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
@@ -133,7 +133,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
@@ -144,6 +144,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<Clan>("/clans/{clanTag}", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clans/{clanTag}", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -175,7 +188,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (Clan)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>> GetClanResponseOrDefaultAsync (string clanTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>?> GetClanResponseOrDefaultAsync (string clanTag)
         {
             try
             {
@@ -193,9 +206,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of Clan</returns>
-        public async System.Threading.Tasks.Task<Clan> GetClanOrDefaultAsync (string clanTag)
+        public async System.Threading.Tasks.Task<Clan?> GetClanOrDefaultAsync (string clanTag)
         {
-             CocApi.Client.ApiResponse<Clan> localVarResponse = await GetClanResponseOrDefaultAsync(clanTag);
+             CocApi.Client.ApiResponse<Clan>? localVarResponse = await GetClanResponseOrDefaultAsync(clanTag);
              if (localVarResponse == null)
                 return null;
 
@@ -251,7 +264,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -274,6 +287,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanMember>>("/clans/{clanTag}/members", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -308,7 +334,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;ClanMember&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>> GetClanMembersResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>?> GetClanMembersResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -329,9 +355,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of List&lt;ClanMember&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanMember>> GetClanMembersOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<List<ClanMember>?> GetClanMembersOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<List<ClanMember>> localVarResponse = await GetClanMembersResponseOrDefaultAsync(clanTag, limit, after, before);
+             CocApi.Client.ApiResponse<List<ClanMember>>? localVarResponse = await GetClanMembersResponseOrDefaultAsync(clanTag, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -381,7 +407,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
@@ -392,6 +418,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWarLeagueGroup>("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -423,7 +462,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWarLeagueGroup)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLeagueGroup>> GetClanWarLeagueGroupResponseOrDefaultAsync (string clanTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLeagueGroup>?> GetClanWarLeagueGroupResponseOrDefaultAsync (string clanTag)
         {
             try
             {
@@ -441,9 +480,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ClanWarLeagueGroup</returns>
-        public async System.Threading.Tasks.Task<ClanWarLeagueGroup> GetClanWarLeagueGroupOrDefaultAsync (string clanTag)
+        public async System.Threading.Tasks.Task<ClanWarLeagueGroup?> GetClanWarLeagueGroupOrDefaultAsync (string clanTag)
         {
-             CocApi.Client.ApiResponse<ClanWarLeagueGroup> localVarResponse = await GetClanWarLeagueGroupResponseOrDefaultAsync(clanTag);
+             CocApi.Client.ApiResponse<ClanWarLeagueGroup>? localVarResponse = await GetClanWarLeagueGroupResponseOrDefaultAsync(clanTag);
              if (localVarResponse == null)
                 return null;
 
@@ -470,12 +509,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag)
+        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'warTag' when calling ClansApi->GetClanWarLeagueWar");
-
             string formattedTag = Clash.FormatTag(warTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -494,7 +532,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(warTag));
+            localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //warTag
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
@@ -505,6 +543,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clanwarleagues/wars/{warTag}", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -536,7 +587,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetClanWarLeagueWarResponseOrDefaultAsync (string warTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>?> GetClanWarLeagueWarResponseOrDefaultAsync (string warTag)
         {
             try
             {
@@ -554,9 +605,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ClanWar</returns>
-        public async System.Threading.Tasks.Task<ClanWar> GetClanWarLeagueWarOrDefaultAsync (string warTag)
+        public async System.Threading.Tasks.Task<ClanWar?> GetClanWarLeagueWarOrDefaultAsync (string warTag)
         {
-             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetClanWarLeagueWarResponseOrDefaultAsync(warTag);
+             CocApi.Client.ApiResponse<ClanWar>? localVarResponse = await GetClanWarLeagueWarResponseOrDefaultAsync(warTag);
              if (localVarResponse == null)
                 return null;
 
@@ -612,7 +663,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -635,6 +686,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWarLog>("/clans/{clanTag}/warlog", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -669,7 +733,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (ClanWarLog)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLog>> GetClanWarLogResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLog>?> GetClanWarLogResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -690,9 +754,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ClanWarLog</returns>
-        public async System.Threading.Tasks.Task<ClanWarLog> GetClanWarLogOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<ClanWarLog?> GetClanWarLogOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<ClanWarLog> localVarResponse = await GetClanWarLogResponseOrDefaultAsync(clanTag, limit, after, before);
+             CocApi.Client.ApiResponse<ClanWarLog>? localVarResponse = await GetClanWarLogResponseOrDefaultAsync(clanTag, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -719,7 +783,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag)
+        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag)
         {
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
@@ -742,7 +806,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(clanTag));
+            localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
@@ -753,6 +817,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clans/{clanTag}/currentwar", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -784,7 +861,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetCurrentWarResponseOrDefaultAsync (string clanTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>?> GetCurrentWarResponseOrDefaultAsync (string clanTag)
         {
             try
             {
@@ -802,9 +879,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ClanWar</returns>
-        public async System.Threading.Tasks.Task<ClanWar> GetCurrentWarOrDefaultAsync (string clanTag)
+        public async System.Threading.Tasks.Task<ClanWar?> GetCurrentWarOrDefaultAsync (string clanTag)
         {
-             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetCurrentWarResponseOrDefaultAsync(clanTag);
+             CocApi.Client.ApiResponse<ClanWar>? localVarResponse = await GetCurrentWarResponseOrDefaultAsync(clanTag);
              if (localVarResponse == null)
                 return null;
 
@@ -924,6 +1001,19 @@ namespace CocApi.Api
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<Clan>>("/clans", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
 
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/clans", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
+
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("SearchClans", localVarResponse);
@@ -964,7 +1054,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;Clan&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<Clan>>> SearchClansResponseOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<Clan>>?> SearchClansResponseOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
         {
             try
             {
@@ -992,9 +1082,9 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <returns>Task of List&lt;Clan&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Clan>> SearchClansOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
+        public async System.Threading.Tasks.Task<List<Clan>?> SearchClansOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string))
         {
-             CocApi.Client.ApiResponse<List<Clan>> localVarResponse = await SearchClansResponseOrDefaultAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
+             CocApi.Client.ApiResponse<List<Clan>>? localVarResponse = await SearchClansResponseOrDefaultAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
              if (localVarResponse == null)
                 return null;
 

@@ -3,7 +3,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**DestructionPercentage** | **Object** |  | [optional] 
+**DestructionPercentage** | **float** |  | [optional] 
 **Tag** | **string** |  | [optional] 
 **Name** | **string** |  | [optional] 
 **BadgeUrls** | [**ClanBadgeUrls**](ClanBadgeUrls.md) |  | [optional] 

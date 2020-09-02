@@ -10,27 +10,21 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi.Model
+namespace CocApi
 {
-/// <summary>
-    /// Clan
-    /// </summary>
-    [DataContract]
-    public partial class Clan :  IEquatable<Clan>, IValidatableObject
-    {
         /// <summary>
         /// Defines WarFrequency
         /// </summary>
@@ -76,11 +70,6 @@ namespace CocApi.Model
         }
 
         /// <summary>
-        /// Gets or Sets WarFrequency
-        /// </summary>
-        [DataMember(Name="warFrequency", EmitDefaultValue=false)]
-        public WarFrequencyEnum? WarFrequency { get; private set; }
-        /// <summary>
         /// Defines Type
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
@@ -106,6 +95,23 @@ namespace CocApi.Model
 
         }
 
+}
+
+
+
+namespace CocApi.Model
+{
+    /// <summary>
+    /// Clan
+    /// </summary>
+    [DataContract]
+    public partial class Clan :  IValidatableObject
+    {
+        /// <summary>
+        /// Gets or Sets WarFrequency
+        /// </summary>
+        [DataMember(Name="warFrequency", EmitDefaultValue=false)]
+        public WarFrequencyEnum? WarFrequency { get; private set; }
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
@@ -162,109 +168,109 @@ namespace CocApi.Model
         /// Gets or Sets WarLeague
         /// </summary>
         [DataMember(Name="warLeague", EmitDefaultValue=false)]
-        public WarLeague WarLeague { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public WarLeague WarLeague { get; private set; }
 
         /// <summary>
         /// Gets or Sets MemberList
         /// </summary>
         [DataMember(Name="memberList", EmitDefaultValue=false)]
-        public List<ClanMember> MemberList { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<ClanMember> MemberList { get; private set; }
 
         /// <summary>
         /// Gets or Sets RequiredTrophies
         /// </summary>
         [DataMember(Name="requiredTrophies", EmitDefaultValue=false)]
-        public int RequiredTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int RequiredTrophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets ClanVersusPoints
         /// </summary>
         [DataMember(Name="clanVersusPoints", EmitDefaultValue=false)]
-        public int ClanVersusPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ClanVersusPoints { get; private set; }
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets IsWarLogPublic
         /// </summary>
         [DataMember(Name="isWarLogPublic", EmitDefaultValue=false)]
-        public bool IsWarLogPublic { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public bool IsWarLogPublic { get; private set; }
 
         /// <summary>
         /// Gets or Sets ClanLevel
         /// </summary>
         [DataMember(Name="clanLevel", EmitDefaultValue=false)]
-        public int ClanLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ClanLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets WarWinStreak
         /// </summary>
         [DataMember(Name="warWinStreak", EmitDefaultValue=false)]
-        public int WarWinStreak { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int WarWinStreak { get; private set; }
 
         /// <summary>
         /// Gets or Sets WarWins
         /// </summary>
         [DataMember(Name="warWins", EmitDefaultValue=false)]
-        public int WarWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int WarWins { get; private set; }
 
         /// <summary>
         /// Gets or Sets WarTies
         /// </summary>
         [DataMember(Name="warTies", EmitDefaultValue=false)]
-        public int WarTies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int WarTies { get; private set; }
 
         /// <summary>
         /// Gets or Sets WarLosses
         /// </summary>
         [DataMember(Name="warLosses", EmitDefaultValue=false)]
-        public int WarLosses { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int WarLosses { get; private set; }
 
         /// <summary>
         /// Gets or Sets ClanPoints
         /// </summary>
         [DataMember(Name="clanPoints", EmitDefaultValue=false)]
-        public int ClanPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ClanPoints { get; private set; }
 
         /// <summary>
         /// Gets or Sets Labels
         /// </summary>
         [DataMember(Name="labels", EmitDefaultValue=false)]
-        public List<Label> Labels { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<Label> Labels { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets Location
         /// </summary>
         [DataMember(Name="location", EmitDefaultValue=false)]
-        public Location Location { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Location Location { get; private set; }
 
         /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [DataMember(Name="members", EmitDefaultValue=false)]
-        public int Members { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Members { get; private set; }
 
         /// <summary>
         /// Gets or Sets Description
         /// </summary>
         [DataMember(Name="description", EmitDefaultValue=false)]
-        public string Description { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Description { get; private set; }
 
         /// <summary>
         /// Gets or Sets BadgeUrls
         /// </summary>
         [DataMember(Name="badgeUrls", EmitDefaultValue=false)]
-        public ClanBadgeUrls BadgeUrls { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public ClanBadgeUrls BadgeUrls { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -305,132 +311,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as Clan);
-        }
-
-        /// <summary>
-        /// Returns true if Clan instances are equal
-        /// </summary>
-        /// <param name="input">Instance of Clan to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(Clan input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.WarLeague == input.WarLeague ||
-                    (this.WarLeague != null &&
-                    this.WarLeague.Equals(input.WarLeague))
-                ) && 
-                (
-                    this.MemberList == input.MemberList ||
-                    this.MemberList != null &&
-                    input.MemberList != null &&
-                    this.MemberList.SequenceEqual(input.MemberList)
-                ) && 
-                (
-                    this.RequiredTrophies == input.RequiredTrophies ||
-                    this.RequiredTrophies.Equals(input.RequiredTrophies)
-                ) && 
-                (
-                    this.ClanVersusPoints == input.ClanVersusPoints ||
-                    this.ClanVersusPoints.Equals(input.ClanVersusPoints)
-                ) && 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.IsWarLogPublic == input.IsWarLogPublic ||
-                    this.IsWarLogPublic.Equals(input.IsWarLogPublic)
-                ) && 
-                (
-                    this.WarFrequency == input.WarFrequency ||
-                    this.WarFrequency.Equals(input.WarFrequency)
-                ) && 
-                (
-                    this.ClanLevel == input.ClanLevel ||
-                    this.ClanLevel.Equals(input.ClanLevel)
-                ) && 
-                (
-                    this.WarWinStreak == input.WarWinStreak ||
-                    this.WarWinStreak.Equals(input.WarWinStreak)
-                ) && 
-                (
-                    this.WarWins == input.WarWins ||
-                    this.WarWins.Equals(input.WarWins)
-                ) && 
-                (
-                    this.WarTies == input.WarTies ||
-                    this.WarTies.Equals(input.WarTies)
-                ) && 
-                (
-                    this.WarLosses == input.WarLosses ||
-                    this.WarLosses.Equals(input.WarLosses)
-                ) && 
-                (
-                    this.ClanPoints == input.ClanPoints ||
-                    this.ClanPoints.Equals(input.ClanPoints)
-                ) && 
-                (
-                    this.Labels == input.Labels ||
-                    this.Labels != null &&
-                    input.Labels != null &&
-                    this.Labels.SequenceEqual(input.Labels)
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.Location == input.Location ||
-                    (this.Location != null &&
-                    this.Location.Equals(input.Location))
-                ) && 
-                (
-                    this.Type == input.Type ||
-                    this.Type.Equals(input.Type)
-                ) && 
-                (
-                    this.Members == input.Members ||
-                    this.Members.Equals(input.Members)
-                ) && 
-                (
-                    this.Description == input.Description ||
-                    (this.Description != null &&
-                    this.Description.Equals(input.Description))
-                ) && 
-                (
-                    this.BadgeUrls == input.BadgeUrls ||
-                    (this.BadgeUrls != null &&
-                    this.BadgeUrls.Equals(input.BadgeUrls))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

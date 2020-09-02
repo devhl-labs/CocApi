@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// Label
     /// </summary>
     [DataContract]
-    public partial class Label :  IEquatable<Label>, IValidatableObject
+    public partial class Label :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Label" /> class.
@@ -48,19 +54,19 @@ namespace CocApi.Model
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Object Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public int Id { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Id { get; private set; }
 
         /// <summary>
         /// Gets or Sets IconUrls
         /// </summary>
         [DataMember(Name="iconUrls", EmitDefaultValue=false)]
-        public LabelIconUrls IconUrls { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public LabelIconUrls IconUrls { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -84,56 +90,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as Label);
-        }
-
-        /// <summary>
-        /// Returns true if Label instances are equal
-        /// </summary>
-        /// <param name="input">Instance of Label to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(Label input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.Id == input.Id ||
-                    this.Id.Equals(input.Id)
-                ) && 
-                (
-                    this.IconUrls == input.IconUrls ||
-                    (this.IconUrls != null &&
-                    this.IconUrls.Equals(input.IconUrls))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

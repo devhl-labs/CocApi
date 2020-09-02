@@ -26,7 +26,7 @@ namespace CocApi.Api
     /// </summary>
     public sealed partial class LocationsApi
     {
-        private CocApi.TokenProvider _tokenProvider;
+        public CocApi.TokenProvider TokenProvider { get; }
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -37,16 +37,16 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="LocationsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LocationsApi(CocApi.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
+        public LocationsApi(CocApi.TokenProvider tokenProvider, TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
-                new CocApi.Client.Configuration { BasePath = basePath }
+                new CocApi.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
             );
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-            this._tokenProvider = tokenProvider;
+            this.TokenProvider = tokenProvider;
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -153,7 +153,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -161,6 +161,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanRanking>>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -195,7 +208,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;ClanRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanRanking>>> GetClanRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanRanking>>?> GetClanRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -216,9 +229,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of List&lt;ClanRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanRanking>> GetClanRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<List<ClanRanking>?> GetClanRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<List<ClanRanking>> localVarResponse = await GetClanRankingResponseOrDefaultAsync(locationId, limit, after, before);
+             CocApi.Client.ApiResponse<List<ClanRanking>>? localVarResponse = await GetClanRankingResponseOrDefaultAsync(locationId, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -273,7 +286,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -288,7 +301,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -296,6 +309,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanVersusRanking>>("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -330,7 +356,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;ClanVersusRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanVersusRanking>>> GetClanVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanVersusRanking>>?> GetClanVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -351,9 +377,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of List&lt;ClanVersusRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanVersusRanking>> GetClanVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<List<ClanVersusRanking>?> GetClanVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<List<ClanVersusRanking>> localVarResponse = await GetClanVersusRankingResponseOrDefaultAsync(locationId, limit, after, before);
+             CocApi.Client.ApiResponse<List<ClanVersusRanking>>? localVarResponse = await GetClanVersusRankingResponseOrDefaultAsync(locationId, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -402,10 +428,10 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -413,6 +439,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<Location>("/locations/{locationId}", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/locations/{locationId}", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -444,7 +483,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <returns>Task of ApiResponse (Location)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Location>> GetLocationResponseOrDefaultAsync (string locationId)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Location>?> GetLocationResponseOrDefaultAsync (string locationId)
         {
             try
             {
@@ -462,9 +501,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <returns>Task of Location</returns>
-        public async System.Threading.Tasks.Task<Location> GetLocationOrDefaultAsync (string locationId)
+        public async System.Threading.Tasks.Task<Location?> GetLocationOrDefaultAsync (string locationId)
         {
-             CocApi.Client.ApiResponse<Location> localVarResponse = await GetLocationResponseOrDefaultAsync(locationId);
+             CocApi.Client.ApiResponse<Location>? localVarResponse = await GetLocationResponseOrDefaultAsync(locationId);
              if (localVarResponse == null)
                 return null;
 
@@ -527,7 +566,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -535,6 +574,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<LocationList>("/locations", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/locations", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -568,7 +620,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LocationList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>> GetLocationsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>?> GetLocationsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -588,9 +640,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of LocationList</returns>
-        public async System.Threading.Tasks.Task<LocationList> GetLocationsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<LocationList?> GetLocationsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<LocationList> localVarResponse = await GetLocationsResponseOrDefaultAsync(limit, after, before);
+             CocApi.Client.ApiResponse<LocationList>? localVarResponse = await GetLocationsResponseOrDefaultAsync(limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -645,7 +697,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -660,7 +712,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -668,6 +720,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/locations/{locationId}/rankings/players", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -702,7 +767,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (PlayerRankingList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetPlayerRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>?> GetPlayerRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -723,9 +788,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of PlayerRankingList</returns>
-        public async System.Threading.Tasks.Task<PlayerRankingList> GetPlayerRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<PlayerRankingList?> GetPlayerRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetPlayerRankingResponseOrDefaultAsync(locationId, limit, after, before);
+             CocApi.Client.ApiResponse<PlayerRankingList>? localVarResponse = await GetPlayerRankingResponseOrDefaultAsync(locationId, limit, after, before);
              if (localVarResponse == null)
                 return null;
 
@@ -780,7 +845,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //.ParameterToString(locationId));
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -795,7 +860,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
             
 
             // make the HTTP request
@@ -803,6 +868,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<PlayerVersusRanking>>("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -837,7 +915,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;PlayerVersusRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<PlayerVersusRanking>>> GetPlayerVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<PlayerVersusRanking>>?> GetPlayerVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
             try
             {
@@ -858,9 +936,9 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of List&lt;PlayerVersusRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<PlayerVersusRanking>> GetPlayerVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
+        public async System.Threading.Tasks.Task<List<PlayerVersusRanking>?> GetPlayerVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string))
         {
-             CocApi.Client.ApiResponse<List<PlayerVersusRanking>> localVarResponse = await GetPlayerVersusRankingResponseOrDefaultAsync(locationId, limit, after, before);
+             CocApi.Client.ApiResponse<List<PlayerVersusRanking>>? localVarResponse = await GetPlayerVersusRankingResponseOrDefaultAsync(locationId, limit, after, before);
              if (localVarResponse == null)
                 return null;
 

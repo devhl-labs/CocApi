@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClanWarLeagueClanMember
     /// </summary>
     [DataContract]
-    public partial class ClanWarLeagueClanMember :  IEquatable<ClanWarLeagueClanMember>, IValidatableObject
+    public partial class ClanWarLeagueClanMember :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLeagueClanMember" /> class.
@@ -48,19 +54,19 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets TownHallLevel
         /// </summary>
         [DataMember(Name="townHallLevel", EmitDefaultValue=false)]
-        public int TownHallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int TownHallLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -84,56 +90,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanWarLeagueClanMember);
-        }
-
-        /// <summary>
-        /// Returns true if ClanWarLeagueClanMember instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanWarLeagueClanMember to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanWarLeagueClanMember input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.TownHallLevel == input.TownHallLevel ||
-                    this.TownHallLevel.Equals(input.TownHallLevel)
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

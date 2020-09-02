@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClanRanking
     /// </summary>
     [DataContract]
-    public partial class ClanRanking :  IEquatable<ClanRanking>, IValidatableObject
+    public partial class ClanRanking :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanRanking" /> class.
@@ -60,55 +66,55 @@ namespace CocApi.Model
         /// Gets or Sets ClanLevel
         /// </summary>
         [DataMember(Name="clanLevel", EmitDefaultValue=false)]
-        public int ClanLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ClanLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets ClanPoints
         /// </summary>
         [DataMember(Name="clanPoints", EmitDefaultValue=false)]
-        public int ClanPoints { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ClanPoints { get; private set; }
 
         /// <summary>
         /// Gets or Sets Location
         /// </summary>
         [DataMember(Name="location", EmitDefaultValue=false)]
-        public Location Location { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public Location Location { get; private set; }
 
         /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [DataMember(Name="members", EmitDefaultValue=false)]
-        public int Members { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Members { get; private set; }
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [DataMember(Name="rank", EmitDefaultValue=false)]
-        public int Rank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Rank { get; private set; }
 
         /// <summary>
         /// Gets or Sets PreviousRank
         /// </summary>
         [DataMember(Name="previousRank", EmitDefaultValue=false)]
-        public int PreviousRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int PreviousRank { get; private set; }
 
         /// <summary>
         /// Gets or Sets BadgeUrls
         /// </summary>
         [DataMember(Name="badgeUrls", EmitDefaultValue=false)]
-        public ClanBadgeUrls BadgeUrls { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public ClanBadgeUrls BadgeUrls { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -138,82 +144,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanRanking);
-        }
-
-        /// <summary>
-        /// Returns true if ClanRanking instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanRanking to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanRanking input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.ClanLevel == input.ClanLevel ||
-                    this.ClanLevel.Equals(input.ClanLevel)
-                ) && 
-                (
-                    this.ClanPoints == input.ClanPoints ||
-                    this.ClanPoints.Equals(input.ClanPoints)
-                ) && 
-                (
-                    this.Location == input.Location ||
-                    (this.Location != null &&
-                    this.Location.Equals(input.Location))
-                ) && 
-                (
-                    this.Members == input.Members ||
-                    this.Members.Equals(input.Members)
-                ) && 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.Rank == input.Rank ||
-                    this.Rank.Equals(input.Rank)
-                ) && 
-                (
-                    this.PreviousRank == input.PreviousRank ||
-                    this.PreviousRank.Equals(input.PreviousRank)
-                ) && 
-                (
-                    this.BadgeUrls == input.BadgeUrls ||
-                    (this.BadgeUrls != null &&
-                    this.BadgeUrls.Equals(input.BadgeUrls))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

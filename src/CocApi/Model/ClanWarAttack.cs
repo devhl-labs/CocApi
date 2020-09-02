@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClanWarAttack
     /// </summary>
     [DataContract]
-    public partial class ClanWarAttack :  IEquatable<ClanWarAttack>, IValidatableObject
+    public partial class ClanWarAttack :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarAttack" /> class.
@@ -52,31 +58,31 @@ namespace CocApi.Model
         /// Gets or Sets Order
         /// </summary>
         [DataMember(Name="order", EmitDefaultValue=false)]
-        public int Order { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Order { get; private set; }
 
         /// <summary>
         /// Gets or Sets AttackerTag
         /// </summary>
         [DataMember(Name="attackerTag", EmitDefaultValue=false)]
-        public string AttackerTag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string AttackerTag { get; private set; }
 
         /// <summary>
         /// Gets or Sets DefenderTag
         /// </summary>
         [DataMember(Name="defenderTag", EmitDefaultValue=false)]
-        public string DefenderTag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string DefenderTag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Stars
         /// </summary>
         [DataMember(Name="stars", EmitDefaultValue=false)]
-        public int Stars { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Stars { get; private set; }
 
         /// <summary>
         /// Gets or Sets DestructionPercentage
         /// </summary>
         [DataMember(Name="destructionPercentage", EmitDefaultValue=false)]
-        public int DestructionPercentage { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int DestructionPercentage { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -102,64 +108,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanWarAttack);
-        }
-
-        /// <summary>
-        /// Returns true if ClanWarAttack instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanWarAttack to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanWarAttack input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Order == input.Order ||
-                    this.Order.Equals(input.Order)
-                ) && 
-                (
-                    this.AttackerTag == input.AttackerTag ||
-                    (this.AttackerTag != null &&
-                    this.AttackerTag.Equals(input.AttackerTag))
-                ) && 
-                (
-                    this.DefenderTag == input.DefenderTag ||
-                    (this.DefenderTag != null &&
-                    this.DefenderTag.Equals(input.DefenderTag))
-                ) && 
-                (
-                    this.Stars == input.Stars ||
-                    this.Stars.Equals(input.Stars)
-                ) && 
-                (
-                    this.DestructionPercentage == input.DestructionPercentage ||
-                    this.DestructionPercentage.Equals(input.DestructionPercentage)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

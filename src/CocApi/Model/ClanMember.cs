@@ -10,27 +10,70 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+        /// <summary>
+        /// Defines Role
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum RoleEnum
+        {
+            /// <summary>
+            /// Enum Member for value: member
+            /// </summary>
+            [EnumMember(Value = "member")]
+            Member = 1,
+
+            /// <summary>
+            /// Enum Admin for value: admin
+            /// </summary>
+            [EnumMember(Value = "admin")]
+            Admin = 2,
+
+            /// <summary>
+            /// Enum CoLeader for value: coLeader
+            /// </summary>
+            [EnumMember(Value = "coLeader")]
+            CoLeader = 3,
+
+            /// <summary>
+            /// Enum Leader for value: leader
+            /// </summary>
+            [EnumMember(Value = "leader")]
+            Leader = 4
+
+        }
+
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClanMember
     /// </summary>
     [DataContract]
-    public partial class ClanMember :  IEquatable<ClanMember>, IValidatableObject
+    public partial class ClanMember :  IValidatableObject
     {
+        /// <summary>
+        /// Gets or Sets Role
+        /// </summary>
+        [DataMember(Name="role", EmitDefaultValue=false)]
+        public RoleEnum? Role { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanMember" /> class.
         /// </summary>
@@ -45,7 +88,7 @@ namespace CocApi.Model
         /// <param name="donationsReceived">donationsReceived.</param>
         /// <param name="trophies">trophies.</param>
         /// <param name="versusTrophies">versusTrophies.</param>
-        public ClanMember(League league = default(League), string tag = default(string), string name = default(string), string role = default(string), int expLevel = default(int), int clanRank = default(int), int previousClanRank = default(int), int donations = default(int), int donationsReceived = default(int), int trophies = default(int), int versusTrophies = default(int))
+        public ClanMember(League league = default(League), string tag = default(string), string name = default(string), RoleEnum? role = default(RoleEnum?), int expLevel = default(int), int clanRank = default(int), int previousClanRank = default(int), int donations = default(int), int donationsReceived = default(int), int trophies = default(int), int versusTrophies = default(int))
         {
             this.League = league;
             this.Tag = tag;
@@ -64,67 +107,61 @@ namespace CocApi.Model
         /// Gets or Sets League
         /// </summary>
         [DataMember(Name="league", EmitDefaultValue=false)]
-        public League League { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public League League { get; private set; }
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
-
-        /// <summary>
-        /// Gets or Sets Role
-        /// </summary>
-        [DataMember(Name="role", EmitDefaultValue=false)]
-        public string Role { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets ExpLevel
         /// </summary>
         [DataMember(Name="expLevel", EmitDefaultValue=false)]
-        public int ExpLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ExpLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets ClanRank
         /// </summary>
         [DataMember(Name="clanRank", EmitDefaultValue=false)]
-        public int ClanRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ClanRank { get; private set; }
 
         /// <summary>
         /// Gets or Sets PreviousClanRank
         /// </summary>
         [DataMember(Name="previousClanRank", EmitDefaultValue=false)]
-        public int PreviousClanRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int PreviousClanRank { get; private set; }
 
         /// <summary>
         /// Gets or Sets Donations
         /// </summary>
         [DataMember(Name="donations", EmitDefaultValue=false)]
-        public int Donations { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Donations { get; private set; }
 
         /// <summary>
         /// Gets or Sets DonationsReceived
         /// </summary>
         [DataMember(Name="donationsReceived", EmitDefaultValue=false)]
-        public int DonationsReceived { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int DonationsReceived { get; private set; }
 
         /// <summary>
         /// Gets or Sets Trophies
         /// </summary>
         [DataMember(Name="trophies", EmitDefaultValue=false)]
-        public int Trophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Trophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets VersusTrophies
         /// </summary>
         [DataMember(Name="versusTrophies", EmitDefaultValue=false)]
-        public int VersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int VersusTrophies { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -156,90 +193,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanMember);
-        }
-
-        /// <summary>
-        /// Returns true if ClanMember instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanMember to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanMember input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.League == input.League ||
-                    (this.League != null &&
-                    this.League.Equals(input.League))
-                ) && 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.Role == input.Role ||
-                    (this.Role != null &&
-                    this.Role.Equals(input.Role))
-                ) && 
-                (
-                    this.ExpLevel == input.ExpLevel ||
-                    this.ExpLevel.Equals(input.ExpLevel)
-                ) && 
-                (
-                    this.ClanRank == input.ClanRank ||
-                    this.ClanRank.Equals(input.ClanRank)
-                ) && 
-                (
-                    this.PreviousClanRank == input.PreviousClanRank ||
-                    this.PreviousClanRank.Equals(input.PreviousClanRank)
-                ) && 
-                (
-                    this.Donations == input.Donations ||
-                    this.Donations.Equals(input.Donations)
-                ) && 
-                (
-                    this.DonationsReceived == input.DonationsReceived ||
-                    this.DonationsReceived.Equals(input.DonationsReceived)
-                ) && 
-                (
-                    this.Trophies == input.Trophies ||
-                    this.Trophies.Equals(input.Trophies)
-                ) && 
-                (
-                    this.VersusTrophies == input.VersusTrophies ||
-                    this.VersusTrophies.Equals(input.VersusTrophies)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

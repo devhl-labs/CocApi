@@ -16,9 +16,9 @@ namespace CocApi.Cache.Models
 
                 return new CachedClan(apiResponse, clansCacheBase.ClanTimeToLive(apiResponse));
             }
-            catch (ApiException apiException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClan(tag, apiException, clansCacheBase.ClanTimeToLive(apiException));
+                return new CachedClan(tag, e, clansCacheBase.ClanTimeToLive(e));
             }
         }
 
@@ -37,7 +37,7 @@ namespace CocApi.Cache.Models
             Tag = response.Data.Tag;
         }
 
-        private CachedClan(string tag, ApiException apiException, TimeSpan localExpiration) : base(apiException, localExpiration)
+        private CachedClan(string tag, Exception exception, TimeSpan localExpiration) : base(exception, localExpiration)
         {
             Tag = tag;
         }

@@ -20,19 +20,19 @@ namespace CocApi.Cache.Models
 
                 return result;
             }
-            catch (ApiException apiException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClanWar(tag, apiException, clansCacheBase.ClanWarTimeToLive(apiException));
+                return new CachedClanWar(tag, e, clansCacheBase.ClanWarTimeToLive(e));
             }
         }
 
         public string Tag { get; internal set; }
 
-        public ClanWar.StateEnum? State { get; internal set; }
+        public WarState? State { get; internal set; }
 
         public DateTime PreparationStartTime { get; internal set; }
 
-        public ClanWar.TypeEnum Type { get; internal set; }
+        public WarType Type { get; internal set; }
 
         internal CachedClanWar(string tag)
         {
@@ -50,9 +50,9 @@ namespace CocApi.Cache.Models
             Tag = clanTag;
         }
 
-        private CachedClanWar(string clanTag, ApiException apiException, TimeSpan localExpiration)
+        private CachedClanWar(string clanTag, Exception exception, TimeSpan localExpiration)
         {
-            base.UpdateFrom(apiException, localExpiration);
+            base.UpdateFrom(exception, localExpiration);
 
             Tag = clanTag;
         }

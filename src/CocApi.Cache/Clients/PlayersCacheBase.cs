@@ -17,8 +17,8 @@ namespace CocApi.Cache
     {
         private readonly PlayersApi _playersApi;
 
-        public PlayersCacheBase(CacheConfiguration cacheConfiguration, PlayersApi playersApi) 
-            : base (playersApi.TokenProvider, cacheConfiguration)
+        public PlayersCacheBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, PlayersApi playersApi) 
+            : base (tokenProvider, cacheConfiguration)
         {
             _playersApi = playersApi;
         }
@@ -88,6 +88,8 @@ namespace CocApi.Cache
             return result?.Data;
         }
 
+        private int _playerId = 0;
+
         public Task RunAsync(CancellationToken cancellationToken)
         {
             _ = Task.Run(async () =>
@@ -103,8 +105,6 @@ namespace CocApi.Cache
 
                     OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
-                    int id = 0;
-
                     while (!StopRequested)
                     {
                         cancellationToken.ThrowIfCancellationRequested();
@@ -116,17 +116,17 @@ namespace CocApi.Cache
                         using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
                         List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
-                            v.Id > id).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
+                            v.Id > _playerId).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
 
                         for (int i = 0; i < cachedPlayers.Count; i++)
                             tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
 
-                        await Task.WhenAll(tasks).ConfigureAwait(false);
-
                         if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
-                            id = 0;
+                            _playerId = 0;
                         else
-                            id = cachedPlayers.Max(v => v.Id);
+                            _playerId = cachedPlayers.Max(v => v.Id);
+
+                        await Task.WhenAll(tasks).ConfigureAwait(false);
 
                         await Task.Delay(_cacheConfiguration.DelayBetweenUpdates).ConfigureAwait(false);
                     }
@@ -176,7 +176,7 @@ namespace CocApi.Cache
         public virtual TimeSpan TimeToLive(ApiResponse<Player> apiResponse)
             => TimeSpan.FromSeconds(0);
 
-        public virtual TimeSpan TimeToLive(ApiException apiException)
+        public virtual TimeSpan TimeToLive(Exception exception)
             => TimeSpan.FromMinutes(0);
 
         public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
@@ -210,7 +210,15 @@ namespace CocApi.Cache
         }
 
         internal void OnPlayerUpdated(Player stored, Player fetched)
-                                                                                                                    => PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched));
+        {
+            try
+            {
+                _ = PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched));
+            }
+            catch (Exception)
+            {
+            }
+        }
 
         internal async Task UpdatePlayerAsync(CachedPlayer cachedPlayer)
         {

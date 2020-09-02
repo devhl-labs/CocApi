@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// PlayerLegendStatistics
     /// </summary>
     [DataContract]
-    public partial class PlayerLegendStatistics :  IEquatable<PlayerLegendStatistics>, IValidatableObject
+    public partial class PlayerLegendStatistics :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerLegendStatistics" /> class.
@@ -54,37 +60,37 @@ namespace CocApi.Model
         /// Gets or Sets CurrentSeason
         /// </summary>
         [DataMember(Name="currentSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult CurrentSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public LegendLeagueTournamentSeasonResult CurrentSeason { get; private set; }
 
         /// <summary>
         /// Gets or Sets PreviousVersusSeason
         /// </summary>
         [DataMember(Name="previousVersusSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult PreviousVersusSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public LegendLeagueTournamentSeasonResult PreviousVersusSeason { get; private set; }
 
         /// <summary>
         /// Gets or Sets BestVersusSeason
         /// </summary>
         [DataMember(Name="bestVersusSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult BestVersusSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public LegendLeagueTournamentSeasonResult BestVersusSeason { get; private set; }
 
         /// <summary>
         /// Gets or Sets LegendTrophies
         /// </summary>
         [DataMember(Name="legendTrophies", EmitDefaultValue=false)]
-        public int LegendTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int LegendTrophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets PreviousSeason
         /// </summary>
         [DataMember(Name="previousSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult PreviousSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public LegendLeagueTournamentSeasonResult PreviousSeason { get; private set; }
 
         /// <summary>
         /// Gets or Sets BestSeason
         /// </summary>
         [DataMember(Name="bestSeason", EmitDefaultValue=false)]
-        public LegendLeagueTournamentSeasonResult BestSeason { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public LegendLeagueTournamentSeasonResult BestSeason { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -111,71 +117,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as PlayerLegendStatistics);
-        }
-
-        /// <summary>
-        /// Returns true if PlayerLegendStatistics instances are equal
-        /// </summary>
-        /// <param name="input">Instance of PlayerLegendStatistics to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(PlayerLegendStatistics input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.CurrentSeason == input.CurrentSeason ||
-                    (this.CurrentSeason != null &&
-                    this.CurrentSeason.Equals(input.CurrentSeason))
-                ) && 
-                (
-                    this.PreviousVersusSeason == input.PreviousVersusSeason ||
-                    (this.PreviousVersusSeason != null &&
-                    this.PreviousVersusSeason.Equals(input.PreviousVersusSeason))
-                ) && 
-                (
-                    this.BestVersusSeason == input.BestVersusSeason ||
-                    (this.BestVersusSeason != null &&
-                    this.BestVersusSeason.Equals(input.BestVersusSeason))
-                ) && 
-                (
-                    this.LegendTrophies == input.LegendTrophies ||
-                    this.LegendTrophies.Equals(input.LegendTrophies)
-                ) && 
-                (
-                    this.PreviousSeason == input.PreviousSeason ||
-                    (this.PreviousSeason != null &&
-                    this.PreviousSeason.Equals(input.PreviousSeason))
-                ) && 
-                (
-                    this.BestSeason == input.BestSeason ||
-                    (this.BestSeason != null &&
-                    this.BestSeason.Equals(input.BestSeason))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

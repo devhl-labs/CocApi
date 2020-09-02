@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// PlayerVersusRanking
     /// </summary>
     [DataContract]
-    public partial class PlayerVersusRanking :  IEquatable<PlayerVersusRanking>, IValidatableObject
+    public partial class PlayerVersusRanking :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerVersusRanking" /> class.
@@ -58,49 +64,49 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public PlayerRankingClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public PlayerRankingClan Clan { get; private set; }
 
         /// <summary>
         /// Gets or Sets VersusBattleWins
         /// </summary>
         [DataMember(Name="versusBattleWins", EmitDefaultValue=false)]
-        public int VersusBattleWins { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int VersusBattleWins { get; private set; }
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets ExpLevel
         /// </summary>
         [DataMember(Name="expLevel", EmitDefaultValue=false)]
-        public int ExpLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int ExpLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [DataMember(Name="rank", EmitDefaultValue=false)]
-        public int Rank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Rank { get; private set; }
 
         /// <summary>
         /// Gets or Sets PreviousRank
         /// </summary>
         [DataMember(Name="previousRank", EmitDefaultValue=false)]
-        public int PreviousRank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int PreviousRank { get; private set; }
 
         /// <summary>
         /// Gets or Sets VersusTrophies
         /// </summary>
         [DataMember(Name="versusTrophies", EmitDefaultValue=false)]
-        public int VersusTrophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int VersusTrophies { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -129,77 +135,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as PlayerVersusRanking);
-        }
-
-        /// <summary>
-        /// Returns true if PlayerVersusRanking instances are equal
-        /// </summary>
-        /// <param name="input">Instance of PlayerVersusRanking to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(PlayerVersusRanking input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Clan == input.Clan ||
-                    (this.Clan != null &&
-                    this.Clan.Equals(input.Clan))
-                ) && 
-                (
-                    this.VersusBattleWins == input.VersusBattleWins ||
-                    this.VersusBattleWins.Equals(input.VersusBattleWins)
-                ) && 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.ExpLevel == input.ExpLevel ||
-                    this.ExpLevel.Equals(input.ExpLevel)
-                ) && 
-                (
-                    this.Rank == input.Rank ||
-                    this.Rank.Equals(input.Rank)
-                ) && 
-                (
-                    this.PreviousRank == input.PreviousRank ||
-                    this.PreviousRank.Equals(input.PreviousRank)
-                ) && 
-                (
-                    this.VersusTrophies == input.VersusTrophies ||
-                    this.VersusTrophies.Equals(input.VersusTrophies)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

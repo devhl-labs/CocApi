@@ -37,11 +37,11 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(CocApi.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
+        public PlayersApi(CocApi.TokenProvider tokenProvider, TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
-                new CocApi.Client.Configuration { BasePath = basePath }
+                new CocApi.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
             );
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
@@ -115,7 +115,6 @@ namespace CocApi.Api
             // verify the required parameter 'playerTag' is set
             if (playerTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'playerTag' when calling PlayersApi->GetPlayer");
-
             string formattedTag = Clash.FormatTag(playerTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -134,7 +133,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString(playerTag));
+            localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //playerTag
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
@@ -145,6 +144,19 @@ namespace CocApi.Api
             stopwatch.Start();
             var localVarResponse = await this.AsynchronousClient.GetAsync<Player>("/players/{playerTag}", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
+
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("/players/{playerTag}", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
 
             if (this.ExceptionFactory != null)
             {
@@ -176,7 +188,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseOrDefaultAsync (string playerTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string playerTag)
         {
             try
             {
@@ -194,9 +206,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player> GetPlayerOrDefaultAsync (string playerTag)
+        public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync (string playerTag)
         {
-             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag);
+             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag);
              if (localVarResponse == null)
                 return null;
 

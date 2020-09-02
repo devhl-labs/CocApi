@@ -19,7 +19,7 @@ namespace {{packageName}}.{{apiPackage}}
     /// </summary>
     {{>visibility}} sealed partial class {{classname}}
     {
-        private {{packageName}}.TokenProvider _tokenProvider;
+        public {{packageName}}.TokenProvider TokenProvider { get; }
         private {{packageName}}.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
         public event QueryResultEventHandler QueryResult;
@@ -30,16 +30,16 @@ namespace {{packageName}}.{{apiPackage}}
         /// Initializes a new instance of the <see cref="{{classname}}"/> class.
         /// </summary>
         /// <returns></returns>
-        public {{classname}}({{packageName}}.TokenProvider tokenProvider, string basePath = "https://api.clashofclans.com/v1")
+        public {{classname}}({{packageName}}.TokenProvider tokenProvider, TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = {{packageName}}.Client.Configuration.MergeConfigurations(
                 {{packageName}}.Client.GlobalConfiguration.Instance,
-                new {{packageName}}.Client.Configuration { BasePath = basePath }
+                new {{packageName}}.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
             );
             this.Client = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = {{packageName}}.Client.Configuration.DefaultExceptionFactory;
-            this._tokenProvider = tokenProvider;
+            this.TokenProvider = tokenProvider;
         }
 
         {{#supportsAsync}}
@@ -143,7 +143,7 @@ namespace {{packageName}}.{{apiPackage}}
             
             {{#pathParams}}
             {{#required}}
-            localVarRequestOptions.PathParameters.Add("{{baseName}}", {{packageName}}.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //.ParameterToString({{paramName}}));
+            localVarRequestOptions.PathParameters.Add("{{baseName}}", {{packageName}}.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //{{paramName}}
             {{/required}}
             {{^required}}
             if ({{paramName}} != null)
@@ -210,7 +210,7 @@ namespace {{packageName}}.{{apiPackage}}
             }
             {{/isKeyInCookie}}
             {{#isKeyInHeader}}
-            localVarRequestOptions.HeaderParameters.Add("{{keyParamName}}", "Bearer " + await _tokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("{{keyParamName}}", "Bearer " + await TokenProvider.GetTokenAsync());
             
             {{/isKeyInHeader}}
             {{#isKeyInQuery}}
@@ -251,12 +251,25 @@ namespace {{packageName}}.{{apiPackage}}
             var localVarResponse = await this.AsynchronousClient.{{#lambda.titlecase}}{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}{{/lambda.titlecase}}Async<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>("{{{path}}}", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
 
+            if (localVarResponse.ErrorText == "The request timed-out.")
+            {
+                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+                QueryException queryException = new QueryException("{{path}}", localVarRequestOptions, stopwatch, timeoutException);
+
+                QueryResults.Add(queryException);
+
+                OnQueryResult(new QueryResultEventArgs(queryException));
+
+                throw timeoutException;
+            }
+
             if (this.ExceptionFactory != null)
             {
                 Exception _exception = this.ExceptionFactory("{{operationId}}", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("{{{path}}}", localVarRequestOptions, stopwatch, _exception);
+                    QueryException queryException = new QueryException("{{path}}", localVarRequestOptions, stopwatch, _exception);
 
                     QueryResults.Add(queryException);
 
@@ -281,7 +294,7 @@ namespace {{packageName}}.{{apiPackage}}
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>Task of ApiResponse{{#returnType}} ({{returnType}}){{/returnType}}</returns>
-        public async System.Threading.Tasks.Task<{{packageName}}.Client.ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>> {{operationId}}ResponseOrDefaultAsync ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = default({{{dataType}}}){{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        public async System.Threading.Tasks.Task<{{packageName}}.Client.ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>?> {{operationId}}ResponseOrDefaultAsync ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = default({{{dataType}}}){{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
             try
             {
@@ -299,9 +312,9 @@ namespace {{packageName}}.{{apiPackage}}
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>Task of {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}</returns>
-        {{#returnType}}public async System.Threading.Tasks.Task<{{{returnType}}}>{{/returnType}}{{^returnType}}public async System.Threading.Tasks.Task{{/returnType}} {{operationId}}OrDefaultAsync ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = default({{{dataType}}}){{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        {{#returnType}}public async System.Threading.Tasks.Task<{{{returnType}}}?>{{/returnType}}{{^returnType}}public async System.Threading.Tasks.Task{{/returnType}} {{operationId}}OrDefaultAsync ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = default({{{dataType}}}){{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
-             {{#returnType}}{{packageName}}.Client.ApiResponse<{{{returnType}}}> localVarResponse = await {{operationId}}ResponseOrDefaultAsync({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+             {{#returnType}}{{packageName}}.Client.ApiResponse<{{{returnType}}}>? localVarResponse = await {{operationId}}ResponseOrDefaultAsync({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
              if (localVarResponse == null)
                 return null;
 

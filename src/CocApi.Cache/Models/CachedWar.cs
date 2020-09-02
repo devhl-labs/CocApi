@@ -18,15 +18,15 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag);
 
-                CachedWar result = new CachedWar(apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse));
+                CachedWar result = new CachedWar(apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse), warTag, season);
 
                 result.Type = result.Data.Type;
 
                 result.Season = season;
-
+                
                 return result;
             }
-            catch (ApiException e)
+            catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
                 return new CachedWar(warTag, e, clansCacheBase.ClanWarTimeToLive(e));
             }
@@ -42,7 +42,7 @@ namespace CocApi.Cache.Models
 
         public string? WarTag { get; internal set; }
 
-        public ClanWar.StateEnum? State { get; internal set; }
+        public WarState? State { get; internal set; }
 
         public bool IsFinal { get; internal set; }
 
@@ -52,7 +52,7 @@ namespace CocApi.Cache.Models
 
         public Announcements Announcements { get; internal set; }
 
-        public ClanWar.TypeEnum Type { get; internal set; }
+        public WarType Type { get; internal set; }
 
 #nullable disable
 
@@ -127,7 +127,7 @@ namespace CocApi.Cache.Models
             UpdateFrom(cachedClanWar);
         }
 
-        private CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
+        private CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
@@ -143,10 +143,14 @@ namespace CocApi.Cache.Models
 
             Type = apiResponse.Data.Type;
 
-            if (State == ClanWar.StateEnum.WarEnded)
+            if (State == WarState.WarEnded)
                 IsFinal = true;
 
             StatusCode = apiResponse.StatusCode;
+
+            WarTag = warTag;
+
+            Season = season;
         }
 
         public CachedWar()
@@ -154,13 +158,11 @@ namespace CocApi.Cache.Models
 
         }
 
-        private CachedWar(string warTag, ApiException apiException, TimeSpan localExpiration)
+        private CachedWar(string warTag, Exception exception, TimeSpan localExpiration)
         {
             WarTag = warTag;
-            
-            StatusCode = (HttpStatusCode)apiException.ErrorCode;
 
-            UpdateFrom(apiException, localExpiration);
+            UpdateFrom(exception, localExpiration);
         }
 
         internal void UpdateFrom(CachedClanWar fetched)
@@ -184,7 +186,7 @@ namespace CocApi.Cache.Models
 
                 EndTime = fetched.Data.EndTime;
 
-                if (fetched.Data.State == ClanWar.StateEnum.WarEnded)
+                if (fetched.Data.State == WarState.WarEnded)
                     IsFinal = true;
 
                 if (fetched.Data.Clans.First().Key == ClanTag)
@@ -203,7 +205,7 @@ namespace CocApi.Cache.Models
 
             State = cachedWar.Data.State;
 
-            if (State == ClanWar.StateEnum.WarEnded)
+            if (State == WarState.WarEnded)
                 IsFinal = true;
 
             StatusCode = cachedWar.StatusCode;

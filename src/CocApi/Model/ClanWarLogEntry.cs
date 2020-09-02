@@ -10,27 +10,21 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi.Model
+namespace CocApi
 {
-/// <summary>
-    /// ClanWarLogEntry
-    /// </summary>
-    [DataContract]
-    public partial class ClanWarLogEntry :  IEquatable<ClanWarLogEntry>, IValidatableObject
-    {
         /// <summary>
         /// Defines Result
         /// </summary>
@@ -57,6 +51,18 @@ namespace CocApi.Model
 
         }
 
+}
+
+
+
+namespace CocApi.Model
+{
+    /// <summary>
+    /// ClanWarLogEntry
+    /// </summary>
+    [DataContract]
+    public partial class ClanWarLogEntry :  IValidatableObject
+    {
         /// <summary>
         /// Gets or Sets Result
         /// </summary>
@@ -83,25 +89,25 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public WarClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public WarClan Clan { get; private set; }
 
         /// <summary>
         /// Gets or Sets TeamSize
         /// </summary>
         [DataMember(Name="teamSize", EmitDefaultValue=false)]
-        public int TeamSize { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int TeamSize { get; private set; }
 
         /// <summary>
         /// Gets or Sets Opponent
         /// </summary>
         [DataMember(Name="opponent", EmitDefaultValue=false)]
-        public WarClan Opponent { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public WarClan Opponent { get; private set; }
 
         /// <summary>
         /// Gets or Sets EndTime
         /// </summary>
         [DataMember(Name="endTime", EmitDefaultValue=false)]
-        public DateTime EndTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public DateTime EndTime { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -127,65 +133,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanWarLogEntry);
-        }
-
-        /// <summary>
-        /// Returns true if ClanWarLogEntry instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanWarLogEntry to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanWarLogEntry input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Clan == input.Clan ||
-                    (this.Clan != null &&
-                    this.Clan.Equals(input.Clan))
-                ) && 
-                (
-                    this.TeamSize == input.TeamSize ||
-                    this.TeamSize.Equals(input.TeamSize)
-                ) && 
-                (
-                    this.Opponent == input.Opponent ||
-                    (this.Opponent != null &&
-                    this.Opponent.Equals(input.Opponent))
-                ) && 
-                (
-                    this.EndTime == input.EndTime ||
-                    (this.EndTime != null &&
-                    this.EndTime.Equals(input.EndTime))
-                ) && 
-                (
-                    this.Result == input.Result ||
-                    this.Result.Equals(input.Result)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

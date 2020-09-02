@@ -10,33 +10,27 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi.Model
+namespace CocApi
 {
-/// <summary>
-    /// ClanWarLeagueGroup
-    /// </summary>
-    [DataContract]
-    public partial class ClanWarLeagueGroup :  IEquatable<ClanWarLeagueGroup>, IValidatableObject
-    {
         /// <summary>
         /// Defines State
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum StateEnum
-        {
+        public enum GroupState
+    {
             /// <summary>
             /// Enum Preparation for value: preparation
             /// </summary>
@@ -57,11 +51,23 @@ namespace CocApi.Model
 
         }
 
+}
+
+
+
+namespace CocApi.Model
+{
+    /// <summary>
+    /// ClanWarLeagueGroup
+    /// </summary>
+    [DataContract]
+    public partial class ClanWarLeagueGroup :  IValidatableObject
+    {
         /// <summary>
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum? State { get; private set; }
+        public GroupState? State { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
         /// </summary>
@@ -70,7 +76,7 @@ namespace CocApi.Model
         /// <param name="season">season.</param>
         /// <param name="clans">clans.</param>
         /// <param name="rounds">rounds.</param>
-        public ClanWarLeagueGroup(string tag = default(string), StateEnum? state = default(StateEnum?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
+        public ClanWarLeagueGroup(string tag = default(string), GroupState? state = default(GroupState?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
         {
             this.Tag = tag;
             this.State = state;
@@ -83,25 +89,25 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Season
         /// </summary>
         [DataMember(Name="season", EmitDefaultValue=false)]
-        public DateTime Season { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public DateTime Season { get; private set; }
 
         /// <summary>
         /// Gets or Sets Clans
         /// </summary>
         [DataMember(Name="clans", EmitDefaultValue=false)]
-        public List<ClanWarLeagueClan> Clans { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<ClanWarLeagueClan> Clans { get; private set; }
 
         /// <summary>
         /// Gets or Sets Rounds
         /// </summary>
         [DataMember(Name="rounds", EmitDefaultValue=false)]
-        public List<ClanWarLeagueRound> Rounds { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public List<ClanWarLeagueRound> Rounds { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -127,68 +133,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanWarLeagueGroup);
-        }
-
-        /// <summary>
-        /// Returns true if ClanWarLeagueGroup instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanWarLeagueGroup to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanWarLeagueGroup? input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.State == input.State ||
-                    this.State.Equals(input.State)
-                ) && 
-                (
-                    this.Season == input.Season ||
-                    (this.Season != null &&
-                    this.Season.Equals(input.Season))
-                ) && 
-                (
-                    this.Clans == input.Clans ||
-                    this.Clans != null &&
-                    input.Clans != null &&
-                    this.Clans.SequenceEqual(input.Clans)
-                ) && 
-                (
-                    this.Rounds == input.Rounds ||
-                    this.Rounds != null &&
-                    input.Rounds != null &&
-                    this.Rounds.SequenceEqual(input.Rounds)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

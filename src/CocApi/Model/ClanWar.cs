@@ -10,32 +10,26 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi.Model
+namespace CocApi
 {
-/// <summary>
-    /// ClanWar
-    /// </summary>
-    [DataContract]
-    public partial class ClanWar :  IEquatable<ClanWar>, IValidatableObject
-    {
         /// <summary>
         /// Defines State
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum StateEnum
+        public enum WarState
         {
             /// <summary>
             /// Enum NotInWar for value: notInWar
@@ -63,11 +57,23 @@ namespace CocApi.Model
 
         }
 
+}
+
+
+
+namespace CocApi.Model
+{
+    /// <summary>
+    /// ClanWar
+    /// </summary>
+    [DataContract]
+    public partial class ClanWar :  IValidatableObject
+    {
         /// <summary>
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
-        public StateEnum? State { get; private set; }
+        public WarState? State { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWar" /> class.
         /// </summary>
@@ -78,7 +84,7 @@ namespace CocApi.Model
         /// <param name="state">state.</param>
         /// <param name="endTime">endTime.</param>
         /// <param name="preparationStartTime">preparationStartTime.</param>
-        public ClanWar(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), StateEnum? state = default(StateEnum?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
+        public ClanWar(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), WarState? state = default(WarState?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
         {
             this.Clan = clan;
             this.TeamSize = teamSize;
@@ -93,37 +99,37 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public WarClan Clan { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public WarClan Clan { get; private set; }
 
         /// <summary>
         /// Gets or Sets TeamSize
         /// </summary>
         [DataMember(Name="teamSize", EmitDefaultValue=false)]
-        public int TeamSize { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int TeamSize { get; private set; }
 
         /// <summary>
         /// Gets or Sets Opponent
         /// </summary>
         [DataMember(Name="opponent", EmitDefaultValue=false)]
-        public WarClan Opponent { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public WarClan Opponent { get; private set; }
 
         /// <summary>
         /// Gets or Sets StartTime
         /// </summary>
         [DataMember(Name="startTime", EmitDefaultValue=false)]
-        public DateTime StartTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public DateTime StartTime { get; private set; }
 
         /// <summary>
         /// Gets or Sets EndTime
         /// </summary>
         [DataMember(Name="endTime", EmitDefaultValue=false)]
-        public DateTime EndTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public DateTime EndTime { get; private set; }
 
         /// <summary>
         /// Gets or Sets PreparationStartTime
         /// </summary>
         [DataMember(Name="preparationStartTime", EmitDefaultValue=false)]
-        public DateTime PreparationStartTime { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public DateTime PreparationStartTime { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -151,62 +157,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanWar);
-        }
-
-        /// <summary>
-        /// Returns true if ClanWar instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanWar to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanWar input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Clan == input.Clan ||
-                    (this.Clan != null &&
-                    this.Clan.Equals(input.Clan))
-                ) && 
-                (
-                    this.TeamSize == input.TeamSize ||
-                    this.TeamSize.Equals(input.TeamSize)
-                ) && 
-                (
-                    this.Opponent == input.Opponent ||
-                    (this.Opponent != null &&
-                    this.Opponent.Equals(input.Opponent))
-                ) && 
-                (
-                    this.StartTime == input.StartTime ||
-                    (this.StartTime != null &&
-                    this.StartTime.Equals(input.StartTime))
-                ) && 
-                (
-                    this.State == input.State ||
-                    this.State.Equals(input.State)
-                ) && 
-                (
-                    this.EndTime == input.EndTime ||
-                    (this.EndTime != null &&
-                    this.EndTime.Equals(input.EndTime))
-                ) && 
-                (
-                    this.PreparationStartTime == input.PreparationStartTime ||
-                    (this.PreparationStartTime != null &&
-                    this.PreparationStartTime.Equals(input.PreparationStartTime))
-                );
         }
 
         /// <summary>

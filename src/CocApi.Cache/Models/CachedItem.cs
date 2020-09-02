@@ -60,9 +60,9 @@ namespace CocApi.Cache.Models
             //StatusCode = response.StatusCode;
         }
 
-        public CachedItem(ApiException apiException, TimeSpan localExpiration)
+        public CachedItem(Exception exception, TimeSpan localExpiration)
         {
-            UpdateFrom(apiException, localExpiration);
+            UpdateFrom(exception, localExpiration);
         }
 
         protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
@@ -75,9 +75,27 @@ namespace CocApi.Cache.Models
             Data = apiResponse?.Data ?? Data;
         }
 
+        protected void UpdateFrom(Exception e, TimeSpan localExpiration)
+        {
+            if (e is ApiException apiException)
+                UpdateFrom(apiException, localExpiration);
+            else if (e is TimeoutException timeout)
+                UpdateFrom(timeout, localExpiration);
+            else
+                throw new NotImplementedException();
+        }
+
         protected void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
         {
             StatusCode = (HttpStatusCode) apiException.ErrorCode;
+            Downloaded = DateTime.UtcNow;
+            ServerExpiration = DateTime.UtcNow;
+            LocalExpiration = DateTime.UtcNow.Add(localExpiration);
+        }
+
+        protected void UpdateFrom(TimeoutException timeoutException, TimeSpan localExpiration)
+        {
+            StatusCode = 0;
             Downloaded = DateTime.UtcNow;
             ServerExpiration = DateTime.UtcNow;
             LocalExpiration = DateTime.UtcNow.Add(localExpiration);

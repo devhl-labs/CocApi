@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// LegendLeagueTournamentSeasonResult
     /// </summary>
     [DataContract]
-    public partial class LegendLeagueTournamentSeasonResult :  IEquatable<LegendLeagueTournamentSeasonResult>, IValidatableObject
+    public partial class LegendLeagueTournamentSeasonResult :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LegendLeagueTournamentSeasonResult" /> class.
@@ -48,19 +54,19 @@ namespace CocApi.Model
         /// Gets or Sets Trophies
         /// </summary>
         [DataMember(Name="trophies", EmitDefaultValue=false)]
-        public int Trophies { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Trophies { get; private set; }
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [DataMember(Name="id", EmitDefaultValue=false)]
-        public DateTime Id { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public DateTime Id { get; private set; }
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [DataMember(Name="rank", EmitDefaultValue=false)]
-        public int Rank { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int Rank { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -84,55 +90,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as LegendLeagueTournamentSeasonResult);
-        }
-
-        /// <summary>
-        /// Returns true if LegendLeagueTournamentSeasonResult instances are equal
-        /// </summary>
-        /// <param name="input">Instance of LegendLeagueTournamentSeasonResult to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(LegendLeagueTournamentSeasonResult input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Trophies == input.Trophies ||
-                    this.Trophies.Equals(input.Trophies)
-                ) && 
-                (
-                    this.Id == input.Id ||
-                    (this.Id != null &&
-                    this.Id.Equals(input.Id))
-                ) && 
-                (
-                    this.Rank == input.Rank ||
-                    this.Rank.Equals(input.Rank)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

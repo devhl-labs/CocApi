@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClanWarMember
     /// </summary>
     [DataContract]
-    public partial class ClanWarMember :  IEquatable<ClanWarMember>, IValidatableObject
+    public partial class ClanWarMember :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarMember" /> class.
@@ -45,7 +51,7 @@ namespace CocApi.Model
         {
             this.Tag = tag;
             this.Name = name;
-            this.MapPosition = mapPosition;
+            this.RosterPosition = mapPosition;
             this.TownhallLevel = townhallLevel;
             this.OpponentAttacks = opponentAttacks;
             this.BestOpponentAttack = bestOpponentAttack;
@@ -56,43 +62,37 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public string Name { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Name { get; private set; }
 
-        /// <summary>
-        /// Gets or Sets MapPosition
-        /// </summary>
-        [DataMember(Name="mapPosition", EmitDefaultValue=false)]
-        public int MapPosition { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        ///// <summary>
+        ///// Gets or Sets MapPosition
+        ///// </summary>
+        //[DataMember(Name="mapPosition", EmitDefaultValue=false)]
+        //public int MapPosition { get; private set; }
 
         /// <summary>
         /// Gets or Sets TownhallLevel
         /// </summary>
         [DataMember(Name="townhallLevel", EmitDefaultValue=false)]
-        public int TownhallLevel { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int TownhallLevel { get; private set; }
 
         /// <summary>
         /// Gets or Sets OpponentAttacks
         /// </summary>
         [DataMember(Name="opponentAttacks", EmitDefaultValue=false)]
-        public int OpponentAttacks { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public int OpponentAttacks { get; private set; }
 
         /// <summary>
         /// Gets or Sets BestOpponentAttack
         /// </summary>
         [DataMember(Name="bestOpponentAttack", EmitDefaultValue=false)]
-        public ClanWarAttack BestOpponentAttack { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
-
-        /// <summary>
-        /// Gets or Sets Attacks
-        /// </summary>
-        [DataMember(Name="attacks", EmitDefaultValue=false)]
-        public List<ClanWarAttack> Attacks { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public ClanWarAttack BestOpponentAttack { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -104,7 +104,7 @@ namespace CocApi.Model
             sb.Append("class ClanWarMember {\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
-            sb.Append("  MapPosition: ").Append(MapPosition).Append("\n");
+            sb.Append("  MapPosition: ").Append(RosterPosition).Append("\n");
             sb.Append("  TownhallLevel: ").Append(TownhallLevel).Append("\n");
             sb.Append("  OpponentAttacks: ").Append(OpponentAttacks).Append("\n");
             sb.Append("  BestOpponentAttack: ").Append(BestOpponentAttack).Append("\n");
@@ -120,75 +120,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanWarMember);
-        }
-
-        /// <summary>
-        /// Returns true if ClanWarMember instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanWarMember to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanWarMember input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.Name == input.Name ||
-                    (this.Name != null &&
-                    this.Name.Equals(input.Name))
-                ) && 
-                (
-                    this.MapPosition == input.MapPosition ||
-                    this.MapPosition.Equals(input.MapPosition)
-                ) && 
-                (
-                    this.TownhallLevel == input.TownhallLevel ||
-                    this.TownhallLevel.Equals(input.TownhallLevel)
-                ) && 
-                (
-                    this.OpponentAttacks == input.OpponentAttacks ||
-                    this.OpponentAttacks.Equals(input.OpponentAttacks)
-                ) && 
-                (
-                    this.BestOpponentAttack == input.BestOpponentAttack ||
-                    (this.BestOpponentAttack != null &&
-                    this.BestOpponentAttack.Equals(input.BestOpponentAttack))
-                ) && 
-                (
-                    this.Attacks == input.Attacks ||
-                    this.Attacks != null &&
-                    input.Attacks != null &&
-                    this.Attacks.SequenceEqual(input.Attacks)
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

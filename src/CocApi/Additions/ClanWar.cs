@@ -17,7 +17,7 @@ namespace CocApi.Model
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
-        public string WarTag { get; set; }
+        public string? WarTag { get; set; }
 
         public override int GetHashCode()
         {
@@ -79,14 +79,6 @@ namespace CocApi.Model
 
         public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
 
-        public enum TypeEnum
-        {
-            Unknown,
-            Random,
-            Friendly,
-            SCCWL
-        }
-
-        public TypeEnum Type { get; set; }
+        public WarType Type { get; set; }
     }
 }

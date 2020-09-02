@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// VerifyTokenResponse
     /// </summary>
     [DataContract]
-    public partial class VerifyTokenResponse :  IEquatable<VerifyTokenResponse>, IValidatableObject
+    public partial class VerifyTokenResponse :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="VerifyTokenResponse" /> class.
@@ -48,19 +54,19 @@ namespace CocApi.Model
         /// Gets or Sets Tag
         /// </summary>
         [DataMember(Name="tag", EmitDefaultValue=false)]
-        public string Tag { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Tag { get; private set; }
 
         /// <summary>
         /// Gets or Sets Token
         /// </summary>
         [DataMember(Name="token", EmitDefaultValue=false)]
-        public string Token { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Token { get; private set; }
 
         /// <summary>
         /// Gets or Sets Status
         /// </summary>
         [DataMember(Name="status", EmitDefaultValue=false)]
-        public string Status { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Status { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -84,57 +90,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as VerifyTokenResponse);
-        }
-
-        /// <summary>
-        /// Returns true if VerifyTokenResponse instances are equal
-        /// </summary>
-        /// <param name="input">Instance of VerifyTokenResponse to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(VerifyTokenResponse input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Tag == input.Tag ||
-                    (this.Tag != null &&
-                    this.Tag.Equals(input.Tag))
-                ) && 
-                (
-                    this.Token == input.Token ||
-                    (this.Token != null &&
-                    this.Token.Equals(input.Token))
-                ) && 
-                (
-                    this.Status == input.Status ||
-                    (this.Status != null &&
-                    this.Status.Equals(input.Status))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

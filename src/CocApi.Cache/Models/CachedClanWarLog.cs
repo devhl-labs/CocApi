@@ -16,9 +16,9 @@ namespace CocApi.Cache.Models
 
                 return new CachedClanWarLog(tag, apiResponse, clansCacheBase.ClanWarLogTimeToLive(apiResponse));
             }
-            catch (ApiException apiException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClanWarLog(tag, apiException, clansCacheBase.ClanWarLogTimeToLive(apiException));
+                return new CachedClanWarLog(tag, e, clansCacheBase.ClanWarLogTimeToLive(e));
             }
         }
 
@@ -36,11 +36,11 @@ namespace CocApi.Cache.Models
             UpdateFrom(apiResponse, localExpiration);
         }
 
-        private CachedClanWarLog(string tag, ApiException apiException, TimeSpan localExpiration)
+        private CachedClanWarLog(string tag, Exception exception, TimeSpan localExpiration)
         {
             Tag = tag;
 
-            UpdateFrom(apiException, localExpiration);
+            UpdateFrom(exception, localExpiration);
         }
 
         internal void UpdateFrom(CachedClanWarLog fetched)

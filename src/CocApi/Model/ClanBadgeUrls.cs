@@ -10,26 +10,32 @@
 
 
 using System;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.IO;
 using System.Runtime.Serialization;
+using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
+namespace CocApi
+{
+}
+
+
+
 namespace CocApi.Model
 {
-/// <summary>
+    /// <summary>
     /// ClanBadgeUrls
     /// </summary>
     [DataContract]
-    public partial class ClanBadgeUrls :  IEquatable<ClanBadgeUrls>, IValidatableObject
+    public partial class ClanBadgeUrls :  IValidatableObject
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanBadgeUrls" /> class.
@@ -48,19 +54,19 @@ namespace CocApi.Model
         /// Gets or Sets Small
         /// </summary>
         [DataMember(Name="small", EmitDefaultValue=false)]
-        public string Small { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Small { get; private set; }
 
         /// <summary>
         /// Gets or Sets Medium
         /// </summary>
         [DataMember(Name="medium", EmitDefaultValue=false)]
-        public string Medium { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Medium { get; private set; }
 
         /// <summary>
         /// Gets or Sets Large
         /// </summary>
         [DataMember(Name="large", EmitDefaultValue=false)]
-        public string Large { get; private set; } //{#isReadOnly}private {/isReadOnly}set;
+        public string Large { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -84,57 +90,6 @@ namespace CocApi.Model
         public virtual string ToJson()
         {
             return JsonConvert.SerializeObject(this, Formatting.Indented);
-        }
-
-        /// <summary>
-        /// Returns true if objects are equal
-        /// </summary>
-        /// <param name="input">Object to be compared</param>
-        /// <returns>Boolean</returns>
-        public override bool Equals(object input)
-        {
-            return this.Equals(input as ClanBadgeUrls);
-        }
-
-        /// <summary>
-        /// Returns true if ClanBadgeUrls instances are equal
-        /// </summary>
-        /// <param name="input">Instance of ClanBadgeUrls to be compared</param>
-        /// <returns>Boolean</returns>
-        public bool Equals(ClanBadgeUrls input)
-        {
-            if (input == null)
-                return false;
-
-            return 
-                (
-                    this.Small == input.Small ||
-                    (this.Small != null &&
-                    this.Small.Equals(input.Small))
-                ) && 
-                (
-                    this.Medium == input.Medium ||
-                    (this.Medium != null &&
-                    this.Medium.Equals(input.Medium))
-                ) && 
-                (
-                    this.Large == input.Large ||
-                    (this.Large != null &&
-                    this.Large.Equals(input.Large))
-                );
-        }
-
-        /// <summary>
-        /// Gets the hash code
-        /// </summary>
-        /// <returns>Hash code</returns>
-        public override int GetHashCode()
-        {
-            unchecked // Overflow is fine, just wrap
-            {
-                int hashCode = 41;
-                return hashCode;
-            }
         }
 
         /// <summary>

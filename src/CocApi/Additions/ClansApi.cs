@@ -11,7 +11,7 @@ namespace CocApi.Api
     {
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetClanWarLeagueWarResponseAsync(string warTag)
         {
-            var response = await getCurrentWarResponseAsync(warTag);
+            var response = await getClanWarLeagueWarResponseAsync(warTag);
 
             response.Data.WarTag = warTag;
 
@@ -31,11 +31,18 @@ namespace CocApi.Api
 
         private void InitializeWar(ApiResponse<ClanWar> apiResponse)
         {
-            if (apiResponse.Data.State == ClanWar.StateEnum.NotInWar)
+            if (apiResponse.Data.State == WarState.NotInWar)
                 return;
 
             foreach (WarClan warClan in apiResponse.Data.Clans.Values)
-                foreach (ClanWarMember member in warClan.Members)
+            {
+                int mapPosition = 1;
+
+                foreach (ClanWarMember member in warClan.Members.OrderBy(m => m.RosterPosition))
+                {
+                    member.MapPosition = mapPosition;
+                    mapPosition++;
+
                     foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
                     {
                         WarClan defendingClan = apiResponse.Data.Clans.First(c => c.Key != warClan.Tag).Value;
@@ -45,9 +52,13 @@ namespace CocApi.Api
                         attack.DefenderClanTag = defendingClan.Tag;
                         attack.AttackerTownHall = member.TownhallLevel;
                         attack.DefenderTownHall = defending.TownhallLevel;
-                        attack.AttackerMapPosition = member.MapPosition;
-                        attack.DefenderMapPosition = defending.MapPosition;
+                        attack.AttackerMapPosition = member.RosterPosition;
+                        attack.DefenderMapPosition = defending.RosterPosition;
                     }
+                }
+
+            }
+
 
             foreach (var clan in apiResponse.Data.Clans.Values)
             {
@@ -88,14 +99,14 @@ namespace CocApi.Api
                 || timeSpan.TotalMinutes == 30
                 || timeSpan.TotalMinutes == 15)
             {
-                apiResponse.Data.Type = ClanWar.TypeEnum.Friendly;
+                apiResponse.Data.Type = WarType.Friendly;
             }
 
             if (timeSpan.TotalHours == 23)
-                apiResponse.Data.Type = ClanWar.TypeEnum.Random;
+                apiResponse.Data.Type = WarType.Random;
 
             if (apiResponse.Data.WarTag != null)
-                apiResponse.Data.Type = ClanWar.TypeEnum.SCCWL;
+                apiResponse.Data.Type = WarType.SCCWL;
         }
     }
 }
