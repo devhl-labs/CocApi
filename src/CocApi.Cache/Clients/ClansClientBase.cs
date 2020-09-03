@@ -878,10 +878,8 @@ namespace CocApi.Cache
 
                     if (fetched.Data != null 
                         && IsSameWar(cachedWar.Data, fetched.Data) 
-                        && HasUpdated(cachedWar, fetched))
-                    {
-                        OnClanWarUpdated(cachedClan.Data, cachedWar.Data, fetched.Data);
-                    }
+                        && HasUpdated(cachedWar, fetched))                    
+                        OnClanWarUpdated(cachedClan.Data, cachedWar.Data, fetched.Data);                    
 
                     cachedWar.UpdateFrom(fetched);
                 }
@@ -897,10 +895,8 @@ namespace CocApi.Cache
 
                         if (fetchedEnemy.Data != null 
                             && (fetchedEnemy.Data.State == WarState.NotInWar
-                            || IsSameWar(cachedWar.Data, fetchedEnemy.Data) == false))
-                        {
-                            cachedWar.IsFinal = true;
-                        }
+                            || IsSameWar(cachedWar.Data, fetchedEnemy.Data) == false))                        
+                            cachedWar.IsFinal = true;                        
 
                         if (fetchedEnemy.Data != null 
                             && IsSameWar(cachedWar.Data, fetchedEnemy.Data) 

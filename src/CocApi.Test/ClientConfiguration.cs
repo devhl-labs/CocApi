@@ -24,7 +24,7 @@ namespace CocApi.Test
                 .AddDbContext<CachedContext>(o =>
                 {
                     o.UseNpgsql(ConnectionString);
-                    o.UseSnakeCaseNamingConvention();  // not currently working
+                    //o.UseSnakeCaseNamingConvention();  // not currently working
                 }).BuildServiceProvider();
 
             services.GetRequiredService<CachedContext>().Database.Migrate();

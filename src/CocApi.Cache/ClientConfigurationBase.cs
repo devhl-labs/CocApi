@@ -43,7 +43,6 @@ namespace CocApi.Cache
 
                 return _services;
             }
-
         }
     }
 }

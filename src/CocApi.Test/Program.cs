@@ -49,7 +49,7 @@ namespace CocApi.Test
             return new ClientConfigurationBase();
 
             // optionally provide your own config and control what is the db provider
-            //return new ClientConfiguration(Environment.GetEnvironmentVariable("COCAPI_TEST_CONNECTIONSTRING", EnvironmentVariableTarget.Machine);
+            //return new ClientConfiguration(Environment.GetEnvironmentVariable("COCAPI_TEST_CONNECTIONSTRING", EnvironmentVariableTarget.Machine));
         }
 
         private static PlayersApi GetPlayersApi(IServiceProvider arg)

@@ -198,12 +198,10 @@ namespace CocApi.Cache.Models
         
         internal void UpdateFrom(CachedWar cachedWar)
         {
-            if (cachedWar.Data == null)
-                throw new ArgumentException("Data should not be null.");
-
             base.UpdateFrom(cachedWar);
 
-            State = cachedWar.Data.State;
+            if (cachedWar.Data != null)
+                State = cachedWar.Data.State;
 
             if (State == WarState.WarEnded)
                 IsFinal = true;

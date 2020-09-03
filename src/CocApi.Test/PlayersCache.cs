@@ -20,9 +20,20 @@ namespace CocApi.Test
         {
             _playersApi = playersApi;
             _logService = logService;
+            Log += PlayersCache_Log;
 
             PlayerUpdated += PlayerUpdater_PlayerUpdated;
             _playersApi.QueryResult += QueryResult;
+        }
+
+        private Task PlayersCache_Log(object sender, LogEventArgs log)
+        {
+            if (log is ExceptionEventArgs exception)
+                _logService.Log(LogLevel.Warning, sender.GetType().Name, exception.Method, exception.Message, exception.Exception.Message);
+            else
+                _logService.Log(LogLevel.Information, sender.GetType().Name, log.Method, log.Message);
+
+            return Task.CompletedTask;
         }
 
         public override TimeSpan TimeToLive(ApiResponse<Player> apiResponse)
@@ -37,7 +48,7 @@ namespace CocApi.Test
 
         private Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Player updated");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "Player updated");
 
             return Task.CompletedTask;
         }

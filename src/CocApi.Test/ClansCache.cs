@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -32,7 +33,18 @@ namespace CocApi.Test
             ClanWarLogUpdated += ClansCache_ClanWarLogUpdated;
             ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
             ClanWarUpdated += ClansCache_ClanWarUpdated;
+            Log += ClansCache_Log;
             clansApi.QueryResult += QueryResult;
+        }
+
+        private Task ClansCache_Log(object sender, LogEventArgs log)
+        {
+            if (log is ExceptionEventArgs exception)
+                _logService.Log(LogLevel.Warning, sender.GetType().Name, exception.Method, exception.Message, exception.Exception.Message);
+            else            
+                _logService.Log(LogLevel.Information, sender.GetType().Name, log.Method, log.Message);            
+
+            return Task.CompletedTask;
         }
 
         public override TimeSpan ClanWarTimeToLive(Exception exception)
@@ -59,28 +71,28 @@ namespace CocApi.Test
 
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarStartingSoon(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War starting soon");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "War starting soon");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarEndNotSeen(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War war end not seen");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "War war end not seen");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarEndingSoon(object sender, ClanWarEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War ending soon");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "War ending soon");
 
             return Task.CompletedTask;
         }
@@ -89,7 +101,7 @@ namespace CocApi.Test
         {
             //await Task.Delay(1);
 
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "New war");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "New war");
 
             string json = JsonConvert.SerializeObject(e.ClanWar);
 
@@ -110,14 +122,14 @@ namespace CocApi.Test
 
         private Task ClansCache_ClanWarLeagueGroupUpdated(object sender, ClanWarLeagueGroupUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Group updated");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "Group updated");
 
             return Task.CompletedTask;
         }
 
         private Task ClansCache_ClanWarLogUpdated(object sender, ClanWarLogUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Debug, this.GetType().Name, null, "War log updated");
+            _logService.Log(LogLevel.Information, this.GetType().Name, null, "War log updated");
 
             return Task.CompletedTask;
         }
@@ -145,9 +157,9 @@ namespace CocApi.Test
             var donations = Clan.Donations(e.Stored, e.Fetched);
 
             if (donations.Count > 0)
-                _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));
+                _logService.Log(LogLevel.Information, this.GetType().Name, null, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));
             else
-                _logService.Log(LogLevel.Debug, this.GetType().Name, null, "Clan updated");
+                _logService.Log(LogLevel.Information, this.GetType().Name, null, "Clan updated");
 
             foreach (ClanMember member in Clan.ClanMembersLeft(e.Stored, e.Fetched))
                 Console.WriteLine(member.Name + " left");

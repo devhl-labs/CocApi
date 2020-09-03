@@ -46,18 +46,6 @@ namespace CocApi.Cache.Models
         public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
             UpdateFrom(apiResponse, localExpiration);
-            //string downloadDateString = response.Headers.First(h => h.Key == "Date").Value.First();
-            //DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
-            //string cacheControlString = response.Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
-            //double cacheControl = double.Parse(cacheControlString);
-            //DateTime serverExpiration = downloadDate.AddSeconds(cacheControl);
-
-            //Downloaded = downloadDate;
-            //RawContent = response.RawContent;
-            //ServerExpiration = serverExpiration;
-            //Data = response.Data;  
-            //LocalExpiration = Downloaded.Add(localExpiration);
-            //StatusCode = response.StatusCode;
         }
 
         public CachedItem(Exception exception, TimeSpan localExpiration)
@@ -101,14 +89,14 @@ namespace CocApi.Cache.Models
             LocalExpiration = DateTime.UtcNow.Add(localExpiration);
         }
 
-        protected void UpdateFrom<TValue>(CachedItem<TValue> fetched) where TValue : class
+        protected void UpdateFrom(CachedItem<T> fetched) /*where TValue : class*/
         {
             StatusCode = fetched.StatusCode;
             RawContent = fetched.RawContent ?? RawContent;
             Downloaded = fetched.Downloaded;
             ServerExpiration = fetched.ServerExpiration;
             LocalExpiration = fetched.LocalExpiration;
-            _data = null;
+            _data = fetched.Data ?? _data;
         }
 
         public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);
