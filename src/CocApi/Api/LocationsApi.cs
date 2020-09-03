@@ -162,7 +162,7 @@ namespace CocApi.Api
             var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanRanking>>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration);
             stopwatch.Stop();
 
-            if (localVarResponse.ErrorText == "The request timed-out.")
+            if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 

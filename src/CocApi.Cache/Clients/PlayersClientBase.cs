@@ -17,7 +17,7 @@ namespace CocApi.Cache
     {
         private readonly PlayersApi _playersApi;
 
-        public PlayersClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, PlayersApi playersApi) 
+        public PlayersClientBase(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, PlayersApi playersApi) 
             : base (tokenProvider, cacheConfiguration)
         {
             _playersApi = playersApi;
@@ -190,22 +190,22 @@ namespace CocApi.Cache
                 && stored.VersusTrophies == fetched.VersusTrophies
                 && stored.WarStars == fetched.WarStars
                 && stored.Labels.Except(fetched.Labels).Count() == 0
-                ) == false)
-                    return false;
+                ))
+                    return true;
 
-            if (stored.LegendStatistics?.BestSeason.Trophies != fetched.LegendStatistics?.BestSeason.Trophies)
+            if (stored.LegendStatistics?.BestSeason?.Trophies != fetched.LegendStatistics?.BestSeason?.Trophies)
                 return true;
 
-            if (stored.LegendStatistics?.CurrentSeason?.Trophies != fetched.LegendStatistics?.CurrentSeason.Trophies
+            if (stored.LegendStatistics?.CurrentSeason.Trophies != fetched.LegendStatistics?.CurrentSeason.Trophies
                 || stored.LegendStatistics?.LegendTrophies != fetched.LegendStatistics?.LegendTrophies)
                 return true;
 
             foreach (var fetchAch in fetched.Achievements)
             {
                 var storedAch = stored.Achievements.FirstOrDefault(a => 
-                    a.Name == fetchAch.Name && a.CompletionInfo == fetchAch.CompletionInfo && a.Village == fetchAch.Village);
+                    a.Name == fetchAch.Name && a.Info == fetchAch.Info && a.Village == fetchAch.Village);
                     
-                if (storedAch == null || storedAch.Info != fetchAch.Info || storedAch.Stars != fetchAch.Stars)
+                if (storedAch == null || storedAch.CompletionInfo != fetchAch.CompletionInfo || storedAch.Stars != fetchAch.Stars)
                     return true;
             }
 

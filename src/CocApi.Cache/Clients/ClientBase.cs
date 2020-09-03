@@ -24,21 +24,13 @@ namespace CocApi.Cache
 
         internal protected readonly TokenProvider _tokenProvider;
         internal protected readonly IServiceProvider _services;
-        internal protected readonly CacheConfiguration _cacheConfiguration;
+        internal protected readonly ClientConfigurationBase _cacheConfiguration;
 
-        public ClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration)
+        public ClientBase(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration)
         {
             _tokenProvider = tokenProvider;
             _cacheConfiguration = cacheConfiguration;
-            _services = BuildServiceProvider(cacheConfiguration.ConnectionString);
-        }
-
-        protected virtual IServiceProvider BuildServiceProvider(string connectionString)
-        {
-            return new ServiceCollection()
-                .AddDbContext<CachedContext>(o =>
-                    o.UseSqlite(connectionString))
-                .BuildServiceProvider();
+            _services = _cacheConfiguration.BuildServiceProvider();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

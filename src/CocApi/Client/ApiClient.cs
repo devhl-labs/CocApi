@@ -37,39 +37,14 @@ namespace CocApi.Client
     {
         private readonly IReadableConfiguration _configuration;
         private static readonly string _contentType = "application/json";
-        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
-        {
-            // OpenAPI generated types generally hide default constructors.
-            ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,
-            ContractResolver = new DefaultContractResolver
-            {
-                NamingStrategy = new CamelCaseNamingStrategy
-                {
-                    OverrideSpecifiedNames = true
-                }
-            },
-            Converters = GetConverters()
-        };
-
-        private static List<JsonConverter> GetConverters()
-        {
-            List<JsonConverter> results = new List<JsonConverter>
-            {
-                new SuperCellDateConverter { DateTimeFormats = new List<string> { "yyyyMMdd'T'HHmmss.fff'Z'", "yyyy'-'MM" } }
-            };
-
-            return results;
-        }
 
         public CustomJsonCodec(IReadableConfiguration configuration)
         {
             _configuration = configuration;
-            //_serializerSettings.DateFormatString = _configuration.DateTimeFormat;
         }
 
         public CustomJsonCodec(JsonSerializerSettings serializerSettings, IReadableConfiguration configuration)
         {
-            _serializerSettings = serializerSettings;
             _configuration = configuration;
         }
 

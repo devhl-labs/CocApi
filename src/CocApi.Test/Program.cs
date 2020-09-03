@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 using CocApi.Cache;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 using CocApi.Api;
@@ -44,9 +43,13 @@ namespace CocApi.Test
             return new ClansApi(arg.GetRequiredService<TokenProvider>());
         }
 
-        private static CacheConfiguration GetCacheConfiguration(IServiceProvider arg)
+        private static ClientConfigurationBase GetCacheConfiguration(IServiceProvider arg)
         {
-            return new CacheConfiguration();
+            // this default config will use sqlite
+            return new ClientConfigurationBase();
+
+            // optionally provide your own config and control what is the db provider
+            //return new ClientConfiguration(Environment.GetEnvironmentVariable("COCAPI_TEST_CONNECTIONSTRING", EnvironmentVariableTarget.Machine);
         }
 
         private static PlayersApi GetPlayersApi(IServiceProvider arg)
@@ -58,7 +61,7 @@ namespace CocApi.Test
         {
             List<string> tokens = new List<string>
             {
-                File.ReadAllText(@"E:\Desktop\token.txt")
+                Environment.GetEnvironmentVariable("TOKEN_0", EnvironmentVariableTarget.Machine)
             };
 
             return new TokenProvider(tokens, TimeSpan.FromSeconds(1));

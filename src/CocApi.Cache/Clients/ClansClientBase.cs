@@ -19,13 +19,13 @@ namespace CocApi.Cache
         private readonly ClansApi _clansApi;
         private readonly PlayersClientBase? _playersCache;
 
-        public ClansClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, ClansApi clansApi)
             : base(tokenProvider, cacheConfiguration)
         {
             _clansApi = clansApi;
         }
 
-        public ClansClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersClientBase playersCache)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, ClansApi clansApi, PlayersClientBase playersCache)
             : this(tokenProvider, cacheConfiguration, clansApi)
         {
             _playersCache = playersCache;
@@ -480,7 +480,6 @@ namespace CocApi.Cache
             }
         }
 
-
         internal void OnClanWarEndingSoon(ClanWar clanWar)
         {
             try
@@ -557,7 +556,6 @@ namespace CocApi.Cache
             {
             }
         }
-
 
         private async Task InsertCachedClanAsync(string formattedTag, bool downloadClan, bool downloadWars, bool downloadCwl, bool downloadMembers)
         {

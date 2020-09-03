@@ -18,7 +18,7 @@ namespace CocApi.Test
         private readonly PlayersCache _playersCache;
         private readonly LogService _logService;
 
-        public ClansCache(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
+        public ClansCache(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
@@ -50,8 +50,8 @@ namespace CocApi.Test
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.RunAsync(cancellationToken);
 
-            await UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
-            await AddAsync("#22G0JJR8"); //fysb
+            await UpdateAsync("#8J82PV0C", downloadMembers: true); //fysb unbuckled
+            await UpdateAsync("#22G0JJR8", downloadMembers: true); //fysb
             await AddAsync("#28RUGUYJU"); //devhls lab
             await AddAsync("#2C8V29YJ"); // russian clan
             await RunAsync(cancellationToken);

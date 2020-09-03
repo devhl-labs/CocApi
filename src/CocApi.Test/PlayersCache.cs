@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Client;
+using CocApi.Model;
 using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Test
@@ -15,13 +16,23 @@ namespace CocApi.Test
         private readonly PlayersApi _playersApi;
         private readonly LogService _logService;
 
-        public PlayersCache(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, PlayersApi playersApi, LogService logService) : base(tokenProvider, cacheConfiguration, playersApi)
+        public PlayersCache(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, PlayersApi playersApi, LogService logService) : base(tokenProvider, cacheConfiguration, playersApi)
         {
             _playersApi = playersApi;
             _logService = logService;
 
             PlayerUpdated += PlayerUpdater_PlayerUpdated;
             _playersApi.QueryResult += QueryResult;
+        }
+
+        public override TimeSpan TimeToLive(ApiResponse<Player> apiResponse)
+        {
+            return TimeSpan.FromMinutes(10);
+        }
+
+        public override TimeSpan TimeToLive(Exception exception)
+        {
+            return TimeSpan.FromMinutes(20);
         }
 
         private Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)

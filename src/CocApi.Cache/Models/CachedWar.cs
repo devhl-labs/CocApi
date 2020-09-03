@@ -215,20 +215,15 @@ namespace CocApi.Cache.Models
 
         public bool AllAttacksUsed()
         {
-            int totalMembers = Data.TeamSize * 2;
-
-            int totalAttacks = totalMembers;
+            int totalAttacks = Data.TeamSize * 2;
 
             if (WarTag == null)
                 totalAttacks *= 2;
 
-            //int attacks = Data.Clan.AllAttacks.Count + Data.Opponent.AllAttacks;
+            if (Data.Attacks.Count == totalAttacks)
+                return true;
 
-            //int attacks = Data.Attacks;
-
-            //return Data. == attacks;
-
-            return false; //todo fix this
+            return false;
         }
 
         public override int GetHashCode()
