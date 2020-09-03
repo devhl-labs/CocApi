@@ -248,11 +248,11 @@ namespace CocApi.Model
         [DataMember(Name="name", EmitDefaultValue=false)]
         public string Name { get; private set; }
 
-        /// <summary>
-        /// Gets or Sets Location
-        /// </summary>
-        [DataMember(Name="location", EmitDefaultValue=false)]
-        public Location Location { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets Location
+        ///// </summary>
+        //[DataMember(Name="location", EmitDefaultValue=false)]
+        //public Location Location { get; private set; }
 
         /// <summary>
         /// Gets or Sets Members

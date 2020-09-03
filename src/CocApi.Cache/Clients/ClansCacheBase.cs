@@ -249,7 +249,26 @@ namespace CocApi.Cache
         }
 
         protected virtual bool HasUpdated(Clan stored, Clan fetched)
-            => !stored.Equals(fetched);
+        {
+            return !(stored.BadgeUrls?.Small == fetched.BadgeUrls?.Small
+                && stored.ClanLevel == fetched.ClanLevel
+                && stored.ClanPoints == fetched.ClanPoints
+                && stored.ClanVersusPoints == fetched.ClanVersusPoints
+                && stored.Description == fetched.Description
+                && stored.IsWarLogPublic == fetched.IsWarLogPublic
+                && stored.Location?.Id == fetched.Location?.Id
+                && stored.Members == fetched.Members
+                && stored.Name == fetched.Name
+                && stored.RequiredTrophies == fetched.RequiredTrophies
+                && stored.Type == fetched.Type
+                && stored.WarFrequency == fetched.WarFrequency
+                && stored.WarLeague?.Id == fetched.WarLeague?.Id
+                && stored.WarLosses == fetched.WarLosses
+                && stored.WarTies == fetched.WarTies
+                && stored.WarWins == fetched.WarWins
+                && stored.WarWinStreak == fetched.WarWinStreak
+                && stored.Labels.Except(fetched.Labels).Count() == 0);
+        }
 
         private bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
         {
@@ -263,7 +282,20 @@ namespace CocApi.Cache
         }
 
         protected virtual bool HasUpdated(ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched)
-            => !fetched.Equals(stored);
+        {
+            if (stored == null)
+                return false;
+
+            if (stored.State != fetched.State)
+                return true;
+
+            foreach (ClanWarLeagueRound round in fetched.Rounds)
+                foreach (string warTag in round.WarTags)
+                    if (stored.Rounds.Any(r => r.WarTags.Any(w => w == warTag)) == false)
+                        return true;
+
+            return false;
+        }
 
         private bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
         {
@@ -281,7 +313,13 @@ namespace CocApi.Cache
             if (stored == null)
                 return false;
 
-            return !fetched.Equals(stored);
+            if (stored.Items.Count != fetched.Items.Count)
+                return true;
+
+            if (stored.Items.Max(i => i.EndTime) != fetched.Items.Max(i => i.EndTime))
+                return true;
+
+            return false;
         }
 
         private bool HasUpdated(CachedWar stored, CachedClanWar fetched)
@@ -299,22 +337,10 @@ namespace CocApi.Cache
 
         protected virtual bool HasUpdated(ClanWar stored, ClanWar fetched)
         {
-            if (stored.Clans.First().Value.Attacks != fetched.Clans.First().Value.Attacks)
-                return true;
-
-            if (stored.Clans.Skip(1).First().Value.Attacks != fetched.Clans.Skip(1).First().Value.Attacks)
-                return true;
-
-            if (stored.EndTime != fetched.EndTime)
-                return true;
-
-            if (stored.StartTime != fetched.StartTime)
-                return true;
-
-            if (stored.State != fetched.State)
-                return true;
-
-            return false;
+            return !(stored.EndTime == fetched.EndTime
+                && stored.StartTime == fetched.StartTime
+                && stored.State == fetched.State
+                && stored.Attacks.Count == fetched.Attacks.Count);
         }
 
         private bool HasUpdated(CachedWar stored, CachedWar fetched)

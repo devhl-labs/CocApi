@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace CocApi.Model
 {
-    public partial class ClanWar
+    public partial class ClanWar : IEquatable<ClanWar?>
     {
+
         public static string Url(string clanTag)
         {
             if (Clash.TryFormatTag(clanTag, out string formattedTag) == false)
@@ -17,11 +20,12 @@ namespace CocApi.Model
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
-        public string? WarTag { get; set; }
+        [DataMember(Name = "warTag", EmitDefaultValue = false)]
+        public string? WarTag { get; internal set; }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(PreparationStartTime, Clans.Values.First().Tag, Clans.Values.Skip(1).First().Tag);
+            return HashCode.Combine(PreparationStartTime, Clans.Values.First().Tag);
         }
 
         private SortedDictionary<string, WarClan> _clans = new SortedDictionary<string, WarClan>();
@@ -47,22 +51,27 @@ namespace CocApi.Model
             }
         }
 
-        private readonly List<ClanWarAttack> _allAttacks = new List<ClanWarAttack>();
+        private List<ClanWarAttack> _attacks = new List<ClanWarAttack>();
 
-        public List<ClanWarAttack> AllAttacks
+        public List<ClanWarAttack> Attacks
         {
             get
             {
                 if (Clans.Count == 0)
-                    return _allAttacks;
+                    return _attacks;
 
-                if (_allAttacks.Count == 0)
+                if (_attacks.Count == 0)
                     foreach (WarClan warClan in Clans.Values)
                         foreach (ClanWarMember member in warClan.Members)
                             foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
-                                _allAttacks.Add(attack);
+                                _attacks.Add(attack);
 
-                return _allAttacks;
+                return _attacks;
+            }
+
+            internal set
+            {
+                _attacks = value ?? new List<ClanWarAttack>();
             }
         }
 
@@ -70,8 +79,8 @@ namespace CocApi.Model
         {
             List<ClanWarAttack> attacks = new List<ClanWarAttack>();
 
-            foreach (ClanWarAttack attack in fetched.AllAttacks)
-                if (stored.AllAttacks.Count(a => a.AttackerTag == attack.AttackerTag && a.DefenderTag == attack.DefenderTag) == 0)
+            foreach (ClanWarAttack attack in fetched.Attacks)
+                if (stored.Attacks.Count(a => a.AttackerTag == attack.AttackerTag && a.DefenderTag == attack.DefenderTag) == 0)
                     attacks.Add(attack);
 
             return attacks;
@@ -79,6 +88,43 @@ namespace CocApi.Model
 
         public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
 
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as ClanWar);
+        }
+
+        public bool Equals(ClanWar? other)
+        {
+            return other != null &&
+                   PreparationStartTime == other.PreparationStartTime &&
+                   Clans.First().Key == other.Clans.First().Key;
+        }
+
+        [DataMember(Name = "type", EmitDefaultValue = false)]
         public WarType Type { get; set; }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWar" /> class.
+        /// </summary>
+        /// <param name="clan">clan.</param>
+        /// <param name="teamSize">teamSize.</param>
+        /// <param name="opponent">opponent.</param>
+        /// <param name="startTime">startTime.</param>
+        /// <param name="state">state.</param>
+        /// <param name="endTime">endTime.</param>
+        /// <param name="preparationStartTime">preparationStartTime.</param>
+        [JsonConstructor]
+        public ClanWar(List<ClanWarAttack> allAttacks, WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), WarState? state = default(WarState?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
+        {
+            this.Attacks = allAttacks;
+            this.Clan = clan;
+            this.TeamSize = teamSize;
+            this.Opponent = opponent;
+            this.StartTime = startTime;
+            this.State = state;
+            this.EndTime = endTime;
+            this.PreparationStartTime = preparationStartTime;
+        }
     }
 }

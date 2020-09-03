@@ -91,11 +91,19 @@ namespace CocApi.Test
 
             _logService.Log(LogLevel.Debug, this.GetType().Name, null, "New war");
 
-            string json = JsonConvert.SerializeObject(e.ClanWar, Clash.JsonSerializerSettings);
+            string json = JsonConvert.SerializeObject(e.ClanWar);
 
-            ClanWar clanWar = (ClanWar) JsonConvert.DeserializeObject(json, typeof(ClanWar), Clash.JsonSerializerSettings);
+            ClanWar clanWar = (ClanWar) JsonConvert.DeserializeObject<ClanWar>(json);
+
+            //Console.WriteLine(clanWar.Attacks.Count);
 
             //throw new Exception();
+
+            //ClanWarMember clanWarMember = new ClanWarMember(mapPosition: 1, rosterPosition: 2);
+
+            //string json2 = JsonConvert.SerializeObject(clanWarMember);
+
+            //string json3 = JsonConvert.SerializeObject(clanWarMember, Clash.JsonSerializerSettings);
 
             return Task.CompletedTask;
         }

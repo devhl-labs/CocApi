@@ -9,10 +9,10 @@ namespace CocApi.Model
     public partial class ClanWarMember
     {
 
-        ///// <summary>
-        ///// Gets or Sets Attacks
-        ///// </summary>
-        //[DataMember(Name="attacks", EmitDefaultValue=false)]
+        /// <summary>
+        /// Gets or Sets Attacks
+        /// </summary>
+        [DataMember(Name = "attacks", EmitDefaultValue = false)]
         public List<ClanWarAttack>? Attacks { get; private set; }
 
         /// <summary>
@@ -42,18 +42,7 @@ namespace CocApi.Model
             this.Tag = tag;
             this.Name = name;
             this.RosterPosition = mapPosition;
-            this.TownhallLevel = townhallLevel;
-            this.OpponentAttacks = opponentAttacks;
-            this.BestOpponentAttack = bestOpponentAttack;
-            this.Attacks = attacks;
-        }
-
-
-        public ClanWarMember(string tag = default(string), int rosterPosition = default(int), string name = default(string), int mapPosition = default(int), int townhallLevel = default(int), int opponentAttacks = default(int), ClanWarAttack bestOpponentAttack = default(ClanWarAttack), List<ClanWarAttack> attacks = default(List<ClanWarAttack>))
-        {
-            this.Tag = tag;
-            this.Name = name;
-            this.RosterPosition = mapPosition;
+            this.MapPosition = mapPositionCorrected;
             this.TownhallLevel = townhallLevel;
             this.OpponentAttacks = opponentAttacks;
             this.BestOpponentAttack = bestOpponentAttack;

@@ -62,7 +62,7 @@ namespace CocApi.Api
 
             foreach (var clan in apiResponse.Data.Clans.Values)
             {
-                var grouped = clan.AllAttacks.GroupBy(a => a.DefenderMapPosition);
+                var grouped = apiResponse.Data.Attacks.Where(a => a.AttackerClanTag == clan.Tag).GroupBy(a => a.DefenderMapPosition);
 
                 foreach (var group in grouped)
                 {

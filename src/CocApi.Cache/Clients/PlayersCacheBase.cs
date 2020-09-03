@@ -170,7 +170,72 @@ namespace CocApi.Cache
 
         protected virtual bool HasUpdated(Player stored, Player fetched)
         {
-            return !stored.Equals(fetched);
+            if (!(stored.AttackWins == fetched.AttackWins
+                && stored.BestTrophies == fetched.BestTrophies
+                && stored.BestVersusTrophies == fetched.BestVersusTrophies
+                && stored.BuilderHallLevel == fetched.BuilderHallLevel
+                && stored.Clan?.Tag == fetched.Clan?.Tag
+                && stored.DefenseWins == fetched.DefenseWins
+                && stored.Donations == fetched.Donations
+                && stored.DonationsReceived == fetched.DonationsReceived
+                && stored.ExpLevel == fetched.ExpLevel
+                && stored.League?.Id == fetched.League?.Id
+                && stored.Name == fetched.Name
+                && stored.Role == fetched.Role
+                && stored.TownHallLevel == fetched.TownHallLevel
+                && stored.TownHallWeaponLevel == fetched.TownHallWeaponLevel
+                && stored.Trophies == fetched.Trophies
+                && stored.VersusBattleWinCount == fetched.VersusBattleWinCount
+                && stored.VersusBattleWins == fetched.VersusBattleWins
+                && stored.VersusTrophies == fetched.VersusTrophies
+                && stored.WarStars == fetched.WarStars
+                && stored.Labels.Except(fetched.Labels).Count() == 0
+                ) == false)
+                    return false;
+
+            if (stored.LegendStatistics?.BestSeason.Trophies != fetched.LegendStatistics?.BestSeason.Trophies)
+                return true;
+
+            if (stored.LegendStatistics?.CurrentSeason?.Trophies != fetched.LegendStatistics?.CurrentSeason.Trophies
+                || stored.LegendStatistics?.LegendTrophies != fetched.LegendStatistics?.LegendTrophies)
+                return true;
+
+            throw new Exception();
+            //todo these should not be objects
+            var a = stored.Achievements.Where(ach => ach.CompletionInfo == "Highest Gold Storage level: 11");
+            var b = stored.Achievements.Where(ach => ach.Name == "Bigger Coffers");
+
+            foreach (var fetchAch in fetched.Achievements)
+            {
+                var storedAch = stored.Achievements.FirstOrDefault(a => 
+                    a.Name == fetchAch.Name && a.CompletionInfo == fetchAch.CompletionInfo && a.Village == fetchAch.Village);
+                    
+                if (storedAch == null || storedAch.Info != fetchAch.Info || storedAch.Stars != fetchAch.Stars)
+                    return true;
+            }
+
+            foreach(var fetchedHero in fetched.Heroes)
+            {
+                var storedHero = stored.Heroes.FirstOrDefault(h => h.Name == fetchedHero.Name && h.Level == fetchedHero.Level);
+                if (storedHero == null)
+                    return true;
+            }
+               
+            foreach(var fetchedSpell in fetched.Spells)
+            {
+                var storedSpell = stored.Spells.FirstOrDefault(s => s.Name == fetchedSpell.Name && s.Level == fetchedSpell.Level);
+                if (storedSpell == null)
+                    return true;
+            }
+              
+            foreach(var fetchedTroop in fetched.Troops)
+            {
+                var storedTroop = stored.Troops.FirstOrDefault(t => t.Name == fetchedTroop.Name && t.Level == fetchedTroop.Level);
+                if (storedTroop == null)
+                    return true;
+            }
+
+            return false;
         }
 
         public virtual TimeSpan TimeToLive(ApiResponse<Player> apiResponse)

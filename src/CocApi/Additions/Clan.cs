@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace CocApi.Model
 {
-    public partial class Clan
+    public partial class Clan : IEquatable<Clan?>
     {
         public static string Url(string clanTag)
         {
@@ -88,5 +89,27 @@ namespace CocApi.Model
         }
 
         public List<ClanMember> ClanMembersJoined(Clan fetched) => ClanMembersJoined(this, fetched);
+
+        /// <summary>
+        /// Gets or Sets Location
+        /// </summary>
+        [DataMember(Name = "location", EmitDefaultValue = false)]
+        public Location? Location { get; private set; }
+
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as Clan);
+        }
+
+        public bool Equals(Clan? other)
+        {
+            return other != null &&
+                   Tag == other.Tag;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Tag);
+        }
     }
 }

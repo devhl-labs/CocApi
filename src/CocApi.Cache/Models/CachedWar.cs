@@ -222,9 +222,13 @@ namespace CocApi.Cache.Models
             if (WarTag == null)
                 totalAttacks *= 2;
 
-            int attacks = Data.Clan.Attacks + Data.Opponent.Attacks;
+            //int attacks = Data.Clan.AllAttacks.Count + Data.Opponent.AllAttacks;
 
-            return totalAttacks == attacks;
+            //int attacks = Data.Attacks;
+
+            //return Data. == attacks;
+
+            return false; //todo fix this
         }
 
         public override int GetHashCode()

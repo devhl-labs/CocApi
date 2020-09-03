@@ -63,10 +63,6 @@ namespace CocApi
         }
     }
 
-
-
-
-
     public class QueryException : IQueryResult
     {
         public Stopwatch Stopwatch { get; }

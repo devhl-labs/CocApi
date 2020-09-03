@@ -49,14 +49,14 @@ namespace CocApi.Model
         /// <param name="stars">stars.</param>
         /// <param name="expEarned">expEarned.</param>
         /// <param name="members">members.</param>
-        public WarClan(float destructionPercentage = default(float), string tag = default(string), string name = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls), int clanLevel = default(int), int attacks = default(int), int stars = default(int), int expEarned = default(int), List<ClanWarMember> members = default(List<ClanWarMember>))
+        public WarClan(float destructionPercentage = default(float), string tag = default(string), string name = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls), int clanLevel = default(int), /*int attacks = default(int),*/ int stars = default(int), int expEarned = default(int), List<ClanWarMember> members = default(List<ClanWarMember>))
         {
             this.DestructionPercentage = destructionPercentage;
             this.Tag = tag;
             this.Name = name;
             this.BadgeUrls = badgeUrls;
             this.ClanLevel = clanLevel;
-            this.Attacks = attacks;
+            //this.Attacks = attacks;
             this.Stars = stars;
             this.ExpEarned = expEarned;
             this.Members = members;
@@ -92,11 +92,11 @@ namespace CocApi.Model
         [DataMember(Name="clanLevel", EmitDefaultValue=false)]
         public int ClanLevel { get; private set; }
 
-        /// <summary>
-        /// Gets or Sets Attacks
-        /// </summary>
-        [DataMember(Name="attacks", EmitDefaultValue=false)]
-        public int Attacks { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets Attacks
+        ///// </summary>
+        //[DataMember(Name="attacks", EmitDefaultValue=false)]
+        //public int Attacks { get; private set; }
 
         /// <summary>
         /// Gets or Sets Stars
@@ -129,7 +129,7 @@ namespace CocApi.Model
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
-            sb.Append("  Attacks: ").Append(Attacks).Append("\n");
+            //sb.Append("  Attacks: ").Append(Attacks).Append("\n");
             sb.Append("  Stars: ").Append(Stars).Append("\n");
             sb.Append("  ExpEarned: ").Append(ExpEarned).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
