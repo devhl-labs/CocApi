@@ -10,7 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Test
 {
-    public class PlayersCache : PlayersCacheBase
+    public class PlayersCache : PlayersClientBase
     {
         private readonly PlayersApi _playersApi;
         private readonly LogService _logService;

@@ -13,7 +13,7 @@ namespace CocApi.Cache.Models
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersCacheBase playersCacheBase, PlayersApi playersApi)
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi)
         {
             try
             {

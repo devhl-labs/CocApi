@@ -14,18 +14,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class ClansCacheBase : CacheBase
+    public class ClansClientBase : ClientBase
     {
         private readonly ClansApi _clansApi;
-        private readonly PlayersCacheBase? _playersCache;
+        private readonly PlayersClientBase? _playersCache;
 
-        public ClansCacheBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi)
+        public ClansClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi)
             : base(tokenProvider, cacheConfiguration)
         {
             _clansApi = clansApi;
         }
 
-        public ClansCacheBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersCacheBase playersCache)
+        public ClansClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, ClansApi clansApi, PlayersClientBase playersCache)
             : this(tokenProvider, cacheConfiguration, clansApi)
         {
             _playersCache = playersCache;
@@ -826,7 +826,7 @@ namespace CocApi.Cache
             }
         }
 
-        private async Task UpdateMember(ClanMember member, PlayersCacheBase playersCache)
+        private async Task UpdateMember(ClanMember member, PlayersClientBase playersCache)
         {
             CachedPlayer cachedPlayer = await playersCache.AddAsync(member.Tag, false);
 

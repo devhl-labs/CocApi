@@ -30,7 +30,7 @@ namespace CocApi
         /// </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public enum GroupState
-    {
+        {
             /// <summary>
             /// Enum Preparation for value: preparation
             /// </summary>

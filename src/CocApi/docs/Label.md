@@ -3,7 +3,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Name** | **Object** |  | [optional] 
+**Name** | **string** |  | [optional] 
 **Id** | **int** |  | [optional] 
 **IconUrls** | [**LabelIconUrls**](LabelIconUrls.md) |  | [optional] 
 

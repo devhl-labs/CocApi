@@ -10,7 +10,7 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
-        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, ClansCacheBase clansCacheBase, ClansApi clansApi)
+        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi)
         {
             try
             {

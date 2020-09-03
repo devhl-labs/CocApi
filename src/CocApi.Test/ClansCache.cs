@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace CocApi.Test
 {
-    public class ClansCache : ClansCacheBase, IHostedService
+    public class ClansCache : ClansClientBase, IHostedService
     {
         private readonly PlayersCache _playersCache;
         private readonly LogService _logService;

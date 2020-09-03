@@ -42,7 +42,7 @@ namespace CocApi.Model
         /// </summary>
         /// <param name="name">name.</param>
         /// <param name="id">id.</param>
-        public WarLeague(Object name = default(Object), int id = default(int))
+        public WarLeague(string name = default(string), int id = default(int))
         {
             this.Name = name;
             this.Id = id;
@@ -52,7 +52,7 @@ namespace CocApi.Model
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; private set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets Id

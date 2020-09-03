@@ -76,7 +76,7 @@ namespace CocApi.Model
         /// <param name="opponent">opponent.</param>
         /// <param name="endTime">endTime.</param>
         /// <param name="result">result.</param>
-        public ClanWarLogEntry(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime endTime = default(DateTime), ResultEnum? result = default(ResultEnum?))
+        public ClanWarLogEntry(WarClanLogEntry clan = default(WarClanLogEntry), int teamSize = default(int), WarClanLogEntry opponent = default(WarClanLogEntry), DateTime endTime = default(DateTime), ResultEnum? result = default(ResultEnum?))
         {
             this.Clan = clan;
             this.TeamSize = teamSize;
@@ -89,7 +89,7 @@ namespace CocApi.Model
         /// Gets or Sets Clan
         /// </summary>
         [DataMember(Name="clan", EmitDefaultValue=false)]
-        public WarClan Clan { get; private set; }
+        public WarClanLogEntry Clan { get; private set; }
 
         /// <summary>
         /// Gets or Sets TeamSize
@@ -101,7 +101,7 @@ namespace CocApi.Model
         /// Gets or Sets Opponent
         /// </summary>
         [DataMember(Name="opponent", EmitDefaultValue=false)]
-        public WarClan Opponent { get; private set; }
+        public WarClanLogEntry Opponent { get; private set; }
 
         /// <summary>
         /// Gets or Sets EndTime

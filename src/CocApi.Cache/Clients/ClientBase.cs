@@ -12,7 +12,7 @@ namespace CocApi.Cache
 
     public delegate Task LogEventHandler(object sender, LogEventArgs log);
 
-    public class CacheBase
+    public class ClientBase
     {
         internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
 
@@ -26,7 +26,7 @@ namespace CocApi.Cache
         internal protected readonly IServiceProvider _services;
         internal protected readonly CacheConfiguration _cacheConfiguration;
 
-        public CacheBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration)
+        public ClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration)
         {
             _tokenProvider = tokenProvider;
             _cacheConfiguration = cacheConfiguration;

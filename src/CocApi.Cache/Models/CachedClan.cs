@@ -8,7 +8,7 @@ namespace CocApi.Cache.Models
 {
     public class CachedClan : CachedItem<Clan>
     {
-        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansCacheBase clansCacheBase, ClansApi clansApi)
+        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi)
         {
             try
             {

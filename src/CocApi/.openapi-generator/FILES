@@ -44,6 +44,7 @@ docs\PlayersApi.md
 docs\VerifyTokenRequest.md
 docs\VerifyTokenResponse.md
 docs\WarClan.md
+docs\WarClanLogEntry.md
 docs\WarLeague.md
 git_push.sh
 src\CocApi\Api\ClansApi.cs
@@ -104,4 +105,5 @@ src\CocApi\Model\PlayerVersusRanking.cs
 src\CocApi\Model\VerifyTokenRequest.cs
 src\CocApi\Model\VerifyTokenResponse.cs
 src\CocApi\Model\WarClan.cs
+src\CocApi\Model\WarClanLogEntry.cs
 src\CocApi\Model\WarLeague.cs

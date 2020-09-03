@@ -116,7 +116,7 @@ namespace CocApi.Model
         /// <summary>
         /// Gets or Sets StartTime
         /// </summary>
-        [DataMember(Name = "startTime", EmitDefaultValue = false)]
+        [DataMember(Name="startTime", EmitDefaultValue=false)]
         public DateTime StartTime { get; private set; }
 
         /// <summary>

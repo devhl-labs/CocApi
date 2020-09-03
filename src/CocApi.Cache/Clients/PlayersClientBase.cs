@@ -13,11 +13,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    public class PlayersCacheBase : CacheBase
+    public class PlayersClientBase : ClientBase
     {
         private readonly PlayersApi _playersApi;
 
-        public PlayersCacheBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, PlayersApi playersApi) 
+        public PlayersClientBase(TokenProvider tokenProvider, CacheConfiguration cacheConfiguration, PlayersApi playersApi) 
             : base (tokenProvider, cacheConfiguration)
         {
             _playersApi = playersApi;
@@ -199,11 +199,6 @@ namespace CocApi.Cache
             if (stored.LegendStatistics?.CurrentSeason?.Trophies != fetched.LegendStatistics?.CurrentSeason.Trophies
                 || stored.LegendStatistics?.LegendTrophies != fetched.LegendStatistics?.LegendTrophies)
                 return true;
-
-            throw new Exception();
-            //todo these should not be objects
-            var a = stored.Achievements.Where(ach => ach.CompletionInfo == "Highest Gold Storage level: 11");
-            var b = stored.Achievements.Where(ach => ach.Name == "Bigger Coffers");
 
             foreach (var fetchAch in fetched.Achievements)
             {

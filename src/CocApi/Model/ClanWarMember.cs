@@ -51,7 +51,7 @@ namespace CocApi.Model
         {
             this.Tag = tag;
             this.Name = name;
-            this.RosterPosition = mapPosition;
+            this.MapPosition = mapPosition;
             this.TownhallLevel = townhallLevel;
             this.OpponentAttacks = opponentAttacks;
             this.BestOpponentAttack = bestOpponentAttack;
@@ -69,12 +69,6 @@ namespace CocApi.Model
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
         public string Name { get; private set; }
-
-        ///// <summary>
-        ///// Gets or Sets MapPosition
-        ///// </summary>
-        //[DataMember(Name="mapPosition", EmitDefaultValue=false)]
-        //public int MapPosition { get; private set; }
 
         /// <summary>
         /// Gets or Sets TownhallLevel
@@ -104,7 +98,7 @@ namespace CocApi.Model
             sb.Append("class ClanWarMember {\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
-            sb.Append("  MapPosition: ").Append(RosterPosition).Append("\n");
+            sb.Append("  MapPosition: ").Append(MapPosition).Append("\n");
             sb.Append("  TownhallLevel: ").Append(TownhallLevel).Append("\n");
             sb.Append("  OpponentAttacks: ").Append(OpponentAttacks).Append("\n");
             sb.Append("  BestOpponentAttack: ").Append(BestOpponentAttack).Append("\n");

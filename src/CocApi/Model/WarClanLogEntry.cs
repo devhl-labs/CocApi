@@ -32,13 +32,13 @@ namespace CocApi
 namespace CocApi.Model
 {
     /// <summary>
-    /// WarClan
+    /// WarClanLogEntry
     /// </summary>
     [DataContract]
-    public partial class WarClan :  IValidatableObject
+    public partial class WarClanLogEntry :  IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="WarClan" /> class.
+        /// Initializes a new instance of the <see cref="WarClanLogEntry" /> class.
         /// </summary>
         /// <param name="destructionPercentage">destructionPercentage.</param>
         /// <param name="tag">tag.</param>
@@ -48,8 +48,7 @@ namespace CocApi.Model
         /// <param name="attacks">attacks.</param>
         /// <param name="stars">stars.</param>
         /// <param name="expEarned">expEarned.</param>
-        /// <param name="members">members.</param>
-        public WarClan(float destructionPercentage = default(float), string tag = default(string), string name = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls), int clanLevel = default(int), int attacks = default(int), int stars = default(int), int expEarned = default(int), List<ClanWarMember> members = default(List<ClanWarMember>))
+        public WarClanLogEntry(float destructionPercentage = default(float), string tag = default(string), string name = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls), int clanLevel = default(int), int attacks = default(int), int stars = default(int), int expEarned = default(int))
         {
             this.DestructionPercentage = destructionPercentage;
             this.Tag = tag;
@@ -59,7 +58,6 @@ namespace CocApi.Model
             this.Attacks = attacks;
             this.Stars = stars;
             this.ExpEarned = expEarned;
-            this.Members = members;
         }
         
         /// <summary>
@@ -111,19 +109,13 @@ namespace CocApi.Model
         public int ExpEarned { get; private set; }
 
         /// <summary>
-        /// Gets or Sets Members
-        /// </summary>
-        [DataMember(Name="members", EmitDefaultValue=false)]
-        public List<ClanWarMember> Members { get; private set; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class WarClan {\n");
+            sb.Append("class WarClanLogEntry {\n");
             sb.Append("  DestructionPercentage: ").Append(DestructionPercentage).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
@@ -132,7 +124,6 @@ namespace CocApi.Model
             sb.Append("  Attacks: ").Append(Attacks).Append("\n");
             sb.Append("  Stars: ").Append(Stars).Append("\n");
             sb.Append("  ExpEarned: ").Append(ExpEarned).Append("\n");
-            sb.Append("  Members: ").Append(Members).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

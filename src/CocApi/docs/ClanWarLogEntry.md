@@ -3,9 +3,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Clan** | [**WarClan**](WarClan.md) |  | [optional] 
+**Clan** | [**WarClanLogEntry**](WarClanLogEntry.md) |  | [optional] 
 **TeamSize** | **int** |  | [optional] 
-**Opponent** | [**WarClan**](WarClan.md) |  | [optional] 
+**Opponent** | [**WarClanLogEntry**](WarClanLogEntry.md) |  | [optional] 
 **EndTime** | **DateTime** |  | [optional] 
 **Result** | **string** |  | [optional] 
 

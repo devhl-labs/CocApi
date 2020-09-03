@@ -4,7 +4,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Level** | **int** |  | [optional] 
-**Name** | **Object** |  | [optional] 
+**Name** | **string** |  | [optional] 
 **MaxLevel** | **int** |  | [optional] 
 **Village** | **string** |  | [optional] 
 

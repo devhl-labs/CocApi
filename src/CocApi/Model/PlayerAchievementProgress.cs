@@ -47,7 +47,7 @@ namespace CocApi.Model
         /// <param name="info">info.</param>
         /// <param name="completionInfo">completionInfo.</param>
         /// <param name="village">village.</param>
-        public PlayerAchievementProgress(int stars = default(int), int value = default(int), Object name = default(Object), int target = default(int), Object info = default(Object), Object completionInfo = default(Object), string village = default(string))
+        public PlayerAchievementProgress(int stars = default(int), int value = default(int), string name = default(string), int target = default(int), string info = default(string), string completionInfo = default(string), string village = default(string))
         {
             this.Stars = stars;
             this.Value = value;
@@ -74,7 +74,7 @@ namespace CocApi.Model
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; private set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets Target
@@ -86,13 +86,13 @@ namespace CocApi.Model
         /// Gets or Sets Info
         /// </summary>
         [DataMember(Name="info", EmitDefaultValue=false)]
-        public Object Info { get; private set; }
+        public string Info { get; private set; }
 
         /// <summary>
         /// Gets or Sets CompletionInfo
         /// </summary>
         [DataMember(Name="completionInfo", EmitDefaultValue=false)]
-        public Object CompletionInfo { get; private set; }
+        public string CompletionInfo { get; private set; }
 
         /// <summary>
         /// Gets or Sets Village

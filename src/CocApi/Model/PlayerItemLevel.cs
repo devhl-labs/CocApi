@@ -44,7 +44,7 @@ namespace CocApi.Model
         /// <param name="name">name.</param>
         /// <param name="maxLevel">maxLevel.</param>
         /// <param name="village">village.</param>
-        public PlayerItemLevel(int level = default(int), Object name = default(Object), int maxLevel = default(int), string village = default(string))
+        public PlayerItemLevel(int level = default(int), string name = default(string), int maxLevel = default(int), string village = default(string))
         {
             this.Level = level;
             this.Name = name;
@@ -62,7 +62,7 @@ namespace CocApi.Model
         /// Gets or Sets Name
         /// </summary>
         [DataMember(Name="name", EmitDefaultValue=false)]
-        public Object Name { get; private set; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets or Sets MaxLevel

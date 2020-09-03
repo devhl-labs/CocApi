@@ -159,6 +159,7 @@ Class | Method | HTTP request | Description
  - [Model.VerifyTokenRequest](docs/VerifyTokenRequest.md)
  - [Model.VerifyTokenResponse](docs/VerifyTokenResponse.md)
  - [Model.WarClan](docs/WarClan.md)
+ - [Model.WarClanLogEntry](docs/WarClanLogEntry.md)
  - [Model.WarLeague](docs/WarLeague.md)
 
 
