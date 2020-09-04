@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Client;
@@ -8,11 +9,11 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWar : CachedItem<ClanWar>
     {
-        internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi)
+        internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(tag);
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(tag, cancellationToken);
 
                 CachedClanWar result = new CachedClanWar(tag, apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse));
 

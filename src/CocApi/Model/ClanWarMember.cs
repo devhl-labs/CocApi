@@ -70,6 +70,12 @@ namespace CocApi.Model
         [DataMember(Name="name", EmitDefaultValue=false)]
         public string Name { get; private set; }
 
+        ///// <summary>
+        ///// Gets or Sets MapPosition
+        ///// </summary>
+        //[DataMember(Name="mapPosition", EmitDefaultValue=false)]
+        //public int MapPosition { get; private set; }
+
         /// <summary>
         /// Gets or Sets TownhallLevel
         /// </summary>
@@ -87,6 +93,12 @@ namespace CocApi.Model
         /// </summary>
         [DataMember(Name="bestOpponentAttack", EmitDefaultValue=false)]
         public ClanWarAttack BestOpponentAttack { get; private set; }
+
+        ///// <summary>
+        ///// Gets or Sets Attacks
+        ///// </summary>
+        //[DataMember(Name="attacks", EmitDefaultValue=false)]
+        //public List<ClanWarAttack> Attacks { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object

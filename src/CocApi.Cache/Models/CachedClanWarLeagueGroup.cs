@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Client;
@@ -10,11 +11,11 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
-        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi)
+        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.GetClanWarLeagueGroupResponseAsync(tag).ConfigureAwait(false);
+                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.GetClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedClanWarLeagueGroup(apiResponse, clansCacheBase.ClanWarLeagueGroupTimeToLive(apiResponse));
             }

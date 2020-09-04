@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Client;
@@ -12,11 +13,11 @@ namespace CocApi.Cache.Models
 {
     public class CachedWar : CachedItem<ClanWar>
     {
-        internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(string warTag, DateTime season, ClansClientBase clansCacheBase, ClansApi clansApi)
+        internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(string warTag, DateTime season, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag);
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken);
 
                 CachedWar result = new CachedWar(apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse), warTag, season);
 

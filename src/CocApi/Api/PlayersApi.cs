@@ -98,9 +98,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player> GetPlayerAsync (string playerTag)
+        public async System.Threading.Tasks.Task<Player> GetPlayerAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(playerTag);
+             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(playerTag,  cancellationToken);
              return localVarResponse.Data;
         }
 
@@ -110,7 +110,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseAsync (string playerTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'playerTag' is set
             if (playerTag == null)
@@ -136,13 +136,13 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //playerTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync());
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<Player>("/players/{playerTag}", localVarRequestOptions, this.Configuration);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<Player>("/players/{playerTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -188,11 +188,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string playerTag)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
-                return await GetPlayerResponseAsync (playerTag);
+                return await GetPlayerResponseAsync (playerTag, cancellationToken);
             }
             catch(ApiException)
             {
@@ -206,9 +206,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync (string playerTag)
+        public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag);
+             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag, cancellationToken).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

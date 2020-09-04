@@ -55,11 +55,11 @@ namespace CocApi.Model
             this.PreviousSeason = previousSeason;
             this.BestSeason = bestSeason;
         }
-        
+
         /// <summary>
         /// Gets or Sets CurrentSeason
         /// </summary>
-        [DataMember(Name="currentSeason", EmitDefaultValue=false)]
+        [DataMember(Name = "currentSeason", EmitDefaultValue = false)]
         public LegendLeagueTournamentSeasonResult CurrentSeason { get; private set; }
 
         ///// <summary>

@@ -19,12 +19,12 @@ namespace CocApi
                 _tokenObjects.Add(new Token(token, tokenTimeOut));
         }
 
-        internal async Task<string> GetTokenAsync()
+        internal async Task<string> GetTokenAsync(CancellationToken? cancellationToken = default)
         {
+            await _tokenSemaphore.WaitAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
             try
             {
-                await _tokenSemaphore.WaitAsync().ConfigureAwait(false);
-
                 return await _tokenObjects.Where(x => !x.IsRateLimited).OrderBy(x => x.LastUsedUtc).First().GetTokenAsync().ConfigureAwait(false);
             }
             finally

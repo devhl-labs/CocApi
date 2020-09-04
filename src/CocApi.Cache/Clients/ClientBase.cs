@@ -20,8 +20,6 @@ namespace CocApi.Cache
 
         internal protected bool IsRunning { get; set; }
 
-        internal protected bool StopRequested { get; set; }
-
         internal protected readonly TokenProvider _tokenProvider;
         internal protected readonly IServiceProvider _services;
         internal protected readonly ClientConfigurationBase _cacheConfiguration;
@@ -35,18 +33,17 @@ namespace CocApi.Cache
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-            StopRequested = true;
+            _stopRequestedTokenSource.Cancel();
 
             OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
 
             while (IsRunning)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                await Task.Delay(500).ConfigureAwait(false);
+                await Task.Delay(500, cancellationToken).ConfigureAwait(false);
             }
-
         }
+
+        protected CancellationTokenSource _stopRequestedTokenSource = new CancellationTokenSource();
     }
 
 }

@@ -3,16 +3,17 @@ using CocApi.Model;
 using CocApi.Client;
 using System.Threading.Tasks;
 using CocApi.Api;
+using System.Threading;
 
 namespace CocApi.Cache.Models
 {
     public class CachedClan : CachedItem<Clan>
     {
-        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi)
+        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<Clan> apiResponse = await clansApi.GetClanResponseAsync(tag).ConfigureAwait(false);
+                ApiResponse<Clan> apiResponse = await clansApi.GetClanResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedClan(apiResponse, clansCacheBase.ClanTimeToLive(apiResponse));
             }

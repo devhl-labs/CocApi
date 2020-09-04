@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Models;
@@ -13,11 +14,11 @@ namespace CocApi.Cache.Models
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi)
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag).ConfigureAwait(false);
+                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedPlayer(apiResponse, playersCacheBase.TimeToLive(apiResponse));
             }
