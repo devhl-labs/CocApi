@@ -8,6 +8,7 @@ namespace CocApi.Model
 {
     public partial class ClanWarMember
     {
+        public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
 
         /// <summary>
         /// Gets or Sets Attacks

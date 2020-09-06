@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CocApi.Model
 {
     public partial class Player : IEquatable<Player?>
     {
+        public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
         public static string Url(string villageTag)
         {
             if (Clash.TryFormatTag(villageTag, out string formattedTag) == false)
@@ -29,5 +31,10 @@ namespace CocApi.Model
         {
             return HashCode.Combine(Tag);
         }
+
+        public int? HeroLevel(string name) => Heroes.First(h => h.Name == name).Level;
+        
+
+        public int? HeroLevelOrDefault(string name) => Heroes.FirstOrDefault(h => h.Name == name)?.Level;        
     }
 }

@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -26,12 +27,13 @@ namespace CocApi.Api
     /// </summary>
     public sealed partial class PlayersApi
     {
-        public CocApi.TokenProvider TokenProvider { get; }
+        private readonly CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
-        public event QueryResultEventHandler QueryResult;
-        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
-        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        public event HttpRequestResultEventHandler HttpRequestResult;
+        private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
+        internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
@@ -46,7 +48,7 @@ namespace CocApi.Api
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-            this.TokenProvider = tokenProvider;
+            this._tokenProvider = tokenProvider;
         }
 
         /// <summary>
@@ -136,7 +138,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //playerTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -149,11 +151,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/players/{playerTag}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -163,21 +165,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetPlayer", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/players/{playerTag}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/players/{playerTag}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

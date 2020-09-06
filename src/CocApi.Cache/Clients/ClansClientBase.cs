@@ -258,7 +258,6 @@ namespace CocApi.Cache
                 && stored.Description == fetched.Description
                 && stored.IsWarLogPublic == fetched.IsWarLogPublic
                 && stored.Location?.Id == fetched.Location?.Id
-                && stored.Members == fetched.Members
                 && stored.Name == fetched.Name
                 && stored.RequiredTrophies == fetched.RequiredTrophies
                 && stored.Type == fetched.Type
@@ -268,7 +267,9 @@ namespace CocApi.Cache
                 && stored.WarTies == fetched.WarTies
                 && stored.WarWins == fetched.WarWins
                 && stored.WarWinStreak == fetched.WarWinStreak
-                && stored.Labels.Except(fetched.Labels).Count() == 0);
+                && stored.Labels.Except(fetched.Labels).Count() == 0
+                && stored.Members.Except(fetched.Members).Count() == 0
+                );
         }
 
         private bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
@@ -673,7 +674,7 @@ namespace CocApi.Cache
                 cachedWar.IsFinal == true &&
                 DateTime.UtcNow > cachedWar.EndTime &&
                 DateTime.UtcNow.Day == cachedWar.EndTime.Day &&
-                cachedWar.AllAttacksUsed() == false)
+                cachedWar.Data.AllAttacksAreUsed() == false)
             {
                 cachedWar.Announcements |= Announcements.WarEndNotSeen;
                 OnClanWarEndNotSeen(cachedWar.Data);
@@ -855,7 +856,7 @@ namespace CocApi.Cache
 
             List<Task> tasks = new List<Task>();
 
-            foreach (ClanMember member in cachedClan.Data.MemberList)
+            foreach (ClanMember member in cachedClan.Data.Members)
                 tasks.Add(UpdateMember(member, _playersCache));
 
             await Task.WhenAll(tasks);

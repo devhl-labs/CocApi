@@ -18,11 +18,10 @@ namespace CocApi.Cache
     public enum Announcements
     {
         None = 0,
-        WarEndingSoon = 1,
-        WarStartingSoon = 2,
-        WarIsAccessible = 4,
-        WarEndNotSeen = 8,
-        WarStarted = 16,
-        WarEnded = 32
+        WarStartingSoon = 1,
+        WarStarted = 2,
+        WarEndingSoon = 4,
+        WarEnded = 8,
+        WarEndNotSeen = 16,
     }
 }

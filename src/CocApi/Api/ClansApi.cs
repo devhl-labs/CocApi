@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -26,12 +27,13 @@ namespace CocApi.Api
     /// </summary>
     public sealed partial class ClansApi
     {
-        public CocApi.TokenProvider TokenProvider { get; }
+        private readonly CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
-        public event QueryResultEventHandler QueryResult;
-        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
-        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        public event HttpRequestResultEventHandler HttpRequestResult;
+        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
+        private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+        internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
@@ -46,7 +48,7 @@ namespace CocApi.Api
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-            this.TokenProvider = tokenProvider;
+            this._tokenProvider = tokenProvider;
         }
 
         /// <summary>
@@ -136,7 +138,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -149,11 +151,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clans/{clanTag}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -163,21 +165,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClan", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clans/{clanTag}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -279,7 +281,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -292,11 +294,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -306,21 +308,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanMembers", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -410,7 +412,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -423,11 +425,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -437,21 +439,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanWarLeagueGroup", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -509,7 +511,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
+        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
@@ -535,7 +537,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("warTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //warTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -548,11 +550,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -562,21 +564,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanWarLeagueWar", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -678,7 +680,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -691,11 +693,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -705,21 +707,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanWarLog", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -783,7 +785,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
@@ -809,7 +811,7 @@ namespace CocApi.Api
             localVarRequestOptions.PathParameters.Add("clanTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //clanTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -822,11 +824,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -836,21 +838,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetCurrentWar", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }
@@ -992,7 +994,7 @@ namespace CocApi.Api
             }
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
@@ -1005,11 +1007,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("/clans", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException queryException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -1019,21 +1021,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("SearchClans", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("/clans", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException queryException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("/clans", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

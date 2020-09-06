@@ -29,11 +29,15 @@ namespace CocApi.Model
         }
 
         private SortedDictionary<string, WarClan> _clans = new SortedDictionary<string, WarClan>();
-        
+
+        private bool _isInitialized;
+
         public SortedDictionary<string, WarClan> Clans
         {
             get
             {
+                //Initialize();
+
                 if (_clans.Count > 0)
                     return _clans;
 
@@ -95,6 +99,10 @@ namespace CocApi.Model
 
         public bool Equals(ClanWar? other)
         {
+            //Initialize();
+
+            //other?.Initialize();
+
             return other != null &&
                    PreparationStartTime == other.PreparationStartTime &&
                    Clans.First().Key == other.Clans.First().Key;
@@ -103,6 +111,26 @@ namespace CocApi.Model
         [DataMember(Name = "type", EmitDefaultValue = false)]
         public WarType Type { get; set; }
 
+        public bool AllAttacksAreUsed()
+        {
+            int totalAttacks = TeamSize * 2;
+
+            if (WarTag == null)
+                totalAttacks *= 2;
+
+            if (Attacks.Count == totalAttacks)
+                return true;
+
+            return false;
+        }
+
+        public bool AllAttacksAreUsedOrWarIsOver()
+        {
+            if (State == WarState.WarEnded)
+                return true;
+
+            return AllAttacksAreUsed();
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWar" /> class.
@@ -125,6 +153,113 @@ namespace CocApi.Model
             this.State = state;
             this.EndTime = endTime;
             this.PreparationStartTime = preparationStartTime;
+
+            //Initialize();
+        }
+
+        private readonly object _initializeLock = new object();
+
+        public void Initialize()
+        {
+            lock (_initializeLock)
+            {
+                if (_isInitialized)
+                    return;
+
+                if (State == WarState.NotInWar)
+                    return;
+
+                foreach (WarClan warClan in Clans.Values)
+                {
+                    if (AllAttacksAreUsedOrWarIsOver())
+                    {
+                        WarClan enemy = Clans.First(c => c.Key != warClan.Tag).Value;
+
+                        if (warClan.Stars > enemy.Stars)
+                            warClan.Result = Result.Win;
+                        else if (warClan.Stars < enemy.Stars)
+                            warClan.Result = Result.Lose;
+                        else if (warClan.Stars == enemy.Stars && warClan.DestructionPercentage > enemy.DestructionPercentage)
+                            warClan.Result = Result.Win;
+                        else if (warClan.Stars == enemy.Stars && warClan.DestructionPercentage < enemy.DestructionPercentage)
+                            warClan.Result = Result.Lose;
+                        else
+                            warClan.Result = Result.Tie;
+                    }
+
+                    int mapPosition = 1;
+
+                    foreach (ClanWarMember member in warClan.Members.OrderBy(m => m.RosterPosition))
+                    {
+                        member.MapPosition = mapPosition;
+                        mapPosition++;
+
+                        foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                        {
+                            WarClan defendingClan = Clans.First(c => c.Key != warClan.Tag).Value;
+                            ClanWarMember defending = defendingClan.Members.First(m => m.Tag == attack.DefenderTag);
+
+                            attack.AttackerClanTag = warClan.Tag;
+                            attack.DefenderClanTag = defendingClan.Tag;
+                            attack.AttackerTownHall = member.TownhallLevel;
+                            attack.DefenderTownHall = defending.TownhallLevel;
+                            attack.AttackerMapPosition = member.RosterPosition;
+                            attack.DefenderMapPosition = defending.RosterPosition;
+                        }
+                    }
+                }
+
+
+                foreach (var clan in Clans.Values)
+                {
+                    var grouped = Attacks.Where(a => a.AttackerClanTag == clan.Tag).GroupBy(a => a.DefenderMapPosition);
+
+                    foreach (var group in grouped)
+                    {
+                        bool fresh = true;
+                        int maxStars = 0;
+
+                        foreach (var attack in group.OrderBy(g => g.Order))
+                        {
+                            attack.Fresh = fresh;
+                            fresh = false;
+
+                            attack.StarsGained = attack.Stars - maxStars;
+
+                            if (attack.StarsGained < 0)
+                                attack.StarsGained = 0;
+
+                            if (attack.Stars > maxStars)
+                                maxStars = attack.Stars;
+                        }
+                    }
+                }
+
+                TimeSpan timeSpan = StartTime - PreparationStartTime;
+
+                if (timeSpan.TotalHours == 24
+                    || timeSpan.TotalHours == 20
+                    || timeSpan.TotalHours == 16
+                    || timeSpan.TotalHours == 12
+                    || timeSpan.TotalHours == 8
+                    || timeSpan.TotalHours == 6
+                    || timeSpan.TotalHours == 4
+                    || timeSpan.TotalHours == 2
+                    || timeSpan.TotalHours == 1
+                    || timeSpan.TotalMinutes == 30
+                    || timeSpan.TotalMinutes == 15)
+                {
+                    Type = WarType.Friendly;
+                }
+
+                if (timeSpan.TotalHours == 23)
+                    Type = WarType.Random;
+
+                if (WarTag != null)
+                    Type = WarType.SCCWL;
+
+                _isInitialized = true;
+            }           
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using CocApi.Api;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace CocApi.Test
 {
@@ -49,6 +50,7 @@ namespace CocApi.Test
             return new ClientConfigurationBase();
 
             // optionally provide your own config and control what is the db provider
+            // you will have to manually replace the migration
             //return new ClientConfiguration(Environment.GetEnvironmentVariable("COCAPI_TEST_CONNECTIONSTRING", EnvironmentVariableTarget.Machine));
         }
 

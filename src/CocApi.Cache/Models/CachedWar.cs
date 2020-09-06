@@ -212,19 +212,6 @@ namespace CocApi.Cache.Models
             StatusCodeOpponent = cachedWar.StatusCodeOpponent;
         }
 
-        public bool AllAttacksUsed()
-        {
-            int totalAttacks = Data.TeamSize * 2;
-
-            if (WarTag == null)
-                totalAttacks *= 2;
-
-            if (Data.Attacks.Count == totalAttacks)
-                return true;
-
-            return false;
-        }
-
         public override int GetHashCode()
         {
             HashCode hash = new HashCode();

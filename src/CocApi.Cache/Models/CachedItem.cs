@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using CocApi.Client;
+using CocApi.Model;
 using Newtonsoft.Json;
 
 namespace CocApi.Cache.Models
@@ -30,7 +31,12 @@ namespace CocApi.Cache.Models
             get
             {
                 if (_data == null)
+                {
                     _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
+
+                    if (_data is ClanWar clanWar)
+                        clanWar.Initialize();
+                }
 
                 return _data;
             }

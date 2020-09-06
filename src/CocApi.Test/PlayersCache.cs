@@ -23,7 +23,7 @@ namespace CocApi.Test
             Log += PlayersCache_Log;
 
             PlayerUpdated += PlayerUpdater_PlayerUpdated;
-            _playersApi.QueryResult += QueryResult;
+            _playersApi.HttpRequestResult += HttpRequestResult;
         }
 
         private Task PlayersCache_Log(object sender, LogEventArgs log)
@@ -53,20 +53,20 @@ namespace CocApi.Test
             return Task.CompletedTask;
         }
 
-        private Task QueryResult(object sender, QueryResultEventArgs log)
+        private Task HttpRequestResult(object sender, HttpRequestResultEventArgs log)
         {
-            string seconds = ((int)log.QueryResult.Stopwatch.Elapsed.TotalSeconds).ToString();
+            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
 
-            if (log.QueryResult is QueryException exception)
+            if (log.HttpRequestResult is HttpRequestException exception)
             {
                 if (exception.Exception is ApiException apiException)
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl(), apiException.ErrorContent.ToString());
+                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), apiException.ErrorContent.ToString());
                 else
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl(), exception.Exception.Message);
+                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), exception.Exception.Message);
             }
 
-            if (log.QueryResult is QuerySuccess)
-                _logService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl());
+            if (log.HttpRequestResult is HttpRequestSuccess)
+                _logService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl());
 
             return Task.CompletedTask;
         }

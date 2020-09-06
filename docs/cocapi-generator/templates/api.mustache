@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Collections.Immutable;
 using {{packageName}}.Client;
 {{#hasImport}}using {{packageName}}.{{modelPackage}};
 {{/hasImport}}
@@ -17,14 +18,15 @@ namespace {{packageName}}.{{apiPackage}}
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    {{>visibility}} sealed partial class {{classname}}
+    {{>visibility}} sealed partial class {{classname}} : IApi
     {
-        public {{packageName}}.TokenProvider TokenProvider { get; }
+        private readonly {{packageName}}.TokenProvider _tokenProvider { get; }
         private {{packageName}}.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task QueryResultEventHandler(object sender, QueryResultEventArgs log);
-        public event QueryResultEventHandler QueryResult;
-        public static System.Collections.Concurrent.ConcurrentBag<IQueryResult> QueryResults = new System.Collections.Concurrent.ConcurrentBag<IQueryResult>();
-        internal void OnQueryResult(QueryResultEventArgs log) => QueryResult?.Invoke(this, log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
+        public event HttpRequestResultEventHandler HttpRequestResult;
+        private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+        internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
+        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}"/> class.
@@ -257,9 +259,9 @@ namespace {{packageName}}.{{apiPackage}}
 
                 QueryException queryException = new QueryException("{{path}}", localVarRequestOptions, stopwatch, timeoutException);
 
-                QueryResults.Add(queryException);
+                _httpRequestResults.Add(queryException);
 
-                OnQueryResult(new QueryResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                 throw timeoutException;
             }
@@ -271,9 +273,9 @@ namespace {{packageName}}.{{apiPackage}}
                 {
                     QueryException queryException = new QueryException("{{path}}", localVarRequestOptions, stopwatch, _exception);
 
-                    QueryResults.Add(queryException);
+                    _httpRequestResults.Add(queryException);
 
-                    OnQueryResult(new QueryResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
 
                     throw _exception;
                 }
@@ -281,9 +283,9 @@ namespace {{packageName}}.{{apiPackage}}
 
             QuerySuccess querySuccess = new QuerySuccess("{{{path}}}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
 
-            QueryResults.Add(querySuccess);
+            _httpRequestResults.Add(querySuccess);
 
-            OnQueryResult(new QueryResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
 
             return localVarResponse;
         }

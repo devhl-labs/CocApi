@@ -34,7 +34,7 @@ namespace CocApi.Test
             ClanWarStartingSoon += ClansCache_ClanWarStartingSoon;
             ClanWarUpdated += ClansCache_ClanWarUpdated;
             Log += ClansCache_Log;
-            clansApi.QueryResult += QueryResult;
+            clansApi.HttpRequestResult += QueryResult;
         }
 
         private Task ClansCache_Log(object sender, LogEventArgs log)
@@ -62,8 +62,8 @@ namespace CocApi.Test
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.RunAsync(cancellationToken);
 
-            await UpdateAsync("#8J82PV0C", downloadMembers: true); //fysb unbuckled
-            await UpdateAsync("#22G0JJR8", downloadMembers: true); //fysb
+            await UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
+            await UpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
             await AddAsync("#28RUGUYJU"); //devhls lab
             await AddAsync("#2C8V29YJ"); // russian clan
             await RunAsync(cancellationToken);
@@ -72,6 +72,18 @@ namespace CocApi.Test
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
         {
             _logService.Log(LogLevel.Information, this.GetType().Name, null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
+
+            string json = JsonConvert.SerializeObject(e.Clan);
+
+            Clan clan = JsonConvert.DeserializeObject<Clan>(json);
+
+            string json2 = JsonConvert.SerializeObject(e.Fetched);
+
+            ClanWar clanWar = JsonConvert.DeserializeObject<ClanWar>(json2);
+
+            string json3 = JsonConvert.SerializeObject(e.Fetched, Clash.JsonSerializerSettings);
+
+            ClanWar clanWar2 = JsonConvert.DeserializeObject<ClanWar>(json3, Clash.JsonSerializerSettings);
 
             return Task.CompletedTask;
         }
@@ -134,20 +146,20 @@ namespace CocApi.Test
             return Task.CompletedTask;
         }
 
-        private Task QueryResult(object sender, QueryResultEventArgs log)
+        private Task QueryResult(object sender, HttpRequestResultEventArgs log)
         {
-            string seconds = ((int)log.QueryResult.Stopwatch.Elapsed.TotalSeconds).ToString();
+            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
 
-            if (log.QueryResult is QueryException exception)
+            if (log.HttpRequestResult is HttpRequestException exception)
             {
                 if (exception.Exception is ApiException apiException)
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl(), apiException.ErrorContent.ToString());
+                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), apiException.ErrorContent.ToString());
                 else
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl(), exception.Exception.Message);
+                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), exception.Exception.Message);
             }
 
-            if (log.QueryResult is QuerySuccess)
-                _logService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.QueryResult.EncodedUrl());
+            if (log.HttpRequestResult is HttpRequestSuccess)
+                _logService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl());
 
             return Task.CompletedTask;
         }

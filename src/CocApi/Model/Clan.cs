@@ -143,7 +143,7 @@ namespace CocApi.Model
         public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequencyEnum? warFrequency = default(WarFrequencyEnum?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), TypeEnum? type = default(TypeEnum?), int members = default(int), string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
         {
             this.WarLeague = warLeague;
-            this.MemberList = memberList;
+            this.Members = memberList;
             this.RequiredTrophies = requiredTrophies;
             this.ClanVersusPoints = clanVersusPoints;
             this.Tag = tag;
@@ -159,7 +159,7 @@ namespace CocApi.Model
             this.Name = name;
             this.Location = location;
             this.Type = type;
-            this.Members = members;
+            //this.Members = members;
             this.Description = description;
             this.BadgeUrls = badgeUrls;
         }
@@ -170,11 +170,11 @@ namespace CocApi.Model
         [DataMember(Name="warLeague", EmitDefaultValue=false)]
         public WarLeague WarLeague { get; private set; }
 
-        /// <summary>
-        /// Gets or Sets MemberList
-        /// </summary>
-        [DataMember(Name="memberList", EmitDefaultValue=false)]
-        public List<ClanMember> MemberList { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets MemberList
+        ///// </summary>
+        //[DataMember(Name="memberList", EmitDefaultValue=false)]
+        //public List<ClanMember> MemberList { get; private set; }
 
         /// <summary>
         /// Gets or Sets RequiredTrophies
@@ -254,11 +254,11 @@ namespace CocApi.Model
         //[DataMember(Name="location", EmitDefaultValue=false)]
         //public Location Location { get; private set; }
 
-        /// <summary>
-        /// Gets or Sets Members
-        /// </summary>
-        [DataMember(Name="members", EmitDefaultValue=false)]
-        public int Members { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets Members
+        ///// </summary>
+        //[DataMember(Name="members", EmitDefaultValue=false)]
+        //public int Members { get; private set; }
 
         /// <summary>
         /// Gets or Sets Description
@@ -281,7 +281,7 @@ namespace CocApi.Model
             var sb = new StringBuilder();
             sb.Append("class Clan {\n");
             sb.Append("  WarLeague: ").Append(WarLeague).Append("\n");
-            sb.Append("  MemberList: ").Append(MemberList).Append("\n");
+            sb.Append("  MemberList: ").Append(Members).Append("\n");
             sb.Append("  RequiredTrophies: ").Append(RequiredTrophies).Append("\n");
             sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");

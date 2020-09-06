@@ -62,25 +62,25 @@ namespace CocApi
         /// Enum Member for value: member
         /// </summary>
         [EnumMember(Value = "member")]
-        Member = 1,
+        Member = 0,
 
         /// <summary>
         /// Enum Admin for value: admin
         /// </summary>
         [EnumMember(Value = "admin")]
-        Elder = 2,
+        Elder = 10,
 
         /// <summary>
         /// Enum CoLeader for value: coLeader
         /// </summary>
         [EnumMember(Value = "coLeader")]
-        CoLeader = 3,
+        CoLeader = 20,
 
         /// <summary>
         /// Enum Leader for value: leader
         /// </summary>
         [EnumMember(Value = "leader")]
-        Leader = 4
+        Leader = 30
 
     }
 
@@ -94,19 +94,19 @@ namespace CocApi
         /// Enum Lose for value: lose
         /// </summary>
         [EnumMember(Value = "lose")]
-        Lose = 1,
+        Lose = -1,
 
         /// <summary>
         /// Enum Tie for value: tie
         /// </summary>
         [EnumMember(Value = "tie")]
-        Tie = 2,
+        Tie = 0,
 
         /// <summary>
         /// Enum Win for value: win
         /// </summary>
         [EnumMember(Value = "win")]
-        Win = 3
+        Win = 1
 
     }
 }
