@@ -11,11 +11,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Collections.Immutable;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -29,11 +29,11 @@ namespace CocApi.Api
     {
         private readonly CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
         private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
-        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
+        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
@@ -102,7 +102,7 @@ namespace CocApi.Api
         /// <returns>Task of Player</returns>
         public async System.Threading.Tasks.Task<Player> GetPlayerAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(playerTag,  cancellationToken);
+             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(playerTag,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -151,11 +151,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -165,21 +165,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetPlayer", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -194,7 +194,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetPlayerResponseAsync (playerTag, cancellationToken);
+                return await GetPlayerResponseAsync (playerTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -210,7 +210,7 @@ namespace CocApi.Api
         /// <returns>Task of Player</returns>
         public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

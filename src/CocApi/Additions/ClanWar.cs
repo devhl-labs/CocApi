@@ -109,7 +109,10 @@ namespace CocApi.Model
         }
 
         [DataMember(Name = "type", EmitDefaultValue = false)]
-        public WarType Type { get; set; }
+        public WarType WarType { get; set; }
+
+        [DataMember(Name = "serverResponseExpires", EmitDefaultValue = false)]
+        public DateTime ServerResponseExpires { get; internal set; }
 
         public bool AllAttacksAreUsed()
         {
@@ -249,14 +252,14 @@ namespace CocApi.Model
                     || timeSpan.TotalMinutes == 30
                     || timeSpan.TotalMinutes == 15)
                 {
-                    Type = WarType.Friendly;
+                    WarType = WarType.Friendly;
                 }
 
                 if (timeSpan.TotalHours == 23)
-                    Type = WarType.Random;
+                    WarType = WarType.Random;
 
                 if (WarTag != null)
-                    Type = WarType.SCCWL;
+                    WarType = WarType.SCCWL;
 
                 _isInitialized = true;
             }           

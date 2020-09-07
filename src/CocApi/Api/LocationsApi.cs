@@ -11,11 +11,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Collections.Immutable;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -29,11 +29,11 @@ namespace CocApi.Api
     {
         private readonly CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
         private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
-        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
+        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationsApi"/> class.
@@ -105,7 +105,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;ClanRanking&gt;</returns>
         public async System.Threading.Tasks.Task<List<ClanRanking>> GetClanRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanRanking>> localVarResponse = await GetClanRankingResponseAsync(locationId, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<List<ClanRanking>> localVarResponse = await GetClanRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -123,7 +123,6 @@ namespace CocApi.Api
             // verify the required parameter 'locationId' is set
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetClanRanking");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -169,11 +168,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -183,21 +182,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanRanking", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -215,7 +214,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanRankingResponseAsync (locationId, limit, after, before, cancellationToken);
+                return await GetClanRankingResponseAsync (locationId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -234,7 +233,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;ClanRanking&gt;</returns>
         public async System.Threading.Tasks.Task<List<ClanRanking>?> GetClanRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanRanking>>? localVarResponse = await GetClanRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<List<ClanRanking>>? localVarResponse = await GetClanRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -254,7 +253,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;ClanVersusRanking&gt;</returns>
         public async System.Threading.Tasks.Task<List<ClanVersusRanking>> GetClanVersusRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanVersusRanking>> localVarResponse = await GetClanVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<List<ClanVersusRanking>> localVarResponse = await GetClanVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -272,7 +271,6 @@ namespace CocApi.Api
             // verify the required parameter 'locationId' is set
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetClanVersusRanking");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -318,11 +316,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -332,21 +330,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanVersusRanking", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -364,7 +362,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanVersusRankingResponseAsync (locationId, limit, after, before, cancellationToken);
+                return await GetClanVersusRankingResponseAsync (locationId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -383,7 +381,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;ClanVersusRanking&gt;</returns>
         public async System.Threading.Tasks.Task<List<ClanVersusRanking>?> GetClanVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanVersusRanking>>? localVarResponse = await GetClanVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<List<ClanVersusRanking>>? localVarResponse = await GetClanVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -400,7 +398,7 @@ namespace CocApi.Api
         /// <returns>Task of Location</returns>
         public async System.Threading.Tasks.Task<Location> GetLocationAsync (string locationId, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Location> localVarResponse = await GetLocationResponseAsync(locationId,  cancellationToken);
+             CocApi.Client.ApiResponse<Location> localVarResponse = await GetLocationResponseAsync(locationId,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -415,7 +413,6 @@ namespace CocApi.Api
             // verify the required parameter 'locationId' is set
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetLocation");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -449,11 +446,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/locations/{locationId}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -463,21 +460,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetLocation", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/locations/{locationId}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/locations/{locationId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/locations/{locationId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -492,7 +489,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetLocationResponseAsync (locationId, cancellationToken);
+                return await GetLocationResponseAsync (locationId, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -508,7 +505,7 @@ namespace CocApi.Api
         /// <returns>Task of Location</returns>
         public async System.Threading.Tasks.Task<Location?> GetLocationOrDefaultAsync (string locationId, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Location>? localVarResponse = await GetLocationResponseOrDefaultAsync(locationId, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<Location>? localVarResponse = await GetLocationResponseOrDefaultAsync(locationId, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -527,7 +524,7 @@ namespace CocApi.Api
         /// <returns>Task of LocationList</returns>
         public async System.Threading.Tasks.Task<LocationList> GetLocationsAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<LocationList> localVarResponse = await GetLocationsResponseAsync(limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<LocationList> localVarResponse = await GetLocationsResponseAsync(limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -541,8 +538,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (LocationList)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>> GetLocationsResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -586,11 +581,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/locations", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/locations", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -600,21 +595,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetLocations", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/locations", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/locations", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/locations", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -631,7 +626,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetLocationsResponseAsync (limit, after, before, cancellationToken);
+                return await GetLocationsResponseAsync (limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -649,7 +644,7 @@ namespace CocApi.Api
         /// <returns>Task of LocationList</returns>
         public async System.Threading.Tasks.Task<LocationList?> GetLocationsOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<LocationList>? localVarResponse = await GetLocationsResponseOrDefaultAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<LocationList>? localVarResponse = await GetLocationsResponseOrDefaultAsync(limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -669,7 +664,7 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList> GetPlayerRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetPlayerRankingResponseAsync(locationId, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetPlayerRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -687,7 +682,6 @@ namespace CocApi.Api
             // verify the required parameter 'locationId' is set
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetPlayerRanking");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -733,11 +727,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -747,21 +741,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetPlayerRanking", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -779,7 +773,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetPlayerRankingResponseAsync (locationId, limit, after, before, cancellationToken);
+                return await GetPlayerRankingResponseAsync (locationId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -798,7 +792,7 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList?> GetPlayerRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<PlayerRankingList>? localVarResponse = await GetPlayerRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<PlayerRankingList>? localVarResponse = await GetPlayerRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -818,7 +812,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;PlayerVersusRanking&gt;</returns>
         public async System.Threading.Tasks.Task<List<PlayerVersusRanking>> GetPlayerVersusRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<PlayerVersusRanking>> localVarResponse = await GetPlayerVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<List<PlayerVersusRanking>> localVarResponse = await GetPlayerVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -836,7 +830,6 @@ namespace CocApi.Api
             // verify the required parameter 'locationId' is set
             if (locationId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'locationId' when calling LocationsApi->GetPlayerVersusRanking");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -882,11 +875,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -896,21 +889,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetPlayerVersusRanking", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -928,7 +921,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetPlayerVersusRankingResponseAsync (locationId, limit, after, before, cancellationToken);
+                return await GetPlayerVersusRankingResponseAsync (locationId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -947,7 +940,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;PlayerVersusRanking&gt;</returns>
         public async System.Threading.Tasks.Task<List<PlayerVersusRanking>?> GetPlayerVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<PlayerVersusRanking>>? localVarResponse = await GetPlayerVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<List<PlayerVersusRanking>>? localVarResponse = await GetPlayerVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

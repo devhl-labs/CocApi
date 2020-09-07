@@ -90,7 +90,7 @@ namespace CocApi.Cache
                 return null;
 
             foreach (var item in cache)
-                item.Data.Type = item.Type;
+                item.Data.WarType = item.Type;
 
             return cache.FirstOrDefault(c => c.State == WarState.InWar)?.Data
                 ?? cache.FirstOrDefault(c => c.State == WarState.Preparation)?.Data
@@ -158,7 +158,7 @@ namespace CocApi.Cache
 
             foreach (var item in cache)
             {
-                item.Data.Type = item.Type;
+                item.Data.WarType = item.Type;
 
                 clanWars.Add(item.Data);
             }
@@ -748,7 +748,7 @@ namespace CocApi.Cache
             {
                 await InsertNewWarAsync(new CachedWar(fetched));
 
-                cachedClanWar.Type = fetched.Data.Type;
+                cachedClanWar.Type = fetched.Data.WarType;
             }
 
             cachedClanWar.UpdateFrom(fetched);

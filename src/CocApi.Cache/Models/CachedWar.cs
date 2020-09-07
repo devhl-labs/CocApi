@@ -21,7 +21,7 @@ namespace CocApi.Cache.Models
 
                 CachedWar result = new CachedWar(apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse), warTag, season);
 
-                result.Type = result.Data.Type;
+                result.Type = result.Data.WarType;
 
                 result.Season = season;
                 
@@ -98,7 +98,7 @@ namespace CocApi.Cache.Models
 
             RawContent = fetched.RawContent;
 
-            Type = fetched.Data.Type;
+            Type = fetched.Data.WarType;
 
             if (cachedClan.Tag == fetched.Data.Clans.First().Value.Tag)
                 StatusCode = fetched.StatusCode;
@@ -142,7 +142,7 @@ namespace CocApi.Cache.Models
 
             EndTime = apiResponse.Data.EndTime;
 
-            Type = apiResponse.Data.Type;
+            Type = apiResponse.Data.WarType;
 
             if (State == WarState.WarEnded)
                 IsFinal = true;

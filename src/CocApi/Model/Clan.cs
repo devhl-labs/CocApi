@@ -23,79 +23,79 @@ using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi
-{
-        /// <summary>
-        /// Defines WarFrequency
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum WarFrequencyEnum
-        {
-            /// <summary>
-            /// Enum Unknown for value: unknown
-            /// </summary>
-            [EnumMember(Value = "unknown")]
-            Unknown = 1,
+//namespace CocApi
+//{
+//        /// <summary>
+//        /// Defines WarFrequency
+//        /// </summary>
+//        [JsonConverter(typeof(StringEnumConverter))]
+//        public enum WarFrequencyEnum
+//        {
+//            /// <summary>
+//            /// Enum Unknown for value: unknown
+//            /// </summary>
+//            [EnumMember(Value = "unknown")]
+//            Unknown = 1,
 
-            /// <summary>
-            /// Enum Never for value: never
-            /// </summary>
-            [EnumMember(Value = "never")]
-            Never = 2,
+//            /// <summary>
+//            /// Enum Never for value: never
+//            /// </summary>
+//            [EnumMember(Value = "never")]
+//            Never = 2,
 
-            /// <summary>
-            /// Enum LessThanOncePerWeek for value: lessThanOncePerWeek
-            /// </summary>
-            [EnumMember(Value = "lessThanOncePerWeek")]
-            LessThanOncePerWeek = 3,
+//            /// <summary>
+//            /// Enum LessThanOncePerWeek for value: lessThanOncePerWeek
+//            /// </summary>
+//            [EnumMember(Value = "lessThanOncePerWeek")]
+//            LessThanOncePerWeek = 3,
 
-            /// <summary>
-            /// Enum OncePerWeek for value: oncePerWeek
-            /// </summary>
-            [EnumMember(Value = "oncePerWeek")]
-            OncePerWeek = 4,
+//            /// <summary>
+//            /// Enum OncePerWeek for value: oncePerWeek
+//            /// </summary>
+//            [EnumMember(Value = "oncePerWeek")]
+//            OncePerWeek = 4,
 
-            /// <summary>
-            /// Enum MoreThanOncePerWeek for value: moreThanOncePerWeek
-            /// </summary>
-            [EnumMember(Value = "moreThanOncePerWeek")]
-            MoreThanOncePerWeek = 5,
+//            /// <summary>
+//            /// Enum MoreThanOncePerWeek for value: moreThanOncePerWeek
+//            /// </summary>
+//            [EnumMember(Value = "moreThanOncePerWeek")]
+//            MoreThanOncePerWeek = 5,
 
-            /// <summary>
-            /// Enum Always for value: always
-            /// </summary>
-            [EnumMember(Value = "always")]
-            Always = 6
+//            /// <summary>
+//            /// Enum Always for value: always
+//            /// </summary>
+//            [EnumMember(Value = "always")]
+//            Always = 6
 
-        }
+//        }
 
-        /// <summary>
-        /// Defines Type
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum TypeEnum
-        {
-            /// <summary>
-            /// Enum InviteOnly for value: InviteOnly
-            /// </summary>
-            [EnumMember(Value = "InviteOnly")]
-            InviteOnly = 1,
+//        /// <summary>
+//        /// Defines Type
+//        /// </summary>
+//        [JsonConverter(typeof(StringEnumConverter))]
+//        public enum TypeEnum
+//        {
+//            /// <summary>
+//            /// Enum InviteOnly for value: InviteOnly
+//            /// </summary>
+//            [EnumMember(Value = "InviteOnly")]
+//            InviteOnly = 1,
 
-            /// <summary>
-            /// Enum Closed for value: Closed
-            /// </summary>
-            [EnumMember(Value = "Closed")]
-            Closed = 2,
+//            /// <summary>
+//            /// Enum Closed for value: Closed
+//            /// </summary>
+//            [EnumMember(Value = "Closed")]
+//            Closed = 2,
 
-            /// <summary>
-            /// Enum Open for value: Open
-            /// </summary>
-            [EnumMember(Value = "Open")]
-            Open = 3
+//            /// <summary>
+//            /// Enum Open for value: Open
+//            /// </summary>
+//            [EnumMember(Value = "Open")]
+//            Open = 3
 
-        }
+//        }
 
-}
+//}
 
 
 
@@ -111,58 +111,61 @@ namespace CocApi.Model
         /// Gets or Sets WarFrequency
         /// </summary>
         [DataMember(Name="warFrequency", EmitDefaultValue=false)]
-        public WarFrequencyEnum? WarFrequency { get; private set; }
+        public WarFrequency? WarFrequency { get; private set; }
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [DataMember(Name="type", EmitDefaultValue=false)]
-        public TypeEnum? Type { get; private set; }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Clan" /> class.
-        /// </summary>
-        /// <param name="warLeague">warLeague.</param>
-        /// <param name="memberList">memberList.</param>
-        /// <param name="requiredTrophies">requiredTrophies.</param>
-        /// <param name="clanVersusPoints">clanVersusPoints.</param>
-        /// <param name="tag">tag.</param>
-        /// <param name="isWarLogPublic">isWarLogPublic.</param>
-        /// <param name="warFrequency">warFrequency.</param>
-        /// <param name="clanLevel">clanLevel.</param>
-        /// <param name="warWinStreak">warWinStreak.</param>
-        /// <param name="warWins">warWins.</param>
-        /// <param name="warTies">warTies.</param>
-        /// <param name="warLosses">warLosses.</param>
-        /// <param name="clanPoints">clanPoints.</param>
-        /// <param name="labels">labels.</param>
-        /// <param name="name">name.</param>
-        /// <param name="location">location.</param>
-        /// <param name="type">type.</param>
-        /// <param name="members">members.</param>
-        /// <param name="description">description.</param>
-        /// <param name="badgeUrls">badgeUrls.</param>
-        public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequencyEnum? warFrequency = default(WarFrequencyEnum?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), TypeEnum? type = default(TypeEnum?), int members = default(int), string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
-        {
-            this.WarLeague = warLeague;
-            this.Members = memberList;
-            this.RequiredTrophies = requiredTrophies;
-            this.ClanVersusPoints = clanVersusPoints;
-            this.Tag = tag;
-            this.IsWarLogPublic = isWarLogPublic;
-            this.WarFrequency = warFrequency;
-            this.ClanLevel = clanLevel;
-            this.WarWinStreak = warWinStreak;
-            this.WarWins = warWins;
-            this.WarTies = warTies;
-            this.WarLosses = warLosses;
-            this.ClanPoints = clanPoints;
-            this.Labels = labels;
-            this.Name = name;
-            this.Location = location;
-            this.Type = type;
-            //this.Members = members;
-            this.Description = description;
-            this.BadgeUrls = badgeUrls;
-        }
+        public RecruitingType? Type { get; private set; }
+
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="Clan" /> class.
+        ///// </summary>
+        ///// <param name="warLeague">warLeague.</param>
+        ///// <param name="memberList">memberList.</param>
+        ///// <param name="requiredTrophies">requiredTrophies.</param>
+        ///// <param name="clanVersusPoints">clanVersusPoints.</param>
+        ///// <param name="tag">tag.</param>
+        ///// <param name="isWarLogPublic">isWarLogPublic.</param>
+        ///// <param name="warFrequency">warFrequency.</param>
+        ///// <param name="clanLevel">clanLevel.</param>
+        ///// <param name="warWinStreak">warWinStreak.</param>
+        ///// <param name="warWins">warWins.</param>
+        ///// <param name="warTies">warTies.</param>
+        ///// <param name="warLosses">warLosses.</param>
+        ///// <param name="clanPoints">clanPoints.</param>
+        ///// <param name="labels">labels.</param>
+        ///// <param name="name">name.</param>
+        ///// <param name="location">location.</param>
+        ///// <param name="type">type.</param>
+        ///// <param name="memberList">members.</param>
+        ///// <param name="description">description.</param>
+        ///// <param name="badgeUrls">badgeUrls.</param>
+        //[JsonConstructor]
+        //public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequency? warFrequency = default(WarFrequency?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), RecruitingType? type = default(RecruitingType?), /*int members = default(int),*/ string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
+        //{
+        //    this.Members = memberList;
+        //    this.WarLeague = warLeague;
+        //    //this.MemberList = memberList;
+        //    this.RequiredTrophies = requiredTrophies;
+        //    this.ClanVersusPoints = clanVersusPoints;
+        //    this.Tag = tag;
+        //    this.IsWarLogPublic = isWarLogPublic;
+        //    this.WarFrequency = warFrequency;
+        //    this.ClanLevel = clanLevel;
+        //    this.WarWinStreak = warWinStreak;
+        //    this.WarWins = warWins;
+        //    this.WarTies = warTies;
+        //    this.WarLosses = warLosses;
+        //    this.ClanPoints = clanPoints;
+        //    this.Labels = labels;
+        //    this.Name = name;
+        //    this.Location = location;
+        //    this.Type = type;
+        //    //this.Members = members;
+        //    this.Description = description;
+        //    this.BadgeUrls = badgeUrls;
+        //}
         
         /// <summary>
         /// Gets or Sets WarLeague
@@ -281,7 +284,7 @@ namespace CocApi.Model
             var sb = new StringBuilder();
             sb.Append("class Clan {\n");
             sb.Append("  WarLeague: ").Append(WarLeague).Append("\n");
-            sb.Append("  MemberList: ").Append(Members).Append("\n");
+            //sb.Append("  MemberList: ").Append(MemberList).Append("\n");
             sb.Append("  RequiredTrophies: ").Append(RequiredTrophies).Append("\n");
             sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");

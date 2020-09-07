@@ -18,9 +18,9 @@ namespace {{packageName}}.{{apiPackage}}
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    {{>visibility}} sealed partial class {{classname}} : IApi
+    {{>visibility}} sealed partial class {{classname}}
     {
-        private readonly {{packageName}}.TokenProvider _tokenProvider { get; }
+        private readonly {{packageName}}.TokenProvider _tokenProvider;
         private {{packageName}}.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
@@ -41,7 +41,7 @@ namespace {{packageName}}.{{apiPackage}}
             this.Client = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = {{packageName}}.Client.Configuration.DefaultExceptionFactory;
-            this.TokenProvider = tokenProvider;
+            this._tokenProvider = tokenProvider;
         }
 
         {{#supportsAsync}}
@@ -212,7 +212,7 @@ namespace {{packageName}}.{{apiPackage}}
             }
             {{/isKeyInCookie}}
             {{#isKeyInHeader}}
-            localVarRequestOptions.HeaderParameters.Add("{{keyParamName}}", "Bearer " + await TokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("{{keyParamName}}", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
             {{/isKeyInHeader}}
             {{#isKeyInQuery}}
@@ -257,11 +257,11 @@ namespace {{packageName}}.{{apiPackage}}
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                QueryException queryException = new QueryException("{{path}}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("{{path}}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -271,21 +271,21 @@ namespace {{packageName}}.{{apiPackage}}
                 Exception _exception = this.ExceptionFactory("{{operationId}}", localVarResponse);
                 if (_exception != null) 
                 {
-                    QueryException queryException = new QueryException("{{path}}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("{{path}}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            QuerySuccess querySuccess = new QuerySuccess("{{{path}}}", localVarRequestOptions, stopwatch, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("{{{path}}}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }

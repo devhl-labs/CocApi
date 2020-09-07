@@ -124,6 +124,7 @@ Class | Method | HTTP request | Description
 
  - [Model.Clan](docs/Clan.md)
  - [Model.ClanBadgeUrls](docs/ClanBadgeUrls.md)
+ - [Model.ClanList](docs/ClanList.md)
  - [Model.ClanMember](docs/ClanMember.md)
  - [Model.ClanRanking](docs/ClanRanking.md)
  - [Model.ClanVersusRanking](docs/ClanVersusRanking.md)

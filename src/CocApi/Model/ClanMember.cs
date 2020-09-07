@@ -25,37 +25,37 @@ using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
 //namespace CocApi
 //{
-        ///// <summary>
-        ///// Defines Role
-        ///// </summary>
-        //[JsonConverter(typeof(StringEnumConverter))]
-        //public enum RoleEnum
-        //{
-        //    /// <summary>
-        //    /// Enum Member for value: member
-        //    /// </summary>
-        //    [EnumMember(Value = "member")]
-        //    Member = 1,
+//        /// <summary>
+//        /// Defines Role
+//        /// </summary>
+//        [JsonConverter(typeof(StringEnumConverter))]
+//        public enum RoleEnum
+//        {
+//            /// <summary>
+//            /// Enum Member for value: member
+//            /// </summary>
+//            [EnumMember(Value = "member")]
+//            Member = 1,
 
-        //    /// <summary>
-        //    /// Enum Admin for value: admin
-        //    /// </summary>
-        //    [EnumMember(Value = "admin")]
-        //    Admin = 2,
+//            /// <summary>
+//            /// Enum Admin for value: admin
+//            /// </summary>
+//            [EnumMember(Value = "admin")]
+//            Admin = 2,
 
-        //    /// <summary>
-        //    /// Enum CoLeader for value: coLeader
-        //    /// </summary>
-        //    [EnumMember(Value = "coLeader")]
-        //    CoLeader = 3,
+//            /// <summary>
+//            /// Enum CoLeader for value: coLeader
+//            /// </summary>
+//            [EnumMember(Value = "coLeader")]
+//            CoLeader = 3,
 
-        //    /// <summary>
-        //    /// Enum Leader for value: leader
-        //    /// </summary>
-        //    [EnumMember(Value = "leader")]
-        //    Leader = 4
+//            /// <summary>
+//            /// Enum Leader for value: leader
+//            /// </summary>
+//            [EnumMember(Value = "leader")]
+//            Leader = 4
 
-        //}
+//        }
 
 //}
 

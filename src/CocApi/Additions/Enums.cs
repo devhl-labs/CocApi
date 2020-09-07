@@ -109,4 +109,74 @@ namespace CocApi
         Win = 1
 
     }
+
+    /// <summary>
+    /// Defines WarFrequency
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum WarFrequency
+    {
+        /// <summary>
+        /// Enum Unknown for value: unknown
+        /// </summary>
+        [EnumMember(Value = "unknown")]
+        Unknown = 1,
+
+        /// <summary>
+        /// Enum Never for value: never
+        /// </summary>
+        [EnumMember(Value = "never")]
+        Never = 2,
+
+        /// <summary>
+        /// Enum LessThanOncePerWeek for value: lessThanOncePerWeek
+        /// </summary>
+        [EnumMember(Value = "lessThanOncePerWeek")]
+        LessThanOncePerWeek = 3,
+
+        /// <summary>
+        /// Enum OncePerWeek for value: oncePerWeek
+        /// </summary>
+        [EnumMember(Value = "oncePerWeek")]
+        OncePerWeek = 4,
+
+        /// <summary>
+        /// Enum MoreThanOncePerWeek for value: moreThanOncePerWeek
+        /// </summary>
+        [EnumMember(Value = "moreThanOncePerWeek")]
+        MoreThanOncePerWeek = 5,
+
+        /// <summary>
+        /// Enum Always for value: always
+        /// </summary>
+        [EnumMember(Value = "always")]
+        Always = 6
+
+    }
+
+    /// <summary>
+    /// Defines Type
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum RecruitingType
+    {
+        /// <summary>
+        /// Enum InviteOnly for value: InviteOnly
+        /// </summary>
+        [EnumMember(Value = "InviteOnly")]
+        InviteOnly = 1,
+
+        /// <summary>
+        /// Enum Closed for value: Closed
+        /// </summary>
+        [EnumMember(Value = "Closed")]
+        Closed = 2,
+
+        /// <summary>
+        /// Enum Open for value: Open
+        /// </summary>
+        [EnumMember(Value = "Open")]
+        Open = 3
+
+    }
 }

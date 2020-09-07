@@ -11,11 +11,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Collections.Immutable;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -29,11 +29,12 @@ namespace CocApi.Api
     {
         private readonly CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
         private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
         public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LeaguesApi"/> class.
         /// </summary>
@@ -101,7 +102,7 @@ namespace CocApi.Api
         /// <returns>Task of League</returns>
         public async System.Threading.Tasks.Task<League> GetLeagueAsync (string leagueId, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<League> localVarResponse = await GetLeagueResponseAsync(leagueId,  cancellationToken);
+             CocApi.Client.ApiResponse<League> localVarResponse = await GetLeagueResponseAsync(leagueId,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -149,11 +150,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -163,21 +164,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetLeague", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -192,7 +193,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetLeagueResponseAsync (leagueId, cancellationToken);
+                return await GetLeagueResponseAsync (leagueId, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -208,7 +209,7 @@ namespace CocApi.Api
         /// <returns>Task of League</returns>
         public async System.Threading.Tasks.Task<League?> GetLeagueOrDefaultAsync (string leagueId, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<League>? localVarResponse = await GetLeagueResponseOrDefaultAsync(leagueId, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<League>? localVarResponse = await GetLeagueResponseOrDefaultAsync(leagueId, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -229,7 +230,7 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList> GetLeagueSeasonRankingsAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<PlayerRankingList> localVarResponse = await GetLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -251,7 +252,6 @@ namespace CocApi.Api
             // verify the required parameter 'seasonId' is set
             if (seasonId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'seasonId' when calling LeaguesApi->GetLeagueSeasonRankings");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -298,11 +298,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -312,21 +312,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetLeagueSeasonRankings", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -345,7 +345,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetLeagueSeasonRankingsResponseAsync (leagueId, seasonId, limit, after, before, cancellationToken);
+                return await GetLeagueSeasonRankingsResponseAsync (leagueId, seasonId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -365,7 +365,7 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList?> GetLeagueSeasonRankingsOrDefaultAsync (string leagueId, string seasonId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<PlayerRankingList>? localVarResponse = await GetLeagueSeasonRankingsResponseOrDefaultAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<PlayerRankingList>? localVarResponse = await GetLeagueSeasonRankingsResponseOrDefaultAsync(leagueId, seasonId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -385,7 +385,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueSeasonList</returns>
         public async System.Threading.Tasks.Task<LeagueSeasonList> GetLeagueSeasonsAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<LeagueSeasonList> localVarResponse = await GetLeagueSeasonsResponseAsync(leagueId, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<LeagueSeasonList> localVarResponse = await GetLeagueSeasonsResponseAsync(leagueId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -403,7 +403,6 @@ namespace CocApi.Api
             // verify the required parameter 'leagueId' is set
             if (leagueId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'leagueId' when calling LeaguesApi->GetLeagueSeasons");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -449,11 +448,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -463,21 +462,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetLeagueSeasons", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -495,7 +494,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetLeagueSeasonsResponseAsync (leagueId, limit, after, before, cancellationToken);
+                return await GetLeagueSeasonsResponseAsync (leagueId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -514,7 +513,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueSeasonList</returns>
         public async System.Threading.Tasks.Task<LeagueSeasonList?> GetLeagueSeasonsOrDefaultAsync (string leagueId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<LeagueSeasonList>? localVarResponse = await GetLeagueSeasonsResponseOrDefaultAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<LeagueSeasonList>? localVarResponse = await GetLeagueSeasonsResponseOrDefaultAsync(leagueId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -533,7 +532,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueList</returns>
         public async System.Threading.Tasks.Task<LeagueList> GetLeaguesAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<LeagueList> localVarResponse = await GetLeaguesResponseAsync(limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<LeagueList> localVarResponse = await GetLeaguesResponseAsync(limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -547,8 +546,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (LeagueList)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LeagueList>> GetLeaguesResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -592,11 +589,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -606,21 +603,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetLeagues", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/leagues", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -637,7 +634,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetLeaguesResponseAsync (limit, after, before, cancellationToken);
+                return await GetLeaguesResponseAsync (limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -655,7 +652,7 @@ namespace CocApi.Api
         /// <returns>Task of LeagueList</returns>
         public async System.Threading.Tasks.Task<LeagueList?> GetLeaguesOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<LeagueList>? localVarResponse = await GetLeaguesResponseOrDefaultAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<LeagueList>? localVarResponse = await GetLeaguesResponseOrDefaultAsync(limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -672,7 +669,7 @@ namespace CocApi.Api
         /// <returns>Task of WarLeague</returns>
         public async System.Threading.Tasks.Task<WarLeague> GetWarLeagueAsync (string leagueId, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<WarLeague> localVarResponse = await GetWarLeagueResponseAsync(leagueId,  cancellationToken);
+             CocApi.Client.ApiResponse<WarLeague> localVarResponse = await GetWarLeagueResponseAsync(leagueId,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -687,7 +684,6 @@ namespace CocApi.Api
             // verify the required parameter 'leagueId' is set
             if (leagueId == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'leagueId' when calling LeaguesApi->GetWarLeague");
-
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -721,11 +717,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -735,21 +731,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetWarLeague", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -764,7 +760,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetWarLeagueResponseAsync (leagueId, cancellationToken);
+                return await GetWarLeagueResponseAsync (leagueId, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -780,7 +776,7 @@ namespace CocApi.Api
         /// <returns>Task of WarLeague</returns>
         public async System.Threading.Tasks.Task<WarLeague?> GetWarLeagueOrDefaultAsync (string leagueId, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<WarLeague>? localVarResponse = await GetWarLeagueResponseOrDefaultAsync(leagueId, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<WarLeague>? localVarResponse = await GetWarLeagueResponseOrDefaultAsync(leagueId, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -799,7 +795,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;WarLeague&gt;</returns>
         public async System.Threading.Tasks.Task<List<WarLeague>> GetWarLeaguesAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesResponseAsync(limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesResponseAsync(limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -813,8 +809,6 @@ namespace CocApi.Api
         /// <returns>Task of ApiResponse (List&lt;WarLeague&gt;)</returns>
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-
-
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
             String[] _contentTypes = new String[] {
@@ -858,11 +852,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -872,21 +866,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetWarLeagues", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/warleagues", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -903,7 +897,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetWarLeaguesResponseAsync (limit, after, before, cancellationToken);
+                return await GetWarLeaguesResponseAsync (limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -921,7 +915,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;WarLeague&gt;</returns>
         public async System.Threading.Tasks.Task<List<WarLeague>?> GetWarLeaguesOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<WarLeague>>? localVarResponse = await GetWarLeaguesResponseOrDefaultAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<List<WarLeague>>? localVarResponse = await GetWarLeaguesResponseOrDefaultAsync(limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

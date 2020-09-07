@@ -4,6 +4,7 @@ CocApi.sln
 README.md
 docs\Clan.md
 docs\ClanBadgeUrls.md
+docs\ClanList.md
 docs\ClanMember.md
 docs\ClanRanking.md
 docs\ClanVersusRanking.md
@@ -70,6 +71,7 @@ src\CocApi\Client\RequestOptions.cs
 src\CocApi\CocApi.csproj
 src\CocApi\Model\Clan.cs
 src\CocApi\Model\ClanBadgeUrls.cs
+src\CocApi\Model\ClanList.cs
 src\CocApi\Model\ClanMember.cs
 src\CocApi\Model\ClanRanking.cs
 src\CocApi\Model\ClanVersusRanking.cs

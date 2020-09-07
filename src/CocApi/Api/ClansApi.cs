@@ -11,11 +11,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Collections.Immutable;
 using CocApi.Client;
 using CocApi.Model;
 
@@ -29,11 +29,11 @@ namespace CocApi.Api
     {
         private readonly CocApi.TokenProvider _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
-        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
-        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
         private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
+        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
@@ -102,7 +102,7 @@ namespace CocApi.Api
         /// <returns>Task of Clan</returns>
         public async System.Threading.Tasks.Task<Clan> GetClanAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Clan> localVarResponse = await GetClanResponseAsync(clanTag,  cancellationToken);
+             CocApi.Client.ApiResponse<Clan> localVarResponse = await GetClanResponseAsync(clanTag,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -151,11 +151,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -165,21 +165,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClan", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -194,7 +194,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanResponseAsync (clanTag, cancellationToken);
+                return await GetClanResponseAsync (clanTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -210,7 +210,7 @@ namespace CocApi.Api
         /// <returns>Task of Clan</returns>
         public async System.Threading.Tasks.Task<Clan?> GetClanOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Clan>? localVarResponse = await GetClanResponseOrDefaultAsync(clanTag, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<Clan>? localVarResponse = await GetClanResponseOrDefaultAsync(clanTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -230,7 +230,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;ClanMember&gt;</returns>
         public async System.Threading.Tasks.Task<List<ClanMember>> GetClanMembersAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanMember>> localVarResponse = await GetClanMembersResponseAsync(clanTag, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<List<ClanMember>> localVarResponse = await GetClanMembersResponseAsync(clanTag, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -294,11 +294,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -308,21 +308,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanMembers", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -340,7 +340,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanMembersResponseAsync (clanTag, limit, after, before, cancellationToken);
+                return await GetClanMembersResponseAsync (clanTag, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -359,7 +359,7 @@ namespace CocApi.Api
         /// <returns>Task of List&lt;ClanMember&gt;</returns>
         public async System.Threading.Tasks.Task<List<ClanMember>?> GetClanMembersOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanMember>>? localVarResponse = await GetClanMembersResponseOrDefaultAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<List<ClanMember>>? localVarResponse = await GetClanMembersResponseOrDefaultAsync(clanTag, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -376,7 +376,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWarLeagueGroup</returns>
         public async System.Threading.Tasks.Task<ClanWarLeagueGroup> GetClanWarLeagueGroupAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWarLeagueGroup> localVarResponse = await GetClanWarLeagueGroupResponseAsync(clanTag,  cancellationToken);
+             CocApi.Client.ApiResponse<ClanWarLeagueGroup> localVarResponse = await GetClanWarLeagueGroupResponseAsync(clanTag,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -425,11 +425,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -439,21 +439,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanWarLeagueGroup", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -468,7 +468,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanWarLeagueGroupResponseAsync (clanTag, cancellationToken);
+                return await GetClanWarLeagueGroupResponseAsync (clanTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -484,7 +484,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWarLeagueGroup</returns>
         public async System.Threading.Tasks.Task<ClanWarLeagueGroup?> GetClanWarLeagueGroupOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWarLeagueGroup>? localVarResponse = await GetClanWarLeagueGroupResponseOrDefaultAsync(clanTag, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanWarLeagueGroup>? localVarResponse = await GetClanWarLeagueGroupResponseOrDefaultAsync(clanTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -501,7 +501,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWar</returns>
         public async System.Threading.Tasks.Task<ClanWar> GetClanWarLeagueWarAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetClanWarLeagueWarResponseAsync(warTag,  cancellationToken);
+             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetClanWarLeagueWarResponseAsync(warTag,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -550,11 +550,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -564,21 +564,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanWarLeagueWar", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -593,7 +593,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanWarLeagueWarResponseAsync (warTag, cancellationToken);
+                return await GetClanWarLeagueWarResponseAsync (warTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -609,7 +609,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWar</returns>
         public async System.Threading.Tasks.Task<ClanWar?> GetClanWarLeagueWarOrDefaultAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWar>? localVarResponse = await GetClanWarLeagueWarResponseOrDefaultAsync(warTag, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanWar>? localVarResponse = await GetClanWarLeagueWarResponseOrDefaultAsync(warTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -629,7 +629,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWarLog</returns>
         public async System.Threading.Tasks.Task<ClanWarLog> GetClanWarLogAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWarLog> localVarResponse = await GetClanWarLogResponseAsync(clanTag, limit, after, before,  cancellationToken);
+             CocApi.Client.ApiResponse<ClanWarLog> localVarResponse = await GetClanWarLogResponseAsync(clanTag, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -693,11 +693,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -707,21 +707,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetClanWarLog", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -739,7 +739,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetClanWarLogResponseAsync (clanTag, limit, after, before, cancellationToken);
+                return await GetClanWarLogResponseAsync (clanTag, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -758,7 +758,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWarLog</returns>
         public async System.Threading.Tasks.Task<ClanWarLog?> GetClanWarLogOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWarLog>? localVarResponse = await GetClanWarLogResponseOrDefaultAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanWarLog>? localVarResponse = await GetClanWarLogResponseOrDefaultAsync(clanTag, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -775,7 +775,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWar</returns>
         public async System.Threading.Tasks.Task<ClanWar> GetCurrentWarAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetCurrentWarResponseAsync(clanTag,  cancellationToken);
+             CocApi.Client.ApiResponse<ClanWar> localVarResponse = await GetCurrentWarResponseAsync(clanTag,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -824,11 +824,11 @@ namespace CocApi.Api
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -838,21 +838,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("GetCurrentWar", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -867,7 +867,7 @@ namespace CocApi.Api
         {
             try
             {
-                return await GetCurrentWarResponseAsync (clanTag, cancellationToken);
+                return await GetCurrentWarResponseAsync (clanTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -883,7 +883,7 @@ namespace CocApi.Api
         /// <returns>Task of ClanWar</returns>
         public async System.Threading.Tasks.Task<ClanWar?> GetCurrentWarOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<ClanWar>? localVarResponse = await GetCurrentWarResponseOrDefaultAsync(clanTag, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanWar>? localVarResponse = await GetCurrentWarResponseOrDefaultAsync(clanTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -907,10 +907,10 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <returns>Task of List&lt;Clan&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Clan>> SearchClansAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ClanList</returns>
+        public async System.Threading.Tasks.Task<ClanList> SearchClansAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<Clan>> localVarResponse = await SearchClansResponseAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds,  cancellationToken);
+             CocApi.Client.ApiResponse<ClanList> localVarResponse = await SearchClansResponseAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -929,8 +929,8 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;Clan&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<Clan>>> SearchClansResponseAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (ClanList)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanList>> SearchClansResponseAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -1000,18 +1000,18 @@ namespace CocApi.Api
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<Clan>>("/clans", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<ClanList>("/clans", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
             {
                 TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException queryException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch, timeoutException);
+                HttpRequestException requestException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(queryException);
+                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                 throw timeoutException;
             }
@@ -1021,21 +1021,21 @@ namespace CocApi.Api
                 Exception _exception = this.ExceptionFactory("SearchClans", localVarResponse);
                 if (_exception != null) 
                 {
-                    HttpRequestException queryException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch, _exception);
+                    HttpRequestException requestException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(queryException);
+                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(queryException));
+                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
                     throw _exception;
                 }
             }
 
-            HttpRequestSuccess querySuccess = new HttpRequestSuccess("/clans", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(querySuccess);
+            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(querySuccess));
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
             return localVarResponse;
         }
@@ -1055,12 +1055,12 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;Clan&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<Clan>>?> SearchClansResponseOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (ClanList)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanList>?> SearchClansResponseOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
-                return await SearchClansResponseAsync (name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken);
+                return await SearchClansResponseAsync (name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -1083,10 +1083,10 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <returns>Task of List&lt;Clan&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Clan>?> SearchClansOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ClanList</returns>
+        public async System.Threading.Tasks.Task<ClanList?> SearchClansOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<Clan>>? localVarResponse = await SearchClansResponseOrDefaultAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanList>? localVarResponse = await SearchClansResponseOrDefaultAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

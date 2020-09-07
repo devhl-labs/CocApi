@@ -11,8 +11,10 @@
     [JsonSubtypes.KnownSubType(typeof({{{modelName}}}), "{{{mappingName}}}")]
     {{/mappedModels}}
     {{/discriminator}}
-    {{>visibility}} partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} {{#validatable}}IValidatableObject{{/validatable}}
+    {{>visibility}} partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} {{#validatable}}IValidatableObject, {{/validatable}}IDownloadable
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         {{#vars}}
         {{#isEnum}}
         /// <summary>

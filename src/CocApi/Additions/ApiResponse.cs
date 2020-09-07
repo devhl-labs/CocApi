@@ -28,5 +28,10 @@ namespace CocApi.Client
                 return Downloaded.AddSeconds(cacheControl);
             }
         }
+
+        private ApiResponse()
+        {
+
+        }
     }
 }

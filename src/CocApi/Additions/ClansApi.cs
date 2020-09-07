@@ -14,6 +14,8 @@ namespace CocApi.Api
         {
             var response = await getClanWarLeagueWarResponseAsync(warTag, cancellationToken);
 
+            response.Data.ServerResponseExpires = response.ServerExpiration;
+
             response.Data.WarTag = warTag;
 
             response.Data.Initialize();
@@ -24,6 +26,8 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             var response = await getCurrentWarResponseAsync(clanTag, cancellationToken);
+
+            response.Data.ServerResponseExpires = response.ServerExpiration;
 
             response.Data.Initialize();
 

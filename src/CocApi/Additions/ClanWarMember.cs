@@ -20,11 +20,11 @@ namespace CocApi.Model
         /// Gets or Sets MapPosition
         /// </summary>
         [DataMember(Name = "mapPosition", EmitDefaultValue = false)]
-        [JsonProperty("mapPosition")]
+        //[JsonProperty("mapPosition")]
         public int RosterPosition { get; private set; }
 
         [DataMember(Name = "mapPositionCorrected", EmitDefaultValue = false)]
-        [JsonProperty("mapPositionCorrected")]
+        //[JsonProperty("mapPositionCorrected")]
         public int MapPosition { get; internal set; }
 
         /// <summary>

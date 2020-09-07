@@ -18,12 +18,14 @@ namespace CocApi.Test
     {
         private readonly PlayersCache _playersCache;
         private readonly LogService _logService;
+        private readonly ClansApi _clansApi;
 
         public ClansCache(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
             _logService = logService;
+            _clansApi = clansApi;
 
             ClanUpdated += ClansCache_ClanUpdated;
             ClanWarAdded += ClansCache_ClanWarAdded;
@@ -59,6 +61,20 @@ namespace CocApi.Test
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            try
+            {
+                ClanWar war = await _clansApi.GetCurrentWarAsync("#P2PC9GYG");
+            }
+            catch (ApiException api)
+            {
+
+            }
+            catch (Exception e)
+            {
+
+                throw;
+            }
+
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.RunAsync(cancellationToken);
 

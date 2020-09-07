@@ -17,9 +17,9 @@ namespace CocApi
 
         public Exception Exception { get; }
 
-        public HttpRequestException(string path, RequestOptions requestOptions, Stopwatch stopwatch, Exception exception)
+        public HttpRequestException(string path, RequestOptions requestOptions, TimeSpan elapsed, Exception exception)
         {
-            Elapsed = stopwatch.Elapsed;
+            Elapsed = elapsed;
 
             Path = path;
 

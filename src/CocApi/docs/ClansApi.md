@@ -513,7 +513,7 @@ Name | Type | Description  | Notes
 
 <a name="searchclans"></a>
 # **SearchClans**
-> List&lt;Clan&gt; SearchClans (string name = null, string warFrequency = null, int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string after = null, string before = null, string labelIds = null)
+> ClanList SearchClans (string name = null, string warFrequency = null, int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string after = null, string before = null, string labelIds = null)
 
 Search clans
 
@@ -556,7 +556,7 @@ namespace Example
             try
             {
                 // Search clans
-                List<Clan> result = apiInstance.SearchClans(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
+                ClanList result = apiInstance.SearchClans(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -588,7 +588,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;Clan&gt;**](Clan.md)
+[**ClanList**](ClanList.md)
 
 ### Authorization
 
