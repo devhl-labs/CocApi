@@ -95,14 +95,14 @@ namespace CocApi.Cache.Models
             LocalExpiration = DateTime.UtcNow.Add(localExpiration);
         }
 
-        protected void UpdateFrom(CachedItem<T> fetched) /*where TValue : class*/
+        protected void UpdateFrom(CachedItem<T> fetched)
         {
             StatusCode = fetched.StatusCode;
-            RawContent = fetched.RawContent ?? RawContent;
+            RawContent = (!string.IsNullOrEmpty(fetched.RawContent)) ? fetched.RawContent : RawContent;
             Downloaded = fetched.Downloaded;
             ServerExpiration = fetched.ServerExpiration;
             LocalExpiration = fetched.LocalExpiration;
-            _data = fetched.Data ?? _data;
+            Data = fetched.Data ?? _data;
         }
 
         public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);

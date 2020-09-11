@@ -61,20 +61,6 @@ namespace CocApi.Test
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            try
-            {
-                ClanWar war = await _clansApi.GetCurrentWarAsync("#P2PC9GYG");
-            }
-            catch (ApiException api)
-            {
-
-            }
-            catch (Exception e)
-            {
-
-                throw;
-            }
-
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.RunAsync(cancellationToken);
 
