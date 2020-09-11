@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace CocApi.Model
@@ -26,6 +27,12 @@ namespace CocApi.Model
             return other != null &&
                    Tag == other.Tag;
         }
+
+        /// <summary>
+        /// Gets or Sets League
+        /// </summary>
+        [DataMember(Name = "league", EmitDefaultValue = false)]
+        public League? League { get; private set; }
 
         public override int GetHashCode()
         {

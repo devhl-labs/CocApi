@@ -262,13 +262,7 @@ namespace CocApi.Cache
 
         internal void OnPlayerUpdated(Player stored, Player fetched)
         {
-            try
-            {
-                _ = PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched)));
         }
 
         internal async Task UpdatePlayerAsync(CachedPlayer cachedPlayer)

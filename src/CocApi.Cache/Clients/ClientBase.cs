@@ -14,7 +14,7 @@ namespace CocApi.Cache
 
     public class ClientBase
     {
-        internal void OnLog(object sender, LogEventArgs log) => Log?.Invoke(sender, log);
+        internal void OnLog(object sender, LogEventArgs log) => Task.Run(() => Log?.Invoke(sender, log));
 
         public event LogEventHandler? Log;
 

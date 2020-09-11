@@ -139,11 +139,11 @@ namespace CocApi.Model
         [DataMember(Name="clan", EmitDefaultValue=false)]
         public PlayerClan Clan { get; private set; }
 
-        /// <summary>
-        /// Gets or Sets League
-        /// </summary>
-        [DataMember(Name="league", EmitDefaultValue=false)]
-        public League League { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets League
+        ///// </summary>
+        //[DataMember(Name="league", EmitDefaultValue=false)]
+        //public League League { get; private set; }
 
         /// <summary>
         /// Gets or Sets AttackWins

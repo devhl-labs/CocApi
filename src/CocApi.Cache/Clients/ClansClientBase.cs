@@ -469,101 +469,47 @@ namespace CocApi.Cache
 
         internal void OnClanUpdated(Clan stored, Clan fetched)
         {
-            try
-            {
-                _ = ClanUpdated?.Invoke(this, new ClanUpdatedEventArgs(stored, fetched));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanUpdated?.Invoke(this, new ClanUpdatedEventArgs(stored, fetched)));
         }
 
         internal void OnClanWarAdded(ClanWar clanWar)
         {
-            try
-            {
-                _ = ClanWarAdded?.Invoke(this, new ClanWarEventArgs(clanWar));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarAdded?.Invoke(this, new ClanWarEventArgs(clanWar)));
         }
 
         internal void OnClanWarEndingSoon(ClanWar clanWar)
         {
-            try
-            {
-                _ = ClanWarEndingSoon?.Invoke(this, new ClanWarEventArgs(clanWar));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarEndingSoon?.Invoke(this, new ClanWarEventArgs(clanWar)));
         }
 
         internal void OnClanWarEndNotSeen(ClanWar clanWar)
         {
-            try
-            {
-                _ = (ClanWarEndNotSeen?.Invoke(this, new ClanWarEventArgs(clanWar)));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarEndNotSeen?.Invoke(this, new ClanWarEventArgs(clanWar)));
         }
 
         internal void OnClanWarEnded(ClanWar clanWar)
         {
-            try
-            {
-                _ = ClanWarEnded?.Invoke(this, new ClanWarEventArgs(clanWar));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarEnded?.Invoke(this, new ClanWarEventArgs(clanWar)));
         }
 
         internal void OnClanWarLeagueGroupUpdated(Clan clan, ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched)
         {
-            try
-            {
-                _ = ClanWarLeagueGroupUpdated?.Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(clan, stored, fetched));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarLeagueGroupUpdated?.Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(clan, stored, fetched)));
         }
 
         internal void OnClanWarLogUpdated(ClanWarLog? stored, ClanWarLog fetched)
         {
-            try
-            {
-                _ = ClanWarLogUpdated?.Invoke(this, new ClanWarLogUpdatedEventArgs(stored, fetched));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarLogUpdated?.Invoke(this, new ClanWarLogUpdatedEventArgs(stored, fetched)));
         }
 
         internal void OnClanWarStartingSoon(ClanWar clanWar)
         {
-            try
-            {
-                _ = ClanWarStartingSoon?.Invoke(this, new ClanWarEventArgs(clanWar));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarStartingSoon?.Invoke(this, new ClanWarEventArgs(clanWar)));
         }
 
         internal void OnClanWarUpdated(Clan clan, ClanWar stored, ClanWar fetched)
         {
-            try
-            {
-                _ = ClanWarUpdated?.Invoke(this, new ClanWarUpdatedEventArgs(clan, stored, fetched));
-            }
-            catch (Exception)
-            {
-            }
+            Task.Run(() => ClanWarUpdated?.Invoke(this, new ClanWarUpdatedEventArgs(clan, stored, fetched)));
         }
 
         private async Task InsertCachedClanAsync(string formattedTag, bool downloadClan, bool downloadWars, bool downloadCwl, bool downloadMembers)
