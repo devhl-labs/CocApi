@@ -24,7 +24,7 @@ namespace CocApi.Model
         {
             List<Donation> results = new List<Donation>();
 
-            foreach(ClanMember storedMember in stored.Members.EmptyIfNull())
+            foreach(ClanMember storedMember in stored.Members)
             {
                 ClanMember fetchedMember = fetched.Members.FirstOrDefault(m => m.Tag == storedMember.Tag);
 
@@ -44,7 +44,7 @@ namespace CocApi.Model
         {
             List<Donation> results = new List<Donation>();
 
-            foreach (ClanMember storedMember in stored.Members.EmptyIfNull())
+            foreach (ClanMember storedMember in stored.Members)
             {
                 ClanMember fetchedMember = fetched.Members.FirstOrDefault(m => m.Tag == storedMember.Tag);
 

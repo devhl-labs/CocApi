@@ -47,7 +47,9 @@ namespace CocApi.Cache
         public bool DownloadCwl { get; set; } = true;
         public bool DownloadMembers { get; set; } = false;
 
-        private ConcurrentDictionary<string, CachedClan> UpdatingClans { get; set; } = new ConcurrentDictionary<string, CachedClan>();
+        private ConcurrentDictionary<string, CachedClan> UpdatingClan { get; set; } = new ConcurrentDictionary<string, CachedClan>();
+
+        private ConcurrentDictionary<string, CachedClan?> UpdatingClanWar { get; set; } = new ConcurrentDictionary<string, CachedClan?>();
 
         private ConcurrentDictionary<int, CachedWar> UpdatingWar { get; set; } = new ConcurrentDictionary<int, CachedWar>();
 
@@ -180,6 +182,8 @@ namespace CocApi.Cache
 
         private int _clanId = 0;
 
+        private int _warId = 0;
+
         public Task RunAsync(CancellationToken cancellationToken)
         {
             _ = Task.Run(async () =>
@@ -203,16 +207,39 @@ namespace CocApi.Cache
                     {
                         List<Task> tasks = new List<Task>();
 
-                        List<CachedClan> cachedClans = await dbContext.Clans.Where(v =>
-                            v.Id > _clanId).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync().ConfigureAwait(false);
+                        List<CachedClan> cachedClans = await dbContext.Clans
+                            .Where(c => c.Id > _clanId)
+                            .OrderBy(c => c.Id)
+                            .Take(_cacheConfiguration.ConcurrentUpdates)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
 
                         for (int i = 0; i < cachedClans.Count; i++)
                             tasks.Add(UpdateEntireClanAsync(cachedClans[i]));
+
+                        List<CachedWar> cachedWars = await dbContext.Wars
+                            .AsNoTracking()
+                            .Where(w => w.Id > _warId && w.State < WarState.WarEnded && w.IsFinal == false)
+                            .OrderBy(w => w.Id)
+                            .Take(_cacheConfiguration.ConcurrentUpdates)
+                            .ToListAsync()
+                            .ConfigureAwait(false);
+
+                        for (int i = 0; i < cachedWars.Count; i++)
+                        {
+                            tasks.Add(UpdateClanWar(cachedWars[i].ClanTag));
+                            tasks.Add(UpdateClanWar(cachedWars[i].OpponentTag));
+                        }
 
                         if (cachedClans.Count < _cacheConfiguration.ConcurrentUpdates)
                             _clanId = 0;
                         else
                             _clanId = cachedClans.Max(c => c.Id);
+
+                        if (cachedWars.Count < _cacheConfiguration.ConcurrentUpdates)
+                            _warId = 0;
+                        else
+                            _warId = cachedWars.Max(c => c.Id);
 
                         await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -678,30 +705,81 @@ namespace CocApi.Cache
                 !cachedClan.Data.IsWarLogPublic)
                 return;
 
-            using var scope = _services.CreateScope();
+            await UpdateClanWar(cachedClan.Tag);
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            //using var scope = _services.CreateScope();
 
-            CachedClanWar cachedClanWar = await dbContext.ClanWars.Where(w => w.Tag == cachedClan.Tag).FirstAsync(_stopRequestedTokenSource.Token);
+            //CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-            if (cachedClanWar.IsLocallyExpired() == false || 
-                cachedClanWar.IsServerExpired() == false)
+            //CachedClanWar cachedClanWar = await dbContext.ClanWars.Where(w => w.Tag == cachedClan.Tag).FirstAsync(_stopRequestedTokenSource.Token);
+
+            //if (cachedClanWar.IsLocallyExpired() == false || 
+            //    cachedClanWar.IsServerExpired() == false)
+            //    return;
+
+            //CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, this, _clansApi, _stopRequestedTokenSource.Token);
+
+            //if (fetched.Data != null && IsNewWar(cachedClanWar, fetched))
+            //{
+            //    await InsertNewWarAsync(new CachedWar(fetched));
+
+            //    cachedClanWar.Type = fetched.Data.WarType;
+            //}
+
+            //cachedClanWar.UpdateFrom(fetched);
+
+            //dbContext.ClanWars.Update(cachedClanWar);
+
+            //await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+        }
+
+        private async Task UpdateClanWar(string clanTag)
+        {
+            if (UpdatingClanWar.TryAdd(clanTag, null) == false)
                 return;
 
-            CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, this, _clansApi, _stopRequestedTokenSource.Token);
-
-            if (fetched.Data != null && IsNewWar(cachedClanWar, fetched))
+            try
             {
-                await InsertNewWarAsync(new CachedWar(fetched));
+                using var scope = _services.CreateScope();
 
-                cachedClanWar.Type = fetched.Data.WarType;
+                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+                CachedClanWar? cachedClanWar = await dbContext.ClanWars
+                    .Where(w => w.Tag == clanTag)
+                    .FirstOrDefaultAsync(_stopRequestedTokenSource.Token)
+                    .ConfigureAwait(false);
+
+                if (cachedClanWar == null)
+                {
+                    cachedClanWar = new CachedClanWar(clanTag);
+
+                    dbContext.ClanWars.Add(cachedClanWar);
+                }
+                else
+                    if (cachedClanWar.IsLocallyExpired() == false ||
+                        cachedClanWar.IsServerExpired() == false)
+                    return;
+
+                CachedClanWar fetched = await CachedClanWar
+                    .FromCurrentWarResponseAsync(clanTag, this, _clansApi, _stopRequestedTokenSource.Token);
+
+                if (fetched.Data != null && IsNewWar(cachedClanWar, fetched))
+                {
+                    await InsertNewWarAsync(new CachedWar(fetched));
+
+                    cachedClanWar.Type = fetched.Data.WarType;
+                }
+
+                cachedClanWar.UpdateFrom(fetched);
+
+                //dbContext.ClanWars.Update(cachedClanWar);
+
+                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
             }
-
-            cachedClanWar.UpdateFrom(fetched);
-
-            dbContext.ClanWars.Update(cachedClanWar);
-
-            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+            catch (Exception)
+            {
+                UpdatingClanWar.TryRemove(clanTag, out _);
+            }
         }
 
         private async Task UpdateCwl(CachedClan cachedClan)
@@ -765,7 +843,7 @@ namespace CocApi.Cache
 
         private async Task UpdateEntireClanAsync(CachedClan cachedClan)
         {
-            if (UpdatingClans.TryAdd(cachedClan.Tag, cachedClan) == false)
+            if (UpdatingClan.TryAdd(cachedClan.Tag, cachedClan) == false)
                 return;
 
             try
@@ -781,7 +859,7 @@ namespace CocApi.Cache
             }
             finally
             {
-                UpdatingClans.TryRemove(cachedClan.Tag, out CachedClan _);
+                UpdatingClan.TryRemove(cachedClan.Tag, out CachedClan _);
             }
         }
 
