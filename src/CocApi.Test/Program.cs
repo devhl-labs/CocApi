@@ -37,21 +37,16 @@ namespace CocApi.Test
             {
                 services.AddHostedService<ClansCache>();
             })
-            .ConfigureLogging(c => c.ClearProviders());
+            .ConfigureLogging(o => o.ClearProviders());
 
         private static ClansApi GetClansApi(IServiceProvider arg)
         {
             return new ClansApi(arg.GetRequiredService<TokenProvider>());
         }
 
-        private static ClientConfigurationBase GetCacheConfiguration(IServiceProvider arg)
+        private static Cache.ClientConfiguration GetCacheConfiguration(IServiceProvider arg)
         {
-            // this default config will use sqlite
-            return new ClientConfigurationBase();
-
-            // optionally provide your own config and control what is the db provider
-            // you will have to manually replace the migration
-            //return new ClientConfiguration(Environment.GetEnvironmentVariable("COCAPI_TEST_CONNECTIONSTRING", EnvironmentVariableTarget.Machine));
+            return new Cache.ClientConfiguration();
         }
 
         private static PlayersApi GetPlayersApi(IServiceProvider arg)
@@ -63,7 +58,8 @@ namespace CocApi.Test
         {
             List<string> tokens = new List<string>
             {
-                Environment.GetEnvironmentVariable("TOKEN_0", EnvironmentVariableTarget.Machine)
+                Environment.GetEnvironmentVariable("TOKEN_0", EnvironmentVariableTarget.Machine) 
+                    ?? throw new NullReferenceException("TOKEN_0 environment variable not found.")
             };
 
             return new TokenProvider(tokens, TimeSpan.FromSeconds(1));

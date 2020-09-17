@@ -22,9 +22,9 @@ namespace CocApi.Cache
 
         internal protected readonly TokenProvider _tokenProvider;
         internal protected readonly IServiceProvider _services;
-        internal protected readonly ClientConfigurationBase _cacheConfiguration;
+        internal protected readonly ClientConfiguration _cacheConfiguration;
 
-        public ClientBase(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration)
+        public ClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration)
         {
             _tokenProvider = tokenProvider;
             _cacheConfiguration = cacheConfiguration;

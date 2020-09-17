@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CocApi.Test
 {
-    public class ClientConfiguration : ClientConfigurationBase
+    public class ClientConfiguration : Cache.ClientConfiguration
     {
         // this optional file shows how to use other database providers
         // currently this postgres example is not working 

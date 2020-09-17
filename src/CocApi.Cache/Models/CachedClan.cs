@@ -33,9 +33,13 @@ namespace CocApi.Cache.Models
 
         public bool DownloadCwl { get; internal set; }
 
+        public bool IsWarLogPublic { get; internal set; }
+
         private CachedClan(ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
             Tag = response.Data.Tag;
+
+            IsWarLogPublic = response.Data.IsWarLogPublic;
         }
 
         private CachedClan(string tag, Exception exception, TimeSpan localExpiration) : base(exception, localExpiration)
@@ -43,17 +47,20 @@ namespace CocApi.Cache.Models
             Tag = tag;
         }
 
-        internal CachedClan(string tag)
+        public CachedClan(string tag)
         {
             Tag = tag;
         }
 
-        internal void UpdateFrom(CachedClan fetched)
+        public void UpdateFrom(CachedClan fetched)
         {
             if (ServerExpiration > fetched.ServerExpiration)
                 return;
 
+            IsWarLogPublic = fetched.IsWarLogPublic;
+
             base.UpdateFrom(fetched);
         }
+
     }
 }

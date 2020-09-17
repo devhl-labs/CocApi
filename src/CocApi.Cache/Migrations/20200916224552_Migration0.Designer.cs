@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CachedContext))]
-    [Migration("20200903221619_Migration3")]
-    partial class Migration3
+    [Migration("20200916224552_Migration0")]
+    partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -38,6 +38,9 @@ namespace CocApi.Cache.Migrations
 
                     b.Property<DateTime>("Downloaded")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsWarLogPublic")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LocalExpiration")
                         .HasColumnType("TEXT");

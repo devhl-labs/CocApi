@@ -17,7 +17,7 @@ namespace CocApi.Cache
     {
         private readonly PlayersApi _playersApi;
 
-        public PlayersClientBase(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, PlayersApi playersApi) 
+        public PlayersClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, PlayersApi playersApi) 
             : base (tokenProvider, cacheConfiguration)
         {
             _playersApi = playersApi;

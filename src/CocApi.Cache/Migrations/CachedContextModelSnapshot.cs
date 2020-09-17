@@ -37,6 +37,9 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("Downloaded")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsWarLogPublic")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("LocalExpiration")
                         .HasColumnType("TEXT");
 

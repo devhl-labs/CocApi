@@ -20,7 +20,7 @@ namespace CocApi.Test
         private readonly LogService _logService;
         private readonly ClansApi _clansApi;
 
-        public ClansCache(TokenProvider tokenProvider, ClientConfigurationBase cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
+        public ClansCache(TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;

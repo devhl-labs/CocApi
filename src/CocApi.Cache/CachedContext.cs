@@ -1,4 +1,5 @@
 ﻿using CocApi.Cache.Models;
+using CocApi.Cache.View;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -17,6 +18,12 @@ namespace CocApi.Cache
         public DbSet<CachedClanWarLeagueGroup> Groups { get; set; }
 
         public DbSet<CachedClanWarLog> WarLogs { get; set; }
+
+        public DbSet<WarWithLogStatus> WarWithLogStatus { get; set; }
+
+        public DbSet<ClanWarWithLogStatus> ClanWarWithLogStatus { get; set; }
+
+        public DbSet<ClanWarLogWithLogStatus> ClanWarLogWithLogStatus { get; set; }
 
         public CachedContext(DbContextOptions options) : base(options)
         {
@@ -46,15 +53,21 @@ namespace CocApi.Cache
             builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.Tag).IsUnique();
 
             builder.Entity<CachedClanWarLog>().HasIndex(p => p.Tag).IsUnique();
+
+            builder.Entity<WarWithLogStatus>().HasNoKey().ToView("WarWithLogStatus");
+
+            builder.Entity<ClanWarWithLogStatus>().HasNoKey().ToView("ClanWarWithLogStatus");
+
+            builder.Entity<ClanWarLogWithLogStatus>().HasNoKey().ToView("ClanWarLogWithLogStatus");
         }
     }
 
-    public class CacheContextFactory : IDesignTimeDbContextFactory<CachedContext>
+    internal class CacheContextFactory : IDesignTimeDbContextFactory<CachedContext>
     {
         public CachedContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<CachedContext>();
-            optionsBuilder.UseSqlite("Data Source=cocapi.db");
+            optionsBuilder.UseSqlite("Data Source=cocapi.db").EnableSensitiveDataLogging();
 
             return new CachedContext(optionsBuilder.Options);
         }
