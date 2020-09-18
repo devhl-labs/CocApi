@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
@@ -25,7 +26,7 @@ namespace CocApi.Cache
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
-        internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, CachedPlayer?>();
+        internal ConcurrentDictionary<string, byte?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, byte?>();
 
         public async Task<CachedPlayer> AddAsync(string tag, bool download = true)
         {
@@ -90,62 +91,77 @@ namespace CocApi.Cache
 
         private int _playerId = 0;
 
-        public Task RunAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            _ = Task.Run(async () =>
+            Task.Run(() =>
             {
-                try
-                {
-                    if (IsRunning)
-                        return;
-
-                    IsRunning = true;
-
-                    _stopRequestedTokenSource = new CancellationTokenSource();
-
-                    OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
-
-                    while (cancellationToken.IsCancellationRequested == false && _stopRequestedTokenSource.IsCancellationRequested == false)
-                    {
-                        List<Task> tasks = new List<Task>();
-
-                        using var scope = _services.CreateScope();
-
-                        using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
-
-                        List<CachedPlayer> cachedPlayers = await dbContext.Players.Where(v =>
-                            v.Id > _playerId).OrderBy(v => v.Id).Take(_cacheConfiguration.ConcurrentUpdates).ToListAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-
-                        for (int i = 0; i < cachedPlayers.Count; i++)
-                            tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
-
-                        if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
-                            _playerId = 0;
-                        else
-                            _playerId = cachedPlayers.Max(v => v.Id);
-
-                        await Task.WhenAll(tasks).ConfigureAwait(false);
-
-                        await Task.Delay(_cacheConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
-                    }
-
-                    IsRunning = false;
-                }
-                catch (Exception e)
-                {
-                    IsRunning = false;
-
-                    if (_stopRequestedTokenSource.IsCancellationRequested)
-                        return;
-
-                    OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
-
-                    if (cancellationToken.IsCancellationRequested == false)
-                        _ = RunAsync(cancellationToken);
-                }
+                _ = MonitorPlayers(cancellationToken).ConfigureAwait(false);
             });
 
             return Task.CompletedTask;
+        }
+
+        private async Task MonitorPlayers(CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (IsRunning)
+                    return;
+
+                IsRunning = true;
+
+                _stopRequestedTokenSource = new CancellationTokenSource();
+
+                OnLog(this, new LogEventArgs(nameof(MonitorPlayers), LogLevel.Information));
+
+                while (cancellationToken.IsCancellationRequested == false && _stopRequestedTokenSource.IsCancellationRequested == false)
+                {
+                    List<Task> tasks = new List<Task>();
+
+                    using var scope = _services.CreateScope();
+
+                    using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+                    List<CachedPlayer> cachedPlayers = await dbContext.Players
+                        .Where(v =>
+                            v.Id > _playerId &&
+                            v.Download &&
+                            v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
+                            v.LocalExpiration < DateTime.UtcNow)
+                        .OrderBy(v => v.Id)
+                        .Take(_cacheConfiguration.ConcurrentUpdates)
+                        .ToListAsync(_stopRequestedTokenSource.Token)
+                        .ConfigureAwait(false);
+
+                    for (int i = 0; i < cachedPlayers.Count; i++)
+                        tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
+
+                    if (cachedPlayers.Count < _cacheConfiguration.ConcurrentUpdates)
+                        _playerId = 0;
+                    else
+                        _playerId = cachedPlayers.Max(v => v.Id);
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+
+                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                }
+
+                IsRunning = false;
+            }
+            catch (Exception e)
+            {
+                IsRunning = false;
+
+                if (_stopRequestedTokenSource.IsCancellationRequested)
+                    return;
+
+                OnLog(this, new ExceptionEventArgs(nameof(MonitorPlayers), e));
+
+                if (cancellationToken.IsCancellationRequested == false)
+                    _ = MonitorPlayers(cancellationToken);
+            }
         }
 
         private bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
@@ -267,33 +283,23 @@ namespace CocApi.Cache
 
         internal async Task UpdatePlayerAsync(CachedPlayer cachedPlayer)
         {
-            if (cachedPlayer.IsServerExpired() == false || cachedPlayer.IsLocallyExpired() == false || _stopRequestedTokenSource.IsCancellationRequested)
-                return;
-
-            if (UpdatingVillage.TryAdd(cachedPlayer.Tag, cachedPlayer) == false)
+            if (UpdatingVillage.TryAdd(cachedPlayer.Tag, null) == false)
                 return;
 
             try
             {
-                using var scope = _services.CreateScope();
-
-                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
-
                 CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, this, _playersApi, _stopRequestedTokenSource.Token);
                     
                 if (cachedPlayer.Data != null && fetched.Data != null && HasUpdated(cachedPlayer, fetched))
                     OnPlayerUpdated(cachedPlayer.Data, fetched.Data);
 
                 cachedPlayer.UpdateFrom(fetched);
-
-                dbContext.Players.Update(cachedPlayer);
-
-                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
-            }
+        }
             finally
             {
                 UpdatingVillage.TryRemove(cachedPlayer.Tag, out _);
             }
-        }
+}
+
     }
 }

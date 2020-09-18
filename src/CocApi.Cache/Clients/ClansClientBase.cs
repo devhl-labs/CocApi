@@ -206,12 +206,12 @@ namespace CocApi.Cache
 
         private ClanMonitor _clanMonitor;
 
-        public Task RunAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
             _activeWarMonitor = new ActiveWarMonitor(_tokenProvider, _cacheConfiguration, _clansApi, this);
             _clanWarLogMonitor = new LogMonitor(_tokenProvider, _cacheConfiguration, _clansApi, this);
             _clanWarMonitor = new ClanWarMonitor(_tokenProvider, _cacheConfiguration, _clansApi, this);
-            _clanMonitor = new ClanMonitor(_tokenProvider, _cacheConfiguration, _clansApi, this);
+            _clanMonitor = new ClanMonitor(_playersCache, _tokenProvider, _cacheConfiguration, _clansApi, this);
 
             Task.Run(() =>
             {
@@ -311,7 +311,7 @@ namespace CocApi.Cache
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+                OnLog(this, new LogEventArgs(nameof(StartAsync), LogLevel.Information));
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
@@ -369,10 +369,10 @@ namespace CocApi.Cache
                 if (_stopRequestedTokenSource.IsCancellationRequested)
                     return;
 
-                OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
+                OnLog(this, new ExceptionEventArgs(nameof(StartAsync), e));
 
                 if (cancellationToken.IsCancellationRequested == false)
-                    _ = RunAsync(cancellationToken);
+                    _ = StartAsync(cancellationToken);
             }
         }
 
@@ -387,7 +387,7 @@ namespace CocApi.Cache
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+                OnLog(this, new LogEventArgs(nameof(StartAsync), LogLevel.Information));
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
@@ -445,10 +445,10 @@ namespace CocApi.Cache
                 if (_stopRequestedTokenSource.IsCancellationRequested)
                     return;
 
-                OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
+                OnLog(this, new ExceptionEventArgs(nameof(StartAsync), e));
 
                 if (cancellationToken.IsCancellationRequested == false)
-                    _ = RunAsync(cancellationToken);
+                    _ = StartAsync(cancellationToken);
             }
         }
 
@@ -654,7 +654,7 @@ namespace CocApi.Cache
             await Task.WhenAll(tasks);
         }
 
-        public async Task UpdateAsync(string tag, bool downloadClan = true, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
+        public async Task AddOrUpdateAsync(string tag, bool downloadClan = true, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
         {
             if (downloadClan == false && downloadMembers == true)
                 throw new ArgumentException("DownloadClan must be true to download members.");

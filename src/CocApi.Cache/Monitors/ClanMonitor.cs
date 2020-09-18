@@ -15,13 +15,15 @@ namespace CocApi.Cache
 {
     internal class ClanMonitor : ClientBase
     {
+        private readonly PlayersClientBase? _playersClientBase;
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
         public ClanMonitor
-            (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
+            (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(tokenProvider, cacheConfiguration)
         {
+            _playersClientBase = playersClientBase;
             _clansApi = clansApi;
             _clansClient = clansClientBase;
         }
@@ -69,7 +71,7 @@ namespace CocApi.Cache
                     List<CachedClan> cachedClans = await dbContext.Clans
                         .Where(w => 
                             w.Id > _warId && 
-                            w.Download &&
+                            (w.Download || w.DownloadMembers) &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
@@ -79,7 +81,11 @@ namespace CocApi.Cache
 
                     for (int i = 0; i < cachedClans.Count; i++)
                     {
-                        tasks.Add(MonitorClanAsync(cachedClans[i]));
+                        if (cachedClans[i].Download)
+                            tasks.Add(MonitorClanAsync(cachedClans[i]));
+
+                        if (cachedClans[i].DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
+                            tasks.Add(MonitorMembersAsync(cachedClans[i]));
                     }
 
                     if (cachedClans.Count < _cacheConfiguration.ConcurrentUpdates)
@@ -128,6 +134,57 @@ namespace CocApi.Cache
             finally
             {
                 _clansClient.UpdatingClan.TryRemove(cached.Tag, out _);
+            }
+        }
+
+        private async Task MonitorMembersAsync(CachedClan cached)
+        {
+            if (cached.Data == null)
+                return;
+
+            List<Task> tasks = new List<Task>();
+
+            foreach (Model.ClanMember? member in cached.Data.Members)
+                tasks.Add(MonitorMemberAsync(member.Tag));
+
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task MonitorMemberAsync(string tag)
+        {
+            if (_playersClientBase == null)
+                return;
+
+            if (_playersClientBase.UpdatingVillage.TryAdd(tag, null) == false)
+                return;
+
+            try
+            {
+                using var scope = _services.CreateScope();
+
+                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+                CachedPlayer? cached = await dbContext.Players
+                    .FirstOrDefaultAsync(p => p.Tag == tag)
+                    .ConfigureAwait(false);
+
+                if (cached == null)
+                {
+                    cached = new CachedPlayer(tag);
+
+                    dbContext.Players.Add(cached);
+                }
+
+                if (cached.ServerExpiration > DateTime.UtcNow.AddSeconds(3) || cached.LocalExpiration > DateTime.UtcNow)
+                    return;
+
+                await _playersClientBase.UpdatePlayerAsync(cached);
+
+                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+            }
+            finally
+            {
+                _playersClientBase.UpdatingVillage.TryRemove(tag, out _);
             }
         }
     }

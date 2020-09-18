@@ -13,7 +13,7 @@ namespace CocApi
 
         private readonly SemaphoreSlim _tokenSemaphore = new SemaphoreSlim(1, 1);
 
-        public TokenProvider(List<string> tokens, TimeSpan tokenTimeOut)
+        public TokenProvider(IEnumerable<string> tokens, TimeSpan tokenTimeOut)
         {
             foreach (string token in tokens)
                 _tokenObjects.Add(new Token(token, tokenTimeOut));

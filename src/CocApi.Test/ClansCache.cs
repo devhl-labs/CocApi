@@ -59,16 +59,16 @@ namespace CocApi.Test
             return base.HasUpdated(stored, fetched);
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public new async Task StartAsync(CancellationToken cancellationToken)
         {
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
-            await _playersCache.RunAsync(cancellationToken);
+            await _playersCache.StartAsync(cancellationToken);
 
-            await UpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
-            await UpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
+            await AddOrUpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
+            await AddOrUpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
             await AddAsync("#28RUGUYJU"); //devhls lab
             await AddAsync("#2C8V29YJ"); // russian clan
-            await RunAsync(cancellationToken);
+            await base.StartAsync(cancellationToken);
         }
 
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
