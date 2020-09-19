@@ -15,11 +15,11 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<Clan> apiResponse = await clansApi.GetClanResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClan(apiResponse, clansCacheBase.ClanTimeToLive(apiResponse));
+                return new CachedClan(apiResponse, await clansCacheBase.ClanTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClan(tag, e, clansCacheBase.ClanTimeToLive(e));
+                return new CachedClan(tag, e, await clansCacheBase.ClanTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 

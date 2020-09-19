@@ -29,13 +29,10 @@ namespace CocApi.Test
                 services.AddSingleton(GetTokenProvider);
                 services.AddSingleton(GetPlayersApi);
                 services.AddSingleton(GetClansApi);
-                services.AddSingleton(GetCacheConfiguration);
+                services.AddSingleton(GetClientConfiguration);
                 services.AddSingleton<LogService>();
-                services.AddSingleton<PlayersCache>();
-            })
-            .ConfigureServices(services =>
-            {
-                services.AddHostedService<ClansCache>();
+                services.AddSingleton<PlayersClient>();
+                services.AddHostedService<ClansClient>();
             })
             .ConfigureLogging(o => o.ClearProviders());
 
@@ -44,7 +41,7 @@ namespace CocApi.Test
             return new ClansApi(arg.GetRequiredService<TokenProvider>());
         }
 
-        private static Cache.ClientConfiguration GetCacheConfiguration(IServiceProvider arg)
+        private static Cache.ClientConfiguration GetClientConfiguration(IServiceProvider arg)
         {
             return new Cache.ClientConfiguration();
         }

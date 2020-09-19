@@ -28,55 +28,36 @@ namespace CocApi.Cache
             _clansClient = clansClientBase;
         }
 
-        private int _warId = 0;
-
-        public Task RunAsync(CancellationToken cancellationToken)
-        {
-            Task.Run(() =>
-            {
-                _ = MonitorClansAsync(cancellationToken);
-            });
-
-            return Task.CompletedTask;
-        }
-
-        public new async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _stopRequestedTokenSource.Cancel();
-
-            await base.StopAsync(cancellationToken);
-        }
-
-        private async Task MonitorClansAsync(CancellationToken cancellationToken)
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
-                if (IsRunning)
+                if (_isRunning)
                     return;
 
-                IsRunning = true;
+                _isRunning = true;
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                OnLog(this, new LogEventArgs(nameof(MonitorClansAsync), LogLevel.Information));
+                _clansClient.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
-                    using var scope = _services.CreateScope();
+                    using var scope = Services.CreateScope();
 
                     CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
                     List<Task> tasks = new List<Task>();
 
                     List<CachedClan> cachedClans = await dbContext.Clans
-                        .Where(w => 
-                            w.Id > _warId && 
+                        .Where(w =>
+                            w.Id > _id &&
                             (w.Download || w.DownloadMembers) &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(_cacheConfiguration.ConcurrentUpdates)
-                        .ToListAsync()
+                        .Take(ClientConfiguration.ConcurrentUpdates)
+                        .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedClans.Count; i++)
@@ -88,32 +69,41 @@ namespace CocApi.Cache
                             tasks.Add(MonitorMembersAsync(cachedClans[i]));
                     }
 
-                    if (cachedClans.Count < _cacheConfiguration.ConcurrentUpdates)
-                        _warId = 0;
+                    if (cachedClans.Count < ClientConfiguration.ConcurrentUpdates)
+                        _id = 0;
                     else
-                        _warId = cachedClans.Max(c => c.Id);
+                        _id = cachedClans.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
-                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(ClientConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
-                IsRunning = false;
+                _isRunning = false;
             }
             catch (Exception e)
             {
-                IsRunning = false;
+                _isRunning = false;
 
                 if (_stopRequestedTokenSource.IsCancellationRequested)
                     return;
 
-                OnLog(this, new ExceptionEventArgs(nameof(MonitorClansAsync), e));
+                _clansClient.OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
                 if (cancellationToken.IsCancellationRequested == false)
                     _ = RunAsync(cancellationToken);
             }
+        }
+
+        public new async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _stopRequestedTokenSource.Cancel();
+
+            await base.StopAsync(cancellationToken);
+
+            _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
         }
 
         private async Task MonitorClanAsync(CachedClan cached)
@@ -155,37 +145,27 @@ namespace CocApi.Cache
             if (_playersClientBase == null)
                 return;
 
-            if (_playersClientBase.UpdatingVillage.TryAdd(tag, null) == false)
+            using var scope = Services.CreateScope();
+
+            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+            CachedPlayer? cached = await dbContext.Players
+                .FirstOrDefaultAsync(p => p.Tag == tag, _stopRequestedTokenSource.Token)
+                .ConfigureAwait(false);
+
+            if (cached == null)
+            {
+                cached = new CachedPlayer(tag);
+
+                dbContext.Players.Add(cached);
+            }
+
+            if (cached.ServerExpiration > DateTime.UtcNow.AddSeconds(3) || cached.LocalExpiration > DateTime.UtcNow)
                 return;
 
-            try
-            {
-                using var scope = _services.CreateScope();
+            await _playersClientBase.PlayerMontitor.UpdatePlayerAsync(cached);
 
-                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
-
-                CachedPlayer? cached = await dbContext.Players
-                    .FirstOrDefaultAsync(p => p.Tag == tag)
-                    .ConfigureAwait(false);
-
-                if (cached == null)
-                {
-                    cached = new CachedPlayer(tag);
-
-                    dbContext.Players.Add(cached);
-                }
-
-                if (cached.ServerExpiration > DateTime.UtcNow.AddSeconds(3) || cached.LocalExpiration > DateTime.UtcNow)
-                    return;
-
-                await _playersClientBase.UpdatePlayerAsync(cached);
-
-                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-            }
-            finally
-            {
-                _playersClientBase.UpdatingVillage.TryRemove(tag, out _);
-            }
+            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
         }
     }
 }

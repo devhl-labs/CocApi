@@ -13,12 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    internal class LogMonitor : ClientBase
+    internal class WarLogMonitor : ClientBase
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        public LogMonitor
+        public WarLogMonitor
             (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(tokenProvider, cacheConfiguration)
         {
@@ -26,41 +26,22 @@ namespace CocApi.Cache
             _clansClient = clansClientBase;
         }
 
-        private int _warId = 0;
-
-        public Task RunAsync(CancellationToken cancellationToken)
-        {
-            Task.Run(() =>
-            {
-                _ = MonitorLogsAsync(cancellationToken);
-            });
-
-            return Task.CompletedTask;
-        }
-
-        public new async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _stopRequestedTokenSource.Cancel();
-
-            await base.StopAsync(cancellationToken);
-        }
-
-        private async Task MonitorLogsAsync(CancellationToken cancellationToken)
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
-                if (IsRunning)
+                if (_isRunning)
                     return;
 
-                IsRunning = true;
+                _isRunning = true;
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                OnLog(this, new LogEventArgs(nameof(MonitorLogsAsync), LogLevel.Information));
+                _clansClient.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
-                    using var scope = _services.CreateScope();
+                    using var scope = Services.CreateScope();
 
                     CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
@@ -68,14 +49,14 @@ namespace CocApi.Cache
 
                     var cachedWarLogs = await dbContext.ClanWarLogWithLogStatus
                         .AsNoTracking()
-                        .Where(w => 
-                            w.Id > _warId && 
+                        .Where(w =>
+                            w.Id > _id &&
                             w.IsWarLogPublic == true &&
                             w.DownloadCurrentWar &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(_cacheConfiguration.ConcurrentUpdates)
+                        .Take(ClientConfiguration.ConcurrentUpdates)
                         .Select(l => new { l.Id, l.Tag })
                         .ToListAsync()
                         .ConfigureAwait(false);
@@ -85,30 +66,39 @@ namespace CocApi.Cache
                         tasks.Add(MonitorLogAsync(cachedWarLogs[i].Tag));
                     }
 
-                    if (cachedWarLogs.Count < _cacheConfiguration.ConcurrentUpdates)
-                        _warId = 0;
+                    if (cachedWarLogs.Count < ClientConfiguration.ConcurrentUpdates)
+                        _id = 0;
                     else
-                        _warId = cachedWarLogs.Max(c => c.Id);
+                        _id = cachedWarLogs.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(ClientConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
-                IsRunning = false;
+                _isRunning = false;
             }
             catch (Exception e)
             {
-                IsRunning = false;
+                _isRunning = false;
 
                 if (_stopRequestedTokenSource.IsCancellationRequested)
                     return;
 
-                OnLog(this, new ExceptionEventArgs(nameof(MonitorLogsAsync), e));
+                _clansClient.OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
                 if (cancellationToken.IsCancellationRequested == false)
                     _ = RunAsync(cancellationToken);
             }
+        }
+
+        public new async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _stopRequestedTokenSource.Cancel();
+
+            await base.StopAsync(cancellationToken);
+
+            _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
         }
 
         private async Task MonitorLogAsync(string tag)
@@ -118,7 +108,7 @@ namespace CocApi.Cache
 
             try
             {
-                using var scope = _services.CreateScope();
+                using var scope = Services.CreateScope();
 
                 CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 

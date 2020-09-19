@@ -15,11 +15,11 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWarLog> apiResponse = await clansApi.GetClanWarLogResponseAsync(tag, cancellationToken: cancellationToken);
 
-                return new CachedClanWarLog(tag, apiResponse, clansCacheBase.ClanWarLogTimeToLive(apiResponse));
+                return new CachedClanWarLog(tag, apiResponse, await clansCacheBase.ClanWarLogTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClanWarLog(tag, e, clansCacheBase.ClanWarLogTimeToLive(e));
+                return new CachedClanWarLog(tag, e, await clansCacheBase.ClanWarLogTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 

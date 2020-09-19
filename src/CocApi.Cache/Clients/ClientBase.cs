@@ -14,32 +14,28 @@ namespace CocApi.Cache
 
     public class ClientBase
     {
-        internal void OnLog(object sender, LogEventArgs log) => Task.Run(() => Log?.Invoke(sender, log));
+        private protected bool _isRunning;
 
-        public event LogEventHandler? Log;
+        internal protected TokenProvider TokenProvider { get; }
+        internal protected IServiceProvider Services { get; }
+        internal protected ClientConfiguration ClientConfiguration { get; }
 
-        internal protected bool IsRunning { get; set; }
-
-        internal protected readonly TokenProvider _tokenProvider;
-        internal protected readonly IServiceProvider _services;
-        internal protected readonly ClientConfiguration _cacheConfiguration;
+        protected int _id;
 
         public ClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration)
         {
-            _tokenProvider = tokenProvider;
-            _cacheConfiguration = cacheConfiguration;
-            _services = _cacheConfiguration.BuildServiceProvider();
+            TokenProvider = tokenProvider;
+            ClientConfiguration = cacheConfiguration;
+            Services = ClientConfiguration.BuildServiceProvider();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
             _stopRequestedTokenSource.Cancel();
 
-            OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
-
-            while (IsRunning)
+            while (_isRunning)
             {
-                await Task.Delay(500, cancellationToken).ConfigureAwait(false);
+                await Task.Delay(250, cancellationToken).ConfigureAwait(false);
             }
         }
 

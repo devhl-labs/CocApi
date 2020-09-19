@@ -66,7 +66,14 @@ CREATE VIEW ""ClanWarLogWithLogStatus"" AS
 select clans.IsWarLogPublic, clans.DownloadCurrentWar, warlogs.* 
 from warlogs
 left join clans on warlogs.tag = clans.tag");
-                }
+                };
+
+                cachedContext.Database.ExecuteSqlRaw(@"
+drop view if exists ClanWarLeagueGroupWithLogStatus;
+CREATE VIEW ""ClanWarLeagueGroupWithLogStatus"" AS 
+select clans.DownloadCwl, groups.* 
+from groups
+left join clans on groups.tag = clans.tag");
 
                 _services = services;
 

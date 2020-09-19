@@ -25,6 +25,8 @@ namespace CocApi.Cache
 
         public DbSet<ClanWarLogWithLogStatus> ClanWarLogWithLogStatus { get; set; }
 
+        public DbSet<ClanWarLeagueGroupWithLogStatus> ClanWarLeagueGroupWithStatus { get; set; }
+
         public CachedContext(DbContextOptions options) : base(options)
         {
 
@@ -59,6 +61,8 @@ namespace CocApi.Cache
             builder.Entity<ClanWarWithLogStatus>().HasNoKey().ToView("ClanWarWithLogStatus");
 
             builder.Entity<ClanWarLogWithLogStatus>().HasNoKey().ToView("ClanWarLogWithLogStatus");
+
+            builder.Entity<ClanWarLeagueGroupWithLogStatus>().HasNoKey().ToView("ClanWarLeagueGroupWithLogStatus");
         }
     }
 

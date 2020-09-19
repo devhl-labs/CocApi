@@ -4,24 +4,22 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Models;
-using CocApi.Cache.View;
-using CocApi.Client;
-using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    internal class ClanWarMonitor : ClientBase
+    internal class CwlMonitor : ClientBase
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        public ClanWarMonitor
+        public CwlMonitor
             (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(tokenProvider, cacheConfiguration)
         {
@@ -50,24 +48,19 @@ namespace CocApi.Cache
 
                     List<Task> tasks = new List<Task>();
 
-                    var cachedWarLogs = await dbContext.ClanWarWithLogStatus
-                        .AsNoTracking()
+                    var cachedWarLogs = await dbContext.ClanWarLeagueGroupWithStatus
                         .Where(w =>
                             w.Id > _id &&
-                            w.IsWarLogPublic == true &&
-                            w.DownloadCurrentWar &&
+                            w.DownloadCwl == true &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
                         .Take(ClientConfiguration.ConcurrentUpdates)
-                        .Select(l => new { l.Id, l.Tag })
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedWarLogs.Count; i++)
-                    {
-                        tasks.Add(MonitorClanWarAsync(cachedWarLogs[i].Tag));
-                    }
+                        tasks.Add(MonitorCwlAsync(cachedWarLogs[i].Tag));
 
                     if (cachedWarLogs.Count < ClientConfiguration.ConcurrentUpdates)
                         _id = 0;
@@ -104,9 +97,12 @@ namespace CocApi.Cache
             _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
         }
 
-        private async Task MonitorClanWarAsync(string tag)
+
+        private readonly ConcurrentDictionary<string, byte> _updatingGroup = new ConcurrentDictionary<string, byte>();
+
+        private async Task MonitorCwlAsync(string tag)
         {
-            if (_clansClient.UpdatingClanWar.TryAdd(tag, new byte()) == false)
+            if (_updatingGroup.TryAdd(tag, new byte()) == false)
                 return;
 
             try
@@ -115,29 +111,87 @@ namespace CocApi.Cache
 
                 CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
-                CachedClanWar? cachedClanWar = await dbContext.ClanWars
+                CachedClanWarLeagueGroup cached = await dbContext.Groups
                     .Where(w => w.Tag == tag)
                     .FirstAsync(_stopRequestedTokenSource.Token)
                     .ConfigureAwait(false);
 
-                CachedClanWar fetched = await CachedClanWar
-                    .FromCurrentWarResponseAsync(tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
+                CachedClanWarLeagueGroup fetched = await CachedClanWarLeagueGroup
+                    .FromClanWarLeagueGroupResponseAsync(tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
 
-                if (fetched.Data != null && CachedClanWar.IsNewWar(cachedClanWar, fetched))
+                if (fetched.Data != null && _clansClient.HasUpdated(cached, fetched))
+                    _clansClient.OnClanWarLeagueGroupUpdated(cached.Data, fetched.Data);
+
+                cached.UpdateFrom(fetched);
+
+                List<Task> tasks = new List<Task>();
+
+                List<string> downloadWarTags = new List<string>();
+
+                if (cached.Data == null || cached.Season.Month < DateTime.Now.Month)
                 {
-                    await _clansClient.InsertNewWarAsync(new CachedWar(fetched));
+                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
-                    cachedClanWar.Type = fetched.Data.WarType;
+                    return;
                 }
 
-                cachedClanWar.UpdateFrom(fetched);
+                try
+                {
+                    foreach (var round in cached.Data.Rounds)
+                        foreach (string warTag in round.WarTags)
+                        {
+                            if (_updatingWarTags.TryAdd(warTag, new byte()))
+                            {
+                                downloadWarTags.Add(warTag);
 
-                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+                                tasks.Add(ReturnNewWarAsync(tag, cached.Season, warTag, _stopRequestedTokenSource.Token));
+                            }
+                        }
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                    foreach (Task<CachedWar?> cachedWarTask in tasks)
+                        if (await cachedWarTask is CachedWar cachedWar)
+                            dbContext.Wars.Add(cachedWar);
+
+                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+                }
+                finally
+                {
+                    foreach (string warTag in downloadWarTags)
+                        _updatingWarTags.TryRemove(warTag, out _);
+                }
             }
             finally
             {
-                _clansClient.UpdatingClanWar.TryRemove(tag, out _);
+                _updatingGroup.TryRemove(tag, out _);
             }
+        }
+
+
+        private static readonly ConcurrentDictionary<string, byte> _updatingWarTags = new ConcurrentDictionary<string, byte>();
+
+        private async Task<CachedWar?> ReturnNewWarAsync(string tag, DateTime season, string warTag, CancellationToken cancellationToken)
+        {
+            _stopRequestedTokenSource.Token.ThrowIfCancellationRequested();
+
+            using var scope = Services.CreateScope();
+
+            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+
+            CachedWar? cachedWar = await dbContext.Wars
+                .FirstOrDefaultAsync(w => w.WarTag == warTag)
+                .ConfigureAwait(false);
+
+            if (cachedWar != null)
+                return null;
+
+            CachedWar fetched = await CachedWar.FromClanWarLeagueWarResponseAsync(warTag, season, _clansClient, _clansApi, cancellationToken);
+
+            if (fetched.ClanTags.Any(c => c == tag) == false)
+                return null;
+
+            return fetched;
         }
     }
 }

@@ -17,17 +17,19 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.GetClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClanWarLeagueGroup(apiResponse, clansCacheBase.ClanWarLeagueGroupTimeToLive(apiResponse));
+                return new CachedClanWarLeagueGroup(apiResponse, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClanWarLeagueGroup(tag, e, clansCacheBase.ClanWarLeagueGroupTimeToLive(e));
+                return new CachedClanWarLeagueGroup(tag, e, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
         public string Tag { get; internal set; }
 
         public DateTime Season { get; internal set; }
+
+        public GroupState? State { get; internal set; }
 
         internal CachedClanWarLeagueGroup(string tag)
         {
@@ -49,8 +51,6 @@ namespace CocApi.Cache.Models
         {
             UpdateFrom(e, localExpiration);
         }
-
-        public GroupState? State { get; internal set; }
 
         internal void UpdateFrom(CachedClanWarLeagueGroup fetched)
         {

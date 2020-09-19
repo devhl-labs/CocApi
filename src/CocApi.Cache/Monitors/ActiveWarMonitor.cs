@@ -28,41 +28,22 @@ namespace CocApi.Cache
             _clansClient = clansClientBase;
         }
 
-        private int _warId = 0;
-
-        public Task RunAsync(CancellationToken cancellationToken)
-        {
-            Task.Run(() =>
-            {
-                _ = MonitorActiveWarsAsync(cancellationToken);
-            });
-
-            return Task.CompletedTask;
-        }
-
-        public new async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _stopRequestedTokenSource.Cancel();
-
-            await base.StopAsync(cancellationToken);
-        }
-
-        private async Task MonitorActiveWarsAsync(CancellationToken cancellationToken)
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
             try
             {
-                if (IsRunning)
+                if (_isRunning)
                     return;
 
-                IsRunning = true;
+                _isRunning = true;
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                OnLog(this, new LogEventArgs(nameof(MonitorActiveWarsAsync), LogLevel.Information));
+                _clansClient.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
-                    using var scope = _services.CreateScope();
+                    using var scope = Services.CreateScope();
 
                     CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
@@ -70,14 +51,14 @@ namespace CocApi.Cache
 
                     var cachedWars = await dbContext.WarWithLogStatus
                         .AsNoTracking()
-                        .Where(w => 
-                            w.Id > _warId && 
-                            w.State < WarState.WarEnded && 
+                        .Where(w =>
+                            w.Id > _id &&
+                            w.State < WarState.WarEnded &&
                             w.IsFinal == false &&
                             (w.IsWarLogPublic == null || w.IsWarLogPublic == true))
                         .OrderBy(w => w.Id)
-                        .Take(_cacheConfiguration.ConcurrentUpdates)
-                        .Select(w => new {w.Id, w.ClanTag, w.OpponentTag })
+                        .Take(ClientConfiguration.ConcurrentUpdates)
+                        .Select(w => new { w.Id, w.ClanTag, w.OpponentTag })
                         .ToListAsync()
                         .ConfigureAwait(false);
 
@@ -87,30 +68,39 @@ namespace CocApi.Cache
                         tasks.Add(MonitorActiveWarAsync(cachedWars[i].OpponentTag));
                     }
 
-                    if (cachedWars.Count < _cacheConfiguration.ConcurrentUpdates)
-                        _warId = 0;
+                    if (cachedWars.Count < ClientConfiguration.ConcurrentUpdates)
+                        _id = 0;
                     else
-                        _warId = cachedWars.Max(c => c.Id);
+                        _id = cachedWars.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    await Task.Delay(_cacheConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(ClientConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
-                IsRunning = false;
+                _isRunning = false;
             }
             catch (Exception e)
             {
-                IsRunning = false;
+                _isRunning = false;
 
                 if (_stopRequestedTokenSource.IsCancellationRequested)
                     return;
 
-                OnLog(this, new ExceptionEventArgs(nameof(MonitorActiveWarsAsync), e));
+                _clansClient.OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
                 if (cancellationToken.IsCancellationRequested == false)
                     _ = RunAsync(cancellationToken);
             }
+        }
+
+        public new async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _stopRequestedTokenSource.Cancel();
+
+            await base.StopAsync(cancellationToken);
+
+            _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
         }
 
         private async Task MonitorActiveWarAsync(string clanTag)
@@ -120,7 +110,7 @@ namespace CocApi.Cache
 
             try
             {
-                using var scope = _services.CreateScope();
+                using var scope = Services.CreateScope();
 
                 CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
 
@@ -142,7 +132,7 @@ namespace CocApi.Cache
                 CachedClanWar fetched = await CachedClanWar
                     .FromCurrentWarResponseAsync(clanTag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
 
-                if (fetched.Data != null && _clansClient.IsNewWar(cachedClanWar, fetched))
+                if (fetched.Data != null && CachedClanWar.IsNewWar(cachedClanWar, fetched))
                 {
                     await _clansClient.InsertNewWarAsync(new CachedWar(fetched));
 

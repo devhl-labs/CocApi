@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CachedContext))]
-    [Migration("20200916224552_Migration0")]
+    [Migration("20200919205033_Migration0")]
     partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -270,9 +270,6 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("StatusCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("StatusCodeOpponent")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")

@@ -14,13 +14,13 @@ using Newtonsoft.Json;
 
 namespace CocApi.Test
 {
-    public class ClansCache : ClansClientBase, IHostedService
+    public class ClansClient : ClansClientBase, IHostedService
     {
-        private readonly PlayersCache _playersCache;
+        private readonly PlayersClient _playersCache;
         private readonly LogService _logService;
         private readonly ClansApi _clansApi;
 
-        public ClansCache(TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersCache playersCache, LogService logService) 
+        public ClansClient(TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClient playersCache, LogService logService) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
@@ -49,11 +49,6 @@ namespace CocApi.Test
             return Task.CompletedTask;
         }
 
-        public override TimeSpan ClanWarTimeToLive(Exception exception)
-        {
-            return base.ClanWarTimeToLive(exception);
-        }
-
         protected override bool HasUpdated(Clan stored, Clan fetched)
         {
             return base.HasUpdated(stored, fetched);
@@ -64,28 +59,29 @@ namespace CocApi.Test
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.StartAsync(cancellationToken);
 
-            await AddOrUpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
-            await AddOrUpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
-            await AddAsync("#28RUGUYJU"); //devhls lab
-            await AddAsync("#2C8V29YJ"); // russian clan
+            await AddOrUpdateAsync("#8J82PV0C", true, true, true, true); //fysb unbuckled
+            await AddOrUpdateAsync("#22G0JJR8", true, true, true, true); //fysb
+            await AddOrUpdateAsync("#28RUGUYJU", true, true, true, true); //devhls lab
+            await AddOrUpdateAsync("#2C8V29YJ", true, true, true, true); // russian clan
+
+            base.DownloadMembers = true;
             await base.StartAsync(cancellationToken);
+        }
+
+        public new async Task StopAsync(CancellationToken cancellationToken)
+        {
+            List<Task> tasks = new List<Task>
+            {
+                base.StopAsync(cancellationToken),
+                _playersCache.StopAsync(cancellationToken)
+            };
+
+            await Task.WhenAll(tasks);
         }
 
         private Task ClansCache_ClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
         {
             _logService.Log(LogLevel.Information, this.GetType().Name, null, "War updated " + ClanWar.NewAttacks(e.Stored, e.Fetched).Count);
-
-            string json = JsonConvert.SerializeObject(e.Clan);
-
-            Clan clan = JsonConvert.DeserializeObject<Clan>(json);
-
-            string json2 = JsonConvert.SerializeObject(e.Fetched);
-
-            ClanWar clanWar = JsonConvert.DeserializeObject<ClanWar>(json2);
-
-            string json3 = JsonConvert.SerializeObject(e.Fetched, Clash.JsonSerializerSettings);
-
-            ClanWar clanWar2 = JsonConvert.DeserializeObject<ClanWar>(json3, Clash.JsonSerializerSettings);
 
             return Task.CompletedTask;
         }

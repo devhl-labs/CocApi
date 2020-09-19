@@ -20,11 +20,11 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedPlayer(apiResponse, playersCacheBase.TimeToLive(apiResponse));
+                return new CachedPlayer(apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedPlayer(tag, e, playersCacheBase.TimeToLive(e));
+                return new CachedPlayer(tag, e, await playersCacheBase.TimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 

@@ -9,12 +9,8 @@ namespace CocApi.Cache
 
         public ClanWar Stored { get; }
 
-        public Clan Clan { get; }
-
-        public ClanWarUpdatedEventArgs(Model.Clan clan, ClanWar stored, ClanWar fetched)
+        public ClanWarUpdatedEventArgs(ClanWar stored, ClanWar fetched)
         {
-            Clan = clan;
-
             Fetched = fetched;
 
             Stored = stored;

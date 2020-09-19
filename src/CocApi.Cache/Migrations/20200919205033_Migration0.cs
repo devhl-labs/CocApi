@@ -127,7 +127,6 @@ namespace CocApi.Cache.Migrations
                     State = table.Column<int>(nullable: true),
                     IsFinal = table.Column<bool>(nullable: false),
                     Season = table.Column<DateTime>(nullable: true),
-                    StatusCodeOpponent = table.Column<int>(nullable: true),
                     Announcements = table.Column<int>(nullable: false),
                     Type = table.Column<int>(nullable: false)
                 },

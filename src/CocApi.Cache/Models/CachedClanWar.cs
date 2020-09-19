@@ -15,7 +15,7 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(tag, cancellationToken);
 
-                CachedClanWar result = new CachedClanWar(tag, apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse));
+                CachedClanWar result = new CachedClanWar(tag, apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false));
 
                 result.Type = result.Data.WarType;
 
@@ -23,8 +23,22 @@ namespace CocApi.Cache.Models
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedClanWar(tag, e, clansCacheBase.ClanWarTimeToLive(e));
+                return new CachedClanWar(tag, e, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
             }
+        }
+
+        internal static bool IsNewWar(CachedClanWar stored, CachedClanWar fetched)
+        {
+            if (fetched.Data == null || fetched.Data.State == WarState.NotInWar)
+                return false;
+
+            if (stored.Data == null)
+                return true;
+
+            if (stored.Data.PreparationStartTime == fetched.Data.PreparationStartTime)
+                return false;
+
+            return true;
         }
 
         public string Tag { get; internal set; }

@@ -11,6 +11,25 @@ namespace CocApi.Model
 {
     public partial class ClanWar : IEquatable<ClanWar?>
     {
+        public static bool IsSameWar(ClanWar? stored, ClanWar fetched)
+        {
+            if (ReferenceEquals(stored, fetched))
+                return true;
+
+            if (stored == null)
+                return true;
+
+            if (stored.PreparationStartTime != fetched.PreparationStartTime)
+                return false;
+
+            if (stored.Clan.Tag == fetched.Clan.Tag)
+                return true;
+
+            if (stored.Clan.Tag == fetched.Opponent.Tag)
+                return true;
+
+            return false;
+        }
 
         public static string Url(string clanTag)
         {

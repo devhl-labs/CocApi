@@ -19,7 +19,7 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken);
 
-                CachedWar result = new CachedWar(apiResponse, clansCacheBase.ClanWarTimeToLive(apiResponse), warTag, season);
+                CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season);
 
                 result.Type = result.Data.WarType;
 
@@ -29,7 +29,7 @@ namespace CocApi.Cache.Models
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)
             {
-                return new CachedWar(warTag, e, clansCacheBase.ClanWarTimeToLive(e));
+                return new CachedWar(warTag, e, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -49,7 +49,7 @@ namespace CocApi.Cache.Models
 
         public DateTime? Season { get; private set; }
 
-        public HttpStatusCode? StatusCodeOpponent { get; internal set; }
+        //public HttpStatusCode? StatusCodeOpponent { get; internal set; }
 
         public Announcements Announcements { get; internal set; }
 
@@ -100,10 +100,10 @@ namespace CocApi.Cache.Models
 
             Type = fetched.Data.WarType;
 
-            if (cachedClan.Tag == fetched.Data.Clans.First().Value.Tag)
-                StatusCode = fetched.StatusCode;
-            else
-                StatusCodeOpponent = fetched.StatusCode;
+            //if (cachedClan.Tag == fetched.Data.Clans.First().Value.Tag)
+            //    StatusCode = fetched.StatusCode;
+            //else
+            //    StatusCodeOpponent = fetched.StatusCode;
 
             UpdateFrom(fetched);
         }
@@ -190,10 +190,10 @@ namespace CocApi.Cache.Models
                 if (fetched.Data.State == WarState.WarEnded)
                     IsFinal = true;
 
-                if (fetched.Data.Clans.First().Key == ClanTag)
-                    StatusCode = fetched.StatusCode;
-                else
-                    StatusCodeOpponent = fetched.StatusCode;
+                //if (fetched.Data.Clans.First().Key == ClanTag)
+                //    StatusCode = fetched.StatusCode;
+                //else
+                //    StatusCodeOpponent = fetched.StatusCode;
             }
         }
         
@@ -209,7 +209,7 @@ namespace CocApi.Cache.Models
 
             StatusCode = cachedWar.StatusCode;
 
-            StatusCodeOpponent = cachedWar.StatusCodeOpponent;
+            //StatusCodeOpponent = cachedWar.StatusCodeOpponent;
         }
 
         public override int GetHashCode()

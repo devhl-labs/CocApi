@@ -270,9 +270,6 @@ namespace CocApi.Cache.Migrations
                     b.Property<int>("StatusCode")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("StatusCodeOpponent")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Type")
                         .HasColumnType("INTEGER");
 
