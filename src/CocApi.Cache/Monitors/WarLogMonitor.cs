@@ -41,6 +41,13 @@ namespace CocApi.Cache
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
+                    if (_clansClient.DownloadCurrentWars == false)
+                    {
+                        await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+
+                        continue;
+                    }
+
                     using var scope = Services.CreateScope();
 
                     CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();

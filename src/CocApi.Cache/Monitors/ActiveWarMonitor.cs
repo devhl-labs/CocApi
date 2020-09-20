@@ -43,6 +43,13 @@ namespace CocApi.Cache
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
+                    if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
+                    {
+                        await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+
+                        continue;
+                    }
+
                     using var scope = Services.CreateScope();
 
                     CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
@@ -133,11 +140,7 @@ namespace CocApi.Cache
                     .FromCurrentWarResponseAsync(clanTag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
 
                 if (fetched.Data != null && CachedClanWar.IsNewWar(cachedClanWar, fetched))
-                //{
                     await _clansClient.InsertNewWarAsync(new CachedWar(fetched));
-
-                    //cachedClanWar.Type = fetched.Data.WarType;
-                //}
 
                 cachedClanWar.UpdateFrom(fetched);
 

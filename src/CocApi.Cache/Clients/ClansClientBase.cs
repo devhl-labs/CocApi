@@ -40,8 +40,6 @@ namespace CocApi.Cache
         {
             _playersCache = playersCache;
             _clanMonitor = new ClanMonitor(_playersCache, TokenProvider, ClientConfiguration, _clansApi, this);
-
-            DownloadMembers = true;
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -54,9 +52,9 @@ namespace CocApi.Cache
         public event AsyncEventHandler<ClanWarEventArgs>? ClanWarStartingSoon;
         public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
-        public bool DownloadCurrentWars { get; set; } = true;
-        public bool DownloadCwl { get; set; } = true;
-        public bool DownloadMembers { get; set; } = false;
+        public bool DownloadCurrentWars { get; set; }
+        public bool DownloadCwl { get; set; }
+        public bool DownloadMembers { get; set; }
 
         internal ConcurrentDictionary<string, byte> UpdatingClanWar { get; set; } = new ConcurrentDictionary<string, byte>();
 
@@ -135,7 +133,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        private async Task<CachedClan> GetCachedClanAsync(string tag, CancellationToken? cancellationToken = default)
+        public async Task<CachedClan> GetCachedClanAsync(string tag, CancellationToken? cancellationToken = default)
         {
             using var scope = Services.CreateScope();
 

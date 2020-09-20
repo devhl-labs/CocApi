@@ -13,12 +13,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
-    internal class PlayerMontitor : ClientBase
+    internal class PlayerMonitor : ClientBase
     {
         private readonly PlayersApi _playersApi;
         private readonly PlayersClientBase _playersClientBase;
 
-        public PlayerMontitor
+        public PlayerMonitor
             (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, PlayersApi playersApi, PlayersClientBase playersClientBase)
             : base(tokenProvider, cacheConfiguration)
         {

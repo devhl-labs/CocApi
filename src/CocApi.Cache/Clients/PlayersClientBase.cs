@@ -19,7 +19,7 @@ namespace CocApi.Cache
     {
         private readonly PlayersApi _playersApi;
 
-        internal readonly PlayerMontitor PlayerMontitor;
+        internal readonly PlayerMonitor PlayerMontitor;
 
         internal void OnLog(object sender, LogEventArgs log) => Task.Run(() => Log?.Invoke(sender, log));
 
@@ -31,7 +31,7 @@ namespace CocApi.Cache
         {
             _playersApi = playersApi;
 
-            PlayerMontitor = new PlayerMontitor(tokenProvider, cacheConfiguration, _playersApi, this);
+            PlayerMontitor = new PlayerMonitor(tokenProvider, cacheConfiguration, _playersApi, this);
         }
 
 

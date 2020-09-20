@@ -64,7 +64,10 @@ namespace CocApi.Test
             await AddOrUpdateAsync("#28RUGUYJU", true, true, true, true); //devhls lab
             await AddOrUpdateAsync("#2C8V29YJ", true, true, true, true); // russian clan
 
-            base.DownloadMembers = true;
+            DownloadMembers = true;
+            DownloadCurrentWars = true;
+            DownloadCwl = true;
+
             await base.StartAsync(cancellationToken);
         }
 
