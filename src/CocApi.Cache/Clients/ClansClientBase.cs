@@ -537,7 +537,13 @@ namespace CocApi.Cache
             => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
         public virtual ValueTask<TimeSpan> ClanWarLogTimeToLiveAsync(Exception exception)
-            => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
+        {
+            if (exception is ApiException apiException)
+                if (apiException.ErrorCode == (int)HttpStatusCode.Forbidden)
+                    return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
+
+            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
+        }
 
         public virtual ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLiveAsync(ApiResponse<ClanWarLeagueGroup> apiResponse)
         {
@@ -565,7 +571,7 @@ namespace CocApi.Cache
         {
             if (exception is ApiException apiException)
                 if (apiException.ErrorCode == (int)HttpStatusCode.Forbidden)
-                    return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
+                    return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
 
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }

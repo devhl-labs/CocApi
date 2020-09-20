@@ -30,6 +30,7 @@ namespace CocApi.Test
                 services.AddSingleton(GetPlayersApi);
                 services.AddSingleton(GetClansApi);
                 services.AddSingleton(GetClientConfiguration);
+                services.AddSingleton(GetLocationsApi);
                 services.AddSingleton<LogService>();
                 services.AddSingleton<PlayersClient>();
                 services.AddHostedService<ClansClient>();
@@ -60,6 +61,11 @@ namespace CocApi.Test
             };
 
             return new TokenProvider(tokens, TimeSpan.FromSeconds(1));
+        }
+
+        private static LocationsApi GetLocationsApi(IServiceProvider arg)
+        {
+            return new LocationsApi(arg.GetRequiredService<TokenProvider>());
         }
     }
 }
