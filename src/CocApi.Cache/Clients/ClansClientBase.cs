@@ -17,7 +17,7 @@ namespace CocApi.Cache
     public class ClansClientBase : ClientBase
     {
         private readonly ClansApi _clansApi;
-        private readonly PlayersClientBase? _playersCache;
+        private readonly PlayersClientBase? _playersClient;
 
         internal void OnLog(object sender, LogEventArgs log) => Task.Run(() => Log?.Invoke(sender, log));
 
@@ -35,11 +35,11 @@ namespace CocApi.Cache
             _warMonitor = new WarMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
         }
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClientBase playersCache)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClientBase playersClient)
             : this(tokenProvider, cacheConfiguration, clansApi)
         {
-            _playersCache = playersCache;
-            _clanMonitor = new ClanMonitor(_playersCache, TokenProvider, ClientConfiguration, _clansApi, this);
+            _playersClient = playersClient;
+            _clanMonitor = new ClanMonitor(_playersClient, TokenProvider, ClientConfiguration, _clansApi, this);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -232,6 +232,8 @@ namespace CocApi.Cache
                 && stored.WarWinStreak == fetched.WarWinStreak
                 && stored.Labels.Except(fetched.Labels).Count() == 0
                 && stored.Members.Except(fetched.Members).Count() == 0
+                && Clan.Donations(stored, fetched).Count == 0 
+                && Clan.DonationsReceived(stored, fetched).Count == 0
                 );
         }
 
