@@ -190,7 +190,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (Clan)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>?> GetClanResponseOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>?> GetClanResponseOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -243,7 +243,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;ClanMember&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>> GetClanMembersResponseAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>> GetClanMembersResponseAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
@@ -336,7 +336,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (List&lt;ClanMember&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>?> GetClanMembersResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanMember>>?> GetClanMembersResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -464,7 +464,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWarLeagueGroup)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLeagueGroup>?> GetClanWarLeagueGroupResponseOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLeagueGroup>?> GetClanWarLeagueGroupResponseOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -511,7 +511,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
@@ -589,7 +589,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>?> GetClanWarLeagueWarResponseOrDefaultAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>?> GetClanWarLeagueWarResponseOrDefaultAsync (string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -735,7 +735,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (ClanWarLog)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLog>?> GetClanWarLogResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWarLog>?> GetClanWarLogResponseOrDefaultAsync (string clanTag, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -785,7 +785,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        private async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
@@ -863,7 +863,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>?> GetCurrentWarResponseOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>?> GetCurrentWarResponseOrDefaultAsync (string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -930,7 +930,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <returns>Task of ApiResponse (ClanList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanList>> SearchClansResponseAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanList>> SearchClansResponseAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -1056,7 +1056,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <returns>Task of ApiResponse (ClanList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanList>?> SearchClansResponseOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanList>?> SearchClansResponseOrDefaultAsync (string name = default(string), string warFrequency = default(string), int? locationId = default(int?), int? minMembers = default(int?), int? maxMembers = default(int?), int? minClanPoints = default(int?), int? minClanLevel = default(int?), int? limit = default(int?), string after = default(string), string before = default(string), string labelIds = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {

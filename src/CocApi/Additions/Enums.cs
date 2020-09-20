@@ -177,6 +177,63 @@ namespace CocApi
         /// </summary>
         [EnumMember(Value = "Open")]
         Open = 3
+    }
+
+    /// <summary>
+    /// Defines State
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum GroupState
+    {
+        /// <summary>
+        /// Enum Preparation for value: preparation
+        /// </summary>
+        [EnumMember(Value = "preparation")]
+        Preparation = 1,
+
+        /// <summary>
+        /// Enum InWar for value: inWar
+        /// </summary>
+        [EnumMember(Value = "inWar")]
+        InWar = 2,
+
+        /// <summary>
+        /// Enum Ended for value: ended
+        /// </summary>
+        [EnumMember(Value = "ended")]
+        Ended = 3
+
+    }
+
+    /// <summary>
+    /// Defines State
+    /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum WarState
+    {
+        /// <summary>
+        /// Enum NotInWar for value: notInWar
+        /// </summary>
+        [EnumMember(Value = "notInWar")]
+        NotInWar = 1,
+
+        /// <summary>
+        /// Enum Preparation for value: preparation
+        /// </summary>
+        [EnumMember(Value = "preparation")]
+        Preparation = 2,
+
+        /// <summary>
+        /// Enum InWar for value: inWar
+        /// </summary>
+        [EnumMember(Value = "inWar")]
+        InWar = 3,
+
+        /// <summary>
+        /// Enum WarEnded for value: warEnded
+        /// </summary>
+        [EnumMember(Value = "warEnded")]
+        WarEnded = 4
 
     }
 }

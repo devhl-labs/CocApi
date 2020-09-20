@@ -14,7 +14,7 @@ Method | HTTP request | Description
 
 <a name="getclanranking"></a>
 # **GetClanRanking**
-> List&lt;ClanRanking&gt; GetClanRanking (string locationId, int? limit = null, string after = null, string before = null)
+> ClanRankingList GetClanRanking (string locationId, int? limit = null, string after = null, string before = null)
 
 Get clan rankings for a specific location
 
@@ -50,7 +50,7 @@ namespace Example
             try
             {
                 // Get clan rankings for a specific location
-                List<ClanRanking> result = apiInstance.GetClanRanking(locationId, limit, after, before);
+                ClanRankingList result = apiInstance.GetClanRanking(locationId, limit, after, before);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -75,7 +75,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;ClanRanking&gt;**](ClanRanking.md)
+[**ClanRankingList**](ClanRankingList.md)
 
 ### Authorization
 
@@ -101,7 +101,7 @@ Name | Type | Description  | Notes
 
 <a name="getclanversusranking"></a>
 # **GetClanVersusRanking**
-> List&lt;ClanVersusRanking&gt; GetClanVersusRanking (string locationId, int? limit = null, string after = null, string before = null)
+> ClanVersusRankingList GetClanVersusRanking (string locationId, int? limit = null, string after = null, string before = null)
 
 Get clan versus rankings for a specific location
 
@@ -137,7 +137,7 @@ namespace Example
             try
             {
                 // Get clan versus rankings for a specific location
-                List<ClanVersusRanking> result = apiInstance.GetClanVersusRanking(locationId, limit, after, before);
+                ClanVersusRankingList result = apiInstance.GetClanVersusRanking(locationId, limit, after, before);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -162,7 +162,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;ClanVersusRanking&gt;**](ClanVersusRanking.md)
+[**ClanVersusRankingList**](ClanVersusRankingList.md)
 
 ### Authorization
 
@@ -441,7 +441,7 @@ Name | Type | Description  | Notes
 
 <a name="getplayerversusranking"></a>
 # **GetPlayerVersusRanking**
-> List&lt;PlayerVersusRanking&gt; GetPlayerVersusRanking (string locationId, int? limit = null, string after = null, string before = null)
+> PlayerVersusRankingList GetPlayerVersusRanking (string locationId, int? limit = null, string after = null, string before = null)
 
 Get player versus rankings for a specific location
 
@@ -477,7 +477,7 @@ namespace Example
             try
             {
                 // Get player versus rankings for a specific location
-                List<PlayerVersusRanking> result = apiInstance.GetPlayerVersusRanking(locationId, limit, after, before);
+                PlayerVersusRankingList result = apiInstance.GetPlayerVersusRanking(locationId, limit, after, before);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -502,7 +502,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;PlayerVersusRanking&gt;**](PlayerVersusRanking.md)
+[**PlayerVersusRankingList**](PlayerVersusRankingList.md)
 
 ### Authorization
 

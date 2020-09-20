@@ -61,8 +61,10 @@ namespace CocApi.Model
     /// ClanWarLogEntry
     /// </summary>
     [DataContract]
-    public partial class ClanWarLogEntry :  IValidatableObject
+    public partial class ClanWarLogEntry :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Gets or Sets Result
         /// </summary>

@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// PlayerAchievementProgress
     /// </summary>
     [DataContract]
-    public partial class PlayerAchievementProgress :  IValidatableObject
+    public partial class PlayerAchievementProgress :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerAchievementProgress" /> class.
         /// </summary>

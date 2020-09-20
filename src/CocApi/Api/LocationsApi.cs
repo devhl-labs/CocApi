@@ -102,10 +102,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;ClanRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanRanking>> GetClanRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ClanRankingList</returns>
+        public async System.Threading.Tasks.Task<ClanRankingList> GetClanRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanRanking>> localVarResponse = await GetClanRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
+             CocApi.Client.ApiResponse<ClanRankingList> localVarResponse = await GetClanRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -117,8 +117,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;ClanRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanRanking>>> GetClanRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (ClanRankingList)</returns>
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanRankingList>> GetClanRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'locationId' is set
             if (locationId == null)
@@ -161,7 +161,7 @@ namespace CocApi.Api
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanRanking>>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<ClanRankingList>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -209,8 +209,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;ClanRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanRanking>>?> GetClanRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (ClanRankingList)</returns>
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanRankingList>?> GetClanRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -230,10 +230,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;ClanRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanRanking>?> GetClanRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ClanRankingList</returns>
+        public async System.Threading.Tasks.Task<ClanRankingList?> GetClanRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanRanking>>? localVarResponse = await GetClanRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanRankingList>? localVarResponse = await GetClanRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -250,10 +250,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;ClanVersusRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanVersusRanking>> GetClanVersusRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ClanVersusRankingList</returns>
+        public async System.Threading.Tasks.Task<ClanVersusRankingList> GetClanVersusRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanVersusRanking>> localVarResponse = await GetClanVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
+             CocApi.Client.ApiResponse<ClanVersusRankingList> localVarResponse = await GetClanVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -265,8 +265,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;ClanVersusRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanVersusRanking>>> GetClanVersusRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (ClanVersusRankingList)</returns>
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanVersusRankingList>> GetClanVersusRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'locationId' is set
             if (locationId == null)
@@ -309,7 +309,7 @@ namespace CocApi.Api
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<ClanVersusRanking>>("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<ClanVersusRankingList>("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -357,8 +357,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;ClanVersusRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<ClanVersusRanking>>?> GetClanVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (ClanVersusRankingList)</returns>
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanVersusRankingList>?> GetClanVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -378,10 +378,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;ClanVersusRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<ClanVersusRanking>?> GetClanVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ClanVersusRankingList</returns>
+        public async System.Threading.Tasks.Task<ClanVersusRankingList?> GetClanVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<ClanVersusRanking>>? localVarResponse = await GetClanVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<ClanVersusRankingList>? localVarResponse = await GetClanVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 
@@ -408,7 +408,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <returns>Task of ApiResponse (Location)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Location>> GetLocationResponseAsync (string locationId, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Location>> GetLocationResponseAsync (string locationId, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'locationId' is set
             if (locationId == null)
@@ -485,7 +485,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <returns>Task of ApiResponse (Location)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Location>?> GetLocationResponseOrDefaultAsync (string locationId, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Location>?> GetLocationResponseOrDefaultAsync (string locationId, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -536,7 +536,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LocationList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>> GetLocationsResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>> GetLocationsResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -622,7 +622,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (LocationList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>?> GetLocationsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LocationList>?> GetLocationsResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -677,7 +677,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (PlayerRankingList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetPlayerRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>> GetPlayerRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'locationId' is set
             if (locationId == null)
@@ -769,7 +769,7 @@ namespace CocApi.Api
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <returns>Task of ApiResponse (PlayerRankingList)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>?> GetPlayerRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerRankingList>?> GetPlayerRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -809,10 +809,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;PlayerVersusRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<PlayerVersusRanking>> GetPlayerVersusRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of PlayerVersusRankingList</returns>
+        public async System.Threading.Tasks.Task<PlayerVersusRankingList> GetPlayerVersusRankingAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<PlayerVersusRanking>> localVarResponse = await GetPlayerVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
+             CocApi.Client.ApiResponse<PlayerVersusRankingList> localVarResponse = await GetPlayerVersusRankingResponseAsync(locationId, limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -824,8 +824,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;PlayerVersusRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<PlayerVersusRanking>>> GetPlayerVersusRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (PlayerVersusRankingList)</returns>
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerVersusRankingList>> GetPlayerVersusRankingResponseAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'locationId' is set
             if (locationId == null)
@@ -868,7 +868,7 @@ namespace CocApi.Api
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<PlayerVersusRanking>>("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerVersusRankingList>("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -916,8 +916,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;PlayerVersusRanking&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<PlayerVersusRanking>>?> GetPlayerVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (PlayerVersusRankingList)</returns>
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<PlayerVersusRankingList>?> GetPlayerVersusRankingResponseOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -937,10 +937,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;PlayerVersusRanking&gt;</returns>
-        public async System.Threading.Tasks.Task<List<PlayerVersusRanking>?> GetPlayerVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of PlayerVersusRankingList</returns>
+        public async System.Threading.Tasks.Task<PlayerVersusRankingList?> GetPlayerVersusRankingOrDefaultAsync (string locationId, int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<PlayerVersusRanking>>? localVarResponse = await GetPlayerVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<PlayerVersusRankingList>? localVarResponse = await GetPlayerVersusRankingResponseOrDefaultAsync(locationId, limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

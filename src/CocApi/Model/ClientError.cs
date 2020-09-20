@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// ClientError
     /// </summary>
     [DataContract]
-    public partial class ClientError :  IValidatableObject
+    public partial class ClientError :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientError" /> class.
         /// </summary>

@@ -23,41 +23,41 @@ using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-//namespace CocApi
-//{
-//        /// <summary>
-//        /// Defines Role
-//        /// </summary>
-//        [JsonConverter(typeof(StringEnumConverter))]
-//        public enum RoleEnum
-//        {
-//            /// <summary>
-//            /// Enum Member for value: member
-//            /// </summary>
-//            [EnumMember(Value = "member")]
-//            Member = 1,
+namespace CocApi
+{
+        /// <summary>
+        /// Defines Role
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum RoleEnum
+        {
+            /// <summary>
+            /// Enum Member for value: member
+            /// </summary>
+            [EnumMember(Value = "member")]
+            Member = 1,
 
-//            /// <summary>
-//            /// Enum Admin for value: admin
-//            /// </summary>
-//            [EnumMember(Value = "admin")]
-//            Admin = 2,
+            /// <summary>
+            /// Enum Admin for value: admin
+            /// </summary>
+            [EnumMember(Value = "admin")]
+            Admin = 2,
 
-//            /// <summary>
-//            /// Enum CoLeader for value: coLeader
-//            /// </summary>
-//            [EnumMember(Value = "coLeader")]
-//            CoLeader = 3,
+            /// <summary>
+            /// Enum CoLeader for value: coLeader
+            /// </summary>
+            [EnumMember(Value = "coLeader")]
+            CoLeader = 3,
 
-//            /// <summary>
-//            /// Enum Leader for value: leader
-//            /// </summary>
-//            [EnumMember(Value = "leader")]
-//            Leader = 4
+            /// <summary>
+            /// Enum Leader for value: leader
+            /// </summary>
+            [EnumMember(Value = "leader")]
+            Leader = 4
 
-//        }
+        }
 
-//}
+}
 
 
 
@@ -67,13 +67,15 @@ namespace CocApi.Model
     /// ClanMember
     /// </summary>
     [DataContract]
-    public partial class ClanMember :  IValidatableObject
+    public partial class ClanMember :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
-        public Role? Role { get; private set; }
+        public RoleEnum? Role { get; private set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanMember" /> class.
         /// </summary>
@@ -88,7 +90,7 @@ namespace CocApi.Model
         /// <param name="donationsReceived">donationsReceived.</param>
         /// <param name="trophies">trophies.</param>
         /// <param name="versusTrophies">versusTrophies.</param>
-        public ClanMember(League league = default(League), string tag = default(string), string name = default(string), Role? role = default(Role?), int expLevel = default(int), int clanRank = default(int), int previousClanRank = default(int), int donations = default(int), int donationsReceived = default(int), int trophies = default(int), int versusTrophies = default(int))
+        public ClanMember(League league = default(League), string tag = default(string), string name = default(string), RoleEnum? role = default(RoleEnum?), int expLevel = default(int), int clanRank = default(int), int previousClanRank = default(int), int donations = default(int), int donationsReceived = default(int), int trophies = default(int), int versusTrophies = default(int))
         {
             this.League = league;
             this.Tag = tag;

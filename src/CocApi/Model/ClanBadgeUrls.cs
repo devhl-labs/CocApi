@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// ClanBadgeUrls
     /// </summary>
     [DataContract]
-    public partial class ClanBadgeUrls :  IValidatableObject
+    public partial class ClanBadgeUrls :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanBadgeUrls" /> class.
         /// </summary>

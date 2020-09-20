@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// WarLeague
     /// </summary>
     [DataContract]
-    public partial class WarLeague :  IValidatableObject
+    public partial class WarLeague :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WarLeague" /> class.
         /// </summary>

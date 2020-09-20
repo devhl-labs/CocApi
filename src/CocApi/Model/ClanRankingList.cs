@@ -32,27 +32,27 @@ namespace CocApi
 namespace CocApi.Model
 {
     /// <summary>
-    /// ClanWarLeagueRound
+    /// ClanRankingList
     /// </summary>
     [DataContract]
-    public partial class ClanWarLeagueRound :  IValidatableObject 
+    public partial class ClanRankingList :  IValidatableObject 
     {
         public DateTime ServerResponseExpires { get; internal set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWarLeagueRound" /> class.
+        /// Initializes a new instance of the <see cref="ClanRankingList" /> class.
         /// </summary>
-        /// <param name="warTags">warTags.</param>
-        public ClanWarLeagueRound(List<string> warTags = default(List<string>))
+        /// <param name="items">items.</param>
+        public ClanRankingList(List<ClanRanking> items = default(List<ClanRanking>))
         {
-            this.WarTags = warTags;
+            this.Items = items;
         }
         
         /// <summary>
-        /// Gets or Sets WarTags
+        /// Gets or Sets Items
         /// </summary>
-        [DataMember(Name="warTags", EmitDefaultValue=false)]
-        public List<string> WarTags { get; private set; }
+        [DataMember(Name="items", EmitDefaultValue=false)]
+        public List<ClanRanking> Items { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -61,8 +61,8 @@ namespace CocApi.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ClanWarLeagueRound {\n");
-            sb.Append("  WarTags: ").Append(WarTags).Append("\n");
+            sb.Append("class ClanRankingList {\n");
+            sb.Append("  Items: ").Append(Items).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }

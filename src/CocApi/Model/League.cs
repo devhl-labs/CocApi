@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// League
     /// </summary>
     [DataContract]
-    public partial class League :  IValidatableObject
+    public partial class League :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="League" /> class.
         /// </summary>

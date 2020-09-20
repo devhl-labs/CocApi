@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// WarClanLogEntry
     /// </summary>
     [DataContract]
-    public partial class WarClanLogEntry :  IValidatableObject
+    public partial class WarClanLogEntry :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WarClanLogEntry" /> class.
         /// </summary>

@@ -105,8 +105,10 @@ namespace CocApi.Model
     /// Clan
     /// </summary>
     [DataContract]
-    public partial class Clan :  IValidatableObject
+    public partial class Clan :  IValidatableObject 
     {
+        //public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Gets or Sets WarFrequency
         /// </summary>
@@ -138,15 +140,13 @@ namespace CocApi.Model
         ///// <param name="name">name.</param>
         ///// <param name="location">location.</param>
         ///// <param name="type">type.</param>
-        ///// <param name="memberList">members.</param>
+        ///// <param name="members">members.</param>
         ///// <param name="description">description.</param>
         ///// <param name="badgeUrls">badgeUrls.</param>
-        //[JsonConstructor]
-        //public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequency? warFrequency = default(WarFrequency?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), RecruitingType? type = default(RecruitingType?), /*int members = default(int),*/ string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
+        //public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequency? warFrequency = default(WarFrequency?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), RecruitingType? type = default(RecruitingType?), int members = default(int), string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
         //{
-        //    this.Members = memberList;
         //    this.WarLeague = warLeague;
-        //    //this.MemberList = memberList;
+        //    this.MemberList = memberList;
         //    this.RequiredTrophies = requiredTrophies;
         //    this.ClanVersusPoints = clanVersusPoints;
         //    this.Tag = tag;
@@ -162,7 +162,7 @@ namespace CocApi.Model
         //    this.Name = name;
         //    this.Location = location;
         //    this.Type = type;
-        //    //this.Members = members;
+        //    this.Members = members;
         //    this.Description = description;
         //    this.BadgeUrls = badgeUrls;
         //}

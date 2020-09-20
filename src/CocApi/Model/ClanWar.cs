@@ -23,41 +23,41 @@ using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi
-{
-    /// <summary>
-    /// Defines State
-    /// </summary>
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum WarState
-    {
-        /// <summary>
-        /// Enum NotInWar for value: notInWar
-        /// </summary>
-        [EnumMember(Value = "notInWar")]
-        NotInWar = 1,
+//namespace CocApi
+//{
+//        /// <summary>
+//        /// Defines State
+//        /// </summary>
+//        [JsonConverter(typeof(StringEnumConverter))]
+//        public enum StateEnum
+//        {
+//            /// <summary>
+//            /// Enum NotInWar for value: notInWar
+//            /// </summary>
+//            [EnumMember(Value = "notInWar")]
+//            NotInWar = 1,
 
-        /// <summary>
-        /// Enum Preparation for value: preparation
-        /// </summary>
-        [EnumMember(Value = "preparation")]
-        Preparation = 2,
+//            /// <summary>
+//            /// Enum Preparation for value: preparation
+//            /// </summary>
+//            [EnumMember(Value = "preparation")]
+//            Preparation = 2,
 
-        /// <summary>
-        /// Enum InWar for value: inWar
-        /// </summary>
-        [EnumMember(Value = "inWar")]
-        InWar = 3,
+//            /// <summary>
+//            /// Enum InWar for value: inWar
+//            /// </summary>
+//            [EnumMember(Value = "inWar")]
+//            InWar = 3,
 
-        /// <summary>
-        /// Enum WarEnded for value: warEnded
-        /// </summary>
-        [EnumMember(Value = "warEnded")]
-        WarEnded = 4
+//            /// <summary>
+//            /// Enum WarEnded for value: warEnded
+//            /// </summary>
+//            [EnumMember(Value = "warEnded")]
+//            WarEnded = 4
 
-    }
+//        }
 
-}
+//}
 
 
 
@@ -67,8 +67,10 @@ namespace CocApi.Model
     /// ClanWar
     /// </summary>
     [DataContract]
-    public partial class ClanWar :  IValidatableObject
+    public partial class ClanWar :  IValidatableObject 
     {
+        //public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Gets or Sets State
         /// </summary>

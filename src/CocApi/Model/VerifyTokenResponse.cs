@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// VerifyTokenResponse
     /// </summary>
     [DataContract]
-    public partial class VerifyTokenResponse :  IValidatableObject
+    public partial class VerifyTokenResponse :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="VerifyTokenResponse" /> class.
         /// </summary>

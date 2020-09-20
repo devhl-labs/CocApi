@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// ClanWarMember
     /// </summary>
     [DataContract]
-    public partial class ClanWarMember :  IValidatableObject
+    public partial class ClanWarMember :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarMember" /> class.
         /// </summary>

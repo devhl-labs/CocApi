@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// ClanRanking
     /// </summary>
     [DataContract]
-    public partial class ClanRanking :  IValidatableObject
+    public partial class ClanRanking :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanRanking" /> class.
         /// </summary>

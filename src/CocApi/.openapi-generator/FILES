@@ -7,7 +7,9 @@ docs\ClanBadgeUrls.md
 docs\ClanList.md
 docs\ClanMember.md
 docs\ClanRanking.md
+docs\ClanRankingList.md
 docs\ClanVersusRanking.md
+docs\ClanVersusRankingList.md
 docs\ClanWar.md
 docs\ClanWarAttack.md
 docs\ClanWarLeagueClan.md
@@ -41,6 +43,7 @@ docs\PlayerRanking.md
 docs\PlayerRankingClan.md
 docs\PlayerRankingList.md
 docs\PlayerVersusRanking.md
+docs\PlayerVersusRankingList.md
 docs\PlayersApi.md
 docs\VerifyTokenRequest.md
 docs\VerifyTokenResponse.md
@@ -74,7 +77,9 @@ src\CocApi\Model\ClanBadgeUrls.cs
 src\CocApi\Model\ClanList.cs
 src\CocApi\Model\ClanMember.cs
 src\CocApi\Model\ClanRanking.cs
+src\CocApi\Model\ClanRankingList.cs
 src\CocApi\Model\ClanVersusRanking.cs
+src\CocApi\Model\ClanVersusRankingList.cs
 src\CocApi\Model\ClanWar.cs
 src\CocApi\Model\ClanWarAttack.cs
 src\CocApi\Model\ClanWarLeagueClan.cs
@@ -104,6 +109,7 @@ src\CocApi\Model\PlayerRanking.cs
 src\CocApi\Model\PlayerRankingClan.cs
 src\CocApi\Model\PlayerRankingList.cs
 src\CocApi\Model\PlayerVersusRanking.cs
+src\CocApi\Model\PlayerVersusRankingList.cs
 src\CocApi\Model\VerifyTokenRequest.cs
 src\CocApi\Model\VerifyTokenResponse.cs
 src\CocApi\Model\WarClan.cs

@@ -35,8 +35,10 @@ namespace CocApi.Model
     /// LabelsObject
     /// </summary>
     [DataContract]
-    public partial class LabelsObject :  IValidatableObject
+    public partial class LabelsObject :  IValidatableObject 
     {
+        public DateTime ServerResponseExpires { get; internal set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="LabelsObject" /> class.
         /// </summary>

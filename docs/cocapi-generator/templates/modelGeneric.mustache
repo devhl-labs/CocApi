@@ -11,10 +11,8 @@
     [JsonSubtypes.KnownSubType(typeof({{{modelName}}}), "{{{mappingName}}}")]
     {{/mappedModels}}
     {{/discriminator}}
-    {{>visibility}} partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} {{#validatable}}IValidatableObject, {{/validatable}}IDownloadable
+    {{>visibility}} partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} {{#validatable}}IValidatableObject {{/validatable}}
     {
-        public DateTime ServerResponseExpires { get; internal set; }
-
         {{#vars}}
         {{#isEnum}}
         /// <summary>
@@ -27,6 +25,7 @@
         public {{#complexType}}{{{complexType}}}{{/complexType}}{{^complexType}}{{{datatypeWithEnum}}}{{/complexType}}{{^isContainer}}{{^required}}?{{/required}}{{/isContainer}} {{name}} { get; private set; }
         {{/isEnum}}
         {{/vars}}
+    
     {{#hasRequired}}
     {{^hasOnlyReadOnly}}
         /// <summary>
@@ -36,6 +35,7 @@
         protected {{classname}}() { }
     {{/hasOnlyReadOnly}}
     {{/hasRequired}}
+    
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}" /> class.
         /// </summary>
