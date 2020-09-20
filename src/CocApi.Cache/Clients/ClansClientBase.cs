@@ -231,7 +231,9 @@ namespace CocApi.Cache
                 && stored.WarWins == fetched.WarWins
                 && stored.WarWinStreak == fetched.WarWinStreak
                 && stored.Labels.Except(fetched.Labels).Count() == 0
-                && stored.Members.Except(fetched.Members).Count() == 0
+                && fetched.Labels.Except(stored.Labels).Count() == 0
+                && Clan.ClanMembersJoined(stored, fetched).Count == 0
+                && Clan.ClanMembersLeft(stored, fetched).Count == 0
                 && Clan.Donations(stored, fetched).Count == 0 
                 && Clan.DonationsReceived(stored, fetched).Count == 0
                 );

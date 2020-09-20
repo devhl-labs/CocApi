@@ -147,6 +147,8 @@ namespace CocApi.Cache
                 && stored.VersusTrophies == fetched.VersusTrophies
                 && stored.WarStars == fetched.WarStars
                 && stored.Labels.Except(fetched.Labels).Count() == 0
+                && fetched.Labels.Except(stored.Labels).Count() == 0
+
                 ))
                     return true;
 
