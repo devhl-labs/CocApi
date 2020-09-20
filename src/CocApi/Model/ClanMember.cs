@@ -69,13 +69,13 @@ namespace CocApi.Model
     [DataContract]
     public partial class ClanMember :  IValidatableObject 
     {
-        public DateTime ServerResponseExpires { get; internal set; }
-
         /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [DataMember(Name="role", EmitDefaultValue=false)]
         public RoleEnum? Role { get; private set; }
+    
+    
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanMember" /> class.
         /// </summary>

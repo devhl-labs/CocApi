@@ -70,7 +70,7 @@ namespace CocApi.Cache
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;

@@ -19,6 +19,8 @@ namespace CocApi.Cache
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
+        private ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
+
         public ClanMonitor
             (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(tokenProvider, cacheConfiguration)
@@ -78,7 +80,7 @@ namespace CocApi.Cache
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -108,7 +110,7 @@ namespace CocApi.Cache
 
         private async Task MonitorClanAsync(CachedClan cached)
         {
-            if (_clansClient.UpdatingClan.TryAdd(cached.Tag, new byte()) == false)
+            if (_updatingClan.TryAdd(cached.Tag, new byte()) == false)
                 return;
 
             try
@@ -123,7 +125,7 @@ namespace CocApi.Cache
             }
             finally
             {
-                _clansClient.UpdatingClan.TryRemove(cached.Tag, out _);
+                _updatingClan.TryRemove(cached.Tag, out _);
             }
         }
 

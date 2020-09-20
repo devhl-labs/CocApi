@@ -190,7 +190,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {

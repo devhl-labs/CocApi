@@ -69,33 +69,33 @@ namespace CocApi.Model
     [DataContract]
     public partial class ClanWar :  IValidatableObject 
     {
-        //public DateTime ServerResponseExpires { get; internal set; }
-
         /// <summary>
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
         public WarState? State { get; private set; }
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWar" /> class.
-        /// </summary>
-        /// <param name="clan">clan.</param>
-        /// <param name="teamSize">teamSize.</param>
-        /// <param name="opponent">opponent.</param>
-        /// <param name="startTime">startTime.</param>
-        /// <param name="state">state.</param>
-        /// <param name="endTime">endTime.</param>
-        /// <param name="preparationStartTime">preparationStartTime.</param>
-        public ClanWar(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), WarState? state = default(WarState?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
-        {
-            this.Clan = clan;
-            this.TeamSize = teamSize;
-            this.Opponent = opponent;
-            this.StartTime = startTime;
-            this.State = state;
-            this.EndTime = endTime;
-            this.PreparationStartTime = preparationStartTime;
-        }
+    
+    
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="ClanWar" /> class.
+        ///// </summary>
+        ///// <param name="clan">clan.</param>
+        ///// <param name="teamSize">teamSize.</param>
+        ///// <param name="opponent">opponent.</param>
+        ///// <param name="startTime">startTime.</param>
+        ///// <param name="state">state.</param>
+        ///// <param name="endTime">endTime.</param>
+        ///// <param name="preparationStartTime">preparationStartTime.</param>
+        //public ClanWar(WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), StateEnum? state = default(StateEnum?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
+        //{
+        //    this.Clan = clan;
+        //    this.TeamSize = teamSize;
+        //    this.Opponent = opponent;
+        //    this.StartTime = startTime;
+        //    this.State = state;
+        //    this.EndTime = endTime;
+        //    this.PreparationStartTime = preparationStartTime;
+        //}
         
         /// <summary>
         /// Gets or Sets Clan

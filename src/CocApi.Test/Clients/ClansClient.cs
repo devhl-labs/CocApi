@@ -18,15 +18,13 @@ namespace CocApi.Test
     {
         private readonly PlayersClient _playersCache;
         private readonly LogService _logService;
-        private readonly LocationsApi _locationsApi;
         private readonly ClansApi _clansApi;
 
-        public ClansClient(LocationsApi locationsApi, TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClient playersCache, LogService logService) 
+        public ClansClient(TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClient playersCache, LogService logService) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
             _logService = logService;
-            _locationsApi = locationsApi;
             _clansApi = clansApi;
 
             ClanUpdated += ClansCache_ClanUpdated;
@@ -58,11 +56,6 @@ namespace CocApi.Test
 
         public new async Task StartAsync(CancellationToken cancellationToken)
         {
-            var a = await _locationsApi.GetClanRankingAsync("global");
-            var b = await _locationsApi.GetClanVersusRankingAsync("global");
-            var c = await _locationsApi.GetPlayerRankingAsync("global");
-            var d = await _locationsApi.GetPlayerVersusRankingAsync("global");
-
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.StartAsync(cancellationToken);
 

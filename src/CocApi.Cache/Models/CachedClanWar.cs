@@ -17,7 +17,7 @@ namespace CocApi.Cache.Models
 
                 CachedClanWar result = new CachedClanWar(tag, apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false));
 
-                result.Type = result.Data.WarType;
+                //result.Type = result.Data.WarType;
 
                 return result;
             }

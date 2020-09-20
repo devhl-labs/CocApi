@@ -69,14 +69,13 @@ namespace CocApi.Model
     [DataContract]
     public partial class Player :  IValidatableObject 
     {
-        public DateTime ServerResponseExpires { get; internal set; }
-
         /// <summary>
         /// Gets or Sets Role
         /// </summary>
-        [DataMember(Name = "role", EmitDefaultValue = false)]
-        public Role? Role { get; private set; }
-
+        [DataMember(Name="role", EmitDefaultValue=false)]
+        public RoleEnum? Role { get; private set; }
+    
+    
         /// <summary>
         /// Initializes a new instance of the <see cref="Player" /> class.
         /// </summary>
@@ -106,7 +105,7 @@ namespace CocApi.Model
         /// <param name="warStars">warStars.</param>
         /// <param name="achievements">achievements.</param>
         /// <param name="versusBattleWinCount">versusBattleWinCount.</param>
-        public Player(PlayerClan clan = default(PlayerClan), League league = default(League), Role? role = default(Role?), int attackWins = default(int), int defenseWins = default(int), int townHallLevel = default(int), int townHallWeaponLevel = default(int), int versusBattleWins = default(int), PlayerLegendStatistics legendStatistics = default(PlayerLegendStatistics), List<PlayerItemLevel> troops = default(List<PlayerItemLevel>), List<PlayerItemLevel> heroes = default(List<PlayerItemLevel>), List<PlayerItemLevel> spells = default(List<PlayerItemLevel>), List<Label> labels = default(List<Label>), string tag = default(string), string name = default(string), int expLevel = default(int), int trophies = default(int), int bestTrophies = default(int), int donations = default(int), int donationsReceived = default(int), int builderHallLevel = default(int), int versusTrophies = default(int), int bestVersusTrophies = default(int), int warStars = default(int), List<PlayerAchievementProgress> achievements = default(List<PlayerAchievementProgress>), int versusBattleWinCount = default(int))
+        public Player(PlayerClan clan = default(PlayerClan), League league = default(League), RoleEnum? role = default(RoleEnum?), int attackWins = default(int), int defenseWins = default(int), int townHallLevel = default(int), int townHallWeaponLevel = default(int), int versusBattleWins = default(int), PlayerLegendStatistics legendStatistics = default(PlayerLegendStatistics), List<PlayerItemLevel> troops = default(List<PlayerItemLevel>), List<PlayerItemLevel> heroes = default(List<PlayerItemLevel>), List<PlayerItemLevel> spells = default(List<PlayerItemLevel>), List<Label> labels = default(List<Label>), string tag = default(string), string name = default(string), int expLevel = default(int), int trophies = default(int), int bestTrophies = default(int), int donations = default(int), int donationsReceived = default(int), int builderHallLevel = default(int), int versusTrophies = default(int), int bestVersusTrophies = default(int), int warStars = default(int), List<PlayerAchievementProgress> achievements = default(List<PlayerAchievementProgress>), int versusBattleWinCount = default(int))
         {
             this.Clan = clan;
             this.League = league;

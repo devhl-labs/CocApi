@@ -170,7 +170,7 @@ namespace CocApi.Model
             this.Labels = labels;
             this.Name = name;
             this.Location = location;
-            this.Type = type;
+            //this.Type = type;
             this.Description = description;
             this.BadgeUrls = badgeUrls;
         }

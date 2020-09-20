@@ -34,7 +34,7 @@ namespace CocApi.Cache.Models
                 {
                     _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
 
-                    if (_data is ClanWar clanWar)
+                    if (_data is ClanWar clanWar)                    
                         clanWar.Initialize();
                 }
 
@@ -62,7 +62,13 @@ namespace CocApi.Cache.Models
         protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
             StatusCode = apiResponse.StatusCode;
+
+            //if (apiResponse.Data != null)
+            //    if (apiResponse.Data is ClanWar)
+            //        RawContent = JsonConvert.SerializeObject(apiResponse.Data);  //adding war type and server expiration to the data
+            //    else
             RawContent = apiResponse?.RawContent ?? RawContent;
+
             Downloaded = apiResponse?.Downloaded ?? DateTime.UtcNow;
             ServerExpiration = apiResponse?.ServerExpiration ?? DateTime.UtcNow;
             LocalExpiration = Downloaded.Add(localExpiration);
@@ -98,7 +104,13 @@ namespace CocApi.Cache.Models
         protected void UpdateFrom(CachedItem<T> fetched)
         {
             StatusCode = fetched.StatusCode;
+
+            //if (fetched.Data != null)
+            //    if (fetched.Data is ClanWar)
+            //        RawContent = JsonConvert.SerializeObject(fetched.Data); //adding war type and server expiration to the data
+            //    else
             RawContent = (!string.IsNullOrEmpty(fetched.RawContent)) ? fetched.RawContent : RawContent;
+
             Downloaded = fetched.Downloaded;
             ServerExpiration = fetched.ServerExpiration;
             LocalExpiration = fetched.LocalExpiration;

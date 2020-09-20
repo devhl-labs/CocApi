@@ -127,11 +127,11 @@ namespace CocApi.Model
                    Clans.First().Key == other.Clans.First().Key;
         }
 
-        [DataMember(Name = "type", EmitDefaultValue = false)]
-        public WarType WarType { get; set; }
+        //[DataMember(Name = "type", EmitDefaultValue = false)]
+        //public WarType WarType { get; internal set; }
 
-        [DataMember(Name = "serverResponseExpires", EmitDefaultValue = false)]
-        public DateTime ServerResponseExpires { get; internal set; }
+        //[DataMember(Name = "serverResponseExpires", EmitDefaultValue = false)]
+        //public DateTime ServerResponseExpires { get; internal set; }
 
         public bool AllAttacksAreUsed()
         {
@@ -257,31 +257,54 @@ namespace CocApi.Model
                     }
                 }
 
-                TimeSpan timeSpan = StartTime - PreparationStartTime;
+                //TimeSpan timeSpan = StartTime - PreparationStartTime;
 
-                if (timeSpan.TotalHours == 24
-                    || timeSpan.TotalHours == 20
-                    || timeSpan.TotalHours == 16
-                    || timeSpan.TotalHours == 12
-                    || timeSpan.TotalHours == 8
-                    || timeSpan.TotalHours == 6
-                    || timeSpan.TotalHours == 4
-                    || timeSpan.TotalHours == 2
-                    || timeSpan.TotalHours == 1
-                    || timeSpan.TotalMinutes == 30
-                    || timeSpan.TotalMinutes == 15)
-                {
-                    WarType = WarType.Friendly;
-                }
+                //if (timeSpan.TotalHours == 24
+                //    || timeSpan.TotalHours == 20
+                //    || timeSpan.TotalHours == 16
+                //    || timeSpan.TotalHours == 12
+                //    || timeSpan.TotalHours == 8
+                //    || timeSpan.TotalHours == 6
+                //    || timeSpan.TotalHours == 4
+                //    || timeSpan.TotalHours == 2
+                //    || timeSpan.TotalHours == 1
+                //    || timeSpan.TotalMinutes == 30
+                //    || timeSpan.TotalMinutes == 15)
+                //{
+                //    WarType = WarType.Friendly;
+                //}
 
-                if (timeSpan.TotalHours == 23)
-                    WarType = WarType.Random;
+                //if (timeSpan.TotalHours == 23)
+                //    WarType = WarType.Random;
 
-                if (WarTag != null)
-                    WarType = WarType.SCCWL;
+                //if (WarTag != null)
+                //    WarType = WarType.SCCWL;
 
                 _isInitialized = true;
             }           
+        }
+
+        public WarType GetWarType()
+        {
+            if (WarTag != null)
+                return WarType.SCCWL;
+
+            TimeSpan timeSpan = StartTime - PreparationStartTime;
+
+            if (timeSpan.TotalHours == 24
+                || timeSpan.TotalHours == 20
+                || timeSpan.TotalHours == 16
+                || timeSpan.TotalHours == 12
+                || timeSpan.TotalHours == 8
+                || timeSpan.TotalHours == 6
+                || timeSpan.TotalHours == 4
+                || timeSpan.TotalHours == 2
+                || timeSpan.TotalHours == 1
+                || timeSpan.TotalMinutes == 30
+                || timeSpan.TotalMinutes == 15)                
+                return WarType.Friendly;
+
+            return WarType.Random;
         }
     }
 }

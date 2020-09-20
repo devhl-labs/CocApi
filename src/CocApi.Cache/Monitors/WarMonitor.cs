@@ -70,7 +70,7 @@ namespace CocApi.Cache
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -113,30 +113,27 @@ namespace CocApi.Cache
                 {
                     List<CachedClanWar> cachedClanWars = await dbContext.ClanWars
                         .AsNoTracking()
-                        .Where(c => 
-                            cached.ClanTags.Any(tag => tag == c.Tag) &&
-                            c.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
-                            c.LocalExpiration < DateTime.UtcNow)
-                        .OrderBy(c => c.Tag)
+                        .Where(c => cached.ClanTags.Any(tag => tag == c.Tag))
+                        .OrderByDescending(c => c.ServerExpiration)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     if ((cachedClanWars.All(c => c.PreparationStartTime != cached.PreparationStartTime) && cached.EndTime < DateTime.UtcNow) ||
-                        cachedClanWars.All(c => c.StatusCode == HttpStatusCode.Forbidden && cached.EndTime < DateTime.UtcNow.AddDays(8)))
+                        cachedClanWars.All(c => c.StatusCode == HttpStatusCode.Forbidden && cached.EndTime.AddDays(8) < DateTime.UtcNow))
                     {
                         cached.IsFinal = true;
 
                         return;
                     }
 
-                    CachedClanWar cachedClanWar = cachedClanWars
-                        .OrderByDescending(c => c.ServerExpiration)
-                        .First(c => c.PreparationStartTime == cached.PreparationStartTime);
+                    CachedClanWar? cachedClanWar = cachedClanWars
+                        .FirstOrDefault(c => c.PreparationStartTime == cached.PreparationStartTime);
 
-                    if (cached.Data != null && cachedClanWar.Data != null && _clansClient.HasUpdated(cached, cachedClanWar))
+                    if (cached.Data != null && cachedClanWar?.Data != null && _clansClient.HasUpdated(cached, cachedClanWar))
                         _clansClient.OnClanWarUpdated(cached.Data, cachedClanWar.Data);
 
-                    cached.UpdateFrom(cachedClanWar);
+                    if (cachedClanWar != null)
+                        cached.UpdateFrom(cachedClanWar);
                 }
                 else
                 {

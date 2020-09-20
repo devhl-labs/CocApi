@@ -21,7 +21,7 @@ namespace CocApi.Cache.Models
 
                 CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season);
 
-                result.Type = result.Data.WarType;
+                //result.Type = result.Data.WarType;
 
                 result.Season = season;
                 
@@ -48,8 +48,6 @@ namespace CocApi.Cache.Models
         public bool IsFinal { get; internal set; }
 
         public DateTime? Season { get; private set; }
-
-        //public HttpStatusCode? StatusCodeOpponent { get; internal set; }
 
         public Announcements Announcements { get; internal set; }
 
@@ -79,34 +77,29 @@ namespace CocApi.Cache.Models
             }
         }
 
-        public CachedWar(CachedClan cachedClan, CachedClanWar fetched, string? warTag = null)
-        {
-            if (fetched.Data == null)
-                throw new ArgumentException("Data should not be null.");
+        //public CachedWar(CachedClan cachedClan, CachedClanWar fetched, string? warTag = null)
+        //{
+        //    if (fetched.Data == null)
+        //        throw new ArgumentException("Data should not be null.");
 
-            ClanTag = fetched.Data.Clans.First().Value.Tag;
+        //    ClanTag = fetched.Data.Clans.First().Value.Tag;
 
-            OpponentTag = fetched.Data.Clans.Skip(1).First().Value.Tag;
+        //    OpponentTag = fetched.Data.Clans.Skip(1).First().Value.Tag;
 
-            PreparationStartTime = fetched.Data.PreparationStartTime;
+        //    PreparationStartTime = fetched.Data.PreparationStartTime;
 
-            EndTime = fetched.Data.EndTime;
+        //    EndTime = fetched.Data.EndTime;
 
-            State = fetched.Data.State;
+        //    State = fetched.Data.State;
 
-            WarTag = warTag;
+        //    WarTag = warTag;
 
-            RawContent = fetched.RawContent;
+        //    RawContent = fetched.RawContent;
 
-            Type = fetched.Data.WarType;
+        //    Type = fetched.Data.WarType;
 
-            //if (cachedClan.Tag == fetched.Data.Clans.First().Value.Tag)
-            //    StatusCode = fetched.StatusCode;
-            //else
-            //    StatusCodeOpponent = fetched.StatusCode;
-
-            UpdateFrom(fetched);
-        }
+        //    UpdateFrom(fetched);
+        //}
 
         public CachedWar(CachedClanWar cachedClanWar)
         {
@@ -142,7 +135,7 @@ namespace CocApi.Cache.Models
 
             EndTime = apiResponse.Data.EndTime;
 
-            Type = apiResponse.Data.WarType;
+            //Type = apiResponse.Data.WarType;
 
             if (State == WarState.WarEnded)
                 IsFinal = true;
@@ -166,8 +159,16 @@ namespace CocApi.Cache.Models
             UpdateFrom(exception, localExpiration);
         }
 
+        private void ThrowIfNotTheSameWar(ClanWar? clanWar)
+        {
+            if (clanWar == null || ClanWar.IsSameWar(Data, clanWar) == false)
+                throw new Exception("The fetched war must be the same war.");
+        }
+
         internal void UpdateFrom(CachedClanWar fetched)
         {
+            ThrowIfNotTheSameWar(fetched.Data);
+
             if (ServerExpiration > fetched.ServerExpiration)
                 return;
 
@@ -189,16 +190,13 @@ namespace CocApi.Cache.Models
 
                 if (fetched.Data.State == WarState.WarEnded)
                     IsFinal = true;
-
-                //if (fetched.Data.Clans.First().Key == ClanTag)
-                //    StatusCode = fetched.StatusCode;
-                //else
-                //    StatusCodeOpponent = fetched.StatusCode;
             }
         }
         
         internal void UpdateFrom(CachedWar cachedWar)
         {
+            ThrowIfNotTheSameWar(cachedWar.Data);
+
             base.UpdateFrom(cachedWar);
 
             if (cachedWar.Data != null)
@@ -208,8 +206,6 @@ namespace CocApi.Cache.Models
                 IsFinal = true;
 
             StatusCode = cachedWar.StatusCode;
-
-            //StatusCodeOpponent = cachedWar.StatusCodeOpponent;
         }
 
         public override int GetHashCode()

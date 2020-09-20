@@ -63,13 +63,13 @@ namespace CocApi.Model
     [DataContract]
     public partial class ClanWarLeagueGroup :  IValidatableObject 
     {
-        public DateTime ServerResponseExpires { get; internal set; }
-
         /// <summary>
         /// Gets or Sets State
         /// </summary>
         [DataMember(Name="state", EmitDefaultValue=false)]
         public GroupState? State { get; private set; }
+    
+    
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
         /// </summary>

@@ -107,8 +107,6 @@ namespace CocApi.Model
     [DataContract]
     public partial class Clan :  IValidatableObject 
     {
-        //public DateTime ServerResponseExpires { get; internal set; }
-
         /// <summary>
         /// Gets or Sets WarFrequency
         /// </summary>
@@ -118,8 +116,9 @@ namespace CocApi.Model
         /// Gets or Sets Type
         /// </summary>
         [DataMember(Name="type", EmitDefaultValue=false)]
-        public RecruitingType? Type { get; private set; }
-
+        public WarType? Type { get; private set; }
+    
+    
         ///// <summary>
         ///// Initializes a new instance of the <see cref="Clan" /> class.
         ///// </summary>
@@ -143,7 +142,7 @@ namespace CocApi.Model
         ///// <param name="members">members.</param>
         ///// <param name="description">description.</param>
         ///// <param name="badgeUrls">badgeUrls.</param>
-        //public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequency? warFrequency = default(WarFrequency?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), RecruitingType? type = default(RecruitingType?), int members = default(int), string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
+        //public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequencyEnum? warFrequency = default(WarFrequencyEnum?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), TypeEnum? type = default(TypeEnum?), int members = default(int), string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
         //{
         //    this.WarLeague = warLeague;
         //    this.MemberList = memberList;

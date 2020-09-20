@@ -37,8 +37,8 @@ namespace CocApi.Model
     [DataContract]
     public partial class PlayerRanking :  IValidatableObject 
     {
-        public DateTime ServerResponseExpires { get; internal set; }
-
+    
+    
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayerRanking" /> class.
         /// </summary>

@@ -2,8 +2,6 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Serialization;
 
 namespace CocApi.Cache
 {
@@ -13,15 +11,15 @@ namespace CocApi.Cache
 
         public int ConcurrentUpdates { get; }
 
-        public TimeSpan DelayBetweenUpdates { get; }
+        public TimeSpan DelayBetweenTasks { get; }
 
-        public ClientConfiguration(string connectionString = "Data Source=cocapi.db", int concurrentUpdates = 1, TimeSpan? delayBetweenUpdates = null)
+        public ClientConfiguration(string connectionString = "Data Source=CocApi.Cache.sqlite", int concurrentUpdates = 1, TimeSpan? delayBetweenTasks = null)
         {
             ConnectionString = connectionString;
 
             ConcurrentUpdates = concurrentUpdates;
 
-            DelayBetweenUpdates = delayBetweenUpdates ?? TimeSpan.FromMilliseconds(50);
+            DelayBetweenTasks = delayBetweenTasks ?? TimeSpan.FromMilliseconds(250);
         }
 
         private static IServiceProvider? _services;
