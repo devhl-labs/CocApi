@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CacheContext))]
-    [Migration("20200926161950_Migration3")]
-    partial class Migration3
+    [Migration("20200926215941_Migration0")]
+    partial class Migration0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,9 +22,6 @@ namespace CocApi.Cache.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("Download")
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("DownloadCurrentWar")
@@ -220,6 +217,8 @@ namespace CocApi.Cache.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClanTag");
 
                     b.HasIndex("Tag")
                         .IsUnique();

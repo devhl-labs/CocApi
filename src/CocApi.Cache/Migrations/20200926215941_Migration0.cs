@@ -19,7 +19,6 @@ namespace CocApi.Cache.Migrations
                     LocalExpiration = table.Column<DateTime>(nullable: false),
                     StatusCode = table.Column<int>(nullable: false),
                     Tag = table.Column<string>(nullable: false),
-                    Download = table.Column<bool>(nullable: false),
                     DownloadMembers = table.Column<bool>(nullable: false),
                     DownloadCurrentWar = table.Column<bool>(nullable: false),
                     DownloadCwl = table.Column<bool>(nullable: false),
@@ -83,7 +82,8 @@ namespace CocApi.Cache.Migrations
                     LocalExpiration = table.Column<DateTime>(nullable: false),
                     StatusCode = table.Column<int>(nullable: false),
                     Tag = table.Column<string>(nullable: false),
-                    Download = table.Column<bool>(nullable: false)
+                    Download = table.Column<bool>(nullable: false),
+                    ClanTag = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,6 +158,11 @@ namespace CocApi.Cache.Migrations
                 table: "Groups",
                 column: "Tag",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Players_ClanTag",
+                table: "Players",
+                column: "ClanTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Players_Tag",
