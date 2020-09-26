@@ -21,13 +21,13 @@ namespace CocApi.Test
         public override IServiceProvider BuildServiceProvider()
         {
             var services = new ServiceCollection()
-                .AddDbContext<CachedContext>(o =>
+                .AddDbContext<CacheContext>(o =>
                 {
                     o.UseNpgsql(ConnectionString);
                     //o.UseSnakeCaseNamingConvention();  // not currently working
                 }).BuildServiceProvider();
 
-            services.GetRequiredService<CachedContext>().Database.Migrate();
+            services.GetRequiredService<CacheContext>().Database.Migrate();
 
             return services;
         }

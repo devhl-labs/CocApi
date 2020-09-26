@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace CocApi.Cache
 {
-    public class CachedContext : DbContext
+    public class CacheContext : DbContext
     {
         public DbSet<CachedClan> Clans { get; set; }
 
@@ -27,7 +27,7 @@ namespace CocApi.Cache
 
         public DbSet<ClanWarLeagueGroupWithLogStatus> ClanWarLeagueGroupWithStatus { get; set; }
 
-        public CachedContext(DbContextOptions options) : base(options)
+        public CacheContext(DbContextOptions options) : base(options)
         {
 
         }
@@ -35,21 +35,17 @@ namespace CocApi.Cache
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<CachedPlayer>().HasIndex(p => p.Tag).IsUnique();
+            builder.Entity<CachedPlayer>().HasIndex(p => p.ClanTag);
 
             builder.Entity<CachedClan>().HasIndex(p => p.Tag).IsUnique();
 
             builder.Entity<CachedClanWar>().HasIndex(p => p.Tag).IsUnique();
-
             builder.Entity<CachedClanWar>().HasIndex(p => new { p.Tag, p.PreparationStartTime }).IsUnique();
 
             builder.Entity<CachedWar>().HasIndex(p => new { p.PreparationStartTime, p.OpponentTag }).IsUnique();
-
             builder.Entity<CachedWar>().HasIndex(p => new { p.PreparationStartTime, p.ClanTag }).IsUnique();
-
             builder.Entity<CachedWar>().HasIndex(p => p.OpponentTag);
-
             builder.Entity<CachedWar>().HasIndex(p => p.ClanTag);
-
             builder.Entity<CachedWar>().HasIndex(p => p.WarTag);
 
             builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.Tag).IsUnique();
@@ -57,23 +53,20 @@ namespace CocApi.Cache
             builder.Entity<CachedClanWarLog>().HasIndex(p => p.Tag).IsUnique();
 
             builder.Entity<WarWithLogStatus>().HasNoKey().ToView("WarWithLogStatus");
-
             builder.Entity<ClanWarWithLogStatus>().HasNoKey().ToView("ClanWarWithLogStatus");
-
             builder.Entity<ClanWarLogWithLogStatus>().HasNoKey().ToView("ClanWarLogWithLogStatus");
-
             builder.Entity<ClanWarLeagueGroupWithLogStatus>().HasNoKey().ToView("ClanWarLeagueGroupWithLogStatus");
         }
     }
 
-    internal class CacheContextFactory : IDesignTimeDbContextFactory<CachedContext>
+    internal class CacheContextFactory : IDesignTimeDbContextFactory<CacheContext>
     {
-        public CachedContext CreateDbContext(string[] args)
+        public CacheContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<CachedContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
             optionsBuilder.UseSqlite("Data Source=cocapi.db").EnableSensitiveDataLogging();
 
-            return new CachedContext(optionsBuilder.Options);
+            return new CacheContext(optionsBuilder.Options);
         }
     }
 }

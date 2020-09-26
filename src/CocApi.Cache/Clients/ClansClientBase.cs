@@ -60,23 +60,21 @@ namespace CocApi.Cache
 
         internal ConcurrentDictionary<CachedWar, byte> UpdatingWar { get; set; } = new ConcurrentDictionary<CachedWar, byte>();
 
-        public async Task AddAsync(string tag, bool downloadClan = true, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
+        public async Task AddAsync(string tag, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
         {
-            if (downloadClan == false && downloadMembers == true)
-                throw new Exception("DownloadClan must be true to download members.");
 
             string formattedTag = Clash.FormatTag(tag);
 
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedClan cachedClan = await dbContext.Clans.Where(c => c.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (cachedClan != null)
                 return;
 
-            await InsertCachedClanAsync(formattedTag, downloadClan, downloadWars, downloadCwl, downloadMembers);
+            await InsertCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers);
 
             return;
         }
@@ -89,7 +87,7 @@ namespace CocApi.Cache
 
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             List<CachedWar> cache = await dbContext.Wars
                 .AsNoTracking()
@@ -111,7 +109,7 @@ namespace CocApi.Cache
         {
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return (await dbContext.Wars
                 .AsNoTracking()
@@ -125,7 +123,7 @@ namespace CocApi.Cache
 
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Wars
                 .AsNoTracking()
@@ -138,7 +136,7 @@ namespace CocApi.Cache
         {
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()
@@ -151,7 +149,7 @@ namespace CocApi.Cache
         {
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()
@@ -404,16 +402,13 @@ namespace CocApi.Cache
             await Task.WhenAll(tasks);
         }
 
-        public async Task AddOrUpdateAsync(string tag, bool downloadClan = true, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
+        public async Task AddOrUpdateAsync(string tag, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
         {
-            if (downloadClan == false && downloadMembers == true)
-                throw new ArgumentException("DownloadClan must be true to download members.");
-
             string formattedTag = Clash.FormatTag(tag);
 
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedClan cachedClan = await dbContext.Clans
                 .Where(c => c.Tag == formattedTag)
@@ -422,13 +417,12 @@ namespace CocApi.Cache
 
             if (cachedClan == null)
             {
-                await InsertCachedClanAsync(formattedTag, downloadClan, downloadWars, downloadCwl, downloadMembers);
+                await InsertCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers);
 
                 return;
             }
 
             cachedClan.Tag = formattedTag;
-            cachedClan.Download = downloadClan;
             cachedClan.DownloadCurrentWar = downloadWars;
             cachedClan.DownloadCwl = downloadCwl;
             cachedClan.DownloadMembers = downloadMembers;
@@ -481,15 +475,14 @@ namespace CocApi.Cache
             Task.Run(() => ClanWarUpdated?.Invoke(this, new ClanWarUpdatedEventArgs(stored, fetched)));
         }
 
-        private async Task InsertCachedClanAsync(string formattedTag, bool downloadClan, bool downloadWars, bool downloadCwl, bool downloadMembers)
+        private async Task InsertCachedClanAsync(string formattedTag, bool downloadWars, bool downloadCwl, bool downloadMembers)
         {
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedClan cachedClan = new CachedClan(formattedTag)
             {
-                Download = downloadClan,
                 DownloadCurrentWar = downloadWars,
                 DownloadCwl = downloadCwl,
                 DownloadMembers = downloadMembers
@@ -530,7 +523,7 @@ namespace CocApi.Cache
             {
                 using var scope = Services.CreateScope();
 
-                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                 CachedWar? exists = await dbContext.Wars
                     .Where(w =>

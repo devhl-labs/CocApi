@@ -21,6 +21,8 @@ namespace CocApi.Cache
 
         private ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
 
+        private DateTime DeletedUnmonitoredPlayers = DateTime.UtcNow;
+
         public ClanMonitor
             (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(tokenProvider, cacheConfiguration)
@@ -47,14 +49,13 @@ namespace CocApi.Cache
                 {
                     using var scope = Services.CreateScope();
 
-                    CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                    CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                     List<Task> tasks = new List<Task>();
 
                     List<CachedClan> cachedClans = await dbContext.Clans
                         .Where(w =>
                             w.Id > _id &&
-                            (w.Download || w.DownloadMembers) &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
@@ -64,8 +65,7 @@ namespace CocApi.Cache
 
                     for (int i = 0; i < cachedClans.Count; i++)
                     {
-                        if (cachedClans[i].Download)
-                            tasks.Add(MonitorClanAsync(cachedClans[i]));
+                        tasks.Add(MonitorClanAsync(cachedClans[i]));
 
                         if (cachedClans[i].DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
                             tasks.Add(MonitorMembersAsync(cachedClans[i]));
@@ -75,6 +75,15 @@ namespace CocApi.Cache
                         _id = 0;
                     else
                         _id = cachedClans.Max(c => c.Id);
+
+                    if (DeletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
+                    {
+                        DeletedUnmonitoredPlayers = DateTime.UtcNow;
+
+                        tasks.Add(DeleteUnmonitoredPlayersNotInAClan());
+
+                        tasks.Add(DeletePlayersInClansNotMonitored());
+                    }
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -149,7 +158,7 @@ namespace CocApi.Cache
 
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedPlayer? cached = await dbContext.Players
                 .FirstOrDefaultAsync(p => p.Tag == tag, _stopRequestedTokenSource.Token)
@@ -168,6 +177,43 @@ namespace CocApi.Cache
             await _playersClientBase.PlayerMontitor.UpdatePlayerAsync(cached);
 
             await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+        }
+
+        private async Task DeleteUnmonitoredPlayersNotInAClan()
+        {
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            // delete any player who is not being monitored so stale items dont get stuck in cache
+            List<CachedPlayer> cachedPlayers = await dbContext.Players
+                .Where(p => 
+                    p.ClanTag == null && 
+                    p.Download == false && 
+                    p.ServerExpiration < DateTime.UtcNow.AddMinutes(-10))
+                .ToListAsync(_stopRequestedTokenSource.Token);
+
+            dbContext.RemoveRange(cachedPlayers);
+
+            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+        }
+
+        private async Task DeletePlayersInClansNotMonitored()
+        {
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            await dbContext.Database.ExecuteSqlRawAsync(@"
+Delete 
+from players
+where Tag in (
+ select p.tag
+ from players p
+ left join clans as c on p.clantag = c.tag
+ where ifnull(c.downloadmembers, false) = false and p.clantag is not null and p.download = false and p.serverexpiration < Datetime('now', '-10 minutes', 'utc')
+)"
+            );
         }
     }
 }

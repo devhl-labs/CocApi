@@ -45,7 +45,7 @@ namespace CocApi.Cache
 
             using var scope = Services.CreateScope();
 
-            CachedContext cacheContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
 
@@ -69,7 +69,7 @@ namespace CocApi.Cache
         {
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Players
                 .Where(i => i.Tag == tag)
@@ -81,7 +81,7 @@ namespace CocApi.Cache
         {
             using var scope = Services.CreateScope();
 
-            CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Players
                 .Where(i => i.Tag == tag)
@@ -204,7 +204,7 @@ namespace CocApi.Cache
 
             using var scope = Services.CreateScope();
 
-            CachedContext cacheContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+            CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => 
                 v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);

@@ -32,9 +32,13 @@ namespace CocApi.Cache.Models
 
         public bool Download { get; internal set; }
 
+        public string? ClanTag { get; private set; }
+
         private CachedPlayer(ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
             Tag = response.Data.Tag;
+
+            ClanTag = response.Data.Clan?.Tag;
         }
 
         private CachedPlayer(string tag, Exception e, TimeSpan localExpiration) : base (e, localExpiration)
@@ -51,6 +55,8 @@ namespace CocApi.Cache.Models
         {
             if (ServerExpiration > fetched.ServerExpiration)
                 return;
+
+            ClanTag = fetched.ClanTag;
 
             base.UpdateFrom(fetched);
         }

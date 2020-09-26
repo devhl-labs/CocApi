@@ -59,10 +59,10 @@ namespace CocApi.Test
             await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
             await _playersCache.StartAsync(cancellationToken);
 
-            await AddOrUpdateAsync("#8J82PV0C", true, true, true, true); //fysb unbuckled
-            await AddOrUpdateAsync("#22G0JJR8", true, true, true, true); //fysb
-            await AddOrUpdateAsync("#28RUGUYJU", true, true, true, true); //devhls lab
-            await AddOrUpdateAsync("#2C8V29YJ", true, true, true, true); // russian clan
+            await AddOrUpdateAsync("#8J82PV0C", true, true, true); //fysb unbuckled
+            await AddOrUpdateAsync("#22G0JJR8", true, true, true); //fysb
+            await AddOrUpdateAsync("#28RUGUYJU",true, true, true); //devhls lab
+            await AddOrUpdateAsync("#2C8V29YJ", true, true, true); // russian clan
 
             DownloadMembers = true;
             DownloadCurrentWars = true;

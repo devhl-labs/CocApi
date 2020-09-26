@@ -25,8 +25,6 @@ namespace CocApi.Cache.Models
 
         public string Tag { get; internal set; }
 
-        public bool Download { get; internal set; }
-
         public bool DownloadMembers { get; internal set; }
 
         public bool DownloadCurrentWar { get; internal set; }

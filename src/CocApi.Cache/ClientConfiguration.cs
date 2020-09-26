@@ -33,11 +33,11 @@ namespace CocApi.Cache
                     return _services;
 
                 var services = new ServiceCollection()
-                    .AddDbContext<CachedContext>(o =>
+                    .AddDbContext<CacheContext>(o =>
                         o.UseSqlite(ConnectionString))
                     .BuildServiceProvider();
 
-                CachedContext cachedContext = services.GetRequiredService<CachedContext>();
+                CacheContext cachedContext = services.GetRequiredService<CacheContext>();
 
                 if (cachedContext.Database.GetPendingMigrations().Count() > 0)
                 {

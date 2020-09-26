@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CacheContext))]
-    [Migration("20200919205033_Migration0")]
-    partial class Migration0
+    [Migration("20200926161950_Migration3")]
+    partial class Migration3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.7");
+                .HasAnnotation("ProductVersion", "3.1.8");
 
             modelBuilder.Entity("CocApi.Cache.Models.CachedClan", b =>
                 {
@@ -192,6 +192,9 @@ namespace CocApi.Cache.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("ClanTag")
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("Download")
                         .HasColumnType("INTEGER");

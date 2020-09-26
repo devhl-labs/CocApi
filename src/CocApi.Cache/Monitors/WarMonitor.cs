@@ -50,7 +50,7 @@ namespace CocApi.Cache
 
                     using var scope = Services.CreateScope();
 
-                    CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                    CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                     List<Task> tasks = new List<Task>();
 
@@ -114,7 +114,7 @@ namespace CocApi.Cache
             {
                 using var scope = Services.CreateScope();
 
-                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                 if (cached.WarTag == null)
                 {

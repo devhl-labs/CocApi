@@ -45,7 +45,7 @@ namespace CocApi.Cache
 
                     using var scope = Services.CreateScope();
 
-                    using CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                    using CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                     List<CachedPlayer> cachedPlayers = await dbContext.Players
                         .Where(v =>

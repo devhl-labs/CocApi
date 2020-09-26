@@ -52,7 +52,7 @@ namespace CocApi.Cache
 
                     using var scope = Services.CreateScope();
 
-                    CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                    CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                     List<Task> tasks = new List<Task>();
 
@@ -119,7 +119,7 @@ namespace CocApi.Cache
             {
                 using var scope = Services.CreateScope();
 
-                CachedContext dbContext = scope.ServiceProvider.GetRequiredService<CachedContext>();
+                CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                 CachedClanWar? cachedClanWar = await dbContext.ClanWars
                     .Where(w => w.Tag == clanTag)
