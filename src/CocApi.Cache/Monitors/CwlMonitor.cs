@@ -145,15 +145,13 @@ namespace CocApi.Cache
                 try
                 {
                     foreach (var round in cached.Data.Rounds)
-                        foreach (string warTag in round.WarTags)
-                        {
+                        foreach (string warTag in round.WarTags.Where(w => w != "#0"))                        
                             if (_updatingWarTags.TryAdd(warTag, new byte()))
                             {
                                 downloadWarTags.Add(warTag);
 
                                 tasks.Add(ReturnNewWarAsync(tag, cached.Season, warTag, _stopRequestedTokenSource.Token));
-                            }
-                        }
+                            }                        
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 

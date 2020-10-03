@@ -200,6 +200,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -346,6 +350,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -474,6 +482,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -596,6 +608,10 @@ namespace CocApi.Api
                 return await GetClanWarLeagueWarResponseAsync (warTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }
@@ -745,6 +761,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -870,6 +890,10 @@ namespace CocApi.Api
                 return await GetCurrentWarResponseAsync (clanTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }
@@ -1063,6 +1087,10 @@ namespace CocApi.Api
                 return await SearchClansResponseAsync (name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }

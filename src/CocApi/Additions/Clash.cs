@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -38,28 +39,35 @@ namespace CocApi
             return TagRegEx.IsMatch(tag);
         }
 
-        public static bool TryFormatTag(string userInput, out string formattedTag)
+        public static bool TryFormatTag(string userInput, [NotNullWhen(true)] out string? formattedTag)
         {
-            try
-            {
-                formattedTag = FormatTag(userInput);
+            formattedTag = NormalizeTag(userInput);
 
+            if (IsValidTag(formattedTag))
                 return true;
-            }
-            catch (Exception)
-            {
-                formattedTag = null;
 
-                return false;
-            }
+            formattedTag = null;
+
+            return false;
         }
 
         public static string FormatTag(string userInput)
         {
-            string formattedTag = string.Empty;
-
             if (string.IsNullOrEmpty(userInput))
                 throw new InvalidTagException(userInput);
+
+            string formattedTag = NormalizeTag(userInput);
+
+            if (IsValidTag(formattedTag) == false)
+                throw new InvalidTagException(userInput);
+
+            return formattedTag;
+        }
+
+        private static string NormalizeTag(string userInput)
+        {
+            if (userInput == null)
+                return userInput;
 
             if (userInput.StartsWith("\"") && userInput.EndsWith("\"") && userInput.Length > 2)
                 userInput = userInput[1..^1];
@@ -70,15 +78,12 @@ namespace CocApi
             else if (userInput.StartsWith("'") && userInput.EndsWith("'") && userInput.Length > 2)
                 userInput = userInput[1..^1];
 
-            formattedTag = userInput.ToUpper();
+            string formattedTag = userInput.ToUpper();
 
             formattedTag = formattedTag.Replace("O", "0");
 
             if (!formattedTag.StartsWith("#"))
                 formattedTag = $"#{formattedTag}";
-
-            if (IsValidTag(formattedTag) == false)
-                throw new InvalidTagException(userInput);
 
             return formattedTag;
         }

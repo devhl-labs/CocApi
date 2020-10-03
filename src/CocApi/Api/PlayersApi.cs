@@ -200,6 +200,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>

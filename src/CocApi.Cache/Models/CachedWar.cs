@@ -19,12 +19,11 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken);
 
-                CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season);
+                CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season)
+                {
+                    Season = season
+                };
 
-                //result.Type = result.Data.WarType;
-
-                result.Season = season;
-                
                 return result;
             }
             catch (Exception e) when (e is ApiException || e is TimeoutException)

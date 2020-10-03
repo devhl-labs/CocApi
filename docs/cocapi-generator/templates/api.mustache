@@ -306,6 +306,10 @@ namespace {{packageName}}.{{apiPackage}}
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>

@@ -220,6 +220,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -368,6 +372,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -492,6 +500,10 @@ namespace CocApi.Api
                 return await GetLocationResponseAsync (locationId, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }
@@ -629,6 +641,10 @@ namespace CocApi.Api
                 return await GetLocationsResponseAsync (limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }
@@ -779,6 +795,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -924,6 +944,10 @@ namespace CocApi.Api
                 return await GetPlayerVersusRankingResponseAsync (locationId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }

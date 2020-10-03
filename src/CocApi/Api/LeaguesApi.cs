@@ -199,6 +199,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -351,6 +355,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -500,6 +508,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -640,6 +652,10 @@ namespace CocApi.Api
             {
                 return null;
             }
+            catch (TimeoutException)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -763,6 +779,10 @@ namespace CocApi.Api
                 return await GetWarLeagueResponseAsync (leagueId, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }
@@ -900,6 +920,10 @@ namespace CocApi.Api
                 return await GetWarLeaguesResponseAsync (limit, after, before, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
+            {
+                return null;
+            }
+            catch (TimeoutException)
             {
                 return null;
             }

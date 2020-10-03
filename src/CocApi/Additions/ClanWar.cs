@@ -55,8 +55,6 @@ namespace CocApi.Model
         {
             get
             {
-                //Initialize();
-
                 if (_clans.Count > 0)
                     return _clans;
 
@@ -191,6 +189,18 @@ namespace CocApi.Model
                 if (State == WarState.NotInWar)
                     return;
 
+                WarClan clan = Clan;
+                WarClan opponent = Opponent;
+
+                SortedList<string, WarClan> sorted = new SortedList<string, WarClan>
+                {
+                    { clan.Tag, clan },
+                    { opponent.Tag, opponent }
+                };
+
+                Clan = sorted.Values.First();
+                Opponent = sorted.Values.Skip(1).First();
+
                 foreach (WarClan warClan in Clans.Values)
                 {
                     if (AllAttacksAreUsedOrWarIsOver())
@@ -232,9 +242,9 @@ namespace CocApi.Model
                 }
 
 
-                foreach (var clan in Clans.Values)
+                foreach (var wc in Clans.Values)
                 {
-                    var grouped = Attacks.Where(a => a.AttackerClanTag == clan.Tag).GroupBy(a => a.DefenderMapPosition);
+                    var grouped = Attacks.Where(a => a.AttackerClanTag == wc.Tag).GroupBy(a => a.DefenderMapPosition);
 
                     foreach (var group in grouped)
                     {
