@@ -160,7 +160,7 @@ namespace CocApi.Cache.Models
 
         private void ThrowIfNotTheSameWar(ClanWar? clanWar)
         {
-            if (clanWar == null || ClanWar.IsSameWar(Data, clanWar) == false)
+            if (ClanWar.IsSameWar(Data, clanWar) == false)
                 throw new Exception("The fetched war must be the same war.");
         }
 

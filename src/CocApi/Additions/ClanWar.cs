@@ -11,12 +11,12 @@ namespace CocApi.Model
 {
     public partial class ClanWar : IEquatable<ClanWar?>
     {
-        public static bool IsSameWar(ClanWar? stored, ClanWar fetched)
+        public static bool IsSameWar(ClanWar? stored, ClanWar? fetched)
         {
             if (ReferenceEquals(stored, fetched))
                 return true;
 
-            if (stored == null)
+            if (stored == null || fetched == null)
                 return true;
 
             if (stored.PreparationStartTime != fetched.PreparationStartTime)

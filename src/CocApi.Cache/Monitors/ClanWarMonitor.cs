@@ -139,7 +139,8 @@ namespace CocApi.Cache
 
                 cachedClanWar.UpdateFrom(fetched);
 
-                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+                // don't allow a cancellation here to ensure parity between ClanWars and Wars table
+                await dbContext.SaveChangesAsync();
             }
             finally
             {
