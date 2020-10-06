@@ -107,13 +107,15 @@ namespace CocApi.Cache
 
         public async Task<CachedWar> GetLeagueWarAsync(string warTag, DateTime season, CancellationToken? cancellationToken = default)
         {
+            string formattedTag = Clash.FormatTag(warTag);
+
             using var scope = Services.CreateScope();
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return (await dbContext.Wars
                 .AsNoTracking()
-                .FirstAsync(w => w.WarTag == warTag && w.Season == season, cancellationToken.GetValueOrDefault())
+                .FirstAsync(w => w.WarTag == formattedTag && w.Season == season, cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false));
         }
 
@@ -134,26 +136,30 @@ namespace CocApi.Cache
 
         public async Task<CachedClan> GetCachedClanAsync(string tag, CancellationToken? cancellationToken = default)
         {
+            string formattedTag = Clash.FormatTag(tag);
+
             using var scope = Services.CreateScope();
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()
-                .Where(i => i.Tag == tag)
+                .Where(i => i.Tag == formattedTag)
                 .FirstAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
         }
 
         public async Task<CachedClan?> GetCachedClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
+            string formattedTag = Clash.FormatTag(tag);
+
             using var scope = Services.CreateScope();
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()
-                .Where(i => i.Tag == tag)
+                .Where(i => i.Tag == formattedTag)
                 .FirstOrDefaultAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
         }

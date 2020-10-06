@@ -67,24 +67,28 @@ namespace CocApi.Cache
 
         public async Task<CachedPlayer> GetCachedPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
+            string formattedTag = Clash.FormatTag(tag);
+
             using var scope = Services.CreateScope();
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Players
-                .Where(i => i.Tag == tag)
+                .Where(i => i.Tag == formattedTag)
                 .FirstAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
         }
 
         public async Task<CachedPlayer?> GetCachedPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
+            string formattedTag = Clash.FormatTag(tag);
+
             using var scope = Services.CreateScope();
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             return await dbContext.Players
-                .Where(i => i.Tag == tag)
+                .Where(i => i.Tag == formattedTag)
                 .FirstOrDefaultAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
         }
