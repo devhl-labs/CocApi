@@ -36,6 +36,9 @@ namespace CocApi
             if (tag.Length < 4)
                 return false;
 
+            if (tag.Count(t => t == '#') != 1)
+                return false;
+
             return TagRegEx.IsMatch(tag);
         }
 
@@ -64,7 +67,8 @@ namespace CocApi
             return formattedTag;
         }
 
-        private static string NormalizeTag(string userInput)
+        [return: NotNullIfNotNull("userInput")]
+        private static string? NormalizeTag(string? userInput)
         {
             if (userInput == null)
                 return userInput;
@@ -81,6 +85,8 @@ namespace CocApi
             string formattedTag = userInput.ToUpper();
 
             formattedTag = formattedTag.Replace("O", "0");
+
+            formattedTag = Regex.Replace(formattedTag, "#+", "#");
 
             if (!formattedTag.StartsWith("#"))
                 formattedTag = $"#{formattedTag}";
