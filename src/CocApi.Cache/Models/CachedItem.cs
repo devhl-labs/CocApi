@@ -34,8 +34,11 @@ namespace CocApi.Cache.Models
                 {
                     _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
 
-                    if (_data is ClanWar clanWar)                    
-                        clanWar.Initialize();
+                    if (_data is ClanWar clanWar)
+                        if (this is CachedWar cachedWar)
+                            clanWar.Initialize(ServerExpiration, cachedWar.WarTag);
+                        else
+                            clanWar.Initialize(ServerExpiration, null);
                 }
 
                 return _data;

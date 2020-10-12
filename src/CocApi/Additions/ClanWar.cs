@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Newtonsoft.Json;
 
+[assembly: InternalsVisibleTo("CocApi.Cache")]
 namespace CocApi.Model
 {
     public partial class ClanWar : IEquatable<ClanWar?>
@@ -38,6 +39,7 @@ namespace CocApi.Model
 
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
+
 
         [DataMember(Name = "warTag", EmitDefaultValue = false)]
         public string? WarTag { get; internal set; }
@@ -125,11 +127,8 @@ namespace CocApi.Model
                    Clans.First().Key == other.Clans.First().Key;
         }
 
-        //[DataMember(Name = "type", EmitDefaultValue = false)]
-        //public WarType WarType { get; internal set; }
-
-        //[DataMember(Name = "serverResponseExpires", EmitDefaultValue = false)]
-        //public DateTime ServerResponseExpires { get; internal set; }
+        [DataMember(Name = "serverExpiration", EmitDefaultValue = false)]
+        public DateTime ServerExpiration { get; internal set; }
 
         public bool AllAttacksAreUsed()
         {
@@ -179,12 +178,16 @@ namespace CocApi.Model
 
         private readonly object _initializeLock = new object();
 
-        public void Initialize()
+        internal void Initialize(DateTime serverExpiration, string? warTag)
         {
             lock (_initializeLock)
             {
                 if (_isInitialized)
                     return;
+
+                ServerExpiration = serverExpiration;
+
+                WarTag = warTag;
 
                 if (State == WarState.NotInWar)
                     return;
@@ -311,7 +314,8 @@ namespace CocApi.Model
                 || timeSpan.TotalHours == 2
                 || timeSpan.TotalHours == 1
                 || timeSpan.TotalMinutes == 30
-                || timeSpan.TotalMinutes == 15)                
+                || timeSpan.TotalMinutes == 15 
+                || timeSpan.TotalMinutes == 5)                
                 return WarType.Friendly;
 
             return WarType.Random;

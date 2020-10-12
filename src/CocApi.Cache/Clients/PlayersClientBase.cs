@@ -105,6 +105,23 @@ namespace CocApi.Cache
                 ?? await _playersApi.GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
         }
 
+        public async Task<List<CachedPlayer>> GetCachedPlayersAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)
+        {
+            List<string> formattedTags = new List<string>();
+
+            foreach (string tag in tags)
+                formattedTags.Add(Clash.FormatTag(tag));
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            return await dbContext.Players
+                .AsNoTracking()
+                .Where(i => formattedTags.Contains(i.Tag))
+                .ToListAsync(cancellationToken.GetValueOrDefault())
+                .ConfigureAwait(false);
+        }
 
 
         public Task StartAsync(CancellationToken cancellationToken)

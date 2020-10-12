@@ -14,9 +14,11 @@ namespace CocApi.Api
         {
             var response = await getClanWarLeagueWarResponseAsync(warTag, cancellationToken);
 
-            response.Data.WarTag = warTag;
+            //response.Data.WarTag = warTag;
 
-            response.Data.Initialize();
+            //response.Data.ServerExpiration = response.ServerExpiration;
+
+            response.Data.Initialize(response.ServerExpiration, warTag);
 
             return response;
         }
@@ -25,7 +27,9 @@ namespace CocApi.Api
         {
             var response = await getCurrentWarResponseAsync(clanTag, cancellationToken);
 
-            response.Data.Initialize();
+            //response.Data.ServerExpiration = response.ServerExpiration;
+
+            response.Data.Initialize(response.ServerExpiration, null);
 
             return response;
         }

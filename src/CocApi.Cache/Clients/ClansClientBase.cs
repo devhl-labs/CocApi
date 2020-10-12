@@ -113,10 +113,50 @@ namespace CocApi.Cache
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-            return (await dbContext.Wars
+            CachedWar war = await dbContext.Wars
                 .AsNoTracking()
                 .FirstAsync(w => w.WarTag == formattedTag && w.Season == season, cancellationToken.GetValueOrDefault())
-                .ConfigureAwait(false));
+                .ConfigureAwait(false);
+
+            war.Data.Initialize(war.ServerExpiration, formattedTag);
+
+            return war;
+        }
+
+        public async Task<CachedWar?> GetLeagueWarOrDefaultAsync(string warTag, DateTime season, CancellationToken? cancellationToken = default)
+        {
+            string formattedTag = Clash.FormatTag(warTag);
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            CachedWar? war = await dbContext.Wars
+                .AsNoTracking()
+                .FirstOrDefaultAsync(w => w.WarTag == formattedTag && w.Season == season, cancellationToken.GetValueOrDefault())
+                .ConfigureAwait(false);
+
+            war?.Data?.Initialize(war.ServerExpiration, formattedTag);
+
+            return war;
+        }
+
+        public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, CancellationToken? cancellationToken = default)
+        {
+            List<ClanWar> result = new List<ClanWar>();
+
+            foreach(var round in group.Rounds)            
+                foreach(string warTag in round.WarTags.Where(t => t != "#0"))
+                {
+                    ClanWar? clanWar = (await GetLeagueWarOrDefaultAsync(warTag, group.Season, cancellationToken))?.Data;
+
+                    clanWar ??= await _clansApi.GetClanWarLeagueWarAsync(warTag, cancellationToken);
+
+                    if (clanWar.PreparationStartTime.Month == group.Season.Month && clanWar.PreparationStartTime.Year == group.Season.Year)
+                        result.Add(clanWar);
+                }
+            
+            return result;
         }
 
         public async Task<List<CachedWar>> GetClanWarsAsync(string tag, CancellationToken? cancellationToken = default)
@@ -161,6 +201,24 @@ namespace CocApi.Cache
                 .AsNoTracking()
                 .Where(i => i.Tag == formattedTag)
                 .FirstOrDefaultAsync(cancellationToken.GetValueOrDefault())
+                .ConfigureAwait(false);
+        }
+
+        public async Task<List<CachedClan>> GetCachedClansAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)
+        {
+            List<string> formattedTags = new List<string>();
+
+            foreach (string tag in tags)
+                formattedTags.Add(Clash.FormatTag(tag));
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            return await dbContext.Clans
+                .AsNoTracking()
+                .Where(i => formattedTags.Contains(i.Tag))
+                .ToListAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
         }
 
