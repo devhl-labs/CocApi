@@ -18,13 +18,17 @@ namespace CocApi.Test
     {
         private readonly PlayersClient _playersCache;
         private readonly LogService _logService;
+        private readonly LeaguesApi _leaguesApi;
         private readonly ClansApi _clansApi;
 
-        public ClansClient(TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClient playersCache, LogService logService) 
+        public ClansClient(
+            TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, 
+            ClansApi clansApi, PlayersClient playersCache, LogService logService, LeaguesApi leaguesApi) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
             _logService = logService;
+            _leaguesApi = leaguesApi;
             _clansApi = clansApi;
 
             ClanUpdated += ClansCache_ClanUpdated;
@@ -62,6 +66,8 @@ namespace CocApi.Test
             //await AddOrUpdateAsync("#22G0JJR8", true, true, true); //fysb
             await AddOrUpdateAsync("#28RUGUYJU",true, true, true); //devhls lab
             //await AddOrUpdateAsync("#2C8V29YJ", true, true, true); // russian clan
+
+            var warLeagues = await _leaguesApi.GetWarLeaguesAsync(100);
 
             DownloadMembers = true;
             DownloadCurrentWars = true;

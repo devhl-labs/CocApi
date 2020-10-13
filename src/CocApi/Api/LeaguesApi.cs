@@ -812,10 +812,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;WarLeague&gt;</returns>
-        public async System.Threading.Tasks.Task<List<WarLeague>> GetWarLeaguesAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of WarLeagueList</returns>
+        public async System.Threading.Tasks.Task<WarLeagueList> GetWarLeaguesAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<WarLeague>> localVarResponse = await GetWarLeaguesResponseAsync(limit, after, before,  cancellationToken.GetValueOrDefault());
+             CocApi.Client.ApiResponse<WarLeagueList> localVarResponse = await GetWarLeaguesResponseAsync(limit, after, before,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -826,8 +826,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;WarLeague&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>> GetWarLeaguesResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (WarLeagueList)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<WarLeagueList>> GetWarLeaguesResponseAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
 
@@ -865,7 +865,7 @@ namespace CocApi.Api
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<List<WarLeague>>("/warleagues", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            var localVarResponse = await this.AsynchronousClient.GetAsync<WarLeagueList>("/warleagues", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -912,8 +912,8 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of ApiResponse (List&lt;WarLeague&gt;)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<List<WarLeague>>?> GetWarLeaguesResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of ApiResponse (WarLeagueList)</returns>
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<WarLeagueList>?> GetWarLeaguesResponseOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -936,10 +936,10 @@ namespace CocApi.Api
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <returns>Task of List&lt;WarLeague&gt;</returns>
-        public async System.Threading.Tasks.Task<List<WarLeague>?> GetWarLeaguesOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
+        /// <returns>Task of WarLeagueList</returns>
+        public async System.Threading.Tasks.Task<WarLeagueList?> GetWarLeaguesOrDefaultAsync (int? limit = default(int?), string after = default(string), string before = default(string), System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<List<WarLeague>>? localVarResponse = await GetWarLeaguesResponseOrDefaultAsync(limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<WarLeagueList>? localVarResponse = await GetWarLeaguesResponseOrDefaultAsync(limit, after, before, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

@@ -165,6 +165,7 @@ Class | Method | HTTP request | Description
  - [Model.WarClan](docs/WarClan.md)
  - [Model.WarClanLogEntry](docs/WarClanLogEntry.md)
  - [Model.WarLeague](docs/WarLeague.md)
+ - [Model.WarLeagueList](docs/WarLeagueList.md)
 
 
 <a name="documentation-for-authorization"></a>

@@ -116,7 +116,7 @@ namespace CocApi.Model
         /// Gets or Sets Type
         /// </summary>
         [DataMember(Name="type", EmitDefaultValue=false)]
-        public WarType? Type { get; private set; }
+        public RecruitingType? Type { get; private set; }
     
     
         ///// <summary>

@@ -437,7 +437,7 @@ Name | Type | Description  | Notes
 
 <a name="getwarleagues"></a>
 # **GetWarLeagues**
-> List&lt;WarLeague&gt; GetWarLeagues (int? limit = null, string after = null, string before = null)
+> WarLeagueList GetWarLeagues (int? limit = null, string after = null, string before = null)
 
 List war leagues
 
@@ -472,7 +472,7 @@ namespace Example
             try
             {
                 // List war leagues
-                List<WarLeague> result = apiInstance.GetWarLeagues(limit, after, before);
+                WarLeagueList result = apiInstance.GetWarLeagues(limit, after, before);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -496,7 +496,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**List&lt;WarLeague&gt;**](WarLeague.md)
+[**WarLeagueList**](WarLeagueList.md)
 
 ### Authorization
 
