@@ -39,7 +39,31 @@ namespace CocApi.Cache
 
         internal ConcurrentDictionary<string, byte?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, byte?>();
 
-        public async Task<CachedPlayer> AddAsync(string tag, bool download = true)
+        //public async Task<CachedPlayer> AddAsync(string tag, bool download = true)
+        //{
+        //    string formattedTag = Clash.FormatTag(tag);
+
+        //    using var scope = Services.CreateScope();
+
+        //    CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+        //    CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
+
+        //    if (cachedPlayer != null)
+        //        return cachedPlayer;
+
+        //    cachedPlayer = new CachedPlayer(tag)
+        //    {
+        //        Download = download
+        //    };
+        //    cacheContext.Players.Add(cachedPlayer);
+
+        //    await cacheContext.SaveChangesAsync().ConfigureAwait(false);
+
+        //    return cachedPlayer;
+        //}
+
+        public async Task<CachedPlayer> AddOrUpdateAsync(string tag, bool download = true)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -49,20 +73,16 @@ namespace CocApi.Cache
 
             CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
 
-            if (cachedPlayer != null)
-                return cachedPlayer;
+            cachedPlayer ??= new CachedPlayer(tag);
 
-            cachedPlayer = new CachedPlayer(tag)
-            {
-                Download = download
-            };
+            cachedPlayer.Download = download;
+
             cacheContext.Players.Update(cachedPlayer);
 
             await cacheContext.SaveChangesAsync().ConfigureAwait(false);
 
             return cachedPlayer;
         }
-
 
 
         public async Task<CachedPlayer> GetCachedPlayerAsync(string tag, CancellationToken? cancellationToken = default)
@@ -169,7 +189,6 @@ namespace CocApi.Cache
                 && stored.WarStars == fetched.WarStars
                 && stored.Labels.Except(fetched.Labels).Count() == 0
                 && fetched.Labels.Except(stored.Labels).Count() == 0
-
                 ))
                     return true;
 
@@ -227,7 +246,7 @@ namespace CocApi.Cache
 
             CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => 
+            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v =>
                 v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
 
             if (cachedPlayer != null && cachedPlayer.Download == download)
