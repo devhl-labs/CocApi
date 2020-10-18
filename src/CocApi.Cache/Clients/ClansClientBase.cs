@@ -71,12 +71,89 @@ namespace CocApi.Cache
 
             CachedClan cachedClan = await dbContext.Clans.Where(c => c.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
 
-            if (cachedClan != null)
-                return;
+            cachedClan ??= await PrepareNewCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers, dbContext).ConfigureAwait(false);
 
-            await InsertCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers);
+            await dbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return;
+        }
+
+        public async Task AddAsync(IEnumerable<string> tags, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
+        {
+            List<string> formattedTags = new List<string>();
+
+            foreach (string tag in tags)
+                formattedTags.Add(Clash.FormatTag(tag));
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            List<CachedClan> cachedClans = await dbContext.Clans
+                .Where(c => formattedTags.Contains(c.Tag))
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            foreach (string formattedTag in formattedTags)
+            {
+                CachedClan cachedClan = cachedClans.FirstOrDefault(c => c.Tag == formattedTag) ??
+                    await PrepareNewCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers, dbContext).ConfigureAwait(false);
+            }
+
+            await dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task AddOrUpdateAsync(string tag, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
+        {
+            string formattedTag = Clash.FormatTag(tag);
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            CachedClan cachedClan = await dbContext.Clans
+                .Where(c => c.Tag == formattedTag)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
+
+            cachedClan ??= await PrepareNewCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers, dbContext).ConfigureAwait(false);
+
+            cachedClan.Tag = formattedTag;
+            cachedClan.DownloadCurrentWar = downloadWars;
+            cachedClan.DownloadCwl = downloadCwl;
+            cachedClan.DownloadMembers = downloadMembers;
+
+            await dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task AddOrUpdateAsync(IEnumerable<string> tags, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
+        {
+            List<string> formattedTags = new List<string>();
+
+            foreach (string tag in tags)
+                formattedTags.Add(Clash.FormatTag(tag));
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            List<CachedClan> cachedClans = await dbContext.Clans
+                .Where(c => formattedTags.Contains(c.Tag))
+                .ToListAsync()
+                .ConfigureAwait(false);
+
+            foreach(string formattedTag in formattedTags)
+            {
+                CachedClan cachedClan = cachedClans.FirstOrDefault(c => c.Tag == formattedTag) ??
+                    await PrepareNewCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers, dbContext).ConfigureAwait(false);
+
+                cachedClan.Tag = formattedTag;
+                cachedClan.DownloadCurrentWar = downloadWars;
+                cachedClan.DownloadCwl = downloadCwl;
+                cachedClan.DownloadMembers = downloadMembers;
+            }
+
+            await dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
 
@@ -466,34 +543,6 @@ namespace CocApi.Cache
             await Task.WhenAll(tasks);
         }
 
-        public async Task AddOrUpdateAsync(string tag, bool downloadWars = true, bool downloadCwl = true, bool downloadMembers = false)
-        {
-            string formattedTag = Clash.FormatTag(tag);
-
-            using var scope = Services.CreateScope();
-
-            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
-
-            CachedClan cachedClan = await dbContext.Clans
-                .Where(c => c.Tag == formattedTag)
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
-
-            if (cachedClan == null)
-            {
-                await InsertCachedClanAsync(formattedTag, downloadWars, downloadCwl, downloadMembers);
-
-                return;
-            }
-
-            cachedClan.Tag = formattedTag;
-            cachedClan.DownloadCurrentWar = downloadWars;
-            cachedClan.DownloadCwl = downloadCwl;
-            cachedClan.DownloadMembers = downloadMembers;
-
-            await dbContext.SaveChangesAsync();
-        }
-
         internal void OnClanUpdated(Clan stored, Clan fetched)
         {
             Task.Run(() => ClanUpdated?.Invoke(this, new ClanUpdatedEventArgs(stored, fetched)));
@@ -539,11 +588,11 @@ namespace CocApi.Cache
             Task.Run(() => ClanWarUpdated?.Invoke(this, new ClanWarUpdatedEventArgs(stored, fetched)));
         }
 
-        private async Task InsertCachedClanAsync(string formattedTag, bool downloadWars, bool downloadCwl, bool downloadMembers)
+        private async Task<CachedClan> PrepareNewCachedClanAsync(string formattedTag, bool downloadWars, bool downloadCwl, bool downloadMembers, CacheContext dbContext)
         {
-            using var scope = Services.CreateScope();
+            //using var scope = Services.CreateScope();
 
-            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+            //CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedClan cachedClan = new CachedClan(formattedTag)
             {
@@ -570,9 +619,9 @@ namespace CocApi.Cache
 
             dbContext.WarLogs.Add(new CachedClanWarLog(formattedTag));
 
-            await dbContext.SaveChangesAsync();
+            //await dbContext.SaveChangesAsync();
 
-            return;
+            return cachedClan;
         }
 
         internal async Task InsertNewWarAsync(CachedWar fetched)
