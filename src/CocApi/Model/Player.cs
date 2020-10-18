@@ -135,11 +135,11 @@ namespace CocApi.Model
             this.VersusBattleWinCount = versusBattleWinCount;
         }
         
-        /// <summary>
-        /// Gets or Sets Clan
-        /// </summary>
-        [DataMember(Name="clan", EmitDefaultValue=false)]
-        public PlayerClan Clan { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets Clan
+        ///// </summary>
+        //[DataMember(Name="clan", EmitDefaultValue=false)]
+        //public PlayerClan Clan { get; private set; }
 
         ///// <summary>
         ///// Gets or Sets League

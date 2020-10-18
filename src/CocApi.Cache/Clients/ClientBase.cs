@@ -22,10 +22,10 @@ namespace CocApi.Cache
 
         protected int _id;
 
-        public ClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration)
+        public ClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration)
         {
             TokenProvider = tokenProvider;
-            ClientConfiguration = cacheConfiguration;
+            ClientConfiguration = clientConfiguration;
             Services = ClientConfiguration.BuildServiceProvider();
         }
 

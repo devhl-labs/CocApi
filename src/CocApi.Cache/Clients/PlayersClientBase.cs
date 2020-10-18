@@ -26,12 +26,12 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public PlayersClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, PlayersApi playersApi) 
-            : base (tokenProvider, cacheConfiguration)
+        public PlayersClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration, PlayersApi playersApi) 
+            : base (tokenProvider, clientConfiguration)
         {
             _playersApi = playersApi;
 
-            PlayerMontitor = new PlayerMonitor(tokenProvider, cacheConfiguration, _playersApi, this);
+            PlayerMontitor = new PlayerMonitor(tokenProvider, clientConfiguration, _playersApi, this);
         }
 
 
@@ -211,21 +211,21 @@ namespace CocApi.Cache
             foreach(var fetchedHero in fetched.Heroes)
             {
                 var storedHero = stored.Heroes.FirstOrDefault(h => h.Name == fetchedHero.Name && h.Level == fetchedHero.Level);
-                if (storedHero == null)
+                if (storedHero == null || storedHero.Level != fetchedHero.Level)
                     return true;
             }
                
             foreach(var fetchedSpell in fetched.Spells)
             {
                 var storedSpell = stored.Spells.FirstOrDefault(s => s.Name == fetchedSpell.Name && s.Level == fetchedSpell.Level);
-                if (storedSpell == null)
+                if (storedSpell == null || storedSpell.Level != fetchedSpell.Level)
                     return true;
             }
               
             foreach(var fetchedTroop in fetched.Troops)
             {
                 var storedTroop = stored.Troops.FirstOrDefault(t => t.Name == fetchedTroop.Name && t.Level == fetchedTroop.Level);
-                if (storedTroop == null)
+                if (storedTroop == null || storedTroop.Level != fetchedTroop.Level)
                     return true;
             }
 

@@ -17,6 +17,12 @@ namespace CocApi.Model
             return $"players/{Uri.EscapeDataString(formattedTag)}";
         }
 
+        /// <summary>
+        /// Gets or Sets Clan
+        /// </summary>
+        [DataMember(Name = "clan", EmitDefaultValue = false)]
+        public PlayerClan? Clan { get; private set; }
+
         public override bool Equals(object? obj)
         {
             return Equals(obj as Player);

@@ -23,8 +23,8 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi)
-            : base(tokenProvider, cacheConfiguration)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration, ClansApi clansApi)
+            : base(tokenProvider, clientConfiguration)
         {
             _clansApi = clansApi;
 
@@ -35,8 +35,8 @@ namespace CocApi.Cache
             _warMonitor = new WarMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
         }
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, PlayersClientBase playersClient)
-            : this(tokenProvider, cacheConfiguration, clansApi)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration, ClansApi clansApi, PlayersClientBase playersClient)
+            : this(tokenProvider, clientConfiguration, clansApi)
         {
             _playersClient = playersClient;
             _clanMonitor = new ClanMonitor(_playersClient, TokenProvider, ClientConfiguration, _clansApi, this);
