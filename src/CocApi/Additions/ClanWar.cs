@@ -76,25 +76,31 @@ namespace CocApi.Model
 
         private List<ClanWarAttack> _attacks = new List<ClanWarAttack>();
 
+        private object _attacksLock = new object();
+
         public List<ClanWarAttack> Attacks
         {
             get
             {
-                if (Clans.Count == 0)
+                lock (_attacksLock)
+                {
+                    if (Clans.Count == 0)
+                        return _attacks;
+
+                    if (_attacks.Count == 0)
+                        foreach (WarClan warClan in Clans.Values)
+                            foreach (ClanWarMember member in warClan.Members)
+                                foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                                    _attacks.Add(attack);
+
                     return _attacks;
-
-                if (_attacks.Count == 0)
-                    foreach (WarClan warClan in Clans.Values)
-                        foreach (ClanWarMember member in warClan.Members)
-                            foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
-                                _attacks.Add(attack);
-
-                return _attacks;
+                }
             }
 
             internal set
             {
-                _attacks = value ?? new List<ClanWarAttack>();
+                lock (_attacksLock)                              
+                    _attacks = value ?? new List<ClanWarAttack>();
             }
         }
 
