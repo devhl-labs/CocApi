@@ -76,18 +76,23 @@ namespace CocApi.Cache
                     else
                         _id = cachedClans.Max(c => c.Id);
 
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+
                     if (DeletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
                     {
                         DeletedUnmonitoredPlayers = DateTime.UtcNow;
 
-                        tasks.Add(DeleteUnmonitoredPlayersNotInAClan());
+                        tasks = new List<Task>
+                        {
+                            DeleteUnmonitoredPlayersNotInAClan(),
 
-                        tasks.Add(DeletePlayersInClansNotMonitored());
+                            DeletePlayersInClansNotMonitored()
+                        };
+
+                        await Task.WhenAll(tasks);
                     }
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
-
-                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
                     await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
@@ -205,13 +210,13 @@ namespace CocApi.Cache
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             await dbContext.Database.ExecuteSqlRawAsync(@"
-Delete 
+delete 
 from players
 where Tag in (
  select p.tag
  from players p
- left join clans as c on p.clantag = c.tag
- where ifnull(c.downloadmembers, false) = false and p.clantag is not null and p.download = false and p.serverexpiration < Datetime('now', '-10 minutes', 'utc')
+ join clans as c on p.clantag = c.tag
+ where c.downloadmembers = false and p.download = false and p.serverexpiration < Datetime('now', '-10 minutes', 'utc')
 )"
             );
         }
