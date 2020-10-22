@@ -53,6 +53,7 @@ namespace CocApi.Cache
         public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
         public bool DownloadCurrentWars { get; set; }
+        public bool DownloadWarLog { get; set; }
         public bool DownloadCwl { get; set; }
         public bool DownloadMembers { get; set; }
 

@@ -41,7 +41,7 @@ namespace CocApi.Cache
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
-                    if (_clansClient.DownloadCurrentWars == false)
+                    if (_clansClient.DownloadWarLog == false)
                     {
                         await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -68,10 +68,9 @@ namespace CocApi.Cache
                         .ToListAsync()
                         .ConfigureAwait(false);
 
-                    for (int i = 0; i < cachedWarLogs.Count; i++)
-                    {
+                    for (int i = 0; i < cachedWarLogs.Count; i++)                    
                         tasks.Add(MonitorLogAsync(cachedWarLogs[i].Tag));
-                    }
+                    
 
                     if (cachedWarLogs.Count < ClientConfiguration.ConcurrentUpdates)
                         _id = 0;
