@@ -7,9 +7,9 @@ namespace CocApi.Cache
     {
         public Player Fetched { get; }
 
-        public Player Stored { get; }
+        public Player? Stored { get; }
 
-        public PlayerUpdatedEventArgs(Player stored, Player fetched)
+        public PlayerUpdatedEventArgs(Player? stored, Player fetched)
         {
             Fetched = fetched;
 

@@ -149,7 +149,6 @@ namespace CocApi.Cache
             Task.Run(() =>
             {
                 _ = PlayerMontitor.RunAsync(cancellationToken);
-                //_ = MonitorPlayers(cancellationToken).ConfigureAwait(false);
             });
 
             return Task.CompletedTask;
@@ -157,6 +156,9 @@ namespace CocApi.Cache
 
         internal bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
         {
+            if (stored.Data == null && fetched.Data != null)
+                return true;
+
             if (stored.ServerExpiration > fetched.ServerExpiration)
                 return false;
 
@@ -279,7 +281,7 @@ namespace CocApi.Cache
             return result.Data;
         }
 
-        internal void OnPlayerUpdated(Player stored, Player fetched)
+        internal void OnPlayerUpdated(Player? stored, Player fetched)
         {
             Task.Run(() => PlayerUpdated?.Invoke(this, new PlayerUpdatedEventArgs(stored, fetched)));
         }
