@@ -495,7 +495,7 @@ namespace CocApi.Cache
                         .AddMonths(1)
                         .Subtract(new TimeSpan(0, 0, 0, 0, 1)) - DateTime.UtcNow);
 
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(20));
+            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }
 
         public virtual ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLiveAsync(Exception exception)
@@ -521,7 +521,7 @@ namespace CocApi.Cache
         public virtual ValueTask<TimeSpan> ClanWarTimeToLiveAsync(ApiResponse<ClanWar> apiResponse)
         {
             if (apiResponse.Data.State == WarState.Preparation)
-                return new ValueTask<TimeSpan>(apiResponse.Data.StartTime - DateTime.UtcNow);
+                return new ValueTask<TimeSpan>(apiResponse.Data.StartTime.AddHours(-1) - DateTime.UtcNow);
 
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }
