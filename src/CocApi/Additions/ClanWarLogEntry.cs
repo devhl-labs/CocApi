@@ -10,22 +10,27 @@ namespace CocApi.Model
     {
         private SortedDictionary<string, WarClanLogEntry> _clans;
 
+        private readonly object _clansLock = new object();
+
         public SortedDictionary<string, WarClanLogEntry> Clans
         {
             get
             {
-                if (_clans != null)
+                lock (_clansLock)
+                {
+                    if (_clans != null)
+                        return _clans;
+
+                    _clans = new SortedDictionary<string, WarClanLogEntry>();
+
+                    if (Clan != null)
+                        _clans.Add(Clan.Tag, Clan);
+
+                    if (Opponent.Tag != null)
+                        _clans.Add(Opponent.Tag, Opponent);
+
                     return _clans;
-
-                _clans = new SortedDictionary<string, WarClanLogEntry>();
-
-                if (Clan != null)
-                    _clans.Add(Clan.Tag, Clan);
-
-                if (Opponent.Tag != null)
-                    _clans.Add(Opponent.Tag, Opponent);
-
-                return _clans;
+                }
             }
         }
 

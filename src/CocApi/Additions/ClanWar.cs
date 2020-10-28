@@ -53,30 +53,35 @@ namespace CocApi.Model
 
         private bool _isInitialized;
 
+        private readonly object _clansLock = new object();
+
         public SortedDictionary<string, WarClan> Clans
         {
             get
             {
-                if (_clans.Count > 0)
-                    return _clans;
-
-                if (Clan == null || Clan.Tag == null || Opponent == null || Opponent.Tag == null)
-                    return _clans;
-
-                _clans = new SortedDictionary<string, WarClan>
+                lock (_clansLock)
                 {
-                    { Clan.Tag, Clan },
+                    if (_clans.Count > 0)
+                        return _clans;
 
-                    { Opponent.Tag, Opponent }
-                };
+                    if (Clan == null || Clan.Tag == null || Opponent == null || Opponent.Tag == null)
+                        return _clans;
 
-                return _clans;
+                    _clans = new SortedDictionary<string, WarClan>
+                    {
+                        { Clan.Tag, Clan },
+
+                        { Opponent.Tag, Opponent }
+                    };
+
+                    return _clans;
+                }
             }
         }
 
         private List<ClanWarAttack> _attacks = new List<ClanWarAttack>();
 
-        private object _attacksLock = new object();
+        private readonly object _attacksLock = new object();
 
         public List<ClanWarAttack> Attacks
         {
