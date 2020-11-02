@@ -24,7 +24,7 @@ namespace CocApi.Client
         {
             get
             {
-                string cacheControlString = Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("max-age=", "");
+                string cacheControlString = Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("public ", "").Replace("max-age=", "");
                 double cacheControl = double.Parse(cacheControlString);
                 return Downloaded.AddSeconds(cacheControl);
             }
