@@ -16,7 +16,7 @@ namespace CocApi.Test
     {
         public static async Task Main(string[] args)
         {
-            if (args.Count() > 0)
+            if (args.Any())
                 Console.WriteLine(args);
 
             await CreateHostBuilder(args).Build().RunAsync();
@@ -26,34 +26,34 @@ namespace CocApi.Test
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostBuilder, services) =>
             {
-                services.AddSingleton(GetTokenProvider);
-                services.AddSingleton(GetPlayersApi);
-                services.AddSingleton(GetClansApi);
-                services.AddSingleton(GetClientConfiguration);
-                services.AddSingleton(GetLocationsApi);
-                services.AddSingleton(GetLeaguesApi);
+                services.AddSingleton(TokenProviderFactory);
+                services.AddSingleton(PlayersApiFactory);
+                services.AddSingleton(ClansApiFactory);
+                services.AddSingleton(ClientConfigurationFactory);
+                services.AddSingleton(LocationsApiFactory);
+                services.AddSingleton(LeaguesApiFactory);
                 services.AddSingleton<LogService>();
                 services.AddSingleton<PlayersClient>();
                 services.AddHostedService<ClansClient>();
             })
             .ConfigureLogging(o => o.ClearProviders());
 
-        private static ClansApi GetClansApi(IServiceProvider arg)
+        private static ClansApi ClansApiFactory(IServiceProvider arg)
         {
             return new ClansApi(arg.GetRequiredService<TokenProvider>());
         }
 
-        private static Cache.ClientConfiguration GetClientConfiguration(IServiceProvider arg)
+        private static Cache.ClientConfiguration ClientConfigurationFactory(IServiceProvider arg)
         {
             return new Cache.ClientConfiguration();
         }
 
-        private static PlayersApi GetPlayersApi(IServiceProvider arg)
+        private static PlayersApi PlayersApiFactory(IServiceProvider arg)
         {
             return new PlayersApi(arg.GetRequiredService<TokenProvider>());
         }
 
-        private static TokenProvider GetTokenProvider(IServiceProvider arg)
+        private static TokenProvider TokenProviderFactory(IServiceProvider arg)
         {
             List<string> tokens = new List<string>
             {
@@ -64,11 +64,12 @@ namespace CocApi.Test
             return new TokenProvider(tokens, TimeSpan.FromSeconds(1));
         }
 
-        private static LocationsApi GetLocationsApi(IServiceProvider arg)
+        private static LocationsApi LocationsApiFactory(IServiceProvider arg)
         {
             return new LocationsApi(arg.GetRequiredService<TokenProvider>());
         }
-        private static LeaguesApi GetLeaguesApi(IServiceProvider arg)
+
+        private static LeaguesApi LeaguesApiFactory(IServiceProvider arg)
         {
             return new LeaguesApi(arg.GetRequiredService<TokenProvider>());
         }

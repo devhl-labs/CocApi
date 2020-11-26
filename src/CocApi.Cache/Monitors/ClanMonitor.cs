@@ -19,9 +19,9 @@ namespace CocApi.Cache
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        private ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
+        private readonly ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
 
-        private DateTime DeletedUnmonitoredPlayers = DateTime.UtcNow;
+        private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
         public ClanMonitor
             (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
@@ -80,9 +80,9 @@ namespace CocApi.Cache
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
-                    if (DeletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
+                    if (_deletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
                     {
-                        DeletedUnmonitoredPlayers = DateTime.UtcNow;
+                        _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
                         tasks = new List<Task>
                         {

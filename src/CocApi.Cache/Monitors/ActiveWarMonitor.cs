@@ -122,8 +122,7 @@ namespace CocApi.Cache
                 CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                 CachedClanWar? cachedClanWar = await dbContext.ClanWars
-                    .Where(w => w.Tag == clanTag)
-                    .FirstOrDefaultAsync(_stopRequestedTokenSource.Token)
+                    .FirstOrDefaultAsync(w => w.Tag == clanTag, _stopRequestedTokenSource.Token)
                     .ConfigureAwait(false);
 
                 if (cachedClanWar == null)

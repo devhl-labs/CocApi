@@ -141,6 +141,8 @@ namespace CocApi.Cache
 
                     if (cachedClanWar != null)
                         cached.UpdateFrom(cachedClanWar);
+
+                    cached.IsFinal = cached.State == WarState.WarEnded;
                 }
                 else
                 {
@@ -156,6 +158,8 @@ namespace CocApi.Cache
                         _clansClient.OnClanWarUpdated(cached.Data, fetched.Data);
 
                     cached.UpdateFrom(fetched);
+
+                    cached.IsFinal = cached.State == WarState.WarEnded;
                 }
 
                 SendWarAnnouncements(cached);

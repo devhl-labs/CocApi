@@ -1,13 +1,9 @@
-$ErrorActionPreference = "Stop"
-
 Read-Host -Prompt "This will delete the cache and build a new migration.  Continue?"
 
 if (Test-Path "..\src\CocApi.Test\bin\Debug\netcoreapp3.1\cocapi.db"){
     Remove-Item "..\src\CocApi.Test\bin\Debug\netcoreapp3.1\cocapi.db"
 }
-Set-Location ..\src\CocApi.Cache\Migrations
-$count=(Get-ChildItem -File).Count
-Set-Location ..
-dotnet ef migrations add Migration$count -s ../CocApi.Test
-#dotnet ef database update -s ../CocApi.Test
+
+$count=(Get-ChildItem -File -Path ../src/CocApi.Cache/Migrations).Count
+dotnet ef migrations add Migration$count -s ../src/CocApi.Test -p ../src/CocApi.Cache
 Read-Host -Prompt "Press Enter to exit"

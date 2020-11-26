@@ -136,8 +136,8 @@ namespace CocApi.Cache.Models
 
             //Type = apiResponse.Data.WarType;
 
-            if (State == WarState.WarEnded)
-                IsFinal = true;
+            //if (State == WarState.WarEnded)
+            //    IsFinal = true;
 
             StatusCode = apiResponse.StatusCode;
 
@@ -179,6 +179,8 @@ namespace CocApi.Cache.Models
 
             LocalExpiration = fetched.LocalExpiration;
 
+            StatusCode = fetched.StatusCode;
+
             if (fetched.Data != null)
             {
                 Data = fetched.Data;
@@ -187,8 +189,8 @@ namespace CocApi.Cache.Models
 
                 EndTime = fetched.Data.EndTime;
 
-                if (fetched.Data.State == WarState.WarEnded)
-                    IsFinal = true;
+                //if (fetched.Data.State == WarState.WarEnded)
+                //    IsFinal = true;
             }
         }
         
@@ -201,8 +203,8 @@ namespace CocApi.Cache.Models
             if (cachedWar.Data != null)
                 State = cachedWar.Data.State;
 
-            if (State == WarState.WarEnded)
-                IsFinal = true;
+            //if (State == WarState.WarEnded)
+            //    IsFinal = true;
 
             StatusCode = cachedWar.StatusCode;
         }

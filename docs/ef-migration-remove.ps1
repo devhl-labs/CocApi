@@ -1,0 +1,1 @@
+dotnet ef migrations remove -s ../src/CocApi.Test -p ../src/CocApi.Cache

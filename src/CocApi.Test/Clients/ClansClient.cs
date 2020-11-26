@@ -60,14 +60,12 @@ namespace CocApi.Test
 
         public new async Task StartAsync(CancellationToken cancellationToken)
         {
-            //await _playersCache.AddAsync("#29GPU9CUJ"); //squirrel man
+            await _playersCache.AddOrUpdateAsync("#29GPU9CUJ"); //squirrel man
 
-            //await AddOrUpdateAsync("#8J82PV0C", true, true, true); //fysb unbuckled
-            //await AddOrUpdateAsync("#22G0JJR8", true, true, true); //fysb
-            await AddOrUpdateAsync("#28RUGUYJU",true, true, true); //devhls lab
-            //await AddOrUpdateAsync("#2C8V29YJ", true, true, true); // russian clan
-
-            var warLeagues = await _leaguesApi.GetWarLeaguesAsync(100);
+            await AddOrUpdateAsync("#8J82PV0C", true, true, true); //fysb unbuckled
+            await AddOrUpdateAsync("#22G0JJR8", true, true, true); //fysb
+            await AddOrUpdateAsync("#28RUGUYJU", true, true, true); //devhls lab
+            await AddOrUpdateAsync("#2C8V29YJ", true, true, true); // russian clan
 
             DownloadMembers = true;
             DownloadCurrentWars = true;
@@ -118,23 +116,7 @@ namespace CocApi.Test
 
         private Task ClansCache_ClanWarAdded(object sender, ClanWarEventArgs e)
         {
-            //await Task.Delay(1);
-
             _logService.Log(LogLevel.Information, this.GetType().Name, null, "New war");
-
-            string json = JsonConvert.SerializeObject(e.ClanWar);
-
-            ClanWar clanWar = (ClanWar) JsonConvert.DeserializeObject<ClanWar>(json);
-
-            //Console.WriteLine(clanWar.Attacks.Count);
-
-            //throw new Exception();
-
-            //ClanWarMember clanWarMember = new ClanWarMember(mapPosition: 1, rosterPosition: 2);
-
-            //string json2 = JsonConvert.SerializeObject(clanWarMember);
-
-            //string json3 = JsonConvert.SerializeObject(clanWarMember, Clash.JsonSerializerSettings);
 
             return Task.CompletedTask;
         }
