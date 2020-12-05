@@ -43,7 +43,7 @@ namespace CocApi.Cache
                 {
                     if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
                     {
-                        await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
 
                         continue;
                     }
@@ -61,23 +61,23 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(ClientConfiguration.ConcurrentUpdates)
+                        .Take(Configuration.ConcurrentUpdates)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedWarLogs.Count; i++)                    
                         tasks.Add(MonitorWarAsync(cachedWarLogs[i]));                    
 
-                    if (cachedWarLogs.Count < ClientConfiguration.ConcurrentUpdates)
+                    if (cachedWarLogs.Count < Configuration.ConcurrentUpdates)
                         _id = 0;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -116,9 +116,11 @@ namespace CocApi.Cache
 
                 CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
+                List<CachedClanWar> cachedClanWars = null;
+
                 if (cached.WarTag == null)
                 {
-                    List<CachedClanWar> cachedClanWars = await dbContext.ClanWars
+                    cachedClanWars = await dbContext.ClanWars
                         .AsNoTracking()
                         .Where(c => cached.ClanTags.Any(tag => tag == c.Tag))
                         .OrderByDescending(c => c.ServerExpiration)
@@ -146,10 +148,26 @@ namespace CocApi.Cache
                 }
                 else
                 {
-                    CachedWar fetched = await CachedWar
-                        .FromClanWarLeagueWarResponseAsync(
-                            cached.WarTag, cached.Season.Value, _clansClient, _clansApi, _stopRequestedTokenSource.Token)
-                        .ConfigureAwait(false);
+                    using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
+
+                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+
+                    CachedWar? fetched = null;
+
+                    try
+                    {
+                        fetched = await CachedWar
+                            .FromClanWarLeagueWarResponseAsync(
+                                cached.WarTag, cached.Season.Value, _clansClient, _clansApi, linkedCts.Token)
+                            .ConfigureAwait(false);
+                    }
+                    catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+                    {
+                        if (_stopRequestedTokenSource.IsCancellationRequested)
+                            throw;
+                        else
+                            return;
+                    }
 
                     if (cached.Data != null && 
                         fetched.Data != null && 
@@ -162,7 +180,7 @@ namespace CocApi.Cache
                     cached.IsFinal = cached.State == WarState.WarEnded;
                 }
 
-                SendWarAnnouncements(cached);
+                SendWarAnnouncements(cached, cachedClanWars);
             }
             finally
             {
@@ -170,7 +188,7 @@ namespace CocApi.Cache
             }
         }
 
-        private void SendWarAnnouncements(CachedWar cachedWar)
+        private void SendWarAnnouncements(CachedWar cachedWar, List<CachedClanWar>? cachedClanWars)
         {
             if (cachedWar.Data == null)
                 return;
@@ -193,10 +211,11 @@ namespace CocApi.Cache
 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
                 cachedWar.State != WarState.WarEnded &&
-                cachedWar.IsFinal == true &&
-                DateTime.UtcNow > cachedWar.EndTime &&
-                DateTime.UtcNow.Day == cachedWar.EndTime.Day &&
-                cachedWar.Data.AllAttacksAreUsed() == false)
+                DateTime.UtcNow > cachedWar.EndTime && 
+                DateTime.UtcNow < cachedWar.EndTime.AddHours(24) &&
+                cachedWar.Data.AllAttacksAreUsed() == false &&
+                cachedClanWars != null &&
+                cachedClanWars.All(w => w.Data != null && w.Data.PreparationStartTime != cachedWar.Data.PreparationStartTime))
             {
                 cachedWar.Announcements |= Announcements.WarEndNotSeen;
                 _clansClient.OnClanWarEndNotSeen(cachedWar.Data);

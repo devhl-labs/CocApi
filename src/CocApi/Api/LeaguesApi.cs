@@ -43,7 +43,7 @@ namespace CocApi.Api
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
-                new CocApi.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
+                new CocApi.Client.Configuration { BasePath = basePath, Timeout = ((int?)httpRequestTimeOut?.TotalMilliseconds) ?? 100000  }
             );
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
@@ -134,7 +134,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //leagueId
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
@@ -142,8 +141,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<League>("/leagues/{leagueId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<League>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<League>("/leagues/{leagueId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -273,8 +292,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //leagueId
-            localVarRequestOptions.PathParameters.Add("seasonId", CocApi.Client.ClientUtils.ParameterToString(seasonId)); // path parameter  //seasonId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -294,8 +311,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<PlayerRankingList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -428,7 +465,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //leagueId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -448,8 +484,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<LeagueSeasonList>("/leagues/{leagueId}/seasons", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<LeagueSeasonList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<LeagueSeasonList>("/leagues/{leagueId}/seasons", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -593,8 +649,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<LeagueList>("/leagues", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<LeagueList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<LeagueList>("/leagues", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -715,9 +791,7 @@ namespace CocApi.Api
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
-            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
-            
-            localVarRequestOptions.PathParameters.Add("leagueId", CocApi.Client.ClientUtils.ParameterToString(leagueId)); // path parameter  //leagueId
+            if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);  
 
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
@@ -725,8 +799,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<WarLeague>("/warleagues/{leagueId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<WarLeague>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<WarLeague>("/warleagues/{leagueId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -864,8 +958,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<WarLeagueList>("/warleagues", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<WarLeagueList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<WarLeagueList>("/warleagues", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")

@@ -17,7 +17,7 @@ namespace CocApi.Cache.Models
 
                 return new CachedClanWarLog(tag, apiResponse, await clansCacheBase.ClanWarLogTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException)
             {
                 return new CachedClanWarLog(tag, e, await clansCacheBase.ClanWarLogTimeToLiveAsync(e).ConfigureAwait(false));
             }

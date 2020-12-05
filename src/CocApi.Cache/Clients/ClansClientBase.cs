@@ -23,23 +23,23 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration, ClansApi clansApi)
-            : base(tokenProvider, clientConfiguration)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi)
+            : base(tokenProvider, configuration)
         {
             _clansApi = clansApi;
 
-            _activeWarMonitor = new ActiveWarMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
-            _clanWarLogMonitor = new WarLogMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
-            _clanWarMonitor = new ClanWarMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
-            _cwlMonitor = new CwlMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
-            _warMonitor = new WarMonitor(TokenProvider, ClientConfiguration, _clansApi, this);
+            _activeWarMonitor = new ActiveWarMonitor(TokenProvider, Configuration, _clansApi, this);
+            _clanWarLogMonitor = new WarLogMonitor(TokenProvider, Configuration, _clansApi, this);
+            _clanWarMonitor = new ClanWarMonitor(TokenProvider, Configuration, _clansApi, this);
+            _cwlMonitor = new CwlMonitor(TokenProvider, Configuration, _clansApi, this);
+            _warMonitor = new WarMonitor(TokenProvider, Configuration, _clansApi, this);
         }
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration, ClansApi clansApi, PlayersClientBase playersClient)
-            : this(tokenProvider, clientConfiguration, clansApi)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, PlayersClientBase playersClient)
+            : this(tokenProvider, configuration, clansApi)
         {
             _playersClient = playersClient;
-            _clanMonitor = new ClanMonitor(_playersClient, TokenProvider, ClientConfiguration, _clansApi, this);
+            _clanMonitor = new ClanMonitor(_playersClient, TokenProvider, Configuration, _clansApi, this);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -493,7 +493,8 @@ namespace CocApi.Cache
                 return new ValueTask<TimeSpan>(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                         .AddMonths(1)
-                        .Subtract(new TimeSpan(0, 0, 0, 0, 1)) - DateTime.UtcNow);
+                        .Subtract(new TimeSpan(0, 0, 0, 0, 1))
+                        .Subtract(DateTime.UtcNow));
 
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }
@@ -506,7 +507,8 @@ namespace CocApi.Cache
                 return new ValueTask<TimeSpan>(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                         .AddMonths(1)
-                        .Subtract(new TimeSpan(0, 0, 0, 0, 1)) - DateTime.UtcNow);
+                        .Subtract(new TimeSpan(0, 0, 0, 0, 1))
+                        .Subtract(DateTime.UtcNow));
         }
 
         public virtual ValueTask<TimeSpan> ClanWarTimeToLiveAsync(Exception exception)

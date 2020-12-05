@@ -43,7 +43,7 @@ namespace CocApi.Api
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
-                new CocApi.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
+                new CocApi.Client.Configuration { BasePath = basePath, Timeout = ((int?)httpRequestTimeOut?.TotalMilliseconds) ?? 100000  }
             );
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
@@ -140,7 +140,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -160,8 +159,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<ClanRankingList>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<ClanRankingList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<ClanRankingList>("/locations/{locationId}/rankings/clans", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/clans", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -292,7 +311,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -312,8 +330,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<ClanVersusRankingList>("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<ClanVersusRankingList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<ClanVersusRankingList>("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/clans-versus", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -438,16 +476,34 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
-
             // authentication (JWT) required
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<Location>("/locations/{locationId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<Location>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<Location>("/locations/{locationId}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -585,8 +641,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<LocationList>("/locations", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<LocationList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<LocationList>("/locations", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/locations", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -715,7 +791,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -735,8 +810,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/locations/{locationId}/rankings/players", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<PlayerRankingList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<PlayerRankingList>("/locations/{locationId}/rankings/players", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/players", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
@@ -867,7 +962,6 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -887,8 +981,28 @@ namespace CocApi.Api
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.GetAsync<PlayerVersusRankingList>("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<PlayerVersusRankingList>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.GetAsync<PlayerVersusRankingList>("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("/locations/{locationId}/rankings/players-versus", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")

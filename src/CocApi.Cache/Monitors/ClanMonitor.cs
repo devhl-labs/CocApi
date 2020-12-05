@@ -24,8 +24,8 @@ namespace CocApi.Cache
         private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
         public ClanMonitor
-            (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(tokenProvider, cacheConfiguration)
+            (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase)
+            : base(tokenProvider, configuration)
         {
             _playersClientBase = playersClientBase;
             _clansApi = clansApi;
@@ -59,7 +59,7 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(ClientConfiguration.ConcurrentUpdates)
+                        .Take(Configuration.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
@@ -71,7 +71,7 @@ namespace CocApi.Cache
                             tasks.Add(MonitorMembersAsync(cachedClans[i]));
                     }
 
-                    if (cachedClans.Count < ClientConfiguration.ConcurrentUpdates)
+                    if (cachedClans.Count < Configuration.ConcurrentUpdates)
                         _id = 0;
                     else
                         _id = cachedClans.Max(c => c.Id);
@@ -94,7 +94,7 @@ namespace CocApi.Cache
                         await Task.WhenAll(tasks);
                     }
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -129,8 +129,23 @@ namespace CocApi.Cache
 
             try
             {
-                CachedClan fetched = await CachedClan
-                    .FromClanResponseAsync(cached.Tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
+                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
+
+                CachedClan? fetched = null;
+
+                try
+                {
+                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+
+                    fetched = await CachedClan.FromClanResponseAsync(cached.Tag, _clansClient, _clansApi, linkedCts.Token);
+                }
+                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+                {
+                    if (_stopRequestedTokenSource.IsCancellationRequested)
+                        throw;
+                    else
+                        return;
+                }
 
                 if (cached.Data != null && fetched.Data != null && _clansClient.HasUpdated(cached, fetched))
                     _clansClient.OnClanUpdated(cached.Data, fetched.Data);

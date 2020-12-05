@@ -36,7 +36,7 @@ namespace {{packageName}}.{{apiPackage}}
         {
             this.Configuration = {{packageName}}.Client.Configuration.MergeConfigurations(
                 {{packageName}}.Client.GlobalConfiguration.Instance,
-                new {{packageName}}.Client.Configuration { BasePath = basePath, Timeout = httpRequestTimeOut?.Milliseconds ?? 1000  }
+                new {{packageName}}.Client.Configuration { BasePath = basePath, Timeout = ((int?)httpRequestTimeOut?.TotalMilliseconds) ?? 100000  }
             );
             this.Client = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new {{packageName}}.Client.ApiClient(this.Configuration.BasePath);
@@ -249,8 +249,28 @@ namespace {{packageName}}.{{apiPackage}}
 
             // make the HTTP request
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
             stopwatch.Start();
-            var localVarResponse = await this.AsynchronousClient.{{#lambda.titlecase}}{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}{{/lambda.titlecase}}Async<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>("{{{path}}}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+            ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>? localVarResponse = null;
+
+            try
+            {
+                localVarResponse = await this.AsynchronousClient.{{#lambda.titlecase}}{{#lambda.lowercase}}{{httpMethod}}{{/lambda.lowercase}}{{/lambda.titlecase}}Async<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>("{{{path}}}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+
+                HttpRequestException requestException = new HttpRequestException("{{path}}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+                _httpRequestResults.Add(requestException);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+                throw;
+            }
+
             stopwatch.Stop();
 
             if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <nullable>enable</nullable>
@@ -7,18 +7,42 @@
     <AssemblyName>CocApi</AssemblyName>
     <PackageId>CocApi</PackageId>
     <OutputType>Library</OutputType>
-    <Authors>OpenAPI</Authors>
-    <Company>OpenAPI</Company>
-    <AssemblyTitle>OpenAPI Library</AssemblyTitle>
-    <Description>A library generated from a OpenAPI doc</Description>
-    <Copyright>No Copyright</Copyright>
+    <Authors>devhl</Authors>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <AssemblyTitle>CocApi</AssemblyTitle>
+    <Description>A wrapper for the Clash of Clans API.</Description>
     <RootNamespace>CocApi</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
+    <FileVersion>1.1.0.0</FileVersion>
+    <RepositoryUrl>https://github.com/devhl-labs/CocApi</RepositoryUrl>
+    <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.xml</DocumentationFile>
-    <RepositoryUrl>https://github.com/GIT_USER_ID/GIT_REPO_ID.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Minor update</PackageReleaseNotes>
+    <PackageReleaseNotes></PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <Copyright>2020</Copyright>
+    <Title>CocApi</Title>
+    <Summary>Wrapper for the Clash of Clans API.</Summary>
+    <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageIcon>Barbarian King.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\Barbarian King.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\Barbarian King.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\LICENSE.md" Link="LICENSE.md">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <!-- <PackageReference Include="JsonSubTypes" Version="1.7.0" /> -->
@@ -27,6 +51,12 @@
     <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <!-- <PackageReference Include="Polly" Version="7.2.0" /> -->
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Barbarian King.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

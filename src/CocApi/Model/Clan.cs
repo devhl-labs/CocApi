@@ -283,7 +283,7 @@ namespace CocApi.Model
             var sb = new StringBuilder();
             sb.Append("class Clan {\n");
             sb.Append("  WarLeague: ").Append(WarLeague).Append("\n");
-            //sb.Append("  MemberList: ").Append(MemberList).Append("\n");
+            sb.Append("  MemberList: ").Append(Members).Append("\n");
             sb.Append("  RequiredTrophies: ").Append(RequiredTrophies).Append("\n");
             sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");

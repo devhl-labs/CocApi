@@ -148,10 +148,7 @@ namespace CocApi.Model
             if (WarTag == null)
                 totalAttacks *= 2;
 
-            if (Attacks.Count == totalAttacks)
-                return true;
-
-            return false;
+            return Attacks.Count == totalAttacks;
         }
 
         public bool AllAttacksAreUsedOrWarIsOver()

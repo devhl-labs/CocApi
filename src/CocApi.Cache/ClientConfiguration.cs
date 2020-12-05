@@ -13,13 +13,19 @@ namespace CocApi.Cache
 
         public TimeSpan DelayBetweenTasks { get; }
 
-        public ClientConfiguration(string connectionString = "Data Source=CocApi.Cache.sqlite", int concurrentUpdates = 1, TimeSpan? delayBetweenTasks = null)
+        public TimeSpan HttpRequestTimeOut { get; set; }
+
+        public ClientConfiguration(
+            string connectionString = "Data Source=CocApi.Cache.sqlite", int concurrentUpdates = 1, 
+            TimeSpan? delayBetweenTasks = null, TimeSpan? httpRequestTimeOut = null)
         {
             ConnectionString = connectionString;
 
             ConcurrentUpdates = concurrentUpdates;
 
             DelayBetweenTasks = delayBetweenTasks ?? TimeSpan.FromMilliseconds(250);
+
+            HttpRequestTimeOut = httpRequestTimeOut ?? TimeSpan.FromSeconds(5);
         }
 
         private static IServiceProvider? _services;

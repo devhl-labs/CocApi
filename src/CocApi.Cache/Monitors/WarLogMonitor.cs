@@ -43,7 +43,7 @@ namespace CocApi.Cache
                 {
                     if (_clansClient.DownloadWarLog == false)
                     {
-                        await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
 
                         continue;
                     }
@@ -63,7 +63,7 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(ClientConfiguration.ConcurrentUpdates)
+                        .Take(Configuration.ConcurrentUpdates)
                         .Select(l => new { l.Id, l.Tag })
                         .ToListAsync()
                         .ConfigureAwait(false);
@@ -72,14 +72,14 @@ namespace CocApi.Cache
                         tasks.Add(MonitorLogAsync(cachedWarLogs[i].Tag));
                     
 
-                    if (cachedWarLogs.Count < ClientConfiguration.ConcurrentUpdates)
+                    if (cachedWarLogs.Count < Configuration.ConcurrentUpdates)
                         _id = 0;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -123,15 +123,19 @@ namespace CocApi.Cache
                     .FirstAsync(_stopRequestedTokenSource.Token)
                     .ConfigureAwait(false);
 
+                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
+
+                using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+
                 CachedClanWarLog fetched = await CachedClanWarLog
-                    .FromClanWarLogResponseAsync(tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
+                    .FromClanWarLogResponseAsync(tag, _clansClient, _clansApi, linkedCts.Token).ConfigureAwait(false);
 
                 if (fetched.Data != null && _clansClient.HasUpdated(cached, fetched))
                     _clansClient.OnClanWarLogUpdated(cached.Data, fetched.Data);
 
                 cached.UpdateFrom(fetched);
 
-                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
             }
             finally
             {

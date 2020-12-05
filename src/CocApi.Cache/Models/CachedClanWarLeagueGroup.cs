@@ -19,7 +19,7 @@ namespace CocApi.Cache.Models
 
                 return new CachedClanWarLeagueGroup(apiResponse, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException)
             {
                 return new CachedClanWarLeagueGroup(tag, e, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(e).ConfigureAwait(false));
             }

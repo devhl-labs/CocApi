@@ -13,11 +13,12 @@ namespace CocApi.Cache.Models
 {
     public class CachedWar : CachedItem<ClanWar>
     {
-        internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(string warTag, DateTime season, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
+            string warTag, DateTime season, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken);
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
                 CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season)
                 {
@@ -26,7 +27,7 @@ namespace CocApi.Cache.Models
 
                 return result;
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException)
             {
                 return new CachedWar(warTag, e, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
             }

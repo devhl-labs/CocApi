@@ -6,29 +6,26 @@
     <Nullable>enable</Nullable>
     <Authors>devhl</Authors>
     <Product />
-    <Description>This is a library that will return responses from developer.clashofclans.com
-
-https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
-Use this feed to get Reflection while this is in prerelease.</Description>
-    <Version>0.43.0-alpha</Version>
-    <AssemblyVersion>0.43.0.0</AssemblyVersion>
+    <Description>Caches response from the Clash of Clans API.</Description>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
     <PackageId>CocApi.Cache</PackageId>
-    <Copyright>2019</Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>2020</Copyright>
+    <PackageLicenseExpression></PackageLicenseExpression>
     <!--<PackageIconUrl>http://devhl.com/CocApi.ico</PackageIconUrl>-->
-    <PackageIcon>MinionsCard.png</PackageIcon>
+    <PackageIcon>Barbarian King.png</PackageIcon>
     <RepositoryUrl>https://github.com/devhl-labs/CocApi</RepositoryUrl>
-    <PackageTags>Clash Clans ClashOfClans ClashClans SuperCell devhl</PackageTags>
-    <PackageReleaseNotes>Initial Release
-
-https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json
-Use this feed to get Reflection while this is in prerelease.</PackageReleaseNotes>
-    <FileVersion>0.43.0.0</FileVersion>
+    <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
+    <PackageReleaseNotes>Improve cancellations</PackageReleaseNotes>
+    <FileVersion>1.1.0.0</FileVersion>
     <ApplicationIcon />
     <AssemblyName>CocApi.Cache</AssemblyName>
     <RootNamespace>CocApi.Cache</RootNamespace>
+    <Company />
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <Title>CocApi.Cache</Title>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,8 +47,12 @@ Use this feed to get Reflection while this is in prerelease.</PackageReleaseNote
 
   <ItemGroup>		
     <None Include="..\..\.editorconfig" Link=".editorconfig" />		
-    <None Include="MinionsCard.png" Pack="true" PackagePath="">
+    <None Include="..\..\Barbarian King.png" Pack="true" PackagePath="">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>		
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 

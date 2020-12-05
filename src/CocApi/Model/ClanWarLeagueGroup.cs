@@ -66,10 +66,10 @@ namespace CocApi.Model
         /// <summary>
         /// Gets or Sets State
         /// </summary>
-        [DataMember(Name="state", EmitDefaultValue=false)]
+        [DataMember(Name = "state", EmitDefaultValue = false)]
         public GroupState? State { get; private set; }
-    
-    
+
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
         /// </summary>
@@ -86,7 +86,7 @@ namespace CocApi.Model
             this.Clans = clans;
             this.Rounds = rounds;
         }
-        
+
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>

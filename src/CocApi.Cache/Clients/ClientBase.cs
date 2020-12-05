@@ -18,15 +18,15 @@ namespace CocApi.Cache
 
         internal protected TokenProvider TokenProvider { get; }
         internal protected IServiceProvider Services { get; }
-        internal protected ClientConfiguration ClientConfiguration { get; }
+        internal protected ClientConfiguration Configuration { get; }
 
         protected int _id;
 
-        public ClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration)
+        public ClientBase(TokenProvider tokenProvider, ClientConfiguration configuration)
         {
             TokenProvider = tokenProvider;
-            ClientConfiguration = clientConfiguration;
-            Services = ClientConfiguration.BuildServiceProvider();
+            Configuration = configuration;
+            Services = Configuration.BuildServiceProvider();
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

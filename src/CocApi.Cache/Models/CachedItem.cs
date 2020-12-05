@@ -82,10 +82,8 @@ namespace CocApi.Cache.Models
         {
             if (e is ApiException apiException)
                 UpdateFrom(apiException, localExpiration);
-            else if (e is TimeoutException timeout)
-                UpdateFrom(timeout, localExpiration);
             else
-                throw new NotImplementedException();
+                UpdateFrom(localExpiration);
         }
 
         protected void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
@@ -96,7 +94,7 @@ namespace CocApi.Cache.Models
             LocalExpiration = DateTime.UtcNow.Add(localExpiration);
         }
 
-        protected void UpdateFrom(TimeoutException timeoutException, TimeSpan localExpiration)
+        protected void UpdateFrom(TimeSpan localExpiration)
         {
             StatusCode = 0;
             Downloaded = DateTime.UtcNow;

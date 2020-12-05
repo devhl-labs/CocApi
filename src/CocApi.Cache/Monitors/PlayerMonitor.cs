@@ -54,14 +54,14 @@ namespace CocApi.Cache
                             v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             v.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(v => v.Id)
-                        .Take(ClientConfiguration.ConcurrentUpdates)
+                        .Take(Configuration.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedPlayers.Count; i++)
                         tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
 
-                    if (cachedPlayers.Count < ClientConfiguration.ConcurrentUpdates)
+                    if (cachedPlayers.Count < Configuration.ConcurrentUpdates)
                         _id = 0;
                     else
                         _id = cachedPlayers.Max(v => v.Id);
@@ -70,7 +70,7 @@ namespace CocApi.Cache
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
-                    await Task.Delay(ClientConfiguration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -107,8 +107,24 @@ namespace CocApi.Cache
 
             try
             {
-                CachedPlayer fetched = await CachedPlayer
-                    .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _stopRequestedTokenSource.Token);
+                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
+
+                using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+
+                CachedPlayer? fetched = null;
+
+                try
+                {
+                    fetched = await CachedPlayer
+                        .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, linkedCts.Token).ConfigureAwait(false);
+                }
+                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+                {
+                    if (_stopRequestedTokenSource.IsCancellationRequested)
+                        throw;
+                    else
+                        return;
+                }
 
                 if (fetched.Data != null && _playersClientBase.HasUpdated(cachedPlayer, fetched))
                     _playersClientBase.OnPlayerUpdated(cachedPlayer.Data, fetched.Data);

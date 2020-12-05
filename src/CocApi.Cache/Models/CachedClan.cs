@@ -17,7 +17,7 @@ namespace CocApi.Cache.Models
 
                 return new CachedClan(apiResponse, await clansCacheBase.ClanTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException)
             {
                 return new CachedClan(tag, e, await clansCacheBase.ClanTimeToLiveAsync(e).ConfigureAwait(false));
             }
