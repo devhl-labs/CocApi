@@ -40,6 +40,11 @@ namespace CocApi.Model
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
+        /// <summary>
+        /// Gets or Sets State
+        /// </summary>
+        [DataMember(Name = "state", EmitDefaultValue = false)]
+        public WarState? State { get; private set; }
 
         [DataMember(Name = "warTag", EmitDefaultValue = false)]
         public string? WarTag { get; internal set; }

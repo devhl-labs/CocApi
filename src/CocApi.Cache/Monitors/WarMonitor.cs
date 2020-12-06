@@ -61,14 +61,14 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(Configuration.ConcurrentUpdates)
+                        .Take(1)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedWarLogs.Count; i++)                    
                         tasks.Add(MonitorWarAsync(cachedWarLogs[i]));                    
 
-                    if (cachedWarLogs.Count < Configuration.ConcurrentUpdates)
+                    if (cachedWarLogs.Count == 0)
                         _id = 0;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
@@ -190,43 +190,52 @@ namespace CocApi.Cache
 
         private void SendWarAnnouncements(CachedWar cachedWar, List<CachedClanWar>? cachedClanWars)
         {
-            if (cachedWar.Data == null)
-                return;
-
-            if (cachedWar.Announcements.HasFlag(Announcements.WarStartingSoon) == false &&
-                DateTime.UtcNow > cachedWar.Data.StartTime.AddHours(-1) &&
-                DateTime.UtcNow < cachedWar.Data.StartTime)
+            try
             {
-                cachedWar.Announcements |= Announcements.WarStartingSoon;
-                _clansClient.OnClanWarStartingSoon(cachedWar.Data);
+                if (cachedWar.Data == null)
+                    return;
+
+                if (cachedWar.Announcements.HasFlag(Announcements.WarStartingSoon) == false &&
+                    DateTime.UtcNow > cachedWar.Data.StartTime.AddHours(-1) &&
+                    DateTime.UtcNow < cachedWar.Data.StartTime)
+                {
+                    cachedWar.Announcements |= Announcements.WarStartingSoon;
+                    _clansClient.OnClanWarStartingSoon(cachedWar.Data);
+                }
+
+                if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
+                    DateTime.UtcNow > cachedWar.Data.EndTime.AddHours(-1) &&
+                    DateTime.UtcNow < cachedWar.Data.EndTime)
+                {
+                    cachedWar.Announcements |= Announcements.WarEndingSoon;
+                    _clansClient.OnClanWarEndingSoon(cachedWar.Data);
+                }
+
+                if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
+                    cachedWar.State != WarState.WarEnded &&
+                    DateTime.UtcNow > cachedWar.EndTime &&
+                    DateTime.UtcNow < cachedWar.EndTime.AddHours(24) &&
+                    cachedWar.Data.AllAttacksAreUsed() == false &&
+                    cachedClanWars != null &&
+                    cachedClanWars.All(w => w.Data != null && w.Data.PreparationStartTime != cachedWar.Data.PreparationStartTime))
+                {
+                    cachedWar.Announcements |= Announcements.WarEndNotSeen;
+                    _clansClient.OnClanWarEndNotSeen(cachedWar.Data);
+                }
+
+                if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
+                    cachedWar.EndTime < DateTime.UtcNow &&
+                    cachedWar.EndTime.Day == DateTime.UtcNow.Day)
+                {
+                    cachedWar.Announcements |= Announcements.WarEnded;
+                    _clansClient.OnClanWarEnded(cachedWar.Data);
+                }
             }
-
-            if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
-                DateTime.UtcNow > cachedWar.Data.EndTime.AddHours(-1) &&
-                DateTime.UtcNow < cachedWar.Data.EndTime)
+            catch (Exception e)
             {
-                cachedWar.Announcements |= Announcements.WarEndingSoon;
-                _clansClient.OnClanWarEndingSoon(cachedWar.Data);
-            }
+                _clansClient.OnLog(this, new ExceptionEventArgs(nameof(SendWarAnnouncements), e));
 
-            if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
-                cachedWar.State != WarState.WarEnded &&
-                DateTime.UtcNow > cachedWar.EndTime && 
-                DateTime.UtcNow < cachedWar.EndTime.AddHours(24) &&
-                cachedWar.Data.AllAttacksAreUsed() == false &&
-                cachedClanWars != null &&
-                cachedClanWars.All(w => w.Data != null && w.Data.PreparationStartTime != cachedWar.Data.PreparationStartTime))
-            {
-                cachedWar.Announcements |= Announcements.WarEndNotSeen;
-                _clansClient.OnClanWarEndNotSeen(cachedWar.Data);
-            }
-
-            if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
-                cachedWar.EndTime < DateTime.UtcNow &&
-                cachedWar.EndTime.Day == DateTime.UtcNow.Day)
-            {
-                cachedWar.Announcements |= Announcements.WarEnded;
-                _clansClient.OnClanWarEnded(cachedWar.Data);
+                throw;
             }
         }
     }

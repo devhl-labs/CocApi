@@ -14,7 +14,8 @@ namespace CocApi.Cache.Models
     public class CachedWar : CachedItem<ClanWar>
     {
         internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
-            string warTag, DateTime season, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+            string warTag, DateTime season, ClansClientBase clansCacheBase, 
+            ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {

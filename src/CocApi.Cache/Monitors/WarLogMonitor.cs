@@ -63,7 +63,7 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(Configuration.ConcurrentUpdates)
+                        .Take(1)
                         .Select(l => new { l.Id, l.Tag })
                         .ToListAsync()
                         .ConfigureAwait(false);
@@ -72,7 +72,7 @@ namespace CocApi.Cache
                         tasks.Add(MonitorLogAsync(cachedWarLogs[i].Tag));
                     
 
-                    if (cachedWarLogs.Count < Configuration.ConcurrentUpdates)
+                    if (cachedWarLogs.Count == 0)
                         _id = 0;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);

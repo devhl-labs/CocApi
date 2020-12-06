@@ -63,14 +63,14 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(Configuration.ConcurrentUpdates)
+                        .Take(1)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedWarLogs.Count; i++)
                         tasks.Add(MonitorCwlAsync(cachedWarLogs[i].Tag));
 
-                    if (cachedWarLogs.Count < Configuration.ConcurrentUpdates)
+                    if (cachedWarLogs.Count == 0)
                         _id = 0;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
@@ -208,7 +208,7 @@ namespace CocApi.Cache
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
             CachedWar? cachedWar = await dbContext.Wars
-                .FirstOrDefaultAsync(w => w.WarTag == warTag)
+                .FirstOrDefaultAsync(w => w.WarTag == warTag && w.Season == season)
                 .ConfigureAwait(false);
 
             if (cachedWar != null)

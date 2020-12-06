@@ -101,6 +101,12 @@ namespace CocApi.Model
         //[JsonProperty("memberList")]
         public List<ClanMember> Members { get; private set; }
 
+        /// <summary>
+        /// Gets or Sets WarFrequency
+        /// </summary>
+        [DataMember(Name = "warFrequency", EmitDefaultValue = false)]
+        public WarFrequency? WarFrequency { get; private set; }
+
         //[DataMember(Name = "members", EmitDefaultValue = false)]
         ////[JsonProperty("members")]
         //public int Members { get; set; }
@@ -110,6 +116,12 @@ namespace CocApi.Model
         /// </summary>
         [DataMember(Name = "location", EmitDefaultValue = false)]
         public Location? Location { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets Type
+        /// </summary>
+        [DataMember(Name = "type", EmitDefaultValue = false)]
+        public RecruitingType? Type { get; private set; }
 
         public override bool Equals(object? obj)
         {

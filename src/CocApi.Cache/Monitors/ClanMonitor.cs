@@ -59,7 +59,7 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(Configuration.ConcurrentUpdates)
+                        .Take(1)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
@@ -71,7 +71,7 @@ namespace CocApi.Cache
                             tasks.Add(MonitorMembersAsync(cachedClans[i]));
                     }
 
-                    if (cachedClans.Count < Configuration.ConcurrentUpdates)
+                    if (cachedClans.Count == 0)
                         _id = 0;
                     else
                         _id = cachedClans.Max(c => c.Id);

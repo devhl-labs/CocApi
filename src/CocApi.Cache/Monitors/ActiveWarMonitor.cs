@@ -65,7 +65,7 @@ namespace CocApi.Cache
                             (w.IsWarLogPublic == null || w.IsWarLogPublic == true))
                         .OrderBy(w => w.Id)
 
-                        .Take(Configuration.ConcurrentUpdates)
+                        .Take(1)
                         .Select(w => new { w.Id, w.ClanTag, w.OpponentTag })
                         .ToListAsync()
                         .ConfigureAwait(false);
@@ -76,7 +76,7 @@ namespace CocApi.Cache
                         tasks.Add(MonitorActiveWarAsync(cachedWars[i].OpponentTag));
                     }
 
-                    if (cachedWars.Count < Configuration.ConcurrentUpdates)
+                    if (cachedWars.Count == 0)
                         _id = 0;
                     else
                         _id = cachedWars.Max(c => c.Id);

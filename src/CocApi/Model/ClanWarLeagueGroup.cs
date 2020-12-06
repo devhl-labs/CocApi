@@ -23,35 +23,35 @@ using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-//namespace CocApi
-//{
-//        /// <summary>
-//        /// Defines State
-//        /// </summary>
-//        [JsonConverter(typeof(StringEnumConverter))]
-//        public enum StateEnum
-//        {
-//            /// <summary>
-//            /// Enum Preparation for value: preparation
-//            /// </summary>
-//            [EnumMember(Value = "preparation")]
-//            Preparation = 1,
+namespace CocApi
+{
+        /// <summary>
+        /// Defines State
+        /// </summary>
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum StateEnum
+        {
+            /// <summary>
+            /// Enum Preparation for value: preparation
+            /// </summary>
+            [EnumMember(Value = "preparation")]
+            Preparation = 1,
 
-//            /// <summary>
-//            /// Enum InWar for value: inWar
-//            /// </summary>
-//            [EnumMember(Value = "inWar")]
-//            InWar = 2,
+            /// <summary>
+            /// Enum InWar for value: inWar
+            /// </summary>
+            [EnumMember(Value = "inWar")]
+            InWar = 2,
 
-//            /// <summary>
-//            /// Enum Ended for value: ended
-//            /// </summary>
-//            [EnumMember(Value = "ended")]
-//            Ended = 3
+            /// <summary>
+            /// Enum Ended for value: ended
+            /// </summary>
+            [EnumMember(Value = "ended")]
+            Ended = 3
 
-//        }
+        }
 
-//}
+}
 
 
 
@@ -63,30 +63,30 @@ namespace CocApi.Model
     [DataContract]
     public partial class ClanWarLeagueGroup :  IValidatableObject 
     {
-        /// <summary>
-        /// Gets or Sets State
-        /// </summary>
-        [DataMember(Name = "state", EmitDefaultValue = false)]
-        public GroupState? State { get; private set; }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
-        /// </summary>
-        /// <param name="tag">tag.</param>
-        /// <param name="state">state.</param>
-        /// <param name="season">season.</param>
-        /// <param name="clans">clans.</param>
-        /// <param name="rounds">rounds.</param>
-        public ClanWarLeagueGroup(string tag = default(string), GroupState? state = default(GroupState?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
-        {
-            this.Tag = tag;
-            this.State = state;
-            this.Season = season;
-            this.Clans = clans;
-            this.Rounds = rounds;
-        }
-
+        ///// <summary>
+        ///// Gets or Sets State
+        ///// </summary>
+        //[DataMember(Name="state", EmitDefaultValue=false)]
+        //public StateEnum? State { get; private set; }
+    
+    
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
+        ///// </summary>
+        ///// <param name="tag">tag.</param>
+        ///// <param name="state">state.</param>
+        ///// <param name="season">season.</param>
+        ///// <param name="clans">clans.</param>
+        ///// <param name="rounds">rounds.</param>
+        //public ClanWarLeagueGroup(string tag = default(string), StateEnum? state = default(StateEnum?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
+        //{
+        //    this.Tag = tag;
+        //    this.State = state;
+        //    this.Season = season;
+        //    this.Clans = clans;
+        //    this.Rounds = rounds;
+        //}
+        
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>

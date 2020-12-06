@@ -40,6 +40,12 @@ namespace CocApi.Model
         [DataMember(Name = "league", EmitDefaultValue = false)]
         public League? League { get; private set; }
 
+        /// <summary>
+        /// Gets or Sets Role
+        /// </summary>
+        [DataMember(Name = "role", EmitDefaultValue = false)]
+        public Role? Role { get; private set; }
+
         public override int GetHashCode()
         {
             return HashCode.Combine(Tag);

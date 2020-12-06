@@ -1,61 +1,54 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <nullable>enable</nullable>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <AssemblyName>CocApi</AssemblyName>
-    <PackageId>CocApi</PackageId>
-    <OutputType>Library</OutputType>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
     <Authors>devhl</Authors>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
-    <AssemblyTitle>CocApi</AssemblyTitle>
+    <Product />
     <Description>A wrapper for the Clash of Clans API.</Description>
-    <RootNamespace>CocApi</RootNamespace>
-    <Version>1.1.0</Version>
-    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.1</Version>
+    <AssemblyVersion>1.1.1.0</AssemblyVersion>
+    <FileVersion>1.1.1.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
+    <PackageId>CocApi</PackageId>
+    <Copyright>2020</Copyright>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <!--<PackageIcon>Barbarian King.png</PackageIcon>-->
     <RepositoryUrl>https://github.com/devhl-labs/CocApi</RepositoryUrl>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
+    <PackageReleaseNotes>Improvement in TokenProvider</PackageReleaseNotes>
+    <ApplicationIcon />
+    <AssemblyName>CocApi</AssemblyName>
+    <RootNamespace>CocApi</RootNamespace>
+    <Company />
+    <!--<PackageLicenseFile>LICENSE.md</PackageLicenseFile>-->
+    <Title>CocApi</Title>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.xml</DocumentationFile>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes></PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    <Copyright>2020</Copyright>
-    <Title>CocApi</Title>
-    <Summary>Wrapper for the Clash of Clans API.</Summary>
-    <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageIcon>Barbarian King.png</PackageIcon>
-  </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\..\Barbarian King.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\Barbarian King.png">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\LICENSE.md" Link="LICENSE.md">
-      <PackagePath></PackagePath>
-      <Pack>True</Pack>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+  </PropertyGroup>
 
   <ItemGroup>
     <!-- <PackageReference Include="JsonSubTypes" Version="1.7.0" /> -->
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="RestSharp" Version="106.10.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
     <!-- <PackageReference Include="Polly" Version="7.2.0" /> -->
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Barbarian King.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="..\..\Barbarian King.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 

@@ -9,8 +9,6 @@ namespace CocApi.Cache
     {
         public string ConnectionString { get; }
 
-        public int ConcurrentUpdates { get; }
-
         public TimeSpan DelayBetweenTasks { get; }
 
         public TimeSpan HttpRequestTimeOut { get; set; }
@@ -20,8 +18,6 @@ namespace CocApi.Cache
             TimeSpan? delayBetweenTasks = null, TimeSpan? httpRequestTimeOut = null)
         {
             ConnectionString = connectionString;
-
-            ConcurrentUpdates = concurrentUpdates;
 
             DelayBetweenTasks = delayBetweenTasks ?? TimeSpan.FromMilliseconds(250);
 

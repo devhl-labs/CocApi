@@ -7,19 +7,18 @@
     <Authors>devhl</Authors>
     <Product />
     <Description>Caches response from the Clash of Clans API.</Description>
-    <Version>1.1.0</Version>
-    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <Version>1.1.1.1</Version>
+    <AssemblyVersion>1.1.1.1</AssemblyVersion>
+    <FileVersion>1.1.1.1</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
     <PackageId>CocApi.Cache</PackageId>
     <Copyright>2020</Copyright>
     <PackageLicenseExpression></PackageLicenseExpression>
-    <!--<PackageIconUrl>http://devhl.com/CocApi.ico</PackageIconUrl>-->
     <PackageIcon>Barbarian King.png</PackageIcon>
     <RepositoryUrl>https://github.com/devhl-labs/CocApi</RepositoryUrl>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
-    <PackageReleaseNotes>Improve cancellations</PackageReleaseNotes>
-    <FileVersion>1.1.0.0</FileVersion>
+    <PackageReleaseNotes>Fixed a bug in downloading cwl wars</PackageReleaseNotes>
     <ApplicationIcon />
     <AssemblyName>CocApi.Cache</AssemblyName>
     <RootNamespace>CocApi.Cache</RootNamespace>

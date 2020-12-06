@@ -50,12 +50,8 @@ namespace CocApi
         {
             TimeSpan timeSpan = DateTime.UtcNow - LastUsedUtc;
 
-            while (timeSpan.TotalMilliseconds < TokenTimeOut.TotalMilliseconds)
-            {
-                await Task.Delay(50).ConfigureAwait(false);
-
-                timeSpan = DateTime.UtcNow - LastUsedUtc;
-            }
+            if (timeSpan.TotalMilliseconds < TokenTimeOut.TotalMilliseconds)            
+                await Task.Delay((int)timeSpan.TotalMilliseconds).ConfigureAwait(false);
 
             LastUsedUtc = DateTime.UtcNow;
 

@@ -107,18 +107,19 @@ namespace CocApi.Model
     [DataContract]
     public partial class Clan :  IValidatableObject 
     {
-        /// <summary>
-        /// Gets or Sets WarFrequency
-        /// </summary>
-        [DataMember(Name="warFrequency", EmitDefaultValue=false)]
-        public WarFrequency? WarFrequency { get; private set; }
-        /// <summary>
-        /// Gets or Sets Type
-        /// </summary>
-        [DataMember(Name="type", EmitDefaultValue=false)]
-        public RecruitingType? Type { get; private set; }
-    
-    
+        ///// <summary>
+        ///// Gets or Sets WarFrequency
+        ///// </summary>
+        //[DataMember(Name="warFrequency", EmitDefaultValue=false)]
+        //public WarFrequencyEnum? WarFrequency { get; private set; }
+
+        ///// <summary>
+        ///// Gets or Sets Type
+        ///// </summary>
+        //[DataMember(Name="type", EmitDefaultValue=false)]
+        //public TypeEnum? Type { get; private set; }
+
+
         ///// <summary>
         ///// Initializes a new instance of the <see cref="Clan" /> class.
         ///// </summary>
@@ -165,11 +166,11 @@ namespace CocApi.Model
         //    this.Description = description;
         //    this.BadgeUrls = badgeUrls;
         //}
-        
+
         /// <summary>
         /// Gets or Sets WarLeague
         /// </summary>
-        [DataMember(Name="warLeague", EmitDefaultValue=false)]
+        [DataMember(Name = "warLeague", EmitDefaultValue = false)]
         public WarLeague WarLeague { get; private set; }
 
         ///// <summary>
@@ -283,7 +284,7 @@ namespace CocApi.Model
             var sb = new StringBuilder();
             sb.Append("class Clan {\n");
             sb.Append("  WarLeague: ").Append(WarLeague).Append("\n");
-            sb.Append("  MemberList: ").Append(Members).Append("\n");
+            //sb.Append("  MemberList: ").Append(MemberList).Append("\n");
             sb.Append("  RequiredTrophies: ").Append(RequiredTrophies).Append("\n");
             sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");

@@ -69,71 +69,71 @@ namespace CocApi.Model
     [DataContract]
     public partial class Player :  IValidatableObject 
     {
-        /// <summary>
-        /// Gets or Sets Role
-        /// </summary>
-        [DataMember(Name = "role", EmitDefaultValue = false)]
-        public Role? Role { get; private set; }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Player" /> class.
-        /// </summary>
-        /// <param name="clan">clan.</param>
-        /// <param name="league">league.</param>
-        /// <param name="role">role.</param>
-        /// <param name="attackWins">attackWins.</param>
-        /// <param name="defenseWins">defenseWins.</param>
-        /// <param name="townHallLevel">townHallLevel.</param>
-        /// <param name="townHallWeaponLevel">townHallWeaponLevel.</param>
-        /// <param name="versusBattleWins">versusBattleWins.</param>
-        /// <param name="legendStatistics">legendStatistics.</param>
-        /// <param name="troops">troops.</param>
-        /// <param name="heroes">heroes.</param>
-        /// <param name="spells">spells.</param>
-        /// <param name="labels">labels.</param>
-        /// <param name="tag">tag.</param>
-        /// <param name="name">name.</param>
-        /// <param name="expLevel">expLevel.</param>
-        /// <param name="trophies">trophies.</param>
-        /// <param name="bestTrophies">bestTrophies.</param>
-        /// <param name="donations">donations.</param>
-        /// <param name="donationsReceived">donationsReceived.</param>
-        /// <param name="builderHallLevel">builderHallLevel.</param>
-        /// <param name="versusTrophies">versusTrophies.</param>
-        /// <param name="bestVersusTrophies">bestVersusTrophies.</param>
-        /// <param name="warStars">warStars.</param>
-        /// <param name="achievements">achievements.</param>
-        /// <param name="versusBattleWinCount">versusBattleWinCount.</param>
-        public Player(PlayerClan clan = default(PlayerClan), League league = default(League), Role? role = default(Role?), int attackWins = default(int), int defenseWins = default(int), int townHallLevel = default(int), int townHallWeaponLevel = default(int), int versusBattleWins = default(int), PlayerLegendStatistics legendStatistics = default(PlayerLegendStatistics), List<PlayerItemLevel> troops = default(List<PlayerItemLevel>), List<PlayerItemLevel> heroes = default(List<PlayerItemLevel>), List<PlayerItemLevel> spells = default(List<PlayerItemLevel>), List<Label> labels = default(List<Label>), string tag = default(string), string name = default(string), int expLevel = default(int), int trophies = default(int), int bestTrophies = default(int), int donations = default(int), int donationsReceived = default(int), int builderHallLevel = default(int), int versusTrophies = default(int), int bestVersusTrophies = default(int), int warStars = default(int), List<PlayerAchievementProgress> achievements = default(List<PlayerAchievementProgress>), int versusBattleWinCount = default(int))
-        {
-            this.Clan = clan;
-            this.League = league;
-            this.Role = role;
-            this.AttackWins = attackWins;
-            this.DefenseWins = defenseWins;
-            this.TownHallLevel = townHallLevel;
-            this.TownHallWeaponLevel = townHallWeaponLevel;
-            this.VersusBattleWins = versusBattleWins;
-            this.LegendStatistics = legendStatistics;
-            this.Troops = troops;
-            this.Heroes = heroes;
-            this.Spells = spells;
-            this.Labels = labels;
-            this.Tag = tag;
-            this.Name = name;
-            this.ExpLevel = expLevel;
-            this.Trophies = trophies;
-            this.BestTrophies = bestTrophies;
-            this.Donations = donations;
-            this.DonationsReceived = donationsReceived;
-            this.BuilderHallLevel = builderHallLevel;
-            this.VersusTrophies = versusTrophies;
-            this.BestVersusTrophies = bestVersusTrophies;
-            this.WarStars = warStars;
-            this.Achievements = achievements;
-            this.VersusBattleWinCount = versusBattleWinCount;
-        }
+        ///// <summary>
+        ///// Gets or Sets Role
+        ///// </summary>
+        //[DataMember(Name="role", EmitDefaultValue=false)]
+        //public RoleEnum? Role { get; private set; }
+    
+    
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="Player" /> class.
+        ///// </summary>
+        ///// <param name="clan">clan.</param>
+        ///// <param name="league">league.</param>
+        ///// <param name="role">role.</param>
+        ///// <param name="attackWins">attackWins.</param>
+        ///// <param name="defenseWins">defenseWins.</param>
+        ///// <param name="townHallLevel">townHallLevel.</param>
+        ///// <param name="townHallWeaponLevel">townHallWeaponLevel.</param>
+        ///// <param name="versusBattleWins">versusBattleWins.</param>
+        ///// <param name="legendStatistics">legendStatistics.</param>
+        ///// <param name="troops">troops.</param>
+        ///// <param name="heroes">heroes.</param>
+        ///// <param name="spells">spells.</param>
+        ///// <param name="labels">labels.</param>
+        ///// <param name="tag">tag.</param>
+        ///// <param name="name">name.</param>
+        ///// <param name="expLevel">expLevel.</param>
+        ///// <param name="trophies">trophies.</param>
+        ///// <param name="bestTrophies">bestTrophies.</param>
+        ///// <param name="donations">donations.</param>
+        ///// <param name="donationsReceived">donationsReceived.</param>
+        ///// <param name="builderHallLevel">builderHallLevel.</param>
+        ///// <param name="versusTrophies">versusTrophies.</param>
+        ///// <param name="bestVersusTrophies">bestVersusTrophies.</param>
+        ///// <param name="warStars">warStars.</param>
+        ///// <param name="achievements">achievements.</param>
+        ///// <param name="versusBattleWinCount">versusBattleWinCount.</param>
+        //public Player(PlayerClan clan = default(PlayerClan), League league = default(League), RoleEnum? role = default(RoleEnum?), int attackWins = default(int), int defenseWins = default(int), int townHallLevel = default(int), int townHallWeaponLevel = default(int), int versusBattleWins = default(int), PlayerLegendStatistics legendStatistics = default(PlayerLegendStatistics), List<PlayerItemLevel> troops = default(List<PlayerItemLevel>), List<PlayerItemLevel> heroes = default(List<PlayerItemLevel>), List<PlayerItemLevel> spells = default(List<PlayerItemLevel>), List<Label> labels = default(List<Label>), string tag = default(string), string name = default(string), int expLevel = default(int), int trophies = default(int), int bestTrophies = default(int), int donations = default(int), int donationsReceived = default(int), int builderHallLevel = default(int), int versusTrophies = default(int), int bestVersusTrophies = default(int), int warStars = default(int), List<PlayerAchievementProgress> achievements = default(List<PlayerAchievementProgress>), int versusBattleWinCount = default(int))
+        //{
+        //    this.Clan = clan;
+        //    this.League = league;
+        //    this.Role = role;
+        //    this.AttackWins = attackWins;
+        //    this.DefenseWins = defenseWins;
+        //    this.TownHallLevel = townHallLevel;
+        //    this.TownHallWeaponLevel = townHallWeaponLevel;
+        //    this.VersusBattleWins = versusBattleWins;
+        //    this.LegendStatistics = legendStatistics;
+        //    this.Troops = troops;
+        //    this.Heroes = heroes;
+        //    this.Spells = spells;
+        //    this.Labels = labels;
+        //    this.Tag = tag;
+        //    this.Name = name;
+        //    this.ExpLevel = expLevel;
+        //    this.Trophies = trophies;
+        //    this.BestTrophies = bestTrophies;
+        //    this.Donations = donations;
+        //    this.DonationsReceived = donationsReceived;
+        //    this.BuilderHallLevel = builderHallLevel;
+        //    this.VersusTrophies = versusTrophies;
+        //    this.BestVersusTrophies = bestVersusTrophies;
+        //    this.WarStars = warStars;
+        //    this.Achievements = achievements;
+        //    this.VersusBattleWinCount = versusBattleWinCount;
+        //}
         
         ///// <summary>
         ///// Gets or Sets Clan

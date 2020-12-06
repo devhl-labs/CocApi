@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace CocApi.Model
@@ -39,6 +40,30 @@ namespace CocApi.Model
         public override int GetHashCode()
         {
             return HashCode.Combine(Clans.OrderBy(c => c.Tag).First().Tag, Season);
+        }
+
+        /// <summary>
+        /// Gets or Sets State
+        /// </summary>
+        [DataMember(Name = "state", EmitDefaultValue = false)]
+        public GroupState? State { get; private set; }
+
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
+        /// </summary>
+        /// <param name="tag">tag.</param>
+        /// <param name="state">state.</param>
+        /// <param name="season">season.</param>
+        /// <param name="clans">clans.</param>
+        /// <param name="rounds">rounds.</param>
+        public ClanWarLeagueGroup(string tag = default(string), GroupState? state = default(GroupState?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
+        {
+            this.Tag = tag;
+            this.State = state;
+            this.Season = season;
+            this.Clans = clans;
+            this.Rounds = rounds;
         }
     }
 }

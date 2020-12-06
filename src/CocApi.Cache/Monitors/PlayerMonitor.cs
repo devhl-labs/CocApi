@@ -54,14 +54,14 @@ namespace CocApi.Cache
                             v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             v.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(v => v.Id)
-                        .Take(Configuration.ConcurrentUpdates)
+                        .Take(1)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedPlayers.Count; i++)
                         tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
 
-                    if (cachedPlayers.Count < Configuration.ConcurrentUpdates)
+                    if (cachedPlayers.Count == 0)
                         _id = 0;
                     else
                         _id = cachedPlayers.Max(v => v.Id);
