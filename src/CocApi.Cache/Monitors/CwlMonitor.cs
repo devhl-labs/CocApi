@@ -71,7 +71,7 @@ namespace CocApi.Cache
                         tasks.Add(MonitorCwlAsync(cachedWarLogs[i].Tag));
 
                     if (cachedWarLogs.Count == 0)
-                        _id = 0;
+                        _id = int.MinValue;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
 
@@ -179,8 +179,11 @@ namespace CocApi.Cache
                     }
 
                     foreach (Task<CachedWar?> cachedWarTask in tasks)
-                        if (cachedWarTask.IsCompletedSuccessfully && cachedWarTask.Result is CachedWar cachedWar)
+                        if (cachedWarTask.IsCompletedSuccessfully && cachedWarTask.Result is CachedWar cachedWar && cachedWar.Data != null)
+                        {
                             dbContext.Wars.Add(cachedWar);
+                            _clansClient.OnClanWarAdded(cachedWar.Data);
+                        }
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }

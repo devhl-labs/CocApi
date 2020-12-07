@@ -56,7 +56,7 @@ namespace CocApi.Cache
 
                     List<Task> tasks = new List<Task>();
 
-                    var cachedWars = await dbContext.WarWithLogStatus
+                    var warWithLogStatus = await dbContext.WarWithLogStatus
                         .AsNoTracking()
                         .Where(w =>
                             w.Id > _id &&
@@ -64,22 +64,21 @@ namespace CocApi.Cache
                             w.IsFinal == false &&
                             (w.IsWarLogPublic == null || w.IsWarLogPublic == true))
                         .OrderBy(w => w.Id)
-
-                        .Take(1)
+                        .Take(1000)
                         .Select(w => new { w.Id, w.ClanTag, w.OpponentTag })
                         .ToListAsync()
                         .ConfigureAwait(false);
 
-                    for (int i = 0; i < cachedWars.Count; i++)
+                    for (int i = 0; i < warWithLogStatus.Count; i++)
                     {
-                        tasks.Add(MonitorActiveWarAsync(cachedWars[i].ClanTag));
-                        tasks.Add(MonitorActiveWarAsync(cachedWars[i].OpponentTag));
+                        await MonitorActiveWarAsync(warWithLogStatus[i].ClanTag);
+                        await MonitorActiveWarAsync(warWithLogStatus[i].OpponentTag);
                     }
 
-                    if (cachedWars.Count == 0)
-                        _id = 0;
+                    if (warWithLogStatus.Count < 1000)
+                        _id = int.MinValue;
                     else
-                        _id = cachedWars.Max(c => c.Id);
+                        _id = warWithLogStatus.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 

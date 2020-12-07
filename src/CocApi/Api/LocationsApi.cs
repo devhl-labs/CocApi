@@ -791,6 +791,7 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -886,7 +887,7 @@ namespace CocApi.Api
             {
                 return await GetPlayerRankingResponseAsync (locationId, limit, after, before, cancellationToken.GetValueOrDefault());
             }
-            catch(ApiException)
+            catch(ApiException e)
             {
                 return null;
             }

@@ -38,6 +38,7 @@ namespace CocApi.Cache
             builder.Entity<CachedPlayer>().HasIndex(p => p.ClanTag);
 
             builder.Entity<CachedClan>().HasIndex(p => p.Tag).IsUnique();
+            builder.Entity<CachedClan>().HasIndex(p => p.IsWarLogPublic);
 
             builder.Entity<CachedClanWar>().HasIndex(p => p.Tag).IsUnique();
             builder.Entity<CachedClanWar>().HasIndex(p => new { p.Tag, p.PreparationStartTime }).IsUnique();

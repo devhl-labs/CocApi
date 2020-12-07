@@ -72,7 +72,7 @@ namespace CocApi.Cache
                     }
 
                     if (cachedClans.Count == 0)
-                        _id = 0;
+                        _id = int.MinValue;
                     else
                         _id = cachedClans.Max(c => c.Id);
 

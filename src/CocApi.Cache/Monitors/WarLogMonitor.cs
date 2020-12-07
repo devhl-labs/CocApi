@@ -73,7 +73,7 @@ namespace CocApi.Cache
                     
 
                     if (cachedWarLogs.Count == 0)
-                        _id = 0;
+                        _id = int.MinValue;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
 

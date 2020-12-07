@@ -43,7 +43,13 @@ namespace CocApi.Cache
 
                 if (cachedContext.Database.GetPendingMigrations().Count() > 0)
                 {
+                    var timeout = cachedContext.Database.GetCommandTimeout();
+
+                    cachedContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
                     cachedContext.Database.Migrate();
+
+                    cachedContext.Database.SetCommandTimeout(timeout);
 
                     cachedContext.Database.ExecuteSqlRaw(@"
 drop view if exists WarWithLogStatus;
@@ -59,21 +65,22 @@ select clans.IsWarLogPublic, clans.DownloadCurrentWar, clanwars.*
 from clanwars
 left join clans on clanwars.tag = clans.tag");
 
-
-                cachedContext.Database.ExecuteSqlRaw(@"
+                    cachedContext.Database.ExecuteSqlRaw(@"
 drop view if exists ClanWarLogWithLogStatus;
 CREATE VIEW ""ClanWarLogWithLogStatus"" AS 
 select clans.IsWarLogPublic, clans.DownloadCurrentWar, warlogs.* 
 from warlogs
 left join clans on warlogs.tag = clans.tag");
-                };
 
-                cachedContext.Database.ExecuteSqlRaw(@"
+                    cachedContext.Database.ExecuteSqlRaw(@"
 drop view if exists ClanWarLeagueGroupWithLogStatus;
 CREATE VIEW ""ClanWarLeagueGroupWithLogStatus"" AS 
 select clans.DownloadCwl, groups.* 
 from groups
 left join clans on groups.tag = clans.tag");
+                };
+
+
 
                 _services = services;
 

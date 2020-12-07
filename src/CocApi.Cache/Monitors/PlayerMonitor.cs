@@ -62,7 +62,7 @@ namespace CocApi.Cache
                         tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
 
                     if (cachedPlayers.Count == 0)
-                        _id = 0;
+                        _id = int.MinValue;
                     else
                         _id = cachedPlayers.Max(v => v.Id);
 

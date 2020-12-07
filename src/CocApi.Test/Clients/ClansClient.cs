@@ -19,16 +19,18 @@ namespace CocApi.Test
         private readonly PlayersClient _playersCache;
         private readonly LogService _logService;
         private readonly LeaguesApi _leaguesApi;
+        private readonly LocationsApi _locationsApi;
         private readonly ClansApi _clansApi;
 
         public ClansClient(
             TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, 
-            ClansApi clansApi, PlayersClient playersCache, LogService logService, LeaguesApi leaguesApi) 
+            ClansApi clansApi, PlayersClient playersCache, LogService logService, LeaguesApi leaguesApi, LocationsApi locationsApi) 
             : base(tokenProvider, cacheConfiguration, clansApi, playersCache)
         {
             _playersCache = playersCache;
             _logService = logService;
             _leaguesApi = leaguesApi;
+            _locationsApi = locationsApi;
             _clansApi = clansApi;
 
             ClanUpdated += ClansCache_ClanUpdated;
@@ -70,6 +72,9 @@ namespace CocApi.Test
             DownloadMembers = true;
             DownloadCurrentWars = true;
             DownloadCwl = true;
+
+            var playerBoardGlobal = await _locationsApi.GetPlayerRankingOrDefaultAsync("global");
+            var playerBoardUs = await _locationsApi.GetPlayerRankingOrDefaultAsync("global");
 
             await _playersCache.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);

@@ -54,24 +54,24 @@ namespace CocApi.Cache
 
                     List<Task> tasks = new List<Task>();
 
-                    var cachedWarLogs = await dbContext.Wars
+                    var wars = await dbContext.Wars
                         .Where(w =>
                             w.Id > _id &&
                             w.IsFinal == false &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(1)
+                        .Take(1000)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
-                    for (int i = 0; i < cachedWarLogs.Count; i++)                    
-                        tasks.Add(MonitorWarAsync(cachedWarLogs[i]));                    
+                    for (int i = 0; i < wars.Count; i++)
+                        await MonitorWarAsync(wars[i]);
 
-                    if (cachedWarLogs.Count == 0)
-                        _id = 0;
+                    if (wars.Count < 1000)
+                        _id = int.MinValue;
                     else
-                        _id = cachedWarLogs.Max(c => c.Id);
+                        _id = wars.Max(c => c.Id);
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -116,7 +116,7 @@ namespace CocApi.Cache
 
                 CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                List<CachedClanWar> cachedClanWars = null;
+                List<CachedClanWar>? cachedClanWars = null;
 
                 if (cached.WarTag == null)
                 {
@@ -136,6 +136,7 @@ namespace CocApi.Cache
                     }
 
                     CachedClanWar? cachedClanWar = cachedClanWars
+                        .OrderByDescending(c => c.ServerExpiration)
                         .FirstOrDefault(c => c.PreparationStartTime == cached.PreparationStartTime);
 
                     if (cached.Data != null && cachedClanWar?.Data != null && _clansClient.HasUpdated(cached, cachedClanWar))
