@@ -3,14 +3,16 @@ using System;
 using CocApi.Cache;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CocApi.Cache.Migrations
 {
     [DbContext(typeof(CacheContext))]
-    partial class CacheContextModelSnapshot : ModelSnapshot
+    [Migration("20201207231820_Migration5")]
+    partial class Migration5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,16 +58,10 @@ namespace CocApi.Cache.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DownloadCurrentWar");
-
                     b.HasIndex("Id")
                         .IsUnique();
 
                     b.HasIndex("IsWarLogPublic");
-
-                    b.HasIndex("LocalExpiration");
-
-                    b.HasIndex("ServerExpiration");
 
                     b.HasIndex("Tag")
                         .IsUnique();
@@ -113,10 +109,6 @@ namespace CocApi.Cache.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.HasIndex("LocalExpiration");
-
-                    b.HasIndex("ServerExpiration");
-
                     b.HasIndex("Tag")
                         .IsUnique();
 
@@ -163,10 +155,6 @@ namespace CocApi.Cache.Migrations
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.HasIndex("LocalExpiration");
-
-                    b.HasIndex("ServerExpiration");
-
                     b.HasIndex("Tag")
                         .IsUnique();
 
@@ -203,10 +191,6 @@ namespace CocApi.Cache.Migrations
 
                     b.HasIndex("Id")
                         .IsUnique();
-
-                    b.HasIndex("LocalExpiration");
-
-                    b.HasIndex("ServerExpiration");
 
                     b.HasIndex("Tag")
                         .IsUnique();
@@ -252,10 +236,6 @@ namespace CocApi.Cache.Migrations
 
                     b.HasIndex("Id")
                         .IsUnique();
-
-                    b.HasIndex("LocalExpiration");
-
-                    b.HasIndex("ServerExpiration");
 
                     b.HasIndex("Tag")
                         .IsUnique();
@@ -321,15 +301,7 @@ namespace CocApi.Cache.Migrations
 
                     b.HasIndex("ClanTag");
 
-                    b.HasIndex("IsFinal");
-
-                    b.HasIndex("LocalExpiration");
-
                     b.HasIndex("OpponentTag");
-
-                    b.HasIndex("ServerExpiration");
-
-                    b.HasIndex("State");
 
                     b.HasIndex("WarTag");
 

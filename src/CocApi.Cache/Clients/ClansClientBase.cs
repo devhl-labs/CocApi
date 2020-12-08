@@ -544,6 +544,8 @@ namespace CocApi.Cache
             };
 
             await Task.WhenAll(tasks);
+
+            OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
         }
 
         internal void OnClanUpdated(Clan stored, Clan fetched)

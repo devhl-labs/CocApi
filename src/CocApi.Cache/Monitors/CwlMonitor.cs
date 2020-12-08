@@ -54,8 +54,6 @@ namespace CocApi.Cache
 
                     CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                    List<Task> tasks = new List<Task>();
-
                     var cachedWarLogs = await dbContext.ClanWarLeagueGroupWithStatus
                         .Where(w =>
                             w.Id > _id &&
@@ -63,19 +61,17 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(1)
+                        .Take(1000)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedWarLogs.Count; i++)
-                        tasks.Add(MonitorCwlAsync(cachedWarLogs[i].Tag));
+                        await MonitorCwlAsync(cachedWarLogs[i].Tag);
 
-                    if (cachedWarLogs.Count == 0)
+                    if (cachedWarLogs.Count < 1000)
                         _id = int.MinValue;
                     else
                         _id = cachedWarLogs.Max(c => c.Id);
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
@@ -110,7 +106,8 @@ namespace CocApi.Cache
 
         private async Task MonitorCwlAsync(string tag)
         {
-            if (_updatingGroup.TryAdd(tag, new byte()) == false)
+            if (_stopRequestedTokenSource.IsCancellationRequested ||
+                _updatingGroup.TryAdd(tag, new byte()) == false)
                 return;
 
             try

@@ -54,8 +54,6 @@ namespace CocApi.Cache
 
                     CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                    List<Task> tasks = new List<Task>();
-
                     var warWithLogStatus = await dbContext.WarWithLogStatus
                         .AsNoTracking()
                         .Where(w =>
@@ -79,8 +77,6 @@ namespace CocApi.Cache
                         _id = int.MinValue;
                     else
                         _id = warWithLogStatus.Max(c => c.Id);
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
@@ -112,7 +108,8 @@ namespace CocApi.Cache
 
         private async Task MonitorActiveWarAsync(string clanTag)
         {
-            if (_clansClient.UpdatingClanWar.TryAdd(clanTag, new byte()) == false)
+            if (_stopRequestedTokenSource.IsCancellationRequested ||
+                _clansClient.UpdatingClanWar.TryAdd(clanTag, new byte()) == false)
                 return;
 
             try

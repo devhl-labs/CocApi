@@ -41,8 +41,6 @@ namespace CocApi.Cache
 
                 while (cancellationToken.IsCancellationRequested == false && _stopRequestedTokenSource.IsCancellationRequested == false)
                 {
-                    List<Task> tasks = new List<Task>();
-
                     using var scope = Services.CreateScope();
 
                     using CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
@@ -54,19 +52,17 @@ namespace CocApi.Cache
                             v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             v.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(v => v.Id)
-                        .Take(1)
+                        .Take(1000)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedPlayers.Count; i++)
-                        tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
+                        await UpdatePlayerAsync(cachedPlayers[i]);
 
-                    if (cachedPlayers.Count == 0)
+                    if (cachedPlayers.Count < 1000)
                         _id = int.MinValue;
                     else
                         _id = cachedPlayers.Max(v => v.Id);
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -100,9 +96,8 @@ namespace CocApi.Cache
 
         internal async Task UpdatePlayerAsync(CachedPlayer cachedPlayer)
         {
-            _stopRequestedTokenSource.Token.ThrowIfCancellationRequested();
-
-            if (_playersClientBase.UpdatingVillage.TryAdd(cachedPlayer.Tag, null) == false)
+            if (_stopRequestedTokenSource.IsCancellationRequested ||
+                _playersClientBase.UpdatingVillage.TryAdd(cachedPlayer.Tag, null) == false)
                 return;
 
             try

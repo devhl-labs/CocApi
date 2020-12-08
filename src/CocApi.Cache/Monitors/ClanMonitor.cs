@@ -51,32 +51,28 @@ namespace CocApi.Cache
 
                     CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                    List<Task> tasks = new List<Task>();
-
                     List<CachedClan> cachedClans = await dbContext.Clans
                         .Where(w =>
                             w.Id > _id &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.Id)
-                        .Take(1)
+                        .Take(1000)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedClans.Count; i++)
                     {
-                        tasks.Add(MonitorClanAsync(cachedClans[i]));
+                        await MonitorClanAsync(cachedClans[i]);
 
                         if (cachedClans[i].DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
-                            tasks.Add(MonitorMembersAsync(cachedClans[i]));
+                            await MonitorMembersAsync(cachedClans[i]);
                     }
 
-                    if (cachedClans.Count == 0)
+                    if (cachedClans.Count < 1000)
                         _id = int.MinValue;
                     else
                         _id = cachedClans.Max(c => c.Id);
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
@@ -84,7 +80,7 @@ namespace CocApi.Cache
                     {
                         _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
-                        tasks = new List<Task>
+                        List<Task> tasks = new List<Task>
                         {
                             DeleteUnmonitoredPlayersNotInAClan(),
 
@@ -124,7 +120,8 @@ namespace CocApi.Cache
 
         private async Task MonitorClanAsync(CachedClan cached)
         {
-            if (_updatingClan.TryAdd(cached.Tag, new byte()) == false)
+            if (_stopRequestedTokenSource.IsCancellationRequested ||
+                _updatingClan.TryAdd(cached.Tag, new byte()) == false)
                 return;
 
             try
@@ -160,7 +157,8 @@ namespace CocApi.Cache
 
         private async Task MonitorMembersAsync(CachedClan cached)
         {
-            if (cached.Data == null)
+            if (_stopRequestedTokenSource.IsCancellationRequested ||
+                cached.Data == null)
                 return;
 
             List<Task> tasks = new List<Task>();

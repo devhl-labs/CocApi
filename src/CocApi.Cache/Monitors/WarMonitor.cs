@@ -52,8 +52,6 @@ namespace CocApi.Cache
 
                     CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                    List<Task> tasks = new List<Task>();
-
                     var wars = await dbContext.Wars
                         .Where(w =>
                             w.Id > _id &&
@@ -72,8 +70,6 @@ namespace CocApi.Cache
                         _id = int.MinValue;
                     else
                         _id = wars.Max(c => c.Id);
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -107,7 +103,8 @@ namespace CocApi.Cache
 
         private async Task MonitorWarAsync(CachedWar cached)
         {
-            if (_clansClient.UpdatingWar.TryAdd(cached, new byte()) == false)
+            if (_stopRequestedTokenSource.IsCancellationRequested ||
+                _clansClient.UpdatingWar.TryAdd(cached, new byte()) == false)
                 return;
 
             try

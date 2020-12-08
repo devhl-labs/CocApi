@@ -35,7 +35,7 @@ namespace CocApi.Cache
 
             while (_isRunning)
             {
-                await Task.Delay(250, cancellationToken).ConfigureAwait(false);
+                await Task.Delay(50, cancellationToken).ConfigureAwait(false);
             }
         }
 

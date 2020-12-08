@@ -34,24 +34,45 @@ namespace CocApi.Cache
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<CachedPlayer>().HasIndex(p => p.Id).IsUnique();
             builder.Entity<CachedPlayer>().HasIndex(p => p.Tag).IsUnique();
             builder.Entity<CachedPlayer>().HasIndex(p => p.ClanTag);
+            builder.Entity<CachedPlayer>().HasIndex(p => p.ServerExpiration);
+            builder.Entity<CachedPlayer>().HasIndex(p => p.LocalExpiration);
 
+            builder.Entity<CachedClan>().HasIndex(p => p.Id).IsUnique();
             builder.Entity<CachedClan>().HasIndex(p => p.Tag).IsUnique();
             builder.Entity<CachedClan>().HasIndex(p => p.IsWarLogPublic);
+            builder.Entity<CachedClan>().HasIndex(p => p.DownloadCurrentWar);
+            builder.Entity<CachedClan>().HasIndex(p => p.ServerExpiration);
+            builder.Entity<CachedClan>().HasIndex(p => p.LocalExpiration);
 
+            builder.Entity<CachedClanWar>().HasIndex(p => p.Id).IsUnique();
             builder.Entity<CachedClanWar>().HasIndex(p => p.Tag).IsUnique();
             builder.Entity<CachedClanWar>().HasIndex(p => new { p.Tag, p.PreparationStartTime }).IsUnique();
+            builder.Entity<CachedClanWar>().HasIndex(p => p.ServerExpiration);
+            builder.Entity<CachedClanWar>().HasIndex(p => p.LocalExpiration);
 
+            builder.Entity<CachedClanWar>().HasIndex(p => p.Id).IsUnique();
             builder.Entity<CachedWar>().HasIndex(p => new { p.PreparationStartTime, p.OpponentTag }).IsUnique();
             builder.Entity<CachedWar>().HasIndex(p => new { p.PreparationStartTime, p.ClanTag }).IsUnique();
             builder.Entity<CachedWar>().HasIndex(p => p.OpponentTag);
             builder.Entity<CachedWar>().HasIndex(p => p.ClanTag);
             builder.Entity<CachedWar>().HasIndex(p => p.WarTag);
+            builder.Entity<CachedWar>().HasIndex(p => p.State);
+            builder.Entity<CachedWar>().HasIndex(p => p.IsFinal);
+            builder.Entity<CachedWar>().HasIndex(p => p.ServerExpiration);
+            builder.Entity<CachedWar>().HasIndex(p => p.LocalExpiration);
 
+            builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.Id).IsUnique();
             builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.Tag).IsUnique();
+            builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.ServerExpiration);
+            builder.Entity<CachedClanWarLeagueGroup>().HasIndex(p => p.LocalExpiration);
 
+            builder.Entity<CachedClanWarLog>().HasIndex(p => p.Id).IsUnique();
             builder.Entity<CachedClanWarLog>().HasIndex(p => p.Tag).IsUnique();
+            builder.Entity<CachedClanWarLog>().HasIndex(p => p.ServerExpiration);
+            builder.Entity<CachedClanWarLog>().HasIndex(p => p.LocalExpiration);
 
             builder.Entity<WarWithLogStatus>().HasNoKey().ToView("WarWithLogStatus");
             builder.Entity<ClanWarWithLogStatus>().HasNoKey().ToView("ClanWarWithLogStatus");
