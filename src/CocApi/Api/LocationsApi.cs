@@ -134,6 +134,8 @@ namespace CocApi.Api
                 "application/json"
             };
 
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
+
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
@@ -305,6 +307,8 @@ namespace CocApi.Api
                 "application/json"
             };
 
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
+
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
 
@@ -469,6 +473,8 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
+
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);
@@ -792,6 +798,7 @@ namespace CocApi.Api
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
             localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
+            
             if (limit != null)
             {
                 localVarRequestOptions.QueryParameters.Add(CocApi.Client.ClientUtils.ParameterToMultiMap("", "limit", limit));
@@ -956,6 +963,8 @@ namespace CocApi.Api
             String[] _accepts = new String[] {
                 "application/json"
             };
+
+            localVarRequestOptions.PathParameters.Add("locationId", CocApi.Client.ClientUtils.ParameterToString(locationId)); // path parameter  //locationId
 
             var localVarContentType = CocApi.Client.ClientUtils.SelectHeaderContentType(_contentTypes);
             if (localVarContentType != null) localVarRequestOptions.HeaderParameters.Add("Content-Type", localVarContentType);

@@ -7,9 +7,9 @@
     <Authors>devhl</Authors>
     <Product />
     <Description>A wrapper for the Clash of Clans API.</Description>
-    <Version>1.1.1</Version>
-    <AssemblyVersion>1.1.1.0</AssemblyVersion>
-    <FileVersion>1.1.1.0</FileVersion>
+    <Version>1.1.1.5</Version>
+    <AssemblyVersion>1.1.1.5</AssemblyVersion>
+    <FileVersion>1.1.1.5</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageProjectUrl>https://discord.gg/AT4wJNq</PackageProjectUrl>
     <PackageId>CocApi</PackageId>
@@ -18,7 +18,7 @@
     <!--<PackageIcon>Barbarian King.png</PackageIcon>-->
     <RepositoryUrl>https://github.com/devhl-labs/CocApi</RepositoryUrl>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
-    <PackageReleaseNotes>Improvement in TokenProvider</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed bug in player rankings</PackageReleaseNotes>
     <ApplicationIcon />
     <AssemblyName>CocApi</AssemblyName>
     <RootNamespace>CocApi</RootNamespace>

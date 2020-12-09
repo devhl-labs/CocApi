@@ -54,22 +54,16 @@ namespace CocApi.Cache
 
                     var wars = await dbContext.Wars
                         .Where(w =>
-                            w.Id > _id &&
                             w.IsFinal == false &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
-                        .OrderBy(w => w.Id)
+                        .OrderBy(w => w.ServerExpiration)
                         .Take(1000)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < wars.Count; i++)
                         await MonitorWarAsync(wars[i]);
-
-                    if (wars.Count < 1000)
-                        _id = int.MinValue;
-                    else
-                        _id = wars.Max(c => c.Id);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -119,13 +113,13 @@ namespace CocApi.Cache
                 {
                     cachedClanWars = await dbContext.ClanWars
                         .AsNoTracking()
-                        .Where(c => cached.ClanTags.Any(tag => tag == c.Tag))
+                        .Where(c => cached.ClanTags.Contains(c.Tag))
                         .OrderByDescending(c => c.ServerExpiration)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    if ((cachedClanWars.All(c => c.PreparationStartTime != cached.PreparationStartTime) && cached.EndTime < DateTime.UtcNow) ||
-                        cachedClanWars.All(c => c.StatusCode == HttpStatusCode.Forbidden && cached.EndTime.AddDays(8) < DateTime.UtcNow))
+                    if (cachedClanWars.Count == 2 && (cachedClanWars.All(c => c.PreparationStartTime != cached.PreparationStartTime) && cached.EndTime < DateTime.UtcNow) ||
+                        cachedClanWars.All(c => (c.Data == null || c.Data.PreparationStartTime != cached.PreparationStartTime) && cached.EndTime.AddDays(8) < DateTime.UtcNow))
                     {
                         cached.IsFinal = true;
 
@@ -141,8 +135,6 @@ namespace CocApi.Cache
 
                     if (cachedClanWar != null)
                         cached.UpdateFrom(cachedClanWar);
-
-                    cached.IsFinal = cached.State == WarState.WarEnded;
                 }
                 else
                 {
@@ -174,9 +166,9 @@ namespace CocApi.Cache
                         _clansClient.OnClanWarUpdated(cached.Data, fetched.Data);
 
                     cached.UpdateFrom(fetched);
-
-                    cached.IsFinal = cached.State == WarState.WarEnded;
                 }
+
+                cached.IsFinal = cached.State == WarState.WarEnded;
 
                 SendWarAnnouncements(cached, cachedClanWars);
             }

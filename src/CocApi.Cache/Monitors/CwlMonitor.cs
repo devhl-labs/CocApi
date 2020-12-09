@@ -56,22 +56,16 @@ namespace CocApi.Cache
 
                     var cachedWarLogs = await dbContext.ClanWarLeagueGroupWithStatus
                         .Where(w =>
-                            w.Id > _id &&
                             w.DownloadCwl == true &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
-                        .OrderBy(w => w.Id)
+                        .OrderBy(w => w.ServerExpiration)
                         .Take(1000)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedWarLogs.Count; i++)
                         await MonitorCwlAsync(cachedWarLogs[i].Tag);
-
-                    if (cachedWarLogs.Count < 1000)
-                        _id = int.MinValue;
-                    else
-                        _id = cachedWarLogs.Max(c => c.Id);
 
                     await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }

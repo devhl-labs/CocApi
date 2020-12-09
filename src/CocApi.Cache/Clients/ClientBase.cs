@@ -20,8 +20,6 @@ namespace CocApi.Cache
         internal protected IServiceProvider Services { get; }
         internal protected ClientConfiguration Configuration { get; }
 
-        protected int _id;
-
         public ClientBase(TokenProvider tokenProvider, ClientConfiguration configuration)
         {
             TokenProvider = tokenProvider;

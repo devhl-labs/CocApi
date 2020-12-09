@@ -47,22 +47,16 @@ namespace CocApi.Cache
 
                     List<CachedPlayer> cachedPlayers = await dbContext.Players
                         .Where(v =>
-                            v.Id > _id &&
                             v.Download &&
                             v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             v.LocalExpiration < DateTime.UtcNow)
-                        .OrderBy(v => v.Id)
+                        .OrderBy(v => v.ServerExpiration)
                         .Take(1000)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
                     for (int i = 0; i < cachedPlayers.Count; i++)
                         await UpdatePlayerAsync(cachedPlayers[i]);
-
-                    if (cachedPlayers.Count < 1000)
-                        _id = int.MinValue;
-                    else
-                        _id = cachedPlayers.Max(v => v.Id);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 

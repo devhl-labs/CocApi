@@ -73,8 +73,10 @@ namespace CocApi.Test
             DownloadCurrentWars = true;
             DownloadCwl = true;
 
-            var playerBoardGlobal = await _locationsApi.GetPlayerRankingOrDefaultAsync("global");
-            var playerBoardUs = await _locationsApi.GetPlayerRankingOrDefaultAsync("global");
+            var playerGlobalRankings = await _locationsApi.GetPlayerRankingAsync("global");
+            var playerVersusGlobalRankings = await _locationsApi.GetPlayerVersusRankingAsync("global");
+            var clanGlobalRankings = await _locationsApi.GetClanRankingOrDefaultAsync("global");
+            var clanGlobalVersusRankings = await _locationsApi.GetClanVersusRankingAsync("global");
 
             await _playersCache.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);

@@ -55,15 +55,13 @@ namespace CocApi.Cache
                     CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
                     var warWithLogStatus = await dbContext.WarWithLogStatus
-                        .AsNoTracking()
                         .Where(w =>
-                            w.Id > _id &&
-                            w.State < WarState.WarEnded &&
                             w.IsFinal == false &&
-                            (w.IsWarLogPublic == null || w.IsWarLogPublic == true))
-                        .OrderBy(w => w.Id)
+                            w.IsWarLogPublic != false &&
+                            w.DownloadCurrentWar != true)
+                        .OrderBy(w => w.ServerExpiration)
                         .Take(1000)
-                        .Select(w => new { w.Id, w.ClanTag, w.OpponentTag })
+                        .Select(w => new { w.ClanTag, w.OpponentTag })
                         .ToListAsync()
                         .ConfigureAwait(false);
 
@@ -72,11 +70,6 @@ namespace CocApi.Cache
                         await MonitorActiveWarAsync(warWithLogStatus[i].ClanTag);
                         await MonitorActiveWarAsync(warWithLogStatus[i].OpponentTag);
                     }
-
-                    if (warWithLogStatus.Count < 1000)
-                        _id = int.MinValue;
-                    else
-                        _id = warWithLogStatus.Max(c => c.Id);
 
                     await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }

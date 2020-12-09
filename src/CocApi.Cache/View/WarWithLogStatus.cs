@@ -45,6 +45,10 @@ namespace CocApi.Cache.View
 
         public WarType Type { get; internal set; }
 
+
+        //clan
         public bool? IsWarLogPublic { get; internal set; }
+
+        public bool? DownloadCurrentWar { get; internal set; }
     }
 }

@@ -178,8 +178,7 @@ namespace CocApi.Cache
                 return null;
 
             return cache.FirstOrDefault(c => c.State == WarState.InWar && c.EndTime > DateTime.UtcNow)
-                ?? cache.FirstOrDefault(c => c.State == WarState.Preparation)
-                ?? cache.FirstOrDefault(c => c.State == WarState.InWar)
+                ?? cache.FirstOrDefault(c => c.State == WarState.Preparation && c.EndTime > DateTime.UtcNow)
                 ?? cache.First();
         }
 

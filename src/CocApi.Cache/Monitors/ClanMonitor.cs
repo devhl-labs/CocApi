@@ -53,10 +53,9 @@ namespace CocApi.Cache
 
                     List<CachedClan> cachedClans = await dbContext.Clans
                         .Where(w =>
-                            w.Id > _id &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
-                        .OrderBy(w => w.Id)
+                        .OrderBy(w => w.ServerExpiration)
                         .Take(1000)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
@@ -68,11 +67,6 @@ namespace CocApi.Cache
                         if (cachedClans[i].DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
                             await MonitorMembersAsync(cachedClans[i]);
                     }
-
-                    if (cachedClans.Count < 1000)
-                        _id = int.MinValue;
-                    else
-                        _id = cachedClans.Max(c => c.Id);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 

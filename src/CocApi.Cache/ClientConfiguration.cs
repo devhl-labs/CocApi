@@ -54,7 +54,7 @@ namespace CocApi.Cache
                     cachedContext.Database.ExecuteSqlRaw(@"
 drop view if exists WarWithLogStatus;
 CREATE VIEW ""WarWithLogStatus"" AS 
-select clans.IsWarLogPublic, wars.*
+select clans.IsWarLogPublic, clans.DownloadCurrentWar, wars.*
 from wars
 left join clans on wars.clantag = clans.tag or wars.opponenttag = clans.tag");
 
