@@ -8,8 +8,8 @@ namespace CocApi.Test
 {
     public class ClientConfiguration : Cache.ClientConfiguration
     {
-        public ClientConfiguration(string connectionString, int concurrentUpdates = 1, TimeSpan? delayBetweenUpdates = null) 
-            : base(connectionString, concurrentUpdates, delayBetweenUpdates)
+        public ClientConfiguration(string connectionString, TimeSpan? delayBetweenUpdates = null) 
+            : base(connectionString, delayBetweenUpdates)
         {
            
         }

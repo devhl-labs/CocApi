@@ -14,7 +14,7 @@ namespace CocApi.Cache
         public TimeSpan HttpRequestTimeOut { get; set; }
 
         public ClientConfiguration(
-            string connectionString = "Data Source=CocApi.Cache.sqlite", int concurrentUpdates = 1, 
+            string connectionString = "Data Source=CocApi.Cache.sqlite", 
             TimeSpan? delayBetweenTasks = null, TimeSpan? httpRequestTimeOut = null)
         {
             ConnectionString = connectionString;
