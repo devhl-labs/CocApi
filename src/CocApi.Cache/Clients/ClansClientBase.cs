@@ -23,12 +23,12 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi)
-            : base(tokenProvider, configuration)
+        public ClansClientBase(TokenProvider tokenQueue, ClientConfiguration configuration, ClansApi clansApi)
+            : base(tokenQueue, configuration)
         {
             _clansApi = clansApi;
 
-            _activeWarMonitor = new ActiveWarMonitor(TokenProvider, Configuration, _clansApi, this);
+            //_activeWarMonitor = new ActiveWarMonitor(TokenQueue, Configuration, _clansApi, this);
             _clanWarLogMonitor = new WarLogMonitor(TokenProvider, Configuration, _clansApi, this);
             _clanWarMonitor = new ClanWarMonitor(TokenProvider, Configuration, _clansApi, this);
             _cwlMonitor = new CwlMonitor(TokenProvider, Configuration, _clansApi, this);
@@ -227,7 +227,12 @@ namespace CocApi.Cache
                 {
                     ClanWar? clanWar = (await GetLeagueWarOrDefaultAsync(warTag, group.Season, cancellationToken))?.Data;
 
-                    clanWar ??= await _clansApi.GetClanWarLeagueWarAsync(warTag, cancellationToken);
+                    if (clanWar == null)
+                    {
+                        string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+
+                        clanWar = await _clansApi.GetClanWarLeagueWarAsync(token, warTag, cancellationToken);
+                    }
 
                     if (clanWar.PreparationStartTime.Month == group.Season.Month && clanWar.PreparationStartTime.Year == group.Season.Year)
                         result.Add(clanWar);
@@ -301,20 +306,36 @@ namespace CocApi.Cache
 
         public async Task<Clan> GetOrFetchClanAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            return (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data
-                ?? await _clansApi.GetClanAsync(tag, cancellationToken).ConfigureAwait(false);
+            Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
+
+            if (result == null)
+            {
+                string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+ 
+                result = await _clansApi.GetClanAsync(token, tag, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
         }
 
         public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            return (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data
-                ?? await _clansApi.GetClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
+            Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
+
+            if (result == null)
+            {
+                string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+
+                result = await _clansApi.GetClanOrDefaultAsync(token, tag, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
         }
 
 
 
 
-        private readonly ActiveWarMonitor _activeWarMonitor;
+        //private readonly ActiveWarMonitor _activeWarMonitor;
 
         private readonly WarLogMonitor _clanWarLogMonitor;
 
@@ -330,7 +351,9 @@ namespace CocApi.Cache
         {           
             Task.Run(() =>
             {
-                _ = _activeWarMonitor.RunAsync(cancellationToken);
+                //_ = _activeWarMonitor.RunAsync(cancellationToken);
+
+
                 _ = _clanWarLogMonitor.RunAsync(cancellationToken);
                 _ = _clanWarMonitor.RunAsync(cancellationToken);
                 _ = _clanMonitor.RunAsync(cancellationToken);
@@ -535,7 +558,7 @@ namespace CocApi.Cache
             {
                 base.StopAsync(cancellationToken),
                 _clanWarLogMonitor.StopAsync(cancellationToken),
-                _activeWarMonitor.StopAsync(cancellationToken),
+                //_activeWarMonitor.StopAsync(cancellationToken),
                 _clanWarMonitor.StopAsync(cancellationToken),
                 _clanMonitor.StopAsync(cancellationToken),
                 _cwlMonitor.StopAsync(cancellationToken),
@@ -660,6 +683,37 @@ namespace CocApi.Cache
             finally
             {
                 UpdatingWar.TryRemove(fetched, out var _);
+            }
+        }
+
+        internal async Task<CachedClanWar?> TryAddCachedClanWar(string tag, DateTime serverExpiration, DateTime localExpiration, CancellationToken? cancellationToken = default)
+        {
+            try
+            {
+                using var scope = Services.CreateScope();
+
+                CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+                CachedClanWar? clanWar = await dbContext.ClanWars.FirstOrDefaultAsync(cw => cw.Tag == tag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                if (clanWar != null)
+                    return clanWar;
+
+                clanWar = new CachedClanWar(tag)
+                {
+                    LocalExpiration = localExpiration,
+                    ServerExpiration = serverExpiration                    
+                };
+
+                dbContext.ClanWars.Add(clanWar);
+
+                await dbContext.SaveChangesAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                return clanWar;
+            }
+            catch (Exception)
+            {
+                return null; //this is a race condition that is hard to handle
             }
         }
     }

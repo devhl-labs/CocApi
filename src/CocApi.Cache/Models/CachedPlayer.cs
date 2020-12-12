@@ -14,11 +14,11 @@ namespace CocApi.Cache.Models
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string token, string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(token, tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedPlayer(apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }

@@ -51,12 +51,16 @@ namespace CocApi.Cache
                             v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             v.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(v => v.ServerExpiration)
-                        .Take(1000)
+                        .Take(10)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
+                    List<Task> tasks = new();
+
                     for (int i = 0; i < cachedPlayers.Count; i++)
-                        await UpdatePlayerAsync(cachedPlayers[i]);
+                        tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -96,6 +100,8 @@ namespace CocApi.Cache
 
             try
             {
+                string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+
                 using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
 
                 using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
@@ -105,7 +111,7 @@ namespace CocApi.Cache
                 try
                 {
                     fetched = await CachedPlayer
-                        .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, linkedCts.Token).ConfigureAwait(false);
+                        .FromPlayerResponseAsync(token, cachedPlayer.Tag, _playersClientBase, _playersApi, linkedCts.Token).ConfigureAwait(false);
                 }
                 catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
                 {

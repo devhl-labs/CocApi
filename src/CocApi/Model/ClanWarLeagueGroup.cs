@@ -23,35 +23,35 @@ using Newtonsoft.Json.Converters;
 using System.ComponentModel.DataAnnotations;
 using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 
-namespace CocApi
-{
-        /// <summary>
-        /// Defines State
-        /// </summary>
-        [JsonConverter(typeof(StringEnumConverter))]
-        public enum StateEnum
-        {
-            /// <summary>
-            /// Enum Preparation for value: preparation
-            /// </summary>
-            [EnumMember(Value = "preparation")]
-            Preparation = 1,
+//namespace CocApi
+//{
+//        /// <summary>
+//        /// Defines State
+//        /// </summary>
+//        [JsonConverter(typeof(StringEnumConverter))]
+//        public enum StateEnum
+//        {
+//            /// <summary>
+//            /// Enum Preparation for value: preparation
+//            /// </summary>
+//            [EnumMember(Value = "preparation")]
+//            Preparation = 1,
 
-            /// <summary>
-            /// Enum InWar for value: inWar
-            /// </summary>
-            [EnumMember(Value = "inWar")]
-            InWar = 2,
+//            /// <summary>
+//            /// Enum InWar for value: inWar
+//            /// </summary>
+//            [EnumMember(Value = "inWar")]
+//            InWar = 2,
 
-            /// <summary>
-            /// Enum Ended for value: ended
-            /// </summary>
-            [EnumMember(Value = "ended")]
-            Ended = 3
+//            /// <summary>
+//            /// Enum Ended for value: ended
+//            /// </summary>
+//            [EnumMember(Value = "ended")]
+//            Ended = 3
 
-        }
+//        }
 
-}
+//}
 
 
 

@@ -58,12 +58,16 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.ServerExpiration)
-                        .Take(1000)
+                        .Take(10)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
+                    List<Task> tasks = new();
+
                     for (int i = 0; i < wars.Count; i++)
-                        await MonitorWarAsync(wars[i]);
+                        tasks.Add(MonitorWarAsync(wars[i]));
+
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -138,6 +142,8 @@ namespace CocApi.Cache
                 }
                 else
                 {
+                    string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+
                     using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
 
                     using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
@@ -148,7 +154,7 @@ namespace CocApi.Cache
                     {
                         fetched = await CachedWar
                             .FromClanWarLeagueWarResponseAsync(
-                                cached.WarTag, cached.Season.Value, _clansClient, _clansApi, linkedCts.Token)
+                                token, cached.WarTag, cached.Season.Value, _clansClient, _clansApi, linkedCts.Token)
                             .ConfigureAwait(false);
                     }
                     catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)

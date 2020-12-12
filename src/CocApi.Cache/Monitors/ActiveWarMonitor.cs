@@ -1,160 +1,198 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Cache.Models;
-using CocApi.Cache.View;
-using CocApi.Client;
-using CocApi.Model;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿//using System;
+//using System.Collections.Concurrent;
+//using System.Collections.Generic;
+//using System.Linq;
+//using System.Net;
+//using System.Threading;
+//using System.Threading.Tasks;
+//using CocApi.Api;
+//using CocApi.Cache.Models;
+//using CocApi.Cache.View;
+//using CocApi.Client;
+//using CocApi.Model;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.Extensions.DependencyInjection;
 
-namespace CocApi.Cache
-{
-    internal class ActiveWarMonitor : ClientBase
-    {
-        private readonly ClansApi _clansApi;
-        private readonly ClansClientBase _clansClient;
+//namespace CocApi.Cache
+//{
+//    internal class ActiveWarMonitor : ClientBase
+//    {
+//        private readonly ClansApi _clansApi;
+//        private readonly ClansClientBase _clansClient;
 
-        public ActiveWarMonitor
-            (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(tokenProvider, cacheConfiguration)
-        {
-            _clansApi = clansApi;
-            _clansClient = clansClientBase;
-        }
+//        public ActiveWarMonitor
+//            (TokenQueue tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
+//            : base(tokenProvider, cacheConfiguration)
+//        {
+//            _clansApi = clansApi;
+//            _clansClient = clansClientBase;
+//        }
 
-        public async Task RunAsync(CancellationToken cancellationToken)
-        {
-            try
-            {
-                if (_isRunning)
-                    return;
+//        public async Task RunAsync(CancellationToken cancellationToken)
+//        {
+//            try
+//            {
+//                if (_isRunning)
+//                    return;
 
-                _isRunning = true;
+//                _isRunning = true;
 
-                _stopRequestedTokenSource = new CancellationTokenSource();
+//                _stopRequestedTokenSource = new CancellationTokenSource();
 
-                _clansClient.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+//                _clansClient.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
-                while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
-                {
-                    if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
-                    {
-                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
+//                {
+//                    if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
+//                    {
+//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
 
-                        continue;
-                    }
+//                        continue;
+//                    }
 
-                    using var scope = Services.CreateScope();
+//                    using var scope = Services.CreateScope();
 
-                    CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+//                    CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                    var warWithLogStatus = await dbContext.WarWithLogStatus
-                        .Where(w =>
-                            w.IsFinal == false &&
-                            w.IsWarLogPublic != false &&
-                            w.DownloadCurrentWar != true)
-                        .OrderBy(w => w.ServerExpiration)
-                        .Take(1000)
-                        .Select(w => new { w.ClanTag, w.OpponentTag })
-                        .ToListAsync()
-                        .ConfigureAwait(false);
+//                    var results = await
+//                        (from cw in dbContext.ClanWars 
+//                         join w in 
+//                            from w in dbContext.Wars
+//                            join c in dbContext.Clans on w.ClanTag equals c.Tag
+//                            where !w.IsFinal && c.IsWarLogPublic != false && c.DownloadCurrentWar != true
+//                            select w 
+//                            on cw.Tag equals w.ClanTag
+//                        select cw)
+//                        .Union(
+//                            from cw in dbContext.ClanWars
+//                            join w in 
+//                                from w in dbContext.Wars
+//                                join c in dbContext.Clans on w.OpponentTag equals c.Tag
+//                                where !w.IsFinal && c.IsWarLogPublic != false && c.DownloadCurrentWar != true
+//                                select w
+//                                on cw.Tag equals w.OpponentTag
+//                            select cw)
+//                        .OrderBy(cw => cw.ServerExpiration)
+//                        .Take(100)
+//                        .ToListAsync();
 
-                    for (int i = 0; i < warWithLogStatus.Count; i++)
-                    {
-                        await MonitorActiveWarAsync(warWithLogStatus[i].ClanTag);
-                        await MonitorActiveWarAsync(warWithLogStatus[i].OpponentTag);
-                    }
+//                    //var warWithLogStatus = await dbContext.WarWithLogStatus
+//                    //    .Where(w =>
+//                    //        w.IsFinal == false &&
+//                    //        w.IsWarLogPublic != false &&
+//                    //        w.DownloadCurrentWar != true)
+//                    //    .OrderBy(w => w.ServerExpiration)
+//                    //    .Take(1000)
+//                    //    .Select(w => new { w.ClanTag, w.OpponentTag })
+//                    //    .ToListAsync()
+//                    //    .ConfigureAwait(false);
 
-                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
-                }
+//                    List<Task> tasks = new();
 
-                _isRunning = false;
-            }
-            catch (Exception e)
-            {
-                _isRunning = false;
+//                    foreach(var item in results)
+//                    {
+//                        tasks.Add(MonitorActiveWarAsync(item));
+//                        tasks.Add(MonitorActiveWarAsync(item));
+//                    }
 
-                if (_stopRequestedTokenSource.IsCancellationRequested)
-                    return;
+//                    //for (int i = 0; i < warWithLogStatus.Count; i++)
+//                    //{
+//                    //    tasks.Add(MonitorActiveWarAsync(warWithLogStatus[i].ClanTag));
+//                    //    tasks.Add(MonitorActiveWarAsync(warWithLogStatus[i].OpponentTag));
+//                    //}
 
-                _clansClient.OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
+//                    await Task.WhenAll(tasks);
 
-                if (cancellationToken.IsCancellationRequested == false)
-                    _ = RunAsync(cancellationToken);
-            }
-        }
+//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
 
-        public new async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _stopRequestedTokenSource.Cancel();
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                }
 
-            await base.StopAsync(cancellationToken);
+//                _isRunning = false;
+//            }
+//            catch (Exception e)
+//            {
+//                _isRunning = false;
 
-            _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
-        }
+//                if (_stopRequestedTokenSource.IsCancellationRequested)
+//                    return;
 
-        private async Task MonitorActiveWarAsync(string clanTag)
-        {
-            if (_stopRequestedTokenSource.IsCancellationRequested ||
-                _clansClient.UpdatingClanWar.TryAdd(clanTag, new byte()) == false)
-                return;
+//                _clansClient.OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
 
-            try
-            {
-                using var scope = Services.CreateScope();
+//                if (cancellationToken.IsCancellationRequested == false)
+//                    _ = RunAsync(cancellationToken);
+//            }
+//        }
 
-                CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+//        public new async Task StopAsync(CancellationToken cancellationToken)
+//        {
+//            _stopRequestedTokenSource.Cancel();
 
-                CachedClanWar? cachedClanWar = await dbContext.ClanWars
-                    .FirstOrDefaultAsync(w => w.Tag == clanTag, _stopRequestedTokenSource.Token)
-                    .ConfigureAwait(false);
+//            await base.StopAsync(cancellationToken);
 
-                if (cachedClanWar == null)
-                {
-                    cachedClanWar = new CachedClanWar(clanTag);
+//            _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
+//        }
 
-                    dbContext.ClanWars.Add(cachedClanWar);
-                }
+//        private async Task MonitorActiveWarAsync(/*string clanTag*/ CachedClanWar cachedClanWar)
+//        {
+//            if (_stopRequestedTokenSource.IsCancellationRequested ||
+//                _clansClient.UpdatingClanWar.TryAdd(cachedClanWar.Tag, new byte()) == false)
+//                return;
 
-                if (cachedClanWar.IsLocallyExpired() == false || cachedClanWar.IsServerExpired() == false)
-                    return;
+//            try
+//            {
+//                //using var scope = Services.CreateScope();
 
-                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
+//                //CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-                CachedClanWar? fetched = null;
+//                //CachedClanWar? cachedClanWar = await dbContext.ClanWars
+//                //    .FirstOrDefaultAsync(w => w.Tag == clanTag, _stopRequestedTokenSource.Token)
+//                //    .ConfigureAwait(false);
 
-                try
-                {
-                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+//                //if (cachedClanWar == null)
+//                //{
+//                //    cachedClanWar = new CachedClanWar(clanTag);
 
-                    fetched = await CachedClanWar.FromCurrentWarResponseAsync(clanTag, _clansClient, _clansApi, linkedCts.Token);
-                }
-                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
-                {
-                    if (_stopRequestedTokenSource.IsCancellationRequested)
-                        throw;
-                    else
-                        return;
-                }
+//                //    dbContext.ClanWars.Add(cachedClanWar);
+//                //}
 
-                if (fetched.Data != null && CachedClanWar.IsNewWar(cachedClanWar, fetched))
-                    await _clansClient.InsertNewWarAsync(new CachedWar(fetched));
+//                if (cachedClanWar.IsLocallyExpired() == false || cachedClanWar.IsServerExpired() == false)
+//                    return;
 
-                cachedClanWar.UpdateFrom(fetched);
+//                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
 
-                await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+//                CachedClanWar? fetched = null;
 
-            }
-            finally
-            {
-                _clansClient.UpdatingClanWar.TryRemove(clanTag, out _);
-            }
-        }
-    }
-}
+//                try
+//                {
+//                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+
+//                    fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClanWar.Tag, _clansClient, _clansApi, linkedCts.Token);
+//                }
+//                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+//                {
+//                    if (_stopRequestedTokenSource.IsCancellationRequested)
+//                        throw;
+//                    else
+//                        return;
+//                }
+
+//                if (fetched.Data != null && CachedClanWar.IsNewWar(cachedClanWar, fetched))
+//                {
+//                    await _clansClient.InsertNewWarAsync(new CachedWar(fetched));
+
+//                    _ = Task.Run(() => _clansClient.TryAddCachedClanWar(fetched.Data.Clans.First(c => c.Key != cachedClanWar.Tag).Key, fetched.ServerExpiration, fetched.LocalExpiration));
+//                }
+
+//                cachedClanWar.UpdateFrom(fetched);
+
+//                //await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+
+//            }
+//            finally
+//            {
+//                _clansClient.UpdatingClanWar.TryRemove(cachedClanWar.Tag, out _);
+//            }
+//        }
+//    }
+//}

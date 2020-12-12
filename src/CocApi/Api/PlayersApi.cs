@@ -27,7 +27,7 @@ namespace CocApi.Api
     /// </summary>
     public sealed partial class PlayersApi
     {
-        private readonly CocApi.TokenProvider _tokenProvider;
+        //private readonly CocApi.TokenQueue _tokenProvider;
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
@@ -39,7 +39,7 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(CocApi.TokenProvider tokenProvider, TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
+        public PlayersApi(/*CocApi.TokenQueue tokenProvider,*/ TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
         {
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
@@ -48,7 +48,7 @@ namespace CocApi.Api
             this.Client = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
-            this._tokenProvider = tokenProvider;
+            //this._tokenProvider = tokenProvider;
         }
 
         /// <summary>
@@ -100,9 +100,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player> GetPlayerAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<Player> GetPlayerAsync (string token, string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(playerTag,  cancellationToken.GetValueOrDefault());
+             CocApi.Client.ApiResponse<Player> localVarResponse = await GetPlayerResponseAsync(token, playerTag,  cancellationToken.GetValueOrDefault());
              return localVarResponse.Data;
         }
 
@@ -112,12 +112,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseAsync (string token, string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'playerTag' is set
             if (playerTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'playerTag' when calling PlayersApi->GetPlayer");
-
             string formattedTag = Clash.FormatTag(playerTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -136,10 +135,11 @@ namespace CocApi.Api
             var localVarAccept = CocApi.Client.ClientUtils.SelectHeaderAccept(_accepts);
             if (localVarAccept != null) localVarRequestOptions.HeaderParameters.Add("Accept", localVarAccept);
             
-            localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag)); // path parameter  //playerTag
+            localVarRequestOptions.PathParameters.Add("playerTag", CocApi.Client.ClientUtils.ParameterToString(formattedTag));  //playerTag
 
             // authentication (JWT) required
-            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
+            localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
             
 
             // make the HTTP request
@@ -211,11 +211,11 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>?> GetPlayerResponseOrDefaultAsync (string token, string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             try
             {
-                return await GetPlayerResponseAsync (playerTag, cancellationToken.GetValueOrDefault());
+                return await GetPlayerResponseAsync (token, playerTag, cancellationToken.GetValueOrDefault());
             }
             catch(ApiException)
             {
@@ -233,9 +233,9 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync (string playerTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync (string token, string playerTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(playerTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+             CocApi.Client.ApiResponse<Player>? localVarResponse = await GetPlayerResponseOrDefaultAsync(token, playerTag, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
              if (localVarResponse == null)
                 return null;
 

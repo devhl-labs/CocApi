@@ -56,25 +56,29 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.ServerExpiration)
-                        .Take(1000)
+                        .Take(10)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    for (int i = 0; i < cachedClans.Count; i++)
-                    {
-                        await MonitorClanAsync(cachedClans[i]);
+                    List<Task> tasks = new();
 
-                        if (cachedClans[i].DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
-                            await MonitorMembersAsync(cachedClans[i]);
+                    foreach(CachedClan cachedClan in cachedClans)
+                    {
+                        tasks.Add(MonitorClanAsync(cachedClan));
+
+                        if (cachedClan.DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
+                            tasks.Add(MonitorMembersAsync(cachedClan));
                     }
 
-                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+                    await Task.WhenAll(tasks).ConfigureAwait(false);
+
+                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
                     if (_deletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
                     {
                         _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
-                        List<Task> tasks = new List<Task>
+                        tasks = new List<Task>
                         {
                             DeleteUnmonitoredPlayersNotInAClan(),
 
@@ -120,15 +124,17 @@ namespace CocApi.Cache
 
             try
             {
-                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
-
                 CachedClan? fetched = null;
 
                 try
                 {
+                    string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+
+                    using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
+
                     using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
 
-                    fetched = await CachedClan.FromClanResponseAsync(cached.Tag, _clansClient, _clansApi, linkedCts.Token);
+                    fetched = await CachedClan.FromClanResponseAsync(token, cached.Tag, _clansClient, _clansApi, linkedCts.Token);
                 }
                 catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
                 {
@@ -157,38 +163,38 @@ namespace CocApi.Cache
 
             List<Task> tasks = new List<Task>();
 
-            foreach (Model.ClanMember? member in cached.Data.Members)
-                tasks.Add(MonitorMemberAsync(member.Tag));
-
-            await Task.WhenAll(tasks);
-        }
-
-        private async Task MonitorMemberAsync(string tag)
-        {
-            if (_playersClientBase == null)
-                return;
-
             using var scope = Services.CreateScope();
 
             CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-            CachedPlayer? cached = await dbContext.Players
-                .FirstOrDefaultAsync(p => p.Tag == tag, _stopRequestedTokenSource.Token)
-                .ConfigureAwait(false);
+            List<CachedPlayer> players = await dbContext.Players.Where(p => cached.Data.Members.Select(m => m.Tag).Contains(p.Tag)).ToListAsync();
 
-            if (cached == null)
+            foreach(Model.ClanMember member in cached.Data.Members.Where(m => !players.Any(p => p.Tag == m.Tag)))
             {
-                cached = new CachedPlayer(tag);
+                CachedPlayer player = new CachedPlayer(member.Tag);
 
-                dbContext.Players.Add(cached);
+                dbContext.Players.Add(player);
+
+                players.Add(player);
             }
+
+            foreach (Model.ClanMember? member in cached.Data.Members)
+                tasks.Add(MonitorMemberAsync(players.FirstOrDefault(p => p.Tag == member.Tag)));
+
+            await Task.WhenAll(tasks);
+
+            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+        }
+
+        private async Task MonitorMemberAsync(CachedPlayer cached)
+        {
+            if (_playersClientBase == null)
+                return;
 
             if (cached.ServerExpiration > DateTime.UtcNow.AddSeconds(3) || cached.LocalExpiration > DateTime.UtcNow)
                 return;
 
             await _playersClientBase.PlayerMontitor.UpdatePlayerAsync(cached);
-
-            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
         }
 
         private async Task DeleteUnmonitoredPlayersNotInAClan()

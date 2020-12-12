@@ -115,14 +115,30 @@ namespace CocApi.Cache
 
         public async Task<Player> GetOrFetchPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            return (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data
-                ?? await _playersApi.GetPlayerAsync(tag, cancellationToken).ConfigureAwait(false);
+            Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
+
+            if (result == null)
+            {
+                string token = await TokenProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                result = await _playersApi.GetPlayerAsync(token, tag, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
         }
 
         public async Task<Player?> GetOrFetchPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            return (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data
-                ?? await _playersApi.GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
+            Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
+
+            if (result == null)
+            {
+                string token = await TokenProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                result = await _playersApi.GetPlayerOrDefaultAsync(token, tag, cancellationToken).ConfigureAwait(false);
+            }
+
+            return result;
         }
 
         public async Task<List<CachedPlayer>> GetCachedPlayersAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)

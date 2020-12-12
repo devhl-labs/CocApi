@@ -68,17 +68,20 @@ namespace CocApi.Test
             await AddOrUpdateAsync("#22G0JJR8", true, true, true); //fysb
             await AddOrUpdateAsync("#28RUGUYJU", true, true, true); //devhls lab
             await AddOrUpdateAsync("#2C8V29YJ", true, true, true); // russian clan
+            await AddOrUpdateAsync("#JYULPG28"); // inphase
 
             DownloadMembers = true;
             DownloadCurrentWars = true;
             DownloadCwl = true;
 
-            var playerGlobalRankings = await _locationsApi.GetPlayerRankingAsync("global");
-            var playerVersusGlobalRankings = await _locationsApi.GetPlayerVersusRankingAsync("global");
-            var clanGlobalRankings = await _locationsApi.GetClanRankingOrDefaultAsync("global");
-            var clanGlobalVersusRankings = await _locationsApi.GetClanVersusRankingAsync("global");
+            string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
-            await _playersCache.StartAsync(cancellationToken);
+            var playerGlobalRankings = await _locationsApi.GetPlayerRankingAsync(token, "global");
+            var playerVersusGlobalRankings = await _locationsApi.GetPlayerVersusRankingAsync(token, "global");
+            var clanGlobalRankings = await _locationsApi.GetClanRankingOrDefaultAsync(token, "global");
+            var clanGlobalVersusRankings = await _locationsApi.GetClanVersusRankingAsync(token, "global");
+
+            //todo  //await _playersCache.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);
         }
 

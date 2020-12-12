@@ -14,12 +14,13 @@ namespace CocApi.Cache.Models
     public class CachedWar : CachedItem<ClanWar>
     {
         internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
+            string token,
             string warTag, DateTime season, ClansClientBase clansCacheBase, 
             ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(token, warTag, cancellationToken).ConfigureAwait(false);
 
                 CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season)
                 {

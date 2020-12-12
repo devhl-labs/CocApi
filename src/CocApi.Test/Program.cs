@@ -43,7 +43,7 @@ namespace CocApi.Test
             //this timespan is the max http request time even without a cancellation token
             //consider it a fallback for when you dont provide a cancellation token
             //keep it a bit longer so it doesn't undercut your cancellation tokens
-            return new ClansApi(arg.GetRequiredService<TokenProvider>(), TimeSpan.FromSeconds(20));
+            return new ClansApi(TimeSpan.FromSeconds(20));
         }
 
         private static Cache.ClientConfiguration ClientConfigurationFactory(IServiceProvider arg)
@@ -55,7 +55,7 @@ namespace CocApi.Test
 
         private static PlayersApi PlayersApiFactory(IServiceProvider arg)
         {
-            return new PlayersApi(arg.GetRequiredService<TokenProvider>(), TimeSpan.FromSeconds(20));
+            return new PlayersApi(TimeSpan.FromSeconds(20));
         }
 
         private static TokenProvider TokenProviderFactory(IServiceProvider arg)
@@ -87,17 +87,17 @@ namespace CocApi.Test
             //in production make this very fast like TimeSpan.FromMilliseconds(33)
             //be aware that seeing many tasks canceled could be due to 
             //waiting for a token
-            return new TokenProvider(tokens, TimeSpan.FromSeconds(1));
+            return new TokenProvider(tokens, TimeSpan.FromMilliseconds(100));
         }
 
         private static LocationsApi LocationsApiFactory(IServiceProvider arg)
         {
-            return new LocationsApi(arg.GetRequiredService<TokenProvider>(), TimeSpan.FromSeconds(20));
+            return new LocationsApi(TimeSpan.FromSeconds(20));
         }
 
         private static LeaguesApi LeaguesApiFactory(IServiceProvider arg)
         {
-            return new LeaguesApi(arg.GetRequiredService<TokenProvider>(), TimeSpan.FromSeconds(20));
+            return new LeaguesApi(TimeSpan.FromSeconds(20));
         }
     }
 }

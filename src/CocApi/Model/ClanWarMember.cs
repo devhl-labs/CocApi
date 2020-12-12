@@ -39,26 +39,26 @@ namespace CocApi.Model
     {
     
     
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWarMember" /> class.
-        /// </summary>
-        /// <param name="tag">tag.</param>
-        /// <param name="name">name.</param>
-        /// <param name="mapPosition">mapPosition.</param>
-        /// <param name="townhallLevel">townhallLevel.</param>
-        /// <param name="opponentAttacks">opponentAttacks.</param>
-        /// <param name="bestOpponentAttack">bestOpponentAttack.</param>
-        /// <param name="attacks">attacks.</param>
-        public ClanWarMember(string tag = default(string), string name = default(string), int mapPosition = default(int), int townhallLevel = default(int), int opponentAttacks = default(int), ClanWarAttack bestOpponentAttack = default(ClanWarAttack), List<ClanWarAttack> attacks = default(List<ClanWarAttack>))
-        {
-            this.Tag = tag;
-            this.Name = name;
-            this.MapPosition = mapPosition;
-            this.TownhallLevel = townhallLevel;
-            this.OpponentAttacks = opponentAttacks;
-            this.BestOpponentAttack = bestOpponentAttack;
-            this.Attacks = attacks;
-        }
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="ClanWarMember" /> class.
+        ///// </summary>
+        ///// <param name="tag">tag.</param>
+        ///// <param name="name">name.</param>
+        ///// <param name="mapPosition">mapPosition.</param>
+        ///// <param name="townhallLevel">townhallLevel.</param>
+        ///// <param name="opponentAttacks">opponentAttacks.</param>
+        ///// <param name="bestOpponentAttack">bestOpponentAttack.</param>
+        ///// <param name="attacks">attacks.</param>
+        //public ClanWarMember(string tag = default(string), string name = default(string), int mapPosition = default(int), int townhallLevel = default(int), int opponentAttacks = default(int), ClanWarAttack bestOpponentAttack = default(ClanWarAttack), List<ClanWarAttack> attacks = default(List<ClanWarAttack>))
+        //{
+        //    this.Tag = tag;
+        //    this.Name = name;
+        //    this.MapPosition = mapPosition;
+        //    this.TownhallLevel = townhallLevel;
+        //    this.OpponentAttacks = opponentAttacks;
+        //    this.BestOpponentAttack = bestOpponentAttack;
+        //    this.Attacks = attacks;
+        //}
         
         /// <summary>
         /// Gets or Sets Tag
