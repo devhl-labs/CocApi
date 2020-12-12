@@ -56,7 +56,7 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.ServerExpiration)
-                        .Take(10)
+                        .Take(Configuration.ConcurrentClanDownloads)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 

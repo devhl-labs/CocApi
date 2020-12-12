@@ -70,7 +70,7 @@ namespace CocApi.Cache
                         where c.IsWarLogPublic && c.DownloadCurrentWar && l.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) && l.LocalExpiration < DateTime.UtcNow
                         orderby l.ServerExpiration
                         select l)
-                        .Take(10)
+                        .Take(Configuration.ConcurrentWarLogDownloads)
                         .ToListAsync()
                         .ConfigureAwait(false);
 

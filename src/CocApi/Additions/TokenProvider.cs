@@ -39,11 +39,27 @@ namespace CocApi
             }
         }
 
+        /// <summary>
+        /// Returns the token after awaiting the token timeout rate limit.
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
         {
             TokenContainer container = NextToken();
 
             return await container.GetAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Ignore the token timeout rate limit and just grab the token.
+        /// </summary>
+        /// <returns></returns>
+        public string Get()
+        {
+            TokenContainer container = NextToken();
+
+            return container.Get();
         }
     }
 }

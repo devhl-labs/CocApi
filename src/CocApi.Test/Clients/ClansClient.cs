@@ -81,7 +81,7 @@ namespace CocApi.Test
             var clanGlobalRankings = await _locationsApi.GetClanRankingOrDefaultAsync(token, "global");
             var clanGlobalVersusRankings = await _locationsApi.GetClanVersusRankingAsync(token, "global");
 
-            //todo  //await _playersCache.StartAsync(cancellationToken);
+            await _playersCache.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);
         }
 

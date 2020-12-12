@@ -66,7 +66,7 @@ namespace CocApi.Cache
                         where c.DownloadCwl && g.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) && g.LocalExpiration < DateTime.UtcNow
                         orderby g.ServerExpiration
                         select g)
-                        .Take(10)
+                        .Take(Configuration.ConcurrentCwlDownloads)
                         .ToListAsync()
                         .ConfigureAwait(false);
 

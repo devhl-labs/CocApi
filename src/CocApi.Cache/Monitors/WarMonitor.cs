@@ -58,16 +58,11 @@ namespace CocApi.Cache
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             w.LocalExpiration < DateTime.UtcNow)
                         .OrderBy(w => w.ServerExpiration)
-                        .Take(10)
                         .ToListAsync()
                         .ConfigureAwait(false);
 
-                    List<Task> tasks = new();
-
                     for (int i = 0; i < wars.Count; i++)
-                        tasks.Add(MonitorWarAsync(wars[i]));
-
-                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                        await MonitorWarAsync(wars[i]).ConfigureAwait(false);
 
                     await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 

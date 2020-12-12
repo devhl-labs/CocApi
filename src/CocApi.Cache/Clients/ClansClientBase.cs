@@ -23,8 +23,8 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public ClansClientBase(TokenProvider tokenQueue, ClientConfiguration configuration, ClansApi clansApi)
-            : base(tokenQueue, configuration)
+        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi)
+            : base(tokenProvider, configuration)
         {
             _clansApi = clansApi;
 
@@ -442,16 +442,16 @@ namespace CocApi.Cache
 
         protected virtual bool HasUpdated(ClanWarLog? stored, ClanWarLog fetched)
         {
-            if (stored == null)
+            if (stored?.Items == null || fetched?.Items == null)
+                return false;
+
+            if (stored.Items.Count == 0 && fetched.Items.Count == 0)
                 return false;
 
             if (stored.Items.Count != fetched.Items.Count)
                 return true;
 
-            if (stored.Items.Max(i => i.EndTime) != fetched.Items.Max(i => i.EndTime))
-                return true;
-
-            return false;
+            return stored.Items.Max(i => i?.EndTime ?? DateTime.MinValue) != fetched.Items.Max(i => i?.EndTime ?? DateTime.MinValue);
         }
 
         internal bool HasUpdated(CachedWar stored, CachedClanWar fetched)

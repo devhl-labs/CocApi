@@ -50,7 +50,7 @@ namespace CocApi.Test
         {
             //this timespan is only used for updating the cache. 
             //you can keep it low so your cache doesn't halt waiting for a slow api response
-            return new Cache.ClientConfiguration(httpRequestTimeOut: TimeSpan.FromSeconds(3));
+            return new Cache.ClientConfiguration(httpRequestTimeOut: TimeSpan.FromSeconds(5));
         }
 
         private static PlayersApi PlayersApiFactory(IServiceProvider arg)

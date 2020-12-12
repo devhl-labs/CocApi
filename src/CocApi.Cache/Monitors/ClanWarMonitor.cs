@@ -41,7 +41,7 @@ namespace CocApi.Cache
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
-                    if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
+                    if (_clansClient.DownloadCurrentWars == false)
                     {
                         await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
 
@@ -73,7 +73,7 @@ namespace CocApi.Cache
                             cw.LocalExpiration < DateTime.UtcNow
                         orderby cw.ServerExpiration
                         select cw)
-                        .Take(10)
+                        .Take(Configuration.ConcurrentClanWarDownloads)
                         .ToListAsync();                        
 
                     List<Task> tasks = new();
