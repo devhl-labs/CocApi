@@ -18,10 +18,13 @@ using System.Net.Mime;
 using System.Collections.Immutable;
 using CocApi.Client;
 using CocApi.Model;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace CocApi.Api
 {
-
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
@@ -32,15 +35,34 @@ namespace CocApi.Api
         public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
         private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+
+        private readonly HttpClient _httpClient;
+        private readonly int _maxConnections;
+
+
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
+
         public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public ClansApi(/*CocApi.TokenQueue tokenProvider,*/ TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
+        public ClansApi(TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1", int maxConnections = 25)
         {
+            _maxConnections = maxConnections;
+            _semaphore = new SemaphoreSlim(_maxConnections, _maxConnections);
+
+            HttpClientHandler httpClientHandler = new HttpClientHandler
+            {
+                MaxConnectionsPerServer = _maxConnections
+            };
+
+            _httpClient = new HttpClient(httpClientHandler)
+            {
+                BaseAddress = new Uri(basePath)
+            };
+
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
                 new CocApi.Client.Configuration { BasePath = basePath, Timeout = ((int?)httpRequestTimeOut?.TotalMilliseconds) ?? 100000  }
@@ -49,6 +71,130 @@ namespace CocApi.Api
             this.AsynchronousClient = new CocApi.Client.ApiClient(this.Configuration.BasePath);
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
             //this._tokenProvider = tokenProvider;
+        }
+
+        private readonly SemaphoreSlim _semaphore;
+        private long _circuitStatus;
+        private const long OPEN = 0;
+        private const long TRIPPED = 1;
+        public string UNAVAILABLE = "Unavailable";
+
+        private string _isTrippedReason = string.Empty;
+
+        private readonly object _isTrippedReasonLock = new object();
+
+        private void TripCircuit(string reason)
+        {
+            if (Interlocked.CompareExchange(ref _circuitStatus, TRIPPED, OPEN) == OPEN)
+            {
+                lock (_isTrippedReasonLock)                
+                    _isTrippedReason = reason;                
+
+                _ = Task.Run(() =>
+                {
+                    _ = OpenCircuitAsync();
+                });
+            }
+        }
+
+        private async Task OpenCircuitAsync()
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1));
+
+            if (Interlocked.CompareExchange(ref _circuitStatus, OPEN, TRIPPED) == TRIPPED)
+            {
+                lock (_isTrippedReasonLock)                
+                    _isTrippedReason = string.Empty;                
+            }
+        }
+
+        private bool IsTripped()
+        {
+            return Interlocked.Read(ref _circuitStatus) == TRIPPED;
+        }
+
+        private async Task<ApiResponse<T>> GetAsync<T>(
+            string token, string path, Uri requestUri, RequestOptions requestOptions, 
+            string methodName, CancellationToken? cancellationToken = default)
+        {
+            await _semaphore.WaitAsync();
+
+            try
+            {
+                if (IsTripped())
+                    throw ThrowOnHttpRequestException(
+                        new CachedHttpRequestException(_isTrippedReason), path, requestOptions, null);
+
+                using HttpRequestMessage request = new HttpRequestMessage();
+                request.Headers.Add("authorization", $"Bearer {token}");
+                request.RequestUri = requestUri;
+                HttpResponseMessage? responseMessage = null;
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+                stopwatch.Start();
+
+                try
+                {
+                    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+                }
+                catch (Exception e)
+                {
+                    TripCircuit(e.Message);
+                    throw ThrowOnHttpRequestException(e, path, requestOptions, stopwatch);
+                }
+
+                stopwatch.Stop();
+
+                string responseContent = await responseMessage.Content.ReadAsStringAsync();
+                
+                Multimap<string, string> headers = new Multimap<string, string>
+                {
+                    new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)),
+                    new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value))
+                };
+
+                ApiResponse<T> apiResponse = new ApiResponse<T>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<T>(responseContent, Clash.JsonSerializerSettings), responseContent);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    Exception e = this.ExceptionFactory(methodName, apiResponse);
+
+                    if (e != null)
+                    {
+                        if (responseMessage.StatusCode == (HttpStatusCode)500 ||
+                        responseMessage.StatusCode == (HttpStatusCode)502 ||
+                        responseMessage.StatusCode == (HttpStatusCode)503 ||
+                        responseMessage.StatusCode == (HttpStatusCode)504)
+                            TripCircuit(e.Message);
+
+                        throw ThrowOnHttpRequestException(new CachedHttpRequestException(e.Message), path, requestOptions, stopwatch);
+                    }
+                }
+
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, requestOptions, stopwatch.Elapsed, responseMessage.StatusCode);
+
+                _httpRequestResults.Add(requestSuccess);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                return apiResponse;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+        private Exception ThrowOnHttpRequestException(Exception e, string path, RequestOptions requestOptions, System.Diagnostics.Stopwatch? stopWatch)
+        {
+            stopWatch?.Stop();
+
+            HttpRequestException requestException = new HttpRequestException(path, requestOptions, stopWatch?.Elapsed ?? TimeSpan.FromSeconds(0), e);
+
+            _httpRequestResults.Add(requestException);
+
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            return e;
         }
 
         /// <summary>
@@ -140,69 +286,169 @@ namespace CocApi.Api
             // authentication (JWT) required
             //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
+
+
+
+
+
+
+
+
+
+
+            return await GetAsync<Clan>(
+                token, "/clans/{clanTag}", new Uri($"{Configuration.BasePath}/{Clan.Url(formattedTag)}"), 
+                localVarRequestOptions, "GetClan", cancellationToken);
             
 
-            // make the HTTP request
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-            stopwatch.Start();
 
-            ApiResponse<Clan>? localVarResponse = null;
 
-            try
-            {
-                localVarResponse = await this.AsynchronousClient.GetAsync<Clan>("/clans/{clanTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                stopwatch.Stop();
+            //using HttpRequestMessage request = new HttpRequestMessage();
+            //request.Headers.Add("authorization", $"Bearer {token}");
+            //request.RequestUri = new Uri($"{Configuration.BasePath}/{Clan.Url(formattedTag)}");
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            //HttpResponseMessage? responseMessage = null;
+            //stopwatch.Start();
+            
+            //try
+            //{
+            //    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
 
-                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, e);
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+            //    _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                throw;
-            }
+            //    throw;
+            //}
 
-            stopwatch.Stop();
+            //stopwatch.Stop();
 
-            if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
-            {
-                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+            //string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
-                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+            //Multimap<string, string> headers = new Multimap<string, string>();
+            //headers.Add(new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)));
+            //headers.Add(new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value)));
 
-                _httpRequestResults.Add(requestException);
+            //ApiResponse<Clan> apiResponse = new ApiResponse<Clan>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<Clan>(responseContent, Clash.JsonSerializerSettings), responseContent);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //if (!responseMessage.IsSuccessStatusCode)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetClan", apiResponse);
+            //    if (_exception != null)
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                throw timeoutException;
-            }
+            //        _httpRequestResults.Add(requestException);
 
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("GetClan", localVarResponse);
-                if (_exception != null) 
-                {
-                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                    _httpRequestResults.Add(requestException);
+            //        throw _exception;
+            //    }
+            //}
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, responseMessage.StatusCode);
 
-                    throw _exception;
-                }
-            }
+            //_httpRequestResults.Add(requestSuccess);
 
-            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
-            _httpRequestResults.Add(requestSuccess);
+            //return apiResponse;
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
-            return localVarResponse;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //// make the HTTP request
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+            //stopwatch.Start();
+
+            //ApiResponse<Clan>? localVarResponse = null;
+
+            //try
+            //{
+            //    localVarResponse = await this.AsynchronousClient.GetAsync<Clan>("/clans/{clanTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
+
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw;
+            //}
+
+            //stopwatch.Stop();
+
+            //if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
+            //{
+            //    TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw timeoutException;
+            //}
+
+            //if (this.ExceptionFactory != null)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetClan", localVarResponse);
+            //    if (_exception != null) 
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return localVarResponse;
         }
 
         /// <summary>
@@ -464,69 +710,165 @@ namespace CocApi.Api
             // authentication (JWT) required
             //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
-            
 
-            // make the HTTP request
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-            stopwatch.Start();
 
-            ApiResponse<ClanWarLeagueGroup>? localVarResponse = null;
 
-            try
-            {
-                localVarResponse = await this.AsynchronousClient.GetAsync<ClanWarLeagueGroup>("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                stopwatch.Stop();
 
-                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            return await GetAsync<ClanWarLeagueGroup>(
+                token, "/clans/{clanTag}/currentwar/leaguegroup", new Uri($"{Configuration.BasePath}/{ClanWarLeagueGroup.Url(formattedTag)}"),
+                localVarRequestOptions, "GetClanWarLeagueGroup", cancellationToken);
 
-                throw;
-            }
 
-            stopwatch.Stop();
 
-            if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
-            {
-                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+            //using HttpRequestMessage request = new HttpRequestMessage();
+            //request.Headers.Add("authorization", $"Bearer {token}");
+            //request.RequestUri = new Uri($"{Configuration.BasePath}/{ClanWarLeagueGroup.Url(formattedTag)}");
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            //HttpResponseMessage? responseMessage = null;
+            //stopwatch.Start();
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //try
+            //{
+            //    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
 
-                throw timeoutException;
-            }
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, e);
 
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("GetClanWarLeagueGroup", localVarResponse);
-                if (_exception != null) 
-                {
-                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, _exception);
+            //    _httpRequestResults.Add(requestException);
 
-                    _httpRequestResults.Add(requestException);
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //    throw;
+            //}
 
-                    throw _exception;
-                }
-            }
+            //stopwatch.Stop();
 
-            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            //string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
-            _httpRequestResults.Add(requestSuccess);
+            //Multimap<string, string> headers = new Multimap<string, string>();
+            //headers.Add(new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)));
+            //headers.Add(new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value)));
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+            //ApiResponse<ClanWarLeagueGroup> apiResponse = new ApiResponse<ClanWarLeagueGroup>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<ClanWarLeagueGroup>(responseContent, Clash.JsonSerializerSettings), responseContent);
 
-            return localVarResponse;
+            //if (!responseMessage.IsSuccessStatusCode)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetClanWarLeagueGroup", apiResponse);
+            //    if (_exception != null)
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, apiResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return apiResponse;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //// make the HTTP request
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+            //stopwatch.Start();
+
+            //ApiResponse<ClanWarLeagueGroup>? localVarResponse = null;
+
+            //try
+            //{
+            //    localVarResponse = await this.AsynchronousClient.GetAsync<ClanWarLeagueGroup>("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
+
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, e);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw;
+            //}
+
+            //stopwatch.Stop();
+
+            //if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
+            //{
+            //    TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw timeoutException;
+            //}
+
+            //if (this.ExceptionFactory != null)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetClanWarLeagueGroup", localVarResponse);
+            //    if (_exception != null) 
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return localVarResponse;
         }
 
         /// <summary>
@@ -614,69 +956,169 @@ namespace CocApi.Api
             // authentication (JWT) required
             //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
-            
 
-            // make the HTTP request
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-            stopwatch.Start();
 
-            ApiResponse<ClanWar>? localVarResponse = null;
 
-            try
-            {
-                localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clanwarleagues/wars/{warTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                stopwatch.Stop();
 
-                HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, e);
+            return await GetAsync<ClanWar>(
+                token, "/clanwarleagues/wars/{warTag}", new Uri($"{Configuration.BasePath}/{ClanWar.Url(formattedTag)}"),
+                localVarRequestOptions, "GetClanWarLeagueWar", cancellationToken);
 
-                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                throw;
-            }
 
-            stopwatch.Stop();
 
-            if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
-            {
-                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+            //using HttpRequestMessage request = new HttpRequestMessage();
+            //request.Headers.Add("authorization", $"Bearer {token}");
+            //request.RequestUri = new Uri($"{Configuration.BasePath}/{ClanWar.Url(formattedTag)}");
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            //HttpResponseMessage? responseMessage = null;
+            //stopwatch.Start();
 
-                HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+            //try
+            //{
+            //    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
 
-                _httpRequestResults.Add(requestException);
+            //    HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //    _httpRequestResults.Add(requestException);
 
-                throw timeoutException;
-            }
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("GetClanWarLeagueWar", localVarResponse);
-                if (_exception != null) 
-                {
-                    HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
+            //    throw;
+            //}
 
-                    _httpRequestResults.Add(requestException);
+            //stopwatch.Stop();
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
-                    throw _exception;
-                }
-            }
+            //Multimap<string, string> headers = new Multimap<string, string>();
+            //headers.Add(new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)));
+            //headers.Add(new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value)));
 
-            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            //ApiResponse<ClanWar> apiResponse = new ApiResponse<ClanWar>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<ClanWar>(responseContent, Clash.JsonSerializerSettings), responseContent);
 
-            _httpRequestResults.Add(requestSuccess);
+            //if (!responseMessage.IsSuccessStatusCode)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetClanWarLeagueWar", apiResponse);
+            //    if (_exception != null)
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+            //        _httpRequestResults.Add(requestException);
 
-            return localVarResponse;
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, apiResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return apiResponse;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //// make the HTTP request
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+            //stopwatch.Start();
+
+            //ApiResponse<ClanWar>? localVarResponse = null;
+
+            //try
+            //{
+            //    localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clanwarleagues/wars/{warTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
+
+            //    HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw;
+            //}
+
+            //stopwatch.Stop();
+
+            //if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
+            //{
+            //    TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+            //    HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw timeoutException;
+            //}
+
+            //if (this.ExceptionFactory != null)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetClanWarLeagueWar", localVarResponse);
+            //    if (_exception != null) 
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return localVarResponse;
         }
 
         /// <summary>
@@ -915,6 +1357,7 @@ namespace CocApi.Api
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'clanTag' when calling ClansApi->GetCurrentWar");
+
             string formattedTag = Clash.FormatTag(clanTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -938,69 +1381,166 @@ namespace CocApi.Api
             // authentication (JWT) required
             //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
-            
 
-            // make the HTTP request
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-            stopwatch.Start();
 
-            ApiResponse<ClanWar>? localVarResponse = null;
 
-            try
-            {
-                localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clans/{clanTag}/currentwar", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                stopwatch.Stop();
 
-                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            return await GetAsync<ClanWar>(
+                token, "/clans/{clanTag}/currentwar", new Uri($"{Configuration.BasePath}/{ClanWar.Url(formattedTag)}"),
+                localVarRequestOptions, "GetCurrentWar", cancellationToken);
 
-                throw;
-            }
 
-            stopwatch.Stop();
 
-            if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
-            {
-                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //using HttpRequestMessage request = new HttpRequestMessage();
+            //request.Headers.Add("authorization", $"Bearer {token}");
+            //request.RequestUri = new Uri($"{Configuration.BasePath}/{ClanWar.Url(formattedTag)}");
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            //HttpResponseMessage? responseMessage = null;
+            //stopwatch.Start();
 
-                throw timeoutException;
-            }
+            //try
+            //{
+            //    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
 
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("GetCurrentWar", localVarResponse);
-                if (_exception != null) 
-                {
-                    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, _exception);
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                    _httpRequestResults.Add(requestException);
+            //    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                    throw _exception;
-                }
-            }
+            //    throw;
+            //}
 
-            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+            //stopwatch.Stop();
 
-            _httpRequestResults.Add(requestSuccess);
+            //string responseContent = await responseMessage.Content.ReadAsStringAsync();
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+            //Multimap<string, string> headers = new Multimap<string, string>();
+            //headers.Add(new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)));
+            //headers.Add(new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value)));
 
-            return localVarResponse;
+            //ApiResponse<ClanWar> apiResponse = new ApiResponse<ClanWar>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<ClanWar>(responseContent, Clash.JsonSerializerSettings), responseContent);
+
+            //if (!responseMessage.IsSuccessStatusCode)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetCurrentWar", apiResponse);
+            //    if (_exception != null)
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, apiResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return apiResponse;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //// make the HTTP request
+            //stopwatch = new System.Diagnostics.Stopwatch();
+
+            //stopwatch.Start();
+
+            //ApiResponse<ClanWar>? localVarResponse = null;
+
+            //try
+            //{
+            //    localVarResponse = await this.AsynchronousClient.GetAsync<ClanWar>("/clans/{clanTag}/currentwar", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
+
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, e);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw;
+            //}
+
+            //stopwatch.Stop();
+
+            //if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
+            //{
+            //    TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+            //    HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw timeoutException;
+            //}
+
+            //if (this.ExceptionFactory != null)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetCurrentWar", localVarResponse);
+            //    if (_exception != null) 
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return localVarResponse;
         }
 
         /// <summary>

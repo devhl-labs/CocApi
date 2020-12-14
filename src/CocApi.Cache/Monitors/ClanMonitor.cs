@@ -136,7 +136,7 @@ namespace CocApi.Cache
 
                     fetched = await CachedClan.FromClanResponseAsync(token, cached.Tag, _clansClient, _clansApi, linkedCts.Token);
                 }
-                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException)
                 {
                     if (_stopRequestedTokenSource.IsCancellationRequested)
                         throw;

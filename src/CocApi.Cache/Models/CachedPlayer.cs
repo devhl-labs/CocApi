@@ -22,7 +22,7 @@ namespace CocApi.Cache.Models
 
                 return new CachedPlayer(apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
             {
                 return new CachedPlayer(tag, e, await playersCacheBase.TimeToLiveAsync(e).ConfigureAwait(false));
             }

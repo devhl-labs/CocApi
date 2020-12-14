@@ -169,7 +169,7 @@
 
 //                    fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClanWar.Tag, _clansClient, _clansApi, linkedCts.Token);
 //                }
-//                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+//                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException  || e is CachedHttpRequestException)
 //                {
 //                    if (_stopRequestedTokenSource.IsCancellationRequested)
 //                        throw;

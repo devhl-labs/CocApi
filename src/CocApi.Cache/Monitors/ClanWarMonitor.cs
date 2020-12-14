@@ -133,7 +133,7 @@ namespace CocApi.Cache
                 {
                     fetched = await CachedClanWar.FromCurrentWarResponseAsync(token, cachedClanWar.Tag, _clansClient, _clansApi, linkedCts.Token).ConfigureAwait(false);
                 }
-                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException)
+                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException)
                 {
                     if (_stopRequestedTokenSource.IsCancellationRequested)
                         throw;

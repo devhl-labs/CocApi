@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using CocApi.Api;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.IO;
 
 namespace CocApi.Test
 {
@@ -85,9 +84,7 @@ namespace CocApi.Test
             };
 
             //in production make this very fast like TimeSpan.FromMilliseconds(33)
-            //be aware that seeing many tasks canceled could be due to 
-            //waiting for a token
-            return new TokenProvider(tokens, TimeSpan.FromMilliseconds(100));
+            return new TokenProvider(tokens, TimeSpan.FromSeconds(3));
         }
 
         private static LocationsApi LocationsApiFactory(IServiceProvider arg)

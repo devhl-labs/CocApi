@@ -18,6 +18,10 @@ using System.Net.Mime;
 using System.Collections.Immutable;
 using CocApi.Client;
 using CocApi.Model;
+using System.Net.Http;
+using Newtonsoft.Json;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CocApi.Api
 {
@@ -32,6 +36,7 @@ namespace CocApi.Api
         public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
         private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
         public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
@@ -39,8 +44,21 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(/*CocApi.TokenQueue tokenProvider,*/ TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1")
+        public PlayersApi(TimeSpan? httpRequestTimeOut = null, string basePath = "https://api.clashofclans.com/v1", int maxConnections = 25)
         {
+            _maxConnections = maxConnections;
+            _semaphore = new SemaphoreSlim(_maxConnections, _maxConnections);
+
+            HttpClientHandler httpClientHandler = new HttpClientHandler
+            {
+                MaxConnectionsPerServer = maxConnections, 
+            };
+
+            _httpClient = new HttpClient(httpClientHandler)
+            {
+                BaseAddress = new Uri(basePath)
+            };
+
             this.Configuration = CocApi.Client.Configuration.MergeConfigurations(
                 CocApi.Client.GlobalConfiguration.Instance,
                 new CocApi.Client.Configuration { BasePath = basePath, Timeout = ((int?)httpRequestTimeOut?.TotalMilliseconds) ?? 100000  }
@@ -50,6 +68,159 @@ namespace CocApi.Api
             this.ExceptionFactory = CocApi.Client.Configuration.DefaultExceptionFactory;
             //this._tokenProvider = tokenProvider;
         }
+
+
+
+
+
+
+
+
+
+        private readonly HttpClient _httpClient; // HttpClientHandler.MaxConnectionsPerServer = _maxConnections 
+        private readonly int _maxConnections;
+        private readonly SemaphoreSlim _semaphore;
+        private long _circuitStatus;
+        private const long OPEN = 0;
+        private const long TRIPPED = 1;
+
+        private string _isTrippedReason = string.Empty;
+
+        private readonly object _isTrippedReasonLock = new object();
+
+        private void TripCircuit(string reason)
+        {
+            if (Interlocked.CompareExchange(ref _circuitStatus, TRIPPED, OPEN) == OPEN)
+            {
+                lock (_isTrippedReasonLock)                
+                    _isTrippedReason = reason;
+
+                _ = Task.Run(() =>
+                {
+                    _ = OpenCircuitAsync();
+                });                
+            }
+        }
+
+        private async Task OpenCircuitAsync()
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1));
+
+            if (Interlocked.CompareExchange(ref _circuitStatus, OPEN, TRIPPED) == TRIPPED)
+            {
+                lock (_isTrippedReasonLock)
+                    _isTrippedReason = string.Empty;
+            }
+        }
+
+        private bool IsTripped()
+        {
+            return Interlocked.Read(ref _circuitStatus) == TRIPPED;
+        }
+
+        private async Task<ApiResponse<T>> GetAsync<T>(
+            string token, string path, Uri requestUri, RequestOptions requestOptions,
+            string methodName, CancellationToken? cancellationToken = default)
+        {
+            await _semaphore.WaitAsync();
+
+            try
+            {
+                if (IsTripped())
+                    throw ThrowOnHttpRequestException(
+                        new CachedHttpRequestException(_isTrippedReason), path, requestOptions, null);
+
+                using HttpRequestMessage request = new HttpRequestMessage();
+                request.Headers.Add("authorization", $"Bearer {token}");
+                request.RequestUri = requestUri;
+                HttpResponseMessage? responseMessage = null;
+                System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+                stopwatch.Start();
+
+                try
+                {
+                    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+                }
+                catch (Exception e)
+                {
+                    TripCircuit(e.Message);
+                    throw ThrowOnHttpRequestException(e, path, requestOptions, stopwatch);
+                }
+
+                stopwatch.Stop();
+
+                string responseContent = await responseMessage.Content.ReadAsStringAsync();
+
+                Multimap<string, string> headers = new Multimap<string, string>
+                {
+                    new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)),
+                    new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value))
+                };
+
+                ApiResponse<T> apiResponse = new ApiResponse<T>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<T>(responseContent, Clash.JsonSerializerSettings), responseContent);
+
+                if (!responseMessage.IsSuccessStatusCode)
+                {
+                    Exception e = this.ExceptionFactory(methodName, apiResponse);
+
+                    if (e != null)
+                    {
+                        if (responseMessage.StatusCode == (HttpStatusCode)500 ||
+                        responseMessage.StatusCode == (HttpStatusCode)502 ||
+                        responseMessage.StatusCode == (HttpStatusCode)503 ||
+                        responseMessage.StatusCode == (HttpStatusCode)504)
+                            TripCircuit(e.Message);
+
+                        throw ThrowOnHttpRequestException(new CachedHttpRequestException(e.Message), path, requestOptions, stopwatch);
+                    }
+                }
+
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, requestOptions, stopwatch.Elapsed, responseMessage.StatusCode);
+
+                _httpRequestResults.Add(requestSuccess);
+
+                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                return apiResponse;
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+        private Exception ThrowOnHttpRequestException(Exception e, string path, RequestOptions requestOptions, System.Diagnostics.Stopwatch? stopWatch)
+        {
+            stopWatch?.Stop();
+
+            HttpRequestException requestException = new HttpRequestException(path, requestOptions, stopWatch?.Elapsed ?? TimeSpan.FromSeconds(0), e);
+
+            _httpRequestResults.Add(requestException);
+
+            OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            return e;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /// <summary>
         /// The client for accessing this underlying API asynchronously.
@@ -140,69 +311,187 @@ namespace CocApi.Api
             // authentication (JWT) required
             //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
-            
 
-            // make the HTTP request
-            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
 
-            stopwatch.Start();
 
-            ApiResponse<Player>? localVarResponse = null;
 
-            try
-            {
-                localVarResponse = await this.AsynchronousClient.GetAsync<Player>("/players/{playerTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                stopwatch.Stop();
 
-                HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                throw;
-            }
 
-            stopwatch.Stop();
+            return await GetAsync<Player>(
+                token, "/players/{playerTag}", new Uri($"{Configuration.BasePath}/{Player.Url(formattedTag)}"),
+                localVarRequestOptions, "GetPlayer", cancellationToken);
 
-            if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
-            {
-                TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
 
-                HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                throw timeoutException;
-            }
 
-            if (this.ExceptionFactory != null)
-            {
-                Exception _exception = this.ExceptionFactory("GetPlayer", localVarResponse);
-                if (_exception != null) 
-                {
-                    HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
 
-                    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
-                    throw _exception;
-                }
-            }
 
-            HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
 
-            OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
-            return localVarResponse;
+
+
+            //using HttpRequestMessage request = new HttpRequestMessage();
+            //request.Headers.Add("authorization", $"Bearer {token}");
+            //request.RequestUri = new Uri($"{Configuration.BasePath}/{Player.Url(formattedTag)}");
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            //HttpResponseMessage? responseMessage = null;
+            //stopwatch.Start();
+
+            //try
+            //{
+            //    responseMessage = await _httpClient.SendAsync(request, cancellationToken.GetValueOrDefault());
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
+
+            //    HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw;
+            //}
+
+            //stopwatch.Stop();
+
+            //string responseContent = await responseMessage.Content.ReadAsStringAsync();
+
+            //Multimap<string, string> headers = new Multimap<string, string>();
+            //headers.Add(new KeyValuePair<string, IList<string>>("Cache-Control", new List<string>(responseMessage.Headers.First(h => h.Key == "Cache-Control").Value)));
+            //headers.Add(new KeyValuePair<string, IList<string>>("Date", new List<string>(responseMessage.Headers.First(h => h.Key == "Date").Value)));
+
+            //ApiResponse<Player> apiResponse = new ApiResponse<Player>(responseMessage.StatusCode, headers, JsonConvert.DeserializeObject<Player>(responseContent, Clash.JsonSerializerSettings), responseContent);
+
+            //if (!responseMessage.IsSuccessStatusCode)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetPlayer", apiResponse);
+            //    if (_exception != null)
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, apiResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return apiResponse;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //// make the HTTP request
+            //System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+
+            //stopwatch.Start();
+
+            //ApiResponse<Player>? localVarResponse = null;
+
+            //try
+            //{
+            //    localVarResponse = await this.AsynchronousClient.GetAsync<Player>("/players/{playerTag}", localVarRequestOptions, this.Configuration, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    stopwatch.Stop();
+
+            //    HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, e);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw;
+            //}
+
+            //stopwatch.Stop();
+
+            //if (localVarResponse.ErrorText == "The request timed-out." || localVarResponse.ErrorText == "The operation has timed out.")
+            //{
+            //    TimeoutException timeoutException = new TimeoutException(localVarResponse.ErrorText);
+
+            //    HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
+
+            //    _httpRequestResults.Add(requestException);
+
+            //    OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //    throw timeoutException;
+            //}
+
+            //if (this.ExceptionFactory != null)
+            //{
+            //    Exception _exception = this.ExceptionFactory("GetPlayer", localVarResponse);
+            //    if (_exception != null) 
+            //    {
+            //        HttpRequestException requestException = new HttpRequestException("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, _exception);
+
+            //        _httpRequestResults.Add(requestException);
+
+            //        OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
+
+            //        throw _exception;
+            //    }
+            //}
+
+            //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
+
+            //_httpRequestResults.Add(requestSuccess);
+
+            //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+            //return localVarResponse;
         }
 
         /// <summary>

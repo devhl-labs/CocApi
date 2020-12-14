@@ -29,7 +29,7 @@ namespace CocApi.Cache.Models
 
                 return result;
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException)
+            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
             {
                 return new CachedWar(warTag, e, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
             }

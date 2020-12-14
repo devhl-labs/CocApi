@@ -11,7 +11,7 @@ namespace CocApi
 
         private readonly string _token;
 
-        public DateTime LastUsedUtc { get; private set; }
+        private DateTime _lastUsedUtc;
 
         public TokenContainer(string token, TimeSpan tokenTimeOut)
         {
@@ -19,31 +19,31 @@ namespace CocApi
             TokenTimeOut = tokenTimeOut;
         }
 
-        private readonly object _getLock = new object();
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
 
         public async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
         {
-            TimeSpan timeSpan = DateTime.UtcNow - LastUsedUtc;
+            await _semaphore.WaitAsync();
 
-            if (timeSpan.TotalMilliseconds < TokenTimeOut.TotalMilliseconds)            
-                await Task.Delay((int)timeSpan.TotalMilliseconds, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-
-            lock (_getLock)
+            try
             {
-                LastUsedUtc = DateTime.UtcNow;
+                DateTime now = DateTime.UtcNow;
+
+                DateTime available = _lastUsedUtc.Add(TokenTimeOut);
+
+                if (now < available)            
+                    await Task.Delay(available - now, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                _lastUsedUtc = now;
+            }
+            finally
+            {
+                _semaphore.Release();
             }
 
             return _token;
         }
 
-        public string Get()
-        {
-            lock (_getLock)
-            {
-                LastUsedUtc = DateTime.UtcNow;
-            }
-
-            return _token;
-        }
+        public string Get() => _token;        
     }
 }
