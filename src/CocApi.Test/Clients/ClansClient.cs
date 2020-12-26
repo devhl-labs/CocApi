@@ -154,7 +154,7 @@ namespace CocApi.Test
                 if (exception.Exception is ApiException apiException)
                     _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), apiException.ErrorContent.ToString());
                 else
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), exception.Exception.Message);
+                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), exception.Exception.Message, exception.Exception.InnerException?.Message);
             }
 
             if (log.HttpRequestResult is HttpRequestSuccess)

@@ -31,9 +31,9 @@ namespace CocApi.Api
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
-        private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+        //private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> // _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
-        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
+        //public ImmutableArray<IHttpRequestResult> HttpRequestResults => // _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LeaguesApi"/> class.
@@ -158,7 +158,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -173,7 +173,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -187,7 +187,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    // _httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -197,7 +197,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            // _httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -331,7 +331,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -346,7 +346,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -360,7 +360,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    // _httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -370,7 +370,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons/{seasonId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            // _httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -506,7 +506,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -521,7 +521,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -535,7 +535,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    // _httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -545,7 +545,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            // _httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -672,7 +672,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -687,7 +687,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -701,7 +701,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/leagues", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    // _httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -711,7 +711,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            // _httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -825,7 +825,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -840,7 +840,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -854,7 +854,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    // _httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -864,7 +864,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues/{leagueId}", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            // _httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -985,7 +985,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1000,7 +1000,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                // _httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1014,7 +1014,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/warleagues", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    // _httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1024,7 +1024,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            // _httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 

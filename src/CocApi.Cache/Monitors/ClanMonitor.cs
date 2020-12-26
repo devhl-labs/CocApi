@@ -15,7 +15,6 @@ namespace CocApi.Cache
 {
     internal class ClanMonitor : ClientBase
     {
-        private readonly PlayersClientBase? _playersClientBase;
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
@@ -24,10 +23,9 @@ namespace CocApi.Cache
         private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
         public ClanMonitor
-            (PlayersClientBase? playersClientBase, TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase)
+            (TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(tokenProvider, configuration)
         {
-            _playersClientBase = playersClientBase;
             _clansApi = clansApi;
             _clansClient = clansClientBase;
         }
@@ -62,13 +60,8 @@ namespace CocApi.Cache
 
                     List<Task> tasks = new();
 
-                    foreach(CachedClan cachedClan in cachedClans)
-                    {
+                    foreach(CachedClan cachedClan in cachedClans)                    
                         tasks.Add(MonitorClanAsync(cachedClan));
-
-                        if (cachedClan.DownloadMembers && _clansClient.DownloadMembers && _playersClientBase != null)
-                            tasks.Add(MonitorMembersAsync(cachedClan));
-                    }
 
                     await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -153,48 +146,6 @@ namespace CocApi.Cache
             {
                 _updatingClan.TryRemove(cached.Tag, out _);
             }
-        }
-
-        private async Task MonitorMembersAsync(CachedClan cached)
-        {
-            if (_stopRequestedTokenSource.IsCancellationRequested ||
-                cached.Data == null)
-                return;
-
-            List<Task> tasks = new List<Task>();
-
-            using var scope = Services.CreateScope();
-
-            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
-
-            List<CachedPlayer> players = await dbContext.Players.Where(p => cached.Data.Members.Select(m => m.Tag).Contains(p.Tag)).ToListAsync();
-
-            foreach(Model.ClanMember member in cached.Data.Members.Where(m => !players.Any(p => p.Tag == m.Tag)))
-            {
-                CachedPlayer player = new CachedPlayer(member.Tag);
-
-                dbContext.Players.Add(player);
-
-                players.Add(player);
-            }
-
-            foreach (Model.ClanMember? member in cached.Data.Members)
-                tasks.Add(MonitorMemberAsync(players.FirstOrDefault(p => p.Tag == member.Tag)));
-
-            await Task.WhenAll(tasks);
-
-            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
-        }
-
-        private async Task MonitorMemberAsync(CachedPlayer cached)
-        {
-            if (_playersClientBase == null)
-                return;
-
-            if (cached.ServerExpiration > DateTime.UtcNow.AddSeconds(3) || cached.LocalExpiration > DateTime.UtcNow)
-                return;
-
-            await _playersClientBase.PlayerMontitor.UpdatePlayerAsync(cached);
         }
 
         private async Task DeleteUnmonitoredPlayersNotInAClan()

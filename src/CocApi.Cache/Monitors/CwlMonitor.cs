@@ -107,8 +107,8 @@ namespace CocApi.Cache
             _clansClient.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
         }
 
-
         private readonly ConcurrentDictionary<string, byte> _updatingGroup = new ConcurrentDictionary<string, byte>();
+        private static readonly ConcurrentDictionary<string, byte> _updatingWarTags = new ConcurrentDictionary<string, byte>();
 
         private async Task MonitorCwlAsync(CachedClanWarLeagueGroup cached, CacheContext dbContext)
         {
@@ -203,9 +203,6 @@ namespace CocApi.Cache
                 _updatingGroup.TryRemove(cached.Tag, out _);
             }
         }
-
-
-        private static readonly ConcurrentDictionary<string, byte> _updatingWarTags = new ConcurrentDictionary<string, byte>();
 
         private async Task<CachedWar?> ReturnNewWarAsync(string tag, DateTime season, string warTag)
         {

@@ -7,7 +7,6 @@
 //using System.Threading.Tasks;
 //using CocApi.Api;
 //using CocApi.Cache.Models;
-//using CocApi.Cache.View;
 //using CocApi.Client;
 //using CocApi.Model;
 //using Microsoft.EntityFrameworkCore;
@@ -21,8 +20,8 @@
 //        private readonly ClansClientBase _clansClient;
 
 //        public ActiveWarMonitor
-//            (TokenQueue tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
-//            : base(tokenProvider, cacheConfiguration)
+//            (TokenProvider tokenProvider, ClientConfiguration clientConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
+//            : base(tokenProvider, clientConfiguration)
 //        {
 //            _clansApi = clansApi;
 //            _clansClient = clansClientBase;
@@ -55,17 +54,17 @@
 //                    CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
 //                    var results = await
-//                        (from cw in dbContext.ClanWars 
-//                         join w in 
+//                        (from cw in dbContext.ClanWars
+//                         join w in
 //                            from w in dbContext.Wars
 //                            join c in dbContext.Clans on w.ClanTag equals c.Tag
 //                            where !w.IsFinal && c.IsWarLogPublic != false && c.DownloadCurrentWar != true
-//                            select w 
+//                            select w
 //                            on cw.Tag equals w.ClanTag
-//                        select cw)
+//                         select cw)
 //                        .Union(
 //                            from cw in dbContext.ClanWars
-//                            join w in 
+//                            join w in
 //                                from w in dbContext.Wars
 //                                join c in dbContext.Clans on w.OpponentTag equals c.Tag
 //                                where !w.IsFinal && c.IsWarLogPublic != false && c.DownloadCurrentWar != true
@@ -89,7 +88,7 @@
 
 //                    List<Task> tasks = new();
 
-//                    foreach(var item in results)
+//                    foreach (var item in results)
 //                    {
 //                        tasks.Add(MonitorActiveWarAsync(item));
 //                        tasks.Add(MonitorActiveWarAsync(item));
@@ -169,7 +168,7 @@
 
 //                    fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClanWar.Tag, _clansClient, _clansApi, linkedCts.Token);
 //                }
-//                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException  || e is CachedHttpRequestException)
+//                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException || e is CachedHttpRequestException)
 //                {
 //                    if (_stopRequestedTokenSource.IsCancellationRequested)
 //                        throw;

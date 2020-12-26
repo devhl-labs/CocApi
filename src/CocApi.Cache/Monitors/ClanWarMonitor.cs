@@ -67,14 +67,17 @@ namespace CocApi.Cache
                     List<CachedClanWar> cachedClanWars = await (
                         from cw in dbContext.ClanWars
                         join c in dbContext.Clans on cw.Tag equals c.Tag
-                        where c.IsWarLogPublic &&
-                            c.DownloadCurrentWar &&
+                        into cw_c_join
+                        from c2 in cw_c_join.DefaultIfEmpty()
+                        where 
+                            c2.IsWarLogPublic != false &&
+                            c2.DownloadCurrentWar != false &&
                             cw.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             cw.LocalExpiration < DateTime.UtcNow
                         orderby cw.ServerExpiration
                         select cw)
                         .Take(Configuration.ConcurrentClanWarDownloads)
-                        .ToListAsync();                        
+                        .ToListAsync();
 
                     List<Task> tasks = new();
 

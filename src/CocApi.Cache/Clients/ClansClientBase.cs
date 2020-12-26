@@ -33,13 +33,14 @@ namespace CocApi.Cache
             _clanWarMonitor = new ClanWarMonitor(TokenProvider, Configuration, _clansApi, this);
             _cwlMonitor = new CwlMonitor(TokenProvider, Configuration, _clansApi, this);
             _warMonitor = new WarMonitor(TokenProvider, Configuration, _clansApi, this);
+            _clanMonitor = new ClanMonitor(TokenProvider, Configuration, _clansApi, this);
         }
 
         public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, PlayersClientBase playersClient)
             : this(tokenProvider, configuration, clansApi)
         {
             _playersClient = playersClient;
-            _clanMonitor = new ClanMonitor(_playersClient, TokenProvider, Configuration, _clansApi, this);
+            _clanMembersMonitor = new(playersClient, tokenProvider, configuration, clansApi, this);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -347,18 +348,20 @@ namespace CocApi.Cache
 
         private readonly WarMonitor _warMonitor;
 
+        private readonly ClanMembersMonitor? _clanMembersMonitor;
+
         public Task StartAsync(CancellationToken cancellationToken)
         {           
             Task.Run(() =>
             {
                 //_ = _activeWarMonitor.RunAsync(cancellationToken);
 
-
                 _ = _clanWarLogMonitor.RunAsync(cancellationToken);
                 _ = _clanWarMonitor.RunAsync(cancellationToken);
                 _ = _clanMonitor.RunAsync(cancellationToken);
                 _ = _cwlMonitor.RunAsync(cancellationToken);
                 _ = _warMonitor.RunAsync(cancellationToken);
+                _ = _clanMembersMonitor?.RunAsync(cancellationToken);
             });
 
             return Task.CompletedTask;
@@ -564,6 +567,9 @@ namespace CocApi.Cache
                 _cwlMonitor.StopAsync(cancellationToken),
                 _warMonitor.StopAsync(cancellationToken)
             };
+
+            if (_clanMembersMonitor != null)
+                tasks.Add(_clanMembersMonitor.StopAsync(cancellationToken));
 
             await Task.WhenAll(tasks);
 

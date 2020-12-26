@@ -34,7 +34,7 @@ namespace CocApi.Api
         private CocApi.Client.ExceptionFactory _exceptionFactory = (name, response) => null;
         public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);        
         public event HttpRequestResultEventHandler HttpRequestResult;
-        private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
+        //private readonly System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult> _httpRequestResults = new System.Collections.Concurrent.ConcurrentBag<IHttpRequestResult>();
 
         private readonly HttpClient _httpClient;
         private readonly int _maxConnections;
@@ -42,7 +42,7 @@ namespace CocApi.Api
 
         internal void OnHttpRequestResult(HttpRequestResultEventArgs log) => HttpRequestResult?.Invoke(this, log);
 
-        public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
+        //public ImmutableArray<IHttpRequestResult> HttpRequestResults => _httpRequestResults.ToImmutableArray();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
@@ -172,7 +172,7 @@ namespace CocApi.Api
 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, requestOptions, stopwatch.Elapsed, responseMessage.StatusCode);
 
-                _httpRequestResults.Add(requestSuccess);
+                //_httpRequestResults.Add(requestSuccess);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -190,7 +190,7 @@ namespace CocApi.Api
 
             HttpRequestException requestException = new HttpRequestException(path, requestOptions, stopWatch?.Elapsed ?? TimeSpan.FromSeconds(0), e);
 
-            _httpRequestResults.Add(requestException);
+            //_httpRequestResults.Add(requestException);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -573,7 +573,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                //_httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -588,7 +588,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                //_httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -602,7 +602,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    //_httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -612,7 +612,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/members", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            //_httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -928,7 +928,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string token, string warTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getClanWarLeagueWarResponseAsync (string token, string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'warTag' is set
             if (warTag == null)
@@ -1243,7 +1243,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                //_httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1258,7 +1258,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                //_httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1272,7 +1272,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    //_httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1282,7 +1282,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            //_httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
@@ -1352,7 +1352,7 @@ namespace CocApi.Api
         /// <exception cref="CocApi.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
         /// <returns>Task of ApiResponse (ClanWar)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string token, string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> getCurrentWarResponseAsync (string token, string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
             // verify the required parameter 'clanTag' is set
             if (clanTag == null)
@@ -1705,7 +1705,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch.Elapsed, e);
 
-                _httpRequestResults.Add(requestException);
+                //_httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1720,7 +1720,7 @@ namespace CocApi.Api
 
                 HttpRequestException requestException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch.Elapsed, timeoutException);
 
-                _httpRequestResults.Add(requestException);
+                //_httpRequestResults.Add(requestException);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1734,7 +1734,7 @@ namespace CocApi.Api
                 {
                     HttpRequestException requestException = new HttpRequestException("/clans", localVarRequestOptions, stopwatch.Elapsed, _exception);
 
-                    _httpRequestResults.Add(requestException);
+                    //_httpRequestResults.Add(requestException);
 
                     OnHttpRequestResult(new HttpRequestResultEventArgs(requestException));
 
@@ -1744,7 +1744,7 @@ namespace CocApi.Api
 
             HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans", localVarRequestOptions, stopwatch.Elapsed, localVarResponse.StatusCode);
 
-            _httpRequestResults.Add(requestSuccess);
+            //_httpRequestResults.Add(requestSuccess);
 
             OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
 
