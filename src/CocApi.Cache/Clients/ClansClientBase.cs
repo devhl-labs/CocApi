@@ -351,7 +351,9 @@ namespace CocApi.Cache
         private readonly ClanMembersMonitor? _clanMembersMonitor;
 
         public Task StartAsync(CancellationToken cancellationToken)
-        {           
+        {
+            base.StartAsync();
+
             Task.Run(() =>
             {
                 //_ = _activeWarMonitor.RunAsync(cancellationToken);

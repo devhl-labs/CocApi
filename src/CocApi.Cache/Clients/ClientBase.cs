@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace CocApi.Cache
         internal protected IServiceProvider Services { get; }
         internal protected ClientConfiguration Configuration { get; }
 
+        public void Migrate() => MigrationHandler.Migrate(Configuration.ConnectionString);
+
         public ClientBase(TokenProvider tokenProvider, ClientConfiguration configuration)
         {
             TokenProvider = tokenProvider;
@@ -31,10 +34,18 @@ namespace CocApi.Cache
         {
             _stopRequestedTokenSource.Cancel();
 
-            while (_isRunning)
-            {
-                await Task.Delay(50, cancellationToken).ConfigureAwait(false);
-            }
+            while (_isRunning)            
+                await Task.Delay(50, cancellationToken).ConfigureAwait(false);            
+        }
+
+        internal Task StartAsync()
+        {
+            CacheContext cachedContext = Services.GetRequiredService<CacheContext>();
+
+            if (cachedContext.Database.GetPendingMigrations().Count() > 0)
+                throw new Exception("Please run the migration before starting the client.");
+
+            return Task.CompletedTask;
         }
 
         protected CancellationTokenSource _stopRequestedTokenSource = new CancellationTokenSource();

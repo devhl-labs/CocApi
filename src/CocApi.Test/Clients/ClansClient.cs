@@ -69,8 +69,10 @@ namespace CocApi.Test
             await AddOrUpdateAsync("#28RUGUYJU", true, true, true); //devhls lab
             await AddOrUpdateAsync("#2C8V29YJ", true, true, true); // russian clan
             await AddOrUpdateAsync("#JYULPG28"); // inphase
+            await AddOrUpdateAsync("#2P0YUY0L0"); // testing closed war log
+            await AddOrUpdateAsync("#PJYPYG9P", true, true, true); // war heads
 
-            DownloadMembers = true;
+            DownloadMembers = false;
             DownloadCurrentWars = true;
             DownloadCwl = true;
 

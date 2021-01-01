@@ -171,7 +171,7 @@ namespace CocApi.Api
                         responseMessage.StatusCode == (HttpStatusCode)504)
                             TripCircuit(e.Message);
 
-                        throw ThrowOnHttpRequestException(new CachedHttpRequestException(e.Message), path, requestOptions, stopwatch);
+                        throw ThrowOnHttpRequestException(e, path, requestOptions, stopwatch);
                     }
                 }
 

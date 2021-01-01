@@ -60,7 +60,7 @@ namespace CocApi.Cache
 
                     List<CachedClan> cachedClans = await dbContext.Clans
                         .OrderBy(c => c.Id)
-                        .Where(c => c.Id > id)
+                        .Where(c => c.Id > id && c.DownloadMembers)
                         .Take(Configuration.ConcurrentClanDownloads)
                         .AsNoTracking()
                         .ToListAsync(_stopRequestedTokenSource.Token)
@@ -70,9 +70,8 @@ namespace CocApi.Cache
                         ? int.MinValue
                         : cachedClans.Max(c => c.Id);
 
-                    foreach (CachedClan cachedClan in cachedClans)
-                        if (cachedClan.DownloadMembers)                        
-                            await MonitorMembersAsync(cachedClan);                        
+                    foreach (CachedClan cachedClan in cachedClans)                      
+                        await MonitorMembersAsync(cachedClan);                        
 
                     await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }

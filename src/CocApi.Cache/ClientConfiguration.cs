@@ -61,18 +61,19 @@ namespace CocApi.Cache
                         o.UseSqlite(ConnectionString))
                     .BuildServiceProvider();
 
-                CacheContext cachedContext = services.GetRequiredService<CacheContext>();
+                //todo
+                //CacheContext cachedContext = services.GetRequiredService<CacheContext>();
 
-                if (cachedContext.Database.GetPendingMigrations().Count() > 0)
-                {
-                    var timeout = cachedContext.Database.GetCommandTimeout();
+                //if (cachedContext.Database.GetPendingMigrations().Count() > 0)
+                //{
+                //    var timeout = cachedContext.Database.GetCommandTimeout();
 
-                    cachedContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+                //    cachedContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
-                    cachedContext.Database.Migrate();
+                //    cachedContext.Database.Migrate();
 
-                    cachedContext.Database.SetCommandTimeout(timeout);
-                };
+                //    cachedContext.Database.SetCommandTimeout(timeout);
+                //};
 
                 _services = services;
 

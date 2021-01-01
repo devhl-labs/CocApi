@@ -80,6 +80,8 @@ namespace CocApi.Cache.Models
 
         protected void UpdateFrom(Exception e, TimeSpan localExpiration)
         {
+            var a = e.GetType();
+
             if (e is ApiException apiException)
                 UpdateFrom(apiException, localExpiration);
             else

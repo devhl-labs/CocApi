@@ -56,7 +56,11 @@ namespace CocApi.Cache
                         .Where(w =>
                             w.IsFinal == false &&
                             w.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
-                            w.LocalExpiration < DateTime.UtcNow)
+                            w.LocalExpiration < DateTime.UtcNow //&&
+                            //w.State < WarState.WarEnded && //todo is there an index on state?
+                            //w.EndTime.AddDays(8) > DateTime.UtcNow //todo does this require a new column and a new index?
+                            //todo w.StartTime < DateTime.UtcNow.AddHours(-1))  //todo preparation start time < now
+                            )
                         .OrderBy(w => w.ServerExpiration)
                         .ToListAsync()
                         .ConfigureAwait(false);
@@ -117,8 +121,8 @@ namespace CocApi.Cache
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    if (cachedClanWars.Count == 2 && (cachedClanWars.All(c => c.PreparationStartTime != cached.PreparationStartTime) && cached.EndTime < DateTime.UtcNow) ||
-                        cachedClanWars.All(c => (c.Data == null || c.Data.PreparationStartTime != cached.PreparationStartTime) && cached.EndTime.AddDays(8) < DateTime.UtcNow))
+                    if (cachedClanWars.Count == 2 && cachedClanWars.All(c => c.PreparationStartTime > cached.PreparationStartTime) ||
+                        cached.EndTime.AddDays(8) < DateTime.UtcNow)
                     {
                         cached.IsFinal = true;
 

@@ -70,8 +70,8 @@ namespace CocApi.Cache
                         into cw_c_join
                         from c2 in cw_c_join.DefaultIfEmpty()
                         where 
-                            c2.IsWarLogPublic != false &&
-                            c2.DownloadCurrentWar != false &&
+                            c2.IsWarLogPublic == true &&
+                            c2.DownloadCurrentWar == true &&
                             cw.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
                             cw.LocalExpiration < DateTime.UtcNow
                         orderby cw.ServerExpiration

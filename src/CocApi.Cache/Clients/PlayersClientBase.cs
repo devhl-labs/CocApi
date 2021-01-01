@@ -162,6 +162,8 @@ namespace CocApi.Cache
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            base.StartAsync();
+
             Task.Run(() =>
             {
                 _ = PlayerMontitor.RunAsync(cancellationToken);
