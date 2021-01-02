@@ -88,6 +88,8 @@ namespace CocApi.Api
 
         private readonly object _isTrippedReasonLock = new object();
 
+        private int _failCounter = 0;
+
         private void TripCircuit(string reason)
         {
             if (Interlocked.CompareExchange(ref _circuitStatus, TRIPPED, OPEN) == OPEN)
@@ -110,6 +112,8 @@ namespace CocApi.Api
             {
                 lock (_isTrippedReasonLock)
                     _isTrippedReason = string.Empty;
+
+                Interlocked.Exchange(ref _failCounter, 0);
             }
         }
 
@@ -143,9 +147,15 @@ namespace CocApi.Api
                 }
                 catch (Exception e)
                 {
-                    TripCircuit(e.Message);
+                    Interlocked.Increment(ref _failCounter);
+
+                    if (Interlocked.CompareExchange(ref _failCounter, 0, 0) > _maxConnections)
+                        TripCircuit(e.Message);
+
                     throw ThrowOnHttpRequestException(e, path, requestOptions, stopwatch);
                 }
+
+                Interlocked.Exchange(ref _failCounter, 0);
 
                 stopwatch.Stop();
 

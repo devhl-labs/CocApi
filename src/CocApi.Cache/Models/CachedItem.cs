@@ -80,8 +80,6 @@ namespace CocApi.Cache.Models
 
         protected void UpdateFrom(Exception e, TimeSpan localExpiration)
         {
-            var a = e.GetType();
-
             if (e is ApiException apiException)
                 UpdateFrom(apiException, localExpiration);
             else
@@ -93,7 +91,10 @@ namespace CocApi.Cache.Models
             StatusCode = (HttpStatusCode) apiException.ErrorCode;
             Downloaded = DateTime.UtcNow;
             ServerExpiration = DateTime.UtcNow;
-            LocalExpiration = DateTime.UtcNow.Add(localExpiration);
+
+            LocalExpiration = localExpiration == TimeSpan.MaxValue
+                ? DateTime.MaxValue
+                : DateTime.UtcNow.Add(localExpiration);
         }
 
         protected void UpdateFrom(TimeSpan localExpiration)

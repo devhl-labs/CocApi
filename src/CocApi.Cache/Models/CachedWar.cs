@@ -55,25 +55,17 @@ namespace CocApi.Cache.Models
 
         public WarType Type { get; internal set; }
 
-#nullable disable
-
-        private SortedSet<string> _clanTags;
-
-#nullable enable
+        private readonly SortedSet<string> _clanTags = new();
 
         public SortedSet<string> ClanTags
         {
             get
             {
-                if (_clanTags != null)
+                if (_clanTags.Count != 0)
                     return _clanTags;
 
-                _clanTags = new SortedSet<string>
-                {
-                    ClanTag,
-
-                    OpponentTag
-                };
+                _clanTags.Add(ClanTag);
+                _clanTags.Add(OpponentTag);
 
                 return _clanTags;
             }

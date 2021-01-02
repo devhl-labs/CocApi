@@ -60,6 +60,14 @@ namespace CocApi.Test
             return base.HasUpdated(stored, fetched);
         }
 
+        public override ValueTask<TimeSpan> ClanTimeToLiveAsync(Exception exception)
+        {
+            if (exception is ApiException api && api.ErrorCode == 404)
+                return new ValueTask<TimeSpan>(TimeSpan.MaxValue);
+
+            return base.ClanTimeToLiveAsync(exception);
+        }
+
         public new async Task StartAsync(CancellationToken cancellationToken)
         {
             await _playersCache.AddOrUpdateAsync("#29GPU9CUJ"); //squirrel man
@@ -71,6 +79,111 @@ namespace CocApi.Test
             await AddOrUpdateAsync("#JYULPG28"); // inphase
             await AddOrUpdateAsync("#2P0YUY0L0"); // testing closed war log
             await AddOrUpdateAsync("#PJYPYG9P", true, true, true); // war heads
+            
+            
+            
+            
+            await AddOrUpdateAsync("#2PLUGYLLL", true, true); // cwl testing
+
+
+
+            await AddOrUpdateAsync("#2GRYJYPP9", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YPCQUQGY", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRYJY0YY", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RLJ8CPQ2", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRYJY8VV", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RLQJRR89", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YPCQUPVC", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRGUJJYY", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YY02Y829", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRGUC0P9", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRU0RR0Q", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YY9PGPJY", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRGUJCRR", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YY02YPRC", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RLJ8UQLC", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRU0RQJ9", true, true); // cwl testing
+
+
+
+            await AddOrUpdateAsync("#2YY9PGL0R", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RLVYPUGC", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YYLL8U02", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RQ8LVUYV", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GRU0RJPC", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YY9PGQPV", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YYLL8RYQ", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GJ22J99V", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GJ22JPG9", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RQYRL9QV", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RQCV0YV2", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YYUC0LGR", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YYRGCV0Y", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RQGCLR2R", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YYUC0QUV", true, true); // cwl testing
+            await AddOrUpdateAsync("#2GJ22JQ8C", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RQGCLQCY", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YYRGU0PR", true, true); // cwl testing
+            await AddOrUpdateAsync("#2RQCV0Q9Y", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YL2URQJ2", true, true); // cwl testing
+            await AddOrUpdateAsync("#2R2289RLR", true, true); // cwl testing
+            await AddOrUpdateAsync("#2YL2URR0Y", true, true); // cwl testing
+            await AddOrUpdateAsync("#28gcrqqgp"); //cwl testing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             DownloadMembers = false;
             DownloadCurrentWars = true;

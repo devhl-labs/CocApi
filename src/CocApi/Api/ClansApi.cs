@@ -104,7 +104,9 @@ namespace CocApi.Api
             if (Interlocked.CompareExchange(ref _circuitStatus, OPEN, TRIPPED) == TRIPPED)
             {
                 lock (_isTrippedReasonLock)                
-                    _isTrippedReason = string.Empty;                
+                    _isTrippedReason = string.Empty;   
+                
+                Interlocked.Exchange(ref _failCounter, 0);
             }
         }
 
@@ -112,6 +114,8 @@ namespace CocApi.Api
         {
             return Interlocked.Read(ref _circuitStatus) == TRIPPED;
         }
+
+        private int _failCounter = 0;
 
         private async Task<ApiResponse<T>> GetAsync<T>(
             string token, string path, Uri requestUri, RequestOptions requestOptions, 
@@ -138,9 +142,15 @@ namespace CocApi.Api
                 }
                 catch (Exception e)
                 {
-                    TripCircuit(e.Message);
+                    Interlocked.Increment(ref _failCounter);
+
+                    if (Interlocked.CompareExchange(ref _failCounter, 0, 0) >= _maxConnections)
+                        TripCircuit(e.Message);
+
                     throw ThrowOnHttpRequestException(e, path, requestOptions, stopwatch);
                 }
+
+                Interlocked.Exchange(ref _failCounter, 0);
 
                 stopwatch.Stop();
 
@@ -933,6 +943,7 @@ namespace CocApi.Api
             // verify the required parameter 'warTag' is set
             if (warTag == null)
                 throw new CocApi.Client.ApiException(400, "Missing required parameter 'warTag' when calling ClansApi->GetClanWarLeagueWar");
+
             string formattedTag = Clash.FormatTag(warTag);
 
             CocApi.Client.RequestOptions localVarRequestOptions = new CocApi.Client.RequestOptions();
@@ -957,12 +968,11 @@ namespace CocApi.Api
             //localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + await _tokenProvider.GetTokenAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false));
             localVarRequestOptions.HeaderParameters.Add("authorization", "Bearer " + token);
 
-
-
-
+            string path = Configuration.BasePath;
+            path += "/clanwarleagues/wars/{0}";
 
             return await GetAsync<ClanWar>(
-                token, "/clanwarleagues/wars/{warTag}", new Uri($"{Configuration.BasePath}/{ClanWar.Url(formattedTag)}"),
+                token, "/clanwarleagues/wars/{warTag}", new Uri(string.Format(path, Uri.EscapeDataString(warTag))),
                 localVarRequestOptions, "GetClanWarLeagueWar", cancellationToken);
 
 
