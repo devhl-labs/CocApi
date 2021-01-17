@@ -37,6 +37,8 @@ namespace CocApi.Cache
 
                 _clansClient.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
 
+                int id = int.MinValue;
+
                 while (_stopRequestedTokenSource.IsCancellationRequested == false && cancellationToken.IsCancellationRequested == false)
                 {
                     if (_clansClient.DownloadCwl == false)
@@ -63,12 +65,16 @@ namespace CocApi.Cache
                     List<CachedClanWarLeagueGroup> cachedGroup = await (
                         from g in dbContext.Groups
                         join c in dbContext.Clans on g.Tag equals c.Tag
-                        where c.DownloadCwl && g.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) && g.LocalExpiration < DateTime.UtcNow
-                        orderby g.ServerExpiration
+                        where c.DownloadCwl && g.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) && g.LocalExpiration < DateTime.UtcNow && g.Id > id
+                        orderby g.Id
                         select g)
                         .Take(Configuration.ConcurrentCwlDownloads)
                         .ToListAsync()
                         .ConfigureAwait(false);
+
+                    id = cachedGroup.Count == Configuration.ConcurrentClanDownloads
+                        ? cachedGroup.Max(g => g.Id)
+                        : int.MinValue;
 
                     List<Task> tasks = new();
 
