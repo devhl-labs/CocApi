@@ -40,11 +40,11 @@ namespace CocApi.Model
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
-        /// <summary>
-        /// Gets or Sets State
-        /// </summary>
-        [DataMember(Name = "state", EmitDefaultValue = false)]
-        public WarState? State { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets State
+        ///// </summary>
+        //[DataMember(Name = "state", EmitDefaultValue = false)]
+        //public WarState? State { get; private set; }
 
         [DataMember(Name = "warTag", EmitDefaultValue = false)]
         public string? WarTag { get; internal set; }
@@ -127,21 +127,21 @@ namespace CocApi.Model
 
         public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
 
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as ClanWar);
-        }
+        //public override bool Equals(object? obj)
+        //{
+        //    return Equals(obj as ClanWar);
+        //}
 
-        public bool Equals(ClanWar? other)
-        {
-            //Initialize();
+        //public bool Equals(ClanWar? other)
+        //{
+        //    //Initialize();
 
-            //other?.Initialize();
+        //    //other?.Initialize();
 
-            return other != null &&
-                   PreparationStartTime == other.PreparationStartTime &&
-                   Clans.First().Key == other.Clans.First().Key;
-        }
+        //    return other != null &&
+        //           PreparationStartTime == other.PreparationStartTime &&
+        //           Clans.First().Key == other.Clans.First().Key;
+        //}
 
         [DataMember(Name = "serverExpiration", EmitDefaultValue = false)]
         public DateTime ServerExpiration { get; internal set; }
@@ -164,30 +164,30 @@ namespace CocApi.Model
             return AllAttacksAreUsed();
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWar" /> class.
-        /// </summary>
-        /// <param name="clan">clan.</param>
-        /// <param name="teamSize">teamSize.</param>
-        /// <param name="opponent">opponent.</param>
-        /// <param name="startTime">startTime.</param>
-        /// <param name="state">state.</param>
-        /// <param name="endTime">endTime.</param>
-        /// <param name="preparationStartTime">preparationStartTime.</param>
-        [JsonConstructor]
-        public ClanWar(List<ClanWarAttack> allAttacks, WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), WarState? state = default(WarState?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
-        {
-            this.Attacks = allAttacks;
-            this.Clan = clan;
-            this.TeamSize = teamSize;
-            this.Opponent = opponent;
-            this.StartTime = startTime;
-            this.State = state;
-            this.EndTime = endTime;
-            this.PreparationStartTime = preparationStartTime;
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="ClanWar" /> class.
+        ///// </summary>
+        ///// <param name="clan">clan.</param>
+        ///// <param name="teamSize">teamSize.</param>
+        ///// <param name="opponent">opponent.</param>
+        ///// <param name="startTime">startTime.</param>
+        ///// <param name="state">state.</param>
+        ///// <param name="endTime">endTime.</param>
+        ///// <param name="preparationStartTime">preparationStartTime.</param>
+        //[JsonConstructor]
+        //public ClanWar(List<ClanWarAttack> allAttacks, WarClan clan = default(WarClan), int teamSize = default(int), WarClan opponent = default(WarClan), DateTime startTime = default(DateTime), WarState? state = default(WarState?), DateTime endTime = default(DateTime), DateTime preparationStartTime = default(DateTime))
+        //{
+        //    this.Attacks = allAttacks;
+        //    this.Clan = clan;
+        //    this.TeamSize = teamSize;
+        //    this.Opponent = opponent;
+        //    this.StartTime = startTime;
+        //    this.State = state;
+        //    this.EndTime = endTime;
+        //    this.PreparationStartTime = preparationStartTime;
 
-            //Initialize();
-        }
+        //    //Initialize();
+        //}
 
         private readonly object _initializeLock = new object();
 

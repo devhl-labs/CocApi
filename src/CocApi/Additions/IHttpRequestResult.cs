@@ -12,10 +12,10 @@ namespace CocApi
 
         string Path { get; }
 
-        RequestOptions RequestOptions { get; }
+        //RequestOptions RequestOptions { get; }
 
-        string Url();
+        //string Url();
 
-        string EncodedUrl();
+        //string EncodedUrl();
     }
 }

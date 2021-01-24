@@ -9,17 +9,17 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLog : CachedItem<ClanWarLog>
     {
-        internal static async Task<CachedClanWarLog> FromClanWarLogResponseAsync(string token, string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedClanWarLog> FromClanWarLogResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWarLog> apiResponse = await clansApi.GetClanWarLogResponseAsync(token, tag, cancellationToken: cancellationToken);
+                ApiResponse<ClanWarLog> apiResponse = await clansApi.GetClanWarLogResponseAsync(tag, cancellationToken: cancellationToken);
 
                 return new CachedClanWarLog(tag, apiResponse, await clansCacheBase.ClanWarLogTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
+            catch (Exception e)
             {
-                return new CachedClanWarLog(tag, e, await clansCacheBase.ClanWarLogTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedClanWarLog(tag, await clansCacheBase.ClanWarLogTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -37,11 +37,11 @@ namespace CocApi.Cache.Models
             UpdateFrom(apiResponse, localExpiration);
         }
 
-        private CachedClanWarLog(string tag, Exception exception, TimeSpan localExpiration)
+        private CachedClanWarLog(string tag, TimeSpan localExpiration)
         {
             Tag = tag;
 
-            UpdateFrom(exception, localExpiration);
+            UpdateFrom(localExpiration);
         }
 
         internal void UpdateFrom(CachedClanWarLog fetched)

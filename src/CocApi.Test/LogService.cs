@@ -13,11 +13,11 @@ namespace CocApi.Test
         None
     }
 
-    public class LogService
+    public static class LogService
     {
-        private object LogLock { get; } = new object();
+        private static object LogLock { get; } = new object();
 
-        public LogService()
+        static LogService()
         {
             Log(LogLevel.Information, nameof(LogService), null, "Press CTRL-C to exit");
         }
@@ -73,7 +73,7 @@ namespace CocApi.Test
             ResetConsoleColor();
         }
 
-        public void Log(LogLevel logLevel, string source, params string?[] messages)
+        public static void Log(LogLevel logLevel, string source, params string?[] messages)
         {
             lock (LogLock)
             {

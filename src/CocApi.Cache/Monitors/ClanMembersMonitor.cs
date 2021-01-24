@@ -21,9 +21,8 @@ namespace CocApi.Cache
 
         private readonly ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
 
-        public ClanMembersMonitor
-            (PlayersClientBase playersClientBase, TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(tokenProvider, configuration)
+        public ClanMembersMonitor(PlayersClientBase playersClientBase, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase) 
+            : base(configuration)
         {
             _playersClientBase = playersClientBase;
             _clansApi = clansApi;

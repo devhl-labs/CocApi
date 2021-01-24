@@ -94,18 +94,21 @@ namespace CocApi
             return formattedTag;
         }
 
-        public static bool IsCwlEnabled()
+        public static bool IsCwlEnabled
         {
-            int day = DateTime.UtcNow.Day;
+            get
+            {
+                int day = DateTime.UtcNow.Day;
 
-            if (day > 0 && day < 11)            
-                return true;          
+                if (day > 0 && day < 11)
+                    return true;
 
-            //add three hours to the end to ensure we get everything
-            if (day == 11 && DateTime.UtcNow.Hour < 3)            
-                return true;                      
+                //add three hours to the end to ensure we get everything
+                if (day == 11 && DateTime.UtcNow.Hour < 3)
+                    return true;
 
-            return false;
+                return false;
+            }
         }
 
         public static List<JsonConverter> JsonConverters()

@@ -25,45 +25,45 @@ namespace CocApi.Model
             return Uri.UnescapeDataString(url);
         }
 
-        public override bool Equals(object? obj)
-        {
-            return Equals(obj as ClanWarLeagueGroup);
-        }
+        //public override bool Equals(object? obj)
+        //{
+        //    return Equals(obj as ClanWarLeagueGroup);
+        //}
 
-        public bool Equals(ClanWarLeagueGroup? other)
-        {
-            return other != null &&
-                   Season == other.Season &&
-                   Clans.OrderBy(c => c.Tag).First().Tag == other.Clans.OrderBy(c => c.Tag).First().Tag;
-        }
+        //public bool Equals(ClanWarLeagueGroup? other)
+        //{
+        //    return other != null &&
+        //           Season == other.Season &&
+        //           Clans.OrderBy(c => c.Tag).First().Tag == other.Clans.OrderBy(c => c.Tag).First().Tag;
+        //}
 
         public override int GetHashCode()
         {
             return HashCode.Combine(Clans.OrderBy(c => c.Tag).First().Tag, Season);
         }
 
-        /// <summary>
-        /// Gets or Sets State
-        /// </summary>
-        [DataMember(Name = "state", EmitDefaultValue = false)]
-        public GroupState? State { get; private set; }
+        ///// <summary>
+        ///// Gets or Sets State
+        ///// </summary>
+        //[DataMember(Name = "state", EmitDefaultValue = false)]
+        //public GroupState? State { get; private set; }
 
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
-        /// </summary>
-        /// <param name="tag">tag.</param>
-        /// <param name="state">state.</param>
-        /// <param name="season">season.</param>
-        /// <param name="clans">clans.</param>
-        /// <param name="rounds">rounds.</param>
-        public ClanWarLeagueGroup(string tag = default(string), GroupState? state = default(GroupState?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
-        {
-            this.Tag = tag;
-            this.State = state;
-            this.Season = season;
-            this.Clans = clans;
-            this.Rounds = rounds;
-        }
+        ///// <summary>
+        ///// Initializes a new instance of the <see cref="ClanWarLeagueGroup" /> class.
+        ///// </summary>
+        ///// <param name="tag">tag.</param>
+        ///// <param name="state">state.</param>
+        ///// <param name="season">season.</param>
+        ///// <param name="clans">clans.</param>
+        ///// <param name="rounds">rounds.</param>
+        //public ClanWarLeagueGroup(string tag = default(string), GroupState? state = default(GroupState?), DateTime season = default(DateTime), List<ClanWarLeagueClan> clans = default(List<ClanWarLeagueClan>), List<ClanWarLeagueRound> rounds = default(List<ClanWarLeagueRound>))
+        //{
+        //    this.Tag = tag;
+        //    this.State = state;
+        //    this.Season = season;
+        //    this.Clans = clans;
+        //    this.Rounds = rounds;
+        //}
     }
 }

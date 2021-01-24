@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Text;
 
-namespace CocApi
-{
-    [Serializable]
-    public class CachedHttpRequestException : Exception
-    {
-        public CachedHttpRequestException(string messge) : base(messge)
-        {
+//namespace CocApi
+//{
+//    [Serializable]
+//    public class CachedHttpRequestException : Exception
+//    {
+//        public CachedHttpRequestException(string messge) : base(messge)
+//        {
 
-        }
-    }
-}
+//        }
+//    }
+//}

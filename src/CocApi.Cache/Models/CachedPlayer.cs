@@ -14,17 +14,17 @@ namespace CocApi.Cache.Models
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string token, string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(token, tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedPlayer(apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
+                return new CachedPlayer(tag, apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
+            catch (Exception e)
             {
-                return new CachedPlayer(tag, e, await playersCacheBase.TimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedPlayer(tag, await playersCacheBase.TimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -34,14 +34,14 @@ namespace CocApi.Cache.Models
 
         public string? ClanTag { get; private set; }
 
-        private CachedPlayer(ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)
+        private CachedPlayer(string tag, ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
-            Tag = response.Data.Tag;
+            Tag = tag;
 
-            ClanTag = response.Data.Clan?.Tag;
+            ClanTag = response.Data?.Clan?.Tag;
         }
 
-        private CachedPlayer(string tag, Exception e, TimeSpan localExpiration) : base (e, localExpiration)
+        private CachedPlayer(string tag, TimeSpan localExpiration) : base (localExpiration)
         {
             Tag = tag;
         }

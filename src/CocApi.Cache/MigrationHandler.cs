@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Microsoft.EntityFrameworkCore;
 
 namespace CocApi.Cache
 {
     public static class MigrationHandler
     {
-        public static void Migrate(string connectionString)
+        public static void Migrate(string connectionString = "Data Source=CocApi.Cache.sqlite")
         {
             DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
             

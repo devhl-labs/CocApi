@@ -34,7 +34,7 @@ namespace CocApi.Cache.Migrations
                     b.Property<DateTime>("Downloaded")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsWarLogPublic")
+                    b.Property<bool?>("IsWarLogPublic")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("LocalExpiration")
@@ -142,7 +142,7 @@ namespace CocApi.Cache.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Season")
+                    b.Property<DateTime?>("Season")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ServerExpiration")
@@ -340,185 +340,6 @@ namespace CocApi.Cache.Migrations
                         .IsUnique();
 
                     b.ToTable("Wars");
-                });
-
-            modelBuilder.Entity("CocApi.Cache.View.ClanWarLeagueGroupWithLogStatus", b =>
-                {
-                    b.Property<bool>("DownloadCwl")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Downloaded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LocalExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RawContent")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Season")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ServerExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("State")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.ToView("ClanWarLeagueGroupWithLogStatus");
-                });
-
-            modelBuilder.Entity("CocApi.Cache.View.ClanWarLogWithLogStatus", b =>
-                {
-                    b.Property<bool>("DownloadCurrentWar")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Downloaded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsWarLogPublic")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LocalExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RawContent")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ServerExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.ToView("ClanWarLogWithLogStatus");
-                });
-
-            modelBuilder.Entity("CocApi.Cache.View.ClanWarWithLogStatus", b =>
-                {
-                    b.Property<bool>("DownloadCurrentWar")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Downloaded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsWarLogPublic")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LocalExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("PreparationStartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RawContent")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ServerExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("State")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.ToView("ClanWarWithLogStatus");
-                });
-
-            modelBuilder.Entity("CocApi.Cache.View.WarWithLogStatus", b =>
-                {
-                    b.Property<int>("Announcements")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ClanTag")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool?>("DownloadCurrentWar")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Downloaded")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsFinal")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool?>("IsWarLogPublic")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("LocalExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OpponentTag")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("PreparationStartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("RawContent")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("Season")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ServerExpiration")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("State")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("StatusCode")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("StatusCodeOpponent")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("WarTag")
-                        .HasColumnType("TEXT");
-
-                    b.ToView("WarWithLogStatus");
                 });
 #pragma warning restore 612, 618
         }

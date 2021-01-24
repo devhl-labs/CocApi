@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Globalization;
-using System.Linq;
 using System.Net;
 using CocApi.Client;
 using CocApi.Model;
@@ -25,21 +23,24 @@ namespace CocApi.Cache.Models
 
         private T? _data;
 
+        private readonly object _dataLock = new();
+
         [NotMapped]
         public T? Data
         {
             get
             {
-                if (_data == null)
-                {
-                    _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
+                lock(_dataLock)
+                    if (_data == null)
+                    {
+                        _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
 
-                    if (_data is ClanWar clanWar)
-                        if (this is CachedWar cachedWar)
-                            clanWar.Initialize(ServerExpiration, cachedWar.WarTag);
-                        else
-                            clanWar.Initialize(ServerExpiration, null);
-                }
+                        if (_data is ClanWar clanWar)
+                            if (this is CachedWar cachedWar)
+                                clanWar.Initialize(ServerExpiration, cachedWar.WarTag);
+                            else
+                                clanWar.Initialize(ServerExpiration, null);
+                    }
 
                 return _data;
             }
@@ -52,49 +53,25 @@ namespace CocApi.Cache.Models
 
         }
 
-        public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration)
-        {
-            UpdateFrom(apiResponse, localExpiration);
-        }
+        public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration) => UpdateFrom(apiResponse, localExpiration);
 
-        public CachedItem(Exception exception, TimeSpan localExpiration)
-        {
-            UpdateFrom(exception, localExpiration);
-        }
-
+        public CachedItem(TimeSpan localExpiration) => UpdateFrom(localExpiration);
+        
         protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
             StatusCode = apiResponse.StatusCode;
-
-            //if (apiResponse.Data != null)
-            //    if (apiResponse.Data is ClanWar)
-            //        RawContent = JsonConvert.SerializeObject(apiResponse.Data);  //adding war type and server expiration to the data
-            //    else
-            RawContent = apiResponse?.RawContent ?? RawContent;
-
-            Downloaded = apiResponse?.Downloaded ?? DateTime.UtcNow;
-            ServerExpiration = apiResponse?.ServerExpiration ?? DateTime.UtcNow;
-            LocalExpiration = Downloaded.Add(localExpiration);
-            Data = apiResponse?.Data ?? Data;
-        }
-
-        protected void UpdateFrom(Exception e, TimeSpan localExpiration)
-        {
-            if (e is ApiException apiException)
-                UpdateFrom(apiException, localExpiration);
-            else
-                UpdateFrom(localExpiration);
-        }
-
-        protected void UpdateFrom(ApiException apiException, TimeSpan localExpiration)
-        {
-            StatusCode = (HttpStatusCode) apiException.ErrorCode;
-            Downloaded = DateTime.UtcNow;
-            ServerExpiration = DateTime.UtcNow;
+            Downloaded = apiResponse.Downloaded;
+            ServerExpiration = apiResponse.ServerExpiration;
 
             LocalExpiration = localExpiration == TimeSpan.MaxValue
                 ? DateTime.MaxValue
                 : DateTime.UtcNow.Add(localExpiration);
+
+            if (apiResponse.IsSuccessStatusCode)
+            {
+                RawContent = apiResponse.RawData;
+                Data = apiResponse.Data;
+            }
         }
 
         protected void UpdateFrom(TimeSpan localExpiration)
@@ -102,23 +79,20 @@ namespace CocApi.Cache.Models
             StatusCode = 0;
             Downloaded = DateTime.UtcNow;
             ServerExpiration = DateTime.UtcNow;
-            LocalExpiration = DateTime.UtcNow.Add(localExpiration);
+            LocalExpiration = localExpiration == TimeSpan.MaxValue
+                ? DateTime.MaxValue
+                : DateTime.UtcNow.Add(localExpiration);
         }
 
         protected void UpdateFrom(CachedItem<T> fetched)
         {
             StatusCode = fetched.StatusCode;
-
-            //if (fetched.Data != null)
-            //    if (fetched.Data is ClanWar)
-            //        RawContent = JsonConvert.SerializeObject(fetched.Data); //adding war type and server expiration to the data
-            //    else
-            RawContent = (!string.IsNullOrEmpty(fetched.RawContent)) ? fetched.RawContent : RawContent;
-
             Downloaded = fetched.Downloaded;
             ServerExpiration = fetched.ServerExpiration;
             LocalExpiration = fetched.LocalExpiration;
+
             Data = fetched.Data ?? _data;
+            RawContent = (!string.IsNullOrEmpty(fetched.RawContent)) ? fetched.RawContent : RawContent;
         }
 
         public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);

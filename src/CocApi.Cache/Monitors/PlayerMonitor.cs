@@ -18,9 +18,7 @@ namespace CocApi.Cache
         private readonly PlayersApi _playersApi;
         private readonly PlayersClientBase _playersClientBase;
 
-        public PlayerMonitor
-            (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, PlayersApi playersApi, PlayersClientBase playersClientBase)
-            : base(tokenProvider, cacheConfiguration)
+        public PlayerMonitor(ClientConfiguration cacheConfiguration, PlayersApi playersApi, PlayersClientBase playersClientBase) : base(cacheConfiguration)
         {
             _playersApi = playersApi;
             _playersClientBase = playersClientBase;
@@ -100,26 +98,9 @@ namespace CocApi.Cache
 
             try
             {
-                string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-
-                using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
-
-                using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
-
-                CachedPlayer? fetched = null;
-
-                try
-                {
-                    fetched = await CachedPlayer
-                        .FromPlayerResponseAsync(token, cachedPlayer.Tag, _playersClientBase, _playersApi, linkedCts.Token).ConfigureAwait(false);
-                }
-                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException)
-                {
-                    if (_stopRequestedTokenSource.IsCancellationRequested)
-                        throw;
-                    else
-                        return;
-                }
+                CachedPlayer? fetched = await CachedPlayer
+                        .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _stopRequestedTokenSource.Token)
+                        .ConfigureAwait(false);
 
                 if (fetched.Data != null && _playersClientBase.HasUpdated(cachedPlayer, fetched))
                     _playersClientBase.OnPlayerUpdated(cachedPlayer.Data, fetched.Data);

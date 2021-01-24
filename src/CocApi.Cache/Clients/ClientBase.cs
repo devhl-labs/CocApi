@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -16,18 +14,15 @@ namespace CocApi.Cache
     public class ClientBase
     {
         private protected bool _isRunning;
-
-        internal protected TokenProvider TokenProvider { get; }
         internal protected IServiceProvider Services { get; }
         internal protected ClientConfiguration Configuration { get; }
 
         public void Migrate() => MigrationHandler.Migrate(Configuration.ConnectionString);
 
-        public ClientBase(TokenProvider tokenProvider, ClientConfiguration configuration)
+        public ClientBase(ClientConfiguration configuration)
         {
-            TokenProvider = tokenProvider;
             Configuration = configuration;
-            Services = Configuration.BuildServiceProvider();
+            Services = Utils.BuildServiceProvider(Configuration.ConnectionString);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)
@@ -42,7 +37,7 @@ namespace CocApi.Cache
         {
             CacheContext cachedContext = Services.GetRequiredService<CacheContext>();
 
-            if (cachedContext.Database.GetPendingMigrations().Count() > 0)
+            if (cachedContext.Database.GetPendingMigrations().Any())
                 throw new Exception("Please run the migration before starting the client.");
 
             return Task.CompletedTask;

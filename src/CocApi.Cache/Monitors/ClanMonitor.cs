@@ -22,9 +22,7 @@ namespace CocApi.Cache
 
         private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
-        public ClanMonitor
-            (TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(tokenProvider, configuration)
+        public ClanMonitor(ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase) : base(configuration)
         {
             _clansApi = clansApi;
             _clansClient = clansClientBase;
@@ -117,25 +115,7 @@ namespace CocApi.Cache
 
             try
             {
-                CachedClan? fetched = null;
-
-                try
-                {
-                    string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-
-                    using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
-
-                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
-
-                    fetched = await CachedClan.FromClanResponseAsync(token, cached.Tag, _clansClient, _clansApi, linkedCts.Token);
-                }
-                catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException)
-                {
-                    if (_stopRequestedTokenSource.IsCancellationRequested)
-                        throw;
-                    else
-                        return;
-                }
+                CachedClan fetched = await CachedClan.FromClanResponseAsync(cached.Tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
 
                 if (cached.Data != null && fetched.Data != null && _clansClient.HasUpdated(cached, fetched))
                     _clansClient.OnClanUpdated(cached.Data, fetched.Data);

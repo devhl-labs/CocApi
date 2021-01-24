@@ -14,24 +14,28 @@ namespace CocApi.Cache.Models
     public class CachedWar : CachedItem<ClanWar>
     {
         internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
-            string token,
             string warTag, DateTime season, ClansClientBase clansCacheBase, 
             ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(token, warTag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
-                CachedWar result = new CachedWar(apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false), warTag, season)
+                TimeSpan timeToLive = await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false);
+
+                if (!apiResponse.IsSuccessStatusCode)
+                    return new CachedWar(warTag, timeToLive);
+
+                CachedWar result = new CachedWar(apiResponse, timeToLive, warTag, season)
                 {
                     Season = season
                 };
 
                 return result;
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
+            catch (Exception e)
             {
-                return new CachedWar(warTag, e, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedWar(warTag, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -70,30 +74,6 @@ namespace CocApi.Cache.Models
                 return _clanTags;
             }
         }
-
-        //public CachedWar(CachedClan cachedClan, CachedClanWar fetched, string? warTag = null)
-        //{
-        //    if (fetched.Data == null)
-        //        throw new ArgumentException("Data should not be null.");
-
-        //    ClanTag = fetched.Data.Clans.First().Value.Tag;
-
-        //    OpponentTag = fetched.Data.Clans.Skip(1).First().Value.Tag;
-
-        //    PreparationStartTime = fetched.Data.PreparationStartTime;
-
-        //    EndTime = fetched.Data.EndTime;
-
-        //    State = fetched.Data.State;
-
-        //    WarTag = warTag;
-
-        //    RawContent = fetched.RawContent;
-
-        //    Type = fetched.Data.WarType;
-
-        //    UpdateFrom(fetched);
-        //}
 
         public CachedWar(CachedClanWar cachedClanWar)
         {
@@ -146,11 +126,11 @@ namespace CocApi.Cache.Models
 
         }
 
-        private CachedWar(string warTag, Exception exception, TimeSpan localExpiration)
+        private CachedWar(string warTag, TimeSpan localExpiration)
         {
             WarTag = warTag;
 
-            UpdateFrom(exception, localExpiration);
+            UpdateFrom(localExpiration);
         }
 
         private void ThrowIfNotTheSameWar(ClanWar? clanWar)

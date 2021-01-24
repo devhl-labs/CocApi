@@ -23,24 +23,23 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi)
-            : base(tokenProvider, configuration)
+        public ClansClientBase(ClientConfiguration configuration, ClansApi clansApi) : base(configuration)
         {
             _clansApi = clansApi;
 
             //_activeWarMonitor = new ActiveWarMonitor(TokenQueue, Configuration, _clansApi, this);
-            _clanWarLogMonitor = new WarLogMonitor(TokenProvider, Configuration, _clansApi, this);
-            _clanWarMonitor = new ClanWarMonitor(TokenProvider, Configuration, _clansApi, this);
-            _cwlMonitor = new CwlMonitor(TokenProvider, Configuration, _clansApi, this);
-            _warMonitor = new WarMonitor(TokenProvider, Configuration, _clansApi, this);
-            _clanMonitor = new ClanMonitor(TokenProvider, Configuration, _clansApi, this);
+            _clanWarLogMonitor = new WarLogMonitor(Configuration, _clansApi, this);
+            _clanWarMonitor = new ClanWarMonitor(Configuration, _clansApi, this);
+            _cwlMonitor = new CwlMonitor(Configuration, _clansApi, this);
+            _warMonitor = new WarMonitor(Configuration, _clansApi, this);
+            _clanMonitor = new ClanMonitor(Configuration, _clansApi, this);
         }
 
-        public ClansClientBase(TokenProvider tokenProvider, ClientConfiguration configuration, ClansApi clansApi, PlayersClientBase playersClient)
-            : this(tokenProvider, configuration, clansApi)
+        public ClansClientBase(ClientConfiguration configuration, ClansApi clansApi, PlayersClientBase playersClient)
+            : this(configuration, clansApi)
         {
             _playersClient = playersClient;
-            _clanMembersMonitor = new(playersClient, tokenProvider, configuration, clansApi, this);
+            _clanMembersMonitor = new ClanMembersMonitor(playersClient, configuration, clansApi, this);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -228,12 +227,8 @@ namespace CocApi.Cache
                 {
                     ClanWar? clanWar = (await GetLeagueWarOrDefaultAsync(warTag, group.Season, cancellationToken))?.Data;
 
-                    if (clanWar == null)
-                    {
-                        string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-
-                        clanWar = await _clansApi.GetClanWarLeagueWarAsync(token, warTag, cancellationToken);
-                    }
+                    if (clanWar == null)                    
+                        clanWar = await _clansApi.GetClanWarLeagueWarAsync(warTag, cancellationToken);                    
 
                     if (clanWar.PreparationStartTime.Month == group.Season.Month && clanWar.PreparationStartTime.Year == group.Season.Year)
                         result.Add(clanWar);
@@ -309,12 +304,8 @@ namespace CocApi.Cache
         {
             Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
 
-            if (result == null)
-            {
-                string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
- 
-                result = await _clansApi.GetClanAsync(token, tag, cancellationToken).ConfigureAwait(false);
-            }
+            if (result == null)             
+                result = await _clansApi.GetClanAsync(tag, cancellationToken).ConfigureAwait(false);            
 
             return result;
         }
@@ -324,11 +315,7 @@ namespace CocApi.Cache
             Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
 
             if (result == null)
-            {
-                string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-
-                result = await _clansApi.GetClanOrDefaultAsync(token, tag, cancellationToken).ConfigureAwait(false);
-            }
+                result = await _clansApi.GetClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);            
 
             return result;
         }
@@ -382,6 +369,13 @@ namespace CocApi.Cache
 
         protected virtual bool HasUpdated(Clan stored, Clan fetched)
         {
+            var a = stored.Labels.SequenceEqual(fetched.Labels);
+            var b = fetched.Labels.SequenceEqual(stored.Labels);
+            var c = Clan.ClanMembersJoined(stored, fetched).Count == 0;
+            var d = Clan.ClanMembersLeft(stored, fetched).Count == 0;
+            var e = Clan.Donations(stored, fetched).Count == 0;
+            var f = Clan.DonationsReceived(stored, fetched).Count == 0;
+
             return !(stored.BadgeUrls?.Small == fetched.BadgeUrls?.Small
                 && stored.ClanLevel == fetched.ClanLevel
                 && stored.ClanPoints == fetched.ClanPoints
@@ -398,13 +392,12 @@ namespace CocApi.Cache
                 && stored.WarTies == fetched.WarTies
                 && stored.WarWins == fetched.WarWins
                 && stored.WarWinStreak == fetched.WarWinStreak
-                && stored.Labels.Except(fetched.Labels).Count() == 0
-                && fetched.Labels.Except(stored.Labels).Count() == 0
+                && stored.Labels.SequenceEqual(fetched.Labels)
+                && fetched.Labels.SequenceEqual(stored.Labels)
                 && Clan.ClanMembersJoined(stored, fetched).Count == 0
                 && Clan.ClanMembersLeft(stored, fetched).Count == 0
                 && Clan.Donations(stored, fetched).Count == 0 
-                && Clan.DonationsReceived(stored, fetched).Count == 0
-                );
+                && Clan.DonationsReceived(stored, fetched).Count == 0);
         }
 
         internal bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
@@ -503,24 +496,21 @@ namespace CocApi.Cache
             => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
         public virtual ValueTask<TimeSpan> ClanWarLogTimeToLiveAsync(ApiResponse<ClanWarLog> apiResponse)
-            => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
+        {
+            return apiResponse.StatusCode == HttpStatusCode.Forbidden 
+                ? new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2))
+                : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
+        }
 
         public virtual ValueTask<TimeSpan> ClanWarLogTimeToLiveAsync(Exception exception)
-        {
-            if (exception is ApiException apiException)
-                if (apiException.ErrorCode == (int)HttpStatusCode.Forbidden)
-                    return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
-
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-        }
+            => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));       
 
         public virtual ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLiveAsync(ApiResponse<ClanWarLeagueGroup> apiResponse)
         {
-            if (apiResponse.Data.State == GroupState.Ended)
+            if (!Clash.IsCwlEnabled || (apiResponse.Data != null && apiResponse.Data.State == GroupState.Ended))
                 return new ValueTask<TimeSpan>(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                         .AddMonths(1)
-                        .Subtract(new TimeSpan(0, 0, 0, 0, 1))
                         .Subtract(DateTime.UtcNow));
 
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
@@ -528,28 +518,24 @@ namespace CocApi.Cache
 
         public virtual ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLiveAsync(Exception exception)
         {
-            if (Clash.IsCwlEnabled())
+            if (Clash.IsCwlEnabled)
                 return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(20));
             else
                 return new ValueTask<TimeSpan>(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                         .AddMonths(1)
-                        .Subtract(new TimeSpan(0, 0, 0, 0, 1))
                         .Subtract(DateTime.UtcNow));
         }
 
         public virtual ValueTask<TimeSpan> ClanWarTimeToLiveAsync(Exception exception)
-        {
-            if (exception is ApiException apiException)
-                if (apiException.ErrorCode == (int)HttpStatusCode.Forbidden)
-                    return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
-
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-        }
+            => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
         public virtual ValueTask<TimeSpan> ClanWarTimeToLiveAsync(ApiResponse<ClanWar> apiResponse)
         {
-            if (apiResponse.Data.State == WarState.Preparation)
+            if (apiResponse.StatusCode == HttpStatusCode.Forbidden)
+                return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
+
+            if (apiResponse.Data?.State == WarState.Preparation)
                 return new ValueTask<TimeSpan>(apiResponse.Data.StartTime.AddHours(-1) - DateTime.UtcNow);
 
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));

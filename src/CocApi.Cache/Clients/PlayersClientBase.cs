@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
@@ -10,7 +9,6 @@ using CocApi.Cache.Models;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
@@ -26,42 +24,17 @@ namespace CocApi.Cache
 
         public event LogEventHandler? Log;
 
-        public PlayersClientBase(TokenProvider tokenProvider, ClientConfiguration clientConfiguration, PlayersApi playersApi) 
-            : base (tokenProvider, clientConfiguration)
+        public PlayersClientBase(ClientConfiguration clientConfiguration, PlayersApi playersApi) : base (clientConfiguration)
         {
             _playersApi = playersApi;
 
-            PlayerMontitor = new PlayerMonitor(tokenProvider, clientConfiguration, _playersApi, this);
+            PlayerMontitor = new PlayerMonitor(clientConfiguration, _playersApi, this);
         }
 
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
         internal ConcurrentDictionary<string, byte?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, byte?>();
-
-        //public async Task<CachedPlayer> AddAsync(string tag, bool download = true)
-        //{
-        //    string formattedTag = Clash.FormatTag(tag);
-
-        //    using var scope = Services.CreateScope();
-
-        //    CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
-
-        //    CachedPlayer cachedPlayer = await cacheContext.Players.Where(v => v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
-
-        //    if (cachedPlayer != null)
-        //        return cachedPlayer;
-
-        //    cachedPlayer = new CachedPlayer(tag)
-        //    {
-        //        Download = download
-        //    };
-        //    cacheContext.Players.Add(cachedPlayer);
-
-        //    await cacheContext.SaveChangesAsync().ConfigureAwait(false);
-
-        //    return cachedPlayer;
-        //}
 
         public async Task<CachedPlayer> AddOrUpdateAsync(string tag, bool download = true)
         {
@@ -118,11 +91,7 @@ namespace CocApi.Cache
             Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
 
             if (result == null)
-            {
-                string token = await TokenProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
-                result = await _playersApi.GetPlayerAsync(token, tag, cancellationToken).ConfigureAwait(false);
-            }
+                result = await _playersApi.GetPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
 
             return result;
         }
@@ -132,11 +101,7 @@ namespace CocApi.Cache
             Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
 
             if (result == null)
-            {
-                string token = await TokenProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
-                result = await _playersApi.GetPlayerOrDefaultAsync(token, tag, cancellationToken).ConfigureAwait(false);
-            }
+                result = await _playersApi.GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
 
             return result;
         }
@@ -167,7 +132,7 @@ namespace CocApi.Cache
             Task.Run(() =>
             {
                 _ = PlayerMontitor.RunAsync(cancellationToken);
-            });
+            }, cancellationToken);
 
             return Task.CompletedTask;
         }
@@ -207,8 +172,8 @@ namespace CocApi.Cache
                 && stored.VersusBattleWins == fetched.VersusBattleWins
                 && stored.VersusTrophies == fetched.VersusTrophies
                 && stored.WarStars == fetched.WarStars
-                && stored.Labels.Except(fetched.Labels).Count() == 0
-                && fetched.Labels.Except(stored.Labels).Count() == 0
+                && stored.Labels.SequenceEqual(fetched.Labels)
+                && fetched.Labels.SequenceEqual(stored.Labels)
                 ))
                     return true;
 
@@ -266,15 +231,20 @@ namespace CocApi.Cache
 
             CacheContext cacheContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
-            CachedPlayer cachedPlayer = await cacheContext.Players.Where(v =>
-                v.Tag == formattedTag).FirstOrDefaultAsync().ConfigureAwait(false);
+            CachedPlayer cachedPlayer = await cacheContext.Players
+                .FirstOrDefaultAsync(v => v.Tag == formattedTag)
+                .ConfigureAwait(false);
 
             if (cachedPlayer != null && cachedPlayer.Download == download)
                 return cachedPlayer;
 
-            cachedPlayer ??= new CachedPlayer(formattedTag);
+            if (cachedPlayer == null)
+            {
+                cachedPlayer = new CachedPlayer(formattedTag);
+                cacheContext.Players.Add(cachedPlayer);
+            }
+
             cachedPlayer.Download = download;
-            cacheContext.Players.Update(cachedPlayer);
 
             await cacheContext.SaveChangesAsync().ConfigureAwait(false);
 

@@ -18,9 +18,7 @@ namespace CocApi.Cache
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        public WarMonitor
-            (TokenProvider tokenProvider, ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(tokenProvider, cacheConfiguration)
+        public WarMonitor(ClientConfiguration cacheConfiguration, ClansApi clansApi, ClansClientBase clansClientBase) : base(cacheConfiguration)
         {
             _clansApi = clansApi;
             _clansClient = clansClientBase;
@@ -141,28 +139,10 @@ namespace CocApi.Cache
                 }
                 else
                 {
-                    string token = await TokenProvider.GetAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-
-                    using CancellationTokenSource cts = new CancellationTokenSource(Configuration.HttpRequestTimeOut);
-
-                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
-
-                    CachedWar? fetched = null;
-
-                    try
-                    {
-                        fetched = await CachedWar
+                    CachedWar? fetched = await CachedWar
                             .FromClanWarLeagueWarResponseAsync(
-                                token, cached.WarTag, cached.Season.Value, _clansClient, _clansApi, linkedCts.Token)
+                                cached.WarTag, cached.Season.Value, _clansClient, _clansApi, _stopRequestedTokenSource.Token)
                             .ConfigureAwait(false);
-                    }
-                    catch (Exception e) when (e is TaskCanceledException || e is OperationCanceledException || e is CachedHttpRequestException)
-                    {
-                        if (_stopRequestedTokenSource.IsCancellationRequested)
-                            throw;
-                        else
-                            return;
-                    }
 
                     if (cached.Data != null && 
                         fetched.Data != null && 

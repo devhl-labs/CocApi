@@ -11,23 +11,23 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
-        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string token, string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.GetClanWarLeagueGroupResponseAsync(token, tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.GetClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClanWarLeagueGroup(apiResponse, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(apiResponse).ConfigureAwait(false));
+                return new CachedClanWarLeagueGroup(tag, apiResponse, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
+            catch (Exception e)
             {
-                return new CachedClanWarLeagueGroup(tag, e, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedClanWarLeagueGroup(tag, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
         public string Tag { get; internal set; }
 
-        public DateTime Season { get; internal set; }
+        public DateTime? Season { get; internal set; }
 
         public GroupState? State { get; internal set; }
 
@@ -36,20 +36,18 @@ namespace CocApi.Cache.Models
             Tag = tag;
         }
 
-        private CachedClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponse, TimeSpan localExpiration)
-            : this(apiResponse.Data.Tag)
+        private CachedClanWarLeagueGroup(string tag, ApiResponse<ClanWarLeagueGroup> apiResponse, TimeSpan localExpiration) : this(tag)
         {
             UpdateFrom(apiResponse, localExpiration);
 
-            Season = apiResponse.Data.Season;
+            Season = apiResponse.Data?.Season;
 
-            State = apiResponse?.Data.State;
+            State = apiResponse.Data?.State;
         }
 
-        private CachedClanWarLeagueGroup(string tag, Exception e, TimeSpan localExpiration)
-            : this(tag)
+        private CachedClanWarLeagueGroup(string tag, TimeSpan localExpiration) : this(tag)
         {
-            UpdateFrom(e, localExpiration);
+            UpdateFrom(localExpiration);
         }
 
         internal void UpdateFrom(CachedClanWarLeagueGroup fetched)

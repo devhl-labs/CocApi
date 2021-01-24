@@ -1,39 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Client;
 using CocApi.Model;
-using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Test
 {
     public class PlayersClient : PlayersClientBase
     {
-        private readonly PlayersApi _playersApi;
-        private readonly LogService _logService;
-
-        public PlayersClient(TokenProvider tokenProvider, Cache.ClientConfiguration cacheConfiguration, PlayersApi playersApi, LogService logService) : base(tokenProvider, cacheConfiguration, playersApi)
+        public PlayersClient(Cache.ClientConfiguration cacheConfiguration, PlayersApi playersApi) : base(cacheConfiguration, playersApi)
         {
-            _playersApi = playersApi;
-            _logService = logService;
-
-            Log += PlayersClient_Log;
-            PlayerUpdated += PlayerUpdater_PlayerUpdated;
-
-            _playersApi.HttpRequestResult += PlayersApi_HttpRequestResult;
+            Log += OnLog;
+            PlayerUpdated += OnPlayerUpdated;
         }
 
-        private Task PlayersClient_Log(object sender, LogEventArgs log)
+        private Task OnLog(object sender, LogEventArgs log)
         {
             if (log is ExceptionEventArgs exception)
-                _logService.Log(LogLevel.Warning, sender.GetType().Name, exception.Method, exception.Message, exception.Exception.Message);
+                LogService.Log(LogLevel.Warning, sender.GetType().Name, exception.Method, exception.Message, exception.Exception.Message);
             else
-                _logService.Log(LogLevel.Information, sender.GetType().Name, log.Method, log.Message);
+                LogService.Log(LogLevel.Information, sender.GetType().Name, log.Method, log.Message);
 
             return Task.CompletedTask;
         }
@@ -61,27 +48,9 @@ namespace CocApi.Test
             return stored.TownHallLevel != fetched.TownHallLevel;
         }
 
-        private Task PlayerUpdater_PlayerUpdated(object sender, PlayerUpdatedEventArgs e)
+        private Task OnPlayerUpdated(object sender, PlayerUpdatedEventArgs e)
         {
-            _logService.Log(LogLevel.Information, this.GetType().Name, null, "Player updated");
-
-            return Task.CompletedTask;
-        }
-
-        private Task PlayersApi_HttpRequestResult(object sender, HttpRequestResultEventArgs log)
-        {
-            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
-
-            if (log.HttpRequestResult is HttpRequestException exception)
-            {
-                if (exception.Exception is ApiException apiException)
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), apiException.ErrorContent.ToString());
-                else
-                    _logService.Log(LogLevel.Debug, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl(), exception.Exception.Message);
-            }
-
-            if (log.HttpRequestResult is HttpRequestSuccess)
-                _logService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.EncodedUrl());
+            LogService.Log(LogLevel.Information, this.GetType().Name, "Player updated");
 
             return Task.CompletedTask;
         }

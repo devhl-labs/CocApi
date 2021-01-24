@@ -9,17 +9,17 @@ namespace CocApi.Cache.Models
 {
     public class CachedClan : CachedItem<Clan>
     {
-        internal static async Task<CachedClan> FromClanResponseAsync(string token, string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<Clan> apiResponse = await clansApi.GetClanResponseAsync(token, tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<Clan> apiResponse = await clansApi.GetClanResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClan(apiResponse, await clansCacheBase.ClanTimeToLiveAsync(apiResponse).ConfigureAwait(false));
+                return new CachedClan(tag, apiResponse, await clansCacheBase.ClanTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
+            catch (Exception e) 
             {
-                return new CachedClan(tag, e, await clansCacheBase.ClanTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedClan(tag, await clansCacheBase.ClanTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -31,16 +31,17 @@ namespace CocApi.Cache.Models
 
         public bool DownloadCwl { get; internal set; }
 
-        public bool IsWarLogPublic { get; internal set; }
+        public bool? IsWarLogPublic { get; internal set; }
 
-        private CachedClan(ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
+        private CachedClan(string tag, ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
         {
-            Tag = response.Data.Tag;
-
-            IsWarLogPublic = response.Data.IsWarLogPublic;
+            Tag = tag;
+            
+            if (response.Data != null)            
+                IsWarLogPublic = response.Data.IsWarLogPublic;                        
         }
 
-        private CachedClan(string tag, Exception exception, TimeSpan localExpiration) : base(exception, localExpiration)
+        private CachedClan(string tag, TimeSpan localExpiration) : base(localExpiration)
         {
             Tag = tag;
         }

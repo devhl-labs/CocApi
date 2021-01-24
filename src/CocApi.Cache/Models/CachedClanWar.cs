@@ -9,19 +9,19 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWar : CachedItem<ClanWar>
     {
-        internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string token, string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(token, tag, cancellationToken);
+                ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(tag, cancellationToken);
 
                 CachedClanWar result = new CachedClanWar(tag, apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false));
 
                 return result;
             }
-            catch (Exception e) when (e is ApiException || e is TimeoutException || e is TaskCanceledException || e is CachedHttpRequestException)
+            catch (Exception e)
             {
-                return new CachedClanWar(tag, e, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedClanWar(tag, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -55,17 +55,20 @@ namespace CocApi.Cache.Models
         private CachedClanWar(string clanTag, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiResponse, localExpiration);
-
-            State = apiResponse?.Data.State;
-
-            PreparationStartTime = apiResponse?.Data.PreparationStartTime ?? PreparationStartTime;
-
+            
             Tag = clanTag;
+            
+            if (apiResponse.Data != null)
+            {
+                State = apiResponse.Data.State;
+
+                PreparationStartTime = apiResponse.Data.PreparationStartTime;
+            }
         }
 
-        private CachedClanWar(string clanTag, Exception exception, TimeSpan localExpiration)
+        private CachedClanWar(string clanTag, TimeSpan localExpiration)
         {
-            base.UpdateFrom(exception, localExpiration);
+            base.UpdateFrom(localExpiration);
 
             Tag = clanTag;
         }

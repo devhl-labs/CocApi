@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using CocApi.Api;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Net.Http;
 
 namespace CocApi.Test
 {
@@ -18,83 +19,110 @@ namespace CocApi.Test
             if (args.Any())
                 Console.WriteLine(args);
 
+            InitializeTokenProvider();
+
+            CocApi.Requests.HttpRequestResult += OnHttpRequestResult;
+
             await CreateHostBuilder(args).Build().RunAsync();
+        }
+
+        private static Task OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
+        {
+            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
+
+            if (log.HttpRequestResult is HttpRequestException exception)
+                LogService.Log(LogLevel.Warning, sender.GetType().Name, seconds, exception.Path, exception.Message, exception.InnerException?.Message);
+            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)            
+                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);            
+            else
+                LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.Path);
+
+            return Task.CompletedTask;
+        }
+
+        private static void InitializeTokenProvider()
+        {
+            List<string> tokens = new List<string>();
+
+            for (int i = 0; i < 10; i++)
+                tokens.Add(Environment.GetEnvironmentVariable($"TOKEN_{i}", EnvironmentVariableTarget.Machine)
+                    ?? throw new NullReferenceException($"TOKEN_{i} environment variable not found."));
+
+            _tokenProvider = new TokenProvider(tokens, TimeSpan.FromSeconds(3));
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostBuilder, services) =>
             {
-                services.AddSingleton(TokenProviderFactory);
                 services.AddSingleton(PlayersApiFactory);
                 services.AddSingleton(ClansApiFactory);
-                services.AddSingleton(ClientConfigurationFactory);
                 services.AddSingleton(LocationsApiFactory);
                 services.AddSingleton(LeaguesApiFactory);
-                services.AddSingleton<LogService>();
+
+                services.AddSingleton<ClientConfiguration>();
                 services.AddSingleton<PlayersClient>();
                 services.AddHostedService<ClansClient>();
+
+                services.AddHttpClient("cocApi", config =>
+                {
+                    config.BaseAddress = new Uri("https://api.clashofclans.com/v1");
+                    config.Timeout = TimeSpan.FromSeconds(10);
+                });
+
+
             })
             .ConfigureLogging(o => o.ClearProviders());
 
+        private static TokenProvider _tokenProvider;
+
         private static ClansApi ClansApiFactory(IServiceProvider arg)
         {
-            //this timespan is the max http request time even without a cancellation token
-            //consider it a fallback for when you dont provide a cancellation token
-            //keep it a bit longer so it doesn't undercut your cancellation tokens
-            return new ClansApi(TimeSpan.FromSeconds(20));
+            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
+            HttpClient httpClient = factory.CreateClient("cocApi");
+
+
+            ClansApi clansApi = new ClansApi(httpClient)
+            {
+                GetTokenAsync = GetTokenAsync
+            };
+
+            return clansApi;
         }
 
-        private static Cache.ClientConfiguration ClientConfigurationFactory(IServiceProvider arg)
-        {
-            //this timespan is only used for updating the cache. 
-            //you can keep it low so your cache doesn't halt waiting for a slow api response
-            return new Cache.ClientConfiguration(httpRequestTimeOut: TimeSpan.FromSeconds(5));
-        }
+        private static async ValueTask<string> GetTokenAsync() => await _tokenProvider.GetAsync();        
 
         private static PlayersApi PlayersApiFactory(IServiceProvider arg)
         {
-            return new PlayersApi(TimeSpan.FromSeconds(20));
-        }
-
-        private static TokenProvider TokenProviderFactory(IServiceProvider arg)
-        {
-            List<string> tokens = new List<string>
+            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
+            HttpClient httpClient = factory.CreateClient("cocApi");
+            PlayersApi playersApi = new PlayersApi(httpClient)
             {
-                Environment.GetEnvironmentVariable("TOKEN_0", EnvironmentVariableTarget.Machine) 
-                    ?? throw new NullReferenceException("TOKEN_0 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_1", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_1 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_2", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_2 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_3", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_3 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_4", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_4 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_5", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_5 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_6", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_6 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_7", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_7 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_8", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_8 environment variable not found."),
-                Environment.GetEnvironmentVariable("TOKEN_9", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException("TOKEN_9 environment variable not found."),
+                GetTokenAsync = GetTokenAsync
             };
-
-            //in production make this very fast like TimeSpan.FromMilliseconds(33)
-            return new TokenProvider(tokens, TimeSpan.FromSeconds(3));
-        }
-
-        private static LocationsApi LocationsApiFactory(IServiceProvider arg)
-        {
-            return new LocationsApi(TimeSpan.FromSeconds(20));
+            return playersApi;
         }
 
         private static LeaguesApi LeaguesApiFactory(IServiceProvider arg)
         {
-            return new LeaguesApi(TimeSpan.FromSeconds(20));
+            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
+            HttpClient httpClient = factory.CreateClient("cocApi");
+            LeaguesApi leaguesApi = new LeaguesApi(httpClient)
+            {
+                GetTokenAsync = GetTokenAsync
+            };
+            return leaguesApi;
+        }
+
+        private static LocationsApi LocationsApiFactory(IServiceProvider arg)
+        {
+            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
+            HttpClient httpClient = factory.CreateClient("cocApi");
+            LocationsApi locationsApi = new LocationsApi(httpClient)
+            {
+                GetTokenAsync = GetTokenAsync
+            };
+            return locationsApi;
         }
     }
 }

@@ -5,7 +5,7 @@ using CocApi.Client;
 
 namespace CocApi
 {
-    public class HttpRequestException : IHttpRequestResult
+    public class HttpRequestException : Exception, IHttpRequestResult
     {
         public DateTime RequestedAt { get; } = DateTime.UtcNow;
 
@@ -13,39 +13,48 @@ namespace CocApi
 
         public string Path { get; }
 
-        public RequestOptions RequestOptions { get; }
+        //public Exception Exception { get; }
 
-        public Exception Exception { get; }
+        //public System.Net.HttpStatusCode StatusCode { get; }
 
-        public HttpRequestException(string path, RequestOptions requestOptions, TimeSpan elapsed, Exception exception)
+        //public string? Reason { get; }
+
+        //public RequestOptions RequestOptions { get; }
+
+        //public Exception Exception { get; }
+
+        public HttpRequestException(string path, /*RequestOptions requestOptions,*/ TimeSpan elapsed, Exception exception) : base (path, exception)
         {
+            //InnerException = Exception;
             Elapsed = elapsed;
-
+            //Exception = exception;
+            //StatusCode = statusCode;
+            //Reason = reason;
             Path = path;
 
-            Exception = exception;
+            //Exception = exception;
 
-            RequestOptions = requestOptions;
+            //RequestOptions = requestOptions;
         }
 
-        public string Url()
-        {
-            string result = Path;
+        //public string Url()
+        //{
+        //    string result = Path;
 
-            foreach (var kvp in RequestOptions.PathParameters)
-                result = result.Replace("{" + kvp.Key + "}", kvp.Value);
+        //    foreach (var kvp in RequestOptions.PathParameters)
+        //        result = result.Replace("{" + kvp.Key + "}", kvp.Value);
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        public string EncodedUrl()
-        {
-            string result = Path;
+        //public string EncodedUrl()
+        //{
+        //    string result = Path;
 
-            foreach (var kvp in RequestOptions.PathParameters)
-                result = result.Replace("{" + kvp.Key + "}", HttpUtility.UrlEncode(kvp.Value));
+        //    foreach (var kvp in RequestOptions.PathParameters)
+        //        result = result.Replace("{" + kvp.Key + "}", HttpUtility.UrlEncode(kvp.Value));
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }
