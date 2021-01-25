@@ -19,8 +19,6 @@ namespace CocApi.Test
             if (args.Any())
                 Console.WriteLine(args);
 
-            InitializeTokenProvider();
-
             CocApi.Requests.HttpRequestResult += OnHttpRequestResult;
 
             await CreateHostBuilder(args).Build().RunAsync();
@@ -40,17 +38,6 @@ namespace CocApi.Test
             return Task.CompletedTask;
         }
 
-        private static void InitializeTokenProvider()
-        {
-            List<string> tokens = new List<string>();
-
-            for (int i = 0; i < 10; i++)
-                tokens.Add(Environment.GetEnvironmentVariable($"TOKEN_{i}", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException($"TOKEN_{i} environment variable not found."));
-
-            _tokenProvider = new TokenProvider(tokens, TimeSpan.FromSeconds(3));
-        }
-
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostBuilder, services) =>
@@ -59,47 +46,51 @@ namespace CocApi.Test
                 services.AddSingleton(ClansApiFactory);
                 services.AddSingleton(LocationsApiFactory);
                 services.AddSingleton(LeaguesApiFactory);
+                services.AddSingleton(TokenProviderFactory);
 
                 services.AddSingleton<ClientConfiguration>();
                 services.AddSingleton<PlayersClient>();
                 services.AddHostedService<ClansClient>();
-
+                
                 services.AddHttpClient("cocApi", config =>
                 {
                     config.BaseAddress = new Uri("https://api.clashofclans.com/v1");
-                    config.Timeout = TimeSpan.FromSeconds(10);
-                });
-
-
+                    config.Timeout = TimeSpan.FromSeconds(10);                    
+                })
+                .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler() { MaxConnectionsPerServer = 100 });
             })
             .ConfigureLogging(o => o.ClearProviders());
 
-        private static TokenProvider _tokenProvider;
+        private static TokenProvider TokenProviderFactory(IServiceProvider arg)
+        {
+            List<string> tokens = new List<string>();
+
+            for (int i = 0; i < 10; i++)
+                tokens.Add(Environment.GetEnvironmentVariable($"TOKEN_{i}", EnvironmentVariableTarget.Machine)
+                    ?? throw new NullReferenceException($"TOKEN_{i} environment variable not found."));
+
+            TokenProvider tokenProvider = new TokenProvider(tokens, TimeSpan.FromSeconds(3));
+
+            return tokenProvider;
+        }
 
         private static ClansApi ClansApiFactory(IServiceProvider arg)
         {
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
-
-
-            ClansApi clansApi = new ClansApi(httpClient)
-            {
-                GetTokenAsync = GetTokenAsync
-            };
+            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
+            ClansApi clansApi = new ClansApi(httpClient, tokenProvider);
 
             return clansApi;
-        }
-
-        private static async ValueTask<string> GetTokenAsync() => await _tokenProvider.GetAsync();        
+        }       
 
         private static PlayersApi PlayersApiFactory(IServiceProvider arg)
         {
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
-            PlayersApi playersApi = new PlayersApi(httpClient)
-            {
-                GetTokenAsync = GetTokenAsync
-            };
+            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
+            PlayersApi playersApi = new PlayersApi(httpClient, tokenProvider);
+
             return playersApi;
         }
 
@@ -107,10 +98,9 @@ namespace CocApi.Test
         {
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
-            LeaguesApi leaguesApi = new LeaguesApi(httpClient)
-            {
-                GetTokenAsync = GetTokenAsync
-            };
+            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
+            LeaguesApi leaguesApi = new LeaguesApi(httpClient, tokenProvider);
+
             return leaguesApi;
         }
 
@@ -118,10 +108,9 @@ namespace CocApi.Test
         {
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
-            LocationsApi locationsApi = new LocationsApi(httpClient)
-            {
-                GetTokenAsync = GetTokenAsync
-            };
+            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
+            LocationsApi locationsApi = new LocationsApi(httpClient, tokenProvider);
+
             return locationsApi;
         }
     }

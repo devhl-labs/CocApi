@@ -112,17 +112,16 @@ namespace CocApi.Api
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(System.Net.Http.HttpClient httpClient)
+        public PlayersApi(System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
         {
             _httpClient = httpClient;
+            GetTokenAsync = tokenProvider.GetAsync;
         }
 
         /// <summary>
         /// Returns the token to be used in the api query
         /// </summary>
-        public Func<System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }  
-
-
+        public Func<System.Threading.CancellationToken?, System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }  
 
 
         /// <summary>
@@ -192,7 +191,7 @@ namespace CocApi.Api
             // authentication (JWT) required
             //isKeyInHeader
             string? token = GetTokenAsync != null
-                ? await GetTokenAsync().ConfigureAwait(false)
+                ? await GetTokenAsync(cancellationToken).ConfigureAwait(false)
                 : null;
 
             if (token != null)
@@ -331,7 +330,7 @@ namespace CocApi.Api
             // authentication (JWT) required
             //isKeyInHeader
             string? token = GetTokenAsync != null
-                ? await GetTokenAsync().ConfigureAwait(false)
+                ? await GetTokenAsync(cancellationToken).ConfigureAwait(false)
                 : null;
 
             if (token != null)

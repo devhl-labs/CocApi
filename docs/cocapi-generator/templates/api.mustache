@@ -79,17 +79,16 @@ namespace {{packageName}}.{{apiPackage}}
         /// Initializes a new instance of the <see cref="{{classname}}"/> class.
         /// </summary>
         /// <returns></returns>
-        public {{classname}}(System.Net.Http.HttpClient httpClient)
+        public {{classname}}(System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
         {
             _httpClient = httpClient;
+            GetTokenAsync = tokenProvider.GetAsync;
         }
 
         /// <summary>
         /// Returns the token to be used in the api query
         /// </summary>
-        public Func<System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }  
-
-
+        public Func<System.Threading.CancellationToken?, System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }  
 
         {{#operation}}        
 
@@ -237,7 +236,7 @@ namespace {{packageName}}.{{apiPackage}}
             {{/isKeyInCookie}}
             {{#isKeyInHeader}}//isKeyInHeader
             string? token = GetTokenAsync != null
-                ? await GetTokenAsync().ConfigureAwait(false)
+                ? await GetTokenAsync(cancellationToken).ConfigureAwait(false)
                 : null;
 
             if (token != null)
