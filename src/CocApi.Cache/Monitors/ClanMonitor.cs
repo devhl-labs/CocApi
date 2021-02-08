@@ -18,7 +18,7 @@ namespace CocApi.Cache
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        private readonly ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
+        public ConcurrentDictionary<string, byte> UpdatingClan { get; } = new ConcurrentDictionary<string, byte>();
 
         private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
@@ -110,7 +110,7 @@ namespace CocApi.Cache
         private async Task MonitorClanAsync(CachedClan cached)
         {
             if (_stopRequestedTokenSource.IsCancellationRequested ||
-                _updatingClan.TryAdd(cached.Tag, new byte()) == false)
+                UpdatingClan.TryAdd(cached.Tag, new byte()) == false)
                 return;
 
             try
@@ -124,7 +124,7 @@ namespace CocApi.Cache
             }
             finally
             {
-                _updatingClan.TryRemove(cached.Tag, out _);
+                UpdatingClan.TryRemove(cached.Tag, out _);
             }
         }
 

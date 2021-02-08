@@ -102,9 +102,16 @@ foreach ($file in $files)
     $content=$content -replace '\?{3,4}', '?' # replace every three to four consecutive occurrences of '?' with a single one
     $content=$content.Replace("WithHttpInfoAsync(", "ResponseAsync(")
 
+    if ($file.name.EndsWith("Api.cs")){
+        $content=$content.Replace('> Get', '> Fetch')
+        $content=$content.Replace('?Get', 'Fetch')
+        $content=$content.Replace('?Search', 'Search')
+        $content=$content.Replace('?Verify', 'Verify')
+    }
+
     if ($file.name -eq "ClansApi.cs"){
-        $content=$content.Replace('public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)', 'internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> InternalGetCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)')
-        $content=$content.Replace('public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)', 'internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> InternalGetClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)')
+        $content=$content.Replace('public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> FetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)', 'internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> InternalFetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)')
+        $content=$content.Replace('public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> FetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)', 'internal async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> InternalFetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)')
         $content=Get-ContentWithRename -content $content -searchText 'warTag' -replacementText 'warTag' 
         $content=Get-ContentWithoutLeadingFormatTag -content $content
     }
@@ -212,5 +219,3 @@ Move-Item -Path "$root/src/CocApi/src/CocApi/Model" -Destination "$root/src/CocA
 Move-Item -Path "$root/src/CocApi/src/CocApi/CocApi.csproj" -Destination "$root/src/CocApi"
 Remove-Item -Path "$root/src/CocApi/src" -Recurse
 Move-Item -Path "$root/../Additions" -Destination "$root/src/CocApi"
-
-Read-Host -Prompt "Press Enter to exit"

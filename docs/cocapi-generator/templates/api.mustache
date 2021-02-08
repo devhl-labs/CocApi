@@ -104,7 +104,7 @@ namespace {{packageName}}.{{apiPackage}}
         /// <returns>Task of {{returnType}}</returns>
         public async System.Threading.Tasks.Task<{{{returnType}}}> {{operationId}}Async({{#allParams}}{{#required}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{^required}}{{{dataType}}}??? {{paramName}} = null{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}System.Threading.CancellationToken? cancellationToken = null)
         {
-            {{packageName}}.Client.ApiResponse<{{{returnType}}}> result = await {{operationId}}WithHttpInfoAsync({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}cancellationToken).ConfigureAwait(false);
+            {{packageName}}.Client.ApiResponse<{{{returnType}}}> result = await ?{{operationId}}WithHttpInfoAsync({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}cancellationToken).ConfigureAwait(false);
             return result.Data ?? throw new NullReferenceException();
         }
         {{/returnType}}
@@ -121,7 +121,7 @@ namespace {{packageName}}.{{apiPackage}}
         /// <returns>Task of {{returnType}}</returns>
         public async System.Threading.Tasks.Task<{{{returnType}}}?> {{operationId}}OrDefaultAsync({{#allParams}}{{#required}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{^required}}{{{dataType}}}??? {{paramName}} = null{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}System.Threading.CancellationToken? cancellationToken = null)
         {
-            {{packageName}}.Client.ApiResponse<{{{returnType}}}> result = await {{operationId}}WithHttpInfoAsync({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}cancellationToken).ConfigureAwait(false);
+            {{packageName}}.Client.ApiResponse<{{{returnType}}}> result = await ?{{operationId}}WithHttpInfoAsync({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
                 ? result.Data
@@ -326,7 +326,7 @@ namespace {{packageName}}.{{apiPackage}}
             {
                 end = DateTime.UtcNow;
 
-                HttpRequestException httpRequestException = new(path, end - start, e);
+                HttpRequestException httpRequestException = new("{{path}}", path, end - start, e);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
 
@@ -337,13 +337,13 @@ namespace {{packageName}}.{{apiPackage}}
             {
                 apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
                 
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("{{path}}", path, end - start, httpStatusCode);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new(path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("{{path}}", path, end - start, httpStatusCode, reasonPhrase);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
             }

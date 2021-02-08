@@ -60,10 +60,10 @@ namespace CocApi.Test
             await AddOrUpdateAsync("#2P0YUY0L0"); // testing closed war log
             await AddOrUpdateAsync("#PJYPYG9P", true, true, true); // war heads
 
-            var playerGlobalRankings = await _locationsApi.GetPlayerRankingAsync("global");
-            var playerVersusGlobalRankings = await _locationsApi.GetPlayerVersusRankingAsync("global");
-            var clanGlobalRankings = await _locationsApi.GetClanRankingOrDefaultAsync("global");
-            var clanGlobalVersusRankings = await _locationsApi.GetClanVersusRankingAsync("global");
+            var playerGlobalRankings = await _locationsApi.FetchPlayerRankingAsync("global");
+            var playerVersusGlobalRankings = await _locationsApi.FetchPlayerVersusRankingAsync("global");
+            var clanGlobalRankings = await _locationsApi.FetchClanRankingOrDefaultAsync("global");
+            var clanGlobalVersusRankings = await _locationsApi.FetchClanVersusRankingAsync("global");
 
             var playerToken = await _playersApi.VerifyTokenResponseAsync("#29GPU9CUJ", new VerifyTokenRequest("a"));
 

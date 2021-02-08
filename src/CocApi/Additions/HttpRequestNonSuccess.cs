@@ -10,7 +10,7 @@ namespace CocApi
         public DateTime RequestedAt { get; } = DateTime.UtcNow;
 
         public TimeSpan Elapsed { get; }
-
+        public string PathFormat { get; }
         public string Path { get; }
 
         public System.Net.HttpStatusCode StatusCode { get; }
@@ -21,11 +21,12 @@ namespace CocApi
 
         //public Exception Exception { get; }
 
-        public HttpRequestNonSuccess(string path, /*RequestOptions requestOptions,*/ TimeSpan elapsed, System.Net.HttpStatusCode statusCode, string? reason)
+        public HttpRequestNonSuccess(string pathFormat, string path, /*RequestOptions requestOptions,*/ TimeSpan elapsed, System.Net.HttpStatusCode statusCode, string? reason)
         {
             Elapsed = elapsed;
             StatusCode = statusCode;
             Reason = reason;
+            PathFormat = pathFormat;
             Path = path;
 
             //Exception = exception;

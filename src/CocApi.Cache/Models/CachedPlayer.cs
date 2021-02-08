@@ -18,7 +18,7 @@ namespace CocApi.Cache.Models
         {
             try
             {
-                ApiResponse<Player> apiResponse = await playersApi.GetPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<Player> apiResponse = await playersApi.FetchPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedPlayer(tag, apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }

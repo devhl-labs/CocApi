@@ -19,11 +19,11 @@ namespace CocApi.Cache.Models
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
                 TimeSpan timeToLive = await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false);
 
-                if (!apiResponse.IsSuccessStatusCode)
+                if (!apiResponse.IsSuccessStatusCode || apiResponse.Data?.State == WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
 
                 CachedWar result = new CachedWar(apiResponse, timeToLive, warTag, season)

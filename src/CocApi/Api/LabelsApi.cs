@@ -36,7 +36,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        System.Threading.Tasks.Task<ApiResponse<LabelsObject>> GetClanLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<ApiResponse<LabelsObject>> FetchClanLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
         
         /// <summary>
         /// List clan labels
@@ -50,7 +50,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        System.Threading.Tasks.Task<LabelsObject> GetClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<LabelsObject> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
         
         /// <summary>
         /// List clan labels
@@ -63,7 +63,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject?)</returns>
-        System.Threading.Tasks.Task<LabelsObject?> GetClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<LabelsObject?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
         /// <summary>
         /// List player labels
         /// </summary>
@@ -76,7 +76,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        System.Threading.Tasks.Task<ApiResponse<LabelsObject>> GetPlayerLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<ApiResponse<LabelsObject>> FetchPlayerLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
         
         /// <summary>
         /// List player labels
@@ -90,7 +90,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        System.Threading.Tasks.Task<LabelsObject> GetPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<LabelsObject> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
         
         /// <summary>
         /// List player labels
@@ -103,7 +103,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject?)</returns>
-        System.Threading.Tasks.Task<LabelsObject?> GetPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<LabelsObject?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
     }
 
     /// <summary>
@@ -142,9 +142,9 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of LabelsObject</returns>
-        public async System.Threading.Tasks.Task<LabelsObject> GetClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<LabelsObject> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LabelsObject> result = await GetClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             return result.Data ?? throw new NullReferenceException();
         }
 
@@ -157,9 +157,9 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of LabelsObject</returns>
-        public async System.Threading.Tasks.Task<LabelsObject?> GetClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<LabelsObject?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LabelsObject> result = await GetClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
                 ? result.Data
@@ -175,7 +175,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetClanLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> FetchClanLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             
             using System.Net.Http.HttpRequestMessage request = new System.Net.Http.HttpRequestMessage();
@@ -250,7 +250,7 @@ namespace CocApi.Api
             {
                 end = DateTime.UtcNow;
 
-                HttpRequestException httpRequestException = new(path, end - start, e);
+                HttpRequestException httpRequestException = new("/labels/clans", path, end - start, e);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
 
@@ -261,13 +261,13 @@ namespace CocApi.Api
             {
                 apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
                 
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/clans", path, end - start, httpStatusCode);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new(path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/clans", path, end - start, httpStatusCode, reasonPhrase);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
             }
@@ -284,9 +284,9 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of LabelsObject</returns>
-        public async System.Threading.Tasks.Task<LabelsObject> GetPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<LabelsObject> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LabelsObject> result = await GetPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             return result.Data ?? throw new NullReferenceException();
         }
 
@@ -299,9 +299,9 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of LabelsObject</returns>
-        public async System.Threading.Tasks.Task<LabelsObject?> GetPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<LabelsObject?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LabelsObject> result = await GetPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
                 ? result.Data
@@ -317,7 +317,7 @@ namespace CocApi.Api
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (LabelsObject)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> GetPlayerLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<LabelsObject>> FetchPlayerLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             
             using System.Net.Http.HttpRequestMessage request = new System.Net.Http.HttpRequestMessage();
@@ -392,7 +392,7 @@ namespace CocApi.Api
             {
                 end = DateTime.UtcNow;
 
-                HttpRequestException httpRequestException = new(path, end - start, e);
+                HttpRequestException httpRequestException = new("/labels/players", path, end - start, e);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
 
@@ -403,13 +403,13 @@ namespace CocApi.Api
             {
                 apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
                 
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/players", path, end - start, httpStatusCode);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new(path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/players", path, end - start, httpStatusCode, reasonPhrase);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
             }

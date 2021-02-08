@@ -15,7 +15,7 @@ namespace CocApi.Cache.Models
         {
             try
             {
-                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.GetClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.FetchClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedClanWarLeagueGroup(tag, apiResponse, await clansCacheBase.ClanWarLeagueGroupTimeToLiveAsync(apiResponse).ConfigureAwait(false));
             }

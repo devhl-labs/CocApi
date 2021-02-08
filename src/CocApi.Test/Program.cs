@@ -69,6 +69,7 @@ namespace CocApi.Test
                 tokens.Add(Environment.GetEnvironmentVariable($"TOKEN_{i}", EnvironmentVariableTarget.Machine)
                     ?? throw new NullReferenceException($"TOKEN_{i} environment variable not found."));
 
+            // you can go much lower than 3 seconds
             TokenProvider tokenProvider = new TokenProvider(tokens, TimeSpan.FromSeconds(3));
 
             return tokenProvider;

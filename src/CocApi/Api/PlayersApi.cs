@@ -34,7 +34,7 @@ namespace CocApi.Api
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        System.Threading.Tasks.Task<ApiResponse<Player>> GetPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<ApiResponse<Player>> FetchPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
         
         /// <summary>
         /// Get player information
@@ -46,7 +46,7 @@ namespace CocApi.Api
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        System.Threading.Tasks.Task<Player> GetPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<Player> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
         
         /// <summary>
         /// Get player information
@@ -57,7 +57,7 @@ namespace CocApi.Api
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (Player?)</returns>
-        System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        System.Threading.Tasks.Task<Player?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
         /// <summary>
         /// Verify player API token that can be found from the game settings.
         /// </summary>
@@ -131,9 +131,9 @@ namespace CocApi.Api
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player> GetPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<Player> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<Player> result = await GetPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
+            CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
             return result.Data ?? throw new NullReferenceException();
         }
 
@@ -144,9 +144,9 @@ namespace CocApi.Api
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of Player</returns>
-        public async System.Threading.Tasks.Task<Player?> GetPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<Player?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<Player> result = await GetPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
+            CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
                 ? result.Data
@@ -160,7 +160,7 @@ namespace CocApi.Api
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (Player)</returns>
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> GetPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Player>> FetchPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             if (playerTag == null)
                 throw new ArgumentNullException(nameof(playerTag)); 
@@ -232,7 +232,7 @@ namespace CocApi.Api
             {
                 end = DateTime.UtcNow;
 
-                HttpRequestException httpRequestException = new(path, end - start, e);
+                HttpRequestException httpRequestException = new("/players/{playerTag}", path, end - start, e);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
 
@@ -243,13 +243,13 @@ namespace CocApi.Api
             {
                 apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
                 
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", path, end - start, httpStatusCode);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new(path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/players/{playerTag}", path, end - start, httpStatusCode, reasonPhrase);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
             }
@@ -372,7 +372,7 @@ namespace CocApi.Api
             {
                 end = DateTime.UtcNow;
 
-                HttpRequestException httpRequestException = new(path, end - start, e);
+                HttpRequestException httpRequestException = new("/players/{playerTag}/verifytoken", path, end - start, e);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
 
@@ -383,13 +383,13 @@ namespace CocApi.Api
             {
                 apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<VerifyTokenResponse>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
                 
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess(path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new(path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode, reasonPhrase);
 
                 OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
             }

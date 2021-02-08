@@ -12,6 +12,8 @@ namespace CocApi
 
         string Path { get; }
 
+        string PathFormat { get; }
+
         //RequestOptions RequestOptions { get; }
 
         //string Url();

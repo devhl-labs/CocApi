@@ -10,9 +10,9 @@ namespace CocApi.Api
 {
     public partial class ClansApi
     {
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> FetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-            var response = await InternalGetClanWarLeagueWarResponseAsync(warTag, cancellationToken);
+            var response = await InternalFetchClanWarLeagueWarResponseAsync(warTag, cancellationToken);
 
             //response.Data.WarTag = warTag;
 
@@ -24,9 +24,9 @@ namespace CocApi.Api
             return response;
         }
 
-        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> GetCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = default)
+        public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<ClanWar>> FetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = default)
         {
-            var response = await InternalGetCurrentWarResponseAsync(clanTag, cancellationToken);
+            var response = await InternalFetchCurrentWarResponseAsync(clanTag, cancellationToken);
 
             //response.Data.ServerExpiration = response.ServerExpiration;
 

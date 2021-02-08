@@ -13,7 +13,7 @@ namespace CocApi.Cache.Models
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.GetCurrentWarResponseAsync(tag, cancellationToken);
+                ApiResponse<ClanWar> apiResponse = await clansApi.FetchCurrentWarResponseAsync(tag, cancellationToken);
 
                 CachedClanWar result = new CachedClanWar(tag, apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false));
 

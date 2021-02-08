@@ -57,6 +57,31 @@ namespace CocApi.Cache
             return cachedPlayer;
         }
 
+        public async Task DeleteAsync(string tag)
+        {
+            string formattedTag = Clash.FormatTag(tag);
+
+            using var scope = Services.CreateScope();
+
+            CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+
+            while (!UpdatingVillage.TryAdd(formattedTag, new byte()))            
+                await Task.Delay(500);            
+
+            try
+            {
+                CachedPlayer cachedPlayer = await dbContext.Players.FirstOrDefaultAsync(c => c.Tag == formattedTag);
+
+                if (cachedPlayer != null)
+                    dbContext.Players.Remove(cachedPlayer);
+
+                await dbContext.SaveChangesAsync();
+            }
+            finally
+            {
+                UpdatingVillage.TryRemove(formattedTag, out _);
+            }
+        }
 
         public async Task<CachedPlayer> GetCachedPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
@@ -91,7 +116,7 @@ namespace CocApi.Cache
             Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
 
             if (result == null)
-                result = await _playersApi.GetPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
+                result = await _playersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
 
             return result;
         }
@@ -101,7 +126,7 @@ namespace CocApi.Cache
             Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Data;
 
             if (result == null)
-                result = await _playersApi.GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
+                result = await _playersApi.FetchPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
 
             return result;
         }

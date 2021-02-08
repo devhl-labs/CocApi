@@ -19,8 +19,6 @@ namespace CocApi.Cache
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        private readonly ConcurrentDictionary<string, byte> _updatingClan = new ConcurrentDictionary<string, byte>();
-
         public ClanMembersMonitor(PlayersClientBase playersClientBase, ClientConfiguration configuration, ClansApi clansApi, ClansClientBase clansClientBase) 
             : base(configuration)
         {
@@ -123,7 +121,7 @@ namespace CocApi.Cache
             }
 
             foreach (Model.ClanMember? member in cached.Data.Members)
-                tasks.Add(MonitorMemberAsync(players.FirstOrDefault(p => p.Tag == member.Tag)));
+                tasks.Add(MonitorMemberAsync(players.Single(p => p.Tag == member.Tag)));
 
             await Task.WhenAll(tasks);
 
