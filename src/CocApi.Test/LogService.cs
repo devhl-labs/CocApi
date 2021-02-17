@@ -84,7 +84,7 @@ namespace CocApi.Test
 
                 foreach (string? message in messages)
                 {
-                    if (string.IsNullOrEmpty(message))
+                    if (string.IsNullOrWhiteSpace(message))
                         continue;
 
                     Console.Write($" | {message}");

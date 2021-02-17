@@ -134,7 +134,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<Player> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -149,7 +149,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -241,7 +241,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", path, end - start, httpStatusCode);
 
@@ -268,7 +268,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<VerifyTokenResponse> VerifyTokenAsync(string playerTag, VerifyTokenRequest body, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<VerifyTokenResponse> result = await VerifyTokenResponseAsync(playerTag, body, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<VerifyTokenResponse> result = await VerifyTokenResponseAsync(playerTag, body, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -381,7 +381,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<VerifyTokenResponse>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<VerifyTokenResponse>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode);
 

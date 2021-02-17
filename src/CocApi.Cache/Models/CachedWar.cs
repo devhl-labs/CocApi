@@ -21,9 +21,9 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
-                TimeSpan timeToLive = await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false);
+                TimeSpan timeToLive = await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
-                if (!apiResponse.IsSuccessStatusCode || apiResponse.Data?.State == WarState.NotInWar)
+                if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
 
                 CachedWar result = new CachedWar(apiResponse, timeToLive, warTag, season)
@@ -35,7 +35,7 @@ namespace CocApi.Cache.Models
             }
             catch (Exception e)
             {
-                return new CachedWar(warTag, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedWar(warTag, await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
             }
         }
 
@@ -99,15 +99,15 @@ namespace CocApi.Cache.Models
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
-            ClanTag = apiResponse.Data.Clans.First().Value.Tag;
+            ClanTag = apiResponse.Content.Clans.First().Value.Tag;
 
-            OpponentTag = apiResponse.Data.Clans.Skip(1).First().Value.Tag;
+            OpponentTag = apiResponse.Content.Clans.Skip(1).First().Value.Tag;
 
-            State = apiResponse.Data.State;
+            State = apiResponse.Content.State;
 
-            PreparationStartTime = apiResponse.Data.PreparationStartTime;
+            PreparationStartTime = apiResponse.Content.PreparationStartTime;
 
-            EndTime = apiResponse.Data.EndTime;
+            EndTime = apiResponse.Content.EndTime;
 
             //Type = apiResponse.Data.WarType;
 

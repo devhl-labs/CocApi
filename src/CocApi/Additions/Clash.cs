@@ -27,7 +27,7 @@ namespace CocApi
 
         public static bool IsValidTag(string tag)
         {
-            if (string.IsNullOrEmpty(tag))
+            if (string.IsNullOrWhiteSpace(tag))
                 return false;
 
             if (tag == "#0")
@@ -56,7 +56,7 @@ namespace CocApi
 
         public static string FormatTag(string userInput)
         {
-            if (string.IsNullOrEmpty(userInput))
+            if (string.IsNullOrWhiteSpace(userInput))
                 throw new InvalidTagException(userInput);
 
             string formattedTag = NormalizeTag(userInput);

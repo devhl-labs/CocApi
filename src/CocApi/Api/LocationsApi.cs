@@ -312,7 +312,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanRankingList> FetchClanRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanRankingList> result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -330,7 +330,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanRankingList> result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -432,7 +432,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanRankingList>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans", path, end - start, httpStatusCode);
 
@@ -461,7 +461,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanVersusRankingList> FetchClanVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanVersusRankingList> result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -479,7 +479,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanVersusRankingList> result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -581,7 +581,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanVersusRankingList>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanVersusRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans-versus", path, end - start, httpStatusCode);
 
@@ -607,7 +607,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<Location> FetchLocationAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<Location> result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -622,7 +622,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<Location> result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -712,7 +712,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<Location>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<Location>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}", path, end - start, httpStatusCode);
 
@@ -740,7 +740,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LocationList> FetchLocationsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LocationList> result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -757,7 +757,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<LocationList> result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -854,7 +854,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LocationList>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LocationList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations", path, end - start, httpStatusCode);
 
@@ -883,7 +883,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<PlayerRankingList> FetchPlayerRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -901,7 +901,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -1003,7 +1003,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerRankingList>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players", path, end - start, httpStatusCode);
 
@@ -1032,7 +1032,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<PlayerVersusRankingList> FetchPlayerVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<PlayerVersusRankingList> result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -1050,7 +1050,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<PlayerVersusRankingList> result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -1152,7 +1152,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerVersusRankingList>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerVersusRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players-versus", path, end - start, httpStatusCode);
 

@@ -214,6 +214,33 @@ namespace CocApi.Model
         }
 
         /// <summary>
+        /// Gets the hash code
+        /// </summary>
+        /// <returns>Hash code</returns>
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hashCode = 41;
+                if (this.Clan != null)
+                    hashCode = hashCode * 59 + this.Clan.GetHashCode();
+                if (this.League != null)
+                    hashCode = hashCode * 59 + this.League.GetHashCode();
+                hashCode = hashCode * 59 + this.AttackWins.GetHashCode();
+                hashCode = hashCode * 59 + this.DefenseWins.GetHashCode();
+                if (this.Tag != null)
+                    hashCode = hashCode * 59 + this.Tag.GetHashCode();
+                if (this.Name != null)
+                    hashCode = hashCode * 59 + this.Name.GetHashCode();
+                hashCode = hashCode * 59 + this.ExpLevel.GetHashCode();
+                hashCode = hashCode * 59 + this.Rank.GetHashCode();
+                hashCode = hashCode * 59 + this.PreviousRank.GetHashCode();
+                hashCode = hashCode * 59 + this.Trophies.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>
         /// To validate all properties of the instance
         /// </summary>
         /// <param name="validationContext">Validation context</param>

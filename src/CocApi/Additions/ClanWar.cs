@@ -49,10 +49,10 @@ namespace CocApi.Model
         [DataMember(Name = "warTag", EmitDefaultValue = false)]
         public string? WarTag { get; internal set; }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(PreparationStartTime, Clans.Values.First().Tag);
-        }
+        //public override int GetHashCode()
+        //{
+        //    return HashCode.Combine(PreparationStartTime, Clans.Values.First().Tag);
+        //}
 
         private SortedDictionary<string, WarClan> _clans = new SortedDictionary<string, WarClan>();
 

@@ -11,7 +11,7 @@ namespace CocApi.Cache.Models
     {
         public int Id { get; internal set; }
 
-        public string RawContent { get; internal set; } = string.Empty;
+        public string? RawContent { get; internal set; }
 
         public DateTime Downloaded { get; internal set; }
 
@@ -31,7 +31,7 @@ namespace CocApi.Cache.Models
             get
             {
                 lock(_dataLock)
-                    if (_data == null)
+                    if (_data == null && !string.IsNullOrWhiteSpace(RawContent))
                     {
                         _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
 
@@ -69,8 +69,8 @@ namespace CocApi.Cache.Models
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                RawContent = apiResponse.RawData;
-                Data = apiResponse.Data;
+                RawContent = apiResponse.RawContent;
+                Data = apiResponse.Content;
             }
         }
 
@@ -92,7 +92,7 @@ namespace CocApi.Cache.Models
             LocalExpiration = fetched.LocalExpiration;
 
             Data = fetched.Data ?? _data;
-            RawContent = (!string.IsNullOrEmpty(fetched.RawContent)) ? fetched.RawContent : RawContent;
+            RawContent = (!string.IsNullOrWhiteSpace(fetched.RawContent)) ? fetched.RawContent : RawContent;
         }
 
         public bool IsServerExpired() => DateTime.UtcNow > ServerExpiration.AddSeconds(3);

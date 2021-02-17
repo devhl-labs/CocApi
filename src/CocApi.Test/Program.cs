@@ -9,6 +9,8 @@ using CocApi.Api;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
+using Microsoft.EntityFrameworkCore.Design;
+using Polly;
 
 namespace CocApi.Test
 {
@@ -21,6 +23,10 @@ namespace CocApi.Test
 
             CocApi.Requests.HttpRequestResult += OnHttpRequestResult;
 
+            CocApi.Cache.Library.Log += OnLog;
+
+            //CocApi.Cache.Library.MemberMonitorOptions.IsDisabled = true;
+
             await CreateHostBuilder(args).Build().RunAsync();
         }
 
@@ -30,10 +36,17 @@ namespace CocApi.Test
 
             if (log.HttpRequestResult is HttpRequestException exception)
                 LogService.Log(LogLevel.Warning, sender.GetType().Name, seconds, exception.Path, exception.Message, exception.InnerException?.Message);
-            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)            
-                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);            
+            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)
+                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);
             else
                 LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.Path);
+
+            return Task.CompletedTask;
+        }
+
+        private static Task OnLog(object sender, LogEventArgs log)
+        {
+            LogService.Log(LogLevel.Information, sender.GetType().Name, new string?[] { log.Message, log.Exception?.Message, log.Exception?.InnerException?.Message });
 
             return Task.CompletedTask;
         }
@@ -47,16 +60,21 @@ namespace CocApi.Test
                 services.AddSingleton(LocationsApiFactory);
                 services.AddSingleton(LeaguesApiFactory);
                 services.AddSingleton(TokenProviderFactory);
-
-                services.AddSingleton<ClientConfiguration>();
+                services.AddSingleton<IDesignTimeDbContextFactory<CocApi.Cache.CocApiCacheContext>, CocApiDbContext>();
                 services.AddSingleton<PlayersClient>();
                 services.AddHostedService<ClansClient>();
-                
+
                 services.AddHttpClient("cocApi", config =>
                 {
                     config.BaseAddress = new Uri("https://api.clashofclans.com/v1");
-                    config.Timeout = TimeSpan.FromSeconds(10);                    
+                    config.Timeout = TimeSpan.FromSeconds(11);
                 })
+                .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(5)))
+                .AddTransientHttpErrorPolicy(builder => builder.RetryAsync(2))
+                .AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(
+                        handledEventsAllowedBeforeBreaking: 20,
+                        durationOfBreak: TimeSpan.FromSeconds(30)
+                ))
                 .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler() { MaxConnectionsPerServer = 100 });
             })
             .ConfigureLogging(o => o.ClearProviders());
@@ -83,7 +101,7 @@ namespace CocApi.Test
             ClansApi clansApi = new ClansApi(httpClient, tokenProvider);
 
             return clansApi;
-        }       
+        }
 
         private static PlayersApi PlayersApiFactory(IServiceProvider arg)
         {
@@ -113,6 +131,12 @@ namespace CocApi.Test
             LocationsApi locationsApi = new LocationsApi(httpClient, tokenProvider);
 
             return locationsApi;
+        }
+
+        public static string GetEnvironmentVariable(string name)
+        {
+            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine)
+                ?? throw new Exception($"No environment variable was found with name {name}");
         }
     }
 }

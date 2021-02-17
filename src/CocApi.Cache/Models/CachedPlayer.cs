@@ -20,11 +20,11 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<Player> apiResponse = await playersApi.FetchPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedPlayer(tag, apiResponse, await playersCacheBase.TimeToLiveAsync(apiResponse).ConfigureAwait(false));
+                return new CachedPlayer(tag, apiResponse, await playersCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e)
             {
-                return new CachedPlayer(tag, await playersCacheBase.TimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedPlayer(tag, await playersCacheBase.TimeToLiveOrDefaultAsync(e).ConfigureAwait(false));
             }
         }
 
@@ -38,7 +38,7 @@ namespace CocApi.Cache.Models
         {
             Tag = tag;
 
-            ClanTag = response.Data?.Clan?.Tag;
+            ClanTag = response.Content?.Clan?.Tag;
         }
 
         private CachedPlayer(string tag, TimeSpan localExpiration) : base (localExpiration)

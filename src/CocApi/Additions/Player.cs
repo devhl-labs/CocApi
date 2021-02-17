@@ -46,10 +46,10 @@ namespace CocApi.Model
         //[DataMember(Name = "role", EmitDefaultValue = false)]
         //public Role? Role { get; private set; }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Tag);
-        }
+        //public override int GetHashCode()
+        //{
+        //    return HashCode.Combine(Tag);
+        //}
 
         public int? HeroLevel(string name) => Heroes.First(h => h.Name == name).Level;
         

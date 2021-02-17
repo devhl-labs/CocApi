@@ -1,4 +1,5 @@
-﻿using CocApi.Model;
+﻿using CocApi.Cache.Context.CachedItems;
+using CocApi.Model;
 using System;
 
 namespace CocApi.Cache
@@ -9,10 +10,12 @@ namespace CocApi.Cache
 
         public ClanWarLog? Stored { get; }
 
-        public ClanWarLogUpdatedEventArgs(ClanWarLog? stored, ClanWarLog fetched)
+        public Clan? Clan { get; }
+
+        public ClanWarLogUpdatedEventArgs(ClanWarLog? stored, ClanWarLog fetched, Clan? clan)
         {
             Fetched = fetched;
-
+            Clan = clan;
             Stored = stored;
         }
     }

@@ -177,6 +177,28 @@ namespace CocApi.Model
         }
 
         /// <summary>
+        /// Gets the hash code
+        /// </summary>
+        /// <returns>Hash code</returns>
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hashCode = 41;
+                if (this.Tag != null)
+                    hashCode = hashCode * 59 + this.Tag.GetHashCode();
+                hashCode = hashCode * 59 + this.State.GetHashCode();
+                if (this.Season != null)
+                    hashCode = hashCode * 59 + this.Season.GetHashCode();
+                if (this.Clans != null)
+                    hashCode = hashCode * 59 + this.Clans.GetHashCode();
+                if (this.Rounds != null)
+                    hashCode = hashCode * 59 + this.Rounds.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>
         /// To validate all properties of the instance
         /// </summary>
         /// <param name="validationContext">Validation context</param>

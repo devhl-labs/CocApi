@@ -15,13 +15,13 @@ namespace CocApi.Cache.Models
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.FetchCurrentWarResponseAsync(tag, cancellationToken);
 
-                CachedClanWar result = new CachedClanWar(tag, apiResponse, await clansCacheBase.ClanWarTimeToLiveAsync(apiResponse).ConfigureAwait(false));
+                CachedClanWar result = new CachedClanWar(tag, apiResponse, await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
 
                 return result;
             }
             catch (Exception e)
             {
-                return new CachedClanWar(tag, await clansCacheBase.ClanWarTimeToLiveAsync(e).ConfigureAwait(false));
+                return new CachedClanWar(tag, await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
             }
         }
 
@@ -58,11 +58,11 @@ namespace CocApi.Cache.Models
             
             Tag = clanTag;
             
-            if (apiResponse.Data != null)
+            if (apiResponse.Content != null)
             {
-                State = apiResponse.Data.State;
+                State = apiResponse.Content.State;
 
-                PreparationStartTime = apiResponse.Data.PreparationStartTime;
+                PreparationStartTime = apiResponse.Content.PreparationStartTime;
             }
         }
 

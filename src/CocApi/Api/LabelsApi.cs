@@ -145,7 +145,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LabelsObject> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -259,7 +259,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/clans", path, end - start, httpStatusCode);
 
@@ -287,7 +287,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LabelsObject> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -401,7 +401,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/players", path, end - start, httpStatusCode);
 

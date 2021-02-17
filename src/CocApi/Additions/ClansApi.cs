@@ -18,8 +18,8 @@ namespace CocApi.Api
 
             //response.Data.ServerExpiration = response.ServerExpiration;
 
-            if (response.Data != null)
-                response.Data.Initialize(response.ServerExpiration, warTag);
+            if (response.Content != null)
+                response.Content.Initialize(response.ServerExpiration, warTag);
 
             return response;
         }
@@ -30,8 +30,8 @@ namespace CocApi.Api
 
             //response.Data.ServerExpiration = response.ServerExpiration;
 
-            if (response.Data != null)
-                response.Data.Initialize(response.ServerExpiration, null);
+            if (response.Content != null)
+                response.Content.Initialize(response.ServerExpiration, null);
 
             return response;
         }

@@ -349,7 +349,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<Clan> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<Clan> result = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -364,7 +364,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<Clan> result = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -456,7 +456,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<Clan>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<Clan>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", path, end - start, httpStatusCode);
 
@@ -485,7 +485,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<List<ClanMember>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<List<ClanMember>> result = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -503,7 +503,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<List<ClanMember>> result = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -607,7 +607,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ClanMember>>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ClanMember>>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/members", path, end - start, httpStatusCode);
 
@@ -633,7 +633,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWarLeagueGroup> result = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -648,7 +648,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanWarLeagueGroup> result = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -740,7 +740,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWarLeagueGroup>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWarLeagueGroup>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", path, end - start, httpStatusCode);
 
@@ -766,7 +766,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWar> result = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -781,7 +781,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanWar> result = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -873,7 +873,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWar>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWar>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", path, end - start, httpStatusCode);
 
@@ -902,7 +902,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWarLog> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWarLog> result = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -920,7 +920,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanWarLog> result = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -1024,7 +1024,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWarLog>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWarLog>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", path, end - start, httpStatusCode);
 
@@ -1050,7 +1050,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWar> FetchCurrentWarAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWar> result = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -1065,7 +1065,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanWar> result = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -1157,7 +1157,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWar>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWar>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", path, end - start, httpStatusCode);
 
@@ -1193,7 +1193,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanList> SearchClansAsync(string? name = null, string? warFrequency = null, int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanList> result = await SearchClansResponseAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken).ConfigureAwait(false);
-            return result.Data ?? throw new NullReferenceException();
+            return result.Content ?? throw new NullReferenceException();
         }
 
         /// <summary>
@@ -1218,7 +1218,7 @@ namespace CocApi.Api
             CocApi.Client.ApiResponse<ClanList> result = await SearchClansResponseAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken).ConfigureAwait(false);
             
             return result.IsSuccessStatusCode
-                ? result.Data
+                ? result.Content
                 : null;
         } 
 
@@ -1347,7 +1347,7 @@ namespace CocApi.Api
 
             if (apiResponse.IsSuccessStatusCode)
             {
-                apiResponse.Data = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanList>(apiResponse.RawData, CocApi.Clash.JsonSerializerSettings);
+                apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
                 HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans", path, end - start, httpStatusCode);
 

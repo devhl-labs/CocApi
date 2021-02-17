@@ -37,10 +37,10 @@ namespace CocApi.Model
         //           Clans.OrderBy(c => c.Tag).First().Tag == other.Clans.OrderBy(c => c.Tag).First().Tag;
         //}
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Clans.OrderBy(c => c.Tag).First().Tag, Season);
-        }
+        //public override int GetHashCode()
+        //{
+        //    return HashCode.Combine(Clans.OrderBy(c => c.Tag).First().Tag, Season);
+        //}
 
         ///// <summary>
         ///// Gets or Sets State

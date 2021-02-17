@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
+using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
@@ -13,37 +15,259 @@ namespace CocApi.Cache
 
     public class ClientBase
     {
-        private protected bool _isRunning;
-        internal protected IServiceProvider Services { get; }
-        internal protected ClientConfiguration Configuration { get; }
+        internal protected IDesignTimeDbContextFactory<CocApiCacheContext> DbContextFactory { get; }
+        internal protected string[] DbContextArgs { get; }
 
-        public void Migrate() => MigrationHandler.Migrate(Configuration.ConnectionString);
-
-        public ClientBase(ClientConfiguration configuration)
+        public ClientBase(IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
         {
-            Configuration = configuration;
-            Services = Utils.BuildServiceProvider(Configuration.ConnectionString);
+            DbContextFactory = dbContextFactory;
+            DbContextArgs = dbContextArgs;
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public async Task ImportDataToVersion2(string connectionString)
         {
-            _stopRequestedTokenSource.Cancel();
+            await ImportWarsAsync(connectionString);
 
-            while (_isRunning)            
-                await Task.Delay(50, cancellationToken).ConfigureAwait(false);            
+            await ImportClansAsync(connectionString);
+
+            await ImportPlayersAsync(connectionString);
         }
 
-        internal Task StartAsync()
+        private async Task ImportWarsAsync(string connectionString)
         {
-            CacheContext cachedContext = Services.GetRequiredService<CacheContext>();
+            int id = int.MinValue;
 
-            if (cachedContext.Database.GetPendingMigrations().Any())
-                throw new Exception("Please run the migration before starting the client.");
+            List<Models.CachedWar> oldWars;
 
-            return Task.CompletedTask;
+            do
+            {
+                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+
+                if ((await dbContext.Wars.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
+                    return;
+
+                dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
+                DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
+
+                optionsBuilder.UseSqlite(connectionString);
+
+                using CacheContext oldContext = new CacheContext(optionsBuilder.Options);
+
+                oldContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
+                oldWars = await oldContext.Wars.AsNoTracking().Where(w => w.Id > id).OrderBy(w => w.Id).Take(100).ToListAsync();
+
+                if (oldWars.Count == 0)
+                    return;
+
+                id = oldWars.Max(w => w.Id);
+
+                foreach (Models.CachedWar oldWar in oldWars)
+                {
+                    CachedWar cachedWar = new CachedWar
+                    {
+                        Announcements = oldWar.Announcements,
+                        ClanTag = oldWar.ClanTag,
+                        Content = oldWar.Data,
+                        Download = true, // this value is not used
+                        DownloadedAt = oldWar.Downloaded,
+                        EndTime = oldWar.EndTime,
+                        ExpiresAt = oldWar.ServerExpiration,
+                        IsFinal = oldWar.IsFinal,
+                        KeepUntil = oldWar.LocalExpiration,
+                        OpponentTag = oldWar.OpponentTag,
+                        PreparationStartTime = oldWar.PreparationStartTime,
+                        RawContent = oldWar.RawContent,
+                        Season = oldWar.Season,
+                        State = oldWar.State,
+                        StatusCode = oldWar.StatusCode,
+                        Type = !string.IsNullOrWhiteSpace(oldWar.WarTag) ? WarType.SCCWL : oldWar.Type,
+                        WarTag = oldWar.WarTag
+                    };
+
+                    if (oldWar.RawContent == string.Empty)
+                        cachedWar.RawContent = null;
+
+                    if (oldWar.Season == DateTime.MinValue)
+                        cachedWar.Season = null;
+
+                    if (oldWar.StatusCode == 0)
+                        cachedWar.StatusCode = null;
+
+                    if (oldWar.WarTag == string.Empty)
+                        cachedWar.WarTag = null;
+
+                    dbContext.Wars.Add(cachedWar);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+
+            } while (oldWars.Count == 100);
         }
 
-        protected CancellationTokenSource _stopRequestedTokenSource = new CancellationTokenSource();
+        private async Task ImportClansAsync(string connectionString)
+        {
+            int id = int.MinValue;
+
+            List<Models.CachedClan> oldClans;
+
+            do
+            {
+                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+
+                if ((await dbContext.Clans.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
+                    return;
+
+                dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
+                DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
+
+                optionsBuilder.UseSqlite(connectionString);
+
+                using CacheContext oldContext = new CacheContext(optionsBuilder.Options);
+
+                oldContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
+                oldClans = await oldContext.Clans.AsNoTracking().Where(w => w.Id > id).OrderBy(w => w.Id).Take(100).ToListAsync();
+
+                if (oldClans.Count == 0)
+                    return;
+
+                id = oldClans.Max(w => w.Id);
+
+                var oldClanWars = await oldContext.ClanWars.AsNoTracking().Where(w => oldClans.Select(c => c.Tag).Contains(w.Tag)).ToListAsync();
+                var oldGroups = await oldContext.Groups.AsNoTracking().Where(w => oldClans.Select(c => c.Tag).Contains(w.Tag)).ToListAsync();
+                var oldWarLogs = await oldContext.WarLogs.AsNoTracking().Where(w => oldClans.Select(c => c.Tag).Contains(w.Tag)).ToListAsync();
+
+                foreach (Models.CachedClan oldClan in oldClans)
+                {
+                    CachedClan cachedClan = new CachedClan
+                    {
+                        CurrentWar = new(),
+                        Download = true,
+                        DownloadedAt = DateOrNull(oldClan.Downloaded),
+                        DownloadMembers = oldClan.DownloadMembers,
+                        ExpiresAt = DateOrNull(oldClan.ServerExpiration),
+                        Group = new(),
+                        IsWarLogPublic = oldClan.IsWarLogPublic,
+                        KeepUntil = DateOrNull(oldClan.LocalExpiration),
+                        RawContent = string.IsNullOrWhiteSpace(oldClan.RawContent) ? null : oldClan.RawContent,
+                        StatusCode = oldClan.StatusCode == 0 ? null : oldClan.StatusCode,
+                        Tag = oldClan.Tag,
+                        WarLog = new()
+                    };
+
+                    cachedClan.CurrentWar.Download = oldClan.DownloadCurrentWar;
+                    cachedClan.Group.Download = oldClan.DownloadCwl;
+                    cachedClan.WarLog.Download = false;
+
+                    dbContext.Clans.Add(cachedClan);
+
+                    var oldClanWar = oldClanWars.FirstOrDefault(w => w.Tag == oldClan.Tag);
+                    if (oldClanWar != null)
+                    {
+                        cachedClan.CurrentWar.Added = false; // default it to false, new war monitor can update it
+                        cachedClan.CurrentWar.DownloadedAt = DateOrNull(oldClanWar.Downloaded);
+                        var dummy = oldClanWar.Data?.Clans.FirstOrDefault(c => c.Key != oldClan.Tag);
+                        cachedClan.CurrentWar.EnemyTag = dummy?.Key;
+                        cachedClan.CurrentWar.ExpiresAt = DateOrNull(oldClanWar.ServerExpiration);
+                        cachedClan.CurrentWar.KeepUntil = DateOrNull(oldClanWar.LocalExpiration);
+                        cachedClan.CurrentWar.PreparationStartTime = DateOrNull(oldClanWar.PreparationStartTime);
+                        cachedClan.CurrentWar.RawContent = string.IsNullOrWhiteSpace(oldClanWar.RawContent) ? null : oldClanWar.RawContent;
+                        cachedClan.CurrentWar.State = oldClanWar.State;
+                        cachedClan.CurrentWar.StatusCode = oldClanWar.StatusCode == 0 ? null : oldClanWar.StatusCode;
+                        cachedClan.CurrentWar.Type = oldClanWar.Type;    
+                    }
+
+                    var oldGroup = oldGroups.FirstOrDefault(w => w.Tag == oldClan.Tag);
+                    if (oldGroup != null)
+                    {
+                        cachedClan.Group.Added = false;
+                        cachedClan.Group.DownloadedAt = DateOrNull(oldGroup.Downloaded);
+                        cachedClan.Group.ExpiresAt = DateOrNull(oldGroup.LocalExpiration);
+                        cachedClan.Group.KeepUntil = DateOrNull(oldGroup.LocalExpiration);
+                        cachedClan.Group.RawContent = string.IsNullOrWhiteSpace(oldGroup.RawContent) ? null : oldGroup.RawContent;
+                        cachedClan.Group.Season = oldGroup.Season == DateTime.MinValue ? null : oldGroup.Season;
+                        cachedClan.Group.State = oldGroup.State;
+                        cachedClan.Group.StatusCode = oldGroup.StatusCode == 0 ? null : oldGroup.StatusCode;
+                    }
+
+                    var oldWarLog = oldWarLogs.FirstOrDefault(w => w.Tag == oldClan.Tag);
+                    if (oldWarLog != null)
+                    {
+                        cachedClan.WarLog.DownloadedAt = DateOrNull(oldWarLog.Downloaded);
+                        cachedClan.WarLog.ExpiresAt = DateOrNull(oldWarLog.ServerExpiration);
+                        cachedClan.WarLog.KeepUntil = DateOrNull(oldWarLog.LocalExpiration);
+                        cachedClan.WarLog.RawContent = string.IsNullOrWhiteSpace(oldWarLog.RawContent) ? null : oldWarLog.RawContent;
+                        cachedClan.WarLog.StatusCode = oldWarLog.StatusCode == 0 ? null : oldWarLog.StatusCode;
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+
+
+            } while (oldClans.Count == 100);
+        }
+
+        private async Task ImportPlayersAsync(string connectionString)
+        {
+            int id = int.MinValue;
+
+            List<Models.CachedPlayer> oldPlayers;
+
+            do
+            {
+                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+
+                if ((await dbContext.Players.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
+                    return;
+
+                dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
+                DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
+
+                optionsBuilder.UseSqlite(connectionString);
+
+                using CacheContext oldContext = new CacheContext(optionsBuilder.Options);
+
+                oldContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
+
+                oldPlayers = await oldContext.Players.AsNoTracking().Where(w => w.Id > id).OrderBy(w => w.Id).Take(100).ToListAsync();
+
+                if (oldPlayers.Count == 0)
+                    return;
+
+                id = oldPlayers.Max(w => w.Id);
+
+                foreach (Models.CachedPlayer oldPlayer in oldPlayers)
+                {
+                    CachedPlayer cachedPlayer = new CachedPlayer(oldPlayer.Tag)
+                    {
+                        ClanTag = oldPlayer.ClanTag,
+                        Download = oldPlayer.Download,
+                        DownloadedAt = DateOrNull(oldPlayer.Downloaded),
+                        ExpiresAt = DateOrNull(oldPlayer.ServerExpiration),
+                        KeepUntil = DateOrNull(oldPlayer.LocalExpiration),
+                        RawContent = string.IsNullOrWhiteSpace(oldPlayer.RawContent) ? null : oldPlayer.RawContent,
+                        StatusCode = oldPlayer.StatusCode == 0 ? null : oldPlayer.StatusCode,
+                        Tag = oldPlayer.Tag
+                    };
+
+                    dbContext.Players.Add(cachedPlayer);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+
+            } while (oldPlayers.Count == 100);
+        }
+
+        private DateTime? DateOrNull(DateTime dte)
+        {
+            return dte == DateTime.MinValue ? null : dte;
+        }
     }
 
 }

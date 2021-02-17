@@ -1,17 +1,19 @@
 $ErrorActionPreference = "Stop"
 
-$root="$PSScriptRoot/../.."
+$root = Resolve-Path $PSScriptRoot/../.. | Select-Object -ExpandProperty Path 
+$repos = Resolve-Path $PSScriptRoot/../../.. | Select-Object -ExpandProperty Path
 
 Move-Item -Path "$root/src/CocApi/Additions" -Destination "$root/.."
 
 Remove-Item -Path "$root/src/CocApi" -Recurse
 
-cmd /c start /wait java -jar ..\..\..\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar generate `
+
+cmd /c start /wait java -jar $repos\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar generate `
     -g csharp-netcore `
-    -i ..\..\..\Clash-of-Clans-Swagger\swagger.yml `
-    -c generator-config.json `
-    -o ..\..\src\CocApi `
-    -t templates `
+    -i $repos\Clash-of-Clans-Swagger\swagger.yml `
+    -c $PSScriptRoot\generator-config.json `
+    -o $root\src\CocApi `
+    -t $PSScriptRoot\templates `
     --library httpclient `
     --global-property apiTests,modelTests | Out-Null
 
@@ -86,7 +88,7 @@ function Get-ContentWithoutLeadingFormatTag {
 }
   
 
-$files = Get-ChildItem ..\..\src\CocApi -Recurse
+$files = Get-ChildItem $root\src\CocApi -Recurse
 foreach ($file in $files)
 {    
     if ($file.PSIsContainer){
@@ -145,6 +147,10 @@ foreach ($file in $files)
         $content=$content.Replace('public int Members { get; private set; }', 'public List<ClanMember> Members { get; private set; }')
         $content=$content.Replace('MemberList = memberList;', '//MemberList = memberList;')
         $content=$content.Replace('Members = members;', 'Members = memberList;')
+
+        $content=$content.Replace('if (this.MemberList != null)', 'if (this.Members != null)')
+        $content=$content.Replace('hashCode = hashCode * 59 + this.MemberList.GetHashCode();', 'hashCode = hashCode * 59 + this.Members.GetHashCode();')
+
         $content=$content.Replace(
 '                (
                     MemberList == input.MemberList ||
@@ -218,4 +224,4 @@ Move-Item -Path "$root/src/CocApi/src/CocApi/Client" -Destination "$root/src/Coc
 Move-Item -Path "$root/src/CocApi/src/CocApi/Model" -Destination "$root/src/CocApi/Model"
 Move-Item -Path "$root/src/CocApi/src/CocApi/CocApi.csproj" -Destination "$root/src/CocApi"
 Remove-Item -Path "$root/src/CocApi/src" -Recurse
-Move-Item -Path "$root/../Additions" -Destination "$root/src/CocApi"
+Move-Item -Path "$repos/Additions" -Destination "$root/src/CocApi"

@@ -134,10 +134,10 @@ namespace CocApi.Model
         //           Tag == other.Tag;
         //}
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Tag);
-        }
+        //public override int GetHashCode()
+        //{
+        //    return HashCode.Combine(Tag);
+        //}
 
         ///// <summary>
         ///// Initializes a new instance of the <see cref="Clan" /> class.

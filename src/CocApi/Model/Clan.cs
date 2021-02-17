@@ -411,6 +411,47 @@ namespace CocApi.Model
         }
 
         /// <summary>
+        /// Gets the hash code
+        /// </summary>
+        /// <returns>Hash code</returns>
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hashCode = 41;
+                if (this.WarLeague != null)
+                    hashCode = hashCode * 59 + this.WarLeague.GetHashCode();
+                if (this.Members != null)
+                    hashCode = hashCode * 59 + this.Members.GetHashCode();
+                hashCode = hashCode * 59 + this.RequiredTrophies.GetHashCode();
+                hashCode = hashCode * 59 + this.ClanVersusPoints.GetHashCode();
+                if (this.Tag != null)
+                    hashCode = hashCode * 59 + this.Tag.GetHashCode();
+                hashCode = hashCode * 59 + this.IsWarLogPublic.GetHashCode();
+                hashCode = hashCode * 59 + this.WarFrequency.GetHashCode();
+                hashCode = hashCode * 59 + this.ClanLevel.GetHashCode();
+                hashCode = hashCode * 59 + this.WarWinStreak.GetHashCode();
+                hashCode = hashCode * 59 + this.WarWins.GetHashCode();
+                hashCode = hashCode * 59 + this.WarTies.GetHashCode();
+                hashCode = hashCode * 59 + this.WarLosses.GetHashCode();
+                hashCode = hashCode * 59 + this.ClanPoints.GetHashCode();
+                if (this.Labels != null)
+                    hashCode = hashCode * 59 + this.Labels.GetHashCode();
+                if (this.Name != null)
+                    hashCode = hashCode * 59 + this.Name.GetHashCode();
+                if (this.Location != null)
+                    hashCode = hashCode * 59 + this.Location.GetHashCode();
+                hashCode = hashCode * 59 + this.Type.GetHashCode();
+                hashCode = hashCode * 59 + this.Members.GetHashCode();
+                if (this.Description != null)
+                    hashCode = hashCode * 59 + this.Description.GetHashCode();
+                if (this.BadgeUrls != null)
+                    hashCode = hashCode * 59 + this.BadgeUrls.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>
         /// To validate all properties of the instance
         /// </summary>
         /// <param name="validationContext">Validation context</param>

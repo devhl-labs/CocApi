@@ -465,6 +465,55 @@ namespace CocApi.Model
         }
 
         /// <summary>
+        /// Gets the hash code
+        /// </summary>
+        /// <returns>Hash code</returns>
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hashCode = 41;
+                if (this.Clan != null)
+                    hashCode = hashCode * 59 + this.Clan.GetHashCode();
+                if (this.League != null)
+                    hashCode = hashCode * 59 + this.League.GetHashCode();
+                hashCode = hashCode * 59 + this.Role.GetHashCode();
+                hashCode = hashCode * 59 + this.AttackWins.GetHashCode();
+                hashCode = hashCode * 59 + this.DefenseWins.GetHashCode();
+                hashCode = hashCode * 59 + this.TownHallLevel.GetHashCode();
+                hashCode = hashCode * 59 + this.TownHallWeaponLevel.GetHashCode();
+                hashCode = hashCode * 59 + this.VersusBattleWins.GetHashCode();
+                if (this.LegendStatistics != null)
+                    hashCode = hashCode * 59 + this.LegendStatistics.GetHashCode();
+                if (this.Troops != null)
+                    hashCode = hashCode * 59 + this.Troops.GetHashCode();
+                if (this.Heroes != null)
+                    hashCode = hashCode * 59 + this.Heroes.GetHashCode();
+                if (this.Spells != null)
+                    hashCode = hashCode * 59 + this.Spells.GetHashCode();
+                if (this.Labels != null)
+                    hashCode = hashCode * 59 + this.Labels.GetHashCode();
+                if (this.Tag != null)
+                    hashCode = hashCode * 59 + this.Tag.GetHashCode();
+                if (this.Name != null)
+                    hashCode = hashCode * 59 + this.Name.GetHashCode();
+                hashCode = hashCode * 59 + this.ExpLevel.GetHashCode();
+                hashCode = hashCode * 59 + this.Trophies.GetHashCode();
+                hashCode = hashCode * 59 + this.BestTrophies.GetHashCode();
+                hashCode = hashCode * 59 + this.Donations.GetHashCode();
+                hashCode = hashCode * 59 + this.DonationsReceived.GetHashCode();
+                hashCode = hashCode * 59 + this.BuilderHallLevel.GetHashCode();
+                hashCode = hashCode * 59 + this.VersusTrophies.GetHashCode();
+                hashCode = hashCode * 59 + this.BestVersusTrophies.GetHashCode();
+                hashCode = hashCode * 59 + this.WarStars.GetHashCode();
+                if (this.Achievements != null)
+                    hashCode = hashCode * 59 + this.Achievements.GetHashCode();
+                hashCode = hashCode * 59 + this.VersusBattleWinCount.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        /// <summary>
         /// To validate all properties of the instance
         /// </summary>
         /// <param name="validationContext">Validation context</param>
