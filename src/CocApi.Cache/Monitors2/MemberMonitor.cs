@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -42,8 +38,6 @@ namespace CocApi.Cache
                 while (_stopRequestedTokenSource.IsCancellationRequested == false)
                 {
                     using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-                    DateTime expires = DateTime.UtcNow.AddSeconds(-3);
 
                     Context.CachedItems.CachedClan cachedClan = await dbContext.Clans
                         .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, _stopRequestedTokenSource.Token).ConfigureAwait(false);
@@ -107,7 +101,10 @@ namespace CocApi.Cache
                             _playersClientBase.UpdatingVillage.TryRemove(tag, out _);
                     }
 
-                    await Task.Delay(Library.MemberMonitorOptions.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    if (_id == int.MinValue)
+                        await Task.Delay(Library.Monitors.Members.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    else
+                        await Task.Delay(Library.Monitors.Members.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;

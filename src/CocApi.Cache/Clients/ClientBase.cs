@@ -39,12 +39,14 @@ namespace CocApi.Cache
 
             List<Models.CachedWar> oldWars;
 
+            using var dbContext2 = DbContextFactory.CreateDbContext(DbContextArgs);
+
+            if ((await dbContext2.Wars.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
+                return;
+
             do
             {
                 using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-                if ((await dbContext.Wars.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
-                    return;
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -113,12 +115,14 @@ namespace CocApi.Cache
 
             List<Models.CachedClan> oldClans;
 
+            using var dbContext2 = DbContextFactory.CreateDbContext(DbContextArgs);
+
+            if ((await dbContext2.Clans.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
+                return;
+
             do
             {
                 using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-                if ((await dbContext.Clans.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
-                    return;
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -217,12 +221,14 @@ namespace CocApi.Cache
 
             List<Models.CachedPlayer> oldPlayers;
 
+            using var dbContext2 = DbContextFactory.CreateDbContext(DbContextArgs);
+
+            if ((await dbContext2.Players.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
+                return;
+
             do
             {
                 using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-                if ((await dbContext.Players.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
-                    return;
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 

@@ -21,11 +21,11 @@ namespace CocApi.Test
             if (args.Any())
                 Console.WriteLine(args);
 
-            CocApi.Requests.HttpRequestResult += OnHttpRequestResult;
+            CocApi.Library.HttpRequestResult += OnHttpRequestResult;
 
             CocApi.Cache.Library.Log += OnLog;
 
-            //CocApi.Cache.Library.MemberMonitorOptions.IsDisabled = true;
+            CocApi.Cache.Library.Monitors.Members.IsDisabled = false;
 
             await CreateHostBuilder(args).Build().RunAsync();
         }

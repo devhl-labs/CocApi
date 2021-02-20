@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -18,6 +14,7 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         public NewCwlWarMonitor(
             IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansApi clansApi, ClansClientBase clansClientBase)
@@ -44,18 +41,18 @@ namespace CocApi.Cache
                 {
                     using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-                    List<Context.CachedItems.CachedClan> cachedClans = await dbContext.Clans
+                    List<CachedClan> cachedClans = await dbContext.Clans
                         .Where(c =>
                             c.CurrentWar.Download && 
                             !c.Group.Added &&
                             !string.IsNullOrWhiteSpace(c.Group.RawContent) &&
                             c.Id > _id)
                         .OrderBy(c => c.Id)
-                        .Take(Library.NewCwlWarMonitorOptions.ConcurrentUpdates)
+                        .Take(Library.Monitors.NewCwlWars.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    _id = cachedClans.Count == Library.NewCwlWarMonitorOptions.ConcurrentUpdates
+                    _id = cachedClans.Count == Library.Monitors.NewCwlWars.ConcurrentUpdates
                         ? cachedClans.Max(c => c.Id)
                         : int.MinValue;
 
@@ -63,7 +60,7 @@ namespace CocApi.Cache
 
                     Dictionary<string, DateTime> updatingTags = new();
 
-                    foreach (Context.CachedItems.CachedClan cachedClan in cachedClans)
+                    foreach (CachedClan cachedClan in cachedClans)
                     {
                         cachedClan.Group.Added = true;
 
@@ -101,7 +98,10 @@ namespace CocApi.Cache
                             _clansClient.UpdatingCwlWar.TryRemove(tag, out _);
                     }
 
-                    await Task.Delay(Library.NewCwlWarMonitorOptions.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    if (_id == int.MinValue)
+                        await Task.Delay(Library.Monitors.NewCwlWars.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    else
+                        await Task.Delay(Library.Monitors.NewCwlWars.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -127,7 +127,18 @@ namespace CocApi.Cache
             CachedWar cachedWar = await CachedWar.FromClanWarLeagueWarResponseAsync(tag, season, _clansClient, _clansApi, cancellationToken).ConfigureAwait(false);
 
             if (cachedWar.Content != null)
-                dbContext.Wars.Add(cachedWar);
+            {
+                await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                try
+                {
+                    dbContext.Wars.Add(cachedWar);
+                }
+                finally
+                {
+                    _semaphore.Release();
+                }
+            }
         }
 
         public new async Task StopAsync(CancellationToken cancellationToken)

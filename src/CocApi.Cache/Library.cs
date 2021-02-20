@@ -1,33 +1,10 @@
 ﻿using System;
 using System.Threading;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
     public static class Library
     {
-        private static IServiceProvider? _services;
-        private static readonly object _serviceProviderLock = new object();
-
-        internal static IServiceProvider BuildServiceProvider(string connectionString)
-        {
-            lock (_serviceProviderLock)
-            {
-                if (_services != null)
-                    return _services;
-
-                var services = new ServiceCollection()
-                    .AddDbContext<CacheContext>(o =>
-                        o.UseSqlite(connectionString))
-                    .BuildServiceProvider();
-
-                _services = services;
-
-                return _services;
-            }
-        }
-
         internal static void OnLog(object sender, LogEventArgs log)
         {
             try
@@ -42,17 +19,20 @@ namespace CocApi.Cache
 
         public static event LogEventHandler? Log;
 
-        public static int MaxConcurrentEvents { get; set; } = 50;
+        public static int MaxConcurrentEvents { get; set; } = 25;
 
         internal static SemaphoreSlim ConcurrentEventsSemaphore = new SemaphoreSlim(MaxConcurrentEvents, MaxConcurrentEvents);
 
-        public static MonitorOptions ClanMonitorOptions { get; } = new MonitorOptions();
-        public static MonitorOptions MemberMonitorOptions { get; } = new MonitorOptions();
-        public static MonitorOptions NewCwlWarMonitorOptions { get; } = new MonitorOptions { DelayBetweenTasks = TimeSpan.FromMinutes(2), ConcurrentUpdates = 10 };
-        public static MonitorOptions NewWarMonitorOptions { get; } = new MonitorOptions { DelayBetweenTasks = TimeSpan.FromSeconds(15) };
-        public static MonitorOptions PlayerMonitorOptions { get; } = new MonitorOptions { DelayBetweenTasks = TimeSpan.FromMinutes(2) };
-        public static MonitorOptions UnmonitoredClansMonitorOptions { get; } = new MonitorOptions { DelayBetweenTasks = TimeSpan.FromMinutes(2) };
-        public static MonitorOptions WarMonitorOptions { get; } = new MonitorOptions();
+        public static class Monitors
+        {
+            public static MonitorOptions Clans { get; } = new MonitorOptions();
+            public static MonitorOptionsBase Members { get; } = new MonitorOptionsBase();
+            public static MonitorOptions NewCwlWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromMinutes(2), DelayBetweenBatchUpdates = TimeSpan.FromMinutes(2), ConcurrentUpdates = 10 };
+            public static MonitorOptions NewWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromSeconds(15), DelayBetweenBatchUpdates = TimeSpan.FromSeconds(15) };
+            public static MonitorOptions Players { get; } = new MonitorOptions();
+            public static MonitorOptions ActiveWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromMinutes(2), DelayBetweenBatchUpdates = TimeSpan.FromMinutes(2) };
+            public static MonitorOptions Wars { get; } = new MonitorOptions();
+        }
 
         public static class TableNames
         {

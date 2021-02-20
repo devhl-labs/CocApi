@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -45,22 +41,24 @@ namespace CocApi.Cache
 
                     DateTime expires = DateTime.UtcNow.AddSeconds(-3);
 
+                    DateTime min = DateTime.MinValue;
+
                     List<Context.CachedItems.CachedClan> cachedClans = await dbContext.Clans
                         .Where(c =>
                             (
-(c.ExpiresAt < expires            && c.KeepUntil < DateTime.UtcNow              && c.Download) ||
-(c.CurrentWar.ExpiresAt < expires && c.CurrentWar.KeepUntil < DateTime.UtcNow   && c.CurrentWar.Download && c.IsWarLogPublic == true) ||
-(c.Group.ExpiresAt < expires      && c.Group.KeepUntil < DateTime.UtcNow        && c.Group.Download) ||
-(c.WarLog.ExpiresAt < expires     && c.WarLog.KeepUntil < DateTime.UtcNow       && c.WarLog.Download     && c.IsWarLogPublic == true) 
+((c.ExpiresAt ?? min) < expires            && (c.KeepUntil ?? min) < DateTime.UtcNow              && c.Download) ||
+((c.Group.ExpiresAt ?? min) < expires      && (c.Group.KeepUntil ?? min) < DateTime.UtcNow        && c.Group.Download) ||
+((c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < DateTime.UtcNow   && c.CurrentWar.Download && c.IsWarLogPublic != false) ||
+((c.WarLog.ExpiresAt ?? min) < expires     && (c.WarLog.KeepUntil ?? min) < DateTime.UtcNow       && c.WarLog.Download     && c.IsWarLogPublic != false) 
                             )
                             &&
                             c.Id > _id)
                         .OrderBy(c => c.Id)
-                        .Take(Library.ClanMonitorOptions.ConcurrentUpdates)
+                        .Take(Library.Monitors.Clans.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    _id = cachedClans.Count == Library.ClanMonitorOptions.ConcurrentUpdates
+                    _id = cachedClans.Count == Library.Monitors.Clans.ConcurrentUpdates
                         ? cachedClans.Max(c => c.Id)
                         : int.MinValue;
 
@@ -80,10 +78,10 @@ namespace CocApi.Cache
                             if (cachedClan.Download && cachedClan.IsExpired)                    
                                 tasks.Add(MonitorClanAsync(cachedClan, _stopRequestedTokenSource.Token));
 
-                            if (cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && cachedClan.IsWarLogPublic == true)
+                            if (cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                                 tasks.Add(MonitorClanWarAsync(cachedClan, _stopRequestedTokenSource.Token));
 
-                            if (cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && cachedClan.IsWarLogPublic == true)
+                            if (cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                                 tasks.Add(MonitorWarLogAsync(cachedClan, _stopRequestedTokenSource.Token));
 
                             if (cachedClan.Group.Download && cachedClan.Group.IsExpired)
@@ -105,7 +103,10 @@ namespace CocApi.Cache
                             _clansClient.UpdatingClan.TryRemove(tag, out _);
                     }
 
-                    await Task.Delay(Library.ClanMonitorOptions.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    if (_id == int.MinValue)
+                        await Task.Delay(Library.Monitors.Clans.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    else
+                        await Task.Delay(Library.Monitors.Clans.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;

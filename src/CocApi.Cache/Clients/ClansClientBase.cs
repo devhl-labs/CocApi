@@ -7,12 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
-//using CocApi.Cache.Models;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
@@ -34,7 +32,7 @@ namespace CocApi.Cache
             _newWarMonitor = new NewWarMonitor(dbContextFactory, dbContextArgs, this);
             _newCwlWarMonitor = new NewCwlWarMonitor(dbContextFactory, dbContextArgs, clansApi, this);
             _warMonitor = new WarMonitor(dbContextFactory, dbContextArgs, clansApi, this);
-            _unmonitoredClansMonitor = new UnmonitoredClansMonitor(dbContextFactory, dbContextArgs, clansApi, this);
+            _activeWarMonitor = new ActiveWarMonitor(dbContextFactory, dbContextArgs, clansApi, this);
         }
 
         public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
@@ -316,7 +314,7 @@ namespace CocApi.Cache
         private readonly NewWarMonitor _newWarMonitor;
         private readonly NewCwlWarMonitor _newCwlWarMonitor;
         private readonly WarMonitor _warMonitor;
-        private readonly UnmonitoredClansMonitor _unmonitoredClansMonitor;
+        private readonly ActiveWarMonitor _activeWarMonitor;
 
 
 
@@ -324,22 +322,22 @@ namespace CocApi.Cache
         {
             await Task.Run(() =>
             {
-                if (!Library.ClanMonitorOptions.IsDisabled)
+                if (!Library.Monitors.Clans.IsDisabled)
                     _ = _clanMonitor.RunAsync();
 
-                if (!Library.NewWarMonitorOptions.IsDisabled)
+                if (!Library.Monitors.NewWars.IsDisabled)
                     _ = _newWarMonitor.RunAsync();
 
-                if (!Library.NewCwlWarMonitorOptions.IsDisabled)
+                if (!Library.Monitors.NewCwlWars.IsDisabled)
                     _ = _newCwlWarMonitor.RunAsync();
 
-                if (!Library.WarMonitorOptions.IsDisabled)
+                if (!Library.Monitors.Wars.IsDisabled)
                     _ = _warMonitor.RunAsync();
 
-                if (!Library.UnmonitoredClansMonitorOptions.IsDisabled)
-                    _ = _unmonitoredClansMonitor.RunAsync();
+                if (!Library.Monitors.ActiveWars.IsDisabled)
+                    _ = _activeWarMonitor.RunAsync();
 
-                if (!Library.MemberMonitorOptions.IsDisabled && _memberMonitor != null)
+                if (!Library.Monitors.Members.IsDisabled && _memberMonitor != null)
                     _ = _memberMonitor.RunAsync();
 
             }, cancellationToken);
@@ -571,7 +569,7 @@ namespace CocApi.Cache
                 _newWarMonitor.StopAsync(cancellationToken),
                 _newCwlWarMonitor.StopAsync(cancellationToken),
                 _warMonitor.StopAsync(cancellationToken),
-                _unmonitoredClansMonitor.StopAsync(cancellationToken)
+                _activeWarMonitor.StopAsync(cancellationToken)
             };
 
             if (_memberMonitor != null)

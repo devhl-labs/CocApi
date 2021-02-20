@@ -2,12 +2,25 @@
 
 namespace CocApi.Cache
 {
-    public class MonitorOptions
+    public class MonitorOptionsBase
     {
-        public TimeSpan DelayBetweenTasks { get; set; } = TimeSpan.FromMilliseconds(250);
+        public TimeSpan DelayBetweenBatchUpdates { get; set; } = TimeSpan.FromMilliseconds(250);
 
-        public int ConcurrentUpdates { get; set; } = 100;
+        public TimeSpan DelayBetweenBatches { get; set; } = TimeSpan.FromMilliseconds(250);
+
+        public int ConcurrentUpdates { get; set; } = 50;
 
         public bool IsDisabled { get; set; }
+    }
+
+    public class MonitorOptions : MonitorOptionsBase
+    {
+        //public TimeSpan DelayBetweenBatchUpdates { get; set; } = TimeSpan.FromMilliseconds(250);
+
+        //public TimeSpan DelayBetweenBatches { get; set; } = TimeSpan.FromMilliseconds(250);
+
+        public int ConcurrentUpdates { get; set; } = 50;
+
+        //public bool IsDisabled { get; set; }
     }
 }

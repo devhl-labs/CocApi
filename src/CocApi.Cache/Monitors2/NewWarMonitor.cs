@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Cache.Context;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -49,11 +44,11 @@ namespace CocApi.Cache
                             c.CurrentWar.State != WarState.NotInWar &&
                             c.Id > _id)
                         .OrderBy(c => c.Id)
-                        .Take(Library.NewWarMonitorOptions.ConcurrentUpdates)
+                        .Take(Library.Monitors.NewWars.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    _id = cachedClans.Count == Library.NewWarMonitorOptions.ConcurrentUpdates
+                    _id = cachedClans.Count == Library.Monitors.NewWars.ConcurrentUpdates
                         ? cachedClans.Max(c => c.Id)
                         : int.MinValue;
 
@@ -101,8 +96,6 @@ namespace CocApi.Cache
 
                             dbContext.Wars.Add(cachedWar);
 
-                            Console.WriteLine(cachedWar.PreparationStartTime + " " + cachedWar.ClanTag + " " + cachedWar.OpponentTag);
-
                             await _clansClient.OnClanWarAddedAsync(new WarAddedEventArgs(cachedClan.Content, cachedClan.CurrentWar.Content));
                         }
 
@@ -117,7 +110,10 @@ namespace CocApi.Cache
                         }
                     }
 
-                    await Task.Delay(Library.NewWarMonitorOptions.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    if (_id == int.MinValue)
+                        await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    else
+                        await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;

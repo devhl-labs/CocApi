@@ -14,7 +14,8 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
-        private HashSet<string> _unmonitoredClans = new();
+        private readonly HashSet<string> _unmonitoredClans = new();
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         public WarMonitor(
             IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansApi clansApi, ClansClientBase clansClientBase)
@@ -43,18 +44,20 @@ namespace CocApi.Cache
 
                     DateTime expires = DateTime.UtcNow.AddSeconds(-3);
 
+                    DateTime min = DateTime.MinValue;
+
                     List<CachedWar> cachedWars = await dbContext.Wars
                         .Where(w =>
-                            w.ExpiresAt < expires && 
-                            w.KeepUntil < DateTime.UtcNow && 
+                            (w.ExpiresAt ?? min) < expires && 
+                            (w.KeepUntil ?? min) < DateTime.UtcNow && 
                             !w.IsFinal &&
                             w.Id > _id)
                         .OrderBy(c => c.Id)
-                        .Take(Library.WarMonitorOptions.ConcurrentUpdates)
+                        .Take(Library.Monitors.Wars.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    _id = cachedWars.Count == Library.WarMonitorOptions.ConcurrentUpdates
+                    _id = cachedWars.Count == Library.Monitors.Wars.ConcurrentUpdates
                         ? cachedWars.Max(c => c.Id)
                         : int.MinValue;
 
@@ -129,7 +132,10 @@ namespace CocApi.Cache
                             _clansClient.UpdatingClan.TryRemove(tag, out _);
                     }
 
-                    await Task.Delay(Library.WarMonitorOptions.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    if (_id == int.MinValue)
+                        await Task.Delay(Library.Monitors.Wars.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    else
+                        await Task.Delay(Library.Monitors.Wars.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;
@@ -220,7 +226,16 @@ namespace CocApi.Cache
                 CurrentWar = cachedClanWar
             };
 
-            dbContext.Clans.Add(cachedClan);
+            await _semaphore.WaitAsync().ConfigureAwait(false);
+
+            try
+            {
+                dbContext.Clans.Add(cachedClan);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
 
             return cachedClan;
         }

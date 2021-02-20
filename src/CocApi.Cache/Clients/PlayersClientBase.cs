@@ -6,12 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
-//using CocApi.Cache.Models;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
@@ -153,7 +151,7 @@ namespace CocApi.Cache
         {
             Task.Run(() =>
             {
-                if (!Library.PlayerMonitorOptions.IsDisabled)
+                if (!Library.Monitors.Players.IsDisabled)
                     _ = PlayerMontitor.RunAsync();
             }, cancellationToken);
 

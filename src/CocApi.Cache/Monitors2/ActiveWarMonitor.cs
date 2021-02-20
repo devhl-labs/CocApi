@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
@@ -12,12 +9,12 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace CocApi.Cache
 {
-    internal class UnmonitoredClansMonitor : MonitorBase
+    internal class ActiveWarMonitor : MonitorBase
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
 
-        public UnmonitoredClansMonitor(
+        public ActiveWarMonitor(
             IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansApi clansApi, ClansClientBase clansClientBase)
             : base(dbContextFactory, dbContextArgs)
         {
@@ -44,6 +41,8 @@ namespace CocApi.Cache
 
                     DateTime expires = DateTime.UtcNow.AddSeconds(-3);
 
+                    DateTime min = DateTime.MinValue;
+
                     List<Context.CachedItems.CachedClan> cachedClans = await
                         (
                             from c in dbContext.Clans
@@ -51,8 +50,8 @@ namespace CocApi.Cache
                             where 
                                 !c.CurrentWar.Download && 
                                 (c.Download == false || c.Download && c.IsWarLogPublic == true) &&
-                                c.CurrentWar.ExpiresAt < expires && 
-                                c.CurrentWar.KeepUntil < DateTime.UtcNow && 
+                                (c.CurrentWar.ExpiresAt ?? min) < expires && 
+                                (c.CurrentWar.KeepUntil ?? min) < DateTime.UtcNow && 
                                 c.Id > _id  &&
                                 !w.IsFinal
                             orderby c.Id
@@ -63,19 +62,19 @@ namespace CocApi.Cache
                             where
                                 !c.CurrentWar.Download &&
                                 (c.Download == false || c.Download && c.IsWarLogPublic == true) &&
-                                c.CurrentWar.ExpiresAt < expires &&
-                                c.CurrentWar.KeepUntil < DateTime.UtcNow &&
+                                (c.CurrentWar.ExpiresAt ?? min) < expires &&
+                                (c.CurrentWar.KeepUntil ?? min) < DateTime.UtcNow &&
                                 c.Id > _id &&
                                 !w.IsFinal
                             orderby c.Id
                             select c
                         )
                         .Distinct()
-                        .Take(Library.UnmonitoredClansMonitorOptions.ConcurrentUpdates)
+                        .Take(Library.Monitors.ActiveWars.ConcurrentUpdates)
                         .ToListAsync(_stopRequestedTokenSource.Token)
                         .ConfigureAwait(false);
 
-                    _id = cachedClans.Count == Library.UnmonitoredClansMonitorOptions.ConcurrentUpdates
+                    _id = cachedClans.Count == Library.Monitors.ActiveWars.ConcurrentUpdates
                         ? cachedClans.Max(c => c.Id)
                         : int.MinValue;
 
@@ -110,7 +109,10 @@ namespace CocApi.Cache
                             _clansClient.UpdatingClan.TryRemove(tag, out _);
                     }
 
-                    await Task.Delay(Library.UnmonitoredClansMonitorOptions.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    if (_id == int.MinValue)
+                        await Task.Delay(Library.Monitors.ActiveWars.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    else
+                        await Task.Delay(Library.Monitors.ActiveWars.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
                 }
 
                 _isRunning = false;

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CocApi
 {
@@ -8,6 +6,15 @@ namespace CocApi
     {
         public static readonly Version Version = typeof(Library).Assembly.GetName().Version;
 
-        public const string RepositoryUrl = "https://github.com/devhl-labs/CocApi";
+        public const string REPOSITORY_URL = "https://github.com/devhl-labs/CocApi";
+
+        public static event HttpRequestResultEventHandler? HttpRequestResult;
+
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+
+        internal static void OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
+        {
+            HttpRequestResult?.Invoke(sender, log);
+        }
     }
 }
