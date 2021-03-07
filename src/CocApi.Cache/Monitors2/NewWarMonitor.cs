@@ -96,7 +96,15 @@ namespace CocApi.Cache
 
                             dbContext.Wars.Add(cachedWar);
 
-                            await _clansClient.OnClanWarAddedAsync(new WarAddedEventArgs(cachedClan.Content, cachedClan.CurrentWar.Content));
+                            CocApi.Model.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
+                                ? cachedClan.Content
+                                : null;
+
+                            CocApi.Model.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
+                                ? cachedClan.Content
+                                : null;
+
+                            await _clansClient.OnClanWarAddedAsync(new WarAddedEventArgs(clan, opponent, cachedClan.CurrentWar.Content), _stopRequestedTokenSource.Token);
                         }
 
                         await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);

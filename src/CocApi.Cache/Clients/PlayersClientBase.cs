@@ -301,18 +301,22 @@ namespace CocApi.Cache
             await PlayerMontitor.StopAsync(cancellationToken);
         }
 
-        internal void OnPlayerUpdated(PlayerUpdatedEventArgs events)
+        internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs events, CancellationToken cancellationToken)
         {
             try
             {
+                await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+
                 PlayerUpdated?.Invoke(this, events).ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on player updated", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on player updated.", e));
             }
-
-            
+            finally
+            {
+                Library.ConcurrentEventsSemaphore.Release();
+            }
         }
     }
 }

@@ -81,14 +81,14 @@ namespace CocApi.Test
 
         private static TokenProvider TokenProviderFactory(IServiceProvider arg)
         {
-            List<string> tokens = new List<string>();
+            List<string> tokens = new();
 
             for (int i = 0; i < 10; i++)
                 tokens.Add(Environment.GetEnvironmentVariable($"TOKEN_{i}", EnvironmentVariableTarget.Machine)
                     ?? throw new NullReferenceException($"TOKEN_{i} environment variable not found."));
 
             // you can go much lower than 3 seconds
-            TokenProvider tokenProvider = new TokenProvider(tokens, TimeSpan.FromSeconds(3));
+            TokenProvider tokenProvider = new(tokens, TimeSpan.FromSeconds(3));
 
             return tokenProvider;
         }
@@ -98,7 +98,7 @@ namespace CocApi.Test
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
             TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            ClansApi clansApi = new ClansApi(httpClient, tokenProvider);
+            ClansApi clansApi = new(httpClient, tokenProvider);
 
             return clansApi;
         }
@@ -108,7 +108,7 @@ namespace CocApi.Test
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
             TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            PlayersApi playersApi = new PlayersApi(httpClient, tokenProvider);
+            PlayersApi playersApi = new(httpClient, tokenProvider);
 
             return playersApi;
         }
@@ -118,7 +118,7 @@ namespace CocApi.Test
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
             TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            LeaguesApi leaguesApi = new LeaguesApi(httpClient, tokenProvider);
+            LeaguesApi leaguesApi = new(httpClient, tokenProvider);
 
             return leaguesApi;
         }
@@ -128,7 +128,7 @@ namespace CocApi.Test
             IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
             HttpClient httpClient = factory.CreateClient("cocApi");
             TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            LocationsApi locationsApi = new LocationsApi(httpClient, tokenProvider);
+            LocationsApi locationsApi = new(httpClient, tokenProvider);
 
             return locationsApi;
         }

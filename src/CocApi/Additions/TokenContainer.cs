@@ -19,11 +19,11 @@ namespace CocApi
             TokenTimeOut = tokenTimeOut;
         }
 
-        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
 
         public async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
         {
-            await _semaphore.WaitAsync();
+            await _semaphore.WaitAsync(cancellationToken.GetValueOrDefault());
 
             try
             {
@@ -35,15 +35,15 @@ namespace CocApi
                     await Task.Delay(available - now, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 _lastUsedUtc = now;
+
+                return _token;
             }
             finally
             {
                 _semaphore.Release();
             }
-
-            return _token;
         }
 
-        public string Get() => _token;        
+        //public string Get() => _token;        
     }
 }

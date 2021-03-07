@@ -7,9 +7,9 @@ namespace CocApi
 {
     public class TokenProvider
     {
-        private readonly Dictionary<int, TokenContainer> _tokenProviders = new Dictionary<int, TokenContainer>();
+        private readonly Dictionary<int, TokenContainer> _tokenProviders = new();
 
-        private volatile int _index = 0;
+        private volatile int _index;
 
         public TokenProvider(IEnumerable<string> tokens, TimeSpan tokenTimeOut)
         {
@@ -22,7 +22,7 @@ namespace CocApi
             }
         }
 
-        private readonly object _nextTokenLock = new object();
+        private readonly object _nextTokenLock = new();
 
         private TokenContainer NextToken()
         {
@@ -51,16 +51,16 @@ namespace CocApi
             return await container.GetAsync(cancellationToken);
         }
 
-        /// <summary>
-        /// Ignore the token timeout rate limit and just grab the token.
-        /// </summary>
-        /// <returns></returns>
-        public string Get()
-        {
-            TokenContainer container = NextToken();
+        ///// <summary>
+        ///// Ignore the token timeout rate limit and just grab the token.
+        ///// </summary>
+        ///// <returns></returns>
+        //public string Get()
+        //{
+        //    TokenContainer container = NextToken();
 
-            return container.Get();
-        }
+        //    return container.Get();
+        //}
     }
 }
 

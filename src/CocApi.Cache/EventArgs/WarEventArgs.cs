@@ -6,7 +6,7 @@ namespace CocApi.Cache
 {
     public class WarEventArgs : EventArgs
     {
-        public ClanWar War {get;}
+        public ClanWar War { get; }
 
         public WarEventArgs(ClanWar war)
         {

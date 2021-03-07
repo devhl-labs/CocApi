@@ -144,11 +144,18 @@ namespace CocApi.Api
         /// <returns>Task of Player</returns>
         public async System.Threading.Tasks.Task<Player?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -220,7 +227,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -279,11 +286,18 @@ namespace CocApi.Api
         /// <returns>Task of VerifyTokenResponse</returns>
         public async System.Threading.Tasks.Task<VerifyTokenResponse?> VerifyTokenOrDefaultAsync(string playerTag, VerifyTokenRequest body, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<VerifyTokenResponse> result = await VerifyTokenResponseAsync(playerTag, body, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<VerifyTokenResponse> result = await VerifyTokenResponseAsync(playerTag, body, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -360,7 +374,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 

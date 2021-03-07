@@ -33,7 +33,7 @@ namespace CocApi.Cache
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                Library.OnLog(this, new LogEventArgs(LogLevel.Information, "UnmonitoredClansMonitoring running"));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Information, "ActiveWarMonitor running"));
 
                 while (_stopRequestedTokenSource.IsCancellationRequested == false)
                 {
@@ -100,7 +100,10 @@ namespace CocApi.Cache
                         }
                         catch (Exception)
                         {
+                            if (_stopRequestedTokenSource.IsCancellationRequested)
+                                throw;
                         }
+
                         await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
                     }
                     finally
@@ -126,7 +129,7 @@ namespace CocApi.Cache
 
                 if (_stopRequestedTokenSource.IsCancellationRequested == false)
                 {
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "UnmonitoredClansMonitoring error", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "ActiveWarMonitor error", e));
 
                     _ = RunAsync();
                 }
@@ -139,7 +142,7 @@ namespace CocApi.Cache
 
             await base.StopAsync(cancellationToken);
 
-            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "UnmonitoredClansMonitor stopped"));
+            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "ActiveWarMonitor stopped"));
         }
 
         private async Task MonitorClanWarAsync(Context.CachedItems.CachedClan cachedClan, CancellationToken cancellationToken)

@@ -87,21 +87,15 @@ namespace CocApi.Cache
                         {
                             List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
 
-                            if (string.IsNullOrWhiteSpace(cachedWar.WarTag))
-                            {
-                                if (!_clansClient.UpdatingWar.TryAdd(cachedWar.Key, cachedWar.Content))
-                                    continue;
-                                
+                            if (string.IsNullOrWhiteSpace(cachedWar.WarTag) && _clansClient.UpdatingWar.TryAdd(cachedWar.Key, cachedWar.Content))
+                            {                                
                                 updatingWar.Add(cachedWar.Key);
 
                                 tasks.Add(UpdateWarAsync(dbContext, cachedWar, cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag)));
                             }
 
-                            if (!string.IsNullOrWhiteSpace(cachedWar.WarTag))
+                            if (!string.IsNullOrWhiteSpace(cachedWar.WarTag) && _clansClient.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
                             {
-                                if (!_clansClient.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
-                                    continue;
-
                                 updatingCwlWar.Add(cachedWar.WarTag);
 
                                 tasks.Add(UpdateCwlWarAsync(cachedWar, cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag)));
@@ -116,6 +110,8 @@ namespace CocApi.Cache
                         }
                         catch (Exception)
                         {
+                            if (_stopRequestedTokenSource.IsCancellationRequested)
+                                throw;
                         }
 
                         await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
@@ -165,8 +161,8 @@ namespace CocApi.Cache
             if (cachedWar.Content != null &&
                 fetched.Content != null &&
                 cachedWar.Season == fetched.Season &&
-                !_clansClient.HasUpdated(cachedWar, fetched))
-                await _clansClient.OnClanWarUpdatedAsync(new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, cachedClan?.Content, cachedOpponent?.Content)); 
+                _clansClient.HasUpdated(cachedWar, fetched))
+                await _clansClient.OnClanWarUpdatedAsync(new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, cachedClan?.Content, cachedOpponent?.Content), _stopRequestedTokenSource.Token); 
 
             cachedWar.IsFinal = fetched.State == WarState.WarEnded;
 
@@ -184,7 +180,7 @@ namespace CocApi.Cache
             if (cachedOpponent == null && cachedClan?.CurrentWar.IsExpired == true)
                 cachedOpponent = await CreateCachedClan(cachedWar.OpponentTag, dbContext).ConfigureAwait(false);
 
-            List<CachedClan?> cachedClans = new List<CachedClan?> { cachedClan, cachedOpponent };
+            List<CachedClan?> cachedClans = new() { cachedClan, cachedOpponent };
 
             if (cachedClans.All(c => c?.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime) || cachedWar.EndTime.AddDays(8) < DateTime.UtcNow)
             {
@@ -198,7 +194,7 @@ namespace CocApi.Cache
                 .FirstOrDefault(c => c?.CurrentWar.PreparationStartTime == cachedWar.PreparationStartTime);
 
             if (cachedWar.Content != null && clan?.CurrentWar.Content != null && _clansClient.HasUpdated(cachedWar, clan.CurrentWar))
-                await _clansClient.OnClanWarUpdatedAsync(new ClanWarUpdatedEventArgs(cachedWar.Content, clan.CurrentWar.Content, cachedClan?.Content, cachedOpponent?.Content));
+                await _clansClient.OnClanWarUpdatedAsync(new ClanWarUpdatedEventArgs(cachedWar.Content, clan.CurrentWar.Content, cachedClan?.Content, cachedOpponent?.Content), _stopRequestedTokenSource.Token);
 
             if (clan != null)
             {
@@ -221,12 +217,12 @@ namespace CocApi.Cache
 
             cachedClanWar.Download = false;
 
-            CachedClan cachedClan = new CachedClan(tag, false, false, false, false, false)
+            CachedClan cachedClan = new(tag, false, false, false, false, false)
             {
                 CurrentWar = cachedClanWar
             };
 
-            await _semaphore.WaitAsync().ConfigureAwait(false);
+            await _semaphore.WaitAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
 
             try
             {
@@ -261,7 +257,7 @@ namespace CocApi.Cache
                     DateTime.UtcNow < cachedWar.Content.StartTime)
                 {
                     cachedWar.Announcements |= Announcements.WarStartingSoon;
-                    await _clansClient.OnClanWarStartingSoonAsync(new WarEventArgs(cachedWar.Content));
+                    await _clansClient.OnClanWarStartingSoonAsync(new WarEventArgs(cachedWar.Content), _stopRequestedTokenSource.Token);
                 }
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
@@ -269,7 +265,7 @@ namespace CocApi.Cache
                     DateTime.UtcNow < cachedWar.Content.EndTime)
                 {
                     cachedWar.Announcements |= Announcements.WarEndingSoon;
-                    await _clansClient.OnClanWarEndingSoonAsync(new WarEventArgs(cachedWar.Content));
+                    await _clansClient.OnClanWarEndingSoonAsync(new WarEventArgs(cachedWar.Content), _stopRequestedTokenSource.Token);
                 }
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
@@ -281,7 +277,7 @@ namespace CocApi.Cache
                     cachedClanWars.All(w => w.Content != null && w.Content.PreparationStartTime != cachedWar.Content.PreparationStartTime))
                 {
                     cachedWar.Announcements |= Announcements.WarEndNotSeen;
-                    await _clansClient.OnClanWarEndNotSeenAsync(new WarEventArgs(cachedWar.Content));
+                    await _clansClient.OnClanWarEndNotSeenAsync(new WarEventArgs(cachedWar.Content), _stopRequestedTokenSource.Token);
                 }
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
@@ -289,7 +285,7 @@ namespace CocApi.Cache
                     cachedWar.EndTime.Day == DateTime.UtcNow.Day)
                 {
                     cachedWar.Announcements |= Announcements.WarEnded;
-                    await _clansClient.OnClanWarEndedAsync(new WarEventArgs(cachedWar.Content));
+                    await _clansClient.OnClanWarEndedAsync(new WarEventArgs(cachedWar.Content), _stopRequestedTokenSource.Token);
                 }
             }
             catch (Exception e)

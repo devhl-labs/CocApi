@@ -310,11 +310,18 @@ namespace CocApi.Api
         /// <returns>Task of League</returns>
         public async System.Threading.Tasks.Task<League?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<League> result = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<League> result = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -384,7 +391,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -449,11 +456,18 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -540,7 +554,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -603,11 +617,18 @@ namespace CocApi.Api
         /// <returns>Task of LeagueSeasonList</returns>
         public async System.Threading.Tasks.Task<LeagueSeasonList?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LeagueSeasonList> result = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<LeagueSeasonList> result = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -689,7 +710,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -750,11 +771,18 @@ namespace CocApi.Api
         /// <returns>Task of LeagueList</returns>
         public async System.Threading.Tasks.Task<LeagueList?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LeagueList> result = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<LeagueList> result = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -831,7 +859,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -888,11 +916,18 @@ namespace CocApi.Api
         /// <returns>Task of WarLeague</returns>
         public async System.Threading.Tasks.Task<WarLeague?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<WarLeague> result = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<WarLeague> result = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -962,7 +997,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -1023,11 +1058,18 @@ namespace CocApi.Api
         /// <returns>Task of WarLeagueList</returns>
         public async System.Threading.Tasks.Task<WarLeagueList?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<WarLeagueList> result = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<WarLeagueList> result = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -1104,7 +1146,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 

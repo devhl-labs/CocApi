@@ -81,6 +81,8 @@ namespace CocApi.Cache
                         }
                         catch (Exception)
                         {
+                            if (_stopRequestedTokenSource.IsCancellationRequested)
+                                throw;
                         }
 
                         await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
@@ -136,7 +138,7 @@ namespace CocApi.Cache
             Context.CachedItems.CachedPlayer fetched = await Context.CachedItems.CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && _playersClientBase.HasUpdated(cachedPlayer, fetched))
-                _playersClientBase.OnPlayerUpdated(new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content));
+                await _playersClientBase.OnPlayerUpdatedAsync(new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content), _stopRequestedTokenSource.Token);
 
             cachedPlayer.UpdateFrom(fetched);
         }

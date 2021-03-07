@@ -157,11 +157,18 @@ namespace CocApi.Api
         /// <returns>Task of LabelsObject</returns>
         public async System.Threading.Tasks.Task<LabelsObject?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -238,7 +245,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -299,11 +306,18 @@ namespace CocApi.Api
         /// <returns>Task of LabelsObject</returns>
         public async System.Threading.Tasks.Task<LabelsObject?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -380,7 +394,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 

@@ -94,6 +94,8 @@ namespace CocApi.Cache
                         }
                         catch (Exception)
                         {
+                            if (_stopRequestedTokenSource.IsCancellationRequested)
+                                throw;
                         }
                         await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
                     }
@@ -141,7 +143,7 @@ namespace CocApi.Cache
             Context.CachedItems.CachedClan fetched = await Context.CachedItems.CachedClan.FromClanResponseAsync(cachedClan.Tag, _clansClient, _clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && _clansClient.HasUpdated(cachedClan, fetched))
-                await _clansClient.OnClanUpdatedAsync(new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content));
+                await _clansClient.OnClanUpdatedAsync(new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content), _stopRequestedTokenSource.Token);
 
             cachedClan.UpdateFrom(fetched);
         }
@@ -165,7 +167,7 @@ namespace CocApi.Cache
             Context.CachedItems.CachedClanWarLog fetched = await Context.CachedItems.CachedClanWarLog.FromClanWarLogResponseAsync(cachedClan.Tag, _clansClient, _clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && _clansClient.HasUpdated(cachedClan.WarLog, fetched))
-                await _clansClient.OnClanWarLogUpdatedAsync(new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content));
+                await _clansClient.OnClanWarLogUpdatedAsync(new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content), _stopRequestedTokenSource.Token);
 
             cachedClan.WarLog.UpdateFrom(fetched);
         }
@@ -176,12 +178,11 @@ namespace CocApi.Cache
                 .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, _clansClient, _clansApi, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (fetched.Content != null) {
-                if (_clansClient.HasUpdated(cachedClan.Group, fetched))
-                    await _clansClient.OnClanWarLeagueGroupUpdatedAsync(new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content));
+            if (fetched.Content != null && _clansClient.HasUpdated(cachedClan.Group, fetched))
+            {
+                await _clansClient.OnClanWarLeagueGroupUpdatedAsync(new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content), _stopRequestedTokenSource.Token);
 
-                if (cachedClan.Group.Content == null || cachedClan.Group.Season != fetched.Season || cachedClan.Group.Content.Rounds.Count != fetched.Content.Rounds.Count)
-                    cachedClan.Group.Added = false;
+                cachedClan.Group.Added = false;                
             }
 
             cachedClan.Group.UpdateFrom(fetched);            

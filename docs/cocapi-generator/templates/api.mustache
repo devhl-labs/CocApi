@@ -119,11 +119,18 @@ namespace {{packageName}}.{{apiPackage}}
         /// <returns>Task of {{returnType}}</returns>
         public async System.Threading.Tasks.Task<{{{returnType}}}?> {{operationId}}OrDefaultAsync({{#allParams}}{{#required}}{{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/required}}{{^required}}{{{dataType}}}??? {{paramName}} = null{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}System.Threading.CancellationToken? cancellationToken = null)
         {
-            {{packageName}}.Client.ApiResponse<{{{returnType}}}> result = await ?{{operationId}}WithHttpInfoAsync({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                {{packageName}}.Client.ApiResponse<{{{returnType}}}> result = await ?{{operationId}}WithHttpInfoAsync({{#allParams}}{{paramName}}{{^-last}}, {{/-last}}{{/allParams}}{{#allParams.0}}, {{/allParams.0}}cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
         {{/returnType}}       
 
@@ -314,7 +321,7 @@ namespace {{packageName}}.{{apiPackage}}
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -322,6 +329,9 @@ namespace {{packageName}}.{{apiPackage}}
             }
             catch (Exception e)
             {
+                if (cancellationToken?.IsCancellationRequested == true)
+                    throw;
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("{{path}}", path, end - start, e);

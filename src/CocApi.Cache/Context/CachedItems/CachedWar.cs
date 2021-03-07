@@ -108,7 +108,7 @@ namespace CocApi.Cache.Context.CachedItems
             UpdateFrom(cachedClanWar);
         }
 
-        private CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
+        internal CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
         {
             base.UpdateFrom(apiResponse, localExpiration);
 

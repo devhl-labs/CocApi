@@ -325,11 +325,18 @@ namespace CocApi.Api
         /// <returns>Task of ClanRankingList</returns>
         public async System.Threading.Tasks.Task<ClanRankingList?> FetchClanRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<ClanRankingList> result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<ClanRankingList> result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -411,7 +418,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -474,11 +481,18 @@ namespace CocApi.Api
         /// <returns>Task of ClanVersusRankingList</returns>
         public async System.Threading.Tasks.Task<ClanVersusRankingList?> FetchClanVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<ClanVersusRankingList> result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<ClanVersusRankingList> result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -560,7 +574,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -617,11 +631,18 @@ namespace CocApi.Api
         /// <returns>Task of Location</returns>
         public async System.Threading.Tasks.Task<Location?> FetchLocationOrDefaultAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<Location> result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<Location> result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -691,7 +712,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -752,11 +773,18 @@ namespace CocApi.Api
         /// <returns>Task of LocationList</returns>
         public async System.Threading.Tasks.Task<LocationList?> FetchLocationsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<LocationList> result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<LocationList> result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -833,7 +861,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -896,11 +924,18 @@ namespace CocApi.Api
         /// <returns>Task of PlayerRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerRankingList?> FetchPlayerRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -982,7 +1017,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
@@ -1045,11 +1080,18 @@ namespace CocApi.Api
         /// <returns>Task of PlayerVersusRankingList</returns>
         public async System.Threading.Tasks.Task<PlayerVersusRankingList?> FetchPlayerVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            CocApi.Client.ApiResponse<PlayerVersusRankingList> result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            
-            return result.IsSuccessStatusCode
-                ? result.Content
-                : null;
+            try
+            {
+                CocApi.Client.ApiResponse<PlayerVersusRankingList> result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                
+                return result.IsSuccessStatusCode
+                    ? result.Content
+                    : null;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         } 
 
         /// <summary>
@@ -1131,7 +1173,7 @@ namespace CocApi.Api
 
                 reasonPhrase = responseMessage.ReasonPhrase;
 
-                responseContent = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
                 end = DateTime.UtcNow;
 
