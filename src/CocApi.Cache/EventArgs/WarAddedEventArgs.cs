@@ -13,7 +13,7 @@ namespace CocApi.Cache
 
         public ClanWar War { get; }
 
-        public WarAddedEventArgs(Clan? clan, Clan? opponent, ClanWar war, CancellationToken cancellationToken) : base(cancellationToken)
+        internal WarAddedEventArgs(Clan? clan, Clan? opponent, ClanWar war, CancellationToken cancellationToken) : base(cancellationToken)
         {
             Clan = clan;
             Opponent = opponent;

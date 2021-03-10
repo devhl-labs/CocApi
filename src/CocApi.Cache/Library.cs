@@ -2,9 +2,33 @@
 using System.Threading;
 
 namespace CocApi.Cache
-{
+{        
+    public enum LogLevel
+    {
+        Trace,
+        Debug,
+        Information,
+        Warning,
+        Error,
+        Critical,
+        None
+    }
+
+    [Flags]
+    public enum Announcements
+    {
+        None = 0,
+        WarStartingSoon = 1,
+        WarStarted = 2,
+        WarEndingSoon = 4,
+        WarEnded = 8,
+        WarEndNotSeen = 16,
+    }
+
     public static class Library
     {
+
+
         internal static void OnLog(object sender, LogEventArgs log)
         {
             try

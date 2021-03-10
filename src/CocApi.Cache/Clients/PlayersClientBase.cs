@@ -162,21 +162,21 @@ namespace CocApi.Cache
             return Task.CompletedTask;
         }
 
-        internal bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
-        {
-            if (stored.Content == null && fetched.Content != null)
-                return true;
+        //internal bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
+        //{
+        //    if (stored.Content == null && fetched.Content != null)
+        //        return true;
 
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        //    if (stored.ExpiresAt > fetched.ExpiresAt)
+        //        return false;
 
-            if (stored.Content == null || fetched.Content == null)
-                return false;
+        //    if (stored.Content == null || fetched.Content == null)
+        //        return false;
 
-            return !fetched.Content.Equals(stored.Content);
+        //    return !fetched.Content.Equals(stored.Content);
 
-            //return HasUpdated(stored.Data, fetched.Data);
-        }
+        //    //return HasUpdated(stored.Data, fetched.Data);
+        //}
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync(ApiResponse<Player> apiResponse)
         {

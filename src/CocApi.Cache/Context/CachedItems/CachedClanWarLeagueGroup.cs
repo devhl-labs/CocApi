@@ -21,8 +21,21 @@ namespace CocApi.Cache.Context.CachedItems
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return new CachedClanWarLeagueGroup(await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWarLeagueGroup>(e).ConfigureAwait(false));
             }
+        }
+
+        internal static bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
+        {
+            if (stored.ExpiresAt > fetched.ExpiresAt)
+                return false;
+
+            if (fetched.Content == null)
+                return false;
+
+            return !fetched.Content.Equals(stored.Content);
         }
 
         public DateTime? Season { get; internal set; }

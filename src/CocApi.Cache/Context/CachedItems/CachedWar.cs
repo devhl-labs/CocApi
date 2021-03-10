@@ -33,8 +33,44 @@ namespace CocApi.Cache.Context.CachedItems
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return new CachedWar(warTag, await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
             }
+        }
+
+        internal static bool HasUpdated(CachedWar stored, CachedWar fetched)
+        {
+            if (ReferenceEquals(stored, fetched))
+                return false;
+
+            if (stored.ExpiresAt > fetched.ExpiresAt)
+                return false;
+
+            if (stored.Content == null)
+                throw new InvalidOperationException($"{nameof(stored)}.Data is null");
+
+            if (fetched.Content == null)
+                throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
+
+            if (!ClanWar.IsSameWar(stored.Content, fetched.Content))
+                throw new InvalidOperationException("Provided wars are the same war.");
+
+            return !fetched.Content.Equals(stored.Content);
+        }
+
+        internal static bool HasUpdated(CachedWar stored, CachedClanWar fetched)
+        {
+            if (stored.ExpiresAt > fetched.ExpiresAt)
+                return false;
+
+            if (stored.Content == null)
+                throw new InvalidOperationException($"{nameof(stored)}.Data is null");
+
+            if (fetched.Content == null)
+                throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
+
+            return !fetched.Content.Equals(stored.Content);
         }
 
         public string Key { get { return $"{Content.PreparationStartTime};{Content.Clan.Tag};{Content.Opponent.Tag}"; } }

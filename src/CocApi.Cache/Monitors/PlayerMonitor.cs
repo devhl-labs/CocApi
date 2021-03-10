@@ -1,116 +1,119 @@
-﻿//using System;
-//using System.Collections.Concurrent;
-//using System.Collections.Generic;
-//using System.Globalization;
-//using System.Linq;
-//using System.Net;
-//using System.Threading;
-//using System.Threading.Tasks;
-//using CocApi.Api;
-//using CocApi.Cache.Models;
-//using Microsoft.EntityFrameworkCore;
-//using Microsoft.Extensions.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using CocApi.Api;
+using CocApi.Cache.Context.CachedItems;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
-//namespace CocApi.Cache
-//{
-//    internal class PlayerMonitor : ClientBase
-//    {
-//        private readonly PlayersApi _playersApi;
-//        private readonly PlayersClientBase _playersClientBase;
+namespace CocApi.Cache
+{
+    internal class PlayerMonitor : MonitorBase
+    {
+        private readonly PlayersApi _playersApi;
+        private readonly PlayersClientBase _playersClientBase;
+        private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
-//        public PlayerMonitor(ClientConfiguration cacheConfiguration, PlayersApi playersApi, PlayersClientBase playersClientBase) : base(cacheConfiguration)
-//        {
-//            _playersApi = playersApi;
-//            _playersClientBase = playersClientBase;
-//        }
+        public PlayerMonitor(
+            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, PlayersApi playersApi, PlayersClientBase playersClientBase) 
+            : base(dbContextFactory, dbContextArgs)
+        {
+            _playersApi = playersApi;
+            _playersClientBase = playersClientBase;
+        }
 
-//        public async Task RunAsync(CancellationToken cancellationToken)
-//        {
-//            try
-//            {
-//                if (_isRunning)
-//                    return;
+        protected override async Task PollAsync()
+        {
+            using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
 
-//                _isRunning = true;
+            DateTime min = DateTime.MinValue;
 
-//                _stopRequestedTokenSource = new CancellationTokenSource();
+            List<Context.CachedItems.CachedPlayer> trackedPlayers = await dbContext.Players
+                .Where(p =>
+                    (p.ExpiresAt ?? min) < DateTime.UtcNow.AddSeconds(-3) &&
+                    (p.KeepUntil ?? min) < DateTime.UtcNow &&
+                    p.Download &&
+                    p.Id > _id)
+                .OrderBy(p => p.Id)
+                .Take(Library.Monitors.Players.ConcurrentUpdates)
+                .ToListAsync(_cancellationToken)
+                .ConfigureAwait(false);
 
-//                _playersClientBase.OnLog(this, new LogEventArgs(nameof(RunAsync), LogLevel.Information));
+            _id = trackedPlayers.Count == Library.Monitors.Players.ConcurrentUpdates
+                ? trackedPlayers.Max(c => c.Id)
+                : int.MinValue;
 
-//                while (cancellationToken.IsCancellationRequested == false && _stopRequestedTokenSource.IsCancellationRequested == false)
-//                {
-//                    using var scope = Services.CreateScope();
+            List<Task> tasks = new();
 
-//                    using CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
+            HashSet<string> updatingTags = new();
 
-//                    List<CachedPlayer> cachedPlayers = await dbContext.Players
-//                        .Where(v =>
-//                            v.Download &&
-//                            v.ServerExpiration < DateTime.UtcNow.AddSeconds(-3) &&
-//                            v.LocalExpiration < DateTime.UtcNow)
-//                        .OrderBy(v => v.ServerExpiration)
-//                        .Take(Configuration.ConcurrentPlayerDownloads)
-//                        .ToListAsync(_stopRequested)
-//                        .ConfigureAwait(false);
+            try
+            {
+                foreach (Context.CachedItems.CachedPlayer trackedPlayer in trackedPlayers)
+                {
+                    if (!_playersClientBase.UpdatingVillage.TryAdd(trackedPlayer.Tag, trackedPlayer))
+                        continue;
 
-//                    List<Task> tasks = new();
+                    updatingTags.Add(trackedPlayer.Tag);
 
-//                    for (int i = 0; i < cachedPlayers.Count; i++)
-//                        tasks.Add(UpdatePlayerAsync(cachedPlayers[i]));
+                    if (trackedPlayer.Download && trackedPlayer.IsExpired)
+                        tasks.Add(MonitorPlayerAsync(trackedPlayer));
+                }
 
-//                    await Task.WhenAll(tasks).ConfigureAwait(false);
+                await Task.WhenAll(tasks);
 
-//                    await dbContext.SaveChangesAsync(_stopRequested).ConfigureAwait(false);
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            finally
+            {
+                foreach (string tag in updatingTags)
+                    _playersClientBase.UpdatingVillage.TryRemove(tag, out _);
+            }
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
-//                }
+            if (_deletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
+            {
+                _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
-//                _isRunning = false;
-//            }
-//            catch (Exception e)
-//            {
-//                _isRunning = false;
+                await DeletePlayersNotMonitoredAsync(dbContext).ConfigureAwait(false);
+            }
 
-//                if (_stopRequestedTokenSource.IsCancellationRequested)
-//                    return;
+            if (_id == int.MinValue)
+                await Task.Delay(Library.Monitors.Players.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+            else
+                await Task.Delay(Library.Monitors.Players.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+        }
 
-//                _playersClientBase.OnLog(this, new ExceptionEventArgs(nameof(RunAsync), e));
+        private async Task MonitorPlayerAsync(CachedPlayer cachedPlayer)
+        {
+            CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _cancellationToken).ConfigureAwait(false);
 
-//                if (cancellationToken.IsCancellationRequested == false)
-//                    _ = RunAsync(cancellationToken);
-//            }
-//        }
+            if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched))
+                await _playersClientBase.OnPlayerUpdatedAsync(new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, _cancellationToken));
 
-//        public new async Task StopAsync(CancellationToken cancellationToken)
-//        {
-//            _stopRequestedTokenSource.Cancel();
+            cachedPlayer.UpdateFrom(fetched);
+        }
 
-//            await base.StopAsync(cancellationToken);
+        private async Task DeletePlayersNotMonitoredAsync(CocApiCacheContext dbContext)
+        {
+            DateTime min = DateTime.MinValue;
 
-//            _playersClientBase.OnLog(this, new LogEventArgs(nameof(StopAsync), LogLevel.Information));
-//        }
+            List<Context.CachedItems.CachedPlayer> cachedPlayers = await (
+                from p in dbContext.Players
+                join c in dbContext.Clans on p.ClanTag equals c.Tag
+                into p_c
+                from c2 in p_c.DefaultIfEmpty()
+                where 
+                    p.Download == false && 
+                    (p.ExpiresAt ?? min) < DateTime.UtcNow.AddMinutes(-10) &&
+                    (p.ClanTag == null || (c2 == null || c2.DownloadMembers == false))
+                select p
+            ).ToListAsync(_cancellationToken).ConfigureAwait(false);
 
-//        internal async Task UpdatePlayerAsync(CachedPlayer cachedPlayer)
-//        {
-//            if (_stopRequestedTokenSource.IsCancellationRequested ||
-//                _playersClientBase.UpdatingVillage.TryAdd(cachedPlayer.Tag, null) == false)
-//                return;
+            dbContext.RemoveRange(cachedPlayers);
 
-//            try
-//            {
-//                CachedPlayer? fetched = await CachedPlayer
-//                        .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _stopRequested)
-//                        .ConfigureAwait(false);
-
-//                if (fetched.Data != null && _playersClientBase.HasUpdated(cachedPlayer, fetched))
-//                    _playersClientBase.OnPlayerUpdated(cachedPlayer.Data, fetched.Data);
-
-//                cachedPlayer.UpdateFrom(fetched);
-//            }
-//            finally
-//            {
-//                _playersClientBase.UpdatingVillage.TryRemove(cachedPlayer.Tag, out _);
-//            }
-//        }
-//    }
-//}
+            await dbContext.SaveChangesAsync(_cancellationToken);
+        }
+    }
+}

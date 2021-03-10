@@ -329,72 +329,72 @@ namespace CocApi.Cache
             return Task.CompletedTask;
         }
 
-        internal bool HasUpdated(CachedClan stored, CachedClan fetched)
-        {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        //internal bool HasUpdated(CachedClan stored, CachedClan fetched)
+        //{
+        //    if (stored.ExpiresAt > fetched.ExpiresAt)
+        //        return false;
 
-            if (fetched.Content == null)
-                return false;
+        //    if (fetched.Content == null)
+        //        return false;
 
-            return !fetched.Content.Equals(stored.Content);
-        }
+        //    return !fetched.Content.Equals(stored.Content);
+        //}
 
-        internal bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
-        {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        //internal bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
+        //{
+        //    if (stored.ExpiresAt > fetched.ExpiresAt)
+        //        return false;
 
-            if (fetched.Content == null)
-                return false;
+        //    if (fetched.Content == null)
+        //        return false;
 
-            return !fetched.Content.Equals(stored.Content);
-        }
+        //    return !fetched.Content.Equals(stored.Content);
+        //}
 
-        internal bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
-        {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        //internal bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
+        //{
+        //    if (stored.ExpiresAt > fetched.ExpiresAt)
+        //        return false;
 
-            if (fetched.Content == null)
-                return false;
+        //    if (fetched.Content == null)
+        //        return false;
 
-            return !fetched.Content.Equals(stored.Content);
-        }
+        //    return !fetched.Content.Equals(stored.Content);
+        //}
 
-        internal bool HasUpdated(CachedWar stored, CachedClanWar fetched)
-        {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        //internal bool HasUpdated(CachedWar stored, CachedClanWar fetched)
+        //{
+        //    if (stored.ExpiresAt > fetched.ExpiresAt)
+        //        return false;
 
-            if (stored.Content == null)
-                throw new InvalidOperationException($"{nameof(stored)}.Data is null");
+        //    if (stored.Content == null)
+        //        throw new InvalidOperationException($"{nameof(stored)}.Data is null");
 
-            if (fetched.Content == null)
-                throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
+        //    if (fetched.Content == null)
+        //        throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
 
-            return !fetched.Content.Equals(stored.Content);
-        }
+        //    return !fetched.Content.Equals(stored.Content);
+        //}
 
-        internal bool HasUpdated(CachedWar stored, CachedWar fetched)
-        {
-            if (ReferenceEquals(stored, fetched))
-                return false;
+        //internal bool HasUpdated(CachedWar stored, CachedWar fetched)
+        //{
+        //    if (ReferenceEquals(stored, fetched))
+        //        return false;
 
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        //    if (stored.ExpiresAt > fetched.ExpiresAt)
+        //        return false;
 
-            if (stored.Content == null)
-                throw new InvalidOperationException($"{nameof(stored)}.Data is null");
+        //    if (stored.Content == null)
+        //        throw new InvalidOperationException($"{nameof(stored)}.Data is null");
 
-            if (fetched.Content == null)
-                throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
+        //    if (fetched.Content == null)
+        //        throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
 
-            if (!ClanWar.IsSameWar(stored.Content, fetched.Content))
-                throw new InvalidOperationException("Provided wars are the same war.");
+        //    if (!ClanWar.IsSameWar(stored.Content, fetched.Content))
+        //        throw new InvalidOperationException("Provided wars are the same war.");
 
-            return !fetched.Content.Equals(stored.Content);
-        }
+        //    return !fetched.Content.Equals(stored.Content);
+        //}
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
         {

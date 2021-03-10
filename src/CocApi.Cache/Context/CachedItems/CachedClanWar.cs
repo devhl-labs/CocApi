@@ -20,6 +20,8 @@ namespace CocApi.Cache.Context.CachedItems
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return new CachedClanWar(await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
             }
         }

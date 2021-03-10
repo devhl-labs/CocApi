@@ -10,7 +10,7 @@ namespace CocApi.Cache
 
         public Player? Stored { get; }
 
-        public PlayerUpdatedEventArgs(Player? stored, Player fetched, CancellationToken cancellationtoken) : base(cancellationtoken)
+        internal PlayerUpdatedEventArgs(Player? stored, Player fetched, CancellationToken cancellationtoken) : base(cancellationtoken)
         {
             Fetched = fetched;
 

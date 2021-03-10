@@ -10,7 +10,7 @@ namespace CocApi.Cache
 
         public Exception? Exception { get; }
 
-        public LogEventArgs(LogLevel logLevel = LogLevel.Information, string? message = null, Exception? exception = null)
+        internal LogEventArgs(LogLevel logLevel = LogLevel.Information, string? message = null, Exception? exception = null)
         {
             LogLevel = logLevel;
             Message = message;

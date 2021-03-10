@@ -25,6 +25,8 @@ namespace CocApi.Cache
         {
             DbContextFactory = dbContextFactory;
             DbContextArgs = dbContextArgs;
+
+            ValidateMigrated();
         }
 
         public async Task ImportDataToVersion2(string connectionString)
@@ -276,6 +278,20 @@ namespace CocApi.Cache
         private DateTime? DateOrNull(DateTime dte)
         {
             return dte == DateTime.MinValue ? null : dte;
+        }
+
+        private void ValidateMigrated()
+        {
+            try
+            {
+                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+
+                dbContext.Clans.FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to query the database. You may need to run a migration.", e);
+            }
         }
     }
 

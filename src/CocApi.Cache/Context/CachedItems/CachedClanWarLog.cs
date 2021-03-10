@@ -19,8 +19,21 @@ namespace CocApi.Cache.Context.CachedItems
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return new CachedClanWarLog(await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWarLog>(e).ConfigureAwait(false));
             }
+        }
+
+        internal static bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
+        {
+            if (stored.ExpiresAt > fetched.ExpiresAt)
+                return false;
+
+            if (fetched.Content == null)
+                return false;
+
+            return !fetched.Content.Equals(stored.Content);
         }
 
         public CachedClanWarLog()

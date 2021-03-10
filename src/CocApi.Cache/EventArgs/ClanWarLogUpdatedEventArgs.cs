@@ -13,7 +13,7 @@ namespace CocApi.Cache
 
         public Clan? Clan { get; }
 
-        public ClanWarLogUpdatedEventArgs(ClanWarLog? stored, ClanWarLog fetched, Clan? clan, CancellationToken cancellationToken) : base(cancellationToken)
+        internal ClanWarLogUpdatedEventArgs(ClanWarLog? stored, ClanWarLog fetched, Clan? clan, CancellationToken cancellationToken) : base(cancellationToken)
         {
             Fetched = fetched;
             Clan = clan;

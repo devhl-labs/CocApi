@@ -24,8 +24,26 @@ namespace CocApi.Cache.Context.CachedItems
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return new CachedPlayer(tag, await playersCacheBase.TimeToLiveOrDefaultAsync(e).ConfigureAwait(false));
             }
+        }
+
+        internal static bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
+        {
+            if (stored.Content == null && fetched.Content != null)
+                return true;
+
+            if (stored.ExpiresAt > fetched.ExpiresAt)
+                return false;
+
+            if (stored.Content == null || fetched.Content == null)
+                return false;
+
+            return !fetched.Content.Equals(stored.Content);
+
+            //return HasUpdated(stored.Data, fetched.Data);
         }
 
         private CachedPlayer(string tag, ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)

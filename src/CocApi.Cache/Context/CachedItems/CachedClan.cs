@@ -19,8 +19,21 @@ namespace CocApi.Cache.Context.CachedItems
             }
             catch (Exception e) 
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return new CachedClan(tag, await clansCacheBase.TimeToLiveOrDefaultAsync<Clan>(e).ConfigureAwait(false));
             }
+        }
+
+        internal static bool HasUpdated(CachedClan stored, CachedClan fetched)
+        {
+            if (stored.ExpiresAt > fetched.ExpiresAt)
+                return false;
+
+            if (fetched.Content == null)
+                return false;
+
+            return !fetched.Content.Equals(stored.Content);
         }
 
         private CachedClan(string tag, ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
