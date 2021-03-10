@@ -12,22 +12,15 @@ namespace CocApi.Cache.Context.CachedItems
     {
         internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
-            TimeSpan ttl;
             try
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.FetchCurrentWarResponseAsync(tag, cancellationToken);
 
-                ttl = await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
-
-                CachedClanWar result = new CachedClanWar(tag, apiResponse, ttl);
-
-                return result;
+                return new CachedClanWar(tag, apiResponse, await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e)
             {
-                ttl = await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false);
-
-                return new CachedClanWar(ttl);
+                return new CachedClanWar(await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
             }
         }
 

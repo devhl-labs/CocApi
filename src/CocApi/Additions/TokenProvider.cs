@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace CocApi
             int i = 0;
 
             foreach (string token in tokens)
-            {
+            {;
                 _tokenProviders.Add(i, new TokenContainer(token, tokenTimeOut));
                 i++;
             }
@@ -30,10 +31,9 @@ namespace CocApi
             {
                 TokenContainer result = _tokenProviders[_index];
 
-                if (_index >= _tokenProviders.Count - 1)
-                    _index = 0;
-                else
-                    _index++;
+                _index = _index >= _tokenProviders.Count - 1
+                    ? 0
+                    : _index++;
 
                 return result;
             }
@@ -50,97 +50,5 @@ namespace CocApi
 
             return await container.GetAsync(cancellationToken);
         }
-
-        ///// <summary>
-        ///// Ignore the token timeout rate limit and just grab the token.
-        ///// </summary>
-        ///// <returns></returns>
-        //public string Get()
-        //{
-        //    TokenContainer container = NextToken();
-
-        //    return container.Get();
-        //}
     }
 }
-
-
-
-
-
-
-//using System;
-//using System.Collections.Generic;
-//using System.Threading;
-//using System.Threading.Tasks;
-
-//namespace CocApi
-//{
-//    public static class TokenProvider
-//    {
-//        private static readonly Dictionary<int, TokenContainer> _tokenProviders = new Dictionary<int, TokenContainer>();
-//        private static volatile int _index = 0;
-
-//        //public TokenProvider(IEnumerable<string> tokens, TimeSpan tokenTimeOut)
-//        //{
-//        //    int i = 0;
-
-//        //    foreach (string token in tokens)
-//        //    {
-//        //        _tokenProviders.Add(i, new TokenContainer(token, tokenTimeOut));
-//        //        i++;
-//        //    }
-//        //}
-
-//        public static void AddTokens(IEnumerable<string> tokens, TimeSpan tokenTimeOut)
-//        {
-//            int i = 0;
-
-//            foreach (string token in tokens)
-//            {
-//                _tokenProviders.Add(i, new TokenContainer(token, tokenTimeOut));
-//                i++;
-//            }
-//        }
-
-//        private static readonly object _nextTokenLock = new object();
-
-//        private static TokenContainer NextToken()
-//        {
-//            lock (_nextTokenLock)
-//            {
-//                TokenContainer result = _tokenProviders[_index];
-
-//                if (_index >= _tokenProviders.Count - 1)
-//                    _index = 0;
-//                else
-//                    _index++;
-
-//                return result;
-//            }
-//        }
-
-//        /// <summary>
-//        /// Returns the token after awaiting the token timeout rate limit.
-//        /// </summary>
-//        /// <param name="cancellationToken"></param>
-//        /// <returns></returns>
-//        public static async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
-//        {
-//            TokenContainer container = NextToken();
-
-//            return await container.GetAsync(cancellationToken);
-//        }
-
-//        /// <summary>
-//        /// Ignore the token timeout rate limit and just grab the token.
-//        /// </summary>
-//        /// <returns></returns>
-//        public static string Get()
-//        {
-//            TokenContainer container = NextToken();
-
-//            return container.Get();
-//        }
-//    }
-//}

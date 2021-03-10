@@ -1,14 +1,15 @@
 ﻿using CocApi.Cache.Context.CachedItems;
 using CocApi.Model;
 using System;
+using System.Threading;
 
 namespace CocApi.Cache
 {
-    public class WarEventArgs : EventArgs
+    public class WarEventArgs : CancellableEventArgs
     {
         public ClanWar War { get; }
 
-        public WarEventArgs(ClanWar war)
+        internal WarEventArgs(ClanWar war, CancellationToken cancellationToken) : base(cancellationToken)
         {
             War = war;
         }

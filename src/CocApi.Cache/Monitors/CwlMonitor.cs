@@ -41,7 +41,7 @@
 //                {
 //                    if (_clansClient.DownloadCwl == false)
 //                    {
-//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 
 //                        continue;
 //                    }
@@ -81,9 +81,9 @@
 
 //                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await dbContext.SaveChangesAsync(_stopRequested).ConfigureAwait(false);
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -123,7 +123,7 @@
 //            try
 //            {
 //                CachedClanWarLeagueGroup? fetched = await CachedClanWarLeagueGroup
-//                    .FromClanWarLeagueGroupResponseAsync(cached.Tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token)
+//                    .FromClanWarLeagueGroupResponseAsync(cached.Tag, _clansClient, _clansApi, _stopRequested)
 //                    .ConfigureAwait(false);
 
 //                if (fetched.Data != null && _clansClient.HasUpdated(cached, fetched))
@@ -193,7 +193,7 @@
 //                    return null;
 
 //                CachedWar fetched = await CachedWar
-//                    .FromClanWarLeagueWarResponseAsync(warTag, season, _clansClient, _clansApi, _stopRequestedTokenSource.Token)
+//                    .FromClanWarLeagueWarResponseAsync(warTag, season, _clansClient, _clansApi, _stopRequested)
 //                    .ConfigureAwait(false);
 
 //                if (fetched.ClanTags.Any(c => c == tag) == false)

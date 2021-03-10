@@ -1,20 +1,11 @@
 ﻿using CocApi.Cache.Context.CachedItems;
 using CocApi.Model;
 using System;
+using System.Threading;
 
 namespace CocApi.Cache
 {
-    public class CwlWarAddedEventArgs : WarAddedEventArgs
-    {
-        public CwlWarAddedEventArgs(Clan? clan, Clan? opponent, ClanWar war, ClanWarLeagueGroup group) : base(clan, opponent, war)
-        {
-            Group = group;
-        }
-
-        public ClanWarLeagueGroup Group { get; }
-    }
-
-    public class WarAddedEventArgs : EventArgs
+    public class WarAddedEventArgs : CancellableEventArgs
     {
         public Clan? Clan { get; }
 
@@ -22,7 +13,7 @@ namespace CocApi.Cache
 
         public ClanWar War { get; }
 
-        public WarAddedEventArgs(Clan? clan, Clan? opponent, ClanWar war)
+        public WarAddedEventArgs(Clan? clan, Clan? opponent, ClanWar war, CancellationToken cancellationToken) : base(cancellationToken)
         {
             Clan = clan;
             Opponent = opponent;

@@ -1,10 +1,11 @@
 ﻿using CocApi.Model;
 using System;
+using System.Threading;
 
 namespace CocApi.Cache
 {
 
-    public class ClanWarLeagueGroupUpdatedEventArgs : EventArgs
+    public class ClanWarLeagueGroupUpdatedEventArgs : CancellableEventArgs
     {
         public ClanWarLeagueGroup Fetched { get; }
 
@@ -12,7 +13,7 @@ namespace CocApi.Cache
 
         public Clan? Clan { get; }
 
-        public ClanWarLeagueGroupUpdatedEventArgs(ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched, Clan? clan)
+        public ClanWarLeagueGroupUpdatedEventArgs(ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched, Clan? clan, CancellationToken cancellationToken) : base(cancellationToken)
         {
             Fetched = fetched;
             Clan = clan;

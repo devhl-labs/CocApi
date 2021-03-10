@@ -5,31 +5,53 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace CocApi.Cache
 {
-    public class MonitorBase
+    internal abstract class MonitorBase
     {
-        private protected bool _isRunning;
-
-        internal protected int _id = int.MinValue;
-
-        internal protected IDesignTimeDbContextFactory<CocApiCacheContext> DbContextFactory { get; }
-        internal protected string[] DbContextArgs { get; }
+        private bool _isRunning;
+        private protected int _id = int.MinValue;
+        private protected CancellationToken _cancellationToken;
+        private protected IDesignTimeDbContextFactory<CocApiCacheContext> _dbContextFactory;
+        private protected string[] _dbContextArgs;
 
         public MonitorBase(IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
         {
-            DbContextFactory = dbContextFactory;
-            DbContextArgs = dbContextArgs;
+            _dbContextFactory = dbContextFactory;
+            _dbContextArgs = dbContextArgs;
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        protected abstract Task PollAsync();
+
+        public async Task RunAsync(CancellationToken cancellationToken)
         {
-            _stopRequestedTokenSource.Cancel();
+            if (_isRunning)
+                throw new InvalidOperationException("Monitor already running.");
 
-            while (_isRunning)            
-                await Task.Delay(50, cancellationToken).ConfigureAwait(false);            
+            _isRunning = true;
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            _cancellationToken = cancellationToken;
+
+            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "running"));
+
+            while (!_cancellationToken.IsCancellationRequested)
+            {
+                try
+                {
+                    await PollAsync();
+                }
+                catch(Exception e)
+                {
+                    if (_cancellationToken.IsCancellationRequested)
+                        break;
+                    else
+                        Library.OnLog(this, new LogEventArgs(LogLevel.Error, "errored", e));
+                }
+            }
+
+            _isRunning = false;
+                                
+            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "stopped"));
         }
-
-
-        protected CancellationTokenSource _stopRequestedTokenSource = new CancellationTokenSource();
     }
-
 }

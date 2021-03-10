@@ -41,7 +41,7 @@
 //                {
 //                    if (_clansClient.DownloadCurrentWars == false)
 //                    {
-//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 
 //                        continue;
 //                    }
@@ -84,9 +84,9 @@
 
 //                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await dbContext.SaveChangesAsync(_stopRequested).ConfigureAwait(false);
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -122,7 +122,7 @@
 
 //            try
 //            {
-//                CachedClanWar? fetched =  await CachedClanWar.FromCurrentWarResponseAsync(cachedClanWar.Tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                CachedClanWar? fetched =  await CachedClanWar.FromCurrentWarResponseAsync(cachedClanWar.Tag, _clansClient, _clansApi, _stopRequested).ConfigureAwait(false);
 
 //                if (fetched.Data != null && CachedClanWar.IsNewWar(cachedClanWar, fetched))
 //                {

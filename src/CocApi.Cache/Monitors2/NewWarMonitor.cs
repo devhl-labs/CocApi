@@ -20,135 +20,234 @@ namespace CocApi.Cache
             _clansClient = clansClientBase;
         }
 
-        public async Task RunAsync()
+        protected override async Task PollAsync()
         {
+            using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
+
+            List<CachedClan> cachedClans = await dbContext.Clans
+                .Where(c =>
+                    !c.CurrentWar.Added &&
+                    c.CurrentWar.State != null &&
+                    c.CurrentWar.State != WarState.NotInWar &&
+                    c.Id > _id)
+                .OrderBy(c => c.Id)
+                .Take(Library.Monitors.NewWars.ConcurrentUpdates)
+                .ToListAsync(_cancellationToken)
+                .ConfigureAwait(false);
+
+            _id = cachedClans.Count == Library.Monitors.NewWars.ConcurrentUpdates
+                ? cachedClans.Max(c => c.Id)
+                : int.MinValue;
+
+            HashSet<string> updatingClans = new();
+
+            foreach (CachedClan cachedClan in cachedClans)
+                if (_clansClient.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
+                {
+                    updatingClans.Add(cachedClan.Tag);
+
+                    if (!_clansClient.UpdatingWar.TryAdd(cachedClan.CurrentWar.Key, null))
+                        updatingClans.Remove(cachedClan.Tag);
+                }
+
             try
             {
-                if (_isRunning)
+                if (updatingClans.Count == 0)
                     return;
 
-                _isRunning = true;
+                List<CachedWar> cachedWars = await dbContext.Wars
+                    .AsNoTracking()
+                    .Where(w => cachedClans.Select(c => c.CurrentWar.PreparationStartTime).Contains(w.PreparationStartTime))
+                    .ToListAsync(_cancellationToken).ConfigureAwait(false);
 
-                _stopRequestedTokenSource = new CancellationTokenSource();
-
-                Library.OnLog(this, new LogEventArgs(LogLevel.Information, "NewWarMonitor running"));
-
-                while (_stopRequestedTokenSource.IsCancellationRequested == false)
+                foreach (CachedClan cachedClan in cachedClans)
                 {
-                    using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+                    if (cachedClan.CurrentWar.Added)
+                        continue;
 
-                    List<CachedClan> cachedClans = await dbContext.Clans
-                        .Where(c =>
-                            !c.CurrentWar.Added && 
-                            c.CurrentWar.State != null &&
-                            c.CurrentWar.State != WarState.NotInWar &&
-                            c.Id > _id)
-                        .OrderBy(c => c.Id)
-                        .Take(Library.Monitors.NewWars.ConcurrentUpdates)
-                        .ToListAsync(_stopRequestedTokenSource.Token)
-                        .ConfigureAwait(false);
+                    cachedClan.CurrentWar.Added = true;
 
-                    _id = cachedClans.Count == Library.Monitors.NewWars.ConcurrentUpdates
-                        ? cachedClans.Max(c => c.Id)
-                        : int.MinValue;
+                    foreach (CachedClan enemyClan in cachedClans)
+                        if (enemyClan.CurrentWar.EnemyTag == cachedClan.Tag && enemyClan.CurrentWar.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime)
+                            enemyClan.CurrentWar.Added = true;
 
-                    HashSet<string> updatingClans = new();
+                    CachedWar? cachedWar = cachedWars.SingleOrDefault(w =>
+                        w.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime &&
+                        w.ClanTag == cachedClan.CurrentWar.Content.Clan.Tag &&
+                        w.OpponentTag == cachedClan.CurrentWar.Content.Opponent.Tag);
 
-                    foreach (CachedClan cachedClan in cachedClans)
-                        if (_clansClient.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
-                        {
-                            updatingClans.Add(cachedClan.Tag);
+                    if (cachedWar != null)
+                        continue;
 
-                            if (!_clansClient.UpdatingWar.TryAdd(cachedClan.CurrentWar.Key, null))
-                                updatingClans.Remove(cachedClan.Tag);
-                        }
+                    cachedWar = new CachedWar(cachedClan.CurrentWar);
 
-                    try
-                    {
-                        if (updatingClans.Count == 0)
-                            continue;
+                    dbContext.Wars.Add(cachedWar);
 
-                        List<CachedWar> cachedWars = await dbContext.Wars
-                            .AsNoTracking()
-                            .Where(w => cachedClans.Select(c => c.CurrentWar.PreparationStartTime).Contains(w.PreparationStartTime))
-                            .ToListAsync().ConfigureAwait(false);
+                    CocApi.Model.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
+                        ? cachedClan.Content
+                        : null;
 
-                        foreach(CachedClan cachedClan in cachedClans)
-                        {
-                            if (cachedClan.CurrentWar.Added)
-                                continue;
+                    CocApi.Model.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
+                        ? cachedClan.Content
+                        : null;
 
-                            cachedClan.CurrentWar.Added = true;
-
-                            foreach (CachedClan enemyClan in cachedClans)
-                                if (enemyClan.CurrentWar.EnemyTag == cachedClan.Tag && enemyClan.CurrentWar.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime)
-                                    enemyClan.CurrentWar.Added = true;
-
-                            CachedWar? cachedWar = cachedWars.SingleOrDefault(w =>
-                                w.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime &&
-                                w.ClanTag == cachedClan.CurrentWar.Content.Clan.Tag &&
-                                w.OpponentTag == cachedClan.CurrentWar.Content.Opponent.Tag);
-
-                            if (cachedWar != null)
-                                continue;
-
-                            cachedWar = new CachedWar(cachedClan.CurrentWar);
-
-                            dbContext.Wars.Add(cachedWar);
-
-                            CocApi.Model.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
-                                ? cachedClan.Content
-                                : null;
-
-                            CocApi.Model.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
-                                ? cachedClan.Content
-                                : null;
-
-                            await _clansClient.OnClanWarAddedAsync(new WarAddedEventArgs(clan, opponent, cachedClan.CurrentWar.Content), _stopRequestedTokenSource.Token);
-                        }
-
-                        await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        foreach (string tag in updatingClans)
-                        {
-                            _clansClient.UpdatingClan.TryRemove(tag, out _);
-                            _clansClient.UpdatingWar.TryRemove(cachedClans.Single(c => c.Tag == tag).CurrentWar.Key, out _);
-                        }
-                    }
-
-                    if (_id == int.MinValue)
-                        await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatches, _stopRequestedTokenSource.Token).ConfigureAwait(false);
-                    else
-                        await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatchUpdates, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+                    await _clansClient.OnClanWarAddedAsync(new WarAddedEventArgs(clan, opponent, cachedClan.CurrentWar.Content, _cancellationToken));
                 }
 
-                _isRunning = false;
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
             }
-            catch (Exception e)
+            finally
             {
-                _isRunning = false;
-
-                if (_stopRequestedTokenSource.IsCancellationRequested)
-                    return;
-
-                if (_stopRequestedTokenSource.IsCancellationRequested == false)
+                foreach (string tag in updatingClans)
                 {
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "NewWarMonitor error", e));
-
-                    _ = RunAsync();
+                    _clansClient.UpdatingClan.TryRemove(tag, out _);
+                    _clansClient.UpdatingWar.TryRemove(cachedClans.Single(c => c.Tag == tag).CurrentWar.Key, out _);
                 }
             }
+
+            if (_id == int.MinValue)
+                await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+            else
+                await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+
+            Console.WriteLine("done");
         }
 
-        public new async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _stopRequestedTokenSource.Cancel();
+        //public async Task RunAsync(CancellationToken cancellationToken)
+        //{
+        //    _cancellationToken = cancellationToken;
 
-            await base.StopAsync(cancellationToken).ConfigureAwait(false);
+        //    _cancellationToken.Register(BeginShutdown);
 
-            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "NewWarMonitor stopped"));
-        }
+        //    try
+        //    {
+        //        if (_isRunning)
+        //            return;
+
+        //        _isRunning = true;
+
+        //        Library.OnLog(this, new LogEventArgs(LogLevel.Information, "running"));
+
+        //        while (_cancellationToken.IsCancellationRequested == false)
+        //        {
+        //            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+
+        //            List<CachedClan> cachedClans = await dbContext.Clans
+        //                .Where(c =>
+        //                    !c.CurrentWar.Added && 
+        //                    c.CurrentWar.State != null &&
+        //                    c.CurrentWar.State != WarState.NotInWar &&
+        //                    c.Id > _id)
+        //                .OrderBy(c => c.Id)
+        //                .Take(Library.Monitors.NewWars.ConcurrentUpdates)
+        //                .ToListAsync(_cancellationToken)
+        //                .ConfigureAwait(false);
+
+        //            _id = cachedClans.Count == Library.Monitors.NewWars.ConcurrentUpdates
+        //                ? cachedClans.Max(c => c.Id)
+        //                : int.MinValue;
+
+        //            HashSet<string> updatingClans = new();
+
+        //            foreach (CachedClan cachedClan in cachedClans)
+        //                if (_clansClient.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
+        //                {
+        //                    updatingClans.Add(cachedClan.Tag);
+
+        //                    if (!_clansClient.UpdatingWar.TryAdd(cachedClan.CurrentWar.Key, null))
+        //                        updatingClans.Remove(cachedClan.Tag);
+        //                }
+
+        //            try
+        //            {
+        //                if (updatingClans.Count == 0)
+        //                    continue;
+
+        //                List<CachedWar> cachedWars = await dbContext.Wars
+        //                    .AsNoTracking()
+        //                    .Where(w => cachedClans.Select(c => c.CurrentWar.PreparationStartTime).Contains(w.PreparationStartTime))
+        //                    .ToListAsync(_cancellationToken).ConfigureAwait(false);
+
+        //                foreach(CachedClan cachedClan in cachedClans)
+        //                {
+        //                    if (cachedClan.CurrentWar.Added)
+        //                        continue;
+
+        //                    cachedClan.CurrentWar.Added = true;
+
+        //                    foreach (CachedClan enemyClan in cachedClans)
+        //                        if (enemyClan.CurrentWar.EnemyTag == cachedClan.Tag && enemyClan.CurrentWar.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime)
+        //                            enemyClan.CurrentWar.Added = true;
+
+        //                    CachedWar? cachedWar = cachedWars.SingleOrDefault(w =>
+        //                        w.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime &&
+        //                        w.ClanTag == cachedClan.CurrentWar.Content.Clan.Tag &&
+        //                        w.OpponentTag == cachedClan.CurrentWar.Content.Opponent.Tag);
+
+        //                    if (cachedWar != null)
+        //                        continue;
+
+        //                    cachedWar = new CachedWar(cachedClan.CurrentWar);
+
+        //                    dbContext.Wars.Add(cachedWar);
+
+        //                    CocApi.Model.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
+        //                        ? cachedClan.Content
+        //                        : null;
+
+        //                    CocApi.Model.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
+        //                        ? cachedClan.Content
+        //                        : null;
+
+        //                    await _clansClient.OnClanWarAddedAsync(new WarAddedEventArgs(clan, opponent, cachedClan.CurrentWar.Content));
+        //                }
+
+        //                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+
+        //                _cancellationToken.ThrowIfCancellationRequested();
+        //            }
+        //            finally
+        //            {
+        //                foreach (string tag in updatingClans)
+        //                {
+        //                    _clansClient.UpdatingClan.TryRemove(tag, out _);
+        //                    _clansClient.UpdatingWar.TryRemove(cachedClans.Single(c => c.Tag == tag).CurrentWar.Key, out _);
+        //                }
+        //            }
+
+        //            if (_id == int.MinValue)
+        //                await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+        //            else
+        //                await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+        //        }
+
+        //        _isRunning = false;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        _isRunning = false;
+
+        //        if (_cancellationToken.IsCancellationRequested)
+        //            return;
+
+        //        Library.OnLog(this, new LogEventArgs(LogLevel.Error, "errored", e));
+
+        //        _ = Task.Run(() => RunAsync(_cancellationToken), CancellationToken.None);                
+        //    }
+        //}
+
+        //public new async Task StopAsync(CancellationToken cancellationToken)
+        //{
+        //    await base.BeginShutdown(cancellationToken).ConfigureAwait(false);
+
+        //    Library.OnLog(this, new LogEventArgs(LogLevel.Information, "NewWarMonitor stopped"));
+        //}
+
+        //public void BeginShutdown()
+        //{
+        //    _stopRequestedTcs.SetResult(true);
+
+        //    Library.OnLog(this, new LogEventArgs(LogLevel.Information, "stopping"));
+        //}
     }
 }

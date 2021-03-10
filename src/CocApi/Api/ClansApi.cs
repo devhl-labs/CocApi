@@ -369,6 +369,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -383,7 +385,9 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>> FetchClanResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             if (clanTag == null)
-                throw new ArgumentNullException(nameof(clanTag)); 
+                throw new ArgumentNullException(nameof(clanTag));
+
+            cancellationToken?.ThrowIfCancellationRequested();
 
             clanTag = Clash.FormatTag(clanTag);
             
@@ -450,6 +454,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}", path, end - start, e);
@@ -515,6 +521,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -608,6 +616,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/members", path, end - start, e);
@@ -667,6 +677,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -748,8 +760,7 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
-                if (cancellationToken?.IsCancellationRequested == true)
-                    throw;
+                cancellationToken?.ThrowIfCancellationRequested();
 
                 end = DateTime.UtcNow;
 
@@ -810,6 +821,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -891,6 +904,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/clanwarleagues/wars/{warTag}", path, end - start, e);
@@ -956,6 +971,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -1049,6 +1066,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/warlog", path, end - start, e);
@@ -1108,6 +1127,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -1189,6 +1210,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/currentwar", path, end - start, e);
@@ -1268,6 +1291,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -1386,6 +1411,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/clans", path, end - start, e);

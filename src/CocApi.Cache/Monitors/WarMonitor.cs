@@ -41,7 +41,7 @@
 //                {
 //                    if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
 //                    {
-//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 
 //                        continue;
 //                    }
@@ -66,9 +66,9 @@
 //                    for (int i = 0; i < wars.Count; i++)
 //                        await MonitorWarAsync(wars[i]).ConfigureAwait(false);
 
-//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await dbContext.SaveChangesAsync(_stopRequested).ConfigureAwait(false);
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -116,7 +116,7 @@
 //                        .AsNoTracking()
 //                        .Where(c => cached.ClanTags.Contains(c.Tag))
 //                        .OrderByDescending(c => c.ServerExpiration)
-//                        .ToListAsync(_stopRequestedTokenSource.Token)
+//                        .ToListAsync(_stopRequested)
 //                        .ConfigureAwait(false);
 
 //                    if (cachedClanWars.Count == 2 && cachedClanWars.All(c => c.PreparationStartTime > cached.PreparationStartTime) ||
@@ -141,7 +141,7 @@
 //                {
 //                    CachedWar? fetched = await CachedWar
 //                            .FromClanWarLeagueWarResponseAsync(
-//                                cached.WarTag, cached.Season.Value, _clansClient, _clansApi, _stopRequestedTokenSource.Token)
+//                                cached.WarTag, cached.Season.Value, _clansClient, _clansApi, _stopRequested)
 //                            .ConfigureAwait(false);
 
 //                    if (cached.Data != null && 

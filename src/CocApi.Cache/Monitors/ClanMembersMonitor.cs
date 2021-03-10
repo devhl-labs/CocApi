@@ -60,7 +60,7 @@
 //                        .Where(c => c.Id > id && c.DownloadMembers)
 //                        .Take(Configuration.ConcurrentClanDownloads)
 //                        .AsNoTracking()
-//                        .ToListAsync(_stopRequestedTokenSource.Token)
+//                        .ToListAsync(_stopRequested)
 //                        .ConfigureAwait(false);
 
 //                    id = cachedClans.Count < Configuration.ConcurrentClanDownloads
@@ -70,7 +70,7 @@
 //                    foreach (CachedClan cachedClan in cachedClans)                      
 //                        await MonitorMembersAsync(cachedClan);                        
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -125,7 +125,7 @@
 
 //            await Task.WhenAll(tasks);
 
-//            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+//            await dbContext.SaveChangesAsync(_stopRequested);
 //        }
 
 //        private async Task MonitorMemberAsync(CachedPlayer cached)

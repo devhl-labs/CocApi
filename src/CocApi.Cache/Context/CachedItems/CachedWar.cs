@@ -24,7 +24,7 @@ namespace CocApi.Cache.Context.CachedItems
                 if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
 
-                CachedWar result = new CachedWar(apiResponse, timeToLive, warTag, season)
+                CachedWar result = new(apiResponse, timeToLive, warTag, season)
                 {
                     Season = season
                 };

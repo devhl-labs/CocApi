@@ -16,11 +16,7 @@ namespace CocApi.Cache
 {
     public class ClansClientBase : ClientBase
     {
-        private readonly ClansApi _clansApi;
-        private readonly MemberMonitor? _memberMonitor;
-
-        internal ConcurrentDictionary<string, Context.CachedItems.CachedClan?> UpdatingClan { get; } = new();
-        //internal ConcurrentDictionary<string, ClanWar?> UpdatingClanWar { get; } = new();
+        internal ConcurrentDictionary<string, CachedClan?> UpdatingClan { get; } = new();
         internal ConcurrentDictionary<string, ClanWar?> UpdatingWar { get; } = new();
         internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
 
@@ -305,42 +301,32 @@ namespace CocApi.Cache
             return result;
         }
 
-
-
-
-
+        private readonly ClansApi _clansApi;
 
         private readonly ClanMonitor _clanMonitor;
         private readonly NewWarMonitor _newWarMonitor;
         private readonly NewCwlWarMonitor _newCwlWarMonitor;
         private readonly WarMonitor _warMonitor;
         private readonly ActiveWarMonitor _activeWarMonitor;
+        private readonly MemberMonitor? _memberMonitor;
 
+        private Task? _clanMonitorTask;
+        private Task? _newWarMonitorTask;
+        private Task? _newCwlWarMonitorTask;
+        private Task? _warMonitorTask;
+        private Task? _activeWarMonitorTask;
+        private Task? _memberMonitorTask;
 
-
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken _)
         {
-            await Task.Run(() =>
-            {
-                if (!Library.Monitors.Clans.IsDisabled)
-                    _ = _clanMonitor.RunAsync();
+            _clanMonitorTask = _clanMonitor.RunAsync(_stopRequestedTokenSource.Token); //todo what if this token is already cancelled?
+            _newWarMonitorTask = _newWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
+            _newCwlWarMonitorTask = _newCwlWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
+            _warMonitorTask = _warMonitor.RunAsync(_stopRequestedTokenSource.Token);
+            _activeWarMonitorTask = _activeWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
+            _memberMonitorTask = _memberMonitor?.RunAsync(_stopRequestedTokenSource.Token);
 
-                if (!Library.Monitors.NewWars.IsDisabled)
-                    _ = _newWarMonitor.RunAsync();
-
-                if (!Library.Monitors.NewCwlWars.IsDisabled)
-                    _ = _newCwlWarMonitor.RunAsync();
-
-                if (!Library.Monitors.Wars.IsDisabled)
-                    _ = _warMonitor.RunAsync();
-
-                if (!Library.Monitors.ActiveWars.IsDisabled)
-                    _ = _activeWarMonitor.RunAsync();
-
-                if (!Library.Monitors.Members.IsDisabled && _memberMonitor != null)
-                    _ = _memberMonitor.RunAsync();
-
-            }, cancellationToken);
+            return Task.CompletedTask;
         }
 
         internal bool HasUpdated(CachedClan stored, CachedClan fetched)
@@ -352,40 +338,9 @@ namespace CocApi.Cache
                 return false;
 
             return !fetched.Content.Equals(stored.Content);
-
-            //return HasUpdated(stored.Data, fetched.Data);
         }
 
-        //internal bool HasUpdated(Clan? stored, Clan fetched)
-        //{
-        //    if (stored == null)
-        //        return true;
-
-        //    return !(stored.BadgeUrls?.Small == fetched.BadgeUrls?.Small
-        //        && stored.ClanLevel == fetched.ClanLevel
-        //        && stored.ClanPoints == fetched.ClanPoints
-        //        && stored.ClanVersusPoints == fetched.ClanVersusPoints
-        //        && stored.Description == fetched.Description
-        //        && stored.IsWarLogPublic == fetched.IsWarLogPublic
-        //        && stored.Location?.Id == fetched.Location?.Id
-        //        && stored.Name == fetched.Name
-        //        && stored.RequiredTrophies == fetched.RequiredTrophies
-        //        && stored.Type == fetched.Type
-        //        && stored.WarFrequency == fetched.WarFrequency
-        //        && stored.WarLeague?.Id == fetched.WarLeague?.Id
-        //        && stored.WarLosses == fetched.WarLosses
-        //        && stored.WarTies == fetched.WarTies
-        //        && stored.WarWins == fetched.WarWins
-        //        && stored.WarWinStreak == fetched.WarWinStreak
-        //        && stored.Labels.SequenceEqual(fetched.Labels)
-        //        && fetched.Labels.SequenceEqual(stored.Labels)
-        //        && Clan.ClanMembersJoined(stored, fetched).Count == 0
-        //        && Clan.ClanMembersLeft(stored, fetched).Count == 0
-        //        && Clan.Donations(stored, fetched).Count == 0 
-        //        && Clan.DonationsReceived(stored, fetched).Count == 0);
-        //}
-
-        internal bool HasUpdated(Context.CachedItems.CachedClanWarLeagueGroup stored, Context.CachedItems.CachedClanWarLeagueGroup fetched)
+        internal bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
         {
             if (stored.ExpiresAt > fetched.ExpiresAt)
                 return false;
@@ -394,27 +349,9 @@ namespace CocApi.Cache
                 return false;
 
             return !fetched.Content.Equals(stored.Content);
-
-            //return HasUpdated(stored.Data, fetched.Data);
         }
 
-        //internal bool HasUpdated(ClanWarLeagueGroup? stored, ClanWarLeagueGroup fetched)
-        //{
-        //    if (stored == null)
-        //        return false;
-
-        //    if (stored.State != fetched.State)
-        //        return true;
-
-        //    foreach (ClanWarLeagueRound round in fetched.Rounds)
-        //        foreach (string warTag in round.WarTags)
-        //            if (stored.Rounds.Any(r => r.WarTags.Any(w => w == warTag)) == false)
-        //                return true;
-
-        //    return false;
-        //}
-
-        internal bool HasUpdated(Context.CachedItems.CachedClanWarLog stored, Context.CachedItems.CachedClanWarLog fetched)
+        internal bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
         {
             if (stored.ExpiresAt > fetched.ExpiresAt)
                 return false;
@@ -423,28 +360,9 @@ namespace CocApi.Cache
                 return false;
 
             return !fetched.Content.Equals(stored.Content);
-
-            //return HasUpdated(stored.Data, fetched.Data);
         }
 
-        //internal bool HasUpdated(ClanWarLog? stored, ClanWarLog fetched)
-        //{
-        //    if (stored == null)
-        //        return true;
-
-        //    if (fetched?.Items == null)
-        //        return false;
-
-        //    if (stored.Items.Count == 0 && fetched.Items.Count == 0)
-        //        return false;
-
-        //    if (stored.Items.Count != fetched.Items.Count)
-        //        return true;
-
-        //    return stored.Items.Max(i => i?.EndTime ?? DateTime.MinValue) != fetched.Items.Max(i => i?.EndTime ?? DateTime.MinValue);
-        //}
-
-        internal bool HasUpdated(Context.CachedItems.CachedWar stored, Context.CachedItems.CachedClanWar fetched)
+        internal bool HasUpdated(CachedWar stored, CachedClanWar fetched)
         {
             if (stored.ExpiresAt > fetched.ExpiresAt)
                 return false;
@@ -456,19 +374,9 @@ namespace CocApi.Cache
                 throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
 
             return !fetched.Content.Equals(stored.Content);
-
-            //return HasUpdated(stored.Data, fetched.Data);
         }
 
-        //internal bool HasUpdated(ClanWar stored, ClanWar fetched)
-        //{
-        //    return !(stored.EndTime == fetched.EndTime
-        //        && stored.StartTime == fetched.StartTime
-        //        && stored.State == fetched.State
-        //        && stored.Attacks.Count == fetched.Attacks.Count);
-        //}
-
-        internal bool HasUpdated(Context.CachedItems.CachedWar stored, Context.CachedItems.CachedWar fetched)
+        internal bool HasUpdated(CachedWar stored, CachedWar fetched)
         {
             if (ReferenceEquals(stored, fetched))
                 return false;
@@ -486,8 +394,6 @@ namespace CocApi.Cache
                 throw new InvalidOperationException("Provided wars are the same war.");
 
             return !fetched.Content.Equals(stored.Content);
-
-            //return HasUpdated(stored.Data, fetched.Data);
         }
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
@@ -561,36 +467,39 @@ namespace CocApi.Cache
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken _)
         {
-            List<Task> tasks = new()
-            {
-                _clanMonitor.StopAsync(cancellationToken),
-                _newWarMonitor.StopAsync(cancellationToken),
-                _newCwlWarMonitor.StopAsync(cancellationToken),
-                _warMonitor.StopAsync(cancellationToken),
-                _activeWarMonitor.StopAsync(cancellationToken)
-            };
+            _stopRequestedTokenSource.Cancel();
 
-            if (_memberMonitor != null)
-                tasks.Add(_memberMonitor.StopAsync(cancellationToken));
+            List<Task> tasks = new();
+
+            if (_clanMonitorTask != null)
+                tasks.Add(_clanMonitorTask);
+            if (_newWarMonitorTask != null)
+                tasks.Add(_newWarMonitorTask);
+            if (_newCwlWarMonitorTask != null)
+                tasks.Add(_newCwlWarMonitorTask);
+            if (_warMonitorTask != null)
+                tasks.Add(_warMonitorTask);
+            if (_activeWarMonitorTask != null)
+                tasks.Add(_activeWarMonitorTask);
+            if (_memberMonitorTask != null)
+                tasks.Add(_memberMonitorTask);
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
-
-            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "Stopping clans client"));
         }
 
-        internal async Task OnClanUpdatedAsync(ClanUpdatedEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanUpdatedAsync(ClanUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
 
             try
             {
                 ClanUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan updated."));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan updated.", e));
             }
             finally
             {
@@ -598,9 +507,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarAddedAsync(WarAddedEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanWarAddedAsync(WarAddedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
             
             try
             {               
@@ -616,9 +525,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarEndingSoonAsync(WarEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanWarEndingSoonAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
 
             try
             {
@@ -634,9 +543,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarEndNotSeenAsync(WarEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanWarEndNotSeenAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
             
             try
             {
@@ -652,9 +561,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarEndedAsync(WarEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanWarEndedAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
 
             try
             {
@@ -670,9 +579,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarLeagueGroupUpdatedAsync(ClanWarLeagueGroupUpdatedEventArgs events, CancellationToken cancellationToken)
+        internal async Task OnClanWarLeagueGroupUpdatedAsync(ClanWarLeagueGroupUpdatedEventArgs events)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
 
             try
             {
@@ -688,9 +597,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarLogUpdatedAsync(ClanWarLogUpdatedEventArgs events, CancellationToken cancellationToken)
+        internal async Task OnClanWarLogUpdatedAsync(ClanWarLogUpdatedEventArgs events)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
 
             try
             {
@@ -706,9 +615,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarStartingSoonAsync(WarEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanWarStartingSoonAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
 
             try
             {
@@ -724,9 +633,9 @@ namespace CocApi.Cache
             }
         }
 
-        internal async Task OnClanWarUpdatedAsync(ClanWarUpdatedEventArgs eventArgs, CancellationToken cancellationToken)
+        internal async Task OnClanWarUpdatedAsync(ClanWarUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
 
             try
             {

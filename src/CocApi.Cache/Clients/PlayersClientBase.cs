@@ -17,19 +17,19 @@ namespace CocApi.Cache
     {
         private readonly PlayersApi _playersApi;
 
-        internal readonly PlayerMonitor PlayerMontitor;
+        internal readonly PlayerMonitor PlayerMonitor;
 
         public PlayersClientBase(PlayersApi playersApi, IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs) 
             : base (dbContextFactory, dbContextArgs)
         {
             _playersApi = playersApi;
 
-            PlayerMontitor = new PlayerMonitor(DbContextFactory, dbContextArgs, _playersApi, this);
+            PlayerMonitor = new PlayerMonitor(DbContextFactory, dbContextArgs, _playersApi, this);
         }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
-        internal ConcurrentDictionary<string, Context.CachedItems.CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, Context.CachedItems.CachedPlayer?>();
+        internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, Context.CachedItems.CachedPlayer?>();
 
         public async Task AddOrUpdateAsync(string tag, bool download = true)
             => await AddOrUpdateAsync(new string[] { tag }, download);
@@ -146,19 +146,23 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
+        private Task? _playerMonitorTask;
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public Task StartAsync(CancellationToken _)
         {
-            Task.Run(() =>
-            {
-                if (!Library.Monitors.Players.IsDisabled)
-                    _ = PlayerMontitor.RunAsync();
-            }, cancellationToken);
+            if (!Library.Monitors.Players.IsDisabled)
+                _playerMonitorTask = PlayerMonitor.RunAsync(_stopRequestedTokenSource.Token);
+
+            //Task.Run(() =>
+            //{
+            //    if (!Library.Monitors.Players.IsDisabled)
+            //        Task.Run(() => PlayerMontitor.RunAsync(_stopRequestedTokenSource.Token));
+            //});
 
             return Task.CompletedTask;
         }
 
-        internal bool HasUpdated(Context.CachedItems.CachedPlayer stored, Context.CachedItems.CachedPlayer fetched)
+        internal bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
         {
             if (stored.Content == null && fetched.Content != null)
                 return true;
@@ -173,72 +177,6 @@ namespace CocApi.Cache
 
             //return HasUpdated(stored.Data, fetched.Data);
         }
-
-        //protected virtual bool HasUpdated(Player stored, Player fetched)
-        //{
-        //    if (!(stored.AttackWins == fetched.AttackWins
-        //        && stored.BestTrophies == fetched.BestTrophies
-        //        && stored.BestVersusTrophies == fetched.BestVersusTrophies
-        //        && stored.BuilderHallLevel == fetched.BuilderHallLevel
-        //        && stored.Clan?.Tag == fetched.Clan?.Tag
-        //        && stored.DefenseWins == fetched.DefenseWins
-        //        && stored.Donations == fetched.Donations
-        //        && stored.DonationsReceived == fetched.DonationsReceived
-        //        && stored.ExpLevel == fetched.ExpLevel
-        //        && stored.League?.Id == fetched.League?.Id
-        //        && stored.Name == fetched.Name
-        //        && stored.Role == fetched.Role
-        //        && stored.TownHallLevel == fetched.TownHallLevel
-        //        && stored.TownHallWeaponLevel == fetched.TownHallWeaponLevel
-        //        && stored.Trophies == fetched.Trophies
-        //        && stored.VersusBattleWinCount == fetched.VersusBattleWinCount
-        //        && stored.VersusBattleWins == fetched.VersusBattleWins
-        //        && stored.VersusTrophies == fetched.VersusTrophies
-        //        && stored.WarStars == fetched.WarStars
-        //        && stored.Labels.SequenceEqual(fetched.Labels)
-        //        && fetched.Labels.SequenceEqual(stored.Labels)
-        //        ))
-        //            return true;
-
-        //    if (stored.LegendStatistics?.BestSeason?.Trophies != fetched.LegendStatistics?.BestSeason?.Trophies)
-        //        return true;
-
-        //    if (stored.LegendStatistics?.CurrentSeason.Trophies != fetched.LegendStatistics?.CurrentSeason.Trophies
-        //        || stored.LegendStatistics?.LegendTrophies != fetched.LegendStatistics?.LegendTrophies)
-        //        return true;
-
-        //    foreach (var fetchAch in fetched.Achievements)
-        //    {
-        //        var storedAch = stored.Achievements.FirstOrDefault(a => 
-        //            a.Name == fetchAch.Name && a.Info == fetchAch.Info && a.Village == fetchAch.Village);
-
-        //        if (storedAch == null || storedAch.CompletionInfo != fetchAch.CompletionInfo || storedAch.Stars != fetchAch.Stars)
-        //            return true;
-        //    }
-
-        //    foreach(var fetchedHero in fetched.Heroes)
-        //    {
-        //        var storedHero = stored.Heroes.FirstOrDefault(h => h.Name == fetchedHero.Name && h.Level == fetchedHero.Level);
-        //        if (storedHero == null || storedHero.Level != fetchedHero.Level)
-        //            return true;
-        //    }
-
-        //    foreach(var fetchedSpell in fetched.Spells)
-        //    {
-        //        var storedSpell = stored.Spells.FirstOrDefault(s => s.Name == fetchedSpell.Name && s.Level == fetchedSpell.Level);
-        //        if (storedSpell == null || storedSpell.Level != fetchedSpell.Level)
-        //            return true;
-        //    }
-
-        //    foreach(var fetchedTroop in fetched.Troops)
-        //    {
-        //        var storedTroop = stored.Troops.FirstOrDefault(t => t.Name == fetchedTroop.Name && t.Level == fetchedTroop.Level);
-        //        if (storedTroop == null || storedTroop.Level != fetchedTroop.Level)
-        //            return true;
-        //    }
-
-        //    return false;
-        //}
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync(ApiResponse<Player> apiResponse)
         {
@@ -296,17 +234,22 @@ namespace CocApi.Cache
             return cachedPlayer;
         }
 
-        public async Task StopAsync(CancellationToken cancellationToken)
+        public async Task StopAsync(CancellationToken _)
         {
-            await PlayerMontitor.StopAsync(cancellationToken);
+            _stopRequestedTokenSource.Cancel();
+
+            if (_playerMonitorTask != null)
+                await _playerMonitorTask;
+
+            //Library.OnLog(this, new LogEventArgs(LogLevel.Information, "stopped"));
         }
 
-        internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs events, CancellationToken cancellationToken)
+        internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs events)
         {
-            try
-            {
-                await Library.ConcurrentEventsSemaphore.WaitAsync(cancellationToken);
+            await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
 
+            try
+            {   
                 PlayerUpdated?.Invoke(this, events).ConfigureAwait(false);
             }
             catch (Exception e)

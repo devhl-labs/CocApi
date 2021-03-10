@@ -129,6 +129,8 @@ namespace {{packageName}}.{{apiPackage}}
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -329,8 +331,7 @@ namespace {{packageName}}.{{apiPackage}}
             }
             catch (Exception e)
             {
-                if (cancellationToken?.IsCancellationRequested == true)
-                    throw;
+                cancellationToken?.ThrowIfCancellationRequested();
 
                 end = DateTime.UtcNow;
 

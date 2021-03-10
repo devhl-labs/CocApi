@@ -50,7 +50,7 @@
 //                            v.LocalExpiration < DateTime.UtcNow)
 //                        .OrderBy(v => v.ServerExpiration)
 //                        .Take(Configuration.ConcurrentPlayerDownloads)
-//                        .ToListAsync(_stopRequestedTokenSource.Token)
+//                        .ToListAsync(_stopRequested)
 //                        .ConfigureAwait(false);
 
 //                    List<Task> tasks = new();
@@ -60,9 +60,9 @@
 
 //                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await dbContext.SaveChangesAsync(_stopRequested).ConfigureAwait(false);
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -99,7 +99,7 @@
 //            try
 //            {
 //                CachedPlayer? fetched = await CachedPlayer
-//                        .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _stopRequestedTokenSource.Token)
+//                        .FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _stopRequested)
 //                        .ConfigureAwait(false);
 
 //                if (fetched.Data != null && _playersClientBase.HasUpdated(cachedPlayer, fetched))

@@ -58,7 +58,7 @@ namespace CocApi.Test
             // import old cache data from CocApi.Cache verison 1.4
             await ImportDataToVersion2(@"Data Source=E:\repos\CocApi\src\CocApi.Test\bin\Debug\net5.0\mb-CocApi.Cache.sqlite");
 
-            await SanityCheck();
+            //await SanityCheck();
 
             await _playersCache.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);
@@ -90,7 +90,7 @@ namespace CocApi.Test
 
         public new async Task StopAsync(CancellationToken cancellationToken)
         {
-            List<Task> tasks = new List<Task>
+            List<Task> tasks = new()
             {
                 base.StopAsync(cancellationToken),
                 _playersCache.StopAsync(cancellationToken)

@@ -21,7 +21,7 @@ namespace CocApi
 
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
+        public async Task<string> GetAsync(CancellationToken? cancellationToken = null)
         {
             await _semaphore.WaitAsync(cancellationToken.GetValueOrDefault());
 
@@ -42,8 +42,6 @@ namespace CocApi
             {
                 _semaphore.Release();
             }
-        }
-
-        //public string Get() => _token;        
+        } 
     }
 }

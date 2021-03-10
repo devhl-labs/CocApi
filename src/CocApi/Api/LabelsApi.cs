@@ -167,6 +167,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -253,6 +255,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/labels/clans", path, end - start, e);
@@ -316,6 +320,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -402,6 +408,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/labels/players", path, end - start, e);

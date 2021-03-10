@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,8 @@ namespace CocApi.Cache
     {
         internal protected IDesignTimeDbContextFactory<CocApiCacheContext> DbContextFactory { get; }
         internal protected string[] DbContextArgs { get; }
+
+        internal protected CancellationTokenSource _stopRequestedTokenSource = new();
 
         public ClientBase(IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
         {

@@ -44,7 +44,7 @@
 //                {
 //                    if (_clansClient.DownloadCurrentWars == false && _clansClient.DownloadCwl == false)
 //                    {
-//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                        await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 
 //                        continue;
 //                    }
@@ -102,9 +102,9 @@
 
 //                    await Task.WhenAll(tasks);
 
-//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+//                    await dbContext.SaveChangesAsync(_stopRequested);
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -145,7 +145,7 @@
 //                //CacheContext dbContext = scope.ServiceProvider.GetRequiredService<CacheContext>();
 
 //                //CachedClanWar? cachedClanWar = await dbContext.ClanWars
-//                //    .FirstOrDefaultAsync(w => w.Tag == clanTag, _stopRequestedTokenSource.Token)
+//                //    .FirstOrDefaultAsync(w => w.Tag == clanTag, _stopRequested)
 //                //    .ConfigureAwait(false);
 
 //                //if (cachedClanWar == null)
@@ -164,7 +164,7 @@
 
 //                try
 //                {
-//                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequestedTokenSource.Token);
+//                    using CancellationTokenSource linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token, _stopRequested);
 
 //                    fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClanWar.Tag, _clansClient, _clansApi, linkedCts.Token);
 //                }
@@ -185,7 +185,7 @@
 
 //                cachedClanWar.UpdateFrom(fetched);
 
-//                //await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+//                //await dbContext.SaveChangesAsync(_stopRequested);
 
 //            }
 //            finally

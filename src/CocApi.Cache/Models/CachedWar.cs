@@ -26,12 +26,10 @@ namespace CocApi.Cache.Models
                 if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
 
-                CachedWar result = new CachedWar(apiResponse, timeToLive, warTag, season)
+                return new CachedWar(apiResponse, timeToLive, warTag, season)
                 {
                     Season = season
                 };
-
-                return result;
             }
             catch (Exception e)
             {

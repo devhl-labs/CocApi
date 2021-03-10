@@ -320,6 +320,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -399,6 +401,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/leagues/{leagueId}", path, end - start, e);
@@ -466,6 +470,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -562,6 +568,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/leagues/{leagueId}/seasons/{seasonId}", path, end - start, e);
@@ -627,6 +635,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -718,6 +728,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/leagues/{leagueId}/seasons", path, end - start, e);
@@ -781,6 +793,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -867,6 +881,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/leagues", path, end - start, e);
@@ -926,6 +942,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -1005,6 +1023,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/warleagues/{leagueId}", path, end - start, e);
@@ -1068,6 +1088,8 @@ namespace CocApi.Api
             }
             catch(Exception)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 return null;
             }
         } 
@@ -1154,6 +1176,8 @@ namespace CocApi.Api
             }
             catch (Exception e)
             {
+                cancellationToken?.ThrowIfCancellationRequested();
+
                 end = DateTime.UtcNow;
 
                 HttpRequestException httpRequestException = new("/warleagues", path, end - start, e);

@@ -72,11 +72,11 @@ namespace CocApi.Cache.Context.CachedItems
 
         public int Id { get; internal set; }
 
-        public CachedItems.CachedClanWar CurrentWar { get; internal set; } = new();
+        public CachedClanWar CurrentWar { get; internal set; } = new();
 
-        public CachedItems.CachedClanWarLog WarLog { get; internal set; } = new();
+        public CachedClanWarLog WarLog { get; internal set; } = new();
 
-        public CachedItems.CachedClanWarLeagueGroup Group { get; internal set; } = new();
+        public CachedClanWarLeagueGroup Group { get; internal set; } = new();
 
         public CachedClan(string tag, bool downloadClan, bool downloadWar, bool downloadLog, bool downloadGroup, bool downloadMembers)
         {

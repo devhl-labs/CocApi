@@ -53,7 +53,7 @@
 //                            w.LocalExpiration < DateTime.UtcNow)
 //                        .OrderBy(w => w.ServerExpiration)
 //                        .Take(Configuration.ConcurrentClanDownloads)
-//                        .ToListAsync(_stopRequestedTokenSource.Token)
+//                        .ToListAsync(_stopRequested)
 //                        .ConfigureAwait(false);
 
 //                    List<Task> tasks = new();
@@ -63,7 +63,7 @@
 
 //                    await Task.WhenAll(tasks).ConfigureAwait(false);
 
-//                    await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await dbContext.SaveChangesAsync(_stopRequested).ConfigureAwait(false);
 
 //                    if (_deletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
 //                    {
@@ -79,7 +79,7 @@
 //                        await Task.WhenAll(tasks);
 //                    }
 
-//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequestedTokenSource.Token).ConfigureAwait(false);
+//                    await Task.Delay(Configuration.DelayBetweenTasks, _stopRequested).ConfigureAwait(false);
 //                }
 
 //                _isRunning = false;
@@ -115,7 +115,7 @@
 
 //            try
 //            {
-//                CachedClan fetched = await CachedClan.FromClanResponseAsync(cached.Tag, _clansClient, _clansApi, _stopRequestedTokenSource.Token);
+//                CachedClan fetched = await CachedClan.FromClanResponseAsync(cached.Tag, _clansClient, _clansApi, _stopRequested);
 
 //                ////////////////////////if (cached.Data != null && fetched.Data != null && _clansClient.HasUpdated(cached, fetched))
 //                ////////////////////////    _clansClient.OnClanUpdated(cached.Data, fetched.Data);
@@ -140,11 +140,11 @@
 //                    p.ClanTag == null && 
 //                    p.Download == false && 
 //                    p.ServerExpiration < DateTime.UtcNow.AddMinutes(-10))
-//                .ToListAsync(_stopRequestedTokenSource.Token);
+//                .ToListAsync(_stopRequested);
 
 //            dbContext.RemoveRange(cachedPlayers);
 
-//            await dbContext.SaveChangesAsync(_stopRequestedTokenSource.Token);
+//            await dbContext.SaveChangesAsync(_stopRequested);
 //        }
 
 //        private async Task DeletePlayersInClansNotMonitored()
