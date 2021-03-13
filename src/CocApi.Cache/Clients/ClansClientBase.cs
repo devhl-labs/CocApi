@@ -11,30 +11,28 @@ using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public class ClansClientBase : ClientBase
+    public class ClansClientBase : ClientBase, IHostedService
     {
         internal ConcurrentDictionary<string, CachedClan?> UpdatingClan { get; } = new();
         internal ConcurrentDictionary<string, ClanWar?> UpdatingWar { get; } = new();
         internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
 
-        public ClansClientBase(ClansApi clansApi, IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
-            : base(dbContextFactory, dbContextArgs)
+        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider cacheContextOptions,
+            IOptions<ClanMonitorsOptions> options)
+            : base(cacheContextOptions)
         {
             _clansApi = clansApi;
-            _clanMonitor = new ClanMonitor(dbContextFactory, dbContextArgs, clansApi, this);
-            _newWarMonitor = new NewWarMonitor(dbContextFactory, dbContextArgs, this);
-            _newCwlWarMonitor = new NewCwlWarMonitor(dbContextFactory, dbContextArgs, clansApi, this);
-            _warMonitor = new WarMonitor(dbContextFactory, dbContextArgs, clansApi, this);
-            _activeWarMonitor = new ActiveWarMonitor(dbContextFactory, dbContextArgs, clansApi, this);
-        }
-
-        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
-            : this(clansApi, dbContextFactory, dbContextArgs)
-        {
-            _memberMonitor = new MemberMonitor(dbContextFactory, dbContextArgs, playersClient, playersApi);
+            _clanMonitor = new ClanMonitor(cacheContextOptions, clansApi, this, options);
+            _newWarMonitor = new NewWarMonitor(cacheContextOptions, this, options);
+            _newCwlWarMonitor = new NewCwlWarMonitor(cacheContextOptions, clansApi, this, options);
+            _warMonitor = new WarMonitor(cacheContextOptions, clansApi, this, options);
+            _activeWarMonitor = new ActiveWarMonitor(cacheContextOptions, clansApi, this, options);
+            _memberMonitor = new MemberMonitor(cacheContextOptions, playersClient, playersApi, options);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -131,8 +129,6 @@ namespace CocApi.Cache
 
             await dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
-
-
 
         public async Task<CachedWar?> GetActiveClanWarOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
         {
@@ -308,7 +304,7 @@ namespace CocApi.Cache
         private readonly NewCwlWarMonitor _newCwlWarMonitor;
         private readonly WarMonitor _warMonitor;
         private readonly ActiveWarMonitor _activeWarMonitor;
-        private readonly MemberMonitor? _memberMonitor;
+        private readonly MemberMonitor _memberMonitor;
 
         private Task? _clanMonitorTask;
         private Task? _newWarMonitorTask;
@@ -324,77 +320,32 @@ namespace CocApi.Cache
             _newCwlWarMonitorTask = _newCwlWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
             _warMonitorTask = _warMonitor.RunAsync(_stopRequestedTokenSource.Token);
             _activeWarMonitorTask = _activeWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
-            _memberMonitorTask = _memberMonitor?.RunAsync(_stopRequestedTokenSource.Token);
+            _memberMonitorTask = _memberMonitor.RunAsync(_stopRequestedTokenSource.Token);
 
             return Task.CompletedTask;
         }
 
-        //internal bool HasUpdated(CachedClan stored, CachedClan fetched)
-        //{
-        //    if (stored.ExpiresAt > fetched.ExpiresAt)
-        //        return false;
+        public async Task StopAsync(CancellationToken _)
+        {
+            _stopRequestedTokenSource.Cancel();
 
-        //    if (fetched.Content == null)
-        //        return false;
+            List<Task> tasks = new();
 
-        //    return !fetched.Content.Equals(stored.Content);
-        //}
+            if (_clanMonitorTask != null)
+                tasks.Add(_clanMonitorTask);
+            if (_newWarMonitorTask != null)
+                tasks.Add(_newWarMonitorTask);
+            if (_newCwlWarMonitorTask != null)
+                tasks.Add(_newCwlWarMonitorTask);
+            if (_warMonitorTask != null)
+                tasks.Add(_warMonitorTask);
+            if (_activeWarMonitorTask != null)
+                tasks.Add(_activeWarMonitorTask);
+            if (_memberMonitorTask != null)
+                tasks.Add(_memberMonitorTask);
 
-        //internal bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
-        //{
-        //    if (stored.ExpiresAt > fetched.ExpiresAt)
-        //        return false;
-
-        //    if (fetched.Content == null)
-        //        return false;
-
-        //    return !fetched.Content.Equals(stored.Content);
-        //}
-
-        //internal bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
-        //{
-        //    if (stored.ExpiresAt > fetched.ExpiresAt)
-        //        return false;
-
-        //    if (fetched.Content == null)
-        //        return false;
-
-        //    return !fetched.Content.Equals(stored.Content);
-        //}
-
-        //internal bool HasUpdated(CachedWar stored, CachedClanWar fetched)
-        //{
-        //    if (stored.ExpiresAt > fetched.ExpiresAt)
-        //        return false;
-
-        //    if (stored.Content == null)
-        //        throw new InvalidOperationException($"{nameof(stored)}.Data is null");
-
-        //    if (fetched.Content == null)
-        //        throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
-
-        //    return !fetched.Content.Equals(stored.Content);
-        //}
-
-        //internal bool HasUpdated(CachedWar stored, CachedWar fetched)
-        //{
-        //    if (ReferenceEquals(stored, fetched))
-        //        return false;
-
-        //    if (stored.ExpiresAt > fetched.ExpiresAt)
-        //        return false;
-
-        //    if (stored.Content == null)
-        //        throw new InvalidOperationException($"{nameof(stored)}.Data is null");
-
-        //    if (fetched.Content == null)
-        //        throw new InvalidOperationException($"{nameof(fetched)}.Data is null");
-
-        //    if (!ClanWar.IsSameWar(stored.Content, fetched.Content))
-        //        throw new InvalidOperationException("Provided wars are the same war.");
-
-        //    return !fetched.Content.Equals(stored.Content);
-        //}
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
         {
@@ -465,28 +416,6 @@ namespace CocApi.Cache
             }
 
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-        }
-
-        public async Task StopAsync(CancellationToken _)
-        {
-            _stopRequestedTokenSource.Cancel();
-
-            List<Task> tasks = new();
-
-            if (_clanMonitorTask != null)
-                tasks.Add(_clanMonitorTask);
-            if (_newWarMonitorTask != null)
-                tasks.Add(_newWarMonitorTask);
-            if (_newCwlWarMonitorTask != null)
-                tasks.Add(_newCwlWarMonitorTask);
-            if (_warMonitorTask != null)
-                tasks.Add(_warMonitorTask);
-            if (_activeWarMonitorTask != null)
-                tasks.Add(_activeWarMonitorTask);
-            if (_memberMonitorTask != null)
-                tasks.Add(_memberMonitorTask);
-
-            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
 
         internal async Task OnClanUpdatedAsync(ClanUpdatedEventArgs eventArgs)

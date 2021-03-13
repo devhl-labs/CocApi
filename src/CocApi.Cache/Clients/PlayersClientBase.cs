@@ -10,21 +10,21 @@ using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
     public class PlayersClientBase : ClientBase
     {
         private readonly PlayersApi _playersApi;
-
+        private readonly IOptions<MonitorOptions> _options;
         internal readonly PlayerMonitor PlayerMonitor;
 
-        public PlayersClientBase(PlayersApi playersApi, IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs) 
-            : base (dbContextFactory, dbContextArgs)
+        public PlayersClientBase(PlayersApi playersApi, CacheDbContextFactoryProvider cacheContextOptions, IOptions<MonitorOptions> options) : base (cacheContextOptions)
         {
             _playersApi = playersApi;
-
-            PlayerMonitor = new PlayerMonitor(DbContextFactory, dbContextArgs, _playersApi, this);
+            _options = options;
+            PlayerMonitor = new PlayerMonitor(cacheContextOptions, _playersApi, this, options);
         }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
@@ -150,33 +150,19 @@ namespace CocApi.Cache
 
         public Task StartAsync(CancellationToken _)
         {
-            if (!Library.Monitors.Players.IsDisabled)
+            if (!_options.Value.IsDisabled)
                 _playerMonitorTask = PlayerMonitor.RunAsync(_stopRequestedTokenSource.Token);
-
-            //Task.Run(() =>
-            //{
-            //    if (!Library.Monitors.Players.IsDisabled)
-            //        Task.Run(() => PlayerMontitor.RunAsync(_stopRequestedTokenSource.Token));
-            //});
 
             return Task.CompletedTask;
         }
 
-        //internal bool HasUpdated(CachedPlayer stored, CachedPlayer fetched)
-        //{
-        //    if (stored.Content == null && fetched.Content != null)
-        //        return true;
+        public async Task StopAsync(CancellationToken _)
+        {
+            _stopRequestedTokenSource.Cancel();
 
-        //    if (stored.ExpiresAt > fetched.ExpiresAt)
-        //        return false;
-
-        //    if (stored.Content == null || fetched.Content == null)
-        //        return false;
-
-        //    return !fetched.Content.Equals(stored.Content);
-
-        //    //return HasUpdated(stored.Data, fetched.Data);
-        //}
+            if (_playerMonitorTask != null)
+                await _playerMonitorTask;
+        }
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync(ApiResponse<Player> apiResponse)
         {
@@ -232,16 +218,6 @@ namespace CocApi.Cache
             await dbContext.SaveChangesAsync().ConfigureAwait(false);
 
             return cachedPlayer;
-        }
-
-        public async Task StopAsync(CancellationToken _)
-        {
-            _stopRequestedTokenSource.Cancel();
-
-            if (_playerMonitorTask != null)
-                await _playerMonitorTask;
-
-            //Library.OnLog(this, new LogEventArgs(LogLevel.Information, "stopped"));
         }
 
         internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs events)

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CocApi.Test.Migrations
 {
-    [DbContext(typeof(CocApiCacheContext))]
+    [DbContext(typeof(CacheDbContext))]
     [Migration("20210215211405_Migration0")]
     partial class Migration0
     {

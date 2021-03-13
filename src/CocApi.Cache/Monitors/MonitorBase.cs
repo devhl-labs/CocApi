@@ -10,14 +10,20 @@ namespace CocApi.Cache
         private bool _isRunning;
         private protected int _id = int.MinValue;
         private protected CancellationToken _cancellationToken;
-        private protected IDesignTimeDbContextFactory<CocApiCacheContext> _dbContextFactory;
+        private protected IDesignTimeDbContextFactory<CacheDbContext> _dbContextFactory;
         private protected string[] _dbContextArgs;
 
-        public MonitorBase(IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
+        public MonitorBase(CacheDbContextFactoryProvider provider)
         {
-            _dbContextFactory = dbContextFactory;
-            _dbContextArgs = dbContextArgs;
+            _dbContextFactory = provider.Factory;
+            _dbContextArgs = provider.DbContextArgs;
         }
+
+        private protected DateTime expires = DateTime.UtcNow.AddSeconds(-3);
+
+        private protected DateTime min = DateTime.MinValue;
+
+        private protected DateTime now = DateTime.UtcNow;
 
         protected abstract Task PollAsync();
 
@@ -38,6 +44,10 @@ namespace CocApi.Cache
             {
                 try
                 {
+                    expires = DateTime.UtcNow.AddSeconds(-3);
+
+                    now = DateTime.UtcNow;
+
                     await PollAsync();
                 }
                 catch(Exception e)

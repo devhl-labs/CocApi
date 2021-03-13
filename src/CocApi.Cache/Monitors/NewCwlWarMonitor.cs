@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -14,19 +14,21 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
+        private readonly IOptions<ClanMonitorsOptions> _options;
         private readonly Dictionary<DateTime, HashSet<string>> _downloadedWars = new();
         private readonly object _dbContextLock = new();
 
-        public NewCwlWarMonitor(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(dbContextFactory, dbContextArgs)
+        public NewCwlWarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanMonitorsOptions> options) : base(provider)
         {
             _clansApi = clansApi;
-            _clansClient = clansClientBase;
+            _clansClient = clansClient;
+            _options = options;
         }
 
         protected override async Task PollAsync()
         {
+            MonitorOptions options = _options.Value.NewCwlWars;
+
             using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
 
             List<CachedClan> cachedClans = await dbContext.Clans
@@ -36,11 +38,11 @@ namespace CocApi.Cache
                     !string.IsNullOrWhiteSpace(c.Group.RawContent) &&
                     c.Id > _id)
                 .OrderBy(c => c.Id)
-                .Take(Library.Monitors.NewCwlWars.ConcurrentUpdates)
+                .Take(options.ConcurrentUpdates)
                 .ToListAsync(_cancellationToken)
                 .ConfigureAwait(false);
 
-            _id = cachedClans.Count == Library.Monitors.NewCwlWars.ConcurrentUpdates
+            _id = cachedClans.Count == options.ConcurrentUpdates
                 ? cachedClans.Max(c => c.Id)
                 : int.MinValue;
 
@@ -114,9 +116,9 @@ namespace CocApi.Cache
                 }
 
                 if (_id == int.MinValue)
-                    await Task.Delay(Library.Monitors.NewCwlWars.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
                 else
-                    await Task.Delay(Library.Monitors.NewCwlWars.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+                    await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
             }
             finally
             {
@@ -127,7 +129,7 @@ namespace CocApi.Cache
             }
         }
 
-        private async Task NewWarFoundAsync(List<CachedClan> cachedClans, CachedClan cachedClan, Client.ApiResponse<CocApi.Model.ClanWar> war, CocApiCacheContext dbContext)
+        private async Task NewWarFoundAsync(List<CachedClan> cachedClans, CachedClan cachedClan, Client.ApiResponse<CocApi.Model.ClanWar> war, CacheDbContext dbContext)
         {
             CocApi.Model.Clan? clan = cachedClans.FirstOrDefault(c => c.Tag == war.Content.Clan.Tag)?.Content;
 

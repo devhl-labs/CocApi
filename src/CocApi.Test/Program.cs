@@ -4,12 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 using CocApi.Cache;
 using System.Linq;
-using System.Collections.Generic;
-using CocApi.Api;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
-using Microsoft.EntityFrameworkCore.Design;
 using Polly;
 
 namespace CocApi.Test
@@ -24,8 +21,6 @@ namespace CocApi.Test
             CocApi.Library.HttpRequestResult += OnHttpRequestResult;
 
             CocApi.Cache.Library.Log += OnLog;
-
-            CocApi.Cache.Library.Monitors.Members.IsDisabled = false;
 
             await CreateHostBuilder(args).Build().RunAsync();
         }
@@ -53,90 +48,49 @@ namespace CocApi.Test
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+
+            // configure CocApi by naming your HttpClient, providing tokens, and defining the token timeout
+            .ConfigureCocApi("cocApi", tokenProvider =>
+            {
+                // you can go much lower than this
+                tokenProvider.TokenTimeout = TimeSpan.FromSeconds(1);
+
+                for (int i = 0; i < 10; i++)
+                    tokenProvider.Tokens.Add(GetEnvironmentVariable($"TOKEN_{i}"));
+            })
+
+            // tell CocApi.Cache about your database
+            .ConfigureCocApiDbContext(provider => provider.Factory = new CacheDbContextFactory())
+
+            // tell CocApi.Cache what classes to use for the clients
+            // omit the type to use the default
+            .ConfigurePlayersClient<PlayersClient>()
+            .ConfigureClansClient<ClansClient>()
+
+
             .ConfigureServices((hostBuilder, services) =>
             {
-                services.AddSingleton(PlayersApiFactory);
-                services.AddSingleton(ClansApiFactory);
-                services.AddSingleton(LocationsApiFactory);
-                services.AddSingleton(LeaguesApiFactory);
-                services.AddSingleton(TokenProviderFactory);
-                services.AddSingleton<IDesignTimeDbContextFactory<CocApi.Cache.CocApiCacheContext>, CocApiDbContext>();
-                services.AddSingleton<PlayersClient>();
-                services.AddHostedService<ClansClient>();
-
+                // define the HttpClient named "cocApi" that CocApi will request
                 services.AddHttpClient("cocApi", config =>
                 {
                     config.BaseAddress = new Uri("https://api.clashofclans.com/v1");
-                    config.Timeout = TimeSpan.FromSeconds(11);
+                    config.Timeout = TimeSpan.FromSeconds(10);
                 })
-                .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(5)))
+                // optionally configure Polly to handle timeouts and http request error handling
+                .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(3)))
                 .AddTransientHttpErrorPolicy(builder => builder.RetryAsync(2))
                 .AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(
                         handledEventsAllowedBeforeBreaking: 20,
                         durationOfBreak: TimeSpan.FromSeconds(30)
                 ))
+
+                // this property is important if you query the api very fast
                 .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler() { MaxConnectionsPerServer = 100 });
             })
             .ConfigureLogging(o => o.ClearProviders());
 
-        private static TokenProvider TokenProviderFactory(IServiceProvider arg)
-        {
-            List<string> tokens = new();
-
-            for (int i = 0; i < 10; i++)
-                tokens.Add(Environment.GetEnvironmentVariable($"TOKEN_{i}", EnvironmentVariableTarget.Machine)
-                    ?? throw new NullReferenceException($"TOKEN_{i} environment variable not found."));
-
-            // you can go much lower than 3 seconds
-            TokenProvider tokenProvider = new(tokens, TimeSpan.FromSeconds(3));
-
-            return tokenProvider;
-        }
-
-        private static ClansApi ClansApiFactory(IServiceProvider arg)
-        {
-            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
-            HttpClient httpClient = factory.CreateClient("cocApi");
-            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            ClansApi clansApi = new(httpClient, tokenProvider);
-
-            return clansApi;
-        }
-
-        private static PlayersApi PlayersApiFactory(IServiceProvider arg)
-        {
-            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
-            HttpClient httpClient = factory.CreateClient("cocApi");
-            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            PlayersApi playersApi = new(httpClient, tokenProvider);
-
-            return playersApi;
-        }
-
-        private static LeaguesApi LeaguesApiFactory(IServiceProvider arg)
-        {
-            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
-            HttpClient httpClient = factory.CreateClient("cocApi");
-            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            LeaguesApi leaguesApi = new(httpClient, tokenProvider);
-
-            return leaguesApi;
-        }
-
-        private static LocationsApi LocationsApiFactory(IServiceProvider arg)
-        {
-            IHttpClientFactory factory = arg.GetRequiredService<IHttpClientFactory>();
-            HttpClient httpClient = factory.CreateClient("cocApi");
-            TokenProvider tokenProvider = arg.GetRequiredService<TokenProvider>();
-            LocationsApi locationsApi = new(httpClient, tokenProvider);
-
-            return locationsApi;
-        }
-
         public static string GetEnvironmentVariable(string name)
-        {
-            return Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine)
-                ?? throw new Exception($"No environment variable was found with name {name}");
-        }
+            => Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine)
+            ?? throw new Exception($"No environment variable was found with name {name}");
     }
 }

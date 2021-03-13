@@ -5,23 +5,25 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
     internal class NewWarMonitor : MonitorBase
     {
         private readonly ClansClientBase _clansClient;
+        private readonly IOptions<ClanMonitorsOptions> _options;
 
-        public NewWarMonitor(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansClientBase clansClientBase)
-            : base(dbContextFactory, dbContextArgs)
+        public NewWarMonitor(CacheDbContextFactoryProvider provider, ClansClientBase clansClient, IOptions<ClanMonitorsOptions> options) : base(provider)
         {
-            _clansClient = clansClientBase;
+            _clansClient = clansClient;
+            _options = options;
         }
 
         protected override async Task PollAsync()
         {
+            MonitorOptions options = _options.Value.NewWars;
+
             using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
 
             List<CachedClan> cachedClans = await dbContext.Clans
@@ -31,11 +33,11 @@ namespace CocApi.Cache
                     c.CurrentWar.State != WarState.NotInWar &&
                     c.Id > _id)
                 .OrderBy(c => c.Id)
-                .Take(Library.Monitors.NewWars.ConcurrentUpdates)
+                .Take(options.ConcurrentUpdates)
                 .ToListAsync(_cancellationToken)
                 .ConfigureAwait(false);
 
-            _id = cachedClans.Count == Library.Monitors.NewWars.ConcurrentUpdates
+            _id = cachedClans.Count == options.ConcurrentUpdates
                 ? cachedClans.Max(c => c.Id)
                 : int.MinValue;
 
@@ -106,11 +108,9 @@ namespace CocApi.Cache
             }
 
             if (_id == int.MinValue)
-                await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
             else
-                await Task.Delay(Library.Monitors.NewWars.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
-
-            Console.WriteLine("done");
+                await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
         }
     }
 }

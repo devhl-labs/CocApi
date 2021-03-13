@@ -6,20 +6,25 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Model;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
     public class ClansClient : ClansClientBase, IHostedService
     {
-        private readonly PlayersClient _playersCache;
+        private readonly PlayersClientBase _playersCache;
         private readonly LocationsApi _locationsApi;
         private readonly PlayersApi _playersApi;
 
-        public ClansClient(IDesignTimeDbContextFactory<CocApi.Cache.CocApiCacheContext> dbContextFactory,
-            ClansApi clansApi, PlayersClient playersCache, LocationsApi locationsApi, PlayersApi playersApi) 
-            : base(clansApi, playersCache, playersApi, dbContextFactory, Array.Empty<string>())
+        public ClansClient(
+            CacheDbContextFactoryProvider dbContextOptions, 
+            ClansApi clansApi, 
+            PlayersClientBase playersCache, 
+            LocationsApi locationsApi, 
+            PlayersApi playersApi, 
+            IOptions<ClanMonitorsOptions> options) 
+            : base(clansApi, playersCache, playersApi, dbContextOptions, options)
         {
             _playersCache = playersCache;
             _locationsApi = locationsApi;

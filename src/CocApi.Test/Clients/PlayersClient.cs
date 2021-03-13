@@ -4,15 +4,14 @@ using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Client;
 using CocApi.Model;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
     public class PlayersClient : PlayersClientBase
     {
-        public PlayersClient(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, PlayersApi playersApi) 
-            : base(playersApi, dbContextFactory, Array.Empty<string>())
+        public PlayersClient(CacheDbContextFactoryProvider cacheContextOptions, PlayersApi playersApi, IOptions<MonitorOptions> options) 
+            : base(playersApi, cacheContextOptions, options)
         {
         }
 

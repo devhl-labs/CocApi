@@ -5,9 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
-using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -15,37 +14,35 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
+        private readonly IOptions<ClanMonitorsOptions> _options;
         private readonly HashSet<string> _unmonitoredClans = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public WarMonitor(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(dbContextFactory, dbContextArgs)
+        public WarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanMonitorsOptions> options) : base(provider)
         {
             _clansApi = clansApi;
-            _clansClient = clansClientBase;
+            _clansClient = clansClient;
+            _options = options;
         }
 
         protected override async Task PollAsync()
         {
+            MonitorOptions options = _options.Value.Wars;
+
             using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
-
-            DateTime expires = DateTime.UtcNow.AddSeconds(-3);
-
-            DateTime min = DateTime.MinValue;
 
             List<CachedWar> cachedWars = await dbContext.Wars
                 .Where(w =>
                     (w.ExpiresAt ?? min) < expires &&
-                    (w.KeepUntil ?? min) < DateTime.UtcNow &&
+                    (w.KeepUntil ?? min) < now &&
                     !w.IsFinal &&
                     w.Id > _id)
                 .OrderBy(c => c.Id)
-                .Take(Library.Monitors.Wars.ConcurrentUpdates)
+                .Take(options.ConcurrentUpdates)
                 .ToListAsync(_cancellationToken)
                 .ConfigureAwait(false);
 
-            _id = cachedWars.Count == Library.Monitors.Wars.ConcurrentUpdates
+            _id = cachedWars.Count == options.ConcurrentUpdates
                 ? cachedWars.Max(c => c.Id)
                 : int.MinValue;
 
@@ -109,9 +106,9 @@ namespace CocApi.Cache
             }
 
             if (_id == int.MinValue)
-                await Task.Delay(Library.Monitors.Wars.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
             else
-                await Task.Delay(Library.Monitors.Wars.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
         }
 
         private async Task UpdateCwlWarAsync(CachedWar cachedWar, CachedClan? cachedClan, CachedClan? cachedOpponent)
@@ -134,7 +131,7 @@ namespace CocApi.Cache
             cachedWar.UpdateFrom(fetched);
         }
 
-        private async Task UpdateWarAsync(CocApiCacheContext dbContext, CachedWar cachedWar, CachedClan? cachedClan, CachedClan? cachedOpponent)
+        private async Task UpdateWarAsync(CacheDbContext dbContext, CachedWar cachedWar, CachedClan? cachedClan, CachedClan? cachedOpponent)
         {
             if (cachedClan == null && cachedOpponent?.CurrentWar.IsExpired == true)
                 cachedClan = await CreateCachedClan(cachedWar.ClanTag, dbContext).ConfigureAwait(false);
@@ -144,7 +141,7 @@ namespace CocApi.Cache
 
             List<CachedClan?> cachedClans = new() { cachedClan, cachedOpponent };
 
-            if (cachedClans.All(c => c?.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime) || cachedWar.EndTime.AddDays(8) < DateTime.UtcNow)
+            if (cachedClans.All(c => c?.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime) || cachedWar.EndTime.AddDays(8) < now)
             {
                 cachedWar.IsFinal = true;
 
@@ -166,7 +163,7 @@ namespace CocApi.Cache
             }
         }
 
-        private async Task<CachedClan?> CreateCachedClan(string tag, CocApiCacheContext dbContext)
+        private async Task<CachedClan?> CreateCachedClan(string tag, CacheDbContext dbContext)
         {
             if (!_clansClient.UpdatingClan.TryAdd(tag, null))
                 return null;
@@ -206,16 +203,16 @@ namespace CocApi.Cache
                     return;
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarStartingSoon) == false &&
-                    DateTime.UtcNow > cachedWar.Content.StartTime.AddHours(-1) &&
-                    DateTime.UtcNow < cachedWar.Content.StartTime)
+                    now > cachedWar.Content.StartTime.AddHours(-1) &&
+                    now < cachedWar.Content.StartTime)
                 {
                     cachedWar.Announcements |= Announcements.WarStartingSoon;
                     await _clansClient.OnClanWarStartingSoonAsync(new WarEventArgs(cachedWar.Content, _cancellationToken));
                 }
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
-                    DateTime.UtcNow > cachedWar.Content.EndTime.AddHours(-1) &&
-                    DateTime.UtcNow < cachedWar.Content.EndTime)
+                    now > cachedWar.Content.EndTime.AddHours(-1) &&
+                    now < cachedWar.Content.EndTime)
                 {
                     cachedWar.Announcements |= Announcements.WarEndingSoon;
                     await _clansClient.OnClanWarEndingSoonAsync(new WarEventArgs(cachedWar.Content, _cancellationToken));
@@ -223,8 +220,8 @@ namespace CocApi.Cache
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
                     cachedWar.State != WarState.WarEnded &&
-                    DateTime.UtcNow > cachedWar.EndTime &&
-                    DateTime.UtcNow < cachedWar.EndTime.AddHours(24) &&
+                    now > cachedWar.EndTime &&
+                    now < cachedWar.EndTime.AddHours(24) &&
                     cachedWar.Content.AllAttacksAreUsed() == false &&
                     cachedClanWars != null &&
                     cachedClanWars.All(w => w.Content != null && w.Content.PreparationStartTime != cachedWar.Content.PreparationStartTime))
@@ -234,8 +231,8 @@ namespace CocApi.Cache
                 }
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
-                    cachedWar.EndTime < DateTime.UtcNow &&
-                    cachedWar.EndTime.Day == DateTime.UtcNow.Day)
+                    cachedWar.EndTime < now &&
+                    cachedWar.EndTime.Day == now.Day)
                 {
                     cachedWar.Announcements |= Announcements.WarEnded;
                     await _clansClient.OnClanWarEndedAsync(new WarEventArgs(cachedWar.Content, _cancellationToken));

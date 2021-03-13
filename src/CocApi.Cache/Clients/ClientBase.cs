@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
@@ -16,17 +15,22 @@ namespace CocApi.Cache
 
     public class ClientBase
     {
-        internal protected IDesignTimeDbContextFactory<CocApiCacheContext> DbContextFactory { get; }
-        internal protected string[] DbContextArgs { get; }
+        internal protected IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
+
+        internal protected string[]? DbContextArgs { get; }
 
         internal protected CancellationTokenSource _stopRequestedTokenSource = new();
 
-        public ClientBase(IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs)
-        {
-            DbContextFactory = dbContextFactory;
-            DbContextArgs = dbContextArgs;
+        internal protected CacheDbContextFactoryProvider CacheContextOptions { get; }
 
-            ValidateMigrated();
+        public ClientBase(CacheDbContextFactoryProvider cacheContextOptions)
+        {
+            DbContextFactory = cacheContextOptions.Factory;
+            DbContextArgs = cacheContextOptions.DbContextArgs ?? Array.Empty<string>();
+
+            CacheContextOptions = cacheContextOptions;
+
+            EnsureMigrated();
         }
 
         public async Task ImportDataToVersion2(string connectionString)
@@ -280,7 +284,7 @@ namespace CocApi.Cache
             return dte == DateTime.MinValue ? null : dte;
         }
 
-        private void ValidateMigrated()
+        private void EnsureMigrated()
         {
             try
             {

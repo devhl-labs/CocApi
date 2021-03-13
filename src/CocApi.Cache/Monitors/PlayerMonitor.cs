@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -14,34 +14,34 @@ namespace CocApi.Cache
     {
         private readonly PlayersApi _playersApi;
         private readonly PlayersClientBase _playersClientBase;
+        private readonly IOptions<MonitorOptions> _options;
         private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
-        public PlayerMonitor(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, PlayersApi playersApi, PlayersClientBase playersClientBase) 
-            : base(dbContextFactory, dbContextArgs)
+        public PlayerMonitor(CacheDbContextFactoryProvider provider, PlayersApi playersApi, PlayersClientBase playersClient, IOptions<MonitorOptions> options) : base(provider)
         {
             _playersApi = playersApi;
-            _playersClientBase = playersClientBase;
+            _playersClientBase = playersClient;
+            _options = options;
         }
 
         protected override async Task PollAsync()
         {
-            using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
+            MonitorOptions options = _options.Value;
 
-            DateTime min = DateTime.MinValue;
+            using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
 
             List<Context.CachedItems.CachedPlayer> trackedPlayers = await dbContext.Players
                 .Where(p =>
-                    (p.ExpiresAt ?? min) < DateTime.UtcNow.AddSeconds(-3) &&
-                    (p.KeepUntil ?? min) < DateTime.UtcNow &&
+                    (p.ExpiresAt ?? min) < expires &&
+                    (p.KeepUntil ?? min) < now &&
                     p.Download &&
                     p.Id > _id)
                 .OrderBy(p => p.Id)
-                .Take(Library.Monitors.Players.ConcurrentUpdates)
+                .Take(options.ConcurrentUpdates)
                 .ToListAsync(_cancellationToken)
                 .ConfigureAwait(false);
 
-            _id = trackedPlayers.Count == Library.Monitors.Players.ConcurrentUpdates
+            _id = trackedPlayers.Count == options.ConcurrentUpdates
                 ? trackedPlayers.Max(c => c.Id)
                 : int.MinValue;
 
@@ -80,9 +80,9 @@ namespace CocApi.Cache
             }
 
             if (_id == int.MinValue)
-                await Task.Delay(Library.Monitors.Players.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
             else
-                await Task.Delay(Library.Monitors.Players.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
         }
 
         private async Task MonitorPlayerAsync(CachedPlayer cachedPlayer)
@@ -95,10 +95,8 @@ namespace CocApi.Cache
             cachedPlayer.UpdateFrom(fetched);
         }
 
-        private async Task DeletePlayersNotMonitoredAsync(CocApiCacheContext dbContext)
+        private async Task DeletePlayersNotMonitoredAsync(CacheDbContext dbContext)
         {
-            DateTime min = DateTime.MinValue;
-
             List<Context.CachedItems.CachedPlayer> cachedPlayers = await (
                 from p in dbContext.Players
                 join c in dbContext.Clans on p.ClanTag equals c.Tag

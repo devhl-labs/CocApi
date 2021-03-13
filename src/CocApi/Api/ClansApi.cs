@@ -385,9 +385,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<CocApi.Client.ApiResponse<Clan>> FetchClanResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             if (clanTag == null)
-                throw new ArgumentNullException(nameof(clanTag));
-
-            cancellationToken?.ThrowIfCancellationRequested();
+                throw new ArgumentNullException(nameof(clanTag)); 
 
             clanTag = Clash.FormatTag(clanTag);
             

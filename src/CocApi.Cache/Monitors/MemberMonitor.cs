@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -14,17 +14,20 @@ namespace CocApi.Cache
     {
         private readonly PlayersClientBase _playersClientBase;
         private readonly PlayersApi _playersApi;
+        private readonly IOptions<ClanMonitorsOptions> _options;
 
-        public MemberMonitor(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, PlayersClientBase playersClientBase, PlayersApi playersApi)
-            : base(dbContextFactory, dbContextArgs)
+        public MemberMonitor(CacheDbContextFactoryProvider provider, PlayersClientBase playersClient, PlayersApi playersApi, IOptions<ClanMonitorsOptions> options) 
+            : base(provider)
         {
-            _playersClientBase = playersClientBase;
+            _playersClientBase = playersClient;
             _playersApi = playersApi;
+            _options = options;
         }
 
         protected override async Task PollAsync()
         {
+            MonitorOptionsBase options = _options.Value.ClanMembers;
+
             using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
 
             CachedClan cachedClan = await dbContext.Clans
@@ -84,9 +87,9 @@ namespace CocApi.Cache
             }
 
             if (_id == int.MinValue)
-                await Task.Delay(Library.Monitors.Members.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
             else
-                await Task.Delay(Library.Monitors.Members.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
         }
 
         private async Task MonitorMemberAsync(CachedPlayer cachedPlayer)

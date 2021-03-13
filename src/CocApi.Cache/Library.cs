@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace CocApi.Cache
 {        
@@ -27,8 +30,6 @@ namespace CocApi.Cache
 
     public static class Library
     {
-
-
         internal static void OnLog(object sender, LogEventArgs log)
         {
             try
@@ -45,18 +46,7 @@ namespace CocApi.Cache
 
         public static int MaxConcurrentEvents { get; set; } = 25;
 
-        internal static SemaphoreSlim ConcurrentEventsSemaphore = new SemaphoreSlim(MaxConcurrentEvents, MaxConcurrentEvents);
-
-        public static class Monitors
-        {
-            public static MonitorOptions Clans { get; } = new MonitorOptions();
-            public static MonitorOptionsBase Members { get; } = new MonitorOptionsBase();
-            public static MonitorOptions NewCwlWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromMinutes(2), DelayBetweenBatchUpdates = TimeSpan.FromMinutes(2), ConcurrentUpdates = 10 };
-            public static MonitorOptions NewWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromSeconds(15), DelayBetweenBatchUpdates = TimeSpan.FromSeconds(15) };
-            public static MonitorOptions Players { get; } = new MonitorOptions();
-            public static MonitorOptions ActiveWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromMinutes(2), DelayBetweenBatchUpdates = TimeSpan.FromMinutes(2) };
-            public static MonitorOptions Wars { get; } = new MonitorOptions();
-        }
+        internal static SemaphoreSlim ConcurrentEventsSemaphore = new(MaxConcurrentEvents, MaxConcurrentEvents);
 
         public static class TableNames
         {
@@ -71,6 +61,80 @@ namespace CocApi.Cache
             public static string Player { get; set; } = "player";
 
             public static string War { get; set; } = "war";
+        }
+
+        public static void AddCocApiDbContext(this IServiceCollection services, Action<CacheDbContextFactoryProvider> configure)
+        {
+            CacheDbContextFactoryProvider provider = new();
+
+            configure(provider);
+
+            if (provider.Factory == null)
+                throw new ArgumentNullException(nameof(provider.Factory), "DbContextFactory cannot be null. This object is used to connect to your database.");
+
+            services.AddSingleton(provider);
+        }
+
+        public static IHostBuilder ConfigureCocApiDbContext(this IHostBuilder builder, Action<CacheDbContextFactoryProvider> provider)
+        {
+            builder.ConfigureServices((context, services) => AddCocApiDbContext(services, provider));
+
+            return builder;
+        }
+
+        public static void AddPlayersClient(this IServiceCollection services, Action<MonitorOptions>? options = null)
+            => AddPlayersClient<PlayersClientBase>(services, options);
+
+        public static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options = null) where TPlayersClient : PlayersClientBase
+        {
+            if (options != null)
+                services.AddOptions<MonitorOptions>().Configure(options);
+
+            services.AddSingleton<PlayersClientBase, TPlayersClient>();
+        }
+
+        public static IHostBuilder ConfigurePlayersClient(this IHostBuilder builder, Action<MonitorOptions>? options = null)
+            => ConfigurePlayersClient<PlayersClientBase>(builder, options);
+
+        public static IHostBuilder ConfigurePlayersClient<TPlayersClient>(this IHostBuilder builder, Action<MonitorOptions>? options = null)
+        where TPlayersClient : PlayersClientBase
+        {
+            builder.ConfigureServices((context, services) => AddPlayersClient<TPlayersClient>(services, options));
+
+            return builder;
+        }
+
+        public static void AddClansClient(this IServiceCollection services, Action<ClanMonitorsOptions>? options = null)
+            => AddClansClient<ClansClientBase>(services, options);
+
+        public static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanMonitorsOptions>? options = null) where TClansClient : ClansClientBase
+        {
+            services.AddSingleton<TClansClient>();
+
+            services.AddSingleton<ClansClientBase, TClansClient>();
+
+            services.TryAddSingleton<PlayersClientBase>();
+
+            services.AddHostedService((serviceProvider) =>
+            {
+                ClansClientBase clansClient = serviceProvider.GetRequiredService<TClansClient>();
+
+                if (options != null)
+                    services.AddOptions<ClanMonitorsOptions>().Configure(options);
+
+                return clansClient;
+            });
+        }
+
+        public static IHostBuilder ConfigureClansClient(this IHostBuilder builder, Action<ClanMonitorsOptions>? options = null)
+            => ConfigureClansClient<ClansClientBase>(builder, options);
+
+        public static IHostBuilder ConfigureClansClient<TClansClient>(this IHostBuilder builder, Action<ClanMonitorsOptions>? options = null) 
+            where TClansClient : ClansClientBase
+        {
+            builder.ConfigureServices((context, services) => AddClansClient<TClansClient>(services, options));
+
+            return builder;
         }
     }
 }

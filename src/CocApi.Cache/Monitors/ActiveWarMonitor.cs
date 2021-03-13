@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -14,22 +14,21 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
+        private readonly IOptions<ClanMonitorsOptions> _options;
 
-        public ActiveWarMonitor(
-            IDesignTimeDbContextFactory<CocApiCacheContext> dbContextFactory, string[] dbContextArgs, ClansApi clansApi, ClansClientBase clansClientBase)
-            : base(dbContextFactory, dbContextArgs)
+        public ActiveWarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanMonitorsOptions> options) 
+            : base(provider)
         {
             _clansApi = clansApi;
-            _clansClient = clansClientBase;
+            _clansClient = clansClient;
+            _options = options;
         }
 
         protected override async Task PollAsync()
         {
+            MonitorOptions options = _options.Value.ActiveWars;
+
             using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
-
-            DateTime expires = DateTime.UtcNow.AddSeconds(-3);
-
-            DateTime min = DateTime.MinValue;
 
             List<CachedClan> cachedClans = await
                 (
@@ -39,7 +38,7 @@ namespace CocApi.Cache
                         !c.CurrentWar.Download &&
                         (c.Download == false || c.Download && c.IsWarLogPublic == true) &&
                         (c.CurrentWar.ExpiresAt ?? min) < expires &&
-                        (c.CurrentWar.KeepUntil ?? min) < DateTime.UtcNow &&
+                        (c.CurrentWar.KeepUntil ?? min) < now &&
                         c.Id > _id &&
                         !w.IsFinal
                     orderby c.Id
@@ -51,18 +50,18 @@ namespace CocApi.Cache
                         !c.CurrentWar.Download &&
                         (c.Download == false || c.Download && c.IsWarLogPublic == true) &&
                         (c.CurrentWar.ExpiresAt ?? min) < expires &&
-                        (c.CurrentWar.KeepUntil ?? min) < DateTime.UtcNow &&
+                        (c.CurrentWar.KeepUntil ?? min) < now &&
                         c.Id > _id &&
                         !w.IsFinal
                     orderby c.Id
                     select c
                 )
                 .Distinct()
-                .Take(Library.Monitors.ActiveWars.ConcurrentUpdates)
+                .Take(options.ConcurrentUpdates)
                 .ToListAsync(_cancellationToken)
                 .ConfigureAwait(false);
 
-            _id = cachedClans.Count == Library.Monitors.ActiveWars.ConcurrentUpdates
+            _id = cachedClans.Count == options.ConcurrentUpdates
                 ? cachedClans.Max(c => c.Id)
                 : int.MinValue;
 
@@ -93,9 +92,9 @@ namespace CocApi.Cache
             }
 
             if (_id == int.MinValue)
-                await Task.Delay(Library.Monitors.ActiveWars.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
             else
-                await Task.Delay(Library.Monitors.ActiveWars.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
+                await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
         }
 
         private async Task MonitorClanWarAsync(CachedClan cachedClan)

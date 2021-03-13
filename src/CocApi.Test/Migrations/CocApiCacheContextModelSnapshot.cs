@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CocApi.Test.Migrations
 {
-    [DbContext(typeof(CocApiCacheContext))]
+    [DbContext(typeof(CacheDbContext))]
     partial class CocApiCacheContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

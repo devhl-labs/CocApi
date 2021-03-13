@@ -6,18 +6,37 @@ using System.Threading.Tasks;
 
 namespace CocApi
 {
+    public class TokenProviderBuilder
+    {
+        public List<string> Tokens { get; set; } = new();
+
+        public TimeSpan TokenTimeout { get; set; }
+
+        internal TokenProvider Build() => new(Tokens, TokenTimeout);
+    }
+
     public class TokenProvider
     {
         private readonly Dictionary<int, TokenContainer> _tokenProviders = new();
 
         private volatile int _index;
 
+        internal TokenProvider()
+        {
+
+        }
+
+        public TokenProvider(string token, TimeSpan tokenTimeout) : this(new string[] { token }, tokenTimeout)
+        {
+
+        }
+
         public TokenProvider(IEnumerable<string> tokens, TimeSpan tokenTimeOut)
         {
             int i = 0;
 
             foreach (string token in tokens)
-            {;
+            {
                 _tokenProviders.Add(i, new TokenContainer(token, tokenTimeOut));
                 i++;
             }

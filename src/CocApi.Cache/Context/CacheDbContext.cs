@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CocApi.Cache
 {
-    public class CocApiCacheContext : DbContext
+    public class CacheDbContext : DbContext
     {
         public DbSet<CachedClan> Clans { get; set; }
 
@@ -11,7 +11,7 @@ namespace CocApi.Cache
 
         public DbSet<CachedWar> Wars { get; set; }
 
-        public CocApiCacheContext(DbContextOptions options) : base(options)
+        public CacheDbContext(DbContextOptions options) : base(options)
         {
 
         }
