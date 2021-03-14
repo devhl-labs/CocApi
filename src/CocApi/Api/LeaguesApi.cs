@@ -298,7 +298,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<League> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<League> result = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -444,7 +444,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<PlayerRankingList> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -610,7 +610,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LeagueSeasonList> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LeagueSeasonList> result = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -769,7 +769,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LeagueList> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LeagueList> result = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -920,7 +920,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<WarLeague> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<WarLeague> result = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -1064,7 +1064,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<WarLeagueList> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<WarLeagueList> result = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>

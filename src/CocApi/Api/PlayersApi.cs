@@ -132,7 +132,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<Player> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<Player> result = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -277,7 +277,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<VerifyTokenResponse> VerifyTokenAsync(string playerTag, VerifyTokenRequest body, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<VerifyTokenResponse> result = await VerifyTokenResponseAsync(playerTag, body, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>

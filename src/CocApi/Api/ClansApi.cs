@@ -347,7 +347,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<Clan> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<Clan> result = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -494,7 +494,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<List<ClanMember>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<List<ClanMember>> result = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -653,7 +653,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWarLeagueGroup> result = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -797,7 +797,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWar> result = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -944,7 +944,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWarLog> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWarLog> result = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -1103,7 +1103,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanWar> FetchCurrentWarAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanWar> result = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -1257,7 +1257,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanList> SearchClansAsync(string? name = null, string? warFrequency = null, int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanList> result = await SearchClansResponseAsync(name, warFrequency, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, after, before, labelIds, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>

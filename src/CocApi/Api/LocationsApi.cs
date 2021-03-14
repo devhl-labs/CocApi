@@ -310,7 +310,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanRankingList> FetchClanRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanRankingList> result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -470,7 +470,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<ClanVersusRankingList> FetchClanVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<ClanVersusRankingList> result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -627,7 +627,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<Location> FetchLocationAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<Location> result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -771,7 +771,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LocationList> FetchLocationsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LocationList> result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -925,7 +925,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<PlayerRankingList> FetchPlayerRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<PlayerRankingList> result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -1085,7 +1085,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<PlayerVersusRankingList> FetchPlayerVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<PlayerVersusRankingList> result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>

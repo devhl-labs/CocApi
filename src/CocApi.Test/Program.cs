@@ -25,27 +25,6 @@ namespace CocApi.Test
             await CreateHostBuilder(args).Build().RunAsync();
         }
 
-        private static Task OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
-        {
-            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
-
-            if (log.HttpRequestResult is HttpRequestException exception)
-                LogService.Log(LogLevel.Warning, sender.GetType().Name, seconds, exception.Path, exception.Message, exception.InnerException?.Message);
-            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)
-                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);
-            else
-                LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.Path);
-
-            return Task.CompletedTask;
-        }
-
-        private static Task OnLog(object sender, LogEventArgs log)
-        {
-            LogService.Log(LogLevel.Information, sender.GetType().Name, new string?[] { log.Message, log.Exception?.Message, log.Exception?.InnerException?.Message });
-
-            return Task.CompletedTask;
-        }
-
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
 
@@ -65,13 +44,11 @@ namespace CocApi.Test
             // tell CocApi.Cache what classes to use for the clients
             // omit the type to use the default
             .ConfigurePlayersClient<PlayersClient>()
-            .ConfigureClansClient()
+            .ConfigureClansClient<ClansClient>()
 
 
             .ConfigureServices((hostBuilder, services) =>
             {
-                services.AddSingleton<ClansClient>();
-
                 // define the HttpClient named "cocApi" that CocApi will request
                 services.AddHttpClient("cocApi", config =>
                 {
@@ -94,5 +71,26 @@ namespace CocApi.Test
         public static string GetEnvironmentVariable(string name)
             => Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine)
             ?? throw new Exception($"No environment variable was found with name {name}");
+
+        private static Task OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
+        {
+            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
+
+            if (log.HttpRequestResult is HttpRequestException exception)
+                LogService.Log(LogLevel.Warning, sender.GetType().Name, seconds, exception.Path, exception.Message, exception.InnerException?.Message);
+            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)
+                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);
+            else
+                LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.Path);
+
+            return Task.CompletedTask;
+        }
+
+        private static Task OnLog(object sender, LogEventArgs log)
+        {
+            LogService.Log(LogLevel.Information, sender.GetType().Name, new string?[] { log.Message, log.Exception?.Message, log.Exception?.InnerException?.Message });
+
+            return Task.CompletedTask;
+        }
     }
 }

@@ -143,7 +143,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LabelsObject> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LabelsObject> result = await FetchClanLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
@@ -296,7 +296,7 @@ namespace CocApi.Api
         public async System.Threading.Tasks.Task<LabelsObject> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             CocApi.Client.ApiResponse<LabelsObject> result = await FetchPlayerLabelsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
-            return result.Content ?? throw new NullReferenceException();
+            return result.Content ?? throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
         }
 
         /// <summary>
