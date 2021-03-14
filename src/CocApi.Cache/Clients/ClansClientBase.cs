@@ -22,19 +22,19 @@ namespace CocApi.Cache
         internal ConcurrentDictionary<string, ClanWar?> UpdatingWar { get; } = new();
         internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
 
-        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider cacheContextOptions,
+        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider provider,
             IOptions<ClanMonitorsOptions> options)
-            : base(cacheContextOptions)
+            : base(provider)
         {
             _clansApi = clansApi;
             _playersClient = playersClient;
             _options = options;
-            _clanMonitor = new ClanMonitor(cacheContextOptions, clansApi, this, options);
-            _newWarMonitor = new NewWarMonitor(cacheContextOptions, this, options);
-            _newCwlWarMonitor = new NewCwlWarMonitor(cacheContextOptions, clansApi, this, options);
-            _warMonitor = new WarMonitor(cacheContextOptions, clansApi, this, options);
-            _activeWarMonitor = new ActiveWarMonitor(cacheContextOptions, clansApi, this, options);
-            _memberMonitor = new MemberMonitor(cacheContextOptions, playersClient, playersApi, options);
+            _clanMonitor = new ClanMonitor(provider, clansApi, this, options);
+            _newWarMonitor = new NewWarMonitor(provider, this, options);
+            _newCwlWarMonitor = new NewCwlWarMonitor(provider, clansApi, this, options);
+            _warMonitor = new WarMonitor(provider, clansApi, this, options);
+            _activeWarMonitor = new ActiveWarMonitor(provider, clansApi, this, options);
+            _memberMonitor = new MemberMonitor(provider, playersClient, playersApi, options);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;

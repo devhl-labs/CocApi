@@ -32,7 +32,13 @@ namespace CocApi
         {
             TokenProviderBuilder tokenProviderBuilder = new();
 
-            tokenProvider.Invoke(tokenProviderBuilder);
+            tokenProvider(tokenProviderBuilder);
+
+            if (tokenProviderBuilder.Tokens == null || tokenProviderBuilder.Tokens.Count == 0)
+                throw new ArgumentException("No tokens were provided.");
+
+            if (tokenProviderBuilder.TokenTimeout == null || tokenProviderBuilder.TokenTimeout == TimeSpan.MinValue)
+                throw new ArgumentException("Please provide a token timeout.");
 
             services.AddSingleton(tokenProviderBuilder.Build());
 

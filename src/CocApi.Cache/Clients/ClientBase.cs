@@ -23,12 +23,12 @@ namespace CocApi.Cache
 
         internal protected CacheDbContextFactoryProvider CacheContextOptions { get; }
 
-        public ClientBase(CacheDbContextFactoryProvider cacheContextOptions)
+        public ClientBase(CacheDbContextFactoryProvider provider)
         {
-            DbContextFactory = cacheContextOptions.Factory;
-            DbContextArgs = cacheContextOptions.DbContextArgs ?? Array.Empty<string>();
+            DbContextFactory = provider.Factory;
+            DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
 
-            CacheContextOptions = cacheContextOptions;
+            CacheContextOptions = provider;
 
             EnsureMigrated();
         }

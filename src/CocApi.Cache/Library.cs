@@ -63,16 +63,16 @@ namespace CocApi.Cache
             public static string War { get; set; } = "war";
         }
 
-        public static void AddCocApiDbContext(this IServiceCollection services, Action<CacheDbContextFactoryProvider> configure)
+        public static void AddCocApiDbContext(this IServiceCollection services, Action<CacheDbContextFactoryProvider> provider)
         {
-            CacheDbContextFactoryProvider provider = new();
+            CacheDbContextFactoryProvider instance = new();
 
-            configure(provider);
+            provider(instance);
 
-            if (provider.Factory == null)
-                throw new ArgumentNullException(nameof(provider.Factory), "DbContextFactory cannot be null. This object is used to connect to your database.");
+            if (instance.Factory == null)
+                throw new ArgumentNullException(nameof(instance.Factory), "DbContextFactory cannot be null. This object is used to connect to your database.");
 
-            services.AddSingleton(provider);
+            services.AddSingleton(instance);
         }
 
         public static IHostBuilder ConfigureCocApiDbContext(this IHostBuilder builder, Action<CacheDbContextFactoryProvider> provider)
@@ -88,7 +88,7 @@ namespace CocApi.Cache
         public static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options = null) where TPlayersClient : PlayersClientBase
         {
             if (options != null)
-                services.AddOptions<MonitorOptions>().Configure(options);
+                services.Configure(options);
 
             services.AddSingleton<PlayersClientBase, TPlayersClient>();
         }
@@ -110,7 +110,7 @@ namespace CocApi.Cache
         public static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanMonitorsOptions>? options = null) where TClansClient : ClansClientBase
         {
             if (options != null)
-                services.AddOptions<ClanMonitorsOptions>().Configure(options);
+                services.Configure(options);
 
             services.AddSingleton<TClansClient>();
 
@@ -121,8 +121,6 @@ namespace CocApi.Cache
             services.AddHostedService((serviceProvider) =>
             {
                 ClansClientBase clansClient = serviceProvider.GetRequiredService<TClansClient>();
-
-                var a = clansClient.GetType();
 
                 return clansClient;
             });

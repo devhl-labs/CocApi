@@ -65,11 +65,13 @@ namespace CocApi.Test
             // tell CocApi.Cache what classes to use for the clients
             // omit the type to use the default
             .ConfigurePlayersClient<PlayersClient>()
-            .ConfigureClansClient<ClansClient>()
+            .ConfigureClansClient()
 
 
             .ConfigureServices((hostBuilder, services) =>
             {
+                services.AddSingleton<ClansClient>();
+
                 // define the HttpClient named "cocApi" that CocApi will request
                 services.AddHttpClient("cocApi", config =>
                 {

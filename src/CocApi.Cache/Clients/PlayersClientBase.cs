@@ -20,11 +20,11 @@ namespace CocApi.Cache
         private readonly IOptions<MonitorOptions> _options;
         internal readonly PlayerMonitor PlayerMonitor;
 
-        public PlayersClientBase(PlayersApi playersApi, CacheDbContextFactoryProvider cacheContextOptions, IOptions<MonitorOptions> options) : base (cacheContextOptions)
+        public PlayersClientBase(PlayersApi playersApi, CacheDbContextFactoryProvider provider, IOptions<MonitorOptions> options) : base (provider)
         {
             _playersApi = playersApi;
             _options = options;
-            PlayerMonitor = new PlayerMonitor(cacheContextOptions, _playersApi, this, options);
+            PlayerMonitor = new PlayerMonitor(provider, _playersApi, this, options);
         }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
