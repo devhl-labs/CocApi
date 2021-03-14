@@ -36,25 +36,6 @@ namespace CocApi.Test
             ClanWarUpdated += OnClanWarUpdated;
         }
 
-        private Task OnClanUpdated(object sender, ClanUpdatedEventArgs e)
-        {
-            if (e.Stored != null)
-            {
-                List<Donation> donations = Clan.Donations(e.Stored, e.Fetched);
-
-                if (donations.Count > 0)
-                    LogService.Log(LogLevel.Information, this.GetType().Name, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));
-
-                foreach (ClanMember member in Clan.ClanMembersLeft(e.Stored, e.Fetched))
-                    Console.WriteLine(member.Name + " left");
-
-                foreach (ClanMember member in Clan.ClanMembersJoined(e.Stored, e.Fetched))
-                    Console.WriteLine(member.Name + " joined");
-            }
-
-            return Task.CompletedTask;
-        }
-
         public new async Task StartAsync(CancellationToken cancellationToken)
         {
             // add some dummy data to the database
@@ -65,7 +46,6 @@ namespace CocApi.Test
 
             //await SanityCheck();
 
-            await _playersCache.StartAsync(cancellationToken);
             await base.StartAsync(cancellationToken);
         }
 
@@ -93,15 +73,23 @@ namespace CocApi.Test
             var playerToken = await _playersApi.VerifyTokenResponseAsync("#29GPU9CUJ", new VerifyTokenRequest("a"));
         }
 
-        public new async Task StopAsync(CancellationToken cancellationToken)
+        private Task OnClanUpdated(object sender, ClanUpdatedEventArgs e)
         {
-            List<Task> tasks = new()
-            {
-                base.StopAsync(cancellationToken),
-                _playersCache.StopAsync(cancellationToken)
-            };
+            if (e.Stored == null)
+                return Task.CompletedTask;
 
-            await Task.WhenAll(tasks);
+            List<Donation> donations = Clan.Donations(e.Stored, e.Fetched);
+
+            if (donations.Count > 0)
+                LogService.Log(LogLevel.Information, this.GetType().Name, "Clan updated" + donations.Count + " " + donations.Sum(d => d.Quanity));
+
+            foreach (ClanMember member in Clan.ClanMembersLeft(e.Stored, e.Fetched))
+                Console.WriteLine(member.Name + " left");
+
+            foreach (ClanMember member in Clan.ClanMembersJoined(e.Stored, e.Fetched))
+                Console.WriteLine(member.Name + " joined");
+
+            return Task.CompletedTask;
         }
 
         private Task OnClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)

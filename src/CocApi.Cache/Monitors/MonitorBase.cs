@@ -27,17 +27,29 @@ namespace CocApi.Cache
 
         protected abstract Task PollAsync();
 
-        public async Task RunAsync(CancellationToken cancellationToken)
+        private readonly object _startLock = new();
+
+        public void Start(CancellationToken cancellationToken)
         {
-            if (_isRunning)
-                throw new InvalidOperationException("Monitor already running.");
+            lock (_startLock)
+            {
+                if (_isRunning)
+                    throw new InvalidOperationException("Monitor already running.");
 
-            _isRunning = true;
+                _isRunning = true;
 
-            cancellationToken.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
 
-            _cancellationToken = cancellationToken;
+                _cancellationToken = cancellationToken;
 
+                RunTask = RunAsync();
+            }
+        }
+
+        public Task RunTask;
+
+        private async Task RunAsync()
+        {
             Library.OnLog(this, new LogEventArgs(LogLevel.Information, "running"));
 
             while (!_cancellationToken.IsCancellationRequested)
@@ -48,7 +60,7 @@ namespace CocApi.Cache
 
                     now = DateTime.UtcNow;
 
-                    await PollAsync();
+                    await PollAsync().ConfigureAwait(false);
                 }
                 catch(Exception e)
                 {

@@ -31,14 +31,13 @@ namespace CocApi.Cache
 
             List<CachedClan> cachedClans = await dbContext.Clans
                 .Where(c =>
+                    c.Id > _id &&
                     (
-((c.ExpiresAt ?? min) < expires && (c.KeepUntil ?? min) < now && c.Download) ||
-((c.Group.ExpiresAt ?? min) < expires && (c.Group.KeepUntil ?? min) < now && c.Group.Download) ||
-((c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false) ||
-((c.WarLog.ExpiresAt ?? min) < expires && (c.WarLog.KeepUntil ?? min) < now && c.WarLog.Download && c.IsWarLogPublic != false)
-                    )
-                    &&
-                    c.Id > _id)
+(!_options.Value.Clans.DisableClan       && (c.ExpiresAt ?? min)            < expires && (c.KeepUntil ?? min)            < now && c.Download) ||
+(!_options.Value.Clans.DisableGroup      && (c.Group.ExpiresAt ?? min)      < expires && (c.Group.KeepUntil ?? min)      < now && c.Group.Download) ||
+(!_options.Value.Clans.DisableCurrentWar && (c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false) ||
+(!_options.Value.Clans.DisableWarLog     && (c.WarLog.ExpiresAt ?? min)     < expires && (c.WarLog.KeepUntil ?? min)     < now && c.WarLog.Download && c.IsWarLogPublic != false)
+                    ))
                 .OrderBy(c => c.Id)
                 .Take(options.ConcurrentUpdates)
                 .ToListAsync(_cancellationToken)
@@ -87,16 +86,16 @@ namespace CocApi.Cache
             {
                 List<Task> tasks = new();
 
-                if (cachedClan.Download && cachedClan.IsExpired)
+                if (!_options.Value.Clans.DisableClan && cachedClan.Download && cachedClan.IsExpired)
                     tasks.Add(MonitorClanAsync(cachedClan));
 
-                if (cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
+                if (!_options.Value.Clans.DisableCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                     tasks.Add(MonitorClanWarAsync(cachedClan));
 
-                if (cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
+                if (!_options.Value.Clans.DisableWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                     tasks.Add(MonitorWarLogAsync(cachedClan));
 
-                if (cachedClan.Group.Download && cachedClan.Group.IsExpired)
+                if (!_options.Value.Clans.DisableGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
                     tasks.Add(MonitorGroupAsync(cachedClan));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);

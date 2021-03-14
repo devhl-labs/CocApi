@@ -109,6 +109,9 @@ namespace CocApi.Cache
 
         public static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanMonitorsOptions>? options = null) where TClansClient : ClansClientBase
         {
+            if (options != null)
+                services.AddOptions<ClanMonitorsOptions>().Configure(options);
+
             services.AddSingleton<TClansClient>();
 
             services.AddSingleton<ClansClientBase, TClansClient>();
@@ -119,8 +122,7 @@ namespace CocApi.Cache
             {
                 ClansClientBase clansClient = serviceProvider.GetRequiredService<TClansClient>();
 
-                if (options != null)
-                    services.AddOptions<ClanMonitorsOptions>().Configure(options);
+                var a = clansClient.GetType();
 
                 return clansClient;
             });

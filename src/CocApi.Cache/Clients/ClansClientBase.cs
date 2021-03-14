@@ -27,6 +27,8 @@ namespace CocApi.Cache
             : base(cacheContextOptions)
         {
             _clansApi = clansApi;
+            _playersClient = playersClient;
+            _options = options;
             _clanMonitor = new ClanMonitor(cacheContextOptions, clansApi, this, options);
             _newWarMonitor = new NewWarMonitor(cacheContextOptions, this, options);
             _newCwlWarMonitor = new NewCwlWarMonitor(cacheContextOptions, clansApi, this, options);
@@ -298,7 +300,8 @@ namespace CocApi.Cache
         }
 
         private readonly ClansApi _clansApi;
-
+        private readonly PlayersClientBase _playersClient;
+        private readonly IOptions<ClanMonitorsOptions> _options;
         private readonly ClanMonitor _clanMonitor;
         private readonly NewWarMonitor _newWarMonitor;
         private readonly NewCwlWarMonitor _newCwlWarMonitor;
@@ -306,45 +309,81 @@ namespace CocApi.Cache
         private readonly ActiveWarMonitor _activeWarMonitor;
         private readonly MemberMonitor _memberMonitor;
 
-        private Task? _clanMonitorTask;
-        private Task? _newWarMonitorTask;
-        private Task? _newCwlWarMonitorTask;
-        private Task? _warMonitorTask;
-        private Task? _activeWarMonitorTask;
-        private Task? _memberMonitorTask;
+        private bool _isRunning;
 
-        public Task StartAsync(CancellationToken _)
+        private readonly SemaphoreSlim _semaphore = new(1, 1);
+
+        public async Task StartAsync(CancellationToken _)
         {
-            _clanMonitorTask = _clanMonitor.RunAsync(_stopRequestedTokenSource.Token); //todo what if this token is already cancelled?
-            _newWarMonitorTask = _newWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
-            _newCwlWarMonitorTask = _newCwlWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
-            _warMonitorTask = _warMonitor.RunAsync(_stopRequestedTokenSource.Token);
-            _activeWarMonitorTask = _activeWarMonitor.RunAsync(_stopRequestedTokenSource.Token);
-            _memberMonitorTask = _memberMonitor.RunAsync(_stopRequestedTokenSource.Token);
+            await _semaphore.WaitAsync(_).ConfigureAwait(false);
 
-            return Task.CompletedTask;
+            try
+            {
+                if (_isRunning)
+                    throw new InvalidOperationException("Already running.");
+
+                _isRunning = true;
+
+                _stopRequestedTokenSource = new CancellationTokenSource();
+
+                if (!_options.Value.Clans.IsDisabled)
+                    _clanMonitor.Start(_stopRequestedTokenSource.Token);
+                if (!_options.Value.NewWars.IsDisabled)
+                    _newWarMonitor.Start(_stopRequestedTokenSource.Token);
+                if (!_options.Value.NewCwlWars.IsDisabled)
+                    _newCwlWarMonitor.Start(_stopRequestedTokenSource.Token);
+                if (!_options.Value.Wars.IsDisabled)
+                    _warMonitor.Start(_stopRequestedTokenSource.Token);
+                if (!_options.Value.ActiveWars.IsDisabled)
+                    _activeWarMonitor.Start(_stopRequestedTokenSource.Token);
+                if (!_options.Value.ClanMembers.IsDisabled)
+                    _memberMonitor.Start(_stopRequestedTokenSource.Token);
+                _playersClient.Start(_stopRequestedTokenSource.Token);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         public async Task StopAsync(CancellationToken _)
         {
+            await _semaphore.WaitAsync(_).ConfigureAwait(false);
+
             _stopRequestedTokenSource.Cancel();
 
-            List<Task> tasks = new();
+            try
+            {
+                List<Task> tasks = new();
 
-            if (_clanMonitorTask != null)
-                tasks.Add(_clanMonitorTask);
-            if (_newWarMonitorTask != null)
-                tasks.Add(_newWarMonitorTask);
-            if (_newCwlWarMonitorTask != null)
-                tasks.Add(_newCwlWarMonitorTask);
-            if (_warMonitorTask != null)
-                tasks.Add(_warMonitorTask);
-            if (_activeWarMonitorTask != null)
-                tasks.Add(_activeWarMonitorTask);
-            if (_memberMonitorTask != null)
-                tasks.Add(_memberMonitorTask);
+                if (_clanMonitor.RunTask != null)
+                    tasks.Add(_clanMonitor.RunTask);
+                if (_newWarMonitor.RunTask != null)
+                    tasks.Add(_newWarMonitor.RunTask);
+                if (_newCwlWarMonitor.RunTask != null)
+                    tasks.Add(_newCwlWarMonitor.RunTask);
+                if (_warMonitor.RunTask != null)
+                    tasks.Add(_warMonitor.RunTask);
+                if (_activeWarMonitor.RunTask != null)
+                    tasks.Add(_activeWarMonitor.RunTask);
+                if (_memberMonitor.RunTask != null)
+                    tasks.Add(_memberMonitor.RunTask);
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+                tasks.Add(_playersClient.StopAsync(_));
+
+                Task timedOut = Task.Delay(TimeSpan.FromMilliseconds(4900), CancellationToken.None);
+
+                _isRunning = false;
+
+                await Task.WhenAny(Task.WhenAll(tasks), timedOut).ConfigureAwait(false);
+
+                if (timedOut.IsCompleted)
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Failed to stop all monitors in time."));
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class

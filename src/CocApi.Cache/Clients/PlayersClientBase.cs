@@ -146,22 +146,18 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        private Task? _playerMonitorTask;
-
-        public Task StartAsync(CancellationToken _)
+        public void Start(CancellationToken _)
         {
             if (!_options.Value.IsDisabled)
-                _playerMonitorTask = PlayerMonitor.RunAsync(_stopRequestedTokenSource.Token);
-
-            return Task.CompletedTask;
+                PlayerMonitor.Start(_stopRequestedTokenSource.Token);
         }
 
         public async Task StopAsync(CancellationToken _)
         {
             _stopRequestedTokenSource.Cancel();
 
-            if (_playerMonitorTask != null)
-                await _playerMonitorTask;
+            if (PlayerMonitor.RunTask != null)
+                await PlayerMonitor.RunTask;
         }
 
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync(ApiResponse<Player> apiResponse)
