@@ -51,30 +51,39 @@ namespace CocApi.Cache
 
         private async Task FillDownloadedWarsAsync()
         {
-            _downloadedWars = new Dictionary<DateTime, ConcurrentDictionary<string, SeenCwlWar>>();
-
-            using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
-
-            DateTime since = DateTime.UtcNow.AddMonths(-2).AddDays(-DateTime.UtcNow.Day - 1); // go back to begining of month two months ago
-
-            List<CachedWar> cachedWars = await dbContext.Wars
-                .AsNoTracking()
-                .Where(w =>
-                    !string.IsNullOrWhiteSpace(w.WarTag) &&
-                    !string.IsNullOrWhiteSpace(w.RawContent) &&
-                    w.PreparationStartTime > since
-                    )
-                .ToListAsync(_cancellationToken).ConfigureAwait(false);
-
-            foreach(CachedWar cachedWar in cachedWars)
+            try
             {
-                _downloadedWars.TryAdd(cachedWar.Season.Value, new ConcurrentDictionary<string, SeenCwlWar>());
+                _downloadedWars = new Dictionary<DateTime, ConcurrentDictionary<string, SeenCwlWar>>();
 
-                var downloadedWars = _downloadedWars.Single(w => w.Key == cachedWar.Season.Value);
+                using var dbContext = _dbContextFactory.CreateDbContext(_dbContextArgs);
 
-                SeenCwlWar seenWar = new(cachedWar.Season.Value, cachedWar.ClanTag, cachedWar.OpponentTag, cachedWar.WarTag, null);
+                DateTime since = DateTime.UtcNow.AddMonths(-2).AddDays(-DateTime.UtcNow.Day - 1); // go back to begining of month two months ago
 
-                downloadedWars.Value.TryAdd(cachedWar.WarTag, seenWar);
+                List<CachedWar> cachedWars = await dbContext.Wars
+                    .AsNoTracking()
+                    .Where(w =>
+                        !string.IsNullOrWhiteSpace(w.WarTag) &&
+                        !string.IsNullOrWhiteSpace(w.RawContent) &&
+                        w.PreparationStartTime > since
+                        )
+                    .ToListAsync(_cancellationToken).ConfigureAwait(false);
+
+                foreach (CachedWar cachedWar in cachedWars)
+                {
+                    _downloadedWars.TryAdd(cachedWar.Season.Value, new ConcurrentDictionary<string, SeenCwlWar>());
+
+                    var downloadedWars = _downloadedWars.Single(w => w.Key == cachedWar.Season.Value);
+
+                    SeenCwlWar seenWar = new(cachedWar.Season.Value, cachedWar.ClanTag, cachedWar.OpponentTag, cachedWar.WarTag, null);
+
+                    downloadedWars.Value.TryAdd(cachedWar.WarTag, seenWar);
+                }
+            }
+            catch (Exception)
+            {
+                _downloadedWars = null;
+
+                throw;
             }
         }
 
@@ -117,78 +126,91 @@ namespace CocApi.Cache
             
             List<Task> announceNewWarTasks = new();
 
-            List<Task> downloadWarTasks = new();
+            HashSet<string> updatingTags = new();
 
-            foreach (CachedClan cachedClan in cachedClans)
+            try
             {
-                cachedClan.Group.Added = true;
-
-                _downloadedWars.TryAdd(cachedClan.Group.Content.Season, new ConcurrentDictionary<string, SeenCwlWar>());
-
-                var group = _downloadedWars.Single(w => w.Key == cachedClan.Group.Season);
-
-                foreach (var round in cachedClan.Group.Content.Rounds)
-                    foreach (var warTag in round.WarTags.Where(w => w != "#0"))
-                        if (group.Value.TryGetValue(warTag, out SeenCwlWar? seenCwlWar))
-                        {
-                            if (seenCwlWar.ApiResponse?.Content == null)
-                                continue;
-                            
-                            CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Clan.Tag);
-
-                            CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Opponent.Tag);
-
-                            announceNewWarTasks.Add(NewWarFoundAsync(clan?.Content, opponent?.Content, cachedClan.Group.Content, seenCwlWar.ApiResponse, dbContext));
-
-                            seenCwlWar.ApiResponse = null; // dont announce this war again, also prevent memory leak                           
-                        }
-                        else
-                        {
-                            warTagsToDownload.TryAdd(group.Key, new Dictionary<string, Model.ClanWarLeagueGroup>());
-
-                            Dictionary<string, Model.ClanWarLeagueGroup> tags = warTagsToDownload.Single(w => w.Key == group.Key).Value;
-
-                            tags.Add(warTag, cachedClan.Group.Content);
-                        }
-            }
-
-            foreach(var warTags in warTagsToDownload)            
-                Parallel.ForEach(warTags.Value, new ParallelOptions { MaxDegreeOfParallelism = _options.Value.NewCwlWars.ConcurrentUpdates }, async kvp =>
+                foreach (CachedClan cachedClan in cachedClans)
                 {
-                    ApiResponse<Model.ClanWar>? apiResponse = null;
+                    if (!_clansClient.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
+                        continue;
 
-                    try
+                    updatingTags.Add(cachedClan.Tag);
+
+                    cachedClan.Group.Added = true;
+
+                    _downloadedWars.TryAdd(cachedClan.Group.Content.Season, new ConcurrentDictionary<string, SeenCwlWar>());
+
+                    var group = _downloadedWars.Single(w => w.Key == cachedClan.Group.Season);
+
+                    foreach (var round in cachedClan.Group.Content.Rounds)
+                        foreach (var warTag in round.WarTags.Where(w => w != "#0"))
+                            if (group.Value.TryGetValue(warTag, out SeenCwlWar? seenCwlWar))
+                            {
+                                if (seenCwlWar.ApiResponse?.Content == null)
+                                    continue;
+
+                                CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Clan.Tag);
+
+                                CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Opponent.Tag);
+
+                                announceNewWarTasks.Add(NewWarFoundAsync(clan?.Content, opponent?.Content, cachedClan.Group.Content, seenCwlWar.ApiResponse, dbContext));
+
+                                seenCwlWar.ApiResponse = null; // dont announce this war again, also prevent memory leak                           
+                            }
+                            else
+                            {
+                                warTagsToDownload.TryAdd(group.Key, new Dictionary<string, Model.ClanWarLeagueGroup>());
+
+                                Dictionary<string, Model.ClanWarLeagueGroup> tags = warTagsToDownload.Single(w => w.Key == group.Key).Value;
+
+                                tags.Add(warTag, cachedClan.Group.Content);
+                            }
+                }
+
+                foreach (var warTags in warTagsToDownload)
+                    Parallel.ForEach(warTags.Value, new ParallelOptions { MaxDegreeOfParallelism = _options.Value.NewCwlWars.ConcurrentUpdates }, async kvp =>
                     {
-                        apiResponse = await _clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, _cancellationToken).ConfigureAwait(false);
-                    }
-                    catch (Exception)
-                    {
-                    }
+                        ApiResponse<Model.ClanWar>? apiResponse = null;
 
-                    if (_cancellationToken.IsCancellationRequested || apiResponse?.Content == null)
-                        return;
+                        try
+                        {
+                            apiResponse = await _clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, _cancellationToken).ConfigureAwait(false);
+                        }
+                        catch (Exception)
+                        {
+                        }
 
-                    SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, apiResponse.Content.WarTag, apiResponse);
+                        if (_cancellationToken.IsCancellationRequested || apiResponse?.Content == null)
+                            return;
 
-                    var group = _downloadedWars.Single(w => w.Key == warTags.Key).Value;
+                        SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, apiResponse.Content.WarTag, apiResponse);
 
-                    group.TryAdd(kvp.Key, seenCwlWar);
+                        var group = _downloadedWars.Single(w => w.Key == warTags.Key).Value;
 
-                    CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Clan.Tag);
+                        group.TryAdd(kvp.Key, seenCwlWar);
 
-                    CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Opponent.Tag);
+                        CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Clan.Tag);
 
-                    if (cachedClan != null || cachedOpponent != null)
-                    {
-                        seenCwlWar.ApiResponse = null; // dont announce this war again, also prevent memory leak
+                        CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Opponent.Tag);
+
+                        if (cachedClan != null || cachedOpponent != null)
+                        {
+                            seenCwlWar.ApiResponse = null; // dont announce this war again, also prevent memory leak
 
                         announceNewWarTasks.Add(NewWarFoundAsync(cachedClan?.Content, cachedOpponent?.Content, kvp.Value, apiResponse, dbContext));
-                    }
-                });
+                        }
+                    });
 
-            await Task.WhenAll(announceNewWarTasks);
+                await Task.WhenAll(announceNewWarTasks);
 
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            finally
+            {
+                foreach (string tag in updatingTags)
+                    _clansClient.UpdatingClan.TryRemove(tag, out _);
+            }
         }
 
         private async Task NewWarFoundAsync(Model.Clan? clan, Model.Clan? opponent, Model.ClanWarLeagueGroup? group, ApiResponse<CocApi.Model.ClanWar> war, CacheDbContext dbContext)
