@@ -23,7 +23,7 @@ namespace CocApi.Test
             PlayersClientBase playersCache, 
             LocationsApi locationsApi, 
             PlayersApi playersApi, 
-            IOptions<ClanMonitorsOptions> options) 
+            IOptions<ClientOptions> options) 
             : base(clansApi, playersCache, playersApi, dbContextOptions, options)
         {
             _playersCache = playersCache;

@@ -14,9 +14,9 @@ namespace CocApi.Cache
     {
         private readonly PlayersClientBase _playersClientBase;
         private readonly PlayersApi _playersApi;
-        private readonly IOptions<ClanMonitorsOptions> _options;
+        private readonly IOptions<ClientOptions> _options;
 
-        public MemberMonitor(CacheDbContextFactoryProvider provider, PlayersClientBase playersClient, PlayersApi playersApi, IOptions<ClanMonitorsOptions> options) 
+        public MemberMonitor(CacheDbContextFactoryProvider provider, PlayersClientBase playersClient, PlayersApi playersApi, IOptions<ClientOptions> options) 
             : base(provider)
         {
             _playersClientBase = playersClient;

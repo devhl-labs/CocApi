@@ -14,11 +14,11 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
-        private readonly IOptions<ClanMonitorsOptions> _options;
+        private readonly IOptions<ClientOptions> _options;
         private readonly HashSet<string> _unmonitoredClans = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public WarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanMonitorsOptions> options) : base(provider)
+        public WarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClientOptions> options) : base(provider)
         {
             _clansApi = clansApi;
             _clansClient = clansClient;
@@ -33,6 +33,7 @@ namespace CocApi.Cache
 
             List<CachedWar> cachedWars = await dbContext.Wars
                 .Where(w =>
+                    string.IsNullOrWhiteSpace(w.WarTag) &&
                     (w.ExpiresAt ?? min) < expires &&
                     (w.KeepUntil ?? min) < now &&
                     !w.IsFinal &&
@@ -64,27 +65,15 @@ namespace CocApi.Cache
 
             HashSet<string> updatingWar = new();
 
-            HashSet<string> updatingCwlWar = new();
-
             try
             {
                 foreach (CachedWar cachedWar in cachedWars)
                 {
                     List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
 
-                    if (string.IsNullOrWhiteSpace(cachedWar.WarTag) && _clansClient.UpdatingWar.TryAdd(cachedWar.Key, cachedWar.Content))
-                    {
-                        updatingWar.Add(cachedWar.Key);
+                    updatingWar.Add(cachedWar.Key);
 
-                        tasks.Add(UpdateWarAsync(dbContext, cachedWar, cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag)));
-                    }
-
-                    if (!string.IsNullOrWhiteSpace(cachedWar.WarTag) && _clansClient.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
-                    {
-                        updatingCwlWar.Add(cachedWar.WarTag);
-
-                        tasks.Add(UpdateCwlWarAsync(cachedWar, cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag)));
-                    }
+                    tasks.Add(UpdateWarAsync(dbContext, cachedWar, cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag)));
 
                     tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToList()));
                 }
@@ -98,9 +87,6 @@ namespace CocApi.Cache
                 foreach (string tag in updatingWar)
                     _clansClient.UpdatingWar.TryRemove(tag, out _);
 
-                foreach (string tag in updatingCwlWar)
-                    _clansClient.UpdatingCwlWar.TryRemove(tag, out _);
-
                 foreach (string tag in _unmonitoredClans)
                     _clansClient.UpdatingClan.TryRemove(tag, out _);
             }
@@ -109,26 +95,6 @@ namespace CocApi.Cache
                 await Task.Delay(options.DelayBetweenBatches, _cancellationToken).ConfigureAwait(false);
             else
                 await Task.Delay(options.DelayBetweenBatchUpdates, _cancellationToken).ConfigureAwait(false);
-        }
-
-        private async Task UpdateCwlWarAsync(CachedWar cachedWar, CachedClan? cachedClan, CachedClan? cachedOpponent)
-        {
-            CachedWar? fetched = await CachedWar
-                    .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, _clansClient, _clansApi, _cancellationToken)
-                    .ConfigureAwait(false);
-
-            if (cachedWar.Content != null &&
-                fetched.Content != null &&
-                cachedWar.Season == fetched.Season &&
-                CachedWar.HasUpdated(cachedWar, fetched))
-                await _clansClient.OnClanWarUpdatedAsync(new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, cachedClan?.Content, cachedOpponent?.Content, _cancellationToken)); 
-
-            cachedWar.IsFinal = fetched.State == WarState.WarEnded;
-
-            if (fetched.Content == null && !Clash.IsCwlEnabled)
-                cachedWar.IsFinal = true;
-
-            cachedWar.UpdateFrom(fetched);
         }
 
         private async Task UpdateWarAsync(CacheDbContext dbContext, CachedWar cachedWar, CachedClan? cachedClan, CachedClan? cachedOpponent)
@@ -232,7 +198,7 @@ namespace CocApi.Cache
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
                     cachedWar.EndTime < now &&
-                    cachedWar.EndTime.Day == now.Day)
+                    cachedWar.EndTime.Day <= (now.Day + 1))
                 {
                     cachedWar.Announcements |= Announcements.WarEnded;
                     await _clansClient.OnClanWarEndedAsync(new WarEventArgs(cachedWar.Content, _cancellationToken));
@@ -240,7 +206,8 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "SendWarAnnouncements error", e));
+                if (!_cancellationToken.IsCancellationRequested)
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "SendWarAnnouncements error", e));
 
                 //throw;
             }

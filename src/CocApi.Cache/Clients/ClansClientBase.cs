@@ -23,9 +23,10 @@ namespace CocApi.Cache
         internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
 
         public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider provider,
-            IOptions<ClanMonitorsOptions> options)
+            IOptions<ClientOptions> options)
             : base(provider)
         {
+            Library.ConcurrentEventsSemaphore = new SemaphoreSlim(options.Value.MaxConcurrentEvents, options.Value.MaxConcurrentEvents);
             _clansApi = clansApi;
             _playersClient = playersClient;
             _options = options;
@@ -35,6 +36,7 @@ namespace CocApi.Cache
             _warMonitor = new WarMonitor(provider, clansApi, this, options);
             _activeWarMonitor = new ActiveWarMonitor(provider, clansApi, this, options);
             _memberMonitor = new MemberMonitor(provider, playersClient, playersApi, options);
+            _cwlWarMonitor = new CwlWarMonitor(provider, clansApi, this, options);
         }
 
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -301,13 +303,14 @@ namespace CocApi.Cache
 
         private readonly ClansApi _clansApi;
         private readonly PlayersClientBase _playersClient;
-        private readonly IOptions<ClanMonitorsOptions> _options;
+        private readonly IOptions<ClientOptions> _options;
         private readonly ClanMonitor _clanMonitor;
         private readonly NewWarMonitor _newWarMonitor;
         private readonly NewCwlWarMonitor _newCwlWarMonitor;
         private readonly WarMonitor _warMonitor;
         private readonly ActiveWarMonitor _activeWarMonitor;
         private readonly MemberMonitor _memberMonitor;
+        private readonly CwlWarMonitor _cwlWarMonitor;
 
         private bool _isRunning;
 
@@ -338,6 +341,9 @@ namespace CocApi.Cache
                     _activeWarMonitor.Start(_stopRequestedTokenSource.Token);
                 if (!_options.Value.ClanMembers.IsDisabled)
                     _memberMonitor.Start(_stopRequestedTokenSource.Token);
+                if (!_options.Value.CwlWars.IsDisabled)
+                    _cwlWarMonitor.Start(_stopRequestedTokenSource.Token);
+
                 _playersClient.Start(_stopRequestedTokenSource.Token);
             }
             finally
@@ -368,6 +374,8 @@ namespace CocApi.Cache
                     tasks.Add(_activeWarMonitor.RunTask);
                 if (_memberMonitor.RunTask != null)
                     tasks.Add(_memberMonitor.RunTask);
+                if (_cwlWarMonitor.RunTask != null)
+                    tasks.Add(_cwlWarMonitor.RunTask);
 
                 tasks.Add(_playersClient.StopAsync(_));
 

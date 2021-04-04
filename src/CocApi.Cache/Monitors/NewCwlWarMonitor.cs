@@ -38,10 +38,10 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
-        private readonly IOptions<ClanMonitorsOptions> _options;
+        private readonly IOptions<ClientOptions> _options;
         private Dictionary<DateTime, ConcurrentDictionary<string, SeenCwlWar>>? _downloadedWars;
 
-        public NewCwlWarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanMonitorsOptions> options) : base(provider)
+        public NewCwlWarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClientOptions> options) : base(provider)
         {
             _clansApi = clansApi;
             _clansClient = clansClient;
@@ -150,7 +150,7 @@ namespace CocApi.Cache
 
                                     CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Opponent.Tag);
 
-                                    announceNewWarTasks.Add(NewWarFoundAsync(clan?.Content, opponent?.Content, cachedClan.Group.Content, seenCwlWar.ApiResponse, dbContext, seenCwlWar));
+                                    announceNewWarTasks.Add(NewWarFoundAsync(clan?.Content, opponent?.Content, cachedClan.Group.Content, seenCwlWar.ApiResponse, seenCwlWar));
                                 }
                                 else
                                 {
@@ -159,42 +159,19 @@ namespace CocApi.Cache
                                     Dictionary<string, Model.ClanWarLeagueGroup> tags = warTagsToDownload.Single(w => w.Key == group.Key).Value;
 
                                     if (!tags.ContainsKey(warTag))
-                                        tags.Add(warTag, cachedClan.Group.Content);
+                                        tags.Add(warTag, cachedClan.Group.Content);                                    
                                 }
                     }
 
-                    foreach (var warTags in warTagsToDownload)
-                        Parallel.ForEach(warTags.Value, new ParallelOptions { MaxDegreeOfParallelism = _options.Value.NewCwlWars.ConcurrentUpdates }, async kvp =>
-                        {
-                            ApiResponse<Model.ClanWar>? apiResponse = null;
+                    List<Task> processRequests = new();
 
-                            try
-                            {
-                                apiResponse = await _clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, _cancellationToken).ConfigureAwait(false);
-                            }
-                            catch (Exception)
-                            {
-                            }
+                    foreach (KeyValuePair<DateTime, Dictionary<string, Model.ClanWarLeagueGroup>> warTagDictionaries in warTagsToDownload)
+                        foreach (var warTags in warTagDictionaries.Value)
+                            processRequests.Add(ProcessRequest(warTags, cachedClans, announceNewWarTasks, warTagDictionaries));
 
-                            if (_cancellationToken.IsCancellationRequested || apiResponse?.Content == null || apiResponse.Content.WarTag != kvp.Key)
-                                return;
+                    await Task.WhenAll(processRequests).ConfigureAwait(false);
 
-                            SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, kvp.Key, apiResponse);
-
-                            var group = _downloadedWars.Single(w => w.Key == warTags.Key).Value;
-
-                            group.TryAdd(kvp.Key, seenCwlWar);
-
-                            CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Clan.Tag);
-
-                            CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Opponent.Tag);
-
-                            if (cachedClan != null || cachedOpponent != null)
-                                announceNewWarTasks.Add(NewWarFoundAsync(cachedClan?.Content, cachedOpponent?.Content, kvp.Value, apiResponse, dbContext, seenCwlWar));
-
-                        });
-
-                    await Task.WhenAll(announceNewWarTasks);
+                    await Task.WhenAll(announceNewWarTasks).ConfigureAwait(false);
 
                     foreach (var task in announceNewWarTasks)
                         dbContext.Wars.Add(task.Result);
@@ -209,13 +186,53 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while polling for new cwl wars.", e));
+                if (!_cancellationToken.IsCancellationRequested)
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while polling for new cwl wars.", e));
 
                 throw;
             }
         }
 
-        private async Task<CachedWar> NewWarFoundAsync(Model.Clan? clan, Model.Clan? opponent, Model.ClanWarLeagueGroup? group, ApiResponse<CocApi.Model.ClanWar> war, CacheDbContext dbContext, SeenCwlWar seenCwlWar)
+        private async Task ProcessRequest(KeyValuePair<string, Model.ClanWarLeagueGroup> kvp, List<CachedClan> cachedClans, List<Task<CachedWar>> announceNewWarTasks, KeyValuePair<DateTime, Dictionary<string, Model.ClanWarLeagueGroup>> warTags)
+        {
+            try
+            {
+                ApiResponse<Model.ClanWar>? apiResponse = null;
+
+                try
+                {
+                    apiResponse = await _clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, _cancellationToken).ConfigureAwait(false);
+                }
+                catch (Exception)
+                {
+                }
+
+                if (_cancellationToken.IsCancellationRequested || apiResponse?.Content == null)
+                    return;
+
+                SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, kvp.Key, apiResponse);
+
+                var group = _downloadedWars.Single(w => w.Key == warTags.Key).Value;
+
+                group.TryAdd(kvp.Key, seenCwlWar);
+
+                CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Clan.Tag);
+
+                CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Opponent.Tag);
+
+                if (cachedClan != null || cachedOpponent != null)
+                    announceNewWarTasks.Add(NewWarFoundAsync(cachedClan?.Content, cachedOpponent?.Content, kvp.Value, apiResponse, seenCwlWar));
+            }
+            catch (Exception e)
+            {
+                if (!_cancellationToken.IsCancellationRequested)
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while processing a cwl war.", e));
+
+                throw;
+            }
+        }
+
+        private async Task<CachedWar> NewWarFoundAsync(Model.Clan? clan, Model.Clan? opponent, Model.ClanWarLeagueGroup? group, ApiResponse<CocApi.Model.ClanWar> war, SeenCwlWar seenCwlWar)
         {
             try
             {
@@ -231,7 +248,8 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while announcing a cwl war.", e));
+                if (!_cancellationToken.IsCancellationRequested)
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while announcing a cwl war.", e));
 
                 throw;
             }

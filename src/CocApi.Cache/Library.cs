@@ -44,9 +44,7 @@ namespace CocApi.Cache
 
         public static event LogEventHandler? Log;
 
-        public static int MaxConcurrentEvents { get; set; } = 25;
-
-        internal static SemaphoreSlim ConcurrentEventsSemaphore = new(MaxConcurrentEvents, MaxConcurrentEvents);
+        internal static SemaphoreSlim ConcurrentEventsSemaphore = new(25, 25);
 
         public static class TableNames
         {
@@ -104,10 +102,10 @@ namespace CocApi.Cache
             return builder;
         }
 
-        public static void AddClansClient(this IServiceCollection services, Action<ClanMonitorsOptions>? options = null)
+        public static void AddClansClient(this IServiceCollection services, Action<ClientOptions>? options = null)
             => AddClansClient<ClansClientBase>(services, options);
 
-        public static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanMonitorsOptions>? options = null) where TClansClient : ClansClientBase
+        public static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClientOptions>? options = null) where TClansClient : ClansClientBase
         {
             if (options != null)
                 services.Configure(options);
@@ -126,10 +124,10 @@ namespace CocApi.Cache
             });
         }
 
-        public static IHostBuilder ConfigureClansClient(this IHostBuilder builder, Action<ClanMonitorsOptions>? options = null)
+        public static IHostBuilder ConfigureClansClient(this IHostBuilder builder, Action<ClientOptions>? options = null)
             => ConfigureClansClient<ClansClientBase>(builder, options);
 
-        public static IHostBuilder ConfigureClansClient<TClansClient>(this IHostBuilder builder, Action<ClanMonitorsOptions>? options = null) 
+        public static IHostBuilder ConfigureClansClient<TClansClient>(this IHostBuilder builder, Action<ClientOptions>? options = null) 
             where TClansClient : ClansClientBase
         {
             builder.ConfigureServices((context, services) => AddClansClient<TClansClient>(services, options));
