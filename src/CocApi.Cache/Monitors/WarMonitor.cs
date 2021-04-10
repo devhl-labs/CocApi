@@ -14,11 +14,11 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
-        private readonly IOptions<ClientOptions> _options;
+        private readonly IOptions<ClanClientOptions> _options;
         private readonly HashSet<string> _unmonitoredClans = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public WarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClientOptions> options) : base(provider)
+        public WarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanClientOptions> options) : base(provider)
         {
             _clansApi = clansApi;
             _clansClient = clansClient;

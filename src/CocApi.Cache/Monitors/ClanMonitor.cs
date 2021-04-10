@@ -14,9 +14,9 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
-        private readonly IOptions<ClientOptions> _options;
+        private readonly IOptions<ClanClientOptions> _options;
 
-        public ClanMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClientOptions> options) : base(provider)
+        public ClanMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanClientOptions> options) : base(provider)
         {
             _clansApi = clansApi;
             _clansClient = clansClient;
@@ -84,6 +84,8 @@ namespace CocApi.Cache
         {
             try
             {
+                ExtendWarTTLWhileInCwl(cachedClan);
+
                 List<Task> tasks = new();
 
                 if (!_options.Value.Clans.DisableClan && cachedClan.Download && cachedClan.IsExpired)
@@ -153,6 +155,21 @@ namespace CocApi.Cache
             }
 
             cachedClan.Group.UpdateFrom(fetched);
+        }
+
+        private void ExtendWarTTLWhileInCwl(CachedClan cachedClan)
+        {
+            if (!Clash.IsCwlEnabled ||
+                _options.Value.CwlWars.IsDisabled ||
+                cachedClan.CurrentWar.Content?.State == WarState.InWar ||
+                cachedClan.CurrentWar.Content?.State == WarState.Preparation ||
+                cachedClan.Group.Content == null ||
+                cachedClan.Group.Content.State == GroupState.Ended ||
+                cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month)
+                return;
+
+            // keep currentwar around an arbitrary amount of time since we are in cwl
+            cachedClan.CurrentWar.KeepUntil = DateTime.UtcNow.AddMinutes(20);
         }
     }
 }

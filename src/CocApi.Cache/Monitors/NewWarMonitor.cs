@@ -12,9 +12,9 @@ namespace CocApi.Cache
     internal class NewWarMonitor : MonitorBase
     {
         private readonly ClansClientBase _clansClient;
-        private readonly IOptions<ClientOptions> _options;
+        private readonly IOptions<ClanClientOptions> _options;
 
-        public NewWarMonitor(CacheDbContextFactoryProvider provider, ClansClientBase clansClient, IOptions<ClientOptions> options) : base(provider)
+        public NewWarMonitor(CacheDbContextFactoryProvider provider, ClansClientBase clansClient, IOptions<ClanClientOptions> options) : base(provider)
         {
             _clansClient = clansClient;
             _options = options;

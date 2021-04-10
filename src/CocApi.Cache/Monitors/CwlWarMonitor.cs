@@ -14,9 +14,9 @@ namespace CocApi.Cache
     {
         private readonly ClansApi _clansApi;
         private readonly ClansClientBase _clansClient;
-        private readonly IOptions<ClientOptions> _options;
+        private readonly IOptions<ClanClientOptions> _options;
 
-        public CwlWarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClientOptions> options) : base(provider)
+        public CwlWarMonitor(CacheDbContextFactoryProvider provider, ClansApi clansApi, ClansClientBase clansClient, IOptions<ClanClientOptions> options) : base(provider)
         {
             _clansApi = clansApi;
             _clansClient = clansClient;

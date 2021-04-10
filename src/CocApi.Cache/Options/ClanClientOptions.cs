@@ -2,7 +2,7 @@
 
 namespace CocApi.Cache
 {
-    public class ClientOptions
+    public class ClanClientOptions
     {
         public int MaxConcurrentEvents { get; set; } = 25;
         public ClanMonitorOptions Clans { get; } = new ClanMonitorOptions();

@@ -19,9 +19,9 @@ namespace CocApi
             public const string BM = "Battle Machine";
         }
 
-        public const int MAX_TOWN_HALL_LEVEL = 13;
+        public const int MAX_TOWN_HALL_LEVEL = 14;
 
-        public const int MAX_BUILD_BASE_LEVEL = 8;
+        public const int MAX_BUILD_BASE_LEVEL = 9;
 
         public static Regex TagRegEx { get; } = new Regex(@"^#[PYLQGRJCUV0289]+$");
 
@@ -139,6 +139,16 @@ namespace CocApi
 
         public static string PlayerProfileUrl(string tag) => $"https://link.clashofclans.com/?action=OpenPlayerProfile&tag={tag[1..]}";
 
+        public static string PlayerProfileUrl(this CocApi.Model.Player player) => PlayerProfileUrl(player.Tag);
+
+        public static string PlayerProfileUrl(this CocApi.Model.ClanMember member) => PlayerProfileUrl(member.Tag);
+
+        public static string PlayerProfileUrl(this CocApi.Model.ClanWarMember member) => PlayerProfileUrl(member.Tag);
+
         public static string ClanProfileUrl(string tag) => $"https://link.clashofclans.com/?action=OpenClanProfile&tag={tag[1..]}";
+
+        public static string ClanProfileUrl(this CocApi.Model.Clan clan) => ClanProfileUrl(clan.Tag);
+
+        public static string ClanProfileUrl(this CocApi.Model.WarClan clan) => ClanProfileUrl(clan.Tag);
     }
 }

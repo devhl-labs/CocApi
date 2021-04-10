@@ -38,13 +38,9 @@ namespace CocApi.Test
                     tokenProvider.Tokens.Add(GetEnvironmentVariable($"TOKEN_{i}"));
             })
 
-            // tell CocApi.Cache about your database
-            .ConfigureCocApiDbContext(provider => provider.Factory = new CacheDbContextFactory())
-
-            // tell CocApi.Cache what classes to use for the clients
-            // omit the type to use the default
-            .ConfigurePlayersClient<PlayersClient>()
-            .ConfigureClansClient<ClansClient>()
+            .ConfigureCocApiCache<ClansClient, PlayersClient>(                
+                // tell the cache library how to query your database
+                provider => provider.Factory = new CacheDbContextFactory())
 
 
             .ConfigureServices((hostBuilder, services) =>

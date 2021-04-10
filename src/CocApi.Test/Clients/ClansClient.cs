@@ -15,6 +15,7 @@ namespace CocApi.Test
     {
         private readonly PlayersClientBase _playersCache;
         private readonly LocationsApi _locationsApi;
+        private readonly LeaguesApi _leaguesApi;
         private readonly PlayersApi _playersApi;
 
         public ClansClient(
@@ -22,18 +23,24 @@ namespace CocApi.Test
             ClansApi clansApi, 
             PlayersClientBase playersCache, 
             LocationsApi locationsApi, 
+            LeaguesApi leaguesApi,
             PlayersApi playersApi, 
-            IOptions<ClientOptions> options) 
+            IOptions<ClanClientOptions> options) 
             : base(clansApi, playersCache, playersApi, dbContextOptions, options)
         {
             _playersCache = playersCache;
             _locationsApi = locationsApi;
+            _leaguesApi = leaguesApi;
             _playersApi = playersApi;
 
             ClanUpdated += OnClanUpdated;
             ClanWarAdded += OnClanWarAdded;
             ClanWarLogUpdated += OnClanWarLogUpdated;
             ClanWarUpdated += OnClanWarUpdated;
+        }
+
+        public ClansClient(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider provider, IOptions<ClanClientOptions> options) : base(clansApi, playersClient, playersApi, provider, options)
+        {
         }
 
         public new async Task StartAsync(CancellationToken cancellationToken)
@@ -44,7 +51,7 @@ namespace CocApi.Test
             // import old cache data from CocApi.Cache verison 1.4
             await ImportDataToVersion2(@"Data Source=E:\repos\CocApi\src\CocApi.Test\bin\Debug\net5.0\mb-CocApi.Cache.sqlite");
 
-            //await SanityCheck();
+            await SanityCheck();
 
             await base.StartAsync(cancellationToken);
         }
@@ -69,6 +76,8 @@ namespace CocApi.Test
             var playerVersusGlobalRankings = await _locationsApi.FetchPlayerVersusRankingAsync("global");
             var clanGlobalRankings = await _locationsApi.FetchClanRankingOrDefaultAsync("global");
             var clanGlobalVersusRankings = await _locationsApi.FetchClanVersusRankingAsync("global");
+
+            var leagueList = await _leaguesApi.FetchWarLeaguesOrDefaultAsync();
 
             var playerToken = await _playersApi.VerifyTokenResponseAsync("#29GPU9CUJ", new VerifyTokenRequest("a"));
         }

@@ -10,11 +10,12 @@ using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public class PlayersClientBase : ClientBase
+    public class PlayersClientBase : ClientBase, IHostedService
     {
         private readonly PlayersApi _playersApi;
         private readonly IOptions<MonitorOptions> _options;
@@ -146,10 +147,12 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public void Start(CancellationToken _)
+        public Task StartAsync(CancellationToken _)
         {
             if (!_options.Value.IsDisabled)
                 PlayerMonitor.Start(_stopRequestedTokenSource.Token);
+
+            return Task.CompletedTask;
         }
 
         public async Task StopAsync(CancellationToken _)

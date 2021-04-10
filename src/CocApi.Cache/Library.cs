@@ -3,6 +3,7 @@ using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using System.Linq;
 
 namespace CocApi.Cache
 {        
@@ -61,7 +62,10 @@ namespace CocApi.Cache
             public static string War { get; set; } = "war";
         }
 
-        public static void AddCocApiDbContext(this IServiceCollection services, Action<CacheDbContextFactoryProvider> provider)
+
+
+
+        private static void AddCocApiDbContext(this IServiceCollection services, Action<CacheDbContextFactoryProvider> provider)
         {
             CacheDbContextFactoryProvider instance = new();
 
@@ -73,48 +77,71 @@ namespace CocApi.Cache
             services.AddSingleton(instance);
         }
 
-        public static IHostBuilder ConfigureCocApiDbContext(this IHostBuilder builder, Action<CacheDbContextFactoryProvider> provider)
-        {
-            builder.ConfigureServices((context, services) => AddCocApiDbContext(services, provider));
+        //private static IHostBuilder ConfigureCocApiDbContext(this IHostBuilder builder, Action<CacheDbContextFactoryProvider> provider)
+        //{
+        //    builder.ConfigureServices((context, services) => AddCocApiDbContext(services, provider));
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
-        public static void AddPlayersClient(this IServiceCollection services, Action<MonitorOptions>? options = null)
-            => AddPlayersClient<PlayersClientBase>(services, options);
 
-        public static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options = null) where TPlayersClient : PlayersClientBase
+
+
+
+
+
+
+
+        //private static void AddPlayersClient(this IServiceCollection services, Action<MonitorOptions>? options = null)
+        //    => AddPlayersClient<PlayersClientBase>(services, options);
+
+        private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options) where TPlayersClient : PlayersClientBase
         {
             if (options != null)
                 services.Configure(options);
 
             services.AddSingleton<PlayersClientBase, TPlayersClient>();
+
+            if (typeof(TPlayersClient) != typeof(PlayersClientBase))
+                services.TryAddSingleton<TPlayersClient>();
         }
 
-        public static IHostBuilder ConfigurePlayersClient(this IHostBuilder builder, Action<MonitorOptions>? options = null)
-            => ConfigurePlayersClient<PlayersClientBase>(builder, options);
+        //private static IHostBuilder ConfigurePlayersClient(this IHostBuilder builder, Action<MonitorOptions>? options = null)
+        //    => ConfigurePlayersClient<PlayersClientBase>(builder, options);
 
-        public static IHostBuilder ConfigurePlayersClient<TPlayersClient>(this IHostBuilder builder, Action<MonitorOptions>? options = null)
-        where TPlayersClient : PlayersClientBase
+        //private static IHostBuilder ConfigurePlayersClient<TPlayersClient>(this IHostBuilder builder, Action<MonitorOptions>? options = null)
+        //where TPlayersClient : PlayersClientBase
+        //{
+        //    builder.ConfigureServices((context, services) => AddPlayersClient<TPlayersClient>(services, options));
+
+        //    return builder;
+        //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //private static void AddClansClient(this IServiceCollection services, Action<ClanClientOptions>? clanClientOptions = null)
+        //    => AddClansClient<ClansClientBase>(services, clanClientOptions);
+
+        private static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanClientOptions>? clanClientOptions)
+            where TClansClient : ClansClientBase
         {
-            builder.ConfigureServices((context, services) => AddPlayersClient<TPlayersClient>(services, options));
-
-            return builder;
-        }
-
-        public static void AddClansClient(this IServiceCollection services, Action<ClientOptions>? options = null)
-            => AddClansClient<ClansClientBase>(services, options);
-
-        public static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClientOptions>? options = null) where TClansClient : ClansClientBase
-        {
-            if (options != null)
-                services.Configure(options);
-
-            services.AddSingleton<TClansClient>();
+            if (clanClientOptions != null)
+                services.Configure(clanClientOptions);
 
             services.AddSingleton<ClansClientBase, TClansClient>();
 
-            services.TryAddSingleton<PlayersClientBase>();
+            if (typeof(TClansClient) != typeof(ClansClientBase))
+                services.TryAddSingleton<TClansClient>();
 
             services.AddHostedService((serviceProvider) =>
             {
@@ -124,13 +151,100 @@ namespace CocApi.Cache
             });
         }
 
-        public static IHostBuilder ConfigureClansClient(this IHostBuilder builder, Action<ClientOptions>? options = null)
-            => ConfigureClansClient<ClansClientBase>(builder, options);
+        //private static IHostBuilder ConfigureClansClient(this IHostBuilder builder, Action<ClanClientOptions>? clanClientOptions = null)
+        //    => ConfigureClansClient<ClansClientBase>(builder, clanClientOptions);
 
-        public static IHostBuilder ConfigureClansClient<TClansClient>(this IHostBuilder builder, Action<ClientOptions>? options = null) 
+        //private static IHostBuilder ConfigureClansClient<TClansClient>(this IHostBuilder builder, Action<ClanClientOptions>? clanClientOptions = null)
+        //    where TClansClient : ClansClientBase
+        //{
+        //    builder.ConfigureServices((context, services) => AddClansClient<TClansClient>(services, clanClientOptions));
+
+        //    return builder;
+        //}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        public static void AddCocApiCache(this IServiceCollection services,
+            Action<CacheDbContextFactoryProvider> provider,
+            Action<ClanClientOptions>? clanClientOptions = null, 
+            Action<MonitorOptions>? playerClientOptions = null)
+            => AddCocApiCache<ClansClientBase, PlayersClientBase>(services, provider, clanClientOptions, playerClientOptions);
+
+        public static void AddCocApiCache<TClansClient, TPlayersClient>(this IServiceCollection services, 
+            Action<CacheDbContextFactoryProvider> provider,
+            Action<ClanClientOptions>? clanClientOptions = null,
+            Action<MonitorOptions>? playerClientOptions = null) 
             where TClansClient : ClansClientBase
+            where TPlayersClient : PlayersClientBase
         {
-            builder.ConfigureServices((context, services) => AddClansClient<TClansClient>(services, options));
+            if (!services.Any(x => x.ServiceType == typeof(CocApi.Api.ClansApi)) ||
+                !services.Any(x => x.ServiceType == typeof(CocApi.Api.PlayersApi)))
+                throw new InvalidOperationException("ClansApi or PlayersApi were not found in the service collection.");
+
+            if (provider == null)
+                throw new InvalidOperationException("The DbContext provider was null.");
+
+            services.AddCocApiDbContext(provider);
+
+            services.AddPlayersClient<TPlayersClient>(playerClientOptions);
+
+            services.AddClansClient<TClansClient>(clanClientOptions);
+        }
+
+        public static IHostBuilder ConfigureCocApiCache(this IHostBuilder builder,
+            Action<CacheDbContextFactoryProvider> provider,
+            Action<ClanClientOptions>? clanClientOptions = null,
+            Action<MonitorOptions>? playerClientOptions = null)
+            => ConfigureCocApiCache<ClansClientBase, PlayersClientBase>(builder, provider, clanClientOptions, playerClientOptions);
+
+        public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient>(this IHostBuilder builder,
+            Action<CacheDbContextFactoryProvider> provider,
+            Action<ClanClientOptions>? clanClientOptions = null,
+            Action<MonitorOptions>? playerClientOptions = null) 
+            where TClansClient : ClansClientBase
+            where TPlayersClient : PlayersClientBase
+        {
+            builder.ConfigureServices((context, services) => AddCocApiCache<TClansClient, TPlayersClient>(services, provider, clanClientOptions, playerClientOptions));
 
             return builder;
         }

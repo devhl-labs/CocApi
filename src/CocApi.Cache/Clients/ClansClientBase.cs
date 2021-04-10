@@ -23,12 +23,12 @@ namespace CocApi.Cache
         internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
 
         public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider provider,
-            IOptions<ClientOptions> options)
+            IOptions<ClanClientOptions> options)
             : base(provider)
         {
             Library.ConcurrentEventsSemaphore = new SemaphoreSlim(options.Value.MaxConcurrentEvents, options.Value.MaxConcurrentEvents);
             _clansApi = clansApi;
-            _playersClient = playersClient;
+            //_playersClient = playersClient;
             _options = options;
             _clanMonitor = new ClanMonitor(provider, clansApi, this, options);
             _newWarMonitor = new NewWarMonitor(provider, this, options);
@@ -302,8 +302,8 @@ namespace CocApi.Cache
         }
 
         private readonly ClansApi _clansApi;
-        private readonly PlayersClientBase _playersClient;
-        private readonly IOptions<ClientOptions> _options;
+        //private readonly PlayersClientBase _playersClient;
+        private readonly IOptions<ClanClientOptions> _options;
         private readonly ClanMonitor _clanMonitor;
         private readonly NewWarMonitor _newWarMonitor;
         private readonly NewCwlWarMonitor _newCwlWarMonitor;
@@ -344,7 +344,7 @@ namespace CocApi.Cache
                 if (!_options.Value.CwlWars.IsDisabled)
                     _cwlWarMonitor.Start(_stopRequestedTokenSource.Token);
 
-                _playersClient.Start(_stopRequestedTokenSource.Token);
+                //_playersClient.StartAsync(_stopRequestedTokenSource.Token);
             }
             finally
             {
@@ -377,16 +377,11 @@ namespace CocApi.Cache
                 if (_cwlWarMonitor.RunTask != null)
                     tasks.Add(_cwlWarMonitor.RunTask);
 
-                tasks.Add(_playersClient.StopAsync(_));
+                //tasks.Add(_playersClient.StopAsync(_));
 
-                Task timedOut = Task.Delay(TimeSpan.FromMilliseconds(4900), CancellationToken.None);
+                await Task.WhenAll(tasks).ConfigureAwait(false);
 
                 _isRunning = false;
-
-                await Task.WhenAny(Task.WhenAll(tasks), timedOut).ConfigureAwait(false);
-
-                if (timedOut.IsCompleted)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Failed to stop all monitors in time."));
             }
             finally
             {
@@ -444,14 +439,13 @@ namespace CocApi.Cache
                     ? new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2))
                     : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
-            if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)
-            {
-                if (!Clash.IsCwlEnabled || group.Content?.State == GroupState.Ended)
+            if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)            
+                if (!Clash.IsCwlEnabled || group.Content?.State == GroupState.Ended || 
+                    (group.Content == null && DateTime.UtcNow.Day >= 3))
                     return new ValueTask<TimeSpan>(
                         new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                             .AddMonths(1)
-                            .Subtract(DateTime.UtcNow));
-            }
+                            .Subtract(DateTime.UtcNow));            
 
             if (apiResponse is ApiResponse<ClanWar> war)
             {
