@@ -39,19 +39,21 @@ namespace CocApi.Test
             ClanWarUpdated += OnClanWarUpdated;
         }
 
-        public ClansClient(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider provider, IOptions<ClanClientOptions> options) : base(clansApi, playersClient, playersApi, provider, options)
+        public ClansClient(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, 
+            CacheDbContextFactoryProvider provider, IOptions<ClanClientOptions> options) 
+            : base(clansApi, playersClient, playersApi, provider, options)
         {
         }
 
         public new async Task StartAsync(CancellationToken cancellationToken)
         {
             // add some dummy data to the database
-            //await AddInitialItems();
+            await AddInitialItems();
 
             // import old cache data from CocApi.Cache verison 1.4
             await ImportDataToVersion2(@"Data Source=E:\repos\CocApi\src\CocApi.Test\bin\Debug\net5.0\mb-CocApi.Cache.sqlite");
 
-            await SanityCheck();
+            //await SanityCheck();
 
             await base.StartAsync(cancellationToken);
         }

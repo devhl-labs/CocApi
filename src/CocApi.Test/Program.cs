@@ -31,11 +31,13 @@ namespace CocApi.Test
             // configure CocApi by naming your HttpClient, providing tokens, and defining the token timeout
             .ConfigureCocApi("cocApi", tokenProvider =>
             {
-                // you can go much lower than this
-                tokenProvider.TokenTimeout = TimeSpan.FromSeconds(1);
-
                 for (int i = 0; i < 10; i++)
-                    tokenProvider.Tokens.Add(GetEnvironmentVariable($"TOKEN_{i}"));
+                {
+                    string token = GetEnvironmentVariable($"TOKEN_{i}");
+                    
+                    // you can go much lower than one second
+                    tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
+                }
             })
 
             .ConfigureCocApiCache<ClansClient, PlayersClient>(                

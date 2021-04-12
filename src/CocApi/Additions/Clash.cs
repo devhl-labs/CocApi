@@ -19,6 +19,15 @@ namespace CocApi
             public const string BM = "Battle Machine";
         }
 
+        public static class Pets
+        {
+            // todo verify these are typed this way in api responses
+            public const string ELECTRO_OWL = "Electro Owl";
+            public const string UNICORN = "Unicorn";
+            public const string MIGHTY_YAK = "Mighty Yak";
+            public const string LASSI = "L.A.S.S.I";
+        }
+
         public const int MAX_TOWN_HALL_LEVEL = 14;
 
         public const int MAX_BUILD_BASE_LEVEL = 9;

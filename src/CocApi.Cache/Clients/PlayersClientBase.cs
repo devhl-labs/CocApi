@@ -149,7 +149,7 @@ namespace CocApi.Cache
 
         public Task StartAsync(CancellationToken _)
         {
-            if (!_options.Value.IsDisabled)
+            if (_options.Value.Enabled)
                 PlayerMonitor.Start(_stopRequestedTokenSource.Token);
 
             return Task.CompletedTask;

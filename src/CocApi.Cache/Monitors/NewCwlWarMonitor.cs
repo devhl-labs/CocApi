@@ -238,11 +238,9 @@ namespace CocApi.Cache
             catch (Exception e)
             {
                 if (!_cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while processing a cwl war.", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, $"An error occured while processing a cwl war at {test}.", e));
 
-                //throw;
-
-                throw new Exception($"Test value is {test}.", e);
+                throw;
             }
         }
 

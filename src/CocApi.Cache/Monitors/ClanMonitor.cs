@@ -160,7 +160,7 @@ namespace CocApi.Cache
         private void ExtendWarTTLWhileInCwl(CachedClan cachedClan)
         {
             if (!Clash.IsCwlEnabled ||
-                _options.Value.CwlWars.IsDisabled ||
+                !_options.Value.CwlWars.Enabled ||
                 cachedClan.CurrentWar.Content?.State == WarState.InWar ||
                 cachedClan.CurrentWar.Content?.State == WarState.Preparation ||
                 cachedClan.Group.Content == null ||

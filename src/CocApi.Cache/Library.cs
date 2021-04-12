@@ -72,7 +72,7 @@ namespace CocApi.Cache
             provider(instance);
 
             if (instance.Factory == null)
-                throw new ArgumentNullException(nameof(instance.Factory), "DbContextFactory cannot be null. This object is used to connect to your database.");
+                throw new ArgumentNullException(nameof(instance.Factory), "The database context factory cannot be null. This object is used to connect to your database.");
 
             services.AddSingleton(instance);
         }
@@ -161,42 +161,6 @@ namespace CocApi.Cache
 
         //    return builder;
         //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

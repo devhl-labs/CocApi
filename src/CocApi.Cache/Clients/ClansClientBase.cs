@@ -22,7 +22,8 @@ namespace CocApi.Cache
         internal ConcurrentDictionary<string, ClanWar?> UpdatingWar { get; } = new();
         internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
 
-        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, CacheDbContextFactoryProvider provider,
+        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, 
+            CacheDbContextFactoryProvider provider,
             IOptions<ClanClientOptions> options)
             : base(provider)
         {
@@ -329,19 +330,19 @@ namespace CocApi.Cache
 
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
-                if (!_options.Value.Clans.IsDisabled)
+                if (_options.Value.Clans.Enabled)
                     _clanMonitor.Start(_stopRequestedTokenSource.Token);
-                if (!_options.Value.NewWars.IsDisabled)
+                if (_options.Value.NewWars.Enabled)
                     _newWarMonitor.Start(_stopRequestedTokenSource.Token);
-                if (!_options.Value.NewCwlWars.IsDisabled)
+                if (_options.Value.NewCwlWars.Enabled)
                     _newCwlWarMonitor.Start(_stopRequestedTokenSource.Token);
-                if (!_options.Value.Wars.IsDisabled)
+                if (_options.Value.Wars.Enabled)
                     _warMonitor.Start(_stopRequestedTokenSource.Token);
-                if (!_options.Value.ActiveWars.IsDisabled)
+                if (_options.Value.ActiveWars.Enabled)
                     _activeWarMonitor.Start(_stopRequestedTokenSource.Token);
-                if (!_options.Value.ClanMembers.IsDisabled)
+                if (_options.Value.ClanMembers.Enabled)
                     _memberMonitor.Start(_stopRequestedTokenSource.Token);
-                if (!_options.Value.CwlWars.IsDisabled)
+                if (_options.Value.CwlWars.Enabled)
                     _cwlWarMonitor.Start(_stopRequestedTokenSource.Token);
 
                 //_playersClient.StartAsync(_stopRequestedTokenSource.Token);
@@ -440,7 +441,8 @@ namespace CocApi.Cache
                     : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
             if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)            
-                if (!Clash.IsCwlEnabled || group.Content?.State == GroupState.Ended || 
+                if (!Clash.IsCwlEnabled || 
+                    (group.Content?.State == GroupState.Ended && DateTime.UtcNow.Month == group.Content.Season.Month) || 
                     (group.Content == null && DateTime.UtcNow.Day >= 3))
                     return new ValueTask<TimeSpan>(
                         new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
