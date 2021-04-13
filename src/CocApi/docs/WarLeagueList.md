@@ -1,4 +1,5 @@
 # CocApi.Model.WarLeagueList
+
 ## Properties
 
 Name | Type | Description | Notes

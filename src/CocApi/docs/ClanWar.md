@@ -1,10 +1,10 @@
 # CocApi.Model.ClanWar
+
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Clan** | [**WarClan**](WarClan.md) |  | [optional] 
-**TeamSize** | **int** |  | [optional] 
 **Opponent** | [**WarClan**](WarClan.md) |  | [optional] 
 **StartTime** | **DateTime** |  | [optional] 
 **State** | **string** |  | [optional] 

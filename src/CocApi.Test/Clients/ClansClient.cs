@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
-    public class ClansClient : ClansClientBase, IHostedService
+    public class ClansClient : ClansClientBase
     {
         private readonly PlayersClientBase _playersCache;
         private readonly LocationsApi _locationsApi;

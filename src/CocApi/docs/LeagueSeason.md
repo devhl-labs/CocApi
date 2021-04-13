@@ -1,4 +1,5 @@
 # CocApi.Model.LeagueSeason
+
 ## Properties
 
 Name | Type | Description | Notes

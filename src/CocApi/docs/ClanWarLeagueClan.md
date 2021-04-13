@@ -1,4 +1,5 @@
 # CocApi.Model.ClanWarLeagueClan
+
 ## Properties
 
 Name | Type | Description | Notes

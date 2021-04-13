@@ -1,4 +1,5 @@
 # CocApi.Model.Clan
+
 ## Properties
 
 Name | Type | Description | Notes
@@ -16,6 +17,7 @@ Name | Type | Description | Notes
 **WarTies** | **int** |  | [optional] 
 **WarLosses** | **int** |  | [optional] 
 **ClanPoints** | **int** |  | [optional] 
+**ChatLanguage** | [**Language**](Language.md) |  | [optional] 
 **Labels** | [**List&lt;Label&gt;**](Label.md) |  | [optional] 
 **Name** | **string** |  | [optional] 
 **Location** | [**Location**](Location.md) |  | [optional] 

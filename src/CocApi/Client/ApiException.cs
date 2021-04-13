@@ -20,7 +20,7 @@ namespace CocApi.Client
         /// <summary>
         /// The reason the api request failed
         /// </summary>
-        public string? ReasonPhrase { get; }
+        public string ReasonPhrase { get; }
 
         /// <summary>
         /// The HttpStatusCode
@@ -38,7 +38,7 @@ namespace CocApi.Client
         /// <param name="reasonPhrase"></param>
         /// <param name="statusCode"></param>
         /// <param name="rawContent"></param>
-        public ApiException(string? reasonPhrase, System.Net.HttpStatusCode statusCode, string rawContent) : base(reasonPhrase ?? rawContent)
+        public ApiException(string reasonPhrase, System.Net.HttpStatusCode statusCode, string rawContent) : base(reasonPhrase ?? rawContent)
         {
             ReasonPhrase = reasonPhrase;
 

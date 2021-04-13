@@ -1,4 +1,5 @@
 # CocApi.Model.LabelIconUrls
+
 ## Properties
 
 Name | Type | Description | Notes

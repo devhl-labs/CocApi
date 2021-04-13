@@ -1,4 +1,5 @@
 # CocApi.Model.ClanBadgeUrls
+
 ## Properties
 
 Name | Type | Description | Notes

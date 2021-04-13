@@ -22,10 +22,12 @@ docs/ClanWarLogEntry.md
 docs/ClanWarMember.md
 docs/ClansApi.md
 docs/ClientError.md
+docs/GoldPassSeason.md
 docs/Label.md
 docs/LabelIconUrls.md
 docs/LabelsApi.md
 docs/LabelsObject.md
+docs/Language.md
 docs/League.md
 docs/LeagueList.md
 docs/LeagueSeason.md
@@ -65,7 +67,6 @@ src/CocApi/Client/ClientUtils.cs
 src/CocApi/Client/Configuration.cs
 src/CocApi/Client/ExceptionFactory.cs
 src/CocApi/Client/GlobalConfiguration.cs
-src/CocApi/Client/HttpMethod.cs
 src/CocApi/Client/IApiAccessor.cs
 src/CocApi/Client/IAsynchronousClient.cs
 src/CocApi/Client/IReadableConfiguration.cs
@@ -94,9 +95,11 @@ src/CocApi/Model/ClanWarLog.cs
 src/CocApi/Model/ClanWarLogEntry.cs
 src/CocApi/Model/ClanWarMember.cs
 src/CocApi/Model/ClientError.cs
+src/CocApi/Model/GoldPassSeason.cs
 src/CocApi/Model/Label.cs
 src/CocApi/Model/LabelIconUrls.cs
 src/CocApi/Model/LabelsObject.cs
+src/CocApi/Model/Language.cs
 src/CocApi/Model/League.cs
 src/CocApi/Model/LeagueList.cs
 src/CocApi/Model/LeagueSeason.cs

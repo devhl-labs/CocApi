@@ -28,49 +28,49 @@ namespace CocApi.Model
     [DataContract(Name = "Clan")]
     public partial class Clan : IEquatable<Clan>, IValidatableObject
     {
-        /// <summary>
-        /// Defines WarFrequency
-        /// </summary>
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum WarFrequencyEnum
-        {
-            /// <summary>
-            /// Enum Unknown for value: unknown
-            /// </summary>
-            [EnumMember(Value = "unknown")]
-            Unknown = 1,
+        ///// <summary>
+        ///// Defines WarFrequency
+        ///// </summary>
+        //[Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        //public enum WarFrequencyEnum
+        //{
+        //    /// <summary>
+        //    /// Enum Unknown for value: unknown
+        //    /// </summary>
+        //    [EnumMember(Value = "unknown")]
+        //    Unknown = 1,
 
-            /// <summary>
-            /// Enum Never for value: never
-            /// </summary>
-            [EnumMember(Value = "never")]
-            Never = 2,
+        //    /// <summary>
+        //    /// Enum Never for value: never
+        //    /// </summary>
+        //    [EnumMember(Value = "never")]
+        //    Never = 2,
 
-            /// <summary>
-            /// Enum LessThanOncePerWeek for value: lessThanOncePerWeek
-            /// </summary>
-            [EnumMember(Value = "lessThanOncePerWeek")]
-            LessThanOncePerWeek = 3,
+        //    /// <summary>
+        //    /// Enum LessThanOncePerWeek for value: lessThanOncePerWeek
+        //    /// </summary>
+        //    [EnumMember(Value = "lessThanOncePerWeek")]
+        //    LessThanOncePerWeek = 3,
 
-            /// <summary>
-            /// Enum OncePerWeek for value: oncePerWeek
-            /// </summary>
-            [EnumMember(Value = "oncePerWeek")]
-            OncePerWeek = 4,
+        //    /// <summary>
+        //    /// Enum OncePerWeek for value: oncePerWeek
+        //    /// </summary>
+        //    [EnumMember(Value = "oncePerWeek")]
+        //    OncePerWeek = 4,
 
-            /// <summary>
-            /// Enum MoreThanOncePerWeek for value: moreThanOncePerWeek
-            /// </summary>
-            [EnumMember(Value = "moreThanOncePerWeek")]
-            MoreThanOncePerWeek = 5,
+        //    /// <summary>
+        //    /// Enum MoreThanOncePerWeek for value: moreThanOncePerWeek
+        //    /// </summary>
+        //    [EnumMember(Value = "moreThanOncePerWeek")]
+        //    MoreThanOncePerWeek = 5,
 
-            /// <summary>
-            /// Enum Always for value: always
-            /// </summary>
-            [EnumMember(Value = "always")]
-            Always = 6
+        //    /// <summary>
+        //    /// Enum Always for value: always
+        //    /// </summary>
+        //    [EnumMember(Value = "always")]
+        //    Always = 6
 
-        }
+        //}
 
         /// <summary>
         /// Gets or Sets WarFrequency
@@ -78,31 +78,31 @@ namespace CocApi.Model
         [DataMember(Name = "warFrequency", EmitDefaultValue = false)]
         public WarFrequency? WarFrequency { get; private set; }
         
-        /// <summary>
-        /// Defines Type
-        /// </summary>
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public enum TypeEnum
-        {
-            /// <summary>
-            /// Enum InviteOnly for value: InviteOnly
-            /// </summary>
-            [EnumMember(Value = "InviteOnly")]
-            InviteOnly = 1,
+        ///// <summary>
+        ///// Defines Type
+        ///// </summary>
+        //[Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        //public enum TypeEnum
+        //{
+        //    /// <summary>
+        //    /// Enum InviteOnly for value: InviteOnly
+        //    /// </summary>
+        //    [EnumMember(Value = "InviteOnly")]
+        //    InviteOnly = 1,
 
-            /// <summary>
-            /// Enum Closed for value: Closed
-            /// </summary>
-            [EnumMember(Value = "Closed")]
-            Closed = 2,
+        //    /// <summary>
+        //    /// Enum Closed for value: Closed
+        //    /// </summary>
+        //    [EnumMember(Value = "Closed")]
+        //    Closed = 2,
 
-            /// <summary>
-            /// Enum Open for value: Open
-            /// </summary>
-            [EnumMember(Value = "Open")]
-            Open = 3
+        //    /// <summary>
+        //    /// Enum Open for value: Open
+        //    /// </summary>
+        //    [EnumMember(Value = "Open")]
+        //    Open = 3
 
-        }
+        //}
 
         /// <summary>
         /// Gets or Sets Type
@@ -126,6 +126,7 @@ namespace CocApi.Model
         /// <param name="warTies">warTies.</param>
         /// <param name="warLosses">warLosses.</param>
         /// <param name="clanPoints">clanPoints.</param>
+        /// <param name="chatLanguage">chatLanguage.</param>
         /// <param name="labels">labels.</param>
         /// <param name="name">name.</param>
         /// <param name="location">location.</param>
@@ -133,7 +134,7 @@ namespace CocApi.Model
         /// <param name="members">members.</param>
         /// <param name="description">description.</param>
         /// <param name="badgeUrls">badgeUrls.</param>
-        public Clan(WarLeague warLeague = default(WarLeague), List<ClanMember> memberList = default(List<ClanMember>), int requiredTrophies = default(int), int clanVersusPoints = default(int), string tag = default(string), bool isWarLogPublic = default(bool), WarFrequency? warFrequency = default(WarFrequency?), int clanLevel = default(int), int warWinStreak = default(int), int warWins = default(int), int warTies = default(int), int warLosses = default(int), int clanPoints = default(int), List<Label> labels = default(List<Label>), string name = default(string), Location location = default(Location), RecruitingType? type = default(RecruitingType?), /*int members = default(int),*/ string description = default(string), ClanBadgeUrls badgeUrls = default(ClanBadgeUrls))
+        public Clan(WarLeague warLeague, List<ClanMember> memberList, int requiredTrophies, int clanVersusPoints, string tag, bool isWarLogPublic, WarFrequency? warFrequency, int clanLevel, int warWinStreak, int warWins, int warTies, int warLosses, int clanPoints, Language chatLanguage, List<Label> labels, string name, Location location, RecruitingType? type, int members, string description, ClanBadgeUrls badgeUrls)
         {
             WarLeague = warLeague;
             //MemberList = memberList;
@@ -148,6 +149,7 @@ namespace CocApi.Model
             WarTies = warTies;
             WarLosses = warLosses;
             ClanPoints = clanPoints;
+            ChatLanguage = chatLanguage;
             Labels = labels;
             Name = name;
             Location = location;
@@ -226,6 +228,12 @@ namespace CocApi.Model
         public int ClanPoints { get; private set; }
 
         /// <summary>
+        /// Gets or Sets ChatLanguage
+        /// </summary>
+        [DataMember(Name = "chatLanguage", EmitDefaultValue = false)]
+        public Language ChatLanguage { get; private set; }
+
+        /// <summary>
         /// Gets or Sets Labels
         /// </summary>
         [DataMember(Name = "labels", EmitDefaultValue = false)]
@@ -282,6 +290,7 @@ namespace CocApi.Model
             sb.Append("  WarTies: ").Append(WarTies).Append('\n');
             sb.Append("  WarLosses: ").Append(WarLosses).Append('\n');
             sb.Append("  ClanPoints: ").Append(ClanPoints).Append('\n');
+            sb.Append("  ChatLanguage: ").Append(ChatLanguage).Append('\n');
             sb.Append("  Labels: ").Append(Labels).Append('\n');
             sb.Append("  Name: ").Append(Name).Append('\n');
             sb.Append("  Location: ").Append(Location).Append('\n');
@@ -375,6 +384,11 @@ namespace CocApi.Model
                     ClanPoints.Equals(input.ClanPoints)
                 ) && 
                 (
+                    ChatLanguage == input.ChatLanguage ||
+                    (ChatLanguage != null &&
+                    ChatLanguage.Equals(input.ChatLanguage))
+                ) && 
+                (
                     Labels == input.Labels ||
                     Labels != null &&
                     input.Labels != null &&
@@ -435,6 +449,8 @@ namespace CocApi.Model
                 hashCode = hashCode * 59 + this.WarTies.GetHashCode();
                 hashCode = hashCode * 59 + this.WarLosses.GetHashCode();
                 hashCode = hashCode * 59 + this.ClanPoints.GetHashCode();
+                if (this.ChatLanguage != null)
+                    hashCode = hashCode * 59 + this.ChatLanguage.GetHashCode();
                 if (this.Labels != null)
                     hashCode = hashCode * 59 + this.Labels.GetHashCode();
                 if (this.Name != null)

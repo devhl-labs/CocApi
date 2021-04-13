@@ -1,4 +1,5 @@
 # CocApi.Model.PlayerClan
+
 ## Properties
 
 Name | Type | Description | Notes

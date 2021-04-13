@@ -1,4 +1,5 @@
 # CocApi.Model.LabelsObject
+
 ## Properties
 
 Name | Type | Description | Notes

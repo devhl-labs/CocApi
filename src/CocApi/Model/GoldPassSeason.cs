@@ -23,97 +23,33 @@ using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 namespace CocApi.Model
 {
     /// <summary>
-    /// ClanWar
+    /// GoldPassSeason
     /// </summary>
-    [DataContract(Name = "ClanWar")]
-    public partial class ClanWar : IEquatable<ClanWar>, IValidatableObject
+    [DataContract(Name = "GoldPassSeason")]
+    public partial class GoldPassSeason : IEquatable<GoldPassSeason>, IValidatableObject
     {
-        ///// <summary>
-        ///// Defines State
-        ///// </summary>
-        //[Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        //public enum StateEnum
-        //{
-        //    /// <summary>
-        //    /// Enum NotInWar for value: notInWar
-        //    /// </summary>
-        //    [EnumMember(Value = "notInWar")]
-        //    NotInWar = 1,
-
-        //    /// <summary>
-        //    /// Enum Preparation for value: preparation
-        //    /// </summary>
-        //    [EnumMember(Value = "preparation")]
-        //    Preparation = 2,
-
-        //    /// <summary>
-        //    /// Enum InWar for value: inWar
-        //    /// </summary>
-        //    [EnumMember(Value = "inWar")]
-        //    InWar = 3,
-
-        //    /// <summary>
-        //    /// Enum WarEnded for value: warEnded
-        //    /// </summary>
-        //    [EnumMember(Value = "warEnded")]
-        //    WarEnded = 4
-
-        //}
-
         /// <summary>
-        /// Gets or Sets State
+        /// Initializes a new instance of the <see cref="GoldPassSeason" /> class.
         /// </summary>
-        [DataMember(Name = "state", EmitDefaultValue = false)]
-        public WarState? State { get; private set; }
-        
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ClanWar" /> class.
-        /// </summary>
-        /// <param name="clan">clan.</param>
-        /// <param name="opponent">opponent.</param>
         /// <param name="startTime">startTime.</param>
-        /// <param name="state">state.</param>
         /// <param name="endTime">endTime.</param>
-        /// <param name="preparationStartTime">preparationStartTime.</param>
-        public ClanWar(WarClan clan, WarClan opponent, DateTime startTime, WarState? state, DateTime endTime, DateTime preparationStartTime)
+        public GoldPassSeason(string startTime, string endTime)
         {
-            Clan = clan;
-            Opponent = opponent;
             StartTime = startTime;
-            State = state;
             EndTime = endTime;
-            PreparationStartTime = preparationStartTime;
         }
-
-        /// <summary>
-        /// Gets or Sets Clan
-        /// </summary>
-        [DataMember(Name = "clan", EmitDefaultValue = false)]
-        public WarClan Clan { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets Opponent
-        /// </summary>
-        [DataMember(Name = "opponent", EmitDefaultValue = false)]
-        public WarClan Opponent { get; private set; }
 
         /// <summary>
         /// Gets or Sets StartTime
         /// </summary>
         [DataMember(Name = "startTime", EmitDefaultValue = false)]
-        public DateTime StartTime { get; private set; }
+        public string StartTime { get; private set; }
 
         /// <summary>
         /// Gets or Sets EndTime
         /// </summary>
         [DataMember(Name = "endTime", EmitDefaultValue = false)]
-        public DateTime EndTime { get; private set; }
-
-        /// <summary>
-        /// Gets or Sets PreparationStartTime
-        /// </summary>
-        [DataMember(Name = "preparationStartTime", EmitDefaultValue = false)]
-        public DateTime PreparationStartTime { get; private set; }
+        public string EndTime { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -122,13 +58,9 @@ namespace CocApi.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class ClanWar {\n");
-            sb.Append("  Clan: ").Append(Clan).Append('\n');
-            sb.Append("  Opponent: ").Append(Opponent).Append('\n');
+            sb.Append("class GoldPassSeason {\n");
             sb.Append("  StartTime: ").Append(StartTime).Append('\n');
-            sb.Append("  State: ").Append(State).Append('\n');
             sb.Append("  EndTime: ").Append(EndTime).Append('\n');
-            sb.Append("  PreparationStartTime: ").Append(PreparationStartTime).Append('\n');
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -149,48 +81,29 @@ namespace CocApi.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object? input)
         {
-            return Equals(input as ClanWar);
+            return Equals(input as GoldPassSeason);
         }
 
         /// <summary>
-        /// Returns true if ClanWar instances are equal
+        /// Returns true if GoldPassSeason instances are equal
         /// </summary>
-        /// <param name="input">Instance of ClanWar to be compared</param>
+        /// <param name="input">Instance of GoldPassSeason to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ClanWar? input)
+        public bool Equals(GoldPassSeason? input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
-                    Clan == input.Clan ||
-                    (Clan != null &&
-                    Clan.Equals(input.Clan))
-                ) && 
-                (
-                    Opponent == input.Opponent ||
-                    (Opponent != null &&
-                    Opponent.Equals(input.Opponent))
-                ) && 
-                (
                     StartTime == input.StartTime ||
                     (StartTime != null &&
                     StartTime.Equals(input.StartTime))
                 ) && 
                 (
-                    State == input.State ||
-                    State.Equals(input.State)
-                ) && 
-                (
                     EndTime == input.EndTime ||
                     (EndTime != null &&
                     EndTime.Equals(input.EndTime))
-                ) && 
-                (
-                    PreparationStartTime == input.PreparationStartTime ||
-                    (PreparationStartTime != null &&
-                    PreparationStartTime.Equals(input.PreparationStartTime))
                 );
         }
 
@@ -203,17 +116,10 @@ namespace CocApi.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                if (this.Clan != null)
-                    hashCode = hashCode * 59 + this.Clan.GetHashCode();
-                if (this.Opponent != null)
-                    hashCode = hashCode * 59 + this.Opponent.GetHashCode();
                 if (this.StartTime != null)
                     hashCode = hashCode * 59 + this.StartTime.GetHashCode();
-                hashCode = hashCode * 59 + this.State.GetHashCode();
                 if (this.EndTime != null)
                     hashCode = hashCode * 59 + this.EndTime.GetHashCode();
-                if (this.PreparationStartTime != null)
-                    hashCode = hashCode * 59 + this.PreparationStartTime.GetHashCode();
                 return hashCode;
             }
         }

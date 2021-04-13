@@ -148,7 +148,7 @@ namespace CocApi.Model
 
         public bool AllAttacksAreUsed()
         {
-            int totalAttacks = TeamSize * 2;
+            int totalAttacks = Clan.Members.Count + Opponent.Members.Count;
 
             if (WarTag == null)
                 totalAttacks *= 2;

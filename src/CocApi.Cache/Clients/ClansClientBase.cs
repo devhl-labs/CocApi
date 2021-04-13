@@ -29,7 +29,7 @@ namespace CocApi.Cache
         {
             Library.ConcurrentEventsSemaphore = new SemaphoreSlim(options.Value.MaxConcurrentEvents, options.Value.MaxConcurrentEvents);
             _clansApi = clansApi;
-            //_playersClient = playersClient;
+            _playersClient = playersClient;
             _options = options;
             _clanMonitor = new ClanMonitor(provider, clansApi, this, options);
             _newWarMonitor = new NewWarMonitor(provider, this, options);
@@ -303,7 +303,7 @@ namespace CocApi.Cache
         }
 
         private readonly ClansApi _clansApi;
-        //private readonly PlayersClientBase _playersClient;
+        private readonly PlayersClientBase _playersClient;
         private readonly IOptions<ClanClientOptions> _options;
         private readonly ClanMonitor _clanMonitor;
         private readonly NewWarMonitor _newWarMonitor;
@@ -345,7 +345,7 @@ namespace CocApi.Cache
                 if (_options.Value.CwlWars.Enabled)
                     _cwlWarMonitor.Start(_stopRequestedTokenSource.Token);
 
-                //_playersClient.StartAsync(_stopRequestedTokenSource.Token);
+                _playersClient.StartAsync(_stopRequestedTokenSource.Token);
             }
             finally
             {
@@ -378,7 +378,7 @@ namespace CocApi.Cache
                 if (_cwlWarMonitor.RunTask != null)
                     tasks.Add(_cwlWarMonitor.RunTask);
 
-                //tasks.Add(_playersClient.StopAsync(_));
+                tasks.Add(_playersClient.StopAsync(_));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
 

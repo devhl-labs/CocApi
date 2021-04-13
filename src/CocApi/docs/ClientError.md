@@ -1,4 +1,5 @@
 # CocApi.Model.ClientError
+
 ## Properties
 
 Name | Type | Description | Notes

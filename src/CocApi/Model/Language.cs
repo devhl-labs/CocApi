@@ -23,33 +23,23 @@ using OpenAPIDateConverter = CocApi.Client.OpenAPIDateConverter;
 namespace CocApi.Model
 {
     /// <summary>
-    /// PlayerItemLevel
+    /// Language
     /// </summary>
-    [DataContract(Name = "PlayerItemLevel")]
-    public partial class PlayerItemLevel : IEquatable<PlayerItemLevel>, IValidatableObject
+    [DataContract(Name = "Language")]
+    public partial class Language : IEquatable<Language>, IValidatableObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerItemLevel" /> class.
+        /// Initializes a new instance of the <see cref="Language" /> class.
         /// </summary>
-        /// <param name="level">level.</param>
         /// <param name="name">name.</param>
-        /// <param name="maxLevel">maxLevel.</param>
-        /// <param name="village">village.</param>
-        /// <param name="superTroopIsActive">superTroopIsActive.</param>
-        public PlayerItemLevel(int level, string name, int maxLevel, string village, bool superTroopIsActive)
+        /// <param name="id">id.</param>
+        /// <param name="languageCode">languageCode.</param>
+        public Language(string name, int id, string languageCode)
         {
-            Level = level;
             Name = name;
-            MaxLevel = maxLevel;
-            Village = village;
-            SuperTroopIsActive = superTroopIsActive;
+            Id = id;
+            LanguageCode = languageCode;
         }
-
-        /// <summary>
-        /// Gets or Sets Level
-        /// </summary>
-        [DataMember(Name = "level", EmitDefaultValue = false)]
-        public int Level { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -58,22 +48,16 @@ namespace CocApi.Model
         public string Name { get; private set; }
 
         /// <summary>
-        /// Gets or Sets MaxLevel
+        /// Gets or Sets Id
         /// </summary>
-        [DataMember(Name = "maxLevel", EmitDefaultValue = false)]
-        public int MaxLevel { get; private set; }
+        [DataMember(Name = "id", EmitDefaultValue = false)]
+        public int Id { get; private set; }
 
         /// <summary>
-        /// Gets or Sets Village
+        /// Gets or Sets LanguageCode
         /// </summary>
-        [DataMember(Name = "village", EmitDefaultValue = false)]
-        public string Village { get; private set; }
-
-        ///// <summary>
-        ///// Gets or Sets SuperTroopIsActive
-        ///// </summary>
-        //[DataMember(Name = "superTroopIsActive", EmitDefaultValue = false)]
-        //public bool SuperTroopIsActive { get; private set; }
+        [DataMember(Name = "languageCode", EmitDefaultValue = false)]
+        public string LanguageCode { get; private set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -82,12 +66,10 @@ namespace CocApi.Model
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.Append("class PlayerItemLevel {\n");
-            sb.Append("  Level: ").Append(Level).Append('\n');
+            sb.Append("class Language {\n");
             sb.Append("  Name: ").Append(Name).Append('\n');
-            sb.Append("  MaxLevel: ").Append(MaxLevel).Append('\n');
-            sb.Append("  Village: ").Append(Village).Append('\n');
-            sb.Append("  SuperTroopIsActive: ").Append(SuperTroopIsActive).Append('\n');
+            sb.Append("  Id: ").Append(Id).Append('\n');
+            sb.Append("  LanguageCode: ").Append(LanguageCode).Append('\n');
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -108,41 +90,33 @@ namespace CocApi.Model
         /// <returns>Boolean</returns>
         public override bool Equals(object? input)
         {
-            return Equals(input as PlayerItemLevel);
+            return Equals(input as Language);
         }
 
         /// <summary>
-        /// Returns true if PlayerItemLevel instances are equal
+        /// Returns true if Language instances are equal
         /// </summary>
-        /// <param name="input">Instance of PlayerItemLevel to be compared</param>
+        /// <param name="input">Instance of Language to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(PlayerItemLevel? input)
+        public bool Equals(Language? input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
-                    Level == input.Level ||
-                    Level.Equals(input.Level)
-                ) && 
-                (
                     Name == input.Name ||
                     (Name != null &&
                     Name.Equals(input.Name))
                 ) && 
                 (
-                    MaxLevel == input.MaxLevel ||
-                    MaxLevel.Equals(input.MaxLevel)
+                    Id == input.Id ||
+                    Id.Equals(input.Id)
                 ) && 
                 (
-                    Village == input.Village ||
-                    (Village != null &&
-                    Village.Equals(input.Village))
-                ) && 
-                (
-                    SuperTroopIsActive == input.SuperTroopIsActive ||
-                    SuperTroopIsActive.Equals(input.SuperTroopIsActive)
+                    LanguageCode == input.LanguageCode ||
+                    (LanguageCode != null &&
+                    LanguageCode.Equals(input.LanguageCode))
                 );
         }
 
@@ -155,13 +129,11 @@ namespace CocApi.Model
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = hashCode * 59 + this.Level.GetHashCode();
                 if (this.Name != null)
                     hashCode = hashCode * 59 + this.Name.GetHashCode();
-                hashCode = hashCode * 59 + this.MaxLevel.GetHashCode();
-                if (this.Village != null)
-                    hashCode = hashCode * 59 + this.Village.GetHashCode();
-                hashCode = hashCode * 59 + this.SuperTroopIsActive.GetHashCode();
+                hashCode = hashCode * 59 + this.Id.GetHashCode();
+                if (this.LanguageCode != null)
+                    hashCode = hashCode * 59 + this.LanguageCode.GetHashCode();
                 return hashCode;
             }
         }

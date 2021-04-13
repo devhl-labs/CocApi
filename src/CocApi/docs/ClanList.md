@@ -1,4 +1,5 @@
 # CocApi.Model.ClanList
+
 ## Properties
 
 Name | Type | Description | Notes

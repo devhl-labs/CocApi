@@ -1,4 +1,5 @@
 # CocApi.Model.VerifyTokenRequest
+
 ## Properties
 
 Name | Type | Description | Notes

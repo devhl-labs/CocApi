@@ -1,4 +1,5 @@
 # CocApi.Model.PlayerLegendStatistics
+
 ## Properties
 
 Name | Type | Description | Notes

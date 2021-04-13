@@ -1,4 +1,5 @@
 # CocApi.Model.WarClanLogEntry
+
 ## Properties
 
 Name | Type | Description | Notes

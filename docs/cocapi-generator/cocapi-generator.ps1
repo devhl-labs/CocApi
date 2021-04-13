@@ -7,14 +7,15 @@ Move-Item -Path "$root/src/CocApi/Additions" -Destination "$root/.."
 
 Remove-Item -Path "$root/src/CocApi" -Recurse
 
-
-cmd /c start /wait java -jar $repos\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar generate `
+# cmd /c start /wait java -jar E:\Desktop\openapi-generator-current-version-for-cocapi\modules\openapi-generator-cli\target\openapi-generator-cli.jar generate `
+# cmd /c start /wait java -jar $repos\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar generate `
+cmd /c start /wait java -jar E:\Desktop\openapi-generator-old\modules\openapi-generator-cli\target\openapi-generator-cli.jar generate `
     -g csharp-netcore `
     -i $repos\Clash-of-Clans-Swagger\swagger.yml `
     -c $PSScriptRoot\generator-config.json `
     -o $root\src\CocApi `
     -t $PSScriptRoot\templates `
-    --library httpclient `
+    --library httpclient-experimental `
     --global-property apiTests,modelTests | Out-Null
 
 function Get-ContentWithRename {

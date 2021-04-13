@@ -95,15 +95,19 @@ namespace CocApi.Cache
         //private static void AddPlayersClient(this IServiceCollection services, Action<MonitorOptions>? options = null)
         //    => AddPlayersClient<PlayersClientBase>(services, options);
 
-        private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options) where TPlayersClient : PlayersClientBase
+        private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options) 
+            where TPlayersClient : PlayersClientBase
         {
             if (options != null)
                 services.Configure(options);
 
-            services.AddSingleton<PlayersClientBase, TPlayersClient>();
+            services.AddSingleton<TPlayersClient>();
 
             if (typeof(TPlayersClient) != typeof(PlayersClientBase))
-                services.TryAddSingleton<TPlayersClient>();
+                services.AddSingleton(provider =>
+                {
+                    return (PlayersClientBase)provider.GetRequiredService<TPlayersClient>();
+                });
         }
 
         //private static IHostBuilder ConfigurePlayersClient(this IHostBuilder builder, Action<MonitorOptions>? options = null)
@@ -138,10 +142,13 @@ namespace CocApi.Cache
             if (clanClientOptions != null)
                 services.Configure(clanClientOptions);
 
-            services.AddSingleton<ClansClientBase, TClansClient>();
+            services.AddSingleton<TClansClient>();
 
             if (typeof(TClansClient) != typeof(ClansClientBase))
-                services.TryAddSingleton<TClansClient>();
+                services.AddSingleton(provider =>
+                {
+                    return (ClansClientBase)provider.GetRequiredService<TClansClient>();
+                });
 
             services.AddHostedService((serviceProvider) =>
             {

@@ -1,4 +1,5 @@
 # CocApi.Model.LegendLeagueTournamentSeasonResult
+
 ## Properties
 
 Name | Type | Description | Notes

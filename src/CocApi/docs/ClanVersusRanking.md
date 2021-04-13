@@ -1,4 +1,5 @@
 # CocApi.Model.ClanVersusRanking
+
 ## Properties
 
 Name | Type | Description | Notes

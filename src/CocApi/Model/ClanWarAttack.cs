@@ -36,13 +36,15 @@ namespace CocApi.Model
         /// <param name="defenderTag">defenderTag.</param>
         /// <param name="stars">stars.</param>
         /// <param name="destructionPercentage">destructionPercentage.</param>
-        public ClanWarAttack(int order, string attackerTag, string defenderTag, int stars, int destructionPercentage)
+        /// <param name="duration">duration.</param>
+        public ClanWarAttack(int order, string attackerTag, string defenderTag, int stars, int destructionPercentage, int duration)
         {
             Order = order;
             AttackerTag = attackerTag;
             DefenderTag = defenderTag;
             Stars = stars;
             DestructionPercentage = destructionPercentage;
+            Duration = duration;
         }
 
         /// <summary>
@@ -76,6 +78,12 @@ namespace CocApi.Model
         public int DestructionPercentage { get; private set; }
 
         /// <summary>
+        /// Gets or Sets Duration
+        /// </summary>
+        [DataMember(Name = "duration", EmitDefaultValue = false)]
+        public int Duration { get; private set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -88,6 +96,7 @@ namespace CocApi.Model
             sb.Append("  DefenderTag: ").Append(DefenderTag).Append('\n');
             sb.Append("  Stars: ").Append(Stars).Append('\n');
             sb.Append("  DestructionPercentage: ").Append(DestructionPercentage).Append('\n');
+            sb.Append("  Duration: ").Append(Duration).Append('\n');
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -143,6 +152,10 @@ namespace CocApi.Model
                 (
                     DestructionPercentage == input.DestructionPercentage ||
                     DestructionPercentage.Equals(input.DestructionPercentage)
+                ) && 
+                (
+                    Duration == input.Duration ||
+                    Duration.Equals(input.Duration)
                 );
         }
 
@@ -162,6 +175,7 @@ namespace CocApi.Model
                     hashCode = hashCode * 59 + this.DefenderTag.GetHashCode();
                 hashCode = hashCode * 59 + this.Stars.GetHashCode();
                 hashCode = hashCode * 59 + this.DestructionPercentage.GetHashCode();
+                hashCode = hashCode * 59 + this.Duration.GetHashCode();
                 return hashCode;
             }
         }

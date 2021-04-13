@@ -1,4 +1,5 @@
 # CocApi.Model.ClanWarLeagueRound
+
 ## Properties
 
 Name | Type | Description | Notes

@@ -1,4 +1,5 @@
 # CocApi.Model.PlayerVersusRankingList
+
 ## Properties
 
 Name | Type | Description | Notes

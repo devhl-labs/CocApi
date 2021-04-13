@@ -1,4 +1,5 @@
 # CocApi.Model.LocationList
+
 ## Properties
 
 Name | Type | Description | Notes
