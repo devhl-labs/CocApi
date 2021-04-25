@@ -10,22 +10,191 @@ namespace CocApi
 {
     public static class Clash
     {
-        public static class Heroes
+        public enum Hero
         {
-            public const string BK = "Barbarian King";
-            public const string AQ = "Archer Queen";
-            public const string GW = "Grand Warden";
-            public const string RC = "Royal Champion";
-            public const string BM = "Battle Machine";
+            BK,
+            AQ,
+            GW,
+            RC,
+            BM
         }
 
-        public static class Pets
+        public static string Name(this Hero hero)
         {
-            // todo verify these are typed this way in api responses
-            public const string ELECTRO_OWL = "Electro Owl";
-            public const string UNICORN = "Unicorn";
-            public const string MIGHTY_YAK = "Mighty Yak";
-            public const string LASSI = "L.A.S.S.I";
+            return hero switch
+            {
+                Hero.BK => "Barbarian King",
+                Hero.AQ => "Archer Queen",
+                Hero.GW => "Grand Warden",
+                Hero.RC => "Royal Champion",
+                Hero.BM => "Battle Machine",
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        public enum Pet
+        {
+            Lassi,
+            ElectroOwl,
+            MightyYak,
+            Unicorn
+        }
+
+        public static string Name(this Pet pet)
+        {
+            return pet switch
+            {
+                Pet.Lassi => "L.A.S.S.I",
+                Pet.ElectroOwl => "Electro Owl",
+                Pet.MightyYak => "Mighty Yak",
+                Pet.Unicorn => "Unicorn",
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        public enum SuperTroop
+        {
+            Barbarian,
+            Archer,
+            Giant,
+            Goblin,
+            WallBreaker,
+            Wizard,
+            InfernoDragon,
+            Minion,
+            Valkyrie,
+            Witch,
+            IceHound
+        }
+
+        public static string Name(this SuperTroop troop)
+        {
+            return troop switch
+            {
+                SuperTroop.Barbarian => "Super Barbarian",
+                SuperTroop.Archer => "Super Archer",
+                SuperTroop.Giant => "Super Giant",
+                SuperTroop.Goblin => "Sneaky Goblin",
+                SuperTroop.WallBreaker => "Super Wall Breaker",
+                SuperTroop.Wizard => "Super Wizard",
+                SuperTroop.InfernoDragon => "Inferno Dragon",
+                SuperTroop.Minion => "Super Minion",
+                SuperTroop.Valkyrie => "Super Valkyrie",
+                SuperTroop.Witch => "Super Witch",
+                SuperTroop.IceHound => "Ice Hound",
+                _ => throw new NotImplementedException("You provided a wrong super troop name or the case has not been handled yet.")
+            };
+        }
+
+        public static Troop BaseTroop(this SuperTroop troop)
+        {
+            return troop switch
+            {
+                SuperTroop.Barbarian => Troop.Barbarian,
+                SuperTroop.Archer => Troop.Archer,
+                SuperTroop.Giant => Troop.Giant,
+                SuperTroop.Goblin => Troop.Goblin,
+                SuperTroop.WallBreaker => Troop.WallBreaker,
+                SuperTroop.Wizard => Troop.Wizard,
+                SuperTroop.InfernoDragon => Troop.BabyDragon,
+                SuperTroop.Minion => Troop.Minion,
+                SuperTroop.Valkyrie => Troop.Valkyrie,
+                SuperTroop.Witch => Troop.Witch,
+                SuperTroop.IceHound => Troop.IceGolem,
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        public enum Troop
+        {
+            Barbarian,
+            Archer,
+            Giant,
+            Goblin,
+            WallBreaker,
+            Balloon,
+            Wizard,
+            Healer,
+            Dragon,
+            Pekka,
+            BabyDragon,
+            Miner,
+            ElectroDragon,
+            Yeti,
+            Minion,
+            HogRider,
+            Valkyrie,
+            Golem,
+            Witch,
+            LavaHound,
+            Bowler,
+            IceGolem,
+            HeadHunter,
+        }
+
+        public static string Name(this Troop troop)
+        {
+            return troop switch
+            {
+                Troop.Barbarian => "Barbarian",
+                Troop.Archer => "Archer",
+                Troop.Giant => "Giant",
+                Troop.Goblin => "Goblin",
+                Troop.WallBreaker => "Wall Breaker",
+                Troop.Balloon => "Balloon",
+                Troop.Wizard => "Wizard",
+                Troop.Healer => "Healer",
+                Troop.Dragon => "Dragon",
+                Troop.Pekka => "P.E.K.K.A",
+                Troop.BabyDragon => "Baby Dragon",
+                Troop.Miner => "Miner",
+                Troop.ElectroDragon => "Electro Dragon",
+                Troop.Yeti => "Yeti",
+                Troop.Minion => "Minion",
+                Troop.HogRider => "Hog Rider",
+                Troop.Valkyrie => "Valkyrie",
+                Troop.Golem => "Golem",
+                Troop.Witch => "Witch",
+                Troop.LavaHound => "Lava Hound",
+                Troop.Bowler => "Bowler",
+                Troop.IceGolem => "Ice Golem",
+                Troop.HeadHunter => "Head Hunter",
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        public enum BuilderBaseTroop
+        {
+            RagedBarbarian,
+            SneakyGoblin,
+            BoxerGiant,
+            BetaMinion,
+            Bomber,
+            BabyDragon,
+            CannonCart,
+            NightWitch,
+            DropShip,
+            SuperPekka,
+            HogGlider
+        }
+
+        public static string Name(this BuilderBaseTroop troop)
+        {
+            return troop switch
+            {
+                BuilderBaseTroop.RagedBarbarian => "Raged Barbarian",
+                BuilderBaseTroop.SneakyGoblin => "Sneaky Archer",
+                BuilderBaseTroop.BoxerGiant => "Boxer Giant",
+                BuilderBaseTroop.BetaMinion => "Beta Minion",
+                BuilderBaseTroop.Bomber => "Bomber",
+                BuilderBaseTroop.BabyDragon => "Baby Dragon",
+                BuilderBaseTroop.CannonCart => "Cannon Cart",
+                BuilderBaseTroop.NightWitch => "Night Witch",
+                BuilderBaseTroop.DropShip => "Drop Ship",
+                BuilderBaseTroop.SuperPekka => "Super P.E.K.K.A",
+                BuilderBaseTroop.HogGlider => "Hog Glider",
+                _ => throw new NotImplementedException(),
+            };
         }
 
         public const int MAX_TOWN_HALL_LEVEL = 14;

@@ -134,31 +134,38 @@ namespace CocApi.Cache
             if (!_clansClient.UpdatingClan.TryAdd(tag, null))
                 return null;
 
-            _unmonitoredClans.Add(tag);
-
-            CachedClanWar cachedClanWar = await CachedClanWar.FromCurrentWarResponseAsync(tag, _clansClient, _clansApi, _cancellationToken).ConfigureAwait(false);
-
-            cachedClanWar.Added = true;
-
-            cachedClanWar.Download = false;
-
-            CachedClan cachedClan = new(tag, false, false, false, false, false)
-            {
-                CurrentWar = cachedClanWar
-            };
-
-            await _semaphore.WaitAsync(_cancellationToken).ConfigureAwait(false);
-
             try
             {
-                dbContext.Clans.Add(cachedClan);
+                _unmonitoredClans.Add(tag);
+
+                CachedClanWar cachedClanWar = await CachedClanWar.FromCurrentWarResponseAsync(tag, _clansClient, _clansApi, _cancellationToken).ConfigureAwait(false);
+
+                cachedClanWar.Added = true;
+
+                cachedClanWar.Download = false;
+
+                CachedClan cachedClan = new(tag, false, false, false, false, false)
+                {
+                    CurrentWar = cachedClanWar
+                };
+
+                await _semaphore.WaitAsync(_cancellationToken).ConfigureAwait(false);
+
+                try
+                {
+                    dbContext.Clans.Add(cachedClan);
+                }
+                finally
+                {
+                    _semaphore.Release();
+                }
+
+                return cachedClan;
             }
             finally
             {
-                _semaphore.Release();
+                _clansClient.UpdatingClan.TryRemove(tag, out _);
             }
-
-            return cachedClan;
         }
 
         private async Task SendWarAnnouncementsAsync(CachedWar cachedWar, List<CachedClanWar> cachedClanWars)

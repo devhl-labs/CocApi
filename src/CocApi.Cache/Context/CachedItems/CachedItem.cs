@@ -92,7 +92,7 @@ namespace CocApi.Cache.Context.CachedItems
             KeepUntil = fetched.KeepUntil;
 
             Content = fetched.Content ?? _content;
-            RawContent = (!string.IsNullOrWhiteSpace(fetched.RawContent)) ? fetched.RawContent : RawContent;
+            RawContent = !string.IsNullOrWhiteSpace(fetched.RawContent) ? fetched.RawContent : RawContent;
         }
 
         private bool IsServerExpired 

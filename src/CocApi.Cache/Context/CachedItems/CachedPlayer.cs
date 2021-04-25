@@ -68,7 +68,8 @@ namespace CocApi.Cache.Context.CachedItems
             if (ExpiresAt > fetched.ExpiresAt)
                 return;
 
-            ClanTag = fetched.ClanTag;
+            if (fetched.Content != null)
+                ClanTag = fetched.Content.Clan?.Tag;
 
             base.UpdateFrom(fetched);
         }

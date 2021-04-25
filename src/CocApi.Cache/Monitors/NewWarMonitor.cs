@@ -49,7 +49,10 @@ namespace CocApi.Cache
                     updatingClans.Add(cachedClan.Tag);
 
                     if (!_clansClient.UpdatingWar.TryAdd(cachedClan.CurrentWar.Key, null))
+                    {
                         updatingClans.Remove(cachedClan.Tag);
+                        _clansClient.UpdatingClan.TryRemove(cachedClan.Tag, out _);
+                    }
                 }
 
             try
