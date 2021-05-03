@@ -10,192 +10,106 @@ namespace CocApi
 {
     public static class Clash
     {
-        public enum Hero
+        public static Unit BK = new Unit("Barbarian King", 80, Village.Home, Resource.DarkElixir);
+        public static Unit AQ = new Unit("Archer Queen", 80, Village.Home, Resource.DarkElixir);
+        public static Unit GW = new Unit("Grand Warden", 40, Village.Home, Resource.Elixir);
+        public static Unit RC = new Unit("Royal Champion", 30, Village.Home, Resource.DarkElixir);
+        public static Unit BM = new Unit("Battle Machine", 30, Village.BuilderBase, Resource.Elixir);
+
+        public static Unit[] Heroes { get; } = new Unit[]
         {
             BK,
             AQ,
             GW,
             RC,
             BM
+        };
+
+        public enum Village
+        {
+            Home,
+            BuilderBase
         }
 
-        public static string Name(this Hero hero)
+        public enum Resource
         {
-            return hero switch
-            {
-                Hero.BK => "Barbarian King",
-                Hero.AQ => "Archer Queen",
-                Hero.GW => "Grand Warden",
-                Hero.RC => "Royal Champion",
-                Hero.BM => "Battle Machine",
-                _ => throw new NotImplementedException(),
-            };
+            Gold,
+            Elixir,
+            DarkElixir
         }
 
-        public enum Pet
+        public static Unit[] Pets { get; } = new Unit[]
         {
-            Lassi,
-            ElectroOwl,
-            MightyYak,
-            Unicorn
-        }
+            new Unit("L.A.S.S.I", 10, Village.Home, Resource.DarkElixir),
+            new Unit("Electro Owl", 10, Village.Home, Resource.DarkElixir),
+            new Unit("Mighty Yak", 10, Village.Home, Resource.DarkElixir),
+            new Unit("Unicorn", 10, Village.Home, Resource.DarkElixir)
+        };
 
-        public static string Name(this Pet pet)
+        public static Unit[] Troops { get; } = new Unit[]
         {
-            return pet switch
-            {
-                Pet.Lassi => "L.A.S.S.I",
-                Pet.ElectroOwl => "Electro Owl",
-                Pet.MightyYak => "Mighty Yak",
-                Pet.Unicorn => "Unicorn",
-                _ => throw new NotImplementedException(),
-            };
-        }
+            new Unit("Barbarian", 10, Village.Home, Resource.Elixir, "Super Barbarian"),
+            new Unit("Archer", 10, Village.Home, Resource.Elixir, "Super Archer"),
+            new Unit("Giant", 10, Village.Home, Resource.Elixir, "Super Giant"),
+            new Unit("Goblin", 8, Village.Home, Resource.Elixir, "Sneaky Goblin"),
+            new Unit("Wall Breaker", 10, Village.Home, Resource.Elixir, "Super Wall Breaker"),
+            new Unit("Balloon", 9, Village.Home, Resource.Elixir),
+            new Unit("Wizard", 10, Village.Home, Resource.Elixir, "Super Wizard"),
+            new Unit("Healer", 7, Village.Home, Resource.Elixir),
+            new Unit("Dragon", 8, Village.Home, Resource.Elixir),
+            new Unit("P.E.K.K.A", 9, Village.Home, Resource.Elixir),
+            new Unit("Baby Dragon", 8, Village.Home, Resource.Elixir, "Inferno Dragon"),
+            new Unit("Miner", 7, Village.Home, Resource.Elixir),
+            new Unit("Eletro Dragon", 4, Village.Home, Resource.Elixir),
+            new Unit("Yeti", 3, Village.Home, Resource.Elixir),
+            new Unit("Minion", 10, Village.Home, Resource.DarkElixir, "Super Minion"),
+            new Unit("Hog Rider", 10, Village.Home, Resource.DarkElixir),
+            new Unit("Valkyrie", 9, Village.Home, Resource.DarkElixir, "Super Valkyrie"),
+            new Unit("Golem", 10, Village.Home, Resource.DarkElixir),
+            new Unit("Witch", 5, Village.Home, Resource.DarkElixir, "Super Witch"),
+            new Unit("Lava Hound", 6, Village.Home, Resource.DarkElixir, "Ice Hound"),
+            new Unit("Bowler", 5, Village.Home, Resource.DarkElixir),
+            new Unit("Ice Golem", 6, Village.Home, Resource.DarkElixir),
+            new Unit("Head Hunter", 3, Village.Home, Resource.DarkElixir),
 
-        public enum SuperTroop
-        {
-            Barbarian,
-            Archer,
-            Giant,
-            Goblin,
-            WallBreaker,
-            Wizard,
-            InfernoDragon,
-            Minion,
-            Valkyrie,
-            Witch,
-            IceHound
-        }
+            new Unit("Raged Barbarian", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Sneaky Archer", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Boxer Giant", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Beta Minion", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Bomber", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Baby Dragon", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Cannon Cart", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Night Witch", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Drop Ship", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Super P.E.K.K.A", 18, Village.BuilderBase, Resource.Elixir),
+            new Unit("Hog Glider", 18, Village.BuilderBase, Resource.Elixir)
+        };
 
-        public static string Name(this SuperTroop troop)
+        public static Unit[] Spells { get; } = new Unit[]
         {
-            return troop switch
-            {
-                SuperTroop.Barbarian => "Super Barbarian",
-                SuperTroop.Archer => "Super Archer",
-                SuperTroop.Giant => "Super Giant",
-                SuperTroop.Goblin => "Sneaky Goblin",
-                SuperTroop.WallBreaker => "Super Wall Breaker",
-                SuperTroop.Wizard => "Super Wizard",
-                SuperTroop.InfernoDragon => "Inferno Dragon",
-                SuperTroop.Minion => "Super Minion",
-                SuperTroop.Valkyrie => "Super Valkyrie",
-                SuperTroop.Witch => "Super Witch",
-                SuperTroop.IceHound => "Ice Hound",
-                _ => throw new NotImplementedException("You provided a wrong super troop name or the case has not been handled yet.")
-            };
-        }
+            new Unit("Lightning Spell", 9, Village.Home, Resource.Elixir),
+            new Unit("Healing Spell", 8, Village.Home, Resource.Elixir),
+            new Unit("Rage Spell", 6, Village.Home, Resource.Elixir),
+            new Unit("Jump Spell", 4, Village.Home, Resource.Elixir),
+            new Unit("Freeze Spell", 7, Village.Home, Resource.Elixir),
+            new Unit("Clone Spell", 7, Village.Home, Resource.Elixir),
+            new Unit("Invisibility Spell", 4, Village.Home, Resource.Elixir),
+            new Unit("Poison Spell", 8, Village.Home, Resource.DarkElixir),
+            new Unit("Earthquake Spell", 5, Village.Home, Resource.DarkElixir),
+            new Unit("Haste Spell", 5, Village.Home, Resource.DarkElixir),
+            new Unit("Skeleton Spell", 7, Village.Home, Resource.DarkElixir),
+            new Unit("Bat Spell", 5, Village.Home, Resource.DarkElixir)
+        };
 
-        public static Troop BaseTroop(this SuperTroop troop)
+        public static Unit[] SiegeMachines { get; } = new Unit[]
         {
-            return troop switch
-            {
-                SuperTroop.Barbarian => Troop.Barbarian,
-                SuperTroop.Archer => Troop.Archer,
-                SuperTroop.Giant => Troop.Giant,
-                SuperTroop.Goblin => Troop.Goblin,
-                SuperTroop.WallBreaker => Troop.WallBreaker,
-                SuperTroop.Wizard => Troop.Wizard,
-                SuperTroop.InfernoDragon => Troop.BabyDragon,
-                SuperTroop.Minion => Troop.Minion,
-                SuperTroop.Valkyrie => Troop.Valkyrie,
-                SuperTroop.Witch => Troop.Witch,
-                SuperTroop.IceHound => Troop.IceGolem,
-                _ => throw new NotImplementedException()
-            };
-        }
+            new Unit("Wall Wrecker", 4, Village.Home, Resource.Elixir),
+            new Unit("Battle Blimp", 4, Village.Home, Resource.Elixir),
+            new Unit("Stone Slammer", 4, Village.Home, Resource.Elixir),
+            new Unit("Siege Barracks", 4, Village.Home, Resource.Elixir),
+            new Unit("Log Launcher", 4, Village.Home, Resource.Elixir)
 
-        public enum Troop
-        {
-            Barbarian,
-            Archer,
-            Giant,
-            Goblin,
-            WallBreaker,
-            Balloon,
-            Wizard,
-            Healer,
-            Dragon,
-            Pekka,
-            BabyDragon,
-            Miner,
-            ElectroDragon,
-            Yeti,
-            Minion,
-            HogRider,
-            Valkyrie,
-            Golem,
-            Witch,
-            LavaHound,
-            Bowler,
-            IceGolem,
-            HeadHunter,
-        }
-
-        public static string Name(this Troop troop)
-        {
-            return troop switch
-            {
-                Troop.Barbarian => "Barbarian",
-                Troop.Archer => "Archer",
-                Troop.Giant => "Giant",
-                Troop.Goblin => "Goblin",
-                Troop.WallBreaker => "Wall Breaker",
-                Troop.Balloon => "Balloon",
-                Troop.Wizard => "Wizard",
-                Troop.Healer => "Healer",
-                Troop.Dragon => "Dragon",
-                Troop.Pekka => "P.E.K.K.A",
-                Troop.BabyDragon => "Baby Dragon",
-                Troop.Miner => "Miner",
-                Troop.ElectroDragon => "Electro Dragon",
-                Troop.Yeti => "Yeti",
-                Troop.Minion => "Minion",
-                Troop.HogRider => "Hog Rider",
-                Troop.Valkyrie => "Valkyrie",
-                Troop.Golem => "Golem",
-                Troop.Witch => "Witch",
-                Troop.LavaHound => "Lava Hound",
-                Troop.Bowler => "Bowler",
-                Troop.IceGolem => "Ice Golem",
-                Troop.HeadHunter => "Head Hunter",
-                _ => throw new NotImplementedException(),
-            };
-        }
-
-        public enum BuilderBaseTroop
-        {
-            RagedBarbarian,
-            SneakyGoblin,
-            BoxerGiant,
-            BetaMinion,
-            Bomber,
-            BabyDragon,
-            CannonCart,
-            NightWitch,
-            DropShip,
-            SuperPekka,
-            HogGlider
-        }
-
-        public static string Name(this BuilderBaseTroop troop)
-        {
-            return troop switch
-            {
-                BuilderBaseTroop.RagedBarbarian => "Raged Barbarian",
-                BuilderBaseTroop.SneakyGoblin => "Sneaky Archer",
-                BuilderBaseTroop.BoxerGiant => "Boxer Giant",
-                BuilderBaseTroop.BetaMinion => "Beta Minion",
-                BuilderBaseTroop.Bomber => "Bomber",
-                BuilderBaseTroop.BabyDragon => "Baby Dragon",
-                BuilderBaseTroop.CannonCart => "Cannon Cart",
-                BuilderBaseTroop.NightWitch => "Night Witch",
-                BuilderBaseTroop.DropShip => "Drop Ship",
-                BuilderBaseTroop.SuperPekka => "Super P.E.K.K.A",
-                BuilderBaseTroop.HogGlider => "Hog Glider",
-                _ => throw new NotImplementedException(),
-            };
-        }
+        };
 
         public const int MAX_TOWN_HALL_LEVEL = 14;
 

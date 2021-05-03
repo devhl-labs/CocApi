@@ -74,29 +74,29 @@ namespace CocApi.Cache
             }
         }
 
-        public async Task AddAsync(string tag, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
-            => await AddAsync(new string[] { tag }, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers).ConfigureAwait(false);
+        //public async Task AddAsync(string tag, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
+        //    => await AddAsync(new string[] { tag }, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers).ConfigureAwait(false);
 
-        public async Task AddAsync(
-            IEnumerable<string> tags, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
-        {
-            HashSet<string> formattedTags = new HashSet<string>();
+        //public async Task AddAsync(
+        //    IEnumerable<string> tags, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
+        //{
+        //    HashSet<string> formattedTags = new HashSet<string>();
 
-            foreach (string tag in tags)
-                formattedTags.Add(Clash.FormatTag(tag));
+        //    foreach (string tag in tags)
+        //        formattedTags.Add(Clash.FormatTag(tag));
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+        //    using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            List<Context.CachedItems.CachedClan> cachedClans = await dbContext.Clans
-                .Where(c => formattedTags.Contains(c.Tag))
-                .ToListAsync()
-                .ConfigureAwait(false);
+        //    List<Context.CachedItems.CachedClan> cachedClans = await dbContext.Clans
+        //        .Where(c => formattedTags.Contains(c.Tag))
+        //        .ToListAsync()
+        //        .ConfigureAwait(false);
 
-            foreach (string formattedTag in formattedTags.Where(tag => !cachedClans.Any(c => c.Tag == tag)))
-                dbContext.Clans.Add(new Context.CachedItems.CachedClan(formattedTag, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers));
+        //    foreach (string formattedTag in formattedTags.Where(tag => !cachedClans.Any(c => c.Tag == tag)))
+        //        dbContext.Clans.Add(new Context.CachedItems.CachedClan(formattedTag, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers));
 
-            await dbContext.SaveChangesAsync().ConfigureAwait(false);
-        }
+        //    await dbContext.SaveChangesAsync().ConfigureAwait(false);
+        //}
 
         public async Task AddOrUpdateAsync(string tag, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
             => await AddOrUpdateAsync(new string[] { tag }, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers).ConfigureAwait(false);
@@ -104,7 +104,7 @@ namespace CocApi.Cache
         public async Task AddOrUpdateAsync(
             IEnumerable<string> tags, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
         {
-            HashSet<string> formattedTags = new HashSet<string>();
+            HashSet<string> formattedTags = new();
 
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
@@ -345,7 +345,7 @@ namespace CocApi.Cache
                 if (_options.Value.CwlWars.Enabled)
                     _cwlWarMonitor.Start(_stopRequestedTokenSource.Token);
 
-                _playersClient.StartAsync(_stopRequestedTokenSource.Token);
+                await _playersClient.StartAsync(_stopRequestedTokenSource.Token);
             }
             finally
             {
@@ -396,8 +396,10 @@ namespace CocApi.Cache
             {
                 return await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live for an ApiResponse.", e));
+
                 return TimeSpan.FromMinutes(0);
             }
         }
@@ -408,13 +410,15 @@ namespace CocApi.Cache
             {
                 return await TimeToLiveAsync<T>(exception).ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live.", e));
+
                 return TimeSpan.FromMinutes(0);
             }
         }
 
-        public virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception) where T : class
+        protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception) where T : class
         {
             if (typeof(T) == typeof(ClanWarLeagueGroup))
             {
@@ -430,7 +434,7 @@ namespace CocApi.Cache
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }
 
-        public virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
+        protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
         {
             if (apiResponse is ApiResponse<Clan>)
                 return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
@@ -620,6 +624,22 @@ namespace CocApi.Cache
             finally
             {
                 Library.ConcurrentEventsSemaphore.Release();
+            }
+        }
+
+        protected virtual bool HasUpdated(Clan? stored, Clan fetched) => !fetched.Equals(stored);
+
+        internal bool HasUpdatedOrDefault(Clan? stored, Clan fetched)
+        {
+            try
+            {
+                return HasUpdated(stored, fetched);
+            }
+            catch (Exception e)
+            {
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while checking if the clan updated.", e));
+
+                return !fetched.Equals(stored);
             }
         }
     }

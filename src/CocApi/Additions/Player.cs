@@ -6,12 +6,12 @@ using System.Text;
 
 namespace CocApi.Model
 {
-    public partial class Player : IEquatable<Player?>
+    public partial class Player /*: IEquatable<Player?>*/
     {
         public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
         public static string Url(string villageTag)
         {
-            if (Clash.TryFormatTag(villageTag, out string formattedTag) == false)
+            if (Clash.TryFormatTag(villageTag, out string? formattedTag) == false)
                 throw new InvalidTagException(villageTag);
 
             return $"players/{Uri.EscapeDataString(formattedTag)}";
@@ -51,9 +51,9 @@ namespace CocApi.Model
         //    return HashCode.Combine(Tag);
         //}
 
-        public int? HeroLevel(string name) => Heroes.First(h => h.Name == name).Level;
+        public int HeroLevel(Unit hero) => Heroes.First(h => h.Name == hero.Name).Level;
         
 
-        public int? HeroLevelOrDefault(string name) => Heroes.FirstOrDefault(h => h.Name == name)?.Level;        
+        public int? HeroLevelOrDefault(Unit hero) => Heroes.FirstOrDefault(h => h.Name == hero.Name)?.Level;        
     }
 }

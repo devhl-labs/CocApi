@@ -32,7 +32,7 @@ namespace CocApi.Cache.Context.CachedItems
 
             if (fetched.Content == null)
                 return false;
-
+            
             return !fetched.Content.Equals(stored.Content);
         }
 

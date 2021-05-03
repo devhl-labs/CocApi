@@ -124,5 +124,15 @@ namespace CocApi.Test
 
             return Task.CompletedTask;
         }
+
+        protected override bool HasUpdated(Clan? stored, Clan fetched)
+        {
+            // there are many properties in a clan
+            // a change in any one will cause an update to the database
+            // return false if you dont care about the changes seen
+            // this will avoid unnecessary database updates
+
+            return base.HasUpdated(stored, fetched);
+        }
     }
 }

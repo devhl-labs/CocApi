@@ -169,8 +169,10 @@ namespace CocApi.Cache
             {
                 return await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live for an ApiResponse.", e));
+
                 return TimeSpan.FromMinutes(0);
             }
         }
@@ -181,16 +183,18 @@ namespace CocApi.Cache
             {
                 return await TimeToLiveAsync(exception).ConfigureAwait(false);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live.", e));
+
                 return TimeSpan.FromMinutes(0);
             }
         }
 
-        public virtual ValueTask<TimeSpan> TimeToLiveAsync(ApiResponse<Player> apiResponse)
+        protected virtual ValueTask<TimeSpan> TimeToLiveAsync(ApiResponse<Player> apiResponse)
             => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
-        public virtual ValueTask<TimeSpan> TimeToLiveAsync(Exception exception)
+        protected virtual ValueTask<TimeSpan> TimeToLiveAsync(Exception exception)
             => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(0));
 
         public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
@@ -234,6 +238,22 @@ namespace CocApi.Cache
             finally
             {
                 Library.ConcurrentEventsSemaphore.Release();
+            }
+        }
+
+        protected virtual bool HasUpdated(Player? stored, Player fetched) => !fetched.Equals(stored);
+
+        internal bool HasUpdatedOrDefault(Player? stored, Player fetched)
+        {
+            try
+            {
+                return HasUpdated(stored, fetched);
+            }
+            catch (Exception e)
+            {
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while checking if the player updated.", e));
+
+                return !fetched.Equals(stored);
             }
         }
     }

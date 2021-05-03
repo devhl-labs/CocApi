@@ -24,14 +24,14 @@ namespace CocApi.Test
             return Task.CompletedTask;
         }
 
-        public override ValueTask<TimeSpan> TimeToLiveAsync(ApiResponse<Player> apiResponse)
+        protected override ValueTask<TimeSpan> TimeToLiveAsync(ApiResponse<Player> apiResponse)
         {
             // store the api results or exception for 10 minutes
             // this controls how frequently the cache queries the api for an update
             return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(0));
         }
 
-        public override ValueTask<TimeSpan> TimeToLiveAsync(Exception exception)
+        protected override ValueTask<TimeSpan> TimeToLiveAsync(Exception exception)
         {
             // store the api results or exception for 10 minutes
             // this controls how frequently the cache queries the api for an update
