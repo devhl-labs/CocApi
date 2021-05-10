@@ -143,7 +143,7 @@ namespace CocApi.Cache
                             foreach (var warTag in round.WarTags.Where(w => w != "#0"))
                                 if (group.Value.TryGetValue(warTag, out SeenCwlWar? seenCwlWar))
                                 {
-                                    if (seenCwlWar.ApiResponse?.Content == null)
+                                    if (seenCwlWar.ApiResponse?.Content == null || (seenCwlWar.ClanTag != cachedClan.Tag && seenCwlWar.OpponentTag != cachedClan.Tag))
                                         continue; // if null we already announced it
 
                                     CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Clan.Tag);
@@ -195,8 +195,6 @@ namespace CocApi.Cache
 
         private async Task ProcessRequest(KeyValuePair<string, Model.ClanWarLeagueGroup> kvp, List<CachedClan> cachedClans, List<Task<CachedWar>> announceNewWarTasks, KeyValuePair<DateTime, Dictionary<string, Model.ClanWarLeagueGroup>> warTags)
         {
-            string test = "1";
-
             try
             {
                 ApiResponse<Model.ClanWar>? apiResponse = null;
@@ -214,23 +212,13 @@ namespace CocApi.Cache
 
                 SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, kvp.Key, apiResponse);
 
-                test = "2";
-
                 var group = _downloadedWars.Single(w => w.Key == warTags.Key).Value;
-
-                test = "3";
 
                 group.TryAdd(kvp.Key, seenCwlWar);
 
-                test = "4";
-
                 CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Clan.Tag);
 
-                test = "5";
-
                 CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Opponent.Tag);
-
-                test = "6";
 
                 if (cachedClan != null || cachedOpponent != null)
                     announceNewWarTasks.Add(NewWarFoundAsync(cachedClan?.Content, cachedOpponent?.Content, kvp.Value, apiResponse, seenCwlWar));
@@ -238,7 +226,7 @@ namespace CocApi.Cache
             catch (Exception e)
             {
                 if (!_cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, $"An error occured while processing a cwl war at {test}.", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, $"An error occured while processing a cwl war.", e));
 
                 throw;
             }

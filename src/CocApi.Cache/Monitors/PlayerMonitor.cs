@@ -89,7 +89,7 @@ namespace CocApi.Cache
         {
             CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, _playersClientBase, _playersApi, _cancellationToken).ConfigureAwait(false);
 
-            if (fetched.Content != null && _playersClientBase.HasUpdatedOrDefault(fetched.Content, cachedPlayer.Content)) // CachedPlayer.HasUpdated(cachedPlayer, fetched))
+            if (fetched.Content != null && _playersClientBase.HasUpdatedOrDefault(cachedPlayer.Content, fetched.Content)) // CachedPlayer.HasUpdated(cachedPlayer, fetched))
                 await _playersClientBase.OnPlayerUpdatedAsync(new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, _cancellationToken));
 
             cachedPlayer.UpdateFrom(fetched);

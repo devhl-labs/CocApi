@@ -10,11 +10,11 @@ namespace CocApi
 {
     public static class Clash
     {
-        public static Unit BK = new Unit("Barbarian King", 80, Village.Home, Resource.DarkElixir);
-        public static Unit AQ = new Unit("Archer Queen", 80, Village.Home, Resource.DarkElixir);
-        public static Unit GW = new Unit("Grand Warden", 40, Village.Home, Resource.Elixir);
-        public static Unit RC = new Unit("Royal Champion", 30, Village.Home, Resource.DarkElixir);
-        public static Unit BM = new Unit("Battle Machine", 30, Village.BuilderBase, Resource.Elixir);
+        public static Unit BK { get; } = new(Village.Home, Resource.DarkElixir, 80, "Barbarian King");
+        public static Unit AQ { get; } = new(Village.Home, Resource.DarkElixir, 80, "Archer Queen");
+        public static Unit GW { get; } = new(Village.Home, Resource.Elixir, 40, "Grand Warden");
+        public static Unit RC { get; } = new(Village.Home, Resource.DarkElixir, 30, "Royal Champion");
+        public static Unit BM { get; } = new(Village.BuilderBase, Resource.Elixir, 30, "Battle Machine");
 
         public static Unit[] Heroes { get; } = new Unit[]
         {
@@ -40,75 +40,75 @@ namespace CocApi
 
         public static Unit[] Pets { get; } = new Unit[]
         {
-            new Unit("L.A.S.S.I", 10, Village.Home, Resource.DarkElixir),
-            new Unit("Electro Owl", 10, Village.Home, Resource.DarkElixir),
-            new Unit("Mighty Yak", 10, Village.Home, Resource.DarkElixir),
-            new Unit("Unicorn", 10, Village.Home, Resource.DarkElixir)
+            new Unit(Village.Home, Resource.DarkElixir, 10, "L.A.S.S.I"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, "Electro Owl"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, "Mighty Yak"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, "Unicorn")
         };
 
         public static Unit[] Troops { get; } = new Unit[]
         {
-            new Unit("Barbarian", 10, Village.Home, Resource.Elixir, "Super Barbarian"),
-            new Unit("Archer", 10, Village.Home, Resource.Elixir, "Super Archer"),
-            new Unit("Giant", 10, Village.Home, Resource.Elixir, "Super Giant"),
-            new Unit("Goblin", 8, Village.Home, Resource.Elixir, "Sneaky Goblin"),
-            new Unit("Wall Breaker", 10, Village.Home, Resource.Elixir, "Super Wall Breaker"),
-            new Unit("Balloon", 9, Village.Home, Resource.Elixir),
-            new Unit("Wizard", 10, Village.Home, Resource.Elixir, "Super Wizard"),
-            new Unit("Healer", 7, Village.Home, Resource.Elixir),
-            new Unit("Dragon", 8, Village.Home, Resource.Elixir),
-            new Unit("P.E.K.K.A", 9, Village.Home, Resource.Elixir),
-            new Unit("Baby Dragon", 8, Village.Home, Resource.Elixir, "Inferno Dragon"),
-            new Unit("Miner", 7, Village.Home, Resource.Elixir),
-            new Unit("Eletro Dragon", 4, Village.Home, Resource.Elixir),
-            new Unit("Yeti", 3, Village.Home, Resource.Elixir),
-            new Unit("Minion", 10, Village.Home, Resource.DarkElixir, "Super Minion"),
-            new Unit("Hog Rider", 10, Village.Home, Resource.DarkElixir),
-            new Unit("Valkyrie", 9, Village.Home, Resource.DarkElixir, "Super Valkyrie"),
-            new Unit("Golem", 10, Village.Home, Resource.DarkElixir),
-            new Unit("Witch", 5, Village.Home, Resource.DarkElixir, "Super Witch"),
-            new Unit("Lava Hound", 6, Village.Home, Resource.DarkElixir, "Ice Hound"),
-            new Unit("Bowler", 5, Village.Home, Resource.DarkElixir),
-            new Unit("Ice Golem", 6, Village.Home, Resource.DarkElixir),
-            new Unit("Head Hunter", 3, Village.Home, Resource.DarkElixir),
+            new Unit(Village.Home, Resource.Elixir, 10, "Barbarian", "Super Barbarian"),
+            new Unit(Village.Home, Resource.Elixir, 10, "Archer", "Super Archer"),
+            new Unit(Village.Home, Resource.Elixir, 10, "Giant", "Super Giant"),
+            new Unit(Village.Home, Resource.Elixir, 8, "Goblin", "Sneaky Goblin"),
+            new Unit(Village.Home, Resource.Elixir, 10, "Wall Breaker", "Super Wall Breaker"),
+            new Unit(Village.Home, Resource.Elixir, 9, "Balloon"),
+            new Unit(Village.Home, Resource.Elixir, 10, "Wizard", "Super Wizard"),
+            new Unit(Village.Home, Resource.Elixir, 7, "Healer"),
+            new Unit(Village.Home, Resource.Elixir, 8, "Dragon"),
+            new Unit(Village.Home, Resource.Elixir, 9, "P.E.K.K.A"),
+            new Unit(Village.Home, Resource.Elixir, 8, "Baby Dragon", "Inferno Dragon"),
+            new Unit(Village.Home, Resource.Elixir, 7, "Miner"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Eletro Dragon"),
+            new Unit(Village.Home, Resource.Elixir, 3, "Yeti"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, "Minion", "Super Minion"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, "Hog Rider"),
+            new Unit(Village.Home, Resource.DarkElixir, 9, "Valkyrie", "Super Valkyrie"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, "Golem"),
+            new Unit(Village.Home, Resource.DarkElixir, 5, "Witch", "Super Witch"),
+            new Unit(Village.Home, Resource.DarkElixir, 6, "Lava Hound", "Ice Hound"),
+            new Unit(Village.Home, Resource.DarkElixir, 5, "Bowler"),
+            new Unit(Village.Home, Resource.DarkElixir, 6, "Ice Golem"),
+            new Unit(Village.Home, Resource.DarkElixir, 3, "Head Hunter"),
 
-            new Unit("Raged Barbarian", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Sneaky Archer", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Boxer Giant", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Beta Minion", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Bomber", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Baby Dragon", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Cannon Cart", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Night Witch", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Drop Ship", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Super P.E.K.K.A", 18, Village.BuilderBase, Resource.Elixir),
-            new Unit("Hog Glider", 18, Village.BuilderBase, Resource.Elixir)
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Raged Barbarian"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Sneaky Archer"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Boxer Giant"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Beta Minion"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Bomber"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Baby Dragon"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Cannon Cart"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Night Witch"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Drop Ship"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Super P.E.K.K.A"),
+            new Unit(Village.BuilderBase, Resource.Elixir, 18, "Hog Glider")
         };
 
         public static Unit[] Spells { get; } = new Unit[]
         {
-            new Unit("Lightning Spell", 9, Village.Home, Resource.Elixir),
-            new Unit("Healing Spell", 8, Village.Home, Resource.Elixir),
-            new Unit("Rage Spell", 6, Village.Home, Resource.Elixir),
-            new Unit("Jump Spell", 4, Village.Home, Resource.Elixir),
-            new Unit("Freeze Spell", 7, Village.Home, Resource.Elixir),
-            new Unit("Clone Spell", 7, Village.Home, Resource.Elixir),
-            new Unit("Invisibility Spell", 4, Village.Home, Resource.Elixir),
-            new Unit("Poison Spell", 8, Village.Home, Resource.DarkElixir),
-            new Unit("Earthquake Spell", 5, Village.Home, Resource.DarkElixir),
-            new Unit("Haste Spell", 5, Village.Home, Resource.DarkElixir),
-            new Unit("Skeleton Spell", 7, Village.Home, Resource.DarkElixir),
-            new Unit("Bat Spell", 5, Village.Home, Resource.DarkElixir)
+            new Unit(Village.Home, Resource.Elixir, 9, "Lightning Spell"),
+            new Unit(Village.Home, Resource.Elixir, 8, "Healing Spell"),
+            new Unit(Village.Home, Resource.Elixir, 6, "Rage Spell"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Jump Spell"),
+            new Unit(Village.Home, Resource.Elixir, 7, "Freeze Spell"),
+            new Unit(Village.Home, Resource.Elixir, 7, "Clone Spell"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Invisibility Spell"),
+
+            new Unit(Village.Home, Resource.DarkElixir, 8, "Poison Spell"),
+            new Unit(Village.Home, Resource.DarkElixir, 5, "Earthquake Spell"),
+            new Unit(Village.Home, Resource.DarkElixir, 5, "Haste Spell"),
+            new Unit(Village.Home, Resource.DarkElixir, 7, "Skeleton Spell"),
+            new Unit(Village.Home, Resource.DarkElixir, 5, "Bat Spell")
         };
 
         public static Unit[] SiegeMachines { get; } = new Unit[]
         {
-            new Unit("Wall Wrecker", 4, Village.Home, Resource.Elixir),
-            new Unit("Battle Blimp", 4, Village.Home, Resource.Elixir),
-            new Unit("Stone Slammer", 4, Village.Home, Resource.Elixir),
-            new Unit("Siege Barracks", 4, Village.Home, Resource.Elixir),
-            new Unit("Log Launcher", 4, Village.Home, Resource.Elixir)
-
+            new Unit(Village.Home, Resource.Elixir, 4, "Wall Wrecker"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Battle Blimp"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Stone Slammer"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Siege Barracks"),
+            new Unit(Village.Home, Resource.Elixir, 4, "Log Launcher")
         };
 
         public const int MAX_TOWN_HALL_LEVEL = 14;
@@ -205,7 +205,7 @@ namespace CocApi
 
         public static List<JsonConverter> JsonConverters()
         {
-            List<JsonConverter> results = new List<JsonConverter>
+            List<JsonConverter> results = new()
             {
                 new SuperCellDateConverter { DateTimeFormats = new List<string> { "yyyyMMdd'T'HHmmss.fff'Z'", "yyyy'-'MM" } }
             };
@@ -213,7 +213,7 @@ namespace CocApi
             return results;
         }
 
-        public static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        public static readonly JsonSerializerSettings JsonSerializerSettings = new()
         {
             // OpenAPI generated types generally hide default constructors.
             ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor,

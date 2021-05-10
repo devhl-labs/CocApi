@@ -165,7 +165,8 @@ namespace CocApi.Cache
                 cachedClan.CurrentWar.Content?.State == WarState.Preparation ||
                 cachedClan.Group.Content == null ||
                 cachedClan.Group.Content.State == GroupState.Ended ||
-                cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month)
+                cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month ||
+                (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month))
                 return;
 
             // keep currentwar around an arbitrary amount of time since we are in cwl

@@ -18,7 +18,7 @@ namespace CocApi
 
         public string? SuperTroopName { get; }
 
-        public Unit(string name, int maxLevel, Clash.Village village, Clash.Resource resource, string? superTroopName = null)
+        internal Unit(Clash.Village village, Clash.Resource resource, int maxLevel, string name, string? superTroopName = null)
         {
             Name = name;
             MaxLevel = maxLevel;

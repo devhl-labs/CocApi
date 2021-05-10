@@ -53,7 +53,7 @@ namespace CocApi.Cache
             {
                 foreach (CachedWar cachedWar in cachedWars)
                 {
-                    if (!string.IsNullOrWhiteSpace(cachedWar.WarTag) && _clansClient.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
+                    if (_clansClient.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
                     {
                         updatingCwlWar.Add(cachedWar.WarTag);
 
