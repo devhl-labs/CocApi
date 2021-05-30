@@ -29,9 +29,13 @@ namespace CocApi.Cache
 
         private readonly object _startLock = new();
 
-        public void Start(CancellationToken cancellationToken)
+        private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
+
+        public async Task StartAsync(CancellationToken cancellationToken)
         {
-            lock (_startLock)
+            await _semaphoreSlim.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            try
             {
                 if (_isRunning)
                     throw new InvalidOperationException("Monitor already running.");
@@ -42,7 +46,12 @@ namespace CocApi.Cache
 
                 _cancellationToken = cancellationToken;
 
-                RunTask = RunAsync();
+                // not all database providers are async so wrap this in a task to avoid blocking
+                _ = Task.Run(() => RunTask = RunAsync(), cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                _semaphoreSlim.Release();
             }
         }
 
@@ -72,7 +81,7 @@ namespace CocApi.Cache
             }
 
             _isRunning = false;
-                                
+
             Library.OnLog(this, new LogEventArgs(LogLevel.Information, "stopped"));
         }
     }

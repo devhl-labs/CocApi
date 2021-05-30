@@ -150,7 +150,7 @@ namespace CocApi.Cache
         public Task StartAsync(CancellationToken _)
         {
             if (_options.Value.Enabled)
-                PlayerMonitor.Start(_stopRequestedTokenSource.Token);
+                PlayerMonitor.StartAsync(_stopRequestedTokenSource.Token);
 
             return Task.CompletedTask;
         }
@@ -167,7 +167,11 @@ namespace CocApi.Cache
         {
             try
             {
-                return await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
+                TimeSpan result = await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
+
+                return result < TimeSpan.Zero
+                    ? TimeSpan.Zero
+                    : result;
             }
             catch (Exception e)
             {
@@ -181,7 +185,11 @@ namespace CocApi.Cache
         {
             try
             {
-                return await TimeToLiveAsync(exception).ConfigureAwait(false);
+                TimeSpan result = await TimeToLiveAsync(exception).ConfigureAwait(false);
+
+                return result < TimeSpan.Zero
+                    ? TimeSpan.Zero
+                    : result;
             }
             catch (Exception e)
             {

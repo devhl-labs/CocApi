@@ -66,7 +66,8 @@ namespace CocApi.Cache
                     !string.IsNullOrWhiteSpace(w.RawContent) &&
                     w.PreparationStartTime > since
                     )
-                .ToListAsync(_cancellationToken).ConfigureAwait(false);
+                .ToListAsync(_cancellationToken)
+                .ConfigureAwait(false);
 
             foreach (CachedWar cachedWar in cachedWars)
             {
@@ -112,7 +113,7 @@ namespace CocApi.Cache
                     .OrderBy(c => c.Id)
                     .Take(options.ConcurrentUpdates)
                     .ToListAsync(_cancellationToken)
-                    .ConfigureAwait(false);
+                .ConfigureAwait(false);
 
                 _id = cachedClans.Count == options.ConcurrentUpdates
                     ? cachedClans.Max(c => c.Id)
@@ -159,7 +160,7 @@ namespace CocApi.Cache
                                     Dictionary<string, Model.ClanWarLeagueGroup> tags = warTagsToDownload.Single(w => w.Key == group.Key).Value;
 
                                     if (!tags.ContainsKey(warTag))
-                                        tags.Add(warTag, cachedClan.Group.Content);                                    
+                                        tags.Add(warTag, cachedClan.Group.Content);
                                 }
                     }
 

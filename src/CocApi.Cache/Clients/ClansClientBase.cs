@@ -331,19 +331,19 @@ namespace CocApi.Cache
                 _stopRequestedTokenSource = new CancellationTokenSource();
 
                 if (_options.Value.Clans.Enabled)
-                    _clanMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _clanMonitor.StartAsync(_stopRequestedTokenSource.Token);
                 if (_options.Value.NewWars.Enabled)
-                    _newWarMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _newWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
                 if (_options.Value.NewCwlWars.Enabled)
-                    _newCwlWarMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _newCwlWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
                 if (_options.Value.Wars.Enabled)
-                    _warMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _warMonitor.StartAsync(_stopRequestedTokenSource.Token);
                 if (_options.Value.ActiveWars.Enabled)
-                    _activeWarMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _activeWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
                 if (_options.Value.ClanMembers.Enabled)
-                    _memberMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _memberMonitor.StartAsync(_stopRequestedTokenSource.Token);
                 if (_options.Value.CwlWars.Enabled)
-                    _cwlWarMonitor.Start(_stopRequestedTokenSource.Token);
+                    await _cwlWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
 
                 await _playersClient.StartAsync(_stopRequestedTokenSource.Token);
             }
@@ -394,7 +394,11 @@ namespace CocApi.Cache
         {
             try
             {
-                return await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
+                TimeSpan result = await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
+
+                return result < TimeSpan.Zero
+                    ? TimeSpan.Zero
+                    : result;
             }
             catch (Exception e)
             {
@@ -408,7 +412,11 @@ namespace CocApi.Cache
         {
             try
             {
-                return await TimeToLiveAsync<T>(exception).ConfigureAwait(false);
+                TimeSpan result = await TimeToLiveAsync<T>(exception).ConfigureAwait(false);
+
+                return result < TimeSpan.Zero
+                    ? TimeSpan.Zero
+                    : result;
             }
             catch (Exception e)
             {

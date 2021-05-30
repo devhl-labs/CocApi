@@ -42,7 +42,17 @@ namespace CocApi.Test
 
             .ConfigureCocApiCache<ClansClient, PlayersClient>(                
                 // tell the cache library how to query your database
-                provider => provider.Factory = new CacheDbContextFactory())
+                provider => provider.Factory = new CacheDbContextFactory(),
+                    c => {
+                        c.ActiveWars.Enabled = false;
+                        c.ClanMembers.Enabled = false;
+                        c.Clans.Enabled = true;
+                        c.NewCwlWars.Enabled = true;
+                        c.NewWars.Enabled = false;
+                        c.Wars.Enabled = false;
+                        c.CwlWars.Enabled = false;
+                    },
+                    p => p.Enabled = false)
 
 
             .ConfigureServices((hostBuilder, services) =>

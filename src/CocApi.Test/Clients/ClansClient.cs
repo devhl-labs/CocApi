@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
-    public class ClansClient : ClansClientBase
+    public class ClansClient : ClansClientBase, IHostedService
     {
         private readonly PlayersClientBase _playersCache;
         private readonly LocationsApi _locationsApi;
@@ -47,11 +47,11 @@ namespace CocApi.Test
 
         public new async Task StartAsync(CancellationToken cancellationToken)
         {
-            // add some dummy data to the database
-            await AddInitialItems();
+            //// add some dummy data to the database
+            //await AddInitialItems();
 
-            // import old cache data from CocApi.Cache verison 1.4
-            await ImportDataToVersion2(@"Data Source=E:\repos\CocApi\src\CocApi.Test\bin\Debug\net5.0\mb-CocApi.Cache.sqlite");
+            //// import old cache data from CocApi.Cache verison 1.4
+            //await ImportDataToVersion2(@"Data Source=E:\repos\CocApi\src\CocApi.Test\bin\Debug\net5.0\mb-CocApi.Cache.sqlite");
 
             //await SanityCheck();
 
