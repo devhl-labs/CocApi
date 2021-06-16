@@ -7,7 +7,7 @@
     <Authors>devhl</Authors>
     <Product />
     <Description>Caches response from the Clash of Clans API.</Description>
-    <Version>2.0.0-preview1.6.5</Version>
+    <Version>2.0.0-preview1.7.0</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -54,12 +54,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Dapper.SqlWriter">
-      <HintPath>..\..\..\Dapper.SqlWriter\Dapper.SqlWriter\bin\Debug\netstandard2.1\Dapper.SqlWriter.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>

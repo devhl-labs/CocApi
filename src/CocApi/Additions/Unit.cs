@@ -16,15 +16,18 @@ namespace CocApi
 
         public Clash.Resource Resource { get; }
 
-        public string? SuperTroopName { get; }
+        public int? TroopId { get; }
 
-        internal Unit(Clash.Village village, Clash.Resource resource, int maxLevel, string name, string? superTroopName = null)
+        public Unit? BaseTroop { get; }
+
+        internal Unit(Clash.Village village, Clash.Resource resource, int maxLevel, string name, int? troopId = null, Unit? baseTroop = null)
         {
             Name = name;
+            BaseTroop = baseTroop;
             MaxLevel = maxLevel;
             Village = village;
             Resource = resource;
-            SuperTroopName = superTroopName;
+            TroopId = troopId;
         }
     }
 }
