@@ -86,7 +86,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 9, "P.E.K.K.A", 9),
             new Unit(Village.Home, Resource.Elixir, _babyDragon.MaxLevel, "Inferno Dragon", 63, _babyDragon),
             new Unit(Village.Home, Resource.Elixir, 7, "Miner", 24),
-            new Unit(Village.Home, Resource.Elixir, 5, "Eletro Dragon", 59),
+            new Unit(Village.Home, Resource.Elixir, 5, "Electro Dragon", 59),
             new Unit(Village.Home, Resource.Elixir, 3, "Yeti", 53),
             new Unit(Village.Home, Resource.Elixir, 3, "Dragon Rider", 65),
             new Unit(Village.Home, Resource.DarkElixir, _minion.MaxLevel, "Super Minion", 84, _minion),
