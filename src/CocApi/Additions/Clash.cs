@@ -97,7 +97,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.DarkElixir, _lavaHound.MaxLevel, "Ice Hound", 76, _lavaHound),
             new Unit(Village.Home, Resource.DarkElixir, 5, "Bowler", 22),
             new Unit(Village.Home, Resource.DarkElixir, 6, "Ice Golem", 58),
-            new Unit(Village.Home, Resource.DarkElixir, 3, "Head Hunter", 82),
+            new Unit(Village.Home, Resource.DarkElixir, 3, "Headhunter", 82),
 
             new Unit(Village.BuilderBase, Resource.Elixir, 18, "Raged Barbarian"),
             new Unit(Village.BuilderBase, Resource.Elixir, 18, "Sneaky Archer"),
