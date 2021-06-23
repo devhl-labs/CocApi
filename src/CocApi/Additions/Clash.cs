@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using static CocApi.Clash;
 
 namespace CocApi
 {
@@ -74,27 +73,27 @@ namespace CocApi
             _valkyrie,
             _witch,
             _lavaHound,
-            new Unit(Village.Home, Resource.Elixir, _barbarian.MaxLevel, "Super Barbarian", 26, _barbarian),
-            new Unit(Village.Home, Resource.Elixir, _archer.MaxLevel, "Super Archer", 27, _archer),
-            new Unit(Village.Home, Resource.Elixir, _giant.MaxLevel, "Super Giant", 29, _giant),
-            new Unit(Village.Home, Resource.Elixir, _goblin.MaxLevel, "Sneaky Goblin", 55, _goblin),
-            new Unit(Village.Home, Resource.Elixir, _wallBreaker.MaxLevel,"Super Wall Breaker", 28, _wallBreaker),
-            new Unit(Village.Home, Resource.Elixir, _balloon.MaxLevel, "Rocket Balloon", 57, _balloon),
-            new Unit(Village.Home, Resource.Elixir, _wizard.MaxLevel, "Super Wizard", 83, _wizard),
+            new Unit(Village.Home, Resource.Elixir, "Super Barbarian", 26, _barbarian),
+            new Unit(Village.Home, Resource.Elixir, "Super Archer", 27, _archer),
+            new Unit(Village.Home, Resource.Elixir, "Super Giant", 29, _giant),
+            new Unit(Village.Home, Resource.Elixir, "Sneaky Goblin", 55, _goblin),
+            new Unit(Village.Home, Resource.Elixir, "Super Wall Breaker", 28, _wallBreaker),
+            new Unit(Village.Home, Resource.Elixir, "Rocket Balloon", 57, _balloon),
+            new Unit(Village.Home, Resource.Elixir, "Super Wizard", 83, _wizard),
             new Unit(Village.Home, Resource.Elixir, 7, "Healer", 7),
             new Unit(Village.Home, Resource.Elixir, 9, "Dragon", 8),
             new Unit(Village.Home, Resource.Elixir, 9, "P.E.K.K.A", 9),
-            new Unit(Village.Home, Resource.Elixir, _babyDragon.MaxLevel, "Inferno Dragon", 63, _babyDragon),
+            new Unit(Village.Home, Resource.Elixir, "Inferno Dragon", 63, _babyDragon),
             new Unit(Village.Home, Resource.Elixir, 7, "Miner", 24),
             new Unit(Village.Home, Resource.Elixir, 5, "Electro Dragon", 59),
             new Unit(Village.Home, Resource.Elixir, 3, "Yeti", 53),
             new Unit(Village.Home, Resource.Elixir, 3, "Dragon Rider", 65),
-            new Unit(Village.Home, Resource.DarkElixir, _minion.MaxLevel, "Super Minion", 84, _minion),
+            new Unit(Village.Home, Resource.DarkElixir, "Super Minion", 84, _minion),
             new Unit(Village.Home, Resource.DarkElixir, 10, "Hog Rider", 11),
-            new Unit(Village.Home, Resource.DarkElixir, _valkyrie.MaxLevel, "Super Valkyrie", 64, _valkyrie),
+            new Unit(Village.Home, Resource.DarkElixir, "Super Valkyrie", 64, _valkyrie),
             new Unit(Village.Home, Resource.DarkElixir, 10, "Golem", 13),
-            new Unit(Village.Home, Resource.DarkElixir, _wizard.MaxLevel, "Super Witch", 66, _witch),
-            new Unit(Village.Home, Resource.DarkElixir, _lavaHound.MaxLevel, "Ice Hound", 76, _lavaHound),
+            new Unit(Village.Home, Resource.DarkElixir, "Super Witch", 66, _witch),
+            new Unit(Village.Home, Resource.DarkElixir, "Ice Hound", 76, _lavaHound),
             new Unit(Village.Home, Resource.DarkElixir, 5, "Bowler", 22),
             new Unit(Village.Home, Resource.DarkElixir, 6, "Ice Golem", 58),
             new Unit(Village.Home, Resource.DarkElixir, 3, "Headhunter", 82),

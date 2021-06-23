@@ -20,14 +20,19 @@ namespace CocApi
 
         public Unit? BaseTroop { get; }
 
-        internal Unit(Clash.Village village, Clash.Resource resource, int maxLevel, string name, int? troopId = null, Unit? baseTroop = null)
+        internal Unit(Clash.Village village, Clash.Resource resource, int maxLevel, string name, int? troopId = null)
         {
             Name = name;
-            BaseTroop = baseTroop;
             MaxLevel = maxLevel;
             Village = village;
             Resource = resource;
             TroopId = troopId;
+        }
+
+        internal Unit(Clash.Village village, Clash.Resource resource, string name, int? troopId = null, Unit baseTroop) 
+            : this(village, resource, baseTroop.MaxLevel, name, troopId)
+        {
+            BaseTroop = baseTroop;
         }
     }
 }
