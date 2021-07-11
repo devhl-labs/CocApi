@@ -10,6 +10,8 @@ namespace CocApi
     {
         public string Name { get; }
 
+        public int DisplayOrder { get; }
+
         public int MaxLevel { get; }
 
         public Clash.Village Village { get; }
@@ -18,19 +20,23 @@ namespace CocApi
 
         public int? TroopId { get; }
 
+        public bool IsSeasonalTroop { get; }
+
         public Unit? BaseTroop { get; }
 
-        internal Unit(Clash.Village village, Clash.Resource resource, int maxLevel, string name, int? troopId = null)
+        internal Unit(Clash.Village village, Clash.Resource resource, int displayOrder, int maxLevel, string name, int? troopId = null, bool isSeasonalTroop = false)
         {
             Name = name;
+            DisplayOrder = displayOrder;
             MaxLevel = maxLevel;
             Village = village;
             Resource = resource;
             TroopId = troopId;
+            IsSeasonalTroop = isSeasonalTroop;
         }
 
-        internal Unit(Clash.Village village, Clash.Resource resource, string name, int? troopId = null, Unit baseTroop) 
-            : this(village, resource, baseTroop.MaxLevel, name, troopId)
+        internal Unit(Clash.Village village, Clash.Resource resource, int displayOrder, Unit baseTroop, string name, int? troopId = null)
+            : this(village, resource, displayOrder, baseTroop.MaxLevel, name, troopId)
         {
             BaseTroop = baseTroop;
         }

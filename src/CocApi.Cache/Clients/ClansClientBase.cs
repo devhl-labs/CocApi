@@ -268,7 +268,7 @@ namespace CocApi.Cache
 
         public async Task<List<CachedClan>> GetCachedClansAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = null)
         {
-            List<string> formattedTags = new List<string>();
+            List<string> formattedTags = new();
 
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));

@@ -51,6 +51,8 @@ namespace CocApi.Cache.Context.CachedItems
 
         public WarType? Type { get; internal set; }
 
+        public int CachedClanId { get; internal set; }
+
         private CachedClanWar(string tag, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
         {
             base.UpdateFrom(apiResponse, localExpiration);

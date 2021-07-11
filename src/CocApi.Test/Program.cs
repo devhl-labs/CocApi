@@ -35,7 +35,7 @@ namespace CocApi.Test
                 {
                     string token = GetEnvironmentVariable($"TOKEN_{i}");
                     
-                    // you can go much lower than one second
+                    // you can go much lower than one second, fastest recommended speed is 33 milliseconds
                     tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
                 }
             })

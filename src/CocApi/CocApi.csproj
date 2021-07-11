@@ -22,9 +22,9 @@
     <Nullable>enable</Nullable>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>Barbarian King.png</PackageIcon>
-    <Version>1.10.2</Version>
-    <AssemblyVersion>1.10.2.0</AssemblyVersion>
-    <FileVersion>1.10.2.0</FileVersion>
+    <Version>1.10.3</Version>
+    <AssemblyVersion>1.10.3.0</AssemblyVersion>
+    <FileVersion>1.10.3.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
   </PropertyGroup>
 

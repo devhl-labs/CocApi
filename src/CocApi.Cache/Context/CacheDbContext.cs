@@ -32,7 +32,8 @@ namespace CocApi.Cache
                 war.HasIndex(w => w.KeepUntil);
                 war.HasIndex(w => w.ExpiresAt);
                 war.HasIndex(w => w.EnemyTag);
-
+                war.HasIndex(w => new { w.CachedClanId, w.Download });
+                war.HasIndex(w => new { w.Added, w.CachedClanId, w.State });
             });
 
             // WarLog
