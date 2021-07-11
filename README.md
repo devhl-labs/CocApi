@@ -8,7 +8,7 @@ To keep objects up to date automatically and receive events on updates, add the 
 ![Discord Banner 2](https://discordapp.com/api/guilds/701245583444279328/widget.png?style=banner2)
 
 ## Using the library
-```
+```csharp
 // fetch commands directly query the api
 Clan clan = await clansApi.FetchAsync("#clanTag");
 
@@ -24,11 +24,12 @@ Use the IHostBuilder extension method ConfigureCocApi to add all the API endpoin
 The TokenProvider object provides rate limiting on a per key basis.
 Then you can use dependency injection to inject ClansApi, LabelsApi, LeaguesApi, LocationsApi, and PlayersApi. 
 These classes allow you to query the API using the named HttpClient provided.
-```
-c#
+```csharp
 private static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)
-	.ConfigureCocApi("cocApi", tokenProvider => { /* todo */ })
+	.ConfigureCocApi("cocApi", tokenProvider => { 
+		tokenProvider.Tokens.Add(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
+	})
 	.ConfigureServices((hostBuilder, services) => 
 	{
 	    services.AddHttpClient("cocApi, httpClient =>
@@ -45,8 +46,7 @@ This tells the CocApi.Cache how to interact with your database.
 Before running you will need to [create a migration](docs/scripts/cocapi-ef-migration.ps1) 
 and run the [update](docs/scripts/cocapi-ef-update.ps1) on your database provider.
 Modify these scripts to suit your needs. At the least you should edit the migration script to inject your connection string.
-```
-ps1
+```ps1
 dotnet ef migrations add YourMigrationName `
     --project $PSScriptRoot/YourProject `
     --context CocApi.Cache.CocApiCacheContext `
@@ -63,8 +63,7 @@ return false to prevent unnecessary writes to the hard drive.
 
 Use the IHostBuilder extension method ConfigureCocApiCache to your service provider.
 This requires that the CocApi is already added to the service provider as shown above. 
-```
-c#
+```csharp
 // providing types ClansClient and PlayersClient is optional
 .ConfigureCocApiCache<ClansClient, PlayersClient>(                
     // tell the cache library how to query your database
