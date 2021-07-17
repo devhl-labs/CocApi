@@ -4,20 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CocApi.Cache
-{        
-    public enum LogLevel
-    {
-        Trace,
-        Debug,
-        Information,
-        Warning,
-        Error,
-        Critical,
-        None
-    }
-
+{
     [Flags]
     public enum Announcements
     {
@@ -45,7 +35,42 @@ namespace CocApi.Cache
 
         public static event LogEventHandler? Log;
 
-        internal static SemaphoreSlim ConcurrentEventsSemaphore = new(25, 25);
+        private static long _currentSemaphoreUsage = 0;
+
+        private static int _maxCount = 25;
+
+        private static SemaphoreSlim _concurrentEventsSemaphore = new(_maxCount, _maxCount);
+
+        public static void SetMaxConcurrentEvents(int max)
+        {
+            _maxCount = max;
+            _concurrentEventsSemaphore = new SemaphoreSlim(max, max);
+        }
+
+        internal static async Task SendConcurrentEvent(object sender, Action action, CancellationToken cancellationToken)
+        {
+            if (Interlocked.Read(ref _currentSemaphoreUsage) >= _maxCount)
+                OnLog(sender, new LogEventArgs(LogLevel.Trace, message: "Max concurrent events reached."));
+
+            await _concurrentEventsSemaphore.WaitAsync(cancellationToken);
+
+            try
+            {
+                Interlocked.Increment(ref _currentSemaphoreUsage);
+
+                action();
+            }
+            catch (Exception e)
+            {
+                OnLog(sender, new LogEventArgs(LogLevel.Error, e, "Error on clan updated."));
+            }
+            finally
+            {
+                _concurrentEventsSemaphore.Release();
+
+                Interlocked.Decrement(ref _currentSemaphoreUsage);
+            }
+        }
 
         public static class TableNames
         {
@@ -77,24 +102,6 @@ namespace CocApi.Cache
             services.AddSingleton(instance);
         }
 
-        //private static IHostBuilder ConfigureCocApiDbContext(this IHostBuilder builder, Action<CacheDbContextFactoryProvider> provider)
-        //{
-        //    builder.ConfigureServices((context, services) => AddCocApiDbContext(services, provider));
-
-        //    return builder;
-        //}
-
-
-
-
-
-
-
-
-
-        //private static void AddPlayersClient(this IServiceCollection services, Action<MonitorOptions>? options = null)
-        //    => AddPlayersClient<PlayersClientBase>(services, options);
-
         private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services, Action<MonitorOptions>? options) 
             where TPlayersClient : PlayersClientBase
         {
@@ -109,32 +116,6 @@ namespace CocApi.Cache
                     return (PlayersClientBase)provider.GetRequiredService<TPlayersClient>();
                 });
         }
-
-        //private static IHostBuilder ConfigurePlayersClient(this IHostBuilder builder, Action<MonitorOptions>? options = null)
-        //    => ConfigurePlayersClient<PlayersClientBase>(builder, options);
-
-        //private static IHostBuilder ConfigurePlayersClient<TPlayersClient>(this IHostBuilder builder, Action<MonitorOptions>? options = null)
-        //where TPlayersClient : PlayersClientBase
-        //{
-        //    builder.ConfigureServices((context, services) => AddPlayersClient<TPlayersClient>(services, options));
-
-        //    return builder;
-        //}
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //private static void AddClansClient(this IServiceCollection services, Action<ClanClientOptions>? clanClientOptions = null)
-        //    => AddClansClient<ClansClientBase>(services, clanClientOptions);
 
         private static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanClientOptions>? clanClientOptions)
             where TClansClient : ClansClientBase
@@ -158,33 +139,26 @@ namespace CocApi.Cache
             });
         }
 
-        //private static IHostBuilder ConfigureClansClient(this IHostBuilder builder, Action<ClanClientOptions>? clanClientOptions = null)
-        //    => ConfigureClansClient<ClansClientBase>(builder, clanClientOptions);
-
-        //private static IHostBuilder ConfigureClansClient<TClansClient>(this IHostBuilder builder, Action<ClanClientOptions>? clanClientOptions = null)
-        //    where TClansClient : ClansClientBase
-        //{
-        //    builder.ConfigureServices((context, services) => AddClansClient<TClansClient>(services, clanClientOptions));
-
-        //    return builder;
-        //}
 
 
 
 
 
 
-
-        public static void AddCocApiCache(this IServiceCollection services,
+        public static void AddCocApiCache(
+            this IServiceCollection services,
             Action<CacheDbContextFactoryProvider> provider,
+            int maxConcurrentEvents = 25,
             Action<ClanClientOptions>? clanClientOptions = null, 
             Action<MonitorOptions>? playerClientOptions = null)
-            => AddCocApiCache<ClansClientBase, PlayersClientBase>(services, provider, clanClientOptions, playerClientOptions);
+            => AddCocApiCache<ClansClientBase, PlayersClientBase>(services, provider, clanClientOptions, playerClientOptions, maxConcurrentEvents);
 
-        public static void AddCocApiCache<TClansClient, TPlayersClient>(this IServiceCollection services, 
+        public static void AddCocApiCache<TClansClient, TPlayersClient>(
+            this IServiceCollection services, 
             Action<CacheDbContextFactoryProvider> provider,
             Action<ClanClientOptions>? clanClientOptions = null,
-            Action<MonitorOptions>? playerClientOptions = null) 
+            Action<MonitorOptions>? playerClientOptions = null,
+            int maxConcurrentEvents = 25) 
             where TClansClient : ClansClientBase
             where TPlayersClient : PlayersClientBase
         {
@@ -195,6 +169,8 @@ namespace CocApi.Cache
             if (provider == null)
                 throw new InvalidOperationException("The DbContext provider was null.");
 
+            SetMaxConcurrentEvents(maxConcurrentEvents);
+
             services.AddCocApiDbContext(provider);
 
             services.AddPlayersClient<TPlayersClient>(playerClientOptions);
@@ -202,20 +178,25 @@ namespace CocApi.Cache
             services.AddClansClient<TClansClient>(clanClientOptions);
         }
 
-        public static IHostBuilder ConfigureCocApiCache(this IHostBuilder builder,
+        public static IHostBuilder ConfigureCocApiCache(
+            this IHostBuilder builder,
             Action<CacheDbContextFactoryProvider> provider,
             Action<ClanClientOptions>? clanClientOptions = null,
-            Action<MonitorOptions>? playerClientOptions = null)
-            => ConfigureCocApiCache<ClansClientBase, PlayersClientBase>(builder, provider, clanClientOptions, playerClientOptions);
+            Action<MonitorOptions>? playerClientOptions = null,
+            int maxConcurrentEvents = 25)
+            => ConfigureCocApiCache<ClansClientBase, PlayersClientBase>(builder, provider, clanClientOptions, playerClientOptions, maxConcurrentEvents);
 
-        public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient>(this IHostBuilder builder,
+        public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient>(
+            this IHostBuilder builder,
             Action<CacheDbContextFactoryProvider> provider,
             Action<ClanClientOptions>? clanClientOptions = null,
-            Action<MonitorOptions>? playerClientOptions = null) 
+            Action<MonitorOptions>? playerClientOptions = null,
+            int maxConcurrentEvents = 25) 
             where TClansClient : ClansClientBase
             where TPlayersClient : PlayersClientBase
         {
-            builder.ConfigureServices((context, services) => AddCocApiCache<TClansClient, TPlayersClient>(services, provider, clanClientOptions, playerClientOptions));
+            builder.ConfigureServices((context, services) => 
+                AddCocApiCache<TClansClient, TPlayersClient>(services, provider, clanClientOptions, playerClientOptions, maxConcurrentEvents));
 
             return builder;
         }

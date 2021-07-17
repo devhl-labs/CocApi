@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,57 +15,55 @@ namespace CocApi
 
     public class TokenProvider
     {
-        private readonly Dictionary<int, Token> _tokens = new();
+        private readonly Token[] _tokens;
 
-        private volatile int _index;
+        internal System.Threading.Channels.Channel<Token> AvailableTokens { get; }
 
         internal TokenProvider()
         {
-
+            
         }
 
         public TokenProvider(string token, TimeSpan tokenTimeout) : this(new TokenBuilder[] { new TokenBuilder(token, tokenTimeout) })
         {
-
         }
 
         public TokenProvider(IEnumerable<TokenBuilder> tokens)
         {
+            _tokens = new Token[tokens.Count()];
+
+            AvailableTokens = System.Threading.Channels.Channel.CreateBounded<Token>(new System.Threading.Channels.BoundedChannelOptions(_tokens.Length)
+            {
+                FullMode = System.Threading.Channels.BoundedChannelFullMode.DropWrite
+            });
+            
             int i = 0;
 
             foreach (TokenBuilder tokenBuilder in tokens)
             {
-                _tokens.Add(i, tokenBuilder.Build());
+                if (tokens.Count(t => t.RawValue == tokenBuilder.RawValue) > 1)
+                    throw new Exception($"Duplicate token provided - {tokenBuilder.RawValue}");
+
+                _tokens[i] = tokenBuilder.Build(this);
+
                 i++;
             }
         }
 
-        private readonly object _nextTokenLock = new();
-
-        private Token NextToken()
+        internal async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
         {
-            lock (_nextTokenLock)
-            {
-                Token result = _tokens[_index];
+            CancellationToken cancellation = cancellationToken.GetValueOrDefault();
 
-                _index = _index >= _tokens.Count - 1
-                    ? 0
-                    : _index++;
+            AvailableTokens.Reader.TryRead(out Token? token);
 
-                return result;
-            }
-        }
+            if (token != null)
+                return token.RawValue;            
+            else
+                Library.OnLog(this, new LogEventArgs(LogLevel.Trace, message: "Waiting on a token"));
 
-        /// <summary>
-        /// Returns the token after awaiting the token timeout rate limit.
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async ValueTask<string> GetAsync(CancellationToken? cancellationToken = null)
-        {
-            Token token = NextToken();
+            token = await AvailableTokens.Reader.ReadAsync(cancellation).ConfigureAwait(false);
 
-            return await token.GetAsync(cancellationToken);
+            return token.RawValue;
         }
     }
 }

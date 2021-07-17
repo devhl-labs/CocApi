@@ -27,7 +27,8 @@ namespace CocApi.Cache
             IOptions<ClanClientOptions> options)
             : base(provider)
         {
-            Library.ConcurrentEventsSemaphore = new SemaphoreSlim(options.Value.MaxConcurrentEvents, options.Value.MaxConcurrentEvents);
+            //Library._maxCount = options.Value.MaxConcurrentEvents;
+            //Library._concurrentEventsSemaphore = new SemaphoreSlim(options.Value.MaxConcurrentEvents, options.Value.MaxConcurrentEvents);
             _clansApi = clansApi;
             _playersClient = playersClient;
             _options = options;
@@ -402,7 +403,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live for an ApiResponse.", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -420,7 +421,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live.", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live."));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -475,164 +476,225 @@ namespace CocApi.Cache
 
         internal async Task OnClanUpdatedAsync(ClanUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            try
+            await Library.SendConcurrentEvent(this, () =>
             {
                 ClanUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan updated.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            }, 
+            eventArgs.CancellationToken);
+
+            //if (Interlocked.Read(ref Library.CurrentSemaphoreUsage) >= Library.MaxCount)
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Trace, "Max concurrent events reached."));
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{
+            //    Interlocked.Increment(ref Library.MaxCount);
+
+            //    ClanUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan updated.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+
+            //    Interlocked.Decrement(ref Library.MaxCount);
+            //}
         }
 
         internal async Task OnClanWarAddedAsync(WarAddedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-            
-            try
-            {               
+            await Library.SendConcurrentEvent(this, () =>
+            {
                 ClanWarAdded?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error adding new clan war.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            },
+            eventArgs.CancellationToken);
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{               
+            //    ClanWarAdded?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error adding new clan war.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         internal async Task OnClanWarEndingSoonAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            try
+            await Library.SendConcurrentEvent(this, () =>
             {
                 ClanWarEndingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war ending soon.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            },
+            eventArgs.CancellationToken);
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarEndingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war ending soon.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         internal async Task OnClanWarEndNotSeenAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-            
-            try
+            await Library.SendConcurrentEvent(this, () =>
             {
                 ClanWarEndNotSeen?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war end not seen.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            },
+            eventArgs.CancellationToken);
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarEndNotSeen?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war end not seen.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         internal async Task OnClanWarEndedAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            try
+            await Library.SendConcurrentEvent(this, () =>
             {
                 ClanWarEnded?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war ended.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            },
+            eventArgs.CancellationToken);
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarEnded?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war ended.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
-        internal async Task OnClanWarLeagueGroupUpdatedAsync(ClanWarLeagueGroupUpdatedEventArgs events)
+        internal async Task OnClanWarLeagueGroupUpdatedAsync(ClanWarLeagueGroupUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
+            await Library.SendConcurrentEvent(this, () =>
+            {
+                ClanWarLeagueGroupUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+            },
+            eventArgs.CancellationToken);
 
-            try
-            {
-                ClanWarLeagueGroupUpdated?.Invoke(this, events).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war league group updated.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarLeagueGroupUpdated?.Invoke(this, events).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war league group updated.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
-        internal async Task OnClanWarLogUpdatedAsync(ClanWarLogUpdatedEventArgs events)
+        internal async Task OnClanWarLogUpdatedAsync(ClanWarLogUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
+            await Library.SendConcurrentEvent(this, () =>
+            {
+                ClanWarLogUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+            },
+            eventArgs.CancellationToken);
 
-            try
-            {
-                ClanWarLogUpdated?.Invoke(this, events).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war log updated.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarLogUpdated?.Invoke(this, events).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war log updated.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         internal async Task OnClanWarStartingSoonAsync(WarEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            try
+            await Library.SendConcurrentEvent(this, () =>
             {
                 ClanWarStartingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war starting soon.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            },
+            eventArgs.CancellationToken);
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarStartingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war starting soon.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         internal async Task OnClanWarUpdatedAsync(ClanWarUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            try
+            await Library.SendConcurrentEvent(this, () =>
             {
                 ClanWarUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war updated.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            },
+            eventArgs.CancellationToken);
+
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
+
+            //try
+            //{
+            //    ClanWarUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war updated.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         protected virtual bool HasUpdated(Clan? stored, Clan fetched) => !fetched.Equals(stored);
@@ -645,7 +707,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while checking if the clan updated.", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while checking if the clan updated."));
 
                 return !fetched.Equals(stored);
             }

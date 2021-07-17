@@ -1,11 +1,24 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using CocApi.Api;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace CocApi
 {
+    public enum LogLevel
+    {
+        Trace,
+        Debug,
+        Information,
+        Warning,
+        Error,
+        Critical
+    }
+
+    public delegate Task LogEventHandler(object sender, CocApi.LogEventArgs log);
+
     public static class Library
     {
         public static readonly Version? Version = typeof(Library).Assembly.GetName().Version;
@@ -76,5 +89,19 @@ namespace CocApi
                 return new(httpClient, tokenProvider);
             });
         }
+
+        internal static void OnLog(object sender, LogEventArgs log)
+        {
+            try
+            {
+                Log?.Invoke(sender, log).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                //throw;
+            }
+        }
+
+        public static event LogEventHandler? Log;
     }
 }

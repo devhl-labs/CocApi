@@ -188,7 +188,7 @@ namespace CocApi.Cache
             catch (Exception e)
             {
                 if (!_cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while polling for new cwl wars.", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occured while polling for new cwl wars."));
 
                 throw;
             }
@@ -227,7 +227,7 @@ namespace CocApi.Cache
             catch (Exception e)
             {
                 if (!_cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, $"An error occured while processing a cwl war.", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, $"An error occured while processing a cwl war."));
 
                 throw;
             }
@@ -250,7 +250,7 @@ namespace CocApi.Cache
             catch (Exception e)
             {
                 if (!_cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occured while announcing a cwl war.", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occured while announcing a cwl war."));
 
                 throw;
             }

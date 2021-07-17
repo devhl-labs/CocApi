@@ -53,7 +53,6 @@ namespace CocApi.Cache
 
             try
             {
-
                 foreach (CachedClan cachedClan in cachedClans)
                 {
                     if (!_clansClient.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
@@ -111,7 +110,7 @@ namespace CocApi.Cache
         {
             CachedClan fetched = await CachedClan.FromClanResponseAsync(cachedClan.Tag, _clansClient, _clansApi, _cancellationToken).ConfigureAwait(false);
 
-            if (fetched.Content != null && _clansClient.HasUpdatedOrDefault(cachedClan.Content, fetched.Content)) // CachedClan.HasUpdated(cachedClan, fetched))
+            if (fetched.Content != null && _clansClient.HasUpdatedOrDefault(cachedClan.Content, fetched.Content))
                 await _clansClient.OnClanUpdatedAsync(new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content, _cancellationToken));
 
             cachedClan.UpdateFrom(fetched);

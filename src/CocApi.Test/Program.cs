@@ -20,6 +20,8 @@ namespace CocApi.Test
 
             CocApi.Library.HttpRequestResult += OnHttpRequestResult;
 
+            CocApi.Library.Log += OnLog;
+
             CocApi.Cache.Library.Log += OnLog;
 
             await CreateHostBuilder(args).Build().RunAsync();
@@ -45,14 +47,15 @@ namespace CocApi.Test
                 provider => provider.Factory = new CacheDbContextFactory(),
                     c => {
                         c.ActiveWars.Enabled = false;
-                        c.ClanMembers.Enabled = false;
+                        c.ClanMembers.Enabled = true;
                         c.Clans.Enabled = true;
                         c.NewCwlWars.Enabled = true;
                         c.NewWars.Enabled = false;
                         c.Wars.Enabled = false;
                         c.CwlWars.Enabled = false;
                     },
-                    p => p.Enabled = false)
+                    p => p.Enabled = false,
+                    maxConcurrentEvents: 25)
 
 
             .ConfigureServices((hostBuilder, services) =>
@@ -96,7 +99,12 @@ namespace CocApi.Test
 
         private static Task OnLog(object sender, LogEventArgs log)
         {
-            LogService.Log(LogLevel.Information, sender.GetType().Name, new string?[] { log.Message, log.Exception?.Message, log.Exception?.InnerException?.Message });
+            LogService.Log(
+                log.LogLevel, 
+                sender.GetType().Name, 
+                new string?[] { string.Format(log.MessageTemplate ?? "", log.Params ?? Array.Empty<string>()), 
+                    log.Exception?.Message, 
+                    log.Exception?.InnerException?.Message });
 
             return Task.CompletedTask;
         }

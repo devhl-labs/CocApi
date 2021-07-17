@@ -11,7 +11,7 @@ namespace CocApi.Cache
 {
     public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
 
-    public delegate Task LogEventHandler(object sender, LogEventArgs log);
+    public delegate Task LogEventHandler(object sender, CocApi.LogEventArgs log);
 
     public class ClientBase
     {

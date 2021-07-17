@@ -2,20 +2,9 @@
 
 namespace CocApi.Test
 {
-    public enum LogLevel
-    {
-        Trace,
-        Debug,
-        Information,
-        Warning,
-        Error,
-        Critical,
-        None
-    }
-
     public static class LogService
     {
-        private static object LogLock { get; } = new object();
+        private static object LogLock { get; } = new();
 
         static LogService()
         {
@@ -44,7 +33,6 @@ namespace CocApi.Test
                     Console.Write("[dbug] ");
                     break;
 
-                case LogLevel.None:
                 case LogLevel.Information:
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.BackgroundColor = ConsoleColor.Black;

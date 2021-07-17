@@ -4,7 +4,7 @@ namespace CocApi.Cache
 {
     public class ClanClientOptions
     {
-        public int MaxConcurrentEvents { get; set; } = 25;
+        //public int MaxConcurrentEvents { get; set; } = 25;
         public ClanMonitorOptions Clans { get; } = new ClanMonitorOptions();
         public MonitorOptionsBase ClanMembers { get; } = new MonitorOptionsBase();
         public MonitorOptions NewCwlWars { get; } = new MonitorOptions { DelayBetweenBatches = TimeSpan.FromMinutes(2), DelayBetweenBatchUpdates = TimeSpan.FromMinutes(2), ConcurrentUpdates = 10 };

@@ -86,8 +86,36 @@ This requires that the CocApi is already added to the service provider as shown 
         playersClient => playersClient.Enabled = false)
 ```
 
+## Monitors
+### ActiveWarMonitor
+Downloads the current war for a clan which is warring one of your tracked clans, but otherwise would not be downloaded. This ensures the most recent data is available. It may help if a tracked clan's war log is private. It also helps get the final war stats in the event the clan searches for a new war immediately.
+
+### ClanMonitor
+Downloads the clan, current war, war log, and league group for a given clan.
+
+### ClanMembers
+Iterates the Clan cached table searching for any clan with DownloadMembers enabled. Every player present in the clan will be downloaded. Players added to the Players table by this monitor will have Download set to **false**. When the village leaves the tracked clan, it will no longer update and will eventually be removed from the cache.
+
+### CwlWarMonitor
+Iterates over the Wars cached table for any war with a war tag. Then queries the API and fires any appropriate updates.
+
+### NewCwlWarMonitor
+Queries the clan's league group from the cache to obtain the war tags. The API is then queried for each war tag. If the resulting war does not contain the desired clan, the war will be stored in memory. If the resulting war does contain the desired clan the war the NewWar event will be fired.
+
+### NewWarMonitor
+Queries the current war cache for any war not yet announced. Fires the NewWar event, and adds the war to the War table.
+
+### PlayerMonitor
+Iterates the Players cached table searching for players with Download set to true.
+
+### WarMonitor
+Iterates over the Wars cached table. Queries the CurrentWar cached table for both clans in the war. Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
+
+## Migrating from version 1
+Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. A future release of CocApi.Cache will remove this method and all traces of SQLite.
+
 ## Logging
-Hook into CocApi.Library.HttpRequestResult and CocApi.Cache.Library.Log to receive events from the libraries.
+Hook into CocApi.Library.HttpRequestResult, CocApi.Library.Log, and CocApi.Cache.Library.Log to receive events from the libraries.
 
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).

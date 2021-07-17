@@ -54,11 +54,11 @@ namespace CocApi.Model
         //    return HashCode.Combine(PreparationStartTime, Clans.Values.First().Tag);
         //}
 
-        private SortedDictionary<string, WarClan> _clans = new SortedDictionary<string, WarClan>();
+        private SortedDictionary<string, WarClan> _clans = new();
 
         private bool _isInitialized;
 
-        private readonly object _clansLock = new object();
+        private readonly object _clansLock = new();
 
         public SortedDictionary<string, WarClan> Clans
         {
@@ -84,9 +84,9 @@ namespace CocApi.Model
             }
         }
 
-        private List<ClanWarAttack> _attacks = new List<ClanWarAttack>();
+        private List<ClanWarAttack> _attacks = new();
 
-        private readonly object _attacksLock = new object();
+        private readonly object _attacksLock = new();
 
         public List<ClanWarAttack> Attacks
         {

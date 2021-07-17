@@ -17,18 +17,16 @@ namespace CocApi
             TokenTimeOut = tokenTimeOut;
         }
 
-        internal Token Build() => new(RawValue, TokenTimeOut);
+        internal Token Build(TokenProvider tokenProvider) => new(RawValue, TokenTimeOut, tokenProvider);
     }
 
     internal sealed class Token
     {
-        private TimeSpan TokenTimeOut { get; set; }
+        internal string RawValue { get; }
+        private readonly TokenProvider _tokenProvider;
+        private readonly System.Timers.Timer _timer = new();
 
-        private readonly string _rawValue;
-
-        private DateTime _lastUsedUtc;
-
-        public Token(string token, TimeSpan tokenTimeOut)
+        public Token(string token, TimeSpan tokenTimeOut, TokenProvider tokenProvider)
         {
             if (string.IsNullOrWhiteSpace(token))
                 throw new ArgumentException("Token must not be null or whitespace.", nameof(token));
@@ -36,33 +34,18 @@ namespace CocApi
             if (tokenTimeOut == null || tokenTimeOut == TimeSpan.MinValue)
                 throw new ArgumentException("Invalid token timeout value.", nameof(tokenTimeOut));
 
-            _rawValue = token;
-            TokenTimeOut = tokenTimeOut;
+            RawValue = token;
+            _tokenProvider = tokenProvider;
+
+            _timer.Interval = tokenTimeOut.TotalMilliseconds;
+            _timer.Elapsed += OnTimer;
+            _timer.AutoReset = true;
+            _timer.Start();
         }
 
-        private readonly SemaphoreSlim _semaphore = new(1, 1);
-
-        public async Task<string> GetAsync(CancellationToken? cancellationToken = null)
+        private void OnTimer(object sender, ElapsedEventArgs e)
         {
-            await _semaphore.WaitAsync(cancellationToken.GetValueOrDefault());
-
-            try
-            {
-                DateTime now = DateTime.UtcNow;
-
-                DateTime available = _lastUsedUtc.Add(TokenTimeOut);
-
-                if (now < available)            
-                    await Task.Delay(available - now, cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-
-                _lastUsedUtc = now;
-
-                return _rawValue;
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        } 
+            _tokenProvider.AvailableTokens.Writer.TryWrite(this);
+        }
     }
 }

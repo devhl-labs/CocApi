@@ -214,7 +214,7 @@ namespace CocApi.Cache
             catch (Exception e)
             {
                 if (!_cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "SendWarAnnouncements error", e));
+                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "SendWarAnnouncements error"));
 
                 //throw;
             }

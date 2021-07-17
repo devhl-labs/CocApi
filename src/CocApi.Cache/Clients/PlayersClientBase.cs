@@ -175,7 +175,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live for an ApiResponse.", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -193,7 +193,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while getting the time to live.", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live."));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -231,22 +231,28 @@ namespace CocApi.Cache
             return cachedPlayer;
         }
 
-        internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs events)
+        internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs eventArgs)
         {
-            await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
+            await Library.SendConcurrentEvent(this, () =>
+            {
+                PlayerUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+            },
+            eventArgs.CancellationToken);
 
-            try
-            {   
-                PlayerUpdated?.Invoke(this, events).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on player updated.", e));
-            }
-            finally
-            {
-                Library.ConcurrentEventsSemaphore.Release();
-            }
+            //await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
+
+            //try
+            //{   
+            //    PlayerUpdated?.Invoke(this, events).ConfigureAwait(false);
+            //}
+            //catch (Exception e)
+            //{
+            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on player updated.", e));
+            //}
+            //finally
+            //{
+            //    Library.ConcurrentEventsSemaphore.Release();
+            //}
         }
 
         protected virtual bool HasUpdated(Player? stored, Player fetched) => !fetched.Equals(stored);
@@ -259,7 +265,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, "An error occurred while checking if the player updated.", e));
+                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while checking if the player updated."));
 
                 return !fetched.Equals(stored);
             }

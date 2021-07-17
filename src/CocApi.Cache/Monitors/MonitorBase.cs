@@ -27,8 +27,6 @@ namespace CocApi.Cache
 
         protected abstract Task PollAsync();
 
-        private readonly object _startLock = new();
-
         private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -59,7 +57,7 @@ namespace CocApi.Cache
 
         private async Task RunAsync()
         {
-            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "running"));
+            Library.OnLog(this, new CocApi.LogEventArgs(LogLevel.Information, message: "running"));
 
             while (!_cancellationToken.IsCancellationRequested)
             {
@@ -76,13 +74,13 @@ namespace CocApi.Cache
                     if (_cancellationToken.IsCancellationRequested)
                         break;
                     else
-                        Library.OnLog(this, new LogEventArgs(LogLevel.Error, "errored", e));
+                        Library.OnLog(this, new CocApi.LogEventArgs(LogLevel.Error, e, "errored"));
                 }
             }
 
             _isRunning = false;
 
-            Library.OnLog(this, new LogEventArgs(LogLevel.Information, "stopped"));
+            Library.OnLog(this, new CocApi.LogEventArgs(LogLevel.Information, message: "stopped"));
         }
     }
 }
