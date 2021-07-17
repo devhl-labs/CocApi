@@ -16,8 +16,8 @@ Clan clan = await clansApi.FetchAsync("#clanTag");
 Clan clan = await clansClient.GetOrFetchClanAsync("#clanTag");
 ```
 
-## CocApi.Clash
-Use the static class CocApi.Clash for various helpers including FormatTag, TryFormatTag, an array of all troop information, and parsing army links.
+## Helper Methods
+Use the static class CocApi.Clash for various helpers including FormatTag, TryFormatTag, an array of all troop information, and parsing army links. The Clan class has static methods Clan.Donations, Clan.ClanMembersLeft, and Clan.ClanMembersJoined. The ClanWar class has static method ClanWar.NewAttacks. These clan and war methods are useful in the update events.
 
 ## Configuring CocApi
 Use the IHostBuilder extension method ConfigureCocApi to add all the API endpoints to your service provider.
@@ -85,9 +85,6 @@ This requires that the CocApi is already added to the service provider as shown 
         },
         playersClient => playersClient.Enabled = false)
 ```
-
-## Events
-In OnClanUpdated you may utilize Clan.Donations, Clan.ClanMembersLeft, and Clan.ClanMembersJoined. In OnClanWarUpdated you may utilize ClanWar.NetAttacks.
 
 ## Monitors
 ### ActiveWarMonitor
