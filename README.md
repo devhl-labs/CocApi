@@ -86,6 +86,9 @@ This requires that the CocApi is already added to the service provider as shown 
         playersClient => playersClient.Enabled = false)
 ```
 
+## Events
+In OnClanUpdated you may utilize Clan.Donations, Clan.ClanMembersLeft, and Clan.ClanMembersJoined. In OnClanWarUpdated you may utilize ClanWar.NetAttacks.
+
 ## Monitors
 ### ActiveWarMonitor
 Downloads the current war for a clan which is warring one of your tracked clans, but otherwise would not be downloaded. This ensures the most recent data is available. It may help if a tracked clan's war log is private. It also helps get the final war stats in the event the clan searches for a new war immediately.
@@ -94,7 +97,7 @@ Downloads the current war for a clan which is warring one of your tracked clans,
 Downloads the clan, current war, war log, and league group for a given clan.
 
 ### ClanMembers
-Iterates the Clan cached table searching for any clan with DownloadMembers enabled. Every player present in the clan will be downloaded. Players added to the Players table by this monitor will have Download set to **false**. When the village leaves the tracked clan, it will no longer update and will eventually be removed from the cache.
+Iterates the Clan cached table searching for any clan with DownloadMembers enabled. Every player present in the clan will be downloaded. Players added to the Players table by this monitor will have Download set to **false**. When the village leaves the tracked clan, it will no longer update and will eventually be removed from the cache. If you wish to continue tracking these villages, on the OnClanUpdated event check for new members using `Clan.ClanMembersJoined(e.Stored, e.Fetched)` and add them to the PlayersClient with Download set to true.
 
 ### CwlWarMonitor
 Iterates over the Wars cached table for any war with a war tag. Then queries the API and fires any appropriate updates.
