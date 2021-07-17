@@ -2,17 +2,17 @@
 A wrapper for [developer.clashofclans.com](https://developer.clashofclans.com/#/) written in .Net 5.0. 
 CocApi is used to fetch results from the clash API. 
 CocApi.Cache will cache responses in a database of your choice.
-To keep objects up to date automatically and receive events on updates, add the tag to the village or clan ClientBase object.
+To keep objects up to date and receive events when the data changes, add the tag to the ClansClient or PlayersClient.
  
 ## Help  
 ![Discord Banner 2](https://discordapp.com/api/guilds/701245583444279328/widget.png?style=banner2)
 
 ## Using the library
 ```csharp
-// fetch commands directly query the api
+// query the api
 Clan clan = await clansApi.FetchAsync("#clanTag");
 
-// get commands query your cache database
+// query your cache or fall back to the api
 Clan clan = await clansClient.GetOrFetchClanAsync("#clanTag");
 ```
 
