@@ -481,28 +481,6 @@ namespace CocApi.Cache
                 ClanUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
             }, 
             eventArgs.CancellationToken);
-
-            //if (Interlocked.Read(ref Library.CurrentSemaphoreUsage) >= Library.MaxCount)
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Trace, "Max concurrent events reached."));
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{
-            //    Interlocked.Increment(ref Library.MaxCount);
-
-            //    ClanUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan updated.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-
-            //    Interlocked.Decrement(ref Library.MaxCount);
-            //}
         }
 
         internal async Task OnClanWarAddedAsync(WarAddedEventArgs eventArgs)
@@ -512,21 +490,6 @@ namespace CocApi.Cache
                 ClanWarAdded?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{               
-            //    ClanWarAdded?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error adding new clan war.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarEndingSoonAsync(WarEventArgs eventArgs)
@@ -536,21 +499,6 @@ namespace CocApi.Cache
                 ClanWarEndingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarEndingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war ending soon.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarEndNotSeenAsync(WarEventArgs eventArgs)
@@ -560,21 +508,6 @@ namespace CocApi.Cache
                 ClanWarEndNotSeen?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarEndNotSeen?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war end not seen.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarEndedAsync(WarEventArgs eventArgs)
@@ -584,21 +517,6 @@ namespace CocApi.Cache
                 ClanWarEnded?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarEnded?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war ended.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarLeagueGroupUpdatedAsync(ClanWarLeagueGroupUpdatedEventArgs eventArgs)
@@ -608,21 +526,6 @@ namespace CocApi.Cache
                 ClanWarLeagueGroupUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarLeagueGroupUpdated?.Invoke(this, events).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war league group updated.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarLogUpdatedAsync(ClanWarLogUpdatedEventArgs eventArgs)
@@ -632,21 +535,6 @@ namespace CocApi.Cache
                 ClanWarLogUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarLogUpdated?.Invoke(this, events).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war log updated.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarStartingSoonAsync(WarEventArgs eventArgs)
@@ -656,21 +544,6 @@ namespace CocApi.Cache
                 ClanWarStartingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarStartingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war starting soon.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         internal async Task OnClanWarUpdatedAsync(ClanWarUpdatedEventArgs eventArgs)
@@ -680,21 +553,6 @@ namespace CocApi.Cache
                 ClanWarUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(eventArgs.CancellationToken);
-
-            //try
-            //{
-            //    ClanWarUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on clan war updated.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         protected virtual bool HasUpdated(Clan? stored, Clan fetched) => !fetched.Equals(stored);

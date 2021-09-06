@@ -62,7 +62,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                OnLog(sender, new LogEventArgs(LogLevel.Error, e, "Error on clan updated."));
+                OnLog(sender, new LogEventArgs(LogLevel.Error, e /*, "Error on clan updated."*/)); // TODO: fix this error message
             }
             finally
             {

@@ -238,21 +238,6 @@ namespace CocApi.Cache
                 PlayerUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
-
-            //await Library.ConcurrentEventsSemaphore.WaitAsync(events.CancellationToken);
-
-            //try
-            //{   
-            //    PlayerUpdated?.Invoke(this, events).ConfigureAwait(false);
-            //}
-            //catch (Exception e)
-            //{
-            //    Library.OnLog(this, new LogEventArgs(LogLevel.Error, "Error on player updated.", e));
-            //}
-            //finally
-            //{
-            //    Library.ConcurrentEventsSemaphore.Release();
-            //}
         }
 
         protected virtual bool HasUpdated(Player? stored, Player fetched) => !fetched.Equals(stored);
