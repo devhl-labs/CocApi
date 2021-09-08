@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
+using CocApi.Cache.Services;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
@@ -16,31 +17,55 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public class ClansClientBase : ClientBase, IHostedService
+    public class ClansClientBase : ClientBase
     {
-        internal ConcurrentDictionary<string, CachedClan?> UpdatingClan { get; } = new();
-        internal ConcurrentDictionary<string, ClanWar?> UpdatingWar { get; } = new();
-        internal ConcurrentDictionary<string, ClanWar?> UpdatingCwlWar { get; } = new();
-
-        public ClansClientBase(ClansApi clansApi, PlayersClientBase playersClient, PlayersApi playersApi, 
+        public ClansClientBase(
+            ClansApi clansApi, 
             CacheDbContextFactoryProvider provider,
-            IOptions<ClanClientOptions> options)
-            : base(provider)
+            Synchronizer synchronizer,
+            ClanMonitor clanMonitor,
+            NewWarMonitor newWarMonitor,
+            NewCwlWarMonitor newCwlWarMonitor,
+            WarMonitor warMonitor,
+            CwlWarMonitor cwlWarMonitor
+            )
+        : base(provider)
         {
-            //Library._maxCount = options.Value.MaxConcurrentEvents;
-            //Library._concurrentEventsSemaphore = new SemaphoreSlim(options.Value.MaxConcurrentEvents, options.Value.MaxConcurrentEvents);
             _clansApi = clansApi;
-            _playersClient = playersClient;
-            _options = options;
-            _clanMonitor = new ClanMonitor(provider, clansApi, this, options);
-            _newWarMonitor = new NewWarMonitor(provider, this, options);
-            _newCwlWarMonitor = new NewCwlWarMonitor(provider, clansApi, this, options);
-            _warMonitor = new WarMonitor(provider, clansApi, this, options);
-            _activeWarMonitor = new ActiveWarMonitor(provider, clansApi, this, options);
-            _memberMonitor = new MemberMonitor(provider, playersClient, playersApi, options);
-            _cwlWarMonitor = new CwlWarMonitor(provider, clansApi, this, options);
+            _synchronizer = synchronizer;
+            _clanMonitor = clanMonitor;
+            _newWarMonitor = newWarMonitor;
+            _newCwlWarMonitor = newCwlWarMonitor;
+            _warMonitor = warMonitor;
+            _cwlWarMonitor = cwlWarMonitor;
+            
+            _clanMonitor.ClanUpdated += OnClanUpdatedAsync;
+            _clanMonitor.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;
+            _clanMonitor.ClanWarLogUpdated += OnClanWarLogUpdatedAsync;
+
+            _newWarMonitor.ClanWarAdded += OnClanWarAddedAsync;
+
+            _newCwlWarMonitor.ClanWarAdded += OnClanWarAddedAsync;
+
+            _warMonitor.ClanWarEnded += OnClanWarEndedAsync;
+            _warMonitor.ClanWarEndingSoon += OnClanWarEndingSoonAsync;
+            _warMonitor.ClanWarEndNotSeen += OnClanWarEndNotSeenAsync;
+            _warMonitor.ClanWarStartingSoon += OnClanWarStartingSoonAsync;
+            _warMonitor.ClanWarUpdated += OnClanWarUpdatedAsync;
+
+            _cwlWarMonitor.ClanWarEnded += OnClanWarEndedAsync;
+            _cwlWarMonitor.ClanWarEndingSoon += OnClanWarEndingSoonAsync;
+            _cwlWarMonitor.ClanWarStartingSoon += OnClanWarStartingSoonAsync;
+            _cwlWarMonitor.ClanWarUpdated += OnClanWarUpdatedAsync;
         }
 
+        private readonly ClansApi _clansApi;
+        private readonly Synchronizer _synchronizer;
+        private readonly ClanMonitor _clanMonitor;
+        private readonly NewWarMonitor _newWarMonitor;
+        private readonly NewCwlWarMonitor _newCwlWarMonitor;
+        private readonly WarMonitor _warMonitor;
+        private readonly CwlWarMonitor _cwlWarMonitor;
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
         public event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
         public event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
@@ -57,7 +82,7 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            while (!UpdatingClan.TryAdd(formattedTag, null))
+            while (!_synchronizer.UpdatingClan.TryAdd(formattedTag, null))
                 await Task.Delay(250).ConfigureAwait(false);
 
             try
@@ -71,33 +96,9 @@ namespace CocApi.Cache
             }
             finally
             {
-                UpdatingClan.TryRemove(formattedTag, out _);
+                _synchronizer.UpdatingClan.TryRemove(formattedTag, out _);
             }
         }
-
-        //public async Task AddAsync(string tag, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
-        //    => await AddAsync(new string[] { tag }, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers).ConfigureAwait(false);
-
-        //public async Task AddAsync(
-        //    IEnumerable<string> tags, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
-        //{
-        //    HashSet<string> formattedTags = new HashSet<string>();
-
-        //    foreach (string tag in tags)
-        //        formattedTags.Add(Clash.FormatTag(tag));
-
-        //    using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-        //    List<Context.CachedItems.CachedClan> cachedClans = await dbContext.Clans
-        //        .Where(c => formattedTags.Contains(c.Tag))
-        //        .ToListAsync()
-        //        .ConfigureAwait(false);
-
-        //    foreach (string formattedTag in formattedTags.Where(tag => !cachedClans.Any(c => c.Tag == tag)))
-        //        dbContext.Clans.Add(new Context.CachedItems.CachedClan(formattedTag, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers));
-
-        //    await dbContext.SaveChangesAsync().ConfigureAwait(false);
-        //}
 
         public async Task AddOrUpdateAsync(string tag, bool downloadClan = true, bool downloadWar = true, bool downloadLog = false, bool downloadGroup = true, bool downloadMembers = false)
             => await AddOrUpdateAsync(new string[] { tag }, downloadClan, downloadWar, downloadLog, downloadGroup, downloadMembers).ConfigureAwait(false);
@@ -287,288 +288,122 @@ namespace CocApi.Cache
         {
             Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
-            if (result == null)
-                result = await _clansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
-
-            return result;
+            return result ?? await _clansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
         {
             Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
-            if (result == null)
-                result = await _clansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
-
-            return result;
+            return result ?? await _clansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
         }
 
-        private readonly ClansApi _clansApi;
-        private readonly PlayersClientBase _playersClient;
-        private readonly IOptions<ClanClientOptions> _options;
-        private readonly ClanMonitor _clanMonitor;
-        private readonly NewWarMonitor _newWarMonitor;
-        private readonly NewCwlWarMonitor _newCwlWarMonitor;
-        private readonly WarMonitor _warMonitor;
-        private readonly ActiveWarMonitor _activeWarMonitor;
-        private readonly MemberMonitor _memberMonitor;
-        private readonly CwlWarMonitor _cwlWarMonitor;
-
-        private bool _isRunning;
-
-        private readonly SemaphoreSlim _semaphore = new(1, 1);
-
-        public async Task StartAsync(CancellationToken _)
+        internal async Task OnClanUpdatedAsync(object sender, ClanUpdatedEventArgs eventArgs)
         {
-            await _semaphore.WaitAsync(_).ConfigureAwait(false);
+            if (ClanUpdated == null)
+                return;
 
-            try
+            await Library.SendConcurrentEvent(this, async () =>
             {
-                if (_isRunning)
-                    throw new InvalidOperationException("Already running.");
-
-                _isRunning = true;
-
-                _stopRequestedTokenSource = new CancellationTokenSource();
-
-                if (_options.Value.Clans.Enabled)
-                    await _clanMonitor.StartAsync(_stopRequestedTokenSource.Token);
-                if (_options.Value.NewWars.Enabled)
-                    await _newWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
-                if (_options.Value.NewCwlWars.Enabled)
-                    await _newCwlWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
-                if (_options.Value.Wars.Enabled)
-                    await _warMonitor.StartAsync(_stopRequestedTokenSource.Token);
-                if (_options.Value.ActiveWars.Enabled)
-                    await _activeWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
-                if (_options.Value.ClanMembers.Enabled)
-                    await _memberMonitor.StartAsync(_stopRequestedTokenSource.Token);
-                if (_options.Value.CwlWars.Enabled)
-                    await _cwlWarMonitor.StartAsync(_stopRequestedTokenSource.Token);
-
-                await _playersClient.StartAsync(_stopRequestedTokenSource.Token);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-
-        public async Task StopAsync(CancellationToken _)
-        {
-            await _semaphore.WaitAsync(_).ConfigureAwait(false);
-
-            _stopRequestedTokenSource.Cancel();
-
-            try
-            {
-                List<Task> tasks = new();
-
-                if (_clanMonitor.RunTask != null)
-                    tasks.Add(_clanMonitor.RunTask);
-                if (_newWarMonitor.RunTask != null)
-                    tasks.Add(_newWarMonitor.RunTask);
-                if (_newCwlWarMonitor.RunTask != null)
-                    tasks.Add(_newCwlWarMonitor.RunTask);
-                if (_warMonitor.RunTask != null)
-                    tasks.Add(_warMonitor.RunTask);
-                if (_activeWarMonitor.RunTask != null)
-                    tasks.Add(_activeWarMonitor.RunTask);
-                if (_memberMonitor.RunTask != null)
-                    tasks.Add(_memberMonitor.RunTask);
-                if (_cwlWarMonitor.RunTask != null)
-                    tasks.Add(_cwlWarMonitor.RunTask);
-
-                tasks.Add(_playersClient.StopAsync(_));
-
-                await Task.WhenAll(tasks).ConfigureAwait(false);
-
-                _isRunning = false;
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-
-        internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
-        {
-            try
-            {
-                TimeSpan result = await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
-
-                return result < TimeSpan.Zero
-                    ? TimeSpan.Zero
-                    : result;
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."));
-
-                return TimeSpan.FromMinutes(0);
-            }
-        }
-
-        internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(Exception exception) where T : class
-        {
-            try
-            {
-                TimeSpan result = await TimeToLiveAsync<T>(exception).ConfigureAwait(false);
-
-                return result < TimeSpan.Zero
-                    ? TimeSpan.Zero
-                    : result;
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live."));
-
-                return TimeSpan.FromMinutes(0);
-            }
-        }
-
-        protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception) where T : class
-        {
-            if (typeof(T) == typeof(ClanWarLeagueGroup))
-            {
-                if (Clash.IsCwlEnabled)
-                    return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(20));
-                else
-                    return new ValueTask<TimeSpan>(
-                        new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
-                            .AddMonths(1)
-                            .Subtract(DateTime.UtcNow));
-            }
-
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-        }
-
-        protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
-        {
-            if (apiResponse is ApiResponse<Clan>)
-                return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-
-            if (apiResponse is ApiResponse<ClanWarLog>)
-                return apiResponse.StatusCode == HttpStatusCode.Forbidden
-                    ? new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2))
-                    : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-
-            if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)            
-                if (!Clash.IsCwlEnabled || 
-                    (group.Content?.State == GroupState.Ended && DateTime.UtcNow.Month == group.Content.Season.Month) || 
-                    (group.Content == null && DateTime.UtcNow.Day >= 3))
-                    return new ValueTask<TimeSpan>(
-                        new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
-                            .AddMonths(1)
-                            .Subtract(DateTime.UtcNow));            
-
-            if (apiResponse is ApiResponse<ClanWar> war)
-            {
-                if (war.StatusCode == HttpStatusCode.Forbidden)
-                    return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
-
-                if (war.Content?.State == WarState.Preparation)
-                    return new ValueTask<TimeSpan>(war.Content.StartTime.AddHours(-1) - DateTime.UtcNow);
-            }
-
-            return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-        }
-
-        internal async Task OnClanUpdatedAsync(ClanUpdatedEventArgs eventArgs)
-        {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+                await ClanUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
             }, 
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarAddedAsync(WarAddedEventArgs eventArgs)
+        internal async Task OnClanWarAddedAsync(object sender, WarAddedEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
+            if (ClanWarAdded == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () =>
             {
-                ClanWarAdded?.Invoke(this, eventArgs).ConfigureAwait(false);
+                await ClanWarAdded.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarEndingSoonAsync(WarEventArgs eventArgs)
+        internal async Task OnClanWarEndingSoonAsync(object sender, WarEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarEndingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
+            if (ClanWarEndingSoon == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () => 
+            { 
+                await ClanWarEndingSoon.Invoke(this, eventArgs).ConfigureAwait(false); 
+            }, 
+            eventArgs.CancellationToken);
+        }
+
+        internal async Task OnClanWarEndNotSeenAsync(object sender, WarEventArgs eventArgs)
+        {
+            if (ClanWarEndNotSeen == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () => 
+            { 
+                await ClanWarEndNotSeen.Invoke(this, eventArgs).ConfigureAwait(false); 
+            }, 
+            eventArgs.CancellationToken);
+        }
+
+        internal async Task OnClanWarEndedAsync(object sender, WarEventArgs eventArgs)
+        {
+            if (ClanWarEnded == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () =>
+            { 
+                await ClanWarEnded.Invoke(this, eventArgs).ConfigureAwait(false); 
             },
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarEndNotSeenAsync(WarEventArgs eventArgs)
+        internal async Task OnClanWarLeagueGroupUpdatedAsync(object sender, ClanWarLeagueGroupUpdatedEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarEndNotSeen?.Invoke(this, eventArgs).ConfigureAwait(false);
-            },
-            eventArgs.CancellationToken);
+            if (ClanWarLeagueGroupUpdated == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () => 
+            {                 
+                await ClanWarLeagueGroupUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
+            }, 
+                eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarEndedAsync(WarEventArgs eventArgs)
+        internal async Task OnClanWarLogUpdatedAsync(object sender, ClanWarLogUpdatedEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarEnded?.Invoke(this, eventArgs).ConfigureAwait(false);
-            },
-            eventArgs.CancellationToken);
+            if (ClanWarLogUpdated == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () => 
+            { 
+                await ClanWarLogUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
+            }, 
+                eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarLeagueGroupUpdatedAsync(ClanWarLeagueGroupUpdatedEventArgs eventArgs)
+        internal async Task OnClanWarStartingSoonAsync(object sender, WarEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarLeagueGroupUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            },
-            eventArgs.CancellationToken);
+            if (ClanWarStartingSoon == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () => 
+            { 
+                await ClanWarStartingSoon.Invoke(this, eventArgs).ConfigureAwait(false); 
+            }, 
+                eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarLogUpdatedAsync(ClanWarLogUpdatedEventArgs eventArgs)
+        internal async Task OnClanWarUpdatedAsync(object sender, ClanWarUpdatedEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarLogUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            },
-            eventArgs.CancellationToken);
-        }
+            if (ClanWarUpdated == null)
+                return;
 
-        internal async Task OnClanWarStartingSoonAsync(WarEventArgs eventArgs)
-        {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarStartingSoon?.Invoke(this, eventArgs).ConfigureAwait(false);
-            },
-            eventArgs.CancellationToken);
-        }
-
-        internal async Task OnClanWarUpdatedAsync(ClanWarUpdatedEventArgs eventArgs)
-        {
-            await Library.SendConcurrentEvent(this, () =>
-            {
-                ClanWarUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
-            },
-            eventArgs.CancellationToken);
-        }
-
-        protected virtual bool HasUpdated(Clan? stored, Clan fetched) => !fetched.Equals(stored);
-
-        internal bool HasUpdatedOrDefault(Clan? stored, Clan fetched)
-        {
-            try
-            {
-                return HasUpdated(stored, fetched);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while checking if the clan updated."));
-
-                return !fetched.Equals(stored);
-            }
+            await Library.SendConcurrentEvent(this, async () => 
+            { 
+                await ClanWarUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
+            }, 
+                eventArgs.CancellationToken);
         }
     }
 }

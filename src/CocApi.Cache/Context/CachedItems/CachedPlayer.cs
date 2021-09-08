@@ -14,19 +14,19 @@ namespace CocApi.Cache.Context.CachedItems
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, PlayersClientBase playersCacheBase, PlayersApi playersApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, TimeToLiveProvider ttl, PlayersApi playersApi, CancellationToken? cancellationToken = default)
         {
             try
             {
                 ApiResponse<Player> apiResponse = await playersApi.FetchPlayerResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedPlayer(tag, apiResponse, await playersCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
+                return new CachedPlayer(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e)
             {
                 cancellationToken?.ThrowIfCancellationRequested();
 
-                return new CachedPlayer(tag, await playersCacheBase.TimeToLiveOrDefaultAsync(e).ConfigureAwait(false));
+                return new CachedPlayer(tag, await ttl.TimeToLiveOrDefaultAsync<Player>(e).ConfigureAwait(false));
             }
         }
 
@@ -86,11 +86,18 @@ namespace CocApi.Cache.Context.CachedItems
 
         private string _tag;
 
-        public string Tag { get { return _tag; } internal set { _tag = CocApi.Clash.FormatTag(value); } }
+        public string Tag 
+        { 
+            get { return _tag; } 
+            internal set { _tag = CocApi.Clash.FormatTag(value); } 
+        }
 
         private string? _clanTag;
 
-        public string? ClanTag { get { return _clanTag; } internal set { _clanTag = value == null ? null : CocApi.Clash.FormatTag(value); }
+        public string? ClanTag 
+        { 
+            get { return _clanTag; } 
+            internal set { _clanTag = value == null ? null : CocApi.Clash.FormatTag(value); }
         }
 
         public int Id { get; internal set; }

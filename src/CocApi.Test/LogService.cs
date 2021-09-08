@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace CocApi.Test
 {
@@ -80,6 +81,32 @@ namespace CocApi.Test
 
                 Console.WriteLine();
             }
+        }
+
+        public static Task OnLog(object sender, LogEventArgs log)
+        {
+            Log(
+                log.LogLevel,
+                sender.GetType().Name,
+                new string?[] { string.Format(log.MessageTemplate ?? "", log.Params ?? Array.Empty<string>()),
+                    log.Exception?.Message,
+                    log.Exception?.InnerException?.Message });
+
+            return Task.CompletedTask;
+        }
+
+        public static Task OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
+        {
+            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
+
+            if (log.HttpRequestResult is HttpRequestException exception)
+                Log(LogLevel.Warning, sender.GetType().Name, seconds, exception.Path, exception.Message, exception.InnerException?.Message);
+            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)
+                Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);
+            else
+                Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.Path);
+
+            return Task.CompletedTask;
         }
     }
 }

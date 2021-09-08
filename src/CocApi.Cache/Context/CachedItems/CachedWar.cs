@@ -12,14 +12,14 @@ namespace CocApi.Cache.Context.CachedItems
     public class CachedWar : CachedItem<ClanWar>
     {
         internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
-            string warTag, DateTime season, ClansClientBase clansCacheBase, 
+            string warTag, DateTime season, TimeToLiveProvider ttl, 
             ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
                 ApiResponse<ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
-                TimeSpan timeToLive = await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
+                TimeSpan timeToLive = await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
                 if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
@@ -35,7 +35,7 @@ namespace CocApi.Cache.Context.CachedItems
             {
                 cancellationToken?.ThrowIfCancellationRequested();
 
-                return new CachedWar(warTag, await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
+                return new CachedWar(warTag, await ttl.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
             }
         }
 

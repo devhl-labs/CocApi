@@ -9,19 +9,19 @@ namespace CocApi.Cache.Context.CachedItems
 {
     public class CachedClan : CachedItem<Clan>
     {
-        internal static async Task<CachedClan> FromClanResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken)
+        internal static async Task<CachedClan> FromClanResponseAsync(string tag, TimeToLiveProvider ttl, ClansApi clansApi, CancellationToken? cancellationToken)
         {
             try
             {
                 ApiResponse<Clan> apiResponse = await clansApi.FetchClanResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClan(tag, apiResponse, await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
+                return new CachedClan(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e) 
             {
                 cancellationToken?.ThrowIfCancellationRequested();
 
-                return new CachedClan(tag, await clansCacheBase.TimeToLiveOrDefaultAsync<Clan>(e).ConfigureAwait(false));
+                return new CachedClan(tag, await ttl.TimeToLiveOrDefaultAsync<Clan>(e).ConfigureAwait(false));
             }
         }
 

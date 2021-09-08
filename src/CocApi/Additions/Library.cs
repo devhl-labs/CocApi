@@ -34,18 +34,18 @@ namespace CocApi
             HttpRequestResult?.Invoke(sender, log);
         }
 
-        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, string namedHttpClient, Action<TokenProviderBuilder> tokenProvider)
+        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, string namedHttpClient, Action<HostBuilderContext, TokenProviderBuilder> tokenProvider)
         {
-            builder.ConfigureServices((context, services) => AddCocApi(services, namedHttpClient, tokenProvider));
+            builder.ConfigureServices((context, services) => AddCocApi(services, context, namedHttpClient, tokenProvider));
 
             return builder;
         }
 
-        public static void AddCocApi(this IServiceCollection services, string namedHttpClient, Action<TokenProviderBuilder> tokenProvider)
+        public static void AddCocApi(this IServiceCollection services, HostBuilderContext host, string namedHttpClient, Action<HostBuilderContext, TokenProviderBuilder> tokenProvider)
         {
             TokenProviderBuilder tokenProviderBuilder = new();
 
-            tokenProvider(tokenProviderBuilder);
+            tokenProvider(host, tokenProviderBuilder);
 
             services.AddSingleton(tokenProviderBuilder.Build());
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace CocApi.Test
 {
@@ -9,7 +10,10 @@ namespace CocApi.Test
         {
             var optionsBuilder = new DbContextOptionsBuilder<CocApi.Cache.CacheDbContext>();
 
-            optionsBuilder.UseNpgsql(Program.GetEnvironmentVariable("POSTGRES_COCAPI_TEST_DEV"), b => b.MigrationsAssembly("CocApi.Test"));
+            string connection = Environment.GetEnvironmentVariable("POSTGRES_COCAPI_TEST_DEV", EnvironmentVariableTarget.Machine)
+                ?? throw new Exception($"Environment variable not found.");
+
+            optionsBuilder.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
 
             return new CocApi.Cache.CacheDbContext(optionsBuilder.Options);
         }

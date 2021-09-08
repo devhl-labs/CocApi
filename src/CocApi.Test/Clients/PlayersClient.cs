@@ -1,18 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache;
-using CocApi.Client;
-using CocApi.Model;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using CocApi.Cache.Services;
 
 namespace CocApi.Test
 {
     public class PlayersClient : PlayersClientBase
     {
-        public PlayersClient(CacheDbContextFactoryProvider cacheContextOptions, PlayersApi playersApi, IOptions<MonitorOptions> options) 
-            : base(playersApi, cacheContextOptions, options)
+        public PlayersClient(
+            CacheDbContextFactoryProvider cacheContextOptions, 
+            PlayersApi playersApi, 
+            PlayerMonitor playerMonitor,
+            MemberMonitor memberMonitor,
+            Synchronizer synchronizer) 
+        : base(playersApi, cacheContextOptions, playerMonitor, memberMonitor, synchronizer)
         {
             PlayerUpdated += OnPlayerUpdated;
         }
@@ -22,22 +23,6 @@ namespace CocApi.Test
             LogService.Log(LogLevel.Information, this.GetType().Name, "Player updated");
 
             return Task.CompletedTask;
-        }
-
-        protected override ValueTask<TimeSpan> TimeToLiveAsync(ApiResponse<Player> apiResponse)
-        {
-            // store the api results or exception for 10 minutes
-            // this controls how frequently the cache queries the api for an update
-            return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(0));
-        }
-
-        protected override ValueTask<TimeSpan> TimeToLiveAsync(Exception exception)
-        {
-            // store the api results or exception for 10 minutes
-            // this controls how frequently the cache queries the api for an update
-
-            // you can cast exception to TimeOutException or ApiException
-            return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(10));
         }
     }
 }

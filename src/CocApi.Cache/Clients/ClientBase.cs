@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Cache.Context.CachedItems;
 using Microsoft.EntityFrameworkCore;
@@ -19,26 +18,20 @@ namespace CocApi.Cache
 
         internal protected string[]? DbContextArgs { get; }
 
-        internal protected CancellationTokenSource _stopRequestedTokenSource = new();
-
         internal protected CacheDbContextFactoryProvider CacheContextOptions { get; }
 
         public ClientBase(CacheDbContextFactoryProvider provider)
         {
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
-
             CacheContextOptions = provider;
-
             EnsureMigrated();
         }
 
         public async Task ImportDataToVersion2(string connectionString)
         {
             await ImportWarsAsync(connectionString);
-
             await ImportClansAsync(connectionString);
-
             await ImportPlayersAsync(connectionString);
         }
 
@@ -279,10 +272,7 @@ namespace CocApi.Cache
             } while (oldPlayers.Count == 100);
         }
 
-        private DateTime? DateOrNull(DateTime dte)
-        {
-            return dte == DateTime.MinValue ? null : dte;
-        }
+        private static DateTime? DateOrNull(DateTime dte) => dte == DateTime.MinValue ? null : dte;
 
         private void EnsureMigrated()
         {

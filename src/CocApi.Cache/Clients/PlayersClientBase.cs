@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
+using CocApi.Cache.Services;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
@@ -15,22 +16,27 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public class PlayersClientBase : ClientBase, IHostedService
+    public class PlayersClientBase : ClientBase
     {
-        private readonly PlayersApi _playersApi;
-        private readonly IOptions<MonitorOptions> _options;
-        internal readonly PlayerMonitor PlayerMonitor;
-
-        public PlayersClientBase(PlayersApi playersApi, CacheDbContextFactoryProvider provider, IOptions<MonitorOptions> options) : base (provider)
+        public PlayersClientBase(
+            PlayersApi playersApi, 
+            CacheDbContextFactoryProvider provider,
+            PlayerMonitor playerMonitor,
+            MemberMonitor memberMonitor,
+            Synchronizer synchronizer) 
+        : base (provider)
         {
-            _playersApi = playersApi;
-            _options = options;
-            PlayerMonitor = new PlayerMonitor(provider, _playersApi, this, options);
+            PlayersApi = playersApi;
+            Synchronizer = synchronizer;
+
+            playerMonitor.PlayerUpdated += OnPlayerUpdatedAsync;
+            memberMonitor.MemberUpdated += OnMemberUpdatedAsync;
         }
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
-        internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new ConcurrentDictionary<string, Context.CachedItems.CachedPlayer?>();
+        internal PlayersApi PlayersApi { get; }
+        internal Synchronizer Synchronizer { get; }
 
         public async Task AddOrUpdateAsync(string tag, bool download = true)
             => await AddOrUpdateAsync(new string[] { tag }, download);
@@ -69,7 +75,7 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            while (!UpdatingVillage.TryAdd(formattedTag, null))            
+            while (!Synchronizer.UpdatingVillage.TryAdd(formattedTag, null))            
                 await Task.Delay(250);            
 
             try
@@ -83,7 +89,7 @@ namespace CocApi.Cache
             }
             finally
             {
-                UpdatingVillage.TryRemove(formattedTag, out _);
+                Synchronizer.UpdatingVillage.TryRemove(formattedTag, out _);
             }
         }
 
@@ -116,7 +122,7 @@ namespace CocApi.Cache
             Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             if (result == null)
-                result = await _playersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
+                result = await PlayersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
 
             return result;
         }
@@ -126,7 +132,7 @@ namespace CocApi.Cache
             Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             if (result == null)
-                result = await _playersApi.FetchPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
+                result = await PlayersApi.FetchPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
 
             return result;
         }
@@ -146,64 +152,6 @@ namespace CocApi.Cache
                 .ToListAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
         }
-
-        public Task StartAsync(CancellationToken _)
-        {
-            if (_options.Value.Enabled)
-                PlayerMonitor.StartAsync(_stopRequestedTokenSource.Token);
-
-            return Task.CompletedTask;
-        }
-
-        public async Task StopAsync(CancellationToken _)
-        {
-            _stopRequestedTokenSource.Cancel();
-
-            if (PlayerMonitor.RunTask != null)
-                await PlayerMonitor.RunTask;
-        }
-
-        internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync(ApiResponse<Player> apiResponse)
-        {
-            try
-            {
-                TimeSpan result = await TimeToLiveAsync(apiResponse).ConfigureAwait(false);
-
-                return result < TimeSpan.Zero
-                    ? TimeSpan.Zero
-                    : result;
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."));
-
-                return TimeSpan.FromMinutes(0);
-            }
-        }
-
-        internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync(Exception exception)
-        {
-            try
-            {
-                TimeSpan result = await TimeToLiveAsync(exception).ConfigureAwait(false);
-
-                return result < TimeSpan.Zero
-                    ? TimeSpan.Zero
-                    : result;
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live."));
-
-                return TimeSpan.FromMinutes(0);
-            }
-        }
-
-        protected virtual ValueTask<TimeSpan> TimeToLiveAsync(ApiResponse<Player> apiResponse)
-            => new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-
-        protected virtual ValueTask<TimeSpan> TimeToLiveAsync(Exception exception)
-            => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(0));
 
         public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
         {
@@ -231,29 +179,28 @@ namespace CocApi.Cache
             return cachedPlayer;
         }
 
-        internal async Task OnPlayerUpdatedAsync(PlayerUpdatedEventArgs eventArgs)
+        internal async Task OnPlayerUpdatedAsync(object sender, PlayerUpdatedEventArgs eventArgs)
         {
-            await Library.SendConcurrentEvent(this, () =>
+            if (PlayerUpdated == null)
+                return;
+
+            await Library.SendConcurrentEvent(this, async () =>
             {
-                PlayerUpdated?.Invoke(this, eventArgs).ConfigureAwait(false);
+                await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
             },
             eventArgs.CancellationToken);
         }
 
-        protected virtual bool HasUpdated(Player? stored, Player fetched) => !fetched.Equals(stored);
-
-        internal bool HasUpdatedOrDefault(Player? stored, Player fetched)
+        internal async Task OnMemberUpdatedAsync(object sender, MemberUpdatedEventArgs eventArgs)
         {
-            try
-            {
-                return HasUpdated(stored, fetched);
-            }
-            catch (Exception e)
-            {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while checking if the player updated."));
+            if (PlayerUpdated == null)
+                return;
 
-                return !fetched.Equals(stored);
-            }
+            await Library.SendConcurrentEvent(this, async () =>
+            {
+                await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
+            },
+            eventArgs.CancellationToken);
         }
     }
 }

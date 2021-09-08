@@ -11,19 +11,19 @@ namespace CocApi.Cache.Models
 {
     public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
-        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, ClansClientBase clansCacheBase, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, TimeToLiveProvider ttl, ClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
                 ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.FetchClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClanWarLeagueGroup(tag, apiResponse, await clansCacheBase.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
+                return new CachedClanWarLeagueGroup(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
             }
             catch (Exception e)
             {
                 cancellationToken?.ThrowIfCancellationRequested();
 
-                return new CachedClanWarLeagueGroup(tag, await clansCacheBase.TimeToLiveOrDefaultAsync<ClanWarLeagueGroup>(e).ConfigureAwait(false));
+                return new CachedClanWarLeagueGroup(tag, await ttl.TimeToLiveOrDefaultAsync<ClanWarLeagueGroup>(e).ConfigureAwait(false));
             }
         }
 

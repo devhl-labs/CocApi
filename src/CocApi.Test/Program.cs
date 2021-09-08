@@ -8,6 +8,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Polly;
+using Microsoft.Extensions.Configuration;
+using CocApi.Api;
+using CocApi.Model;
 
 namespace CocApi.Test
 {
@@ -18,31 +21,40 @@ namespace CocApi.Test
             if (args.Any())
                 Console.WriteLine(args);
 
-            CocApi.Library.HttpRequestResult += OnHttpRequestResult;
+            CocApi.Library.HttpRequestResult += LogService.OnHttpRequestResult;
+            CocApi.Library.Log += LogService.OnLog;
+            CocApi.Cache.Library.Log += LogService.OnLog;
 
-            CocApi.Library.Log += OnLog;
+            IHost host = CreateHostBuilder(args).Build();
 
-            CocApi.Cache.Library.Log += OnLog;
+            LocationsApi locationsApi = host.Services.GetRequiredService<LocationsApi>();
+            LeaguesApi leaguesApi = host.Services.GetRequiredService<LeaguesApi>();
+            PlayersApi playersApi = host.Services.GetRequiredService<PlayersApi>();
+            await SanityCheck(locationsApi, leaguesApi, playersApi);
 
-            await CreateHostBuilder(args).Build().RunAsync();
+            PlayersClient playersClient = host.Services.GetRequiredService<PlayersClient>();
+            ClansClient clansClient = host.Services.GetRequiredService<ClansClient>();
+            await AddTestItems(playersClient, clansClient);
+
+            await host.RunAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
 
             // configure CocApi by naming your HttpClient, providing tokens, and defining the token timeout
-            .ConfigureCocApi("cocApi", tokenProvider =>
+            .ConfigureCocApi("cocApi", (host, tokenProvider) =>
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    string token = GetEnvironmentVariable($"TOKEN_{i}");
+                    string token = host.Configuration.GetValue<string>($"TOKEN_{i}");
                     
                     // you can go much lower than one second, fastest recommended speed is 33 milliseconds
                     tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
                 }
             })
 
-            .ConfigureCocApiCache<ClansClient, PlayersClient>(                
+            .ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(                
                 // tell the cache library how to query your database
                 provider => provider.Factory = new CacheDbContextFactory(),
                     c => {
@@ -79,34 +91,32 @@ namespace CocApi.Test
             })
             .ConfigureLogging(o => o.ClearProviders());
 
-        public static string GetEnvironmentVariable(string name)
-            => Environment.GetEnvironmentVariable(name, EnvironmentVariableTarget.Machine)
-            ?? throw new Exception($"No environment variable was found with name {name}");
 
-        private static Task OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
+
+        private static async Task AddTestItems(PlayersClient playersClient, ClansClient clansClient)
         {
-            string seconds = ((int)log.HttpRequestResult.Elapsed.TotalSeconds).ToString();
+            await playersClient.AddOrUpdateAsync("#29GPU9CUJ"); //squirrel man
 
-            if (log.HttpRequestResult is HttpRequestException exception)
-                LogService.Log(LogLevel.Warning, sender.GetType().Name, seconds, exception.Path, exception.Message, exception.InnerException?.Message);
-            else if (log.HttpRequestResult is HttpRequestNonSuccess nonSuccess)
-                LogService.Log(LogLevel.Debug, sender.GetType().Name, seconds, nonSuccess.Path, nonSuccess.Reason);
-            else
-                LogService.Log(LogLevel.Information, sender.GetType().Name, seconds, log.HttpRequestResult.Path);
-
-            return Task.CompletedTask;
+            await clansClient.AddOrUpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
+            await clansClient.AddOrUpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
+            await clansClient.AddOrUpdateAsync("#28RUGUYJU", downloadMembers: false); //devhls lab
+            await clansClient.AddOrUpdateAsync("#2C8V29YJ", downloadMembers: false); // russian clan
+            await clansClient.AddOrUpdateAsync("#JYULPG28", downloadMembers: false); // inphase
+            await clansClient.AddOrUpdateAsync("#2P0YUY0L0", downloadMembers: false); // testing closed war log
+            await clansClient.AddOrUpdateAsync("#PJYPYG9P", downloadMembers: false); // war heads
+            await clansClient.AddOrUpdateAsync("#2900Y0PP2"); // crimine sas
         }
 
-        private static Task OnLog(object sender, LogEventArgs log)
+        private static async Task SanityCheck(LocationsApi locationsApi, LeaguesApi leaguesApi, PlayersApi playersApi)
         {
-            LogService.Log(
-                log.LogLevel, 
-                sender.GetType().Name, 
-                new string?[] { string.Format(log.MessageTemplate ?? "", log.Params ?? Array.Empty<string>()), 
-                    log.Exception?.Message, 
-                    log.Exception?.InnerException?.Message });
+            var playerGlobalRankings = await locationsApi.FetchPlayerRankingAsync("global");
+            var playerVersusGlobalRankings = await locationsApi.FetchPlayerVersusRankingAsync("global");
+            var clanGlobalRankings = await locationsApi.FetchClanRankingOrDefaultAsync("global");
+            var clanGlobalVersusRankings = await locationsApi.FetchClanVersusRankingAsync("global");
 
-            return Task.CompletedTask;
+            var leagueList = await leaguesApi.FetchWarLeaguesOrDefaultAsync();
+
+            var playerToken = await playersApi.VerifyTokenResponseAsync("#29GPU9CUJ", new VerifyTokenRequest("a"));
         }
     }
 }
