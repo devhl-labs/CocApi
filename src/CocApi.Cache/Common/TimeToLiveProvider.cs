@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using CocApi.Client;
 using CocApi.Model;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace CocApi.Cache
 {
@@ -20,7 +21,8 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."));
+                await Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."))
+                    .ConfigureAwait(false);
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -38,7 +40,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live."));
+                await Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live.")).ConfigureAwait(false);
 
                 return TimeSpan.FromMinutes(0);
             }

@@ -84,15 +84,10 @@ namespace CocApi.Cache
         public static class TableNames
         {
             public static string Clans { get; set; } = "clan";
-
             public static string CurrentWar { get; set; } = "current_war";
-
             public static string WarLog { get; set; } = "war_log";
-
             public static string Group { get; set; } = "group";
-
             public static string Player { get; set; } = "player";
-
             public static string War { get; set; } = "war";
         }
 
@@ -126,7 +121,7 @@ namespace CocApi.Cache
                 });
         }
 
-        private static void AddClansClient<TClansClient>(this IServiceCollection services, Action<ClanClientOptions>? clanClientOptions)
+        private static void AddClansClient<TClansClient>(this IServiceCollection services, Action<CacheOptions>? clanClientOptions)
             where TClansClient : ClansClientBase
         {
             if (clanClientOptions != null)
@@ -146,14 +141,15 @@ namespace CocApi.Cache
         {
             services.AddSingleton<TTimeToLiveProvider>();
             services.AddSingleton<Synchronizer>();
-            services.AddSingleton<ActiveWarMonitor>();
-            services.AddSingleton<ClanMonitor>();
-            services.AddSingleton<CwlWarMonitor>();
-            services.AddSingleton<MemberMonitor>();
-            services.AddSingleton<NewCwlWarMonitor>();
-            services.AddSingleton<NewWarMonitor>();
-            services.AddSingleton<PlayerMonitor>();
-            services.AddSingleton<WarMonitor>();
+            services.AddSingleton<ActiveWarService>();
+            services.AddSingleton<ClanService>();
+            services.AddSingleton<CwlWarService>();
+            services.AddSingleton<MemberService>();
+            services.AddSingleton<NewCwlWarService>();
+            services.AddSingleton<NewWarService>();
+            services.AddSingleton<PlayerService>();
+            services.AddSingleton<WarService>();
+            services.AddSingleton<DeleteStalePlayerService>();
         }
 
 
@@ -164,7 +160,7 @@ namespace CocApi.Cache
             this IServiceCollection services,
             Action<CacheDbContextFactoryProvider> provider,
             int maxConcurrentEvents = 25,
-            Action<ClanClientOptions>? clanClientOptions = null, 
+            Action<CacheOptions>? clanClientOptions = null, 
             Action<MonitorOptions>? playerClientOptions = null)
             => AddCocApiCache<ClansClientBase, PlayersClientBase, TimeToLiveProvider>(
                 services, provider, clanClientOptions, playerClientOptions, maxConcurrentEvents);
@@ -172,7 +168,7 @@ namespace CocApi.Cache
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IServiceCollection services, 
             Action<CacheDbContextFactoryProvider> provider,
-            Action<ClanClientOptions>? clanClientOptions = null,
+            Action<CacheOptions>? clanClientOptions = null,
             Action<MonitorOptions>? playerClientOptions = null,
             int maxConcurrentEvents = 25) 
             where TClansClient : ClansClientBase
@@ -198,20 +194,21 @@ namespace CocApi.Cache
 
             services.AddClansClient<TClansClient>(clanClientOptions);
 
-            services.AddHostedService(services => services.GetRequiredService<ActiveWarMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<ClanMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<CwlWarMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<MemberMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<NewCwlWarMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<NewWarMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<PlayerMonitor>());
-            services.AddHostedService(services => services.GetRequiredService<WarMonitor>());
+            services.AddHostedService(services => services.GetRequiredService<ActiveWarService>());
+            services.AddHostedService(services => services.GetRequiredService<ClanService>());
+            services.AddHostedService(services => services.GetRequiredService<CwlWarService>());
+            services.AddHostedService(services => services.GetRequiredService<MemberService>());
+            services.AddHostedService(services => services.GetRequiredService<NewCwlWarService>());
+            services.AddHostedService(services => services.GetRequiredService<NewWarService>());
+            services.AddHostedService(services => services.GetRequiredService<PlayerService>());
+            services.AddHostedService(services => services.GetRequiredService<WarService>());
+            services.AddHostedService(services => services.GetRequiredService<DeleteStalePlayerService>());
         }
 
         public static IHostBuilder ConfigureCocApiCache(
             this IHostBuilder builder,
             Action<CacheDbContextFactoryProvider> provider,
-            Action<ClanClientOptions>? clanClientOptions = null,
+            Action<CacheOptions>? clanClientOptions = null,
             Action<MonitorOptions>? playerClientOptions = null,
             int maxConcurrentEvents = 25)
             => ConfigureCocApiCache<ClansClientBase, PlayersClientBase, TimeToLiveProvider>(
@@ -220,7 +217,7 @@ namespace CocApi.Cache
         public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IHostBuilder builder,
             Action<CacheDbContextFactoryProvider> provider,
-            Action<ClanClientOptions>? clanClientOptions = null,
+            Action<CacheOptions>? clanClientOptions = null,
             Action<MonitorOptions>? playerClientOptions = null,
             int maxConcurrentEvents = 25) 
             where TClansClient : ClansClientBase

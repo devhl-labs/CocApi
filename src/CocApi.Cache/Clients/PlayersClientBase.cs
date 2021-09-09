@@ -21,13 +21,12 @@ namespace CocApi.Cache
         public PlayersClientBase(
             PlayersApi playersApi, 
             CacheDbContextFactoryProvider provider,
-            PlayerMonitor playerMonitor,
-            MemberMonitor memberMonitor,
+            PlayerService playerMonitor,
+            MemberService memberMonitor,
             Synchronizer synchronizer) 
-        : base (provider)
+        : base (provider, synchronizer)
         {
             PlayersApi = playersApi;
-            Synchronizer = synchronizer;
 
             playerMonitor.PlayerUpdated += OnPlayerUpdatedAsync;
             memberMonitor.MemberUpdated += OnMemberUpdatedAsync;
@@ -35,15 +34,13 @@ namespace CocApi.Cache
 
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
-        internal PlayersApi PlayersApi { get; }
-        internal Synchronizer Synchronizer { get; }
+        public PlayersApi PlayersApi { get; }
 
-        public async Task AddOrUpdateAsync(string tag, bool download = true)
-            => await AddOrUpdateAsync(new string[] { tag }, download);
+        public async Task AddOrUpdateAsync(string tag, bool download = true) => await AddOrUpdateAsync(new string[] { tag }, download);
 
         public async Task AddOrUpdateAsync(IEnumerable<string> tags, bool download = true)
         {
-            HashSet<string> formattedTags = new HashSet<string>();
+            HashSet<string> formattedTags = new();
 
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
@@ -93,7 +90,7 @@ namespace CocApi.Cache
             }
         }
 
-        public async Task<CachedPlayer> GetCachedPlayerAsync(string tag, CancellationToken? cancellationToken = default)
+        public async Task<CachedPlayer> GetPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -105,7 +102,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<CachedPlayer?> GetCachedPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
+        public async Task<CachedPlayer?> GetPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -119,7 +116,7 @@ namespace CocApi.Cache
 
         public async Task<Player> GetOrFetchPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Player? result = (await GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             if (result == null)
                 result = await PlayersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
@@ -129,7 +126,7 @@ namespace CocApi.Cache
 
         public async Task<Player?> GetOrFetchPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Player? result = (await GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             if (result == null)
                 result = await PlayersApi.FetchPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
@@ -137,7 +134,7 @@ namespace CocApi.Cache
             return result;
         }
 
-        public async Task<List<CachedPlayer>> GetCachedPlayersAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)
+        public async Task<List<CachedPlayer>> GetPlayersAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)
         {
             List<string> formattedTags = new List<string>();
 
@@ -151,32 +148,6 @@ namespace CocApi.Cache
                 .Where(i => formattedTags.Contains(i.Tag))
                 .ToListAsync(cancellationToken.GetValueOrDefault())
                 .ConfigureAwait(false);
-        }
-
-        public async Task<CachedPlayer> UpdateAsync(string tag, bool download = true)
-        {
-            string formattedTag = Clash.FormatTag(tag);
-
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-            CachedPlayer cachedPlayer = await dbContext.Players
-                .FirstOrDefaultAsync(v => v.Tag == formattedTag)
-                .ConfigureAwait(false);
-
-            if (cachedPlayer != null && cachedPlayer.Download == download)
-                return cachedPlayer;
-
-            if (cachedPlayer == null)
-            {
-                cachedPlayer = new CachedPlayer(formattedTag);
-                dbContext.Players.Add(cachedPlayer);
-            }
-
-            cachedPlayer.Download = download;
-
-            await dbContext.SaveChangesAsync().ConfigureAwait(false);
-
-            return cachedPlayer;
         }
 
         internal async Task OnPlayerUpdatedAsync(object sender, PlayerUpdatedEventArgs eventArgs)

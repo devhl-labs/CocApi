@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CocApi.Cache.Context.CachedItems;
+using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -14,18 +15,18 @@ namespace CocApi.Cache
 
     public class ClientBase
     {
-        internal protected IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
+        public IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
 
-        internal protected string[]? DbContextArgs { get; }
+        public string[]? DbContextArgs { get; }
 
-        internal protected CacheDbContextFactoryProvider CacheContextOptions { get; }
+        internal Synchronizer Synchronizer { get; }
 
-        public ClientBase(CacheDbContextFactoryProvider provider)
+        public ClientBase(CacheDbContextFactoryProvider provider, Synchronizer synchronizer)
         {
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
-            CacheContextOptions = provider;
             EnsureMigrated();
+            Synchronizer = synchronizer;
         }
 
         public async Task ImportDataToVersion2(string connectionString)

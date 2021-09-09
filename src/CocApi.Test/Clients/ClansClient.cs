@@ -15,11 +15,11 @@ namespace CocApi.Test
             CacheDbContextFactoryProvider dbContextOptions, 
             ClansApi clansApi, 
             Synchronizer synchronizer,
-            ClanMonitor clanMonitor,
-            NewWarMonitor newWarMonitor,
-            NewCwlWarMonitor newCwlWarMonitor,
-            WarMonitor warMonitor,
-            CwlWarMonitor cwlWarMonitor) 
+            ClanService clanMonitor,
+            NewWarService newWarMonitor,
+            NewCwlWarService newCwlWarMonitor,
+            WarService warMonitor,
+            CwlWarService cwlWarMonitor) 
             : base(clansApi, dbContextOptions, synchronizer, clanMonitor, newWarMonitor, newCwlWarMonitor, warMonitor, cwlWarMonitor)
         {
             ClanUpdated += OnClanUpdated;

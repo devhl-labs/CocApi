@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context.CachedItems;
 using CocApi.Cache.Services;
-using CocApi.Client;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -23,49 +17,38 @@ namespace CocApi.Cache
             ClansApi clansApi, 
             CacheDbContextFactoryProvider provider,
             Synchronizer synchronizer,
-            ClanMonitor clanMonitor,
-            NewWarMonitor newWarMonitor,
-            NewCwlWarMonitor newCwlWarMonitor,
-            WarMonitor warMonitor,
-            CwlWarMonitor cwlWarMonitor
+            ClanService clanService,
+            NewWarService newWarService,
+            NewCwlWarService newCwlWarService,
+            WarService warService,
+            CwlWarService cwlWarService
             )
-        : base(provider)
+        : base(provider, synchronizer)
         {
-            _clansApi = clansApi;
-            _synchronizer = synchronizer;
-            _clanMonitor = clanMonitor;
-            _newWarMonitor = newWarMonitor;
-            _newCwlWarMonitor = newCwlWarMonitor;
-            _warMonitor = warMonitor;
-            _cwlWarMonitor = cwlWarMonitor;
+            ClansApi = clansApi;
             
-            _clanMonitor.ClanUpdated += OnClanUpdatedAsync;
-            _clanMonitor.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;
-            _clanMonitor.ClanWarLogUpdated += OnClanWarLogUpdatedAsync;
+            clanService.ClanUpdated += OnClanUpdatedAsync;
+            clanService.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;
+            clanService.ClanWarLogUpdated += OnClanWarLogUpdatedAsync;
 
-            _newWarMonitor.ClanWarAdded += OnClanWarAddedAsync;
+            newWarService.ClanWarAdded += OnClanWarAddedAsync;
 
-            _newCwlWarMonitor.ClanWarAdded += OnClanWarAddedAsync;
+            newCwlWarService.ClanWarAdded += OnClanWarAddedAsync;
 
-            _warMonitor.ClanWarEnded += OnClanWarEndedAsync;
-            _warMonitor.ClanWarEndingSoon += OnClanWarEndingSoonAsync;
-            _warMonitor.ClanWarEndNotSeen += OnClanWarEndNotSeenAsync;
-            _warMonitor.ClanWarStartingSoon += OnClanWarStartingSoonAsync;
-            _warMonitor.ClanWarUpdated += OnClanWarUpdatedAsync;
+            warService.ClanWarEnded += OnClanWarEndedAsync;
+            warService.ClanWarEndingSoon += OnClanWarEndingSoonAsync;
+            warService.ClanWarEndNotSeen += OnClanWarEndNotSeenAsync;
+            warService.ClanWarStartingSoon += OnClanWarStartingSoonAsync;
+            warService.ClanWarUpdated += OnClanWarUpdatedAsync;
 
-            _cwlWarMonitor.ClanWarEnded += OnClanWarEndedAsync;
-            _cwlWarMonitor.ClanWarEndingSoon += OnClanWarEndingSoonAsync;
-            _cwlWarMonitor.ClanWarStartingSoon += OnClanWarStartingSoonAsync;
-            _cwlWarMonitor.ClanWarUpdated += OnClanWarUpdatedAsync;
+            cwlWarService.ClanWarEnded += OnClanWarEndedAsync;
+            cwlWarService.ClanWarEndingSoon += OnClanWarEndingSoonAsync;
+            cwlWarService.ClanWarStartingSoon += OnClanWarStartingSoonAsync;
+            cwlWarService.ClanWarUpdated += OnClanWarUpdatedAsync;
         }
 
-        private readonly ClansApi _clansApi;
-        private readonly Synchronizer _synchronizer;
-        private readonly ClanMonitor _clanMonitor;
-        private readonly NewWarMonitor _newWarMonitor;
-        private readonly NewCwlWarMonitor _newCwlWarMonitor;
-        private readonly WarMonitor _warMonitor;
-        private readonly CwlWarMonitor _cwlWarMonitor;
+        public ClansApi ClansApi { get; }
+
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
         public event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
         public event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
@@ -82,7 +65,7 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            while (!_synchronizer.UpdatingClan.TryAdd(formattedTag, null))
+            while (!Synchronizer.UpdatingClan.TryAdd(formattedTag, null))
                 await Task.Delay(250).ConfigureAwait(false);
 
             try
@@ -96,7 +79,7 @@ namespace CocApi.Cache
             }
             finally
             {
-                _synchronizer.UpdatingClan.TryRemove(formattedTag, out _);
+                Synchronizer.UpdatingClan.TryRemove(formattedTag, out _);
             }
         }
 
@@ -165,7 +148,7 @@ namespace CocApi.Cache
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
             return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
-                ?? await _clansApi.FetchClanWarLeagueGroupAsync(formattedTag, cancellationToken).ConfigureAwait(false);
+                ?? await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
@@ -175,7 +158,7 @@ namespace CocApi.Cache
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
             return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
-                ?? await _clansApi.FetchClanWarLeagueGroupOrDefaultAsync(formattedTag, cancellationToken).ConfigureAwait(false);
+                ?? await ClansApi.FetchClanWarLeagueGroupOrDefaultAsync(formattedTag, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<CachedWar> GetLeagueWarAsync(string warTag, DateTime season, CancellationToken? cancellationToken = null)
@@ -220,7 +203,7 @@ namespace CocApi.Cache
                     ClanWar? clanWar = (await GetLeagueWarOrDefaultAsync(warTag, group.Season, cancellationToken).ConfigureAwait(false))?.Content;
 
                     if (clanWar == null)
-                        clanWar = await _clansApi.FetchClanWarLeagueWarAsync(warTag, cancellationToken).ConfigureAwait(false);
+                        clanWar = await ClansApi.FetchClanWarLeagueWarAsync(warTag, cancellationToken).ConfigureAwait(false);
 
                     if (clanWar.PreparationStartTime.Month == group.Season.Month && clanWar.PreparationStartTime.Year == group.Season.Year)
                         result.Add(clanWar);
@@ -242,7 +225,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<CachedClan> GetCachedClanAsync(string tag, CancellationToken? cancellationToken = null)
+        public async Task<CachedClan> GetClanAsync(string tag, CancellationToken? cancellationToken = null)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -255,7 +238,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<CachedClan?> GetCachedClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
+        public async Task<CachedClan?> GetClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -268,7 +251,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<List<CachedClan>> GetCachedClansAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = null)
+        public async Task<List<CachedClan>> GetClansAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = null)
         {
             List<string> formattedTags = new();
 
@@ -286,19 +269,19 @@ namespace CocApi.Cache
 
         public async Task<Clan> GetOrFetchClanAsync(string tag, CancellationToken? cancellationToken = null)
         {
-            Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Clan? result = (await GetClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
-            return result ?? await _clansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
+            return result ?? await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
         {
-            Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Clan? result = (await GetClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
-            return result ?? await _clansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
+            return result ?? await ClansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
         }
 
-        internal async Task OnClanUpdatedAsync(object sender, ClanUpdatedEventArgs eventArgs)
+        private async Task OnClanUpdatedAsync(object sender, ClanUpdatedEventArgs eventArgs)
         {
             if (ClanUpdated == null)
                 return;
@@ -310,7 +293,7 @@ namespace CocApi.Cache
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarAddedAsync(object sender, WarAddedEventArgs eventArgs)
+        private async Task OnClanWarAddedAsync(object sender, WarAddedEventArgs eventArgs)
         {
             if (ClanWarAdded == null)
                 return;
@@ -322,7 +305,7 @@ namespace CocApi.Cache
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarEndingSoonAsync(object sender, WarEventArgs eventArgs)
+        private async Task OnClanWarEndingSoonAsync(object sender, WarEventArgs eventArgs)
         {
             if (ClanWarEndingSoon == null)
                 return;
@@ -334,7 +317,7 @@ namespace CocApi.Cache
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarEndNotSeenAsync(object sender, WarEventArgs eventArgs)
+        private async Task OnClanWarEndNotSeenAsync(object sender, WarEventArgs eventArgs)
         {
             if (ClanWarEndNotSeen == null)
                 return;
@@ -346,7 +329,7 @@ namespace CocApi.Cache
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarEndedAsync(object sender, WarEventArgs eventArgs)
+        private async Task OnClanWarEndedAsync(object sender, WarEventArgs eventArgs)
         {
             if (ClanWarEnded == null)
                 return;
@@ -358,7 +341,7 @@ namespace CocApi.Cache
             eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarLeagueGroupUpdatedAsync(object sender, ClanWarLeagueGroupUpdatedEventArgs eventArgs)
+        private async Task OnClanWarLeagueGroupUpdatedAsync(object sender, ClanWarLeagueGroupUpdatedEventArgs eventArgs)
         {
             if (ClanWarLeagueGroupUpdated == null)
                 return;
@@ -370,7 +353,7 @@ namespace CocApi.Cache
                 eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarLogUpdatedAsync(object sender, ClanWarLogUpdatedEventArgs eventArgs)
+        private async Task OnClanWarLogUpdatedAsync(object sender, ClanWarLogUpdatedEventArgs eventArgs)
         {
             if (ClanWarLogUpdated == null)
                 return;
@@ -382,7 +365,7 @@ namespace CocApi.Cache
                 eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarStartingSoonAsync(object sender, WarEventArgs eventArgs)
+        private async Task OnClanWarStartingSoonAsync(object sender, WarEventArgs eventArgs)
         {
             if (ClanWarStartingSoon == null)
                 return;
@@ -394,7 +377,7 @@ namespace CocApi.Cache
                 eventArgs.CancellationToken);
         }
 
-        internal async Task OnClanWarUpdatedAsync(object sender, ClanWarUpdatedEventArgs eventArgs)
+        private async Task OnClanWarUpdatedAsync(object sender, ClanWarUpdatedEventArgs eventArgs)
         {
             if (ClanWarUpdated == null)
                 return;

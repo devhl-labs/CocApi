@@ -10,8 +10,8 @@ namespace CocApi.Test
         public PlayersClient(
             CacheDbContextFactoryProvider cacheContextOptions, 
             PlayersApi playersApi, 
-            PlayerMonitor playerMonitor,
-            MemberMonitor memberMonitor,
+            PlayerService playerMonitor,
+            MemberService memberMonitor,
             Synchronizer synchronizer) 
         : base(playersApi, cacheContextOptions, playerMonitor, memberMonitor, synchronizer)
         {

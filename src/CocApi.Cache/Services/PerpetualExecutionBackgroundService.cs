@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -12,18 +13,22 @@ namespace CocApi.Cache.Services
         public DateTime RanAt { get; private set; }
         public DateTime CompletedAt { get; private set; }
         public int ExecutionsAttempted { get; private set; }
-
         public int ExecutionsCompleted { get; private set; }
 
-        public PerpetualExecutionBackgroundService(TimeSpan? beginExecutionAfter = null, TimeSpan? delayBetweenExecutions = null)
+     
+        private bool _isEnabled = true;
+
+
+        public PerpetualExecutionBackgroundService(TimeSpan? beginExecutionAfter, TimeSpan? delayBetweenExecutions)
         {
             BeginExecutionAfter = beginExecutionAfter ?? TimeSpan.Zero;
             DelayBetweenExecutions = delayBetweenExecutions ?? TimeSpan.Zero;
         }
 
-        protected abstract Task DoWorkAsync(CancellationToken cancellationToken);
 
-        private async Task TryDoWorkAsync(CancellationToken cancellationToken)
+        private protected abstract Task PollAsync(CancellationToken cancellationToken);
+
+        private async Task TryPollAsync(CancellationToken cancellationToken)
         {
             try
             {
@@ -31,7 +36,7 @@ namespace CocApi.Cache.Services
 
                 ExecutionsAttempted++;
 
-                await DoWorkAsync(cancellationToken);
+                await PollAsync(cancellationToken);
 
                 CompletedAt = DateTime.UtcNow;
 
@@ -40,17 +45,16 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Library.OnLog((T)(object)this, new LogEventArgs(LogLevel.Error, e));
+                     await Library.OnLog((T)(object)this, new LogEventArgs(LogLevel.Error, e)).ConfigureAwait(false);
             }
         }
 
-        private bool _isEnabled = true;
-
-        public void IsEnabled(bool enabled)
+        internal void IsEnabled(bool enabled)
         {
             _isEnabled = enabled;
         }
 
+        [EditorBrowsable(EditorBrowsableState.Never)]
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             try
@@ -60,7 +64,7 @@ namespace CocApi.Cache.Services
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     if (_isEnabled)
-                        await TryDoWorkAsync(cancellationToken);
+                        await TryPollAsync(cancellationToken);
 
                     await Task.Delay(DelayBetweenExecutions, cancellationToken);
                 }
@@ -68,8 +72,24 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Library.OnLog((T)(object)this, new LogEventArgs(LogLevel.Error, e));
+                    await Library.OnLog((T)(object)this, new LogEventArgs(LogLevel.Error, e)).ConfigureAwait(false);
             }
+        }
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override async Task StartAsync(CancellationToken cancellationToken)
+        {
+            await Library.OnLog((T)(object)this, new LogEventArgs(LogLevel.Information, null, "Starting"));
+
+            await base.StartAsync(cancellationToken);
+        }
+        
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            await Library.OnLog((T)(object)this, new LogEventArgs(LogLevel.Information, null, "Stoping"));
+
+            await base.StopAsync(cancellationToken);
         }
     }
 }

@@ -11,39 +11,122 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public sealed class WarMonitor : PerpetualMonitor<WarMonitor>
+    public sealed class WarService : PerpetualService<WarService>
     {
-        public event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarEndNotSeen;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarEnded;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
-        public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
+        internal event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
+        internal event AsyncEventHandler<WarEventArgs>? ClanWarEndNotSeen;
+        internal event AsyncEventHandler<WarEventArgs>? ClanWarEnded;
+        internal event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
+        internal event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
-        private readonly ClansApi _clansApi;
-        private readonly IOptions<ClanClientOptions> _options;
+
+        internal ClansApi ClansApi { get; }
+        internal IOptions<CacheOptions> Options { get; }
+        internal static bool Instantiated { get; private set; }
+        internal Synchronizer Synchronizer { get; }
+        internal TimeToLiveProvider TimeToLiveProvider { get; }
+
+
         private readonly HashSet<string> _unmonitoredClans = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
 
-        public static bool Instantiated { get; private set; }
 
-        public Synchronizer Synchronizer { get; }
-
-        public TimeToLiveProvider TimeToLiveProvider { get; }
-
-        public WarMonitor(
+        public WarService(
             CacheDbContextFactoryProvider provider,
             ClansApi clansApi,
             Synchronizer synchronizer,
             TimeToLiveProvider timeToLiveProvider,
-            IOptions<ClanClientOptions> options) 
+            IOptions<CacheOptions> options) 
         : base(provider)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
-            _clansApi = clansApi;
+            ClansApi = clansApi;
             //_clansClient = clansClient;
             Synchronizer = synchronizer;
             TimeToLiveProvider = timeToLiveProvider;
-            _options = options;
+            Options = options;
+        }
+
+
+        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        {
+            SetDateVariables();
+
+            MonitorOptions options = Options.Value.Wars;
+
+            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+
+            List<CachedWar> cachedWars = await dbContext.Wars
+                .Where(w =>
+                    string.IsNullOrWhiteSpace(w.WarTag) &&
+                    (w.ExpiresAt ?? min) < expires &&
+                    (w.KeepUntil ?? min) < now &&
+                    !w.IsFinal &&
+                    w.Id > _id)
+                .OrderBy(c => c.Id)
+                .Take(options.ConcurrentUpdates)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            _id = cachedWars.Count == options.ConcurrentUpdates
+                ? cachedWars.Max(c => c.Id)
+                : int.MinValue;
+
+            HashSet<string> tags = new();
+
+            foreach (CachedWar cachedWar in cachedWars)
+            {
+                tags.Add(cachedWar.ClanTag);
+                tags.Add(cachedWar.OpponentTag);
+            }
+
+            List<CachedClan> allCachedClans = await dbContext.Clans
+                .Where(c => tags.Contains(c.Tag))
+                .AsNoTracking()
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            List<Task> tasks = new();
+
+            HashSet<string> updatingWar = new();
+
+            try
+            {
+                foreach (CachedWar cachedWar in cachedWars)
+                {
+                    List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
+
+                    updatingWar.Add(cachedWar.Key);
+
+                    tasks.Add(
+                        UpdateWarAsync(
+                            dbContext, 
+                            cachedWar, 
+                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), 
+                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag), 
+                            cancellationToken));
+
+                    tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
+                }
+
+                await Task.WhenAll(tasks);
+
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            }
+            finally
+            {
+                foreach (string tag in updatingWar)
+                    Synchronizer.UpdatingWar.TryRemove(tag, out _);
+
+                foreach (string tag in _unmonitoredClans)
+                    Synchronizer.UpdatingClan.TryRemove(tag, out _);
+            }
+
+            // todo what am i doing with this?
+            if (_id == int.MinValue)
+                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
+            else
+                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task UpdateWarAsync(
@@ -102,7 +185,7 @@ namespace CocApi.Cache
                 _unmonitoredClans.Add(tag);
 
                 CachedClanWar cachedClanWar = await CachedClanWar
-                    .FromCurrentWarResponseAsync(tag, TimeToLiveProvider, _clansApi, cancellationToken)
+                    .FromCurrentWarResponseAsync(tag, TimeToLiveProvider, ClansApi, cancellationToken)
                     .ConfigureAwait(false);
 
                 cachedClanWar.Added = true;
@@ -189,87 +272,6 @@ namespace CocApi.Cache
                 if (!cancellationToken.IsCancellationRequested)
                     await Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "SendWarAnnouncements error")).ConfigureAwait(false);
             }
-        }
-
-        protected override async Task DoWorkAsync(CancellationToken cancellationToken)
-        {
-            SetDateVariables();
-
-            MonitorOptions options = _options.Value.Wars;
-
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
-
-            List<CachedWar> cachedWars = await dbContext.Wars
-                .Where(w =>
-                    string.IsNullOrWhiteSpace(w.WarTag) &&
-                    (w.ExpiresAt ?? min) < expires &&
-                    (w.KeepUntil ?? min) < now &&
-                    !w.IsFinal &&
-                    w.Id > _id)
-                .OrderBy(c => c.Id)
-                .Take(options.ConcurrentUpdates)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            _id = cachedWars.Count == options.ConcurrentUpdates
-                ? cachedWars.Max(c => c.Id)
-                : int.MinValue;
-
-            HashSet<string> tags = new();
-
-            foreach (CachedWar cachedWar in cachedWars)
-            {
-                tags.Add(cachedWar.ClanTag);
-                tags.Add(cachedWar.OpponentTag);
-            }
-
-            List<CachedClan> allCachedClans = await dbContext.Clans
-                .Where(c => tags.Contains(c.Tag))
-                .AsNoTracking()
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            List<Task> tasks = new();
-
-            HashSet<string> updatingWar = new();
-
-            try
-            {
-                foreach (CachedWar cachedWar in cachedWars)
-                {
-                    List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
-
-                    updatingWar.Add(cachedWar.Key);
-
-                    tasks.Add(
-                        UpdateWarAsync(
-                            dbContext, 
-                            cachedWar, 
-                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), 
-                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag), 
-                            cancellationToken));
-
-                    tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
-                }
-
-                await Task.WhenAll(tasks);
-
-                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-            }
-            finally
-            {
-                foreach (string tag in updatingWar)
-                    Synchronizer.UpdatingWar.TryRemove(tag, out _);
-
-                foreach (string tag in _unmonitoredClans)
-                    Synchronizer.UpdatingClan.TryRemove(tag, out _);
-            }
-
-            // todo what am i doing with this?
-            if (_id == int.MinValue)
-                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
-            else
-                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
     }
 }

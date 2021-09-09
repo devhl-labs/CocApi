@@ -9,8 +9,6 @@ using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Polly;
 using Microsoft.Extensions.Configuration;
-using CocApi.Api;
-using CocApi.Model;
 
 namespace CocApi.Test
 {
@@ -25,18 +23,7 @@ namespace CocApi.Test
             CocApi.Library.Log += LogService.OnLog;
             CocApi.Cache.Library.Log += LogService.OnLog;
 
-            IHost host = CreateHostBuilder(args).Build();
-
-            LocationsApi locationsApi = host.Services.GetRequiredService<LocationsApi>();
-            LeaguesApi leaguesApi = host.Services.GetRequiredService<LeaguesApi>();
-            PlayersApi playersApi = host.Services.GetRequiredService<PlayersApi>();
-            await SanityCheck(locationsApi, leaguesApi, playersApi);
-
-            PlayersClient playersClient = host.Services.GetRequiredService<PlayersClient>();
-            ClansClient clansClient = host.Services.GetRequiredService<ClansClient>();
-            await AddTestItems(playersClient, clansClient);
-
-            await host.RunAsync();
+            await CreateHostBuilder(args).Build().RunAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -88,35 +75,9 @@ namespace CocApi.Test
 
                 // this property is important if you query the api very fast
                 .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler() { MaxConnectionsPerServer = 100 });
+
+                services.AddHostedService<TestService>();
             })
             .ConfigureLogging(o => o.ClearProviders());
-
-
-
-        private static async Task AddTestItems(PlayersClient playersClient, ClansClient clansClient)
-        {
-            await playersClient.AddOrUpdateAsync("#29GPU9CUJ"); //squirrel man
-
-            await clansClient.AddOrUpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
-            await clansClient.AddOrUpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
-            await clansClient.AddOrUpdateAsync("#28RUGUYJU", downloadMembers: false); //devhls lab
-            await clansClient.AddOrUpdateAsync("#2C8V29YJ", downloadMembers: false); // russian clan
-            await clansClient.AddOrUpdateAsync("#JYULPG28", downloadMembers: false); // inphase
-            await clansClient.AddOrUpdateAsync("#2P0YUY0L0", downloadMembers: false); // testing closed war log
-            await clansClient.AddOrUpdateAsync("#PJYPYG9P", downloadMembers: false); // war heads
-            await clansClient.AddOrUpdateAsync("#2900Y0PP2"); // crimine sas
-        }
-
-        private static async Task SanityCheck(LocationsApi locationsApi, LeaguesApi leaguesApi, PlayersApi playersApi)
-        {
-            var playerGlobalRankings = await locationsApi.FetchPlayerRankingAsync("global");
-            var playerVersusGlobalRankings = await locationsApi.FetchPlayerVersusRankingAsync("global");
-            var clanGlobalRankings = await locationsApi.FetchClanRankingOrDefaultAsync("global");
-            var clanGlobalVersusRankings = await locationsApi.FetchClanVersusRankingAsync("global");
-
-            var leagueList = await leaguesApi.FetchWarLeaguesOrDefaultAsync();
-
-            var playerToken = await playersApi.VerifyTokenResponseAsync("#29GPU9CUJ", new VerifyTokenRequest("a"));
-        }
     }
 }
