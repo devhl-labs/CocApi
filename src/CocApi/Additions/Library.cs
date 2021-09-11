@@ -36,17 +36,29 @@ namespace CocApi
 
         public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, string namedHttpClient, Action<HostBuilderContext, TokenProviderBuilder> tokenProvider)
         {
-            builder.ConfigureServices((context, services) => AddCocApi(services, context, namedHttpClient, tokenProvider));
+            builder.ConfigureServices((context, services) =>
+            {
+                TokenProviderBuilder tokenProviderBuilder = new();
+
+                tokenProvider(context, tokenProviderBuilder);
+
+                AddCocApi(services, namedHttpClient, tokenProviderBuilder);
+            });
 
             return builder;
         }
 
-        public static void AddCocApi(this IServiceCollection services, HostBuilderContext host, string namedHttpClient, Action<HostBuilderContext, TokenProviderBuilder> tokenProvider)
+        public static void AddCocApi(this IServiceCollection services, string namedHttpClient, Action<TokenProviderBuilder> tokenProvider)
         {
             TokenProviderBuilder tokenProviderBuilder = new();
 
-            tokenProvider(host, tokenProviderBuilder);
+            tokenProvider(tokenProviderBuilder);
 
+            AddCocApi(services, namedHttpClient, tokenProviderBuilder);
+        }
+
+        private static void AddCocApi(this IServiceCollection services, string namedHttpClient, TokenProviderBuilder tokenProviderBuilder)
+        {
             services.AddSingleton(tokenProviderBuilder.Build());
 
             services.AddSingleton<ClansApi>(serviceProvider =>

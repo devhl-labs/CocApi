@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Threading.Tasks;
 using CocApi.Cache.Services;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace CocApi.Cache
 {
@@ -94,16 +96,13 @@ namespace CocApi.Cache
 
 
 
-        private static void AddCocApiDbContext(this IServiceCollection services, Action<CacheDbContextFactoryProvider> provider)
+        private static void AddCocApiDbContext(this IServiceCollection services, CacheDbContextFactoryProvider provider)
         {
-            CacheDbContextFactoryProvider instance = new();
+            if (provider == null || provider.Factory == null)
+                throw new ArgumentNullException(nameof(provider.Factory), 
+                    "The database context factory cannot be null. This object is used to connect to your database.");
 
-            provider(instance);
-
-            if (instance.Factory == null)
-                throw new ArgumentNullException(nameof(instance.Factory), "The database context factory cannot be null. This object is used to connect to your database.");
-
-            services.AddSingleton(instance);
+            services.AddSingleton(provider);
         }
 
         private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services) 
@@ -152,21 +151,10 @@ namespace CocApi.Cache
             services.AddSingleton<DeleteStalePlayerService>();
         }
 
-
-
-
-
-        public static void AddCocApiCache(
+        private static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IServiceCollection services,
-            Action<CacheDbContextFactoryProvider> provider,
+            CacheDbContextFactoryProvider provider,
             Action<CacheOptions>? cacheOptions = null)
-            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
-                services, provider, cacheOptions);
-
-        public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
-            this IServiceCollection services, 
-            Action<CacheDbContextFactoryProvider> provider,
-            Action<CacheOptions>? cacheOptions = null) 
             where TClansClient : ClansClient
             where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
@@ -176,9 +164,6 @@ namespace CocApi.Cache
 
             if (!services.Any(x => x.ServiceType == typeof(CocApi.Api.PlayersApi)))
                 throw new InvalidOperationException("PlayersApi was not found in the service collection. Add it using AddCocApi");
-
-            if (provider == null)
-                throw new InvalidOperationException("The DbContext provider was null.");
 
             if (cacheOptions != null)
                 services.Configure(cacheOptions);
@@ -202,24 +187,62 @@ namespace CocApi.Cache
             services.AddHostedService(services => services.GetRequiredService<DeleteStalePlayerService>());
         }
 
-        public static IHostBuilder ConfigureCocApiCache(
-            this IHostBuilder builder,
+
+
+
+
+
+        public static void AddCocApiCache(
+            this IServiceCollection services,
             Action<CacheDbContextFactoryProvider> provider,
             Action<CacheOptions>? cacheOptions = null)
-            => ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
-                builder, provider, cacheOptions);
+            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, provider, cacheOptions);
 
-        public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
-            this IHostBuilder builder,
+        public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+            this IServiceCollection services, 
             Action<CacheDbContextFactoryProvider> provider,
             Action<CacheOptions>? cacheOptions = null) 
             where TClansClient : ClansClient
             where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
         {
+            if (provider == null)
+                throw new InvalidOperationException("The DbContext provider was null.");
+
+            CacheDbContextFactoryProvider instance = new();
+
+            provider(instance);
+
+            AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, instance, cacheOptions);
+        }
+
+        public static IHostBuilder ConfigureCocApiCache(
+            this IHostBuilder builder,
+            Action<HostBuilderContext, CacheDbContextFactoryProvider> provider,
+            Action<CacheOptions, HostBuilderContext>? cacheOptions = null)
+            => ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
+                builder, provider, cacheOptions);
+
+        public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+            this IHostBuilder builder,
+            Action<HostBuilderContext, CacheDbContextFactoryProvider> provider,
+            Action<CacheOptions, HostBuilderContext>? cacheOptions = null) 
+            where TClansClient : ClansClient
+            where TPlayersClient : PlayersClient
+            where TTimeToLiveProvider : TimeToLiveProvider
+        {
             builder.ConfigureServices((context, services) =>
-                AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
-                    services, provider, cacheOptions));
+            {
+                CacheDbContextFactoryProvider dbFactoryInstance = new();
+
+                provider(context, dbFactoryInstance);
+
+                if (cacheOptions != null)
+                    services.AddOptions<CacheOptions>().Configure<HostBuilderContext>((a, b) => cacheOptions(a, b));
+
+                AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, dbFactoryInstance, null);
+            });
+
 
             return builder;
         }
