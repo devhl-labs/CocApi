@@ -8,6 +8,8 @@ using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Polly;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore.Query.Internal;
+using System.Linq;
 
 namespace CocApi.Test
 {
@@ -28,13 +30,22 @@ namespace CocApi.Test
             // configure CocApi by naming your HttpClient, providing tokens, and defining the token timeout
             .ConfigureCocApi("cocApi", (host, tokenProvider) =>
             {
-                for (int i = 0; i < 10; i++)
+                string[] tokenNames = host.Configuration.GetSection("CocApi:Rest:Tokens").Get<string[]>();
+
+                foreach(string tokenName in tokenNames)
                 {
-                    string token = host.Configuration.GetValue<string>($"TOKEN_{i}");
-                    
-                    // you can go much lower than one second, fastest recommended speed is 33 milliseconds
+                    string token = host.Configuration.GetValue<string>(tokenName);
+
                     tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
                 }
+
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    string token = host.Configuration.GetValue<string>($"TOKEN_{i}");
+                    
+                //    // you can go much lower than one second, fastest recommended speed is 33 milliseconds
+                //    tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
+                //}
             })
 
             .ConfigureCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>(                
@@ -60,7 +71,7 @@ namespace CocApi.Test
                 // define the HttpClient named "cocApi" that CocApi will request
                 services.AddHttpClient("cocApi", config =>
                 {
-                    config.BaseAddress = new Uri("https://api.clashofclans.com/v1");
+                    config.BaseAddress = new Uri(hostBuilder.Configuration.GetSection("CocApi:Rest:BaseAddress").Get<string>());
                     config.Timeout = TimeSpan.FromSeconds(10);
                 })
                 // optionally configure Polly to handle timeouts and http request error handling

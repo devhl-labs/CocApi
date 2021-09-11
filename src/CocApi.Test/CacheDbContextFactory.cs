@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.Extensions.Configuration;
 
 namespace CocApi.Test
 {
@@ -8,10 +8,22 @@ namespace CocApi.Test
     {
         public CocApi.Cache.CacheDbContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<CocApi.Cache.CacheDbContext>();
+            string environment = System.Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
-            string connection = Environment.GetEnvironmentVariable("POSTGRES_COCAPI_TEST_DEV", EnvironmentVariableTarget.Machine)
-                ?? throw new Exception($"Environment variable not found.");
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false)
+                .AddJsonFile($"appsettings.{environment}.json", true)
+                .AddEnvironmentVariables()
+                .AddCommandLine(args)               
+                .Build();
+
+            // get our environment variable name from appsettings
+            string connection = configuration.GetConnectionString("CocApiTest");
+
+            // get the connection string from our environment variables or command line
+            connection = configuration.GetValue<string>(connection);
+
+            var optionsBuilder = new DbContextOptionsBuilder<CocApi.Cache.CacheDbContext>();
 
             optionsBuilder.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
 
