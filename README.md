@@ -5,8 +5,8 @@ CocApi.Cache will cache responses in a database of your choice.
 To keep objects up to date and receive events when the data changes, add the tag to the ClansClient or PlayersClient.
  
 ## Help  
-![Discord Banner 4](https://discordapp.com/api/guilds/566451504332931073/widget.png?style=banner4)
-![Discord Banner 1](https://discordapp.com/api/guilds/566451504332931073/widget.png?style=banner1)
+[Discord Banner 4](https://discordapp.com/api/guilds/566451504332931073/widget.png?style=banner4)
+[Discord Banner 1](https://discordapp.com/api/guilds/566451504332931073/widget.png?style=banner1)
 
 ## Using the library
 ```csharp
