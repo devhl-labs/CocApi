@@ -227,7 +227,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<CachedClan> GetClanAsync(string tag, CancellationToken? cancellationToken = null)
+        public async Task<CachedClan> GetCachedClanAsync(string tag, CancellationToken? cancellationToken = null)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -240,7 +240,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<CachedClan?> GetClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
+        public async Task<CachedClan?> GetCachedClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -253,7 +253,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<List<CachedClan>> GetClansAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = null)
+        public async Task<List<CachedClan>> GetCachedClansAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = null)
         {
             List<string> formattedTags = new();
 
@@ -271,14 +271,14 @@ namespace CocApi.Cache
 
         public async Task<Clan> GetOrFetchClanAsync(string tag, CancellationToken? cancellationToken = null)
         {
-            Clan? result = (await GetClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             return result ?? await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
         {
-            Clan? result = (await GetClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             return result ?? await ClansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
         }

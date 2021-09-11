@@ -27,7 +27,8 @@ These classes allow you to query the API using the named HttpClient provided.
 ```csharp
 private static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)
-	.ConfigureCocApi("cocApi", tokenProvider => { 
+	.ConfigureCocApi("cocApi", tokenProvider => 
+    { 
 		tokenProvider.Tokens.Add(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
 	})
 	.ConfigureServices((hostBuilder, services) => 
@@ -67,7 +68,8 @@ This requires that the CocApi is already added to the service provider as shown 
 		// use this method to inject your connection string from appsettings.json
 		provider.DbContextArgs = new string[] { hostBuilder.Configuration.GetValue<string>("ConnectionStrings:CocApiCache") };
 	},
-    o => {
+    o => 
+    {
         o.ActiveWars.Enabled = false;
         o.ClanMembers.Enabled = false;
         o.Clans.Enabled = true;

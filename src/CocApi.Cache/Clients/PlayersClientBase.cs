@@ -91,7 +91,7 @@ namespace CocApi.Cache
             }
         }
 
-        public async Task<CachedPlayer> GetPlayerAsync(string tag, CancellationToken? cancellationToken = default)
+        public async Task<CachedPlayer> GetCachedPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -103,7 +103,7 @@ namespace CocApi.Cache
                 .ConfigureAwait(false);
         }
 
-        public async Task<CachedPlayer?> GetPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
+        public async Task<CachedPlayer?> GetCachedPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
             string formattedTag = Clash.FormatTag(tag);
 
@@ -117,7 +117,7 @@ namespace CocApi.Cache
 
         public async Task<Player> GetOrFetchPlayerAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            Player? result = (await GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             if (result == null)
                 result = await PlayersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
@@ -127,7 +127,7 @@ namespace CocApi.Cache
 
         public async Task<Player?> GetOrFetchPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
         {
-            Player? result = (await GetPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+            Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
             if (result == null)
                 result = await PlayersApi.FetchPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
@@ -135,9 +135,9 @@ namespace CocApi.Cache
             return result;
         }
 
-        public async Task<List<CachedPlayer>> GetPlayersAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)
+        public async Task<List<CachedPlayer>> GetCachedPlayersAsync(IEnumerable<string> tags, CancellationToken? cancellationToken = default)
         {
-            List<string> formattedTags = new List<string>();
+            List<string> formattedTags = new();
 
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
