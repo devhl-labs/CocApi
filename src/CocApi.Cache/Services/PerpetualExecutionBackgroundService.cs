@@ -9,6 +9,7 @@ namespace CocApi.Cache.Services
     public abstract class PerpetualExecutionBackgroundService<T> : BackgroundService where T : class
     {
         public TimeSpan BeginExecutionAfter { get; }
+        public TimeSpan DelayBeforeExecution { get; }
         public TimeSpan DelayBetweenExecutions { get; }
         public DateTime RanAt { get; private set; }
         public DateTime CompletedAt { get; private set; }
@@ -19,9 +20,9 @@ namespace CocApi.Cache.Services
         private bool _isEnabled = true;
 
 
-        public PerpetualExecutionBackgroundService(TimeSpan? beginExecutionAfter, TimeSpan? delayBetweenExecutions)
+        public PerpetualExecutionBackgroundService(TimeSpan? delayBeforeExecution, TimeSpan? delayBetweenExecutions)
         {
-            BeginExecutionAfter = beginExecutionAfter ?? TimeSpan.Zero;
+            DelayBeforeExecution = delayBeforeExecution ?? TimeSpan.Zero;
             DelayBetweenExecutions = delayBetweenExecutions ?? TimeSpan.Zero;
         }
 

@@ -37,11 +37,10 @@ namespace CocApi.Cache
             Synchronizer synchronizer,
             TimeToLiveProvider timeToLiveProvider,
             IOptions<CacheOptions> options) 
-        : base(provider)
+        : base(provider, options.Value.Wars.DelayBeforeExecution, options.Value.Wars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             ClansApi = clansApi;
-            //_clansClient = clansClient;
             Synchronizer = synchronizer;
             TimeToLiveProvider = timeToLiveProvider;
             Options = options;
@@ -52,7 +51,7 @@ namespace CocApi.Cache
         {
             SetDateVariables();
 
-            MonitorOptions options = Options.Value.Wars;
+            ServiceOptions options = Options.Value.Wars;
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
@@ -121,12 +120,6 @@ namespace CocApi.Cache
                 foreach (string tag in _unmonitoredClans)
                     Synchronizer.UpdatingClan.TryRemove(tag, out _);
             }
-
-            // todo what am i doing with this?
-            if (_id == int.MinValue)
-                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
-            else
-                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task UpdateWarAsync(

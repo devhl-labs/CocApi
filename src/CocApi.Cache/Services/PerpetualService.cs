@@ -17,8 +17,8 @@ namespace CocApi.Cache.Services
 
         public PerpetualService(
             CacheDbContextFactoryProvider provider, 
-            TimeSpan beginExecutionAfter,
-            TimeSpan delayBetweenExecutions) : base(beginExecutionAfter, delayBetweenExecutions)
+            TimeSpan delayBeforeExecution,
+            TimeSpan delayBetweenExecutions) : base(delayBeforeExecution, delayBetweenExecutions)
         {
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs;

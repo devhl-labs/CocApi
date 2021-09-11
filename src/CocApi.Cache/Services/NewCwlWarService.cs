@@ -34,7 +34,7 @@ namespace CocApi.Cache
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-        : base(provider)
+        : base(provider, options.Value.NewCwlWars.DelayBeforeExecution, options.Value.NewCwlWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             ClansApi = clansApi;
@@ -52,7 +52,7 @@ namespace CocApi.Cache
 
             RemoveOldWars();
 
-            MonitorOptions options = Options.Value.NewCwlWars;
+            ServiceOptions options = Options.Value.NewCwlWars;
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 

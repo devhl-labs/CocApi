@@ -18,12 +18,9 @@ namespace CocApi.Cache
 
         internal Synchronizer Synchronizer { get; }
         internal PlayersApi PlayersApi { get; }
-        internal IOptions<MonitorOptions> Options { get; }
+        internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
-
-
-        //private DateTime _deletedUnmonitoredPlayers = DateTime.UtcNow;
 
 
         public PlayerService(
@@ -31,7 +28,8 @@ namespace CocApi.Cache
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
             PlayersApi playersApi,
-            IOptions<MonitorOptions> options) : base(provider)
+            IOptions<CacheOptions> options) 
+        : base(provider, options.Value.Players.DelayBeforeExecution, options.Value.Players.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             TimeToLiveProvider = timeToLiveProvider;
@@ -45,7 +43,7 @@ namespace CocApi.Cache
         {
             SetDateVariables();
 
-            MonitorOptions options = Options.Value;
+            ServiceOptions options = Options.Value.Players;
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
@@ -90,19 +88,6 @@ namespace CocApi.Cache
                 foreach (string tag in updatingTags)
                     Synchronizer.UpdatingVillage.TryRemove(tag, out _);
             }
-
-            //if (_deletedUnmonitoredPlayers < DateTime.UtcNow.AddMinutes(-10))
-            //{
-            //    _deletedUnmonitoredPlayers = DateTime.UtcNow;
-
-            //    await DeletePlayersNotMonitoredAsync(dbContext, cancellationToken).ConfigureAwait(false);
-            //}
-
-            // todo what am i doing with these
-            if (_id == int.MinValue)
-                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
-            else
-                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task MonitorPlayerAsync(CachedPlayer cachedPlayer, CancellationToken cancellationToken)
@@ -111,29 +96,10 @@ namespace CocApi.Cache
                 .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, PlayersApi, cancellationToken)
                 .ConfigureAwait(false);
 
-            if (fetched.Content != null && PlayerUpdated != null)
+            if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && PlayerUpdated != null)
                 await PlayerUpdated(this, new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
 
             cachedPlayer.UpdateFrom(fetched);
         }
-
-        //private async Task DeletePlayersNotMonitoredAsync(CacheDbContext dbContext, CancellationToken cancellationToken)
-        //{
-        //    List<Context.CachedItems.CachedPlayer> cachedPlayers = await (
-        //        from p in dbContext.Players
-        //        join c in dbContext.Clans on p.ClanTag equals c.Tag
-        //        into p_c
-        //        from c2 in p_c.DefaultIfEmpty()
-        //        where 
-        //            p.Download == false && 
-        //            (p.ExpiresAt ?? min) < DateTime.UtcNow.AddMinutes(-10) &&
-        //            (p.ClanTag == null || (c2 == null || c2.DownloadMembers == false))
-        //        select p
-        //    ).ToListAsync(cancellationToken).ConfigureAwait(false);
-
-        //    dbContext.RemoveRange(cachedPlayers);
-
-        //    await dbContext.SaveChangesAsync(cancellationToken);
-        //}
     }
 }

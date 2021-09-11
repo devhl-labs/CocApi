@@ -2,6 +2,7 @@
 using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Cache.Services;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
@@ -12,8 +13,9 @@ namespace CocApi.Test
             PlayersApi playersApi, 
             PlayerService playerMonitor,
             MemberService memberMonitor,
-            Synchronizer synchronizer) 
-        : base(playersApi, cacheContextOptions, playerMonitor, memberMonitor, synchronizer)
+            Synchronizer synchronizer,
+            IOptions<CacheOptions> options) 
+        : base(playersApi, cacheContextOptions, playerMonitor, memberMonitor, synchronizer, options)
         {
             PlayerUpdated += OnPlayerUpdated;
         }

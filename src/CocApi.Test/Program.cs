@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
 using CocApi.Cache;
-using System.Linq;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
@@ -16,9 +15,6 @@ namespace CocApi.Test
     {
         public static async Task Main(string[] args)
         {
-            if (args.Any())
-                Console.WriteLine(args);
-
             CocApi.Library.HttpRequestResult += LogService.OnHttpRequestResult;
             CocApi.Library.Log += LogService.OnLog;
             CocApi.Cache.Library.Log += LogService.OnLog;
@@ -44,21 +40,23 @@ namespace CocApi.Test
             .ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(                
                 // tell the cache library how to query your database
                 provider => provider.Factory = new CacheDbContextFactory(),
-                    c => {
-                        c.ActiveWars.Enabled = false;
-                        c.ClanMembers.Enabled = true;
-                        c.Clans.Enabled = true;
-                        c.NewCwlWars.Enabled = true;
-                        c.NewWars.Enabled = false;
-                        c.Wars.Enabled = false;
-                        c.CwlWars.Enabled = false;
-                    },
-                    p => p.Enabled = false,
-                    maxConcurrentEvents: 25)
+                    o =>
+                    {
+                        o.ActiveWars.Enabled = true;
+                        o.ClanMembers.Enabled = true;
+                        o.Clans.Enabled = true;
+                        o.NewCwlWars.Enabled = true;
+                        o.NewWars.Enabled = true;
+                        o.Wars.Enabled = true;
+                        o.CwlWars.Enabled = true;
+                    })
 
 
             .ConfigureServices((hostBuilder, services) =>
             {
+                // use appsettings.json like this or configure the CacheOptions as above
+                //services.Configure<CacheOptions>(hostBuilder.Configuration.GetSection("CocApiCache"));
+
                 // define the HttpClient named "cocApi" that CocApi will request
                 services.AddHttpClient("cocApi", config =>
                 {

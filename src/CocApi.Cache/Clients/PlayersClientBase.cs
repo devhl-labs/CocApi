@@ -23,8 +23,9 @@ namespace CocApi.Cache
             CacheDbContextFactoryProvider provider,
             PlayerService playerMonitor,
             MemberService memberMonitor,
-            Synchronizer synchronizer) 
-        : base (provider, synchronizer)
+            Synchronizer synchronizer,
+            IOptions<CacheOptions> options) 
+        : base (provider, synchronizer, options)
         {
             PlayersApi = playersApi;
 

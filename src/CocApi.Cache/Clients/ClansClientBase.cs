@@ -8,6 +8,7 @@ using CocApi.Cache.Context.CachedItems;
 using CocApi.Cache.Services;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -21,9 +22,10 @@ namespace CocApi.Cache
             NewWarService newWarService,
             NewCwlWarService newCwlWarService,
             WarService warService,
-            CwlWarService cwlWarService
+            CwlWarService cwlWarService,
+            IOptions<CacheOptions> options
             )
-        : base(provider, synchronizer)
+        : base(provider, synchronizer, options)
         {
             ClansApi = clansApi;
             

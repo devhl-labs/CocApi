@@ -10,14 +10,11 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public sealed class DeleteStalePlayerService : PerpetualService<PlayerService>
+    public sealed class DeleteStalePlayerService : PerpetualService<DeleteStalePlayerService>
     {
-        internal event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
-
-
         internal Synchronizer Synchronizer { get; }
         internal PlayersApi PlayersApi { get; }
-        internal IOptions<MonitorOptions> Options { get; }
+        internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
 
@@ -27,7 +24,8 @@ namespace CocApi.Cache
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
             PlayersApi playersApi,
-            IOptions<MonitorOptions> options) : base(provider)
+            IOptions<CacheOptions> options) 
+        : base(provider, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             TimeToLiveProvider = timeToLiveProvider;
@@ -40,8 +38,6 @@ namespace CocApi.Cache
         private protected override async Task PollAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
-
-            MonitorOptions options = Options.Value;
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
@@ -60,12 +56,6 @@ namespace CocApi.Cache
             dbContext.RemoveRange(cachedPlayers);
 
             await dbContext.SaveChangesAsync(cancellationToken);
-
-            // todo what am i doing with these
-            if (_id == int.MinValue)
-                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
-            else
-                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
     }
 }

@@ -54,36 +54,28 @@ dotnet ef migrations add YourMigrationName `
     -- Your connection string or environment variable that will be injected into your IDesignTimeDbContextFactory.CreateDbContext args parameter
 ```
 
-It is not required but recommended to create two classes that inherit ClansClientBase and PlayersClientBase from CocApi.Cache.
-You probably also want these classes to implement IHostedService if you want to add code to StartAsync or StopAsync.
-There are virtual TimeToLiveAsync methods which dictate how long an api response is stored for. 
-There are also virtual HasUpdated methods which dictate if the object downloaded from the api has changed compared to the previous download.
-When this method returns true, the new data will be written to the disk. If you don't care about the properties that changed, 
-return false to prevent unnecessary writes to the hard drive.
-
 Use the IHostBuilder extension method ConfigureCocApiCache to your service provider.
 This requires that the CocApi is already added to the service provider as shown above. 
 ```csharp
-// providing types ClansClient and PlayersClient is optional
-.ConfigureCocApiCache<ClansClient, PlayersClient>(                
-    // tell the cache library how to query your database
+// optionally provide you classes that inherit ClansClient or PlayersClient
+.ConfigureCocApiCache<ClansClient, PlayersClient>(
     provider => 
 	{
+        // tell the cache library how to query your database
 		provider.Factory = new YourDbContextFactory();
 		
 		// use this method to inject your connection string from appsettings.json
-		provider.DbContextArgs = new string[] { hostBuilder.Configuration.GetValue<string>("CocApi:Cache:ConnectionString") };
+		provider.DbContextArgs = new string[] { hostBuilder.Configuration.GetValue<string>("ConnectionStrings:CocApiCache") };
 	},
-        clansClient => {
-            clansClient.ActiveWars.Enabled = false;
-            clansClient.ClanMembers.Enabled = false;
-            clansClient.Clans.Enabled = true;
-            clansClient.NewCwlWars.Enabled = true;
-            clansClient.NewWars.Enabled = false;
-            clansClient.Wars.Enabled = false;
-            clansClient.CwlWars.Enabled = false;
-        },
-        playersClient => playersClient.Enabled = false)
+    o => {
+        o.ActiveWars.Enabled = false;
+        o.ClanMembers.Enabled = false;
+        o.Clans.Enabled = true;
+        o.NewCwlWars.Enabled = true;
+        o.NewWars.Enabled = false;
+        o.Wars.Enabled = false;
+        o.CwlWars.Enabled = false;
+    })
 ```
 
 ## Monitors

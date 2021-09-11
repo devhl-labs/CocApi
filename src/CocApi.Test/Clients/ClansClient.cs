@@ -6,6 +6,7 @@ using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Cache.Services;
 using CocApi.Model;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
@@ -19,8 +20,9 @@ namespace CocApi.Test
             NewWarService newWarMonitor,
             NewCwlWarService newCwlWarMonitor,
             WarService warMonitor,
-            CwlWarService cwlWarMonitor) 
-            : base(clansApi, dbContextOptions, synchronizer, clanMonitor, newWarMonitor, newCwlWarMonitor, warMonitor, cwlWarMonitor)
+            CwlWarService cwlWarMonitor,
+            IOptions<CacheOptions> options) 
+            : base(clansApi, dbContextOptions, synchronizer, clanMonitor, newWarMonitor, newCwlWarMonitor, warMonitor, cwlWarMonitor, options)
         {
             ClanUpdated += OnClanUpdated;
             ClanWarAdded += OnClanWarAdded;

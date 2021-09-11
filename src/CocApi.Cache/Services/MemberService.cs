@@ -29,7 +29,7 @@ namespace CocApi.Cache
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-            : base(provider)
+            : base(provider, options.Value.ClanMembers.DelayBeforeExecution, options.Value.ClanMembers.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             PlayersApi = playersApi;
@@ -43,7 +43,7 @@ namespace CocApi.Cache
         {
             SetDateVariables();
 
-            MonitorOptionsBase options = Options.Value.ClanMembers;
+            ServiceOptionsBase options = Options.Value.ClanMembers;
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
@@ -104,11 +104,6 @@ namespace CocApi.Cache
                 foreach (string tag in updatingTags)
                     Synchronizer.UpdatingVillage.TryRemove(tag, out _);
             }
-
-            if (_id == int.MinValue)
-                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
-            else
-                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task MonitorMemberAsync(CachedPlayer cachedPlayer, CachedClan cachedClan, CancellationToken cancellationToken)

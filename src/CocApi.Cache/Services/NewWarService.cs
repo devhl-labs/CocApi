@@ -25,7 +25,7 @@ namespace CocApi.Cache
             CacheDbContextFactoryProvider provider, 
             Synchronizer synchronizer,
             IOptions<CacheOptions> options) 
-        : base(provider)
+        : base(provider, options.Value.NewWars.DelayBeforeExecution, options.Value.NewWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             Synchronizer = synchronizer;
@@ -38,7 +38,7 @@ namespace CocApi.Cache
         {
             SetDateVariables();
 
-            MonitorOptions options = Options.Value.NewWars;
+            ServiceOptions options = Options.Value.NewWars;
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
@@ -130,11 +130,6 @@ namespace CocApi.Cache
                     Synchronizer.UpdatingWar.TryRemove(cachedClans.Single(c => c.Tag == tag).CurrentWar.Key, out _);
                 }
             }
-
-            if (_id == int.MinValue)
-                await Task.Delay(options.DelayBetweenBatches, cancellationToken).ConfigureAwait(false);
-            else
-                await Task.Delay(options.DelayBetweenBatchUpdates, cancellationToken).ConfigureAwait(false);
         }
     }
 }

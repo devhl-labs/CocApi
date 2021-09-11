@@ -6,6 +6,7 @@ using CocApi.Cache.Context.CachedItems;
 using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
@@ -21,8 +22,9 @@ namespace CocApi.Cache
 
         internal Synchronizer Synchronizer { get; }
 
-        public ClientBase(CacheDbContextFactoryProvider provider, Synchronizer synchronizer)
+        public ClientBase(CacheDbContextFactoryProvider provider, Synchronizer synchronizer, IOptions<CacheOptions> options)
         {
+            Library.SetMaxConcurrentEvents(options.Value.MaxConcurrentEvents);
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
             EnsureMigrated();
