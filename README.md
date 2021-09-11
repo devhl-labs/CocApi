@@ -57,8 +57,8 @@ dotnet ef migrations add YourMigrationName `
 Use the IHostBuilder extension method ConfigureCocApiCache to your service provider.
 This requires that the CocApi is already added to the service provider as shown above. 
 ```csharp
-// optionally provide you classes that inherit ClansClient or PlayersClient
-.ConfigureCocApiCache<ClansClient, PlayersClient>(
+// optionally provide you classes that inherit ClansClient, PlayersClient or TimeToLiveProvider
+.ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
     provider => 
 	{
         // tell the cache library how to query your database
