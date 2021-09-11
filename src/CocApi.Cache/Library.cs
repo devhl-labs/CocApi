@@ -134,6 +134,12 @@ namespace CocApi.Cache
             where TTimeToLiveProvider : TimeToLiveProvider
         {
             services.AddSingleton<TTimeToLiveProvider>();
+            if (typeof(TTimeToLiveProvider) != typeof(TimeToLiveProvider))
+                services.AddSingleton(provider =>
+                {
+                    return (TimeToLiveProvider)provider.GetRequiredService<TTimeToLiveProvider>();
+                });
+
             services.AddSingleton<Synchronizer>();
             services.AddSingleton<ActiveWarService>();
             services.AddSingleton<ClanService>();
