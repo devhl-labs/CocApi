@@ -7,6 +7,7 @@ To keep objects up to date and receive events when the data changes, add the tag
 ## Help  
 ![Discord Banner 4](https://discordapp.com/api/guilds/701245583444279328/widget.png?style=banner4)
 ![Discord Banner 1](https://discordapp.com/api/guilds/566451504332931073/widget.png?style=banner1)
+[![Clash API Developers](https://discordapp.com/api/guilds/701245583444279328/widget.png?style=banner4)](https://discord.gg/clashapi)
 
 ## Using the library
 ```csharp
