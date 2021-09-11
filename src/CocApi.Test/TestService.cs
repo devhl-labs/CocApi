@@ -12,13 +12,13 @@ namespace CocApi.Test
 {
     public class TestService : IHostedService
     {
-        public ClansClient ClansClient { get; }
-        public PlayersClient PlayersClient { get; }
+        public CustomClansClient ClansClient { get; }
+        public CustomPlayersClient PlayersClient { get; }
         public PlayersApi PlayersApi { get; }
         public LocationsApi LocationsApi { get; }
         public LeaguesApi LeaguesApi { get; }
 
-        public TestService(ClansClient clansClient, PlayersClient playersClient, PlayersApi playersApi, LocationsApi locationsApi, LeaguesApi leaguesApi)
+        public TestService(CustomClansClient clansClient, CustomPlayersClient playersClient, PlayersApi playersApi, LocationsApi locationsApi, LeaguesApi leaguesApi)
         {
             ClansClient = clansClient;
             PlayersClient = playersClient;

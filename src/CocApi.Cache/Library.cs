@@ -107,26 +107,26 @@ namespace CocApi.Cache
         }
 
         private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services) 
-            where TPlayersClient : PlayersClientBase
+            where TPlayersClient : PlayersClient
         {
             services.AddSingleton<TPlayersClient>();
 
-            if (typeof(TPlayersClient) != typeof(PlayersClientBase))
+            if (typeof(TPlayersClient) != typeof(PlayersClient))
                 services.AddSingleton(provider =>
                 {
-                    return (PlayersClientBase)provider.GetRequiredService<TPlayersClient>();
+                    return (PlayersClient)provider.GetRequiredService<TPlayersClient>();
                 });
         }
 
         private static void AddClansClient<TClansClient>(this IServiceCollection services)
-            where TClansClient : ClansClientBase
+            where TClansClient : ClansClient
         {
             services.AddSingleton<TClansClient>();
 
-            if (typeof(TClansClient) != typeof(ClansClientBase))
+            if (typeof(TClansClient) != typeof(ClansClient))
                 services.AddSingleton(provider =>
                 {
-                    return (ClansClientBase)provider.GetRequiredService<TClansClient>();
+                    return (ClansClient)provider.GetRequiredService<TClansClient>();
                 });
         }
 
@@ -155,7 +155,7 @@ namespace CocApi.Cache
             Action<CacheDbContextFactoryProvider> provider,
             int maxConcurrentEvents = 25,
             Action<CacheOptions>? cacheOptions = null)
-            => AddCocApiCache<ClansClientBase, PlayersClientBase, TimeToLiveProvider>(
+            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
                 services, provider, cacheOptions, maxConcurrentEvents);
 
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
@@ -163,8 +163,8 @@ namespace CocApi.Cache
             Action<CacheDbContextFactoryProvider> provider,
             Action<CacheOptions>? cacheOptions = null,
             int maxConcurrentEvents = 25) 
-            where TClansClient : ClansClientBase
-            where TPlayersClient : PlayersClientBase
+            where TClansClient : ClansClient
+            where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
         {
             if (!services.Any(x => x.ServiceType == typeof(CocApi.Api.ClansApi)))
@@ -204,15 +204,15 @@ namespace CocApi.Cache
             this IHostBuilder builder,
             Action<CacheDbContextFactoryProvider> provider,
             Action<CacheOptions>? cacheOptions = null)
-            => ConfigureCocApiCache<ClansClientBase, PlayersClientBase, TimeToLiveProvider>(
+            => ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
                 builder, provider, cacheOptions);
 
         public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IHostBuilder builder,
             Action<CacheDbContextFactoryProvider> provider,
             Action<CacheOptions>? cacheOptions = null) 
-            where TClansClient : ClansClientBase
-            where TPlayersClient : PlayersClientBase
+            where TClansClient : ClansClient
+            where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
         {
             builder.ConfigureServices((context, services) =>

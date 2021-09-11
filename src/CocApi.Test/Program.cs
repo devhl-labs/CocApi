@@ -37,7 +37,7 @@ namespace CocApi.Test
                 }
             })
 
-            .ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(                
+            .ConfigureCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>(                
                 // tell the cache library how to query your database
                 provider => provider.Factory = new CacheDbContextFactory(),
                 o =>
