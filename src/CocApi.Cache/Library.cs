@@ -153,16 +153,14 @@ namespace CocApi.Cache
         public static void AddCocApiCache(
             this IServiceCollection services,
             Action<CacheDbContextFactoryProvider> provider,
-            int maxConcurrentEvents = 25,
             Action<CacheOptions>? cacheOptions = null)
             => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
-                services, provider, cacheOptions, maxConcurrentEvents);
+                services, provider, cacheOptions);
 
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IServiceCollection services, 
             Action<CacheDbContextFactoryProvider> provider,
-            Action<CacheOptions>? cacheOptions = null,
-            int maxConcurrentEvents = 25) 
+            Action<CacheOptions>? cacheOptions = null) 
             where TClansClient : ClansClient
             where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
@@ -178,8 +176,6 @@ namespace CocApi.Cache
 
             if (cacheOptions != null)
                 services.Configure(cacheOptions);
-
-            SetMaxConcurrentEvents(maxConcurrentEvents);
 
             services.AddSingletons<TTimeToLiveProvider>();
 
