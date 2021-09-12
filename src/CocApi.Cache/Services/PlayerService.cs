@@ -4,12 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context.CachedItems;
-using CocApi.Cache.Services;
+using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CocApi.Cache
+namespace CocApi.Cache.Services
 {
     public sealed class PlayerService : PerpetualService<PlayerService>
     {
@@ -32,6 +31,7 @@ namespace CocApi.Cache
         : base(provider, options.Value.Players.DelayBeforeExecution, options.Value.Players.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
+            IsEnabled = options.Value.Players.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
             PlayersApi = playersApi;
@@ -47,7 +47,7 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            List<Context.CachedItems.CachedPlayer> trackedPlayers = await dbContext.Players
+            List<CachedPlayer> trackedPlayers = await dbContext.Players
                 .Where(p =>
                     (p.ExpiresAt ?? min) < expires &&
                     (p.KeepUntil ?? min) < now &&
@@ -68,7 +68,7 @@ namespace CocApi.Cache
 
             try
             {
-                foreach (Context.CachedItems.CachedPlayer trackedPlayer in trackedPlayers)
+                foreach (CachedPlayer trackedPlayer in trackedPlayers)
                 {
                     if (!Synchronizer.UpdatingVillage.TryAdd(trackedPlayer.Tag, trackedPlayer))
                         continue;

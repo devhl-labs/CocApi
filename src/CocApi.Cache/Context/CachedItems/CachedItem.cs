@@ -5,7 +5,7 @@ using CocApi.Client;
 using CocApi.Model;
 using Newtonsoft.Json;
 
-namespace CocApi.Cache.Context.CachedItems
+namespace CocApi.Cache.Context
 {
     public class CachedItem<T> where T : class
     {

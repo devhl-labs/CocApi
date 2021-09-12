@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CocApi.Cache.Context.CachedItems;
+using CocApi.Cache.Context;
 using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -10,26 +10,28 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
-
-    public delegate Task LogEventHandler(object sender, CocApi.LogEventArgs log);
-
     public class ClientBase
     {
         public IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
-
         public string[]? DbContextArgs { get; }
-
         internal Synchronizer Synchronizer { get; }
+        public IPerpetualExecution<object>[] PerpetualServices { get; }
 
-        public ClientBase(CacheDbContextFactoryProvider provider, Synchronizer synchronizer, IOptions<CacheOptions> options)
+
+        public ClientBase(
+            CacheDbContextFactoryProvider provider, 
+            Synchronizer synchronizer, 
+            IPerpetualExecution<object>[] perpetualServices,
+            IOptions<CacheOptions> options)
         {
             Library.SetMaxConcurrentEvents(options.Value.MaxConcurrentEvents);
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
             EnsureMigrated();
             Synchronizer = synchronizer;
+            PerpetualServices = perpetualServices;
         }
+
 
         public async Task ImportDataToVersion2(string connectionString)
         {
@@ -55,11 +57,11 @@ namespace CocApi.Cache
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
-                DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
+                DbContextOptionsBuilder<CacheContext> optionsBuilder = new();
 
                 optionsBuilder.UseSqlite(connectionString);
 
-                using CacheContext oldContext = new CacheContext(optionsBuilder.Options);
+                using CacheContext oldContext = new(optionsBuilder.Options);
 
                 oldContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -72,7 +74,7 @@ namespace CocApi.Cache
 
                 foreach (Models.CachedWar oldWar in oldWars)
                 {
-                    CachedWar cachedWar = new CachedWar
+                    CachedWar cachedWar = new()
                     {
                         Announcements = oldWar.Announcements,
                         ClanTag = oldWar.ClanTag,
@@ -131,11 +133,11 @@ namespace CocApi.Cache
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
-                DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
+                DbContextOptionsBuilder<CacheContext> optionsBuilder = new();
 
                 optionsBuilder.UseSqlite(connectionString);
 
-                using CacheContext oldContext = new CacheContext(optionsBuilder.Options);
+                using CacheContext oldContext = new(optionsBuilder.Options);
 
                 oldContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -152,7 +154,7 @@ namespace CocApi.Cache
 
                 foreach (Models.CachedClan oldClan in oldClans)
                 {
-                    CachedClan cachedClan = new CachedClan
+                    CachedClan cachedClan = new()
                     {
                         CurrentWar = new(),
                         Download = true,
@@ -237,11 +239,11 @@ namespace CocApi.Cache
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
-                DbContextOptionsBuilder<CacheContext> optionsBuilder = new DbContextOptionsBuilder<CacheContext>();
+                DbContextOptionsBuilder<CacheContext> optionsBuilder = new();
 
                 optionsBuilder.UseSqlite(connectionString);
 
-                using CacheContext oldContext = new CacheContext(optionsBuilder.Options);
+                using CacheContext oldContext = new(optionsBuilder.Options);
 
                 oldContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -254,7 +256,7 @@ namespace CocApi.Cache
 
                 foreach (Models.CachedPlayer oldPlayer in oldPlayers)
                 {
-                    CachedPlayer cachedPlayer = new CachedPlayer(oldPlayer.Tag)
+                    CachedPlayer cachedPlayer = new(oldPlayer.Tag)
                     {
                         ClanTag = oldPlayer.ClanTag,
                         Download = oldPlayer.Download,
@@ -290,6 +292,17 @@ namespace CocApi.Cache
                 throw new Exception("Failed to query the database. You may need to run a migration.", e);
             }
         }
-    }
 
+        public void Stop()
+        {
+            foreach (var perptualService in PerpetualServices)
+                perptualService.IsEnabled = false;
+        }
+
+        public void Start()
+        {
+            foreach (var perptualService in PerpetualServices)
+                perptualService.IsEnabled = true;
+        }
+    }
 }

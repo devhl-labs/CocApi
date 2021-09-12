@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Services;
+using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CocApi.Cache
+namespace CocApi.Cache.Services
 {
-    public sealed class DeleteStalePlayerService : PerpetualService<DeleteStalePlayerService>
+    public sealed class StalePlayerService : PerpetualService<StalePlayerService>
     {
         internal Synchronizer Synchronizer { get; }
         internal PlayersApi PlayersApi { get; }
@@ -19,7 +19,7 @@ namespace CocApi.Cache
         internal TimeToLiveProvider TimeToLiveProvider { get; }
 
 
-        public DeleteStalePlayerService(
+        public StalePlayerService(
             CacheDbContextFactoryProvider provider, 
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
@@ -28,6 +28,7 @@ namespace CocApi.Cache
         : base(provider, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
+            IsEnabled = options.Value.DeleteStalePlayers.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
             PlayersApi = playersApi;
@@ -41,7 +42,7 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            List<Context.CachedItems.CachedPlayer> cachedPlayers = await (
+            List<CachedPlayer> cachedPlayers = await (
                 from p in dbContext.Players
                 join c in dbContext.Clans on p.ClanTag equals c.Tag
                 into p_c

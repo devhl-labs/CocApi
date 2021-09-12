@@ -10,12 +10,11 @@ namespace CocApi.Test
     {
         public CustomPlayersClient(
             CacheDbContextFactoryProvider cacheContextOptions, 
-            PlayersApi playersApi, 
-            PlayerService playerMonitor,
-            MemberService memberMonitor,
+            PlayersApi playersApi,
             Synchronizer synchronizer,
+            IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-        : base(playersApi, cacheContextOptions, playerMonitor, memberMonitor, synchronizer, options)
+        : base(playersApi, cacheContextOptions, synchronizer, perpetualServices, options)
         {
             PlayerUpdated += OnPlayerUpdated;
         }

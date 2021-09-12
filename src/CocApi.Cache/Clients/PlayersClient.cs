@@ -3,32 +3,37 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context.CachedItems;
-using CocApi.Cache.Services;
+using CocApi.Cache.Context;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using CocApi.Cache.Services;
 
 namespace CocApi.Cache
 {
     public class PlayersClient : ClientBase
     {
+        public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
+
+
         public PlayersClient(
             PlayersApi playersApi, 
             CacheDbContextFactoryProvider provider,
-            PlayerService playerMonitor,
-            MemberService memberMonitor,
             Synchronizer synchronizer,
+            IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-        : base (provider, synchronizer, options)
+        : base (provider, synchronizer, perpetualServices, options)
         {
             PlayersApi = playersApi;
 
-            playerMonitor.PlayerUpdated += OnPlayerUpdatedAsync;
-            memberMonitor.MemberUpdated += OnMemberUpdatedAsync;
+            PlayerService playerService = (PlayerService) perpetualServices.Single(p => p.GetType() == typeof(PlayerService));
+            playerService.PlayerUpdated += OnPlayerUpdatedAsync;
+
+            MemberService memberService = (MemberService)perpetualServices.Single(p => p.GetType() == typeof(MemberService));
+            memberService.MemberUpdated += OnMemberUpdatedAsync;
+
         }
 
-        public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
         public PlayersApi PlayersApi { get; }
 
@@ -43,16 +48,16 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            List<Context.CachedItems.CachedPlayer> cachedPlayers = await dbContext.Players
+            List<CachedPlayer> cachedPlayers = await dbContext.Players
                 .Where(c => formattedTags.Contains(c.Tag))
                 .ToListAsync()
                 .ConfigureAwait(false);
 
             foreach (string formattedTag in formattedTags)
             {
-                Context.CachedItems.CachedPlayer? trackedPlayer = cachedPlayers.FirstOrDefault(c => c.Tag == formattedTag);
+                CachedPlayer? trackedPlayer = cachedPlayers.FirstOrDefault(c => c.Tag == formattedTag);
 
-                trackedPlayer ??= new Context.CachedItems.CachedPlayer(formattedTag); 
+                trackedPlayer ??= new CachedPlayer(formattedTag); 
 
                 trackedPlayer.Download = download;
 
@@ -73,7 +78,7 @@ namespace CocApi.Cache
 
             try
             {
-                Context.CachedItems.CachedPlayer cachedPlayer = await dbContext.Players.FirstOrDefaultAsync(c => c.Tag == formattedTag);
+                CachedPlayer cachedPlayer = await dbContext.Players.FirstOrDefaultAsync(c => c.Tag == formattedTag);
 
                 if (cachedPlayer != null)
                     dbContext.Players.Remove(cachedPlayer);

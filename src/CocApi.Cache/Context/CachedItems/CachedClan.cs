@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using System.Threading;
 
-namespace CocApi.Cache.Context.CachedItems
+namespace CocApi.Cache.Context
 {
     public class CachedClan : CachedItem<Clan>
     {

@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Cache.Context.CachedItems;
-using CocApi.Cache.Services;
+using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CocApi.Cache
+namespace CocApi.Cache.Services
 {
     public sealed class NewWarService : PerpetualService<NewWarService>
     {
@@ -28,6 +27,7 @@ namespace CocApi.Cache
         : base(provider, options.Value.NewWars.DelayBeforeExecution, options.Value.NewWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
+            IsEnabled = options.Value.NewWars.Enabled;
             Synchronizer = synchronizer;
             Options = options;
         }

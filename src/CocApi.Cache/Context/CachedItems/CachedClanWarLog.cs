@@ -5,7 +5,7 @@ using CocApi.Api;
 using CocApi.Client;
 using CocApi.Model;
 
-namespace CocApi.Cache.Context.CachedItems
+namespace CocApi.Cache.Context
 {
     public class CachedClanWarLog : CachedItem<ClanWarLog>
     {

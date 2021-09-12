@@ -5,11 +5,14 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Threading.Tasks;
 using CocApi.Cache.Services;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
 
 namespace CocApi.Cache
 {
+    public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
+
+    public delegate Task LogEventHandler(object sender, CocApi.LogEventArgs log);
+
+
     [Flags]
     public enum Announcements
     {
@@ -20,6 +23,7 @@ namespace CocApi.Cache
         WarEnded = 8,
         WarEndNotSeen = 16,
     }
+
 
     public static class Library
     {
@@ -148,7 +152,18 @@ namespace CocApi.Cache
             services.AddSingleton<NewWarService>();
             services.AddSingleton<PlayerService>();
             services.AddSingleton<WarService>();
-            services.AddSingleton<DeleteStalePlayerService>();
+            services.AddSingleton<StalePlayerService>();
+            services.AddSingleton(services => new IPerpetualExecution<object>[]{
+                services.GetRequiredService<ActiveWarService>(),
+                services.GetRequiredService<ClanService>(),
+                services.GetRequiredService<CwlWarService>(),
+                services.GetRequiredService<MemberService>(),
+                services.GetRequiredService<NewCwlWarService>(),
+                services.GetRequiredService<NewWarService>(),
+                services.GetRequiredService<PlayerService>(),
+                services.GetRequiredService<StalePlayerService>(),
+                services.GetRequiredService<WarService>()
+            });
         }
 
         private static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
@@ -184,7 +199,7 @@ namespace CocApi.Cache
             services.AddHostedService(services => services.GetRequiredService<NewWarService>());
             services.AddHostedService(services => services.GetRequiredService<PlayerService>());
             services.AddHostedService(services => services.GetRequiredService<WarService>());
-            services.AddHostedService(services => services.GetRequiredService<DeleteStalePlayerService>());
+            services.AddHostedService(services => services.GetRequiredService<StalePlayerService>());
         }
 
 

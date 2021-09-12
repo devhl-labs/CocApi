@@ -1,4 +1,4 @@
-﻿using CocApi.Cache.Context.CachedItems;
+﻿using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace CocApi.Cache

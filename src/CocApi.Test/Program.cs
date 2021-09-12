@@ -57,6 +57,7 @@ namespace CocApi.Test
                         cacheOptions.NewWars.Enabled = true;
                         cacheOptions.Wars.Enabled = true;
                         cacheOptions.CwlWars.Enabled = true;
+                        cacheOptions.Players.Enabled = true;
                     }
                 );
 

@@ -4,31 +4,47 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context.CachedItems;
-using CocApi.Cache.Services;
+using CocApi.Cache.Context;
 using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using CocApi.Cache.Services;
 
 namespace CocApi.Cache
 {
     public class ClansClient : ClientBase
     {
+        public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
+        public event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
+        public event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
+        public event AsyncEventHandler<WarEventArgs>? ClanWarEndNotSeen;
+        public event AsyncEventHandler<WarEventArgs>? ClanWarEnded;
+        public event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
+        public event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
+        public event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
+        public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
+
+
+        public ClansApi ClansApi { get; }
+
+
         public ClansClient(
             ClansApi clansApi, 
             CacheDbContextFactoryProvider provider,
             Synchronizer synchronizer,
-            ClanService clanService,
-            NewWarService newWarService,
-            NewCwlWarService newCwlWarService,
-            WarService warService,
-            CwlWarService cwlWarService,
+            IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options
             )
-        : base(provider, synchronizer, options)
+        : base(provider, synchronizer, perpetualServices, options)
         {
             ClansApi = clansApi;
-            
+
+            ClanService clanService = (ClanService)perpetualServices.Single(p => p.GetType() == typeof(ClanService));
+            NewWarService newWarService = (NewWarService)perpetualServices.Single(p => p.GetType() == typeof(NewWarService));
+            NewCwlWarService newCwlWarService = (NewCwlWarService)perpetualServices.Single(p => p.GetType() == typeof(NewCwlWarService));
+            WarService warService = (WarService)perpetualServices.Single(p => p.GetType() == typeof(WarService));
+            CwlWarService cwlWarService = (CwlWarService)perpetualServices.Single(p => p.GetType() == typeof(CwlWarService));
+
             clanService.ClanUpdated += OnClanUpdatedAsync;
             clanService.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;
             clanService.ClanWarLogUpdated += OnClanWarLogUpdatedAsync;
@@ -49,17 +65,6 @@ namespace CocApi.Cache
             cwlWarService.ClanWarUpdated += OnClanWarUpdatedAsync;
         }
 
-        public ClansApi ClansApi { get; }
-
-        public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
-        public event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarEndNotSeen;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarEnded;
-        public event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
-        public event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
-        public event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
-        public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
         public async Task DeleteAsync(string tag)
         {
@@ -72,7 +77,7 @@ namespace CocApi.Cache
 
             try
             {
-                Context.CachedItems.CachedClan cachedClan = await dbContext.Clans.FirstOrDefaultAsync(c => c.Tag == formattedTag).ConfigureAwait(false);
+                CachedClan cachedClan = await dbContext.Clans.FirstOrDefaultAsync(c => c.Tag == formattedTag).ConfigureAwait(false);
 
                 if (cachedClan != null)
                     dbContext.Clans.Remove(cachedClan);
@@ -98,16 +103,16 @@ namespace CocApi.Cache
 
             using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
 
-            List<Context.CachedItems.CachedClan> cachedClans = await dbContext.Clans
+            List<CachedClan> cachedClans = await dbContext.Clans
                 .Where(c => formattedTags.Contains(c.Tag))
                 .ToListAsync()
                 .ConfigureAwait(false);
 
             foreach (string formattedTag in formattedTags)
             {
-                Context.CachedItems.CachedClan? cachedClan = cachedClans.FirstOrDefault(c => c.Tag == formattedTag);
+                CachedClan? cachedClan = cachedClans.FirstOrDefault(c => c.Tag == formattedTag);
 
-                cachedClan ??= new Context.CachedItems.CachedClan();
+                cachedClan ??= new CachedClan();
 
                 cachedClan.Tag = formattedTag;
                 cachedClan.Download = downloadClan;
@@ -197,7 +202,7 @@ namespace CocApi.Cache
 
         public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, CancellationToken? cancellationToken = null)
         {
-            List<ClanWar> result = new List<ClanWar>();
+            List<ClanWar> result = new();
 
             foreach (var round in group.Rounds)
                 foreach (string warTag in round.WarTags.Where(t => t != "#0"))

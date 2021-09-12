@@ -1,6 +1,5 @@
-﻿using CocApi.Cache.Context.CachedItems;
+﻿using CocApi.Cache.Context;
 using CocApi.Model;
-using System;
 using System.Threading;
 
 namespace CocApi.Cache

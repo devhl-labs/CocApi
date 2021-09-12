@@ -4,12 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
-using CocApi.Cache.Context.CachedItems;
-using CocApi.Cache.Services;
+using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace CocApi.Cache
+namespace CocApi.Cache.Services
 {
     public sealed class MemberService : PerpetualService<MemberService>
     {
@@ -32,6 +31,7 @@ namespace CocApi.Cache
             : base(provider, options.Value.ClanMembers.DelayBeforeExecution, options.Value.ClanMembers.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
+            IsEnabled = options.Value.ClanMembers.Enabled;
             PlayersApi = playersApi;
             Synchronizer = synchronizer;
             Ttl = ttl;

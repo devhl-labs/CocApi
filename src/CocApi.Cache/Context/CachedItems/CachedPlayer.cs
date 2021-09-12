@@ -10,7 +10,7 @@ using CocApi.Cache.Models;
 using CocApi.Client;
 using CocApi.Model;
 
-namespace CocApi.Cache.Context.CachedItems
+namespace CocApi.Cache.Context
 {
     public class CachedPlayer : CachedItem<Player>
     {

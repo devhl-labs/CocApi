@@ -6,7 +6,8 @@ using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Cache.Services
 {
-    public abstract class PerpetualExecutionBackgroundService<T> : BackgroundService where T : class
+
+    public abstract class PerpetualExecutionBackgroundService<T> : BackgroundService, IPerpetualExecution<T> where T : class
     {
         public TimeSpan BeginExecutionAfter { get; }
         public TimeSpan DelayBeforeExecution { get; }
@@ -16,8 +17,8 @@ namespace CocApi.Cache.Services
         public int ExecutionsAttempted { get; private set; }
         public int ExecutionsCompleted { get; private set; }
 
-     
-        private bool _isEnabled = true;
+
+        public bool IsEnabled { get; set; } = true;
 
 
         public PerpetualExecutionBackgroundService(TimeSpan? delayBeforeExecution, TimeSpan? delayBetweenExecutions)
@@ -50,11 +51,6 @@ namespace CocApi.Cache.Services
             }
         }
 
-        internal void IsEnabled(bool enabled)
-        {
-            _isEnabled = enabled;
-        }
-
         [EditorBrowsable(EditorBrowsableState.Never)]
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -64,7 +60,7 @@ namespace CocApi.Cache.Services
 
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (_isEnabled)
+                    if (IsEnabled)
                         await TryPollAsync(cancellationToken);
 
                     await Task.Delay(DelayBetweenExecutions, cancellationToken);

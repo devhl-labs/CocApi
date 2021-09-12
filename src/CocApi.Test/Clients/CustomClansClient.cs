@@ -10,19 +10,15 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
-    public class CustomClansClient : Cache.ClansClient
+    public class CustomClansClient : ClansClient
     {
         public CustomClansClient(
             CacheDbContextFactoryProvider dbContextOptions, 
             ClansApi clansApi, 
             Synchronizer synchronizer,
-            ClanService clanMonitor,
-            NewWarService newWarMonitor,
-            NewCwlWarService newCwlWarMonitor,
-            WarService warMonitor,
-            CwlWarService cwlWarMonitor,
+            IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-            : base(clansApi, dbContextOptions, synchronizer, clanMonitor, newWarMonitor, newCwlWarMonitor, warMonitor, cwlWarMonitor, options)
+            : base(clansApi, dbContextOptions, synchronizer, perpetualServices, options)
         {
             ClanUpdated += OnClanUpdated;
             ClanWarAdded += OnClanWarAdded;

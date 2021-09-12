@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CocApi.Cache
+﻿namespace CocApi.Cache
 {
     public class ClanServiceOptions : ServiceOptions
     {
