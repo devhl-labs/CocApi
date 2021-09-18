@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using CocApi.Api;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi
 {
@@ -25,22 +27,22 @@ namespace CocApi
 
         public const string REPOSITORY_URL = "https://github.com/devhl-labs/CocApi";
 
-        public static event HttpRequestResultEventHandler? HttpRequestResult;
+        internal static void LogRequestSuccess<T>(ILogger<T> logger, HttpStatusCode httpStatusCode, DateTime start, DateTime end, string path)
+            => logger.LogInformation("{0,-9} | {1} | {3}", (end - start).TotalSeconds, httpStatusCode, path);
 
-        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+        internal static void LogRequestFailure<T>(ILogger<T> logger, HttpStatusCode httpStatusCode, DateTime start, DateTime end, string path, string failureReason)
+            => logger.LogInformation("{0,-9} | {1} | {3} | {4}", (end - start).TotalSeconds, httpStatusCode, path, failureReason);
 
-        internal static void OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
-        {
-            HttpRequestResult?.Invoke(sender, log);
-        }
+        internal static void LogRequestException<T>(ILogger<T> logger, Exception e, DateTime start, DateTime end, string path)
+            => logger.LogError(e, "{0,-9} | An exception occured while requesting {1}.", (end - start).TotalSeconds, path);
 
-        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, string namedHttpClient, Action<HostBuilderContext, TokenProviderBuilder> tokenProvider)
+        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, string namedHttpClient, Action<HostBuilderContext, TokenContainer> tokenContainer)
         {
             builder.ConfigureServices((context, services) =>
             {
-                TokenProviderBuilder tokenProviderBuilder = new();
+                TokenContainer tokenProviderBuilder = new();
 
-                tokenProvider(context, tokenProviderBuilder);
+                tokenContainer(context, tokenProviderBuilder);
 
                 AddCocApi(services, namedHttpClient, tokenProviderBuilder);
             });
@@ -48,25 +50,29 @@ namespace CocApi
             return builder;
         }
 
-        public static void AddCocApi(this IServiceCollection services, string namedHttpClient, Action<TokenProviderBuilder> tokenProvider)
+        public static void AddCocApi(this IServiceCollection services, string namedHttpClient, Action<TokenContainer> tokenContainer)
         {
-            TokenProviderBuilder tokenProviderBuilder = new();
+            TokenContainer tokenProviderBuilder = new();
 
-            tokenProvider(tokenProviderBuilder);
+            tokenContainer(tokenProviderBuilder);
+
+            services.AddSingleton(tokenProviderBuilder);
 
             AddCocApi(services, namedHttpClient, tokenProviderBuilder);
         }
 
-        private static void AddCocApi(this IServiceCollection services, string namedHttpClient, TokenProviderBuilder tokenProviderBuilder)
+        private static void AddCocApi(this IServiceCollection services, string namedHttpClient, TokenContainer tokenContainer)
         {
-            services.AddSingleton(tokenProviderBuilder.Build());
+            services.AddSingleton(tokenContainer);
+
+            services.AddSingleton<TokenProvider>();
 
             services.AddSingleton<ClansApi>(serviceProvider =>
             {
                 IHttpClientFactory factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 HttpClient httpClient = factory.CreateClient(namedHttpClient);
                 TokenProvider tokenProvider = serviceProvider.GetRequiredService<TokenProvider>();
-                return new(httpClient, tokenProvider);
+                return new(serviceProvider.GetRequiredService<ILogger<ClansApi>>(), httpClient, tokenProvider);
             });
 
             services.AddSingleton<LabelsApi>(serviceProvider =>
@@ -74,7 +80,7 @@ namespace CocApi
                 IHttpClientFactory factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 HttpClient httpClient = factory.CreateClient(namedHttpClient);
                 TokenProvider tokenProvider = serviceProvider.GetRequiredService<TokenProvider>();
-                return new(httpClient, tokenProvider);
+                return new(serviceProvider.GetRequiredService<ILogger<LabelsApi>>(), httpClient, tokenProvider);
             });
 
             services.AddSingleton<LeaguesApi>(serviceProvider =>
@@ -82,7 +88,7 @@ namespace CocApi
                 IHttpClientFactory factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 HttpClient httpClient = factory.CreateClient(namedHttpClient);
                 TokenProvider tokenProvider = serviceProvider.GetRequiredService<TokenProvider>();
-                return new(httpClient, tokenProvider);
+                return new(serviceProvider.GetRequiredService<ILogger<LeaguesApi>>(), httpClient, tokenProvider);
             });
 
             services.AddSingleton<LocationsApi>(serviceProvider =>
@@ -90,7 +96,7 @@ namespace CocApi
                 IHttpClientFactory factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 HttpClient httpClient = factory.CreateClient(namedHttpClient);
                 TokenProvider tokenProvider = serviceProvider.GetRequiredService<TokenProvider>();
-                return new(httpClient, tokenProvider);
+                return new(serviceProvider.GetRequiredService<ILogger<LocationsApi>>(), httpClient, tokenProvider);
             });
 
             services.AddSingleton<PlayersApi>(serviceProvider =>
@@ -98,22 +104,8 @@ namespace CocApi
                 IHttpClientFactory factory = serviceProvider.GetRequiredService<IHttpClientFactory>();
                 HttpClient httpClient = factory.CreateClient(namedHttpClient);
                 TokenProvider tokenProvider = serviceProvider.GetRequiredService<TokenProvider>();
-                return new(httpClient, tokenProvider);
+                return new(serviceProvider.GetRequiredService<ILogger<PlayersApi>>(), httpClient, tokenProvider);
             });
         }
-
-        internal static void OnLog(object sender, LogEventArgs log)
-        {
-            try
-            {
-                Log?.Invoke(sender, log).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                //throw;
-            }
-        }
-
-        public static event LogEventHandler? Log;
     }
 }

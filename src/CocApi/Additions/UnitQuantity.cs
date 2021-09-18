@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CocApi.Additions
+﻿namespace CocApi.Additions
 {
-    public class UnitQuantity
+    public sealed class UnitQuantity
     {
         public int Quantity { get; }
 

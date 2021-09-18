@@ -9,10 +9,11 @@ using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
 {
-    public class ClansClient : ClientBase
+    public class ClansClient : ClientBase<ClansClient>
     {
         public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
         public event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
@@ -29,13 +30,14 @@ namespace CocApi.Cache
 
 
         public ClansClient(
+            ILogger<ClansClient> logger,
             ClansApi clansApi, 
             CacheDbContextFactoryProvider provider,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options
             )
-        : base(provider, synchronizer, perpetualServices, options)
+        : base(logger, provider, synchronizer, perpetualServices, options)
         {
             ClansApi = clansApi;
 
@@ -293,7 +295,7 @@ namespace CocApi.Cache
             if (ClanUpdated == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () =>
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanUpdatedAsync), async () =>
             {
                 await ClanUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
             }, 
@@ -305,7 +307,7 @@ namespace CocApi.Cache
             if (ClanWarAdded == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () =>
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarAddedAsync), async () =>
             {
                 await ClanWarAdded.Invoke(this, eventArgs).ConfigureAwait(false);
             },
@@ -317,7 +319,7 @@ namespace CocApi.Cache
             if (ClanWarEndingSoon == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () => 
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndingSoonAsync), async () => 
             { 
                 await ClanWarEndingSoon.Invoke(this, eventArgs).ConfigureAwait(false); 
             }, 
@@ -329,7 +331,7 @@ namespace CocApi.Cache
             if (ClanWarEndNotSeen == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () => 
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndNotSeenAsync), async () => 
             { 
                 await ClanWarEndNotSeen.Invoke(this, eventArgs).ConfigureAwait(false); 
             }, 
@@ -341,7 +343,7 @@ namespace CocApi.Cache
             if (ClanWarEnded == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () =>
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndedAsync), async () =>
             { 
                 await ClanWarEnded.Invoke(this, eventArgs).ConfigureAwait(false); 
             },
@@ -353,7 +355,7 @@ namespace CocApi.Cache
             if (ClanWarLeagueGroupUpdated == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () => 
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLeagueGroupUpdatedAsync), async () => 
             {                 
                 await ClanWarLeagueGroupUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
             }, 
@@ -365,7 +367,7 @@ namespace CocApi.Cache
             if (ClanWarLogUpdated == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () => 
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLogUpdatedAsync), async () => 
             { 
                 await ClanWarLogUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
             }, 
@@ -377,7 +379,7 @@ namespace CocApi.Cache
             if (ClanWarStartingSoon == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () => 
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarStartingSoonAsync), async () => 
             { 
                 await ClanWarStartingSoon.Invoke(this, eventArgs).ConfigureAwait(false); 
             }, 
@@ -389,7 +391,7 @@ namespace CocApi.Cache
             if (ClanWarUpdated == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () => 
+            await Library.SendConcurrentEvent(Logger, nameof(OnClanWarUpdatedAsync), async () => 
             { 
                 await ClanWarUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
             }, 

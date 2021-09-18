@@ -10,7 +10,7 @@ namespace CocApi.Model
     {
         private SortedDictionary<string, WarClanLogEntry> _clans;
 
-        private readonly object _clansLock = new object();
+        private readonly object _clansLock = new();
 
         public SortedDictionary<string, WarClanLogEntry> Clans
         {

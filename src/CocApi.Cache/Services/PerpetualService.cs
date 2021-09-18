@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache.Services
 {
@@ -16,9 +17,10 @@ namespace CocApi.Cache.Services
 
 
         public PerpetualService(
+            ILogger<T> logger,
             CacheDbContextFactoryProvider provider, 
             TimeSpan delayBeforeExecution,
-            TimeSpan delayBetweenExecutions) : base(delayBeforeExecution, delayBetweenExecutions)
+            TimeSpan delayBetweenExecutions) : base(logger, delayBeforeExecution, delayBetweenExecutions)
         {
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs;

@@ -3,12 +3,19 @@ using System.Net;
 using System.Threading.Tasks;
 using CocApi.Client;
 using CocApi.Model;
-using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
 {
     public class TimeToLiveProvider
     {
+        protected ILogger<TimeToLiveProvider> Logger { get; }
+
+        public TimeToLiveProvider(ILogger<TimeToLiveProvider> logger)
+        {
+            Logger = logger;
+        }
+
         internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
         {
             try
@@ -21,8 +28,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                await Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live for an ApiResponse."))
-                    .ConfigureAwait(false);
+                Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(TimeToLiveAsync));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -40,7 +46,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                await Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occurred while getting the time to live.")).ConfigureAwait(false);
+                Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(TimeToLiveAsync));
 
                 return TimeSpan.FromMinutes(0);
             }

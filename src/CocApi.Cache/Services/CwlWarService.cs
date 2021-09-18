@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
@@ -26,12 +27,13 @@ namespace CocApi.Cache.Services
 
 
         public CwlWarService(
+            ILogger<CwlWarService> logger,
             CacheDbContextFactoryProvider provider, 
             ClansApi clansApi,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-        : base(provider, options.Value.CwlWars.DelayBeforeExecution, options.Value.CwlWars.DelayBetweenExecutions)
+        : base(logger, provider, options.Value.CwlWars.DelayBeforeExecution, options.Value.CwlWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.CwlWars.Enabled;
@@ -164,7 +166,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    await Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "SendWarAnnouncements error")).ConfigureAwait(false);
+                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
 
                 //throw;
             }

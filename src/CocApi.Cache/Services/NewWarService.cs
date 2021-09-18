@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
@@ -21,10 +22,11 @@ namespace CocApi.Cache.Services
         
         
         public NewWarService(
+            ILogger<NewWarService> logger,
             CacheDbContextFactoryProvider provider, 
             Synchronizer synchronizer,
             IOptions<CacheOptions> options) 
-        : base(provider, options.Value.NewWars.DelayBeforeExecution, options.Value.NewWars.DelayBetweenExecutions)
+        : base(logger, provider, options.Value.NewWars.DelayBeforeExecution, options.Value.NewWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.NewWars.Enabled;

@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace CocApi
 {
-    public class TokenBuilder
+    public sealed class TokenBuilder
     {
         public TimeSpan TokenTimeOut { get; }
 

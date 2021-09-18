@@ -20,7 +20,7 @@ namespace CocApi.Test
             // get our environment variable name from appsettings
             string connection = configuration.GetConnectionString("CocApiTest");
 
-            // get the connection string from our environment variables or command line
+            // convert the variable name to the variable value
             connection = configuration.GetValue<string>(connection);
 
             var optionsBuilder = new DbContextOptionsBuilder<CocApi.Cache.CacheDbContext>();

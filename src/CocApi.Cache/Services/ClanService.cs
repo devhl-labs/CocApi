@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
@@ -25,12 +26,13 @@ namespace CocApi.Cache.Services
 
 
         public ClanService(
+            ILogger<ClanService> logger,
             CacheDbContextFactoryProvider provider, 
             ClansApi clansApi, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-            : base(provider, options.Value.Clans.DelayBeforeExecution, options.Value.Clans.DelayBetweenExecutions)
+            : base(logger, provider, options.Value.Clans.DelayBeforeExecution, options.Value.Clans.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.Clans.Enabled;

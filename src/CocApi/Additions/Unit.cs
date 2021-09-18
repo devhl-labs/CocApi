@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CocApi
+﻿namespace CocApi
 {
-    public class Unit
+    public sealed class Unit
     {
         public string Name { get; }
 

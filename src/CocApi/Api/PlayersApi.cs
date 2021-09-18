@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Mime;
 using CocApi.Client;
 using CocApi.Model;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Api
 {
@@ -102,16 +103,18 @@ namespace CocApi.Api
     /// </summary>
     public partial class PlayersApi : IPlayersApi
     {
+        private readonly ILogger<PlayersApi> _logger;
         private readonly System.Net.Http.HttpClient _httpClient;
 
-        private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
+        //private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
+        public PlayersApi(ILogger<PlayersApi> logger, System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
         {
+            _logger = logger;
             _httpClient = httpClient;
             GetTokenAsync = tokenProvider.GetAsync;
         }
@@ -243,7 +246,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/players/{playerTag}", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -252,15 +257,19 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<Player>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
                 
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", path, end - start, httpStatusCode);
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/players/{playerTag}", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/players/{playerTag}", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -394,7 +403,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/players/{playerTag}/verifytoken", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -402,16 +413,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<VerifyTokenResponse>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/players/{playerTag}/verifytoken", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;

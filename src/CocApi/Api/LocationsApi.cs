@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Mime;
 using CocApi.Client;
 using CocApi.Model;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Api
 {
@@ -277,16 +278,18 @@ namespace CocApi.Api
     /// </summary>
     public partial class LocationsApi : ILocationsApi
     {
+        private readonly ILogger<LocationsApi> _logger;
         private readonly System.Net.Http.HttpClient _httpClient;
 
-        private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
+        //private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LocationsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LocationsApi(System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
+        public LocationsApi(ILogger<LocationsApi> logger, System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
         {
+            _logger = logger;
             _httpClient = httpClient;
             GetTokenAsync = tokenProvider.GetAsync;
         }
@@ -434,7 +437,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/locations/{locationId}/rankings/clans", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -442,16 +447,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/clans", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/clans", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -594,7 +603,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/locations/{locationId}/rankings/clans-versus", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -602,16 +613,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanVersusRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans-versus", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/clans-versus", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/clans-versus", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/clans-versus", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -736,7 +751,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/locations/{locationId}", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -744,16 +761,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<Location>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -889,7 +910,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/locations", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -897,16 +920,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LocationList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/locations", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/locations", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -1049,7 +1076,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/locations/{locationId}/rankings/players", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -1057,16 +1086,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/players", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/players", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -1209,7 +1242,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/locations/{locationId}/rankings/players-versus", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -1217,16 +1252,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerVersusRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players-versus", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/locations/{locationId}/rankings/players-versus", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/players-versus", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/locations/{locationId}/rankings/players-versus", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;

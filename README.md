@@ -33,7 +33,7 @@ private static IHostBuilder CreateHostBuilder(string[] args) =>
 	})
 	.ConfigureServices((hostBuilder, services) => 
 	{
-	    services.AddHttpClient("cocApi, httpClient =>
+	    services.AddHttpClient("cocApi", httpClient =>
 		{
 			httpClient.BaseAddress = new Uri("https://api.clashofclans.com/v1");
 			httpClient.Timeout = TimeSpan.FromSeconds(3);
@@ -70,13 +70,13 @@ This requires that the CocApi is already added to the service provider as shown 
 	},
     o => 
     {
-        o.ActiveWars.Enabled = false;
-        o.ClanMembers.Enabled = false;
+        o.ActiveWars.Enabled = true;
+        o.ClanMembers.Enabled = true;
         o.Clans.Enabled = true;
         o.NewCwlWars.Enabled = true;
-        o.NewWars.Enabled = false;
-        o.Wars.Enabled = false;
-        o.CwlWars.Enabled = false;
+        o.NewWars.Enabled = true;
+        o.Wars.Enabled = true;
+        o.CwlWars.Enabled = true;
     })
 ```
 

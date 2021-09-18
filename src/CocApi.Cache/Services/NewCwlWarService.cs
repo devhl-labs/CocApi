@@ -8,6 +8,7 @@ using CocApi.Api;
 using CocApi.Cache.Context;
 using CocApi.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
@@ -28,12 +29,13 @@ namespace CocApi.Cache.Services
 
 
         public NewCwlWarService(
+            ILogger<NewCwlWarService> logger,
             CacheDbContextFactoryProvider provider, 
             ClansApi clansApi, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-        : base(provider, options.Value.NewCwlWars.DelayBeforeExecution, options.Value.NewCwlWars.DelayBetweenExecutions)
+        : base(logger, provider, options.Value.NewCwlWars.DelayBeforeExecution, options.Value.NewCwlWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.NewCwlWars.Enabled;
@@ -223,7 +225,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, $"An error occured while processing a cwl war."));
+                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(ProcessRequest));
 
                 throw;
             }
@@ -253,7 +255,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Library.OnLog(this, new LogEventArgs(LogLevel.Error, e, "An error occured while announcing a cwl war."));
+                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(NewWarFoundAsync));
 
                 throw;
             }

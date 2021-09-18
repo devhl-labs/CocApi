@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Mime;
 using CocApi.Client;
 using CocApi.Model;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Api
 {
@@ -113,14 +114,15 @@ namespace CocApi.Api
     {
         private readonly System.Net.Http.HttpClient _httpClient;
 
-        private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
+        //private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LabelsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LabelsApi(System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
+        public LabelsApi(ILogger<LabelsApi> logger, System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
         {
+            _logger = logger;
             _httpClient = httpClient;
             GetTokenAsync = tokenProvider.GetAsync;
         }
@@ -128,7 +130,8 @@ namespace CocApi.Api
         /// <summary>
         /// Returns the token to be used in the api query
         /// </summary>
-        public Func<System.Threading.CancellationToken?, System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }  
+        public Func<System.Threading.CancellationToken?, System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }
+        private ILogger<LabelsApi> _logger;
 
 
         /// <summary>
@@ -261,7 +264,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/labels/clans", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -269,16 +274,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/clans", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/clans", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/clans", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/clans", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -414,7 +423,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/labels/players", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -422,16 +433,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/players", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/players", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/players", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/players", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Model;
@@ -18,7 +14,12 @@ namespace CocApi.Test
         public LocationsApi LocationsApi { get; }
         public LeaguesApi LeaguesApi { get; }
 
-        public TestService(CustomClansClient clansClient, CustomPlayersClient playersClient, PlayersApi playersApi, LocationsApi locationsApi, LeaguesApi leaguesApi)
+        public TestService(
+            CustomClansClient clansClient, 
+            CustomPlayersClient playersClient, 
+            PlayersApi playersApi, 
+            LocationsApi locationsApi, 
+            LeaguesApi leaguesApi)
         {
             ClansClient = clansClient;
             PlayersClient = playersClient;

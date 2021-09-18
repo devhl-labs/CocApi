@@ -5,12 +5,11 @@ using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Threading.Tasks;
 using CocApi.Cache.Services;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
 {
     public delegate Task AsyncEventHandler<T>(object sender, T e) where T : EventArgs;
-
-    public delegate Task LogEventHandler(object sender, CocApi.LogEventArgs log);
 
 
     [Flags]
@@ -27,19 +26,6 @@ namespace CocApi.Cache
 
     public static class Library
     {
-        internal static async Task OnLog(object sender, LogEventArgs log)
-        {
-            try
-            {
-                if (Log != null)
-                    await Log.Invoke(sender, log).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                //throw;
-            }
-        }
-
         internal static bool EnsureSingleton(bool instantiated)
         {
             if (instantiated)
@@ -47,8 +33,6 @@ namespace CocApi.Cache
 
             return true;
         }
-
-        public static event LogEventHandler? Log;
 
         private static long _currentSemaphoreUsage = 0;
 
@@ -62,10 +46,10 @@ namespace CocApi.Cache
             _concurrentEventsSemaphore = new SemaphoreSlim(max, max);
         }
 
-        internal static async Task SendConcurrentEvent(object sender, Func<Task> action, CancellationToken cancellationToken)
+        internal static async Task SendConcurrentEvent<T>(ILogger<T> logger, string methodName, Func<Task> action, CancellationToken cancellationToken)
         {
             if (Interlocked.Read(ref _currentSemaphoreUsage) >= _maxCount)
-                await OnLog(sender, new LogEventArgs(LogLevel.Trace, message: "Max concurrent events reached.")).ConfigureAwait(false);
+                logger.LogTrace("Max concurrent events reached.");
 
             await _concurrentEventsSemaphore.WaitAsync(cancellationToken);
 
@@ -77,7 +61,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                await OnLog(sender, new LogEventArgs(LogLevel.Error, e /*, "Error on clan updated."*/)); // TODO: fix this error message
+                logger.LogError(e, "An exception occured while executing {0}.{1}().", typeof(T).Name, methodName);
             }
             finally
             {

@@ -6,25 +6,29 @@ using CocApi.Cache.Context;
 using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache
 {
-    public class ClientBase
+    public class ClientBase<T>
     {
         public IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
         public string[]? DbContextArgs { get; }
         internal Synchronizer Synchronizer { get; }
         public IPerpetualExecution<object>[] PerpetualServices { get; }
+        public ILogger<T> Logger { get; }
 
 
         public ClientBase(
+            ILogger<T> logger,
             CacheDbContextFactoryProvider provider, 
             Synchronizer synchronizer, 
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options)
         {
             Library.SetMaxConcurrentEvents(options.Value.MaxConcurrentEvents);
+            Logger = logger;
             DbContextFactory = provider.Factory;
             DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
             EnsureMigrated();

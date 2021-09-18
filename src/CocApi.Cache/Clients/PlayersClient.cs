@@ -8,21 +8,23 @@ using CocApi.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
 {
-    public class PlayersClient : ClientBase
+    public class PlayersClient : ClientBase<PlayersClient>
     {
         public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
 
         public PlayersClient(
+            ILogger<PlayersClient> logger,
             PlayersApi playersApi, 
             CacheDbContextFactoryProvider provider,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-        : base (provider, synchronizer, perpetualServices, options)
+        : base (logger, provider, synchronizer, perpetualServices, options)
         {
             PlayersApi = playersApi;
 
@@ -156,7 +158,7 @@ namespace CocApi.Cache
             if (PlayerUpdated == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () =>
+            await Library.SendConcurrentEvent(Logger, nameof(OnPlayerUpdatedAsync), async () =>
             {
                 await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
             },
@@ -168,7 +170,7 @@ namespace CocApi.Cache
             if (PlayerUpdated == null)
                 return;
 
-            await Library.SendConcurrentEvent(this, async () =>
+            await Library.SendConcurrentEvent(Logger, nameof(OnMemberUpdatedAsync), async () =>
             {
                 await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
             },

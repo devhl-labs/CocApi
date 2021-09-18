@@ -1,6 +1,6 @@
 ﻿namespace CocApi.Model
 {
-    public class Donation
+    public sealed class Donation
     {
         public ClanMember ClanMember { get; }
 

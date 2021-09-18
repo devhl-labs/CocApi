@@ -16,6 +16,7 @@ using System.Net;
 using System.Net.Mime;
 using CocApi.Client;
 using CocApi.Model;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Api
 {
@@ -319,14 +320,15 @@ namespace CocApi.Api
     {
         private readonly System.Net.Http.HttpClient _httpClient;
 
-        private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
+        //private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public ClansApi(System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
+        public ClansApi(ILogger<ClansApi> logger, System.Net.Http.HttpClient httpClient, TokenProvider tokenProvider)
         {
+            _logger = logger;
             _httpClient = httpClient;
             GetTokenAsync = tokenProvider.GetAsync;
         }
@@ -334,7 +336,8 @@ namespace CocApi.Api
         /// <summary>
         /// Returns the token to be used in the api query
         /// </summary>
-        public Func<System.Threading.CancellationToken?, System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }  
+        public Func<System.Threading.CancellationToken?, System.Threading.Tasks.ValueTask<string>>? GetTokenAsync { get; set; }
+        private readonly ILogger<ClansApi> _logger;
 
 
         /// <summary>
@@ -458,7 +461,11 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                //Logger.LogInformation("/clans/{clanTag}", path)
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -466,16 +473,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<Clan>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -620,7 +631,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/members", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -628,16 +641,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ClanMember>>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/members", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/members", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/members", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/members", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -764,7 +781,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/currentwar/leaguegroup", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -772,16 +791,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWarLeagueGroup>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar/leaguegroup", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/currentwar/leaguegroup", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/currentwar/leaguegroup", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -908,7 +931,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clanwarleagues/wars/{warTag}", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -916,16 +941,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWar>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clanwarleagues/wars/{warTag}", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clanwarleagues/wars/{warTag}", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clanwarleagues/wars/{warTag}", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -1070,7 +1099,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/warlog", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -1078,16 +1109,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWarLog>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/warlog", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/warlog", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/warlog", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -1214,7 +1249,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clans/{clanTag}/currentwar", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -1222,16 +1259,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanWar>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans/{clanTag}/currentwar", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/currentwar", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clans/{clanTag}/currentwar", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;
@@ -1415,7 +1456,9 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/clans", path, end - start, e);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+
+                Library.LogRequestException(_logger, e, start, end, path);
 
                 throw httpRequestException;
             }
@@ -1423,16 +1466,20 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<ClanList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans", path, end - start, httpStatusCode);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/clans", path, end - start, httpStatusCode);
+
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+
+                Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                HttpRequestNonSuccess httpRequestNonSuccess = new("/clans", path, end - start, httpStatusCode, reasonPhrase);
+                //HttpRequestNonSuccess httpRequestNonSuccess = new("/clans", path, end - start, httpStatusCode, reasonPhrase);
 
-                OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+
+                Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
 
             return apiResponse;

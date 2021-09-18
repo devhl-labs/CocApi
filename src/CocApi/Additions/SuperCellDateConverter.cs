@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace CocApi
 {
-    public class SuperCellDateConverter : JsonConverter
+    public sealed class SuperCellDateConverter : JsonConverter
     {
         public List<string> DateTimeFormats { get; set; } = new List<string>();
 

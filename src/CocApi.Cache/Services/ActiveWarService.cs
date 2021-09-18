@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
@@ -19,12 +20,13 @@ namespace CocApi.Cache.Services
 
 
         public ActiveWarService(
+            ILogger<ActiveWarService> logger,
             CacheDbContextFactoryProvider provider, 
             ClansApi clansApi, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-            : base(provider, options.Value.ActiveWars.DelayBeforeExecution, options.Value.ActiveWars.DelayBetweenExecutions)
+            : base(logger, provider, options.Value.ActiveWars.DelayBeforeExecution, options.Value.ActiveWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.ActiveWars.Enabled;
