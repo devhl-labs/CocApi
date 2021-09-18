@@ -109,7 +109,7 @@ Iterates over the Wars cached table. Queries the CurrentWar cached table for bot
 Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. A future release of CocApi.Cache will remove this method and all traces of SQLite.
 
 ## Logging
-Hook into CocApi.Library.HttpRequestResult, CocApi.Library.Log, and CocApi.Cache.Library.Log to receive events from the libraries.
+Logs are sent using `Microsoft.Extensions.Logging.ILogger`. The test project shows how to use Serilog, but you can use whatever you like.
 
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).
