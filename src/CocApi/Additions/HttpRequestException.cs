@@ -2,7 +2,7 @@
 
 namespace CocApi
 {
-    public class HttpRequestException : Exception
+    public class HttpRequestException : Exception, IHttpRequestResult
     {
         public DateTime RequestedAt { get; } = DateTime.UtcNow;
         public TimeSpan Elapsed { get; }

@@ -2,6 +2,7 @@
 using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Cache.Services;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -11,12 +12,12 @@ namespace CocApi.Test
     {
         public CustomPlayersClient(
             ILogger<CustomPlayersClient> logger,
-            CacheDbContextFactoryProvider cacheContextOptions, 
+            IServiceScopeFactory scopeFactory, 
             PlayersApi playersApi,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-        : base(logger, playersApi, cacheContextOptions, synchronizer, perpetualServices, options)
+        : base(logger, playersApi, scopeFactory, synchronizer, perpetualServices, options)
         {
             PlayerUpdated += OnPlayerUpdated;
         }

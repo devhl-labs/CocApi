@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache.Services
@@ -12,18 +12,16 @@ namespace CocApi.Cache.Services
         private protected DateTime now = DateTime.UtcNow;
 
 
-        internal IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
-        internal string[] DbContextArgs { get; }
+        private protected IServiceScopeFactory ScopeFactory { get; }
 
 
         public PerpetualService(
-            ILogger<T> logger,
-            CacheDbContextFactoryProvider provider, 
+            ILogger<T> logger, 
+            IServiceScopeFactory scopeFactory,
             TimeSpan delayBeforeExecution,
             TimeSpan delayBetweenExecutions) : base(logger, delayBeforeExecution, delayBetweenExecutions)
         {
-            DbContextFactory = provider.Factory;
-            DbContextArgs = provider.DbContextArgs;
+            ScopeFactory = scopeFactory;
         }
 
 

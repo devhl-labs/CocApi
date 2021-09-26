@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -33,12 +34,12 @@ namespace CocApi.Cache.Services
 
         public WarService(
             ILogger<WarService> logger,
-            CacheDbContextFactoryProvider provider,
+            IServiceScopeFactory scopeFactory,
             ClansApi clansApi,
             Synchronizer synchronizer,
             TimeToLiveProvider timeToLiveProvider,
             IOptions<CacheOptions> options) 
-        : base(logger, provider, options.Value.Wars.DelayBeforeExecution, options.Value.Wars.DelayBetweenExecutions)
+        : base(logger, scopeFactory, options.Value.Wars.DelayBeforeExecution, options.Value.Wars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.Wars.Enabled;
@@ -55,7 +56,9 @@ namespace CocApi.Cache.Services
 
             ServiceOptions options = Options.Value.Wars;
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedWar> cachedWars = await dbContext.Wars
                 .Where(w =>

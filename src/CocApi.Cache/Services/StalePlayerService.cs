@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -22,12 +23,12 @@ namespace CocApi.Cache.Services
 
         public StalePlayerService(
             ILogger<StalePlayerService> logger,
-            CacheDbContextFactoryProvider provider, 
+            IServiceScopeFactory scopeFactory,
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
             PlayersApi playersApi,
             IOptions<CacheOptions> options) 
-        : base(logger, provider, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
+        : base(logger, scopeFactory, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.DeleteStalePlayers.Enabled;
@@ -42,7 +43,9 @@ namespace CocApi.Cache.Services
         {
             SetDateVariables();
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedPlayer> cachedPlayers = await (
                 from p in dbContext.Players

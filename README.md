@@ -27,57 +27,52 @@ These classes allow you to query the API using the named HttpClient provided.
 ```csharp
 private static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)
-	.ConfigureCocApi("cocApi", tokenProvider => 
-    { 
-		tokenProvider.Tokens.Add(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
-	})
-	.ConfigureServices((hostBuilder, services) => 
-	{
-	    services.AddHttpClient("cocApi", httpClient =>
-		{
-			httpClient.BaseAddress = new Uri("https://api.clashofclans.com/v1");
-			httpClient.Timeout = TimeSpan.FromSeconds(3);
-		})
-	}
+        .ConfigureCocApi("cocApi", (context, tokenProvider) =>
+        { 
+            tokenProvider.Tokens.Add(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
+        })
+        .ConfigureServices((hostBuilder, services) => 
+        {
+            services.AddHttpClient("cocApi", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri("https://api.clashofclans.com/v1");
+                httpClient.Timeout = TimeSpan.FromSeconds(3);
+            })
+        }
 ```
 
 ## Configuring CocApi.Cache
-Create a class that implements `IDesignTimeDbContextFactory<CocApi.Cache.CocApiCacheContext>`.
-This tells the CocApi.Cache how to interact with your database.
 Before running you will need to [create a migration](docs/scripts/cocapi-ef-migration.ps1) 
 and run the [update](docs/scripts/cocapi-ef-update.ps1) on your database provider.
 Modify these scripts to suit your needs. At the least you should edit the migration script to inject your connection string.
 ```ps1
 dotnet ef migrations add YourMigrationName `
     --project $PSScriptRoot/YourProject `
-    --context CocApi.Cache.CocApiCacheContext `
-    -o ./OutputFolder `
-    -- Your connection string or environment variable that will be injected into your IDesignTimeDbContextFactory.CreateDbContext args parameter
+    --context CocApi.Cache.CacheDbContext `
+    -o ./OutputFolder
 ```
 
 Use the IHostBuilder extension method ConfigureCocApiCache to your service provider.
 This requires that the CocApi is already added to the service provider as shown above. 
 ```csharp
-// optionally provide your classes that inherit ClansClient, PlayersClient or TimeToLiveProvider
-.ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
-    provider => 
-	{
-        // tell the cache library how to query your database
-		provider.Factory = new YourDbContextFactory();
-		
-		// use this method to inject your connection string from appsettings.json
-		provider.DbContextArgs = new string[] { hostBuilder.Configuration.GetValue<string>("ConnectionStrings:CocApiCache") };
-	},
-    o => 
-    {
-        o.ActiveWars.Enabled = true;
-        o.ClanMembers.Enabled = true;
-        o.Clans.Enabled = true;
-        o.NewCwlWars.Enabled = true;
-        o.NewWars.Enabled = true;
-        o.Wars.Enabled = true;
-        o.CwlWars.Enabled = true;
-    })
+.ConfigureCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>((services, dbContextOptions) =>
+{
+    IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+
+    string connection = configuration.GetConnectionString("your connection string");
+
+    dbContextOptions.UseNpgsql(connection);
+},
+(cacheOptions, context) =>
+{
+    cacheOptions.ActiveWars.Enabled = true;
+    cacheOptions.ClanMembers.Enabled = true;
+    cacheOptions.Clans.Enabled = true;
+    cacheOptions.NewCwlWars.Enabled = true;
+    cacheOptions.NewWars.Enabled = true;
+    cacheOptions.Wars.Enabled = true;
+    cacheOptions.CwlWars.Enabled = true;
+})
 ```
 
 ## Background Services
@@ -87,11 +82,11 @@ Downloads the current war for a clan which is warring one of your tracked clans,
 ### ClanService
 Downloads the clan, current war, war log, and league group for a given clan.
 
-### ClanService
-Iterates the Clan cached table searching for any clan with DownloadMembers enabled. Every player present in the clan will be downloaded. Players added to the Players table by this service will have Download set to **false**. When the village leaves the tracked clan, it will no longer update and will eventually be removed from the cache. If you wish to continue tracking these villages, on the OnClanUpdated event check for new members using `Clan.ClanMembersJoined(e.Stored, e.Fetched)` and add them to the PlayersClient with Download set to true.
+### ClanMemberService
+Iterates the Clan cache table searching for any clan with DownloadMembers enabled. Every player present in the clan will be downloaded. Players added to the Players table by this service will have Download set to **false**. When the village leaves the tracked clan, it will no longer update and will eventually be removed from the cache. If you wish to continue tracking these villages, on the OnClanUpdated event check for new members using `Clan.ClanMembersJoined(e.Stored, e.Fetched)` and add them to the PlayersClient with Download set to true.
 
 ### CwlWarService
-Iterates over the Wars cached table for any war with a war tag. Then queries the API and fires any appropriate updates.
+Iterates over the Wars cache table for any war with a war tag. Then queries the API and fires any appropriate updates.
 
 ### NewCwlWarService
 Queries the clan's league group from the cache to obtain the war tags. The API is then queried for each war tag. If the resulting war does not contain the desired clan, the war will be stored in memory. If the resulting war does contain the desired clan the war the NewWar event will be fired.
@@ -100,10 +95,10 @@ Queries the clan's league group from the cache to obtain the war tags. The API i
 Queries the current war cache for any war not yet announced. Fires the NewWar event, and adds the war to the War table.
 
 ### PlayerService
-Iterates the Players cached table searching for players with Download set to true.
+Iterates the Players cache table searching for players with Download set to true.
 
 ### WarService
-Iterates over the Wars cached table. Queries the CurrentWar cached table for both clans in the war. Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
+Iterates over the Wars cache table. Queries the CurrentWar cache table for both clans in the war. Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
 
 ## Migrating from version 1
 Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. A future release of CocApi.Cache will remove this method and all traces of SQLite.

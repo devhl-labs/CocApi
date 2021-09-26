@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -25,12 +26,12 @@ namespace CocApi.Cache.Services
 
         public MemberService(
             ILogger<MemberService> logger,
-            CacheDbContextFactoryProvider provider,
+            IServiceScopeFactory scopeFactory,
             PlayersApi playersApi, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-            : base(logger, provider, options.Value.ClanMembers.DelayBeforeExecution, options.Value.ClanMembers.DelayBetweenExecutions)
+            : base(logger, scopeFactory, options.Value.ClanMembers.DelayBeforeExecution, options.Value.ClanMembers.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.ClanMembers.Enabled;
@@ -47,7 +48,9 @@ namespace CocApi.Cache.Services
 
             ServiceOptionsBase options = Options.Value.ClanMembers;
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             CachedClan cachedClan = await dbContext.Clans
                 .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, cancellationToken).ConfigureAwait(false);

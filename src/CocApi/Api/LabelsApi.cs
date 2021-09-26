@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.Extensions.Logging;
@@ -114,7 +115,7 @@ namespace CocApi.Api
     {
         private readonly System.Net.Http.HttpClient _httpClient;
 
-        //private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
+        private async Task OnHttpRequestResult(HttpRequestResultEventArgs log) => await CocApi.Library.OnHttpRequestResult(this, log).ConfigureAwait(false);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LabelsApi"/> class.
@@ -264,7 +265,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/labels/clans", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -275,17 +276,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/clans", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/clans", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/clans", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/clans", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
@@ -423,7 +424,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/labels/players", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -434,17 +435,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LabelsObject>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/players", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/labels/players", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/players", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/labels/players", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }

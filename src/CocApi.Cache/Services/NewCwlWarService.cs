@@ -8,6 +8,7 @@ using CocApi.Api;
 using CocApi.Cache.Context;
 using CocApi.Client;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -30,12 +31,12 @@ namespace CocApi.Cache.Services
 
         public NewCwlWarService(
             ILogger<NewCwlWarService> logger,
-            CacheDbContextFactoryProvider provider, 
+            IServiceScopeFactory scopeFactory,
             ClansApi clansApi, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-        : base(logger, provider, options.Value.NewCwlWars.DelayBeforeExecution, options.Value.NewCwlWars.DelayBetweenExecutions)
+        : base(logger, scopeFactory, options.Value.NewCwlWars.DelayBeforeExecution, options.Value.NewCwlWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.NewCwlWars.Enabled;
@@ -56,7 +57,9 @@ namespace CocApi.Cache.Services
 
             ServiceOptions options = Options.Value.NewCwlWars;
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedClan> cachedClans = await dbContext.Clans
                 .Where(c =>
@@ -149,7 +152,9 @@ namespace CocApi.Cache.Services
 
             Dictionary<DateTime, ConcurrentDictionary<string, SeenCwlWar>> result = new();
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             DateTime since = DateTime.UtcNow.AddMonths(-2).AddDays(-DateTime.UtcNow.Day - 1); // go back to begining of month two months ago
 

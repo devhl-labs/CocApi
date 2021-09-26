@@ -7,6 +7,10 @@ using Microsoft.Extensions.Configuration;
 using Polly;
 using CocApi.Cache;
 using Serilog;
+using Microsoft.EntityFrameworkCore;
+using Polly.Extensions.Http;
+using Polly.Timeout;
+using System.Runtime.CompilerServices;
 
 namespace CocApi.Test
 {
@@ -42,71 +46,85 @@ namespace CocApi.Test
                         .Enrich.With<UtcTimestampEnricher>();
                 })
 
+
+                .ConfigureCocApi("cocApi", (context, tokenProvider) =>
+                {
+                    // configure CocApi by naming your HttpClient and providing tokens
+                    string[] tokenNames = context.Configuration.GetSection("CocApi:Rest:Tokens").Get<string[]>();
+
+                    foreach (string tokenName in tokenNames)
+                    {
+                        // the real token value is in an environment variable
+                        string token = context.Configuration.GetValue<string>(tokenName);
+
+                        tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
+                    }
+                })
+
+
+                .ConfigureCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>((services, dbContextOptions) =>
+                {
+                    IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+
+                    string connection = configuration.GetConnectionString("CocApiTest");
+
+                    // convert the variable name to the variable value
+                    connection = configuration.GetValue<string>(connection);
+
+                    dbContextOptions.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
+
+                }, (cacheOptions, context) =>
+                {
+                    cacheOptions.ActiveWars.Enabled = true;
+                    cacheOptions.ClanMembers.Enabled = true;
+                    cacheOptions.Clans.Enabled = true;
+                    cacheOptions.NewCwlWars.Enabled = true;
+                    cacheOptions.NewWars.Enabled = true;
+                    cacheOptions.Wars.Enabled = true;
+                    cacheOptions.CwlWars.Enabled = true;
+                    cacheOptions.Players.Enabled = true;
+                })
+
+
                 .ConfigureServices((hostBuilder, services) =>
                 {
-                    // configure CocApi by naming your HttpClient, providing tokens, and defining the token timeout
-                    services.AddCocApi("cocApi", tokenProvider =>
-                    {
-                        string[] tokenNames = hostBuilder.Configuration.GetSection("CocApi:Rest:Tokens").Get<string[]>();
-
-                        foreach (string tokenName in tokenNames)
-                        {
-                            // the real token value is in an environment variable
-                            string token = hostBuilder.Configuration.GetValue<string>(tokenName);
-
-                            tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
-                        }
-                    });
-
-
-                    services.AddCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>(
-                        provider =>
-                        {
-                            // tell the cache library how to query your database
-                            provider.Factory = new CacheDbContextFactory();
-                        },
-                        cacheOptions =>
-                        {
-                            cacheOptions.ActiveWars.Enabled = true;
-                            cacheOptions.ClanMembers.Enabled = true;
-                            cacheOptions.Clans.Enabled = true;
-                            cacheOptions.NewCwlWars.Enabled = true;
-                            cacheOptions.NewWars.Enabled = true;
-                            cacheOptions.Wars.Enabled = true;
-                            cacheOptions.CwlWars.Enabled = true;
-                            cacheOptions.Players.Enabled = true;
-                        }
-                    );
-
-
                     // use appsettings.json like this or configure the CacheOptions as above
                     //services.Configure<CacheOptions>(hostBuilder.Configuration.GetSection("CocApi:Cache"));
-
 
                     IConfigurationSection httpConfig = hostBuilder.Configuration.GetSection("CocApi:Rest:HttpClient");
 
                     // define the HttpClient named "cocApi" that CocApi will request
-                    services.AddHttpClient("cocApi", config =>
-                    {
-                        config.BaseAddress = new Uri(httpConfig.GetValue<string>("BaseAddress"));
-                        config.Timeout = TimeSpan.FromSeconds(httpConfig.GetValue<int>("Timeout"));
-                    })
+                    services.AddHttpClient("cocApi", config => config.BaseAddress = new Uri(httpConfig.GetValue<string>("BaseAddress")))
+                    
                     // optionally configure Polly to handle timeouts and http request error handling
-                    .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(httpConfig.GetValue<int>("RetryTimeout"))))
-                    .AddTransientHttpErrorPolicy(builder => builder.RetryAsync(httpConfig.GetValue<int>("Retry")))
-                    .AddTransientHttpErrorPolicy(builder => builder.CircuitBreakerAsync(
-                            handledEventsAllowedBeforeBreaking: httpConfig.GetValue<int>("HandledEventsAllowedBeforeBreaking"),
-                            durationOfBreak: TimeSpan.FromSeconds(httpConfig.GetValue<int>("DurationOfBreak"))
-                    ))
-
-                    // this property is important if you query the api very fast
-                    .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler()
+                    .AddPolicyHandler(RetryPolicy(httpConfig))
+                    .AddPolicyHandler(TimeoutPolicy(httpConfig))
+                    .AddTransientHttpErrorPolicy(builder => CircuitBreakerPolicy(builder, httpConfig))
+                    .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler
                     {
+                        // this property is important if you query the api very fast
                         MaxConnectionsPerServer = httpConfig.GetValue<int>("MaxConnectionsPerServer")
                     });
+
 
                     services.AddHostedService<TestService>();
                 });
         }
+
+        private static Polly.Retry.AsyncRetryPolicy<HttpResponseMessage> RetryPolicy(IConfigurationSection config)
+            => HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<TimeoutRejectedException>()
+                .RetryAsync(config.GetValue<int>("Retries"));
+
+        private static AsyncTimeoutPolicy<HttpResponseMessage> TimeoutPolicy(IConfigurationSection config)
+            => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(config.GetValue<long>("Timeout")));
+
+        private static Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<HttpResponseMessage> CircuitBreakerPolicy(
+                PolicyBuilder<HttpResponseMessage> builder, 
+                IConfigurationSection config)
+            => builder.CircuitBreakerAsync(
+                handledEventsAllowedBeforeBreaking: config.GetValue<int>("HandledEventsAllowedBeforeBreaking"),
+                durationOfBreak: TimeSpan.FromSeconds(config.GetValue<int>("DurationOfBreak")));
     }
 }

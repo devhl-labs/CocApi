@@ -23,9 +23,25 @@ namespace CocApi
 
     public static class Library
     {
+        public static event HttpRequestResultEventHandler? HttpRequestResult;
+
+        public delegate System.Threading.Tasks.Task HttpRequestResultEventHandler(object sender, HttpRequestResultEventArgs log);
+
         public static readonly Version? Version = typeof(Library).Assembly.GetName().Version;
 
         public const string REPOSITORY_URL = "https://github.com/devhl-labs/CocApi";
+
+        internal static async Task OnHttpRequestResult(object sender, HttpRequestResultEventArgs log)
+        {
+            try
+            {
+                if (HttpRequestResult != null)
+                    await HttpRequestResult.Invoke(sender, log).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+            }
+        }
 
         internal static void LogRequestSuccess<T>(ILogger<T> logger, HttpStatusCode httpStatusCode, DateTime start, DateTime end, string path)
             => logger.LogInformation("{0,-9} | {1} | {3}", (end - start).TotalSeconds, httpStatusCode, path);

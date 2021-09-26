@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
@@ -20,11 +21,11 @@ namespace CocApi.Cache
         public PlayersClient(
             ILogger<PlayersClient> logger,
             PlayersApi playersApi, 
-            CacheDbContextFactoryProvider provider,
+            IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-        : base (logger, provider, synchronizer, perpetualServices, options)
+        : base (logger, scopeFactory, synchronizer, perpetualServices, options)
         {
             PlayersApi = playersApi;
 
@@ -48,7 +49,9 @@ namespace CocApi.Cache
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedPlayer> cachedPlayers = await dbContext.Players
                 .Where(c => formattedTags.Contains(c.Tag))
@@ -73,7 +76,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             while (!Synchronizer.UpdatingVillage.TryAdd(formattedTag, null))            
                 await Task.Delay(250);            
@@ -97,7 +102,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Players
                 .Where(i => i.Tag == formattedTag)
@@ -109,7 +116,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Players
                 .Where(i => i.Tag == formattedTag)
@@ -144,7 +153,9 @@ namespace CocApi.Cache
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Players
                 .AsNoTracking()

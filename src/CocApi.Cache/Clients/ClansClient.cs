@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache
 {
@@ -32,12 +33,12 @@ namespace CocApi.Cache
         public ClansClient(
             ILogger<ClansClient> logger,
             ClansApi clansApi, 
-            CacheDbContextFactoryProvider provider,
+            IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options
             )
-        : base(logger, provider, synchronizer, perpetualServices, options)
+        : base(logger, scopeFactory, synchronizer, perpetualServices, options)
         {
             ClansApi = clansApi;
 
@@ -72,7 +73,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             while (!Synchronizer.UpdatingClan.TryAdd(formattedTag, null))
                 await Task.Delay(250).ConfigureAwait(false);
@@ -103,7 +106,9 @@ namespace CocApi.Cache
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedClan> cachedClans = await dbContext.Clans
                 .Where(c => formattedTags.Contains(c.Tag))
@@ -133,7 +138,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedWar> cache = await dbContext.Wars
                 .AsNoTracking()
@@ -154,7 +161,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
                 ?? await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, cancellationToken).ConfigureAwait(false);
@@ -164,7 +173,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
                 ?? await ClansApi.FetchClanWarLeagueGroupOrDefaultAsync(formattedTag, cancellationToken).ConfigureAwait(false);
@@ -174,7 +185,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(warTag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             CachedWar war = await dbContext.Wars
                 .AsNoTracking()
@@ -190,7 +203,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(warTag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             CachedWar? war = await dbContext.Wars
                 .AsNoTracking()
@@ -225,7 +240,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Wars
                 .AsNoTracking()
@@ -238,7 +255,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()
@@ -251,7 +270,9 @@ namespace CocApi.Cache
         {
             string formattedTag = Clash.FormatTag(tag);
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()
@@ -267,7 +288,9 @@ namespace CocApi.Cache
             foreach (string tag in tags)
                 formattedTags.Add(Clash.FormatTag(tag));
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             return await dbContext.Clans
                 .AsNoTracking()

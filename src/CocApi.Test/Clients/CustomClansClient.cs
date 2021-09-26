@@ -5,6 +5,7 @@ using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Cache.Services;
 using CocApi.Model;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -14,12 +15,12 @@ namespace CocApi.Test
     {
         public CustomClansClient(
             ILogger<CustomClansClient> logger,
-            CacheDbContextFactoryProvider dbContextOptions, 
+            IServiceScopeFactory scopeFactory,
             ClansApi clansApi, 
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
-            : base(logger, clansApi, dbContextOptions, synchronizer, perpetualServices, options)
+            : base(logger, clansApi, scopeFactory, synchronizer, perpetualServices, options)
         {
             ClanUpdated += OnClanUpdated;
             ClanWarAdded += OnClanWarAdded;

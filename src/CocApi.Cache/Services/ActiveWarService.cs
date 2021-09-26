@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CocApi.Api;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -21,12 +22,12 @@ namespace CocApi.Cache.Services
 
         public ActiveWarService(
             ILogger<ActiveWarService> logger,
-            CacheDbContextFactoryProvider provider, 
+            IServiceScopeFactory scopeFactory,
             ClansApi clansApi, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
-            : base(logger, provider, options.Value.ActiveWars.DelayBeforeExecution, options.Value.ActiveWars.DelayBetweenExecutions)
+            : base(logger, scopeFactory, options.Value.ActiveWars.DelayBeforeExecution, options.Value.ActiveWars.DelayBetweenExecutions)
         {
             Instantiated = Library.EnsureSingleton(Instantiated);
             IsEnabled = options.Value.ActiveWars.Enabled;
@@ -43,7 +44,9 @@ namespace CocApi.Cache.Services
 
             ServiceOptions options = Options.Value.ActiveWars;
 
-            using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             List<CachedClan> cachedClans = await
                 (
@@ -72,6 +75,7 @@ namespace CocApi.Cache.Services
                     select c
                 )
                 .Distinct()
+                .OrderBy(w => w.Id)
                 .Take(options.ConcurrentUpdates)
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);

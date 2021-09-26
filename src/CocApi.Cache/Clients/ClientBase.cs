@@ -6,6 +6,7 @@ using CocApi.Cache.Context;
 using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -13,24 +14,21 @@ namespace CocApi.Cache
 {
     public class ClientBase<T>
     {
-        public IDesignTimeDbContextFactory<CacheDbContext> DbContextFactory { get; }
-        public string[]? DbContextArgs { get; }
         internal Synchronizer Synchronizer { get; }
         public IPerpetualExecution<object>[] PerpetualServices { get; }
         public ILogger<T> Logger { get; }
-
+        public IServiceScopeFactory ScopeFactory { get; }
 
         public ClientBase(
             ILogger<T> logger,
-            CacheDbContextFactoryProvider provider, 
+            IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer, 
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options)
         {
             Library.SetMaxConcurrentEvents(options.Value.MaxConcurrentEvents);
             Logger = logger;
-            DbContextFactory = provider.Factory;
-            DbContextArgs = provider.DbContextArgs ?? Array.Empty<string>();
+            ScopeFactory = scopeFactory;
             EnsureMigrated();
             Synchronizer = synchronizer;
             PerpetualServices = perpetualServices;
@@ -50,14 +48,18 @@ namespace CocApi.Cache
 
             List<Models.CachedWar> oldWars;
 
-            using var dbContext2 = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope2 = ScopeFactory.CreateScope();
+
+            var dbContext2 = scope2.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             if ((await dbContext2.Wars.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
                 return;
 
             do
             {
-                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+                using var scope = ScopeFactory.CreateScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -126,14 +128,18 @@ namespace CocApi.Cache
 
             List<Models.CachedClan> oldClans;
 
-            using var dbContext2 = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope2 = ScopeFactory.CreateScope();
+
+            var dbContext2 = scope2.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             if ((await dbContext2.Clans.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
                 return;
 
             do
             {
-                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+                using var scope = ScopeFactory.CreateScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -232,14 +238,18 @@ namespace CocApi.Cache
 
             List<Models.CachedPlayer> oldPlayers;
 
-            using var dbContext2 = DbContextFactory.CreateDbContext(DbContextArgs);
+            using var scope2 = ScopeFactory.CreateScope();
+
+            var dbContext2 = scope2.ServiceProvider.GetRequiredService<CacheDbContext>();
 
             if ((await dbContext2.Players.FirstOrDefaultAsync().ConfigureAwait(false)) != null)
                 return;
 
             do
             {
-                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+                using var scope = ScopeFactory.CreateScope();
+
+                var dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
                 dbContext.Database.SetCommandTimeout(TimeSpan.FromHours(1));
 
@@ -287,9 +297,11 @@ namespace CocApi.Cache
         {
             try
             {
-                using var dbContext = DbContextFactory.CreateDbContext(DbContextArgs);
+                using var scope = ScopeFactory.CreateScope();
 
-                dbContext.Clans.FirstOrDefault();
+                var dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+
+                dbContext.Clans.OrderBy(c => c.Id).FirstOrDefault();
             }
             catch (Exception e)
             {

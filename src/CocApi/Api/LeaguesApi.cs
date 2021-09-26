@@ -14,6 +14,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Mime;
+using System.Threading.Tasks;
 using CocApi.Client;
 using CocApi.Model;
 using Microsoft.Extensions.Logging;
@@ -272,7 +273,7 @@ namespace CocApi.Api
         private readonly ILogger<LeaguesApi> _logger;
         private readonly System.Net.Http.HttpClient _httpClient;
 
-        //private void OnHttpRequestResult(HttpRequestResultEventArgs log) => CocApi.Library.OnHttpRequestResult(this, log);
+        private async Task OnHttpRequestResult(HttpRequestResultEventArgs log) => await CocApi.Library.OnHttpRequestResult(this, log).ConfigureAwait(false);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LeaguesApi"/> class.
@@ -410,7 +411,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/leagues/{leagueId}", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -421,17 +422,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<League>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues/{leagueId}", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues/{leagueId}", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
@@ -583,7 +584,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/leagues/{leagueId}/seasons/{seasonId}", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -593,18 +594,18 @@ namespace CocApi.Api
             if (apiResponse.IsSuccessStatusCode)
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<PlayerRankingList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
-                
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons/{seasonId}", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons/{seasonId}", path, end - start, httpStatusCode);
+
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues/{leagueId}/seasons/{seasonId}", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues/{leagueId}/seasons/{seasonId}", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
@@ -749,7 +750,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/leagues/{leagueId}/seasons", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -760,17 +761,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LeagueSeasonList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues/{leagueId}/seasons", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues/{leagueId}/seasons", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues/{leagueId}/seasons", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
@@ -908,7 +909,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/leagues", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -919,17 +920,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<LeagueList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/leagues", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/leagues", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
@@ -1056,7 +1057,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/warleagues/{leagueId}", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -1067,17 +1068,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<WarLeague>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues/{leagueId}", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues/{leagueId}", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/warleagues/{leagueId}", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/warleagues/{leagueId}", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
@@ -1215,7 +1216,7 @@ namespace CocApi.Api
 
                 HttpRequestException httpRequestException = new("/warleagues", path, end - start, e);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestException)).ConfigureAwait(false);
 
                 Library.LogRequestException(_logger, e, start, end, path);
 
@@ -1226,17 +1227,17 @@ namespace CocApi.Api
             {
                 apiResponse.Content = Newtonsoft.Json.JsonConvert.DeserializeObject<WarLeagueList>(apiResponse.RawContent, CocApi.Clash.JsonSerializerSettings);
 
-                //HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues", path, end - start, httpStatusCode);
+                HttpRequestSuccess requestSuccess = new HttpRequestSuccess("/warleagues", path, end - start, httpStatusCode);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(requestSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestSuccess(_logger, httpStatusCode, start, end, path);
             }
             else
             {
-                //HttpRequestNonSuccess httpRequestNonSuccess = new("/warleagues", path, end - start, httpStatusCode, reasonPhrase);
+                HttpRequestNonSuccess httpRequestNonSuccess = new("/warleagues", path, end - start, httpStatusCode, reasonPhrase);
 
-                //OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess));
+                await OnHttpRequestResult(new HttpRequestResultEventArgs(httpRequestNonSuccess)).ConfigureAwait(false);
 
                 Library.LogRequestFailure(_logger, httpStatusCode, start, end, path, reasonPhrase);
             }
