@@ -129,11 +129,17 @@ namespace CocApi.Cache.Services
                     foreach (var warTags in warTagDictionaries.Value)
                         processRequests.Add(ProcessRequest(warTags, cachedClans, announceNewWarTasks, warTagDictionaries, cancellationToken));
 
-                await Task.WhenAll(processRequests).ConfigureAwait(false);
+                try
+                {
+                    await Task.WhenAll(processRequests).ConfigureAwait(false);
 
-                await Task.WhenAll(announceNewWarTasks).ConfigureAwait(false);
+                    await Task.WhenAll(announceNewWarTasks).ConfigureAwait(false);
+                }
+                catch (Exception)
+                {
+                }
 
-                foreach (var task in announceNewWarTasks)
+                foreach (var task in announceNewWarTasks.Where(t => t.IsCompletedSuccessfully))
                     dbContext.Wars.Add(task.Result);
 
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
