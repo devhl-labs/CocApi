@@ -171,6 +171,13 @@ namespace CocApi.Cache.Services
 
                 cachedWar.IsFinal = clan.CurrentWar.State == WarState.WarEnded;
             }
+            else if (cachedClans.All(c => 
+                    c != null && 
+                    (
+                        c.CurrentWar.PreparationStartTime == DateTime.MinValue || 
+                        c.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime
+                    )))
+                cachedWar.IsFinal = true;
         }
 
         private async Task<CachedClan?> CreateCachedClan(string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
