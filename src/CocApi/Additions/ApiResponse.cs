@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
-using CocApi.Model;
 
 namespace CocApi.Client
 {
@@ -13,8 +10,10 @@ namespace CocApi.Client
         { 
             get
             {
-                string downloadDateString = Headers.First(h => h.Key == "Date").Value.First();
-                DateTime downloadDate = DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
+                string? downloadDateString = Headers.FirstOrDefault(h => h.Key == "Date").Value.FirstOrDefault();
+                DateTime downloadDate = downloadDateString == null
+                    ? DateTime.UtcNow
+                    : DateTime.ParseExact(downloadDateString, "ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
 
                 return downloadDate;
             }
@@ -24,7 +23,16 @@ namespace CocApi.Client
         {
             get
             {
-                string cacheControlString = Headers.First(h => h.Key == "Cache-Control").Value.First().Replace("public ", "").Replace("max-age=", "");
+                var cacheControlString = Headers.FirstOrDefault(h => h.Key == "Cache-Control").Value.FirstOrDefault();
+
+                if (cacheControlString == null)
+                {
+                    string? envVar = Environment.GetEnvironmentVariable("COCAPI_CURRENT_WAR_CACHE_CONTROL") ?? "5";
+
+                    return DateTime.UtcNow.AddSeconds(int.Parse(envVar));
+                }
+
+                cacheControlString = cacheControlString.Replace("public ", "").Replace("max-age=", "");
                 double cacheControl = double.Parse(cacheControlString);
                 return Downloaded.AddSeconds(cacheControl);
             }
