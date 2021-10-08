@@ -115,10 +115,7 @@ namespace CocApi.Cache.Services
                     .Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken))
                     .ConfigureAwait(false); 
 
-            cachedWar.IsFinal = fetched.State == WarState.WarEnded;
-
-            if (fetched.Content == null && !Clash.IsCwlEnabled)
-                cachedWar.IsFinal = true;
+            cachedWar.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == WarState.WarEnded;
 
             cachedWar.UpdateFrom(fetched);
         }
