@@ -40,6 +40,25 @@ namespace CocApi.Cache
             )
         : base(logger, scopeFactory, synchronizer, perpetualServices, options)
         {
+            if (!(options.Value.CwlWars.Enabled == 
+                    options.Value.Clans.DownloadGroup == 
+                    options.Value.NewCwlWars.Enabled == 
+                    options.Value.Clans.Enabled))
+            {
+                logger.LogWarning("Your cache control options has CWL partially enabled.");
+                // TODO: then why do all these booleans exist?
+            }
+
+            if (!(options.Value.ClanMembers.Enabled == options.Value.DeleteStalePlayers.Enabled))            
+                logger.LogWarning("You are downloading clan members but not deleting stale players. This will cause departed clan members to stay in cache forever.");
+
+            if (!(options.Value.ActiveWars.Enabled ==
+                    options.Value.Wars.Enabled ==
+                    options.Value.Clans.Enabled ==
+                    options.Value.Clans.DownloadCurrentWar ==
+                    options.Value.NewWars.Enabled))
+                logger.LogWarning("Your cache control options has current wars partially enabled.");
+
             ClansApi = clansApi;
 
             ClanService clanService = (ClanService)perpetualServices.Single(p => p.GetType() == typeof(ClanService));
