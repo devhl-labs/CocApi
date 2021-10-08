@@ -11,7 +11,7 @@ namespace CocApi.Cache
 
         public DbSet<CachedWar> Wars { get; set; }
 
-        public CacheDbContext(DbContextOptions options) : base(options)
+        public CacheDbContext(DbContextOptions<CacheDbContext> options) : base(options)
         {
 
         }
