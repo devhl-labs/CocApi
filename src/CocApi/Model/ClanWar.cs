@@ -75,7 +75,8 @@ namespace CocApi.Model
         /// <param name="state">state.</param>
         /// <param name="endTime">endTime.</param>
         /// <param name="preparationStartTime">preparationStartTime.</param>
-        public ClanWar(WarClan clan, WarClan opponent, DateTime startTime, WarState? state, DateTime endTime, DateTime preparationStartTime)
+        /// <param name="attacksPerMember">attacksPerMember.</param>
+        public ClanWar(WarClan clan, WarClan opponent, DateTime startTime, WarState? state, DateTime endTime, DateTime preparationStartTime, int attacksPerMember)
         {
             Clan = clan;
             Opponent = opponent;
@@ -83,6 +84,7 @@ namespace CocApi.Model
             State = state;
             EndTime = endTime;
             PreparationStartTime = preparationStartTime;
+            AttacksPerMember = attacksPerMember;
         }
 
         /// <summary>

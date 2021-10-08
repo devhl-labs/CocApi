@@ -11,6 +11,7 @@ namespace CocApi.Cache
         /// It may help if a tracked clan's war log is private. 
         /// It also helps get the final war stats in the event the clan searches for a new war immediately.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public ServiceOptions ActiveWars { get; } = new ServiceOptions { DelayBeforeExecution = TimeSpan.FromMinutes(5), DelayBetweenExecutions = TimeSpan.FromMinutes(10) };
 
         /// <summary>
@@ -45,6 +46,7 @@ namespace CocApi.Cache
         /// If the resulting war does not contain the desired clan, the war will be stored in memory. 
         /// If the resulting war does contain the desired clan the war the NewWar event will be fired.
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public ServiceOptions NewCwlWars { get; } = new ServiceOptions { DelayBetweenExecutions = TimeSpan.FromMinutes(2), ConcurrentUpdates = 10 };
 
         /// <summary>
@@ -52,6 +54,7 @@ namespace CocApi.Cache
         /// Fires the NewWar event, and adds the war to the War table.
         /// NOTE: the Clans service must be enabled as well as DownloadCurrentWar
         /// </summary>
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public ServiceOptions NewWars { get; } = new ServiceOptions { DelayBetweenExecutions = TimeSpan.FromSeconds(15) };
 
         /// <summary>

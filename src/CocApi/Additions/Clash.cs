@@ -59,6 +59,7 @@ namespace CocApi
         private static readonly Unit _valkyrie    = new(Village.Home, Resource.DarkElixir, 203, 9, "Valkyrie", 12);
         private static readonly Unit _witch       = new(Village.Home, Resource.DarkElixir, 205, 5, "Witch", 14);
         private static readonly Unit _lavaHound   = new(Village.Home, Resource.DarkElixir, 206, 6, "Lava Hound", 17);
+        private static readonly Unit _bowler      = new(Village.Home, Resource.DarkElixir, 207, 5, "Bowler", 22);
 
         public static Unit[] Troops { get; } = new Unit[]
         {
@@ -95,7 +96,6 @@ namespace CocApi
 
             new Unit(Village.Home, Resource.DarkElixir, 202, 10, "Hog Rider", 11),
             new Unit(Village.Home, Resource.DarkElixir, 204, 10, "Golem", 13),
-            new Unit(Village.Home, Resource.DarkElixir, 207, 5, "Bowler", 22),
             new Unit(Village.Home, Resource.DarkElixir, 208, 6, "Ice Golem"),
             new Unit(Village.Home, Resource.DarkElixir, 209, 3, "Headhunter", 82),
 
@@ -111,6 +111,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.DarkElixir, 310, _valkyrie, "Super Valkyrie", 64),
             new Unit(Village.Home, Resource.DarkElixir, 311, _witch, "Super Witch", 66),
             new Unit(Village.Home, Resource.DarkElixir, 313, _lavaHound, "Ice Hound", 76),
+            new Unit(Village.Home, Resource.DarkElixir, 314, _bowler, "Super Bowler", 80),
 
             new Unit(Village.BuilderBase, Resource.Elixir, 401, 18, "Raged Barbarian"),
             new Unit(Village.BuilderBase, Resource.Elixir, 402, 18, "Sneaky Archer"),

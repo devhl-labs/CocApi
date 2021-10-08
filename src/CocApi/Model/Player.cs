@@ -95,7 +95,7 @@ namespace CocApi.Model
         /// <param name="warStars">warStars.</param>
         /// <param name="achievements">achievements.</param>
         /// <param name="versusBattleWinCount">versusBattleWinCount.</param>
-        public Player(PlayerClan clan, League league, Role? role, int attackWins, int defenseWins, int townHallLevel, int townHallWeaponLevel, int versusBattleWins, PlayerLegendStatistics legendStatistics, List<PlayerItemLevel> troops, List<PlayerItemLevel> heroes, List<PlayerItemLevel> spells, List<Label> labels, string tag, string name, int expLevel, int trophies, int bestTrophies, int donations, int donationsReceived, int builderHallLevel, int versusTrophies, int bestVersusTrophies, int warStars, List<PlayerAchievementProgress> achievements, int versusBattleWinCount)
+        public Player(PlayerClan clan, League league, Role? role, int attackWins, int defenseWins, int townHallLevel, int townHallWeaponLevel, int versusBattleWins, PlayerLegendStatistics legendStatistics, List<PlayerItemLevel> troops, List<PlayerItemLevel> heroes, List<PlayerItemLevel> spells, List<Label> labels, string tag, string name, int expLevel, int trophies, int bestTrophies, int donations, int donationsReceived, int builderHallLevel, int versusTrophies, int bestVersusTrophies, int warStars, List<PlayerAchievementProgress> achievements, int versusBattleWinCount, WarPreference? warPreference)
         {
             Clan = clan;
             League = league;
@@ -123,6 +123,7 @@ namespace CocApi.Model
             WarStars = warStars;
             Achievements = achievements;
             VersusBattleWinCount = versusBattleWinCount;
+            WarPreference = warPreference;
         }
 
         /// <summary>

@@ -7,6 +7,15 @@ using Newtonsoft.Json.Converters;
 
 namespace CocApi
 {
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum WarPreference
+    {
+        [EnumMember(Value = "out")]
+        Out,
+        [EnumMember(Value ="in")]
+        In
+    }
+
     ///// <summary>
     ///// Defines Role
     ///// </summary>

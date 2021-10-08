@@ -54,6 +54,9 @@ namespace CocApi.Model
         public int HeroLevel(Unit hero) => Heroes.First(h => h.Name == hero.Name).Level;
         
 
-        public int? HeroLevelOrDefault(Unit hero) => Heroes.FirstOrDefault(h => h.Name == hero.Name)?.Level;        
+        public int? HeroLevelOrDefault(Unit hero) => Heroes.FirstOrDefault(h => h.Name == hero.Name)?.Level;
+
+        [DataMember(Name = "warPreference", EmitDefaultValue = false)]
+        public WarPreference? WarPreference { get; private set; }
     }
 }

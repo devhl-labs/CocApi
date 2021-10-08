@@ -189,7 +189,7 @@ namespace CocApi.Model
         //    //Initialize();
         //}
 
-        private readonly object _initializeLock = new object();
+        private readonly object _initializeLock = new();
 
         internal void Initialize(DateTime serverExpiration, string? warTag)
         {
@@ -333,5 +333,8 @@ namespace CocApi.Model
 
             return WarType.Random;
         }
+
+        [DataMember(Name = "attacksPerMember", EmitDefaultValue = false)]
+        public int AttacksPerMember { get; private set; }
     }
 }
