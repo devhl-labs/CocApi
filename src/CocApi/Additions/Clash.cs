@@ -53,6 +53,7 @@ namespace CocApi
         private static readonly Unit _wallBreaker = new(Village.Home, Resource.Elixir, 105, 10, "Wall Breaker", 4);
         private static readonly Unit _balloon     = new(Village.Home, Resource.Elixir, 106, 10, "Balloon", 5);
         private static readonly Unit _wizard      = new(Village.Home, Resource.Elixir, 107, 10, "Wizard", 6);
+        private static readonly Unit _dragon      = new(Village.Home, Resource.Elixir, 109, 9,  "Dragon", 8);
         private static readonly Unit _babyDragon  = new(Village.Home, Resource.Elixir, 111, 8, "Baby Dragon", 23);
 
         private static readonly Unit _minion      = new(Village.Home, Resource.DarkElixir, 201, 10, "Minion", 10);
@@ -77,22 +78,20 @@ namespace CocApi
             _lavaHound,
 
             new Unit(Village.Home, Resource.Elixir, 108, 7, "Healer", 7),
-            new Unit(Village.Home, Resource.Elixir, 109, 9, "Dragon", 8),
             new Unit(Village.Home, Resource.Elixir, 110, 9, "P.E.K.K.A", 9),
             new Unit(Village.Home, Resource.Elixir, 112, 7, "Miner", 24),
             new Unit(Village.Home, Resource.Elixir, 113, 5, "Electro Dragon", 59),
             new Unit(Village.Home, Resource.Elixir, 114, 3, "Yeti", 53),
             new Unit(Village.Home, Resource.Elixir, 115, 3, "Dragon Rider", 65),
 
-            // TODO: we need the ids for all the season troops
-            new Unit(Village.Home, Resource.Elixir, 180, _wizard.MaxLevel, "Ice Wizard", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 181, 11, "Battle Ram", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 182, _barbarian.MaxLevel, "Pumpkin Barbarian", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 183, 11, "Giant Skeleton", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 184, 9, "Skeleton Barrel", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 185, 8, "El Primo", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 186, _wizard.MaxLevel, "Party Wizard", isSeasonalTroop: true),
-            new Unit(Village.Home, Resource.Elixir, 187, 8, "Royal Ghost", isSeasonalTroop: true),
+            new Unit(Village.Home, Resource.Elixir, 180, _wizard.MaxLevel, "Ice Wizard", 30, true),
+            new Unit(Village.Home, Resource.Elixir, 181, 11, "Battle Ram", 45, true),
+            new Unit(Village.Home, Resource.Elixir, 182, _barbarian.MaxLevel, "Pumpkin Barbarian", 48, true),
+            new Unit(Village.Home, Resource.Elixir, 183, 11, "Giant Skeleton", 50, true),
+            new Unit(Village.Home, Resource.Elixir, 184, 9, "Skeleton Barrel", 61, true),
+            new Unit(Village.Home, Resource.Elixir, 185, 8, "El Primo", 67, true),
+            new Unit(Village.Home, Resource.Elixir, 186, _wizard.MaxLevel, "Party Wizard", 72, true),
+            new Unit(Village.Home, Resource.Elixir, 187, 8, "Royal Ghost", 47, true),
 
             new Unit(Village.Home, Resource.DarkElixir, 202, 10, "Hog Rider", 11),
             new Unit(Village.Home, Resource.DarkElixir, 204, 10, "Golem", 13),
@@ -106,10 +105,11 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 305, _wallBreaker, "Super Wall Breaker", 28),
             new Unit(Village.Home, Resource.Elixir, 306, _balloon, "Rocket Balloon", 57),
             new Unit(Village.Home, Resource.Elixir, 307, _wizard, "Super Wizard", 83),
-            new Unit(Village.Home, Resource.Elixir, 308, _babyDragon, "Inferno Dragon", 63),
-            new Unit(Village.Home, Resource.DarkElixir, 309, _minion, "Super Minion", 84),
-            new Unit(Village.Home, Resource.DarkElixir, 310, _valkyrie, "Super Valkyrie", 64),
-            new Unit(Village.Home, Resource.DarkElixir, 311, _witch, "Super Witch", 66),
+            new Unit(Village.Home, Resource.DarkElixir, 308, _dragon, "Super Dragon", 81),
+            new Unit(Village.Home, Resource.Elixir, 309, _babyDragon, "Inferno Dragon", 63),
+            new Unit(Village.Home, Resource.DarkElixir, 310, _minion, "Super Minion", 84),
+            new Unit(Village.Home, Resource.DarkElixir, 311, _valkyrie, "Super Valkyrie", 64),
+            new Unit(Village.Home, Resource.DarkElixir, 312, _witch, "Super Witch", 66),
             new Unit(Village.Home, Resource.DarkElixir, 313, _lavaHound, "Ice Hound", 76),
             new Unit(Village.Home, Resource.DarkElixir, 314, _bowler, "Super Bowler", 80),
 
@@ -135,6 +135,8 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 105, 7, "Freeze Spell", 5),
             new Unit(Village.Home, Resource.Elixir, 106, 7, "Clone Spell", 16),
             new Unit(Village.Home, Resource.Elixir, 107, 4, "Invisibility Spell", 35),
+            new Unit(Village.Home, Resource.Elixir, 108, 1, "Santa's Surprise", 4, true),
+            new Unit(Village.Home, Resource.Elixir, 109, 1, "Birthday Boom", 22, true),
 
             new Unit(Village.Home, Resource.DarkElixir, 201, 8, "Poison Spell", 9),
             new Unit(Village.Home, Resource.DarkElixir, 202, 5, "Earthquake Spell", 10),
@@ -149,7 +151,8 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 2, 4, "Battle Blimp", 52),
             new Unit(Village.Home, Resource.Elixir, 3, 4, "Stone Slammer", 62),
             new Unit(Village.Home, Resource.Elixir, 4, 4, "Siege Barracks", 75),
-            new Unit(Village.Home, Resource.Elixir, 5, 4, "Log Launcher", 87)
+            new Unit(Village.Home, Resource.Elixir, 5, 4, "Log Launcher", 87),
+            new Unit(Village.Home, Resource.Elixir, 6, 4, "Flame Flinger", 91)
         };
 
         public const int MAX_TOWN_HALL_LEVEL = 14;

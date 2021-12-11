@@ -1,6 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using CocApi.Cache.Context;
 using CocApi.Model;
+using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
 {
@@ -15,9 +16,9 @@ namespace CocApi.Cache
         internal ConcurrentDictionary<string, CachedPlayer?> UpdatingVillage { get; set; } = new();
 
 
-        public Synchronizer()
+        public Synchronizer(ILogger<Synchronizer> logger)
         {
-            Instantiated = Library.EnsureSingleton(Instantiated);
+            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         }
     }
 }

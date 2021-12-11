@@ -48,16 +48,10 @@ namespace CocApi.Test
 
                 .ConfigureCocApi("cocApi", (context, tokenProvider) =>
                 {
-                    // configure CocApi by naming your HttpClient and providing tokens
-                    string[] tokenNames = context.Configuration.GetSection("CocApi:Rest:Tokens").Get<string[]>();
+                    string[] tokens = context.Configuration.GetSection("CocApi:Rest:Tokens").Get<string[]>();
 
-                    foreach (string tokenName in tokenNames)
-                    {
-                        // the real token value is in an environment variable
-                        string token = context.Configuration.GetValue<string>(tokenName);
-
+                    foreach (string token in tokens)
                         tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
-                    }
                 })
 
 
@@ -66,9 +60,6 @@ namespace CocApi.Test
                     IConfiguration configuration = services.GetRequiredService<IConfiguration>();
 
                     string connection = configuration.GetConnectionString("CocApiTest");
-
-                    // convert the variable name to the variable value
-                    connection = configuration.GetValue<string>(connection);
 
                     dbContextOptions.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
 

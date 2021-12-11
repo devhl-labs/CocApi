@@ -30,7 +30,7 @@ namespace CocApi.Cache.Services
             IOptions<CacheOptions> options) 
         : base(logger, scopeFactory, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
         {
-            Instantiated = Library.EnsureSingleton(Instantiated);
+            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.DeleteStalePlayers.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;

@@ -29,7 +29,7 @@ namespace CocApi.Cache.Services
             IOptions<CacheOptions> options) 
         : base(logger, scopeFactory, options.Value.NewWars.DelayBeforeExecution, options.Value.NewWars.DelayBetweenExecutions)
         {
-            Instantiated = Library.EnsureSingleton(Instantiated);
+            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.NewWars.Enabled;
             Synchronizer = synchronizer;
             Options = options;

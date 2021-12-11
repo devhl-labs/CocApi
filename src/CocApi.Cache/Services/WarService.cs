@@ -41,7 +41,7 @@ namespace CocApi.Cache.Services
             IOptions<CacheOptions> options) 
         : base(logger, scopeFactory, options.Value.Wars.DelayBeforeExecution, options.Value.Wars.DelayBetweenExecutions)
         {
-            Instantiated = Library.EnsureSingleton(Instantiated);
+            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.Wars.Enabled;
             ClansApi = clansApi;
             Synchronizer = synchronizer;

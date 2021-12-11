@@ -35,7 +35,7 @@ namespace CocApi.Cache.Services
             IOptions<CacheOptions> options) 
             : base(logger, scopeFactory, options.Value.Clans.DelayBeforeExecution, options.Value.Clans.DelayBetweenExecutions)
         {
-            Instantiated = Library.EnsureSingleton(Instantiated);
+            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.Clans.Enabled;
             ClansApi = clansApi;
             Synchronizer = synchronizer;

@@ -27,10 +27,10 @@ namespace CocApi.Cache
 
     public static class Library
     {
-        internal static bool EnsureSingleton(bool instantiated)
+        internal static bool WarnOnSubsequentInstantiations<T>(ILogger<T> logger, bool instantiated)
         {
             if (instantiated)
-                throw new InvalidOperationException("This singleton has already been instantiated.");
+                logger.LogWarning("{0} is intended to be a singleton but was instantiated more than once.", typeof(T).Name);
 
             return true;
         }

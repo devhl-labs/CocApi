@@ -33,7 +33,7 @@ namespace CocApi.Cache.Services
             IOptions<CacheOptions> options) 
         : base(logger, scopeFactory, options.Value.Players.DelayBeforeExecution, options.Value.Players.DelayBetweenExecutions)
         {
-            Instantiated = Library.EnsureSingleton(Instantiated);
+            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.Players.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
