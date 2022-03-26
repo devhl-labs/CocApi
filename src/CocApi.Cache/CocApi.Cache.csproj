@@ -7,7 +7,7 @@
     <Authors>devhl</Authors>
     <Product />
     <Description>Caches response from the Clash of Clans API.</Description>
-    <Version>2.0.0-preview1.13.8</Version>
+    <Version>2.0.0-preview1.13.9</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

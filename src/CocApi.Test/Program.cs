@@ -48,7 +48,7 @@ namespace CocApi.Test
 
                 .ConfigureCocApi("cocApi", (context, tokenProvider) =>
                 {
-                    string[] tokens = context.Configuration.GetSection("CocApi:Rest:Tokens").Get<string[]>();
+                    string[] tokens = context.Configuration.GetSection("CocApi.Test:Rest:Tokens").Get<string[]>();
 
                     foreach (string token in tokens)
                         tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
@@ -59,7 +59,7 @@ namespace CocApi.Test
                 {
                     IConfiguration configuration = services.GetRequiredService<IConfiguration>();
 
-                    string connection = configuration.GetConnectionString("CocApiTest");
+                    string connection = configuration.GetConnectionString("CocApi.Test");
 
                     dbContextOptions.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
 
