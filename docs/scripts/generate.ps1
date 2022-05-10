@@ -379,7 +379,6 @@ foreach ($file in $files)
 # bump the version for CocApi.Cache
 $cacheProject = Resolve-Path -Path "$PSScriptRoot\..\..\src\CocApi.Cache\CocApi.Cache.csproj"
 $content = Get-Content -Path $cacheProject.Path
-# <Version>2.0.0-preview1.14.9</Version>
 $pattern = "(?s)<Version>(.*?)</Version>"
 $content = $content -replace $pattern, "<Version>$packageVersion</Version>"
 Write-Host
