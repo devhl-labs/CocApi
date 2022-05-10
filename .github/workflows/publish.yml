@@ -31,10 +31,10 @@ jobs:
 
 
       # CocApi.Cache
-      - name: CocApi - Build binaries
+      - name: CocApi.Cache - Build binaries
         run: dotnet build -c Release src/CocApi.Cache/CocApi.Cache.csproj
 
-      - name: CocApi - Creating a package
+      - name: CocApi.Cache - Creating a package
         run: dotnet pack --no-build -c Release src/CocApi.Cache/CocApi.Cache.csproj -o .
 
       # push packages to nuget
