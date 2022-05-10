@@ -15,54 +15,28 @@ jobs:
         with:
           dotnet-version: 6.0.x
 
-      # Publish
-      - name: publish CocApi
-        id: publish_nuget_CocApi
-        uses: rohith/publish-nuget@v2
-        continue-on-error: true
-        with:
-          # Filepath of the project to be packaged, relative to root of repository
-          PROJECT_FILE_PATH: src/CocApi/CocApi.csproj
-          
-          # NuGet package id, used for version detection & defaults to project name
-          # PACKAGE_NAME: Core
-          
-          # Filepath with version info, relative to root of repository & defaults to PROJECT_FILE_PATH
-          # VERSION_FILE_PATH: Directory.Build.props
+      # CocApi
+      - name: CocApi - Build binaries
+        run: dotnet build -c Release src/CocApi/CocApi.csproj
 
-          # Regex pattern to extract version info in a capturing group
-          # VERSION_REGEX: ^\s*<Version>(.*)<\/Version>\s*$
-          
-          # Useful with external providers like Nerdbank.GitVersioning, ignores VERSION_FILE_PATH & VERSION_REGEX
-          # VERSION_STATIC: 1.0.0
+      - name: CocApi - Creating a package
+        run: dotnet pack --no-build -c Release src/CocApi/CocApi.csproj -o .
 
-          # Flag to toggle git tagging, enabled by default
-          # TAG_COMMIT: true
+      # CocApi.Rest
+      - name: CocApi.Rest - Build binaries
+        run: dotnet build -c Release src/CocApi.Rest/CocApi.Rest.csproj
 
-          # Format of the git tag, [*] gets replaced with actual version
-          # TAG_FORMAT: v*
+      - name: CocApi.Rest - Creating a package
+        run: dotnet pack --no-build -c Release src/CocApi.Rest/CocApi.Rest.csproj -o .
 
-          # API key to authenticate with NuGet server
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
 
-          # NuGet server uri hosting the packages, defaults to https://api.nuget.org
-          # NUGET_SOURCE: https://api.nuget.org
+      # CocApi.Cache
+      - name: CocApi - Build binaries
+        run: dotnet build -c Release src/CocApi.Cache/CocApi.Cache.csproj
 
-          # Flag to toggle pushing symbols along with nuget package to the server, disabled by default
-          # INCLUDE_SYMBOLS: false
+      - name: CocApi - Creating a package
+        run: dotnet pack --no-build -c Release src/CocApi.Cache/CocApi.Cache.csproj -o .
 
-      - name: publish CocApi.Rest
-        id: publish_nuget_CocApi_Rest
-        uses: rohith/publish-nuget@v2
-        continue-on-error: true
-        with:
-          PROJECT_FILE_PATH: src/CocApi.Rest/CocApi.Rest.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-
-      - name: publish CocApi.Cache
-        id: publish_nuget_CocApi_Cache
-        uses: rohith/publish-nuget@v2
-        continue-on-error: true
-        with:
-          PROJECT_FILE_PATH: src/CocApi.Cache/CocApi.Cache.csproj
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
+      # push packages to nuget
+      - name: Publish to Nuget
+        run: dotnet nuget push *.nupkg -s https://api.nuget.org/v3/index.json -k ${{secrets.NUGET_API_KEY}} --skip-duplicate -n
