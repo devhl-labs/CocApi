@@ -19,7 +19,7 @@ jobs:
 
       # Publish
       - name: CocApi - publish on version change
-        uses: alirezanet/publish-nuget@v3.0.0
+        uses: alirezanet/publish-nuget@v3.0.4
         continue-on-error: true
         with:
           # Filepath of the project to be packaged, relative to root of repository
@@ -56,14 +56,14 @@ jobs:
           # NO_BUILD: false
 
       - name: CocApi.Rest - publish on version change
-        uses: alirezanet/publish-nuget@v3.0.0
+        uses: alirezanet/publish-nuget@v3.0.4
         continue-on-error: true
         with:
           PROJECT_FILE_PATH: src/CocApi.Rest/CocApi.Rest.csproj
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
 
       - name: CocApi.Cache - publish on version change
-        uses: alirezanet/publish-nuget@v3.0.0
+        uses: alirezanet/publish-nuget@v3.0.4
         continue-on-error: true
         with:
           PROJECT_FILE_PATH: src/CocApi.Cache/CocApi.Cache.csproj
