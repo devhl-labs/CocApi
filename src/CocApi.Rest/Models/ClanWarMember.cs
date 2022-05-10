@@ -72,6 +72,12 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
+        /// Gets or Sets MapPosition
+        /// </summary>
+        [JsonPropertyName("mapPosition")]
+        public int MapPosition { get; }
+
+        /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonPropertyName("name")]

@@ -29,6 +29,107 @@ namespace CocApi.Rest.Models
     public partial class Clan : IEquatable<Clan?>
     {
         /// <summary>
+        /// Initializes a new instance of the <see cref="Clan" /> class.
+        /// </summary>
+        /// <param name="badgeUrls">badgeUrls</param>
+        /// <param name="clanLevel">clanLevel</param>
+        /// <param name="clanPoints">clanPoints</param>
+        /// <param name="clanVersusPoints">clanVersusPoints</param>
+        /// <param name="description">description</param>
+        /// <param name="isWarLogPublic">isWarLogPublic</param>
+        /// <param name="labels">labels</param>
+        /// <param name="memberList">memberList</param>
+        /// <param name="members">members</param>
+        /// <param name="name">name</param>
+        /// <param name="requiredTrophies">requiredTrophies</param>
+        /// <param name="tag">tag</param>
+        /// <param name="warLeague">warLeague</param>
+        /// <param name="warWinStreak">warWinStreak</param>
+        /// <param name="warWins">warWins</param>
+        /// <param name="chatLanguage">chatLanguage</param>
+        /// <param name="location">location</param>
+        /// <param name="type">type</param>
+        /// <param name="warFrequency">warFrequency</param>
+        /// <param name="warLosses">warLosses</param>
+        /// <param name="warTies">warTies</param>
+        [JsonConstructor]
+        internal Clan(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        {
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (warLeague == null)
+                throw new ArgumentNullException("warLeague is a required property for Clan and cannot be null.");
+
+            if (memberList == null)
+                throw new ArgumentNullException("memberList is a required property for Clan and cannot be null.");
+
+            if (requiredTrophies == null)
+                throw new ArgumentNullException("requiredTrophies is a required property for Clan and cannot be null.");
+
+            if (clanVersusPoints == null)
+                throw new ArgumentNullException("clanVersusPoints is a required property for Clan and cannot be null.");
+
+            if (tag == null)
+                throw new ArgumentNullException("tag is a required property for Clan and cannot be null.");
+
+            if (isWarLogPublic == null)
+                throw new ArgumentNullException("isWarLogPublic is a required property for Clan and cannot be null.");
+
+            if (clanLevel == null)
+                throw new ArgumentNullException("clanLevel is a required property for Clan and cannot be null.");
+
+            if (warWinStreak == null)
+                throw new ArgumentNullException("warWinStreak is a required property for Clan and cannot be null.");
+
+            if (warWins == null)
+                throw new ArgumentNullException("warWins is a required property for Clan and cannot be null.");
+
+            if (clanPoints == null)
+                throw new ArgumentNullException("clanPoints is a required property for Clan and cannot be null.");
+
+            if (labels == null)
+                throw new ArgumentNullException("labels is a required property for Clan and cannot be null.");
+
+            if (name == null)
+                throw new ArgumentNullException("name is a required property for Clan and cannot be null.");
+
+            if (members == null)
+                throw new ArgumentNullException("members is a required property for Clan and cannot be null.");
+
+            if (description == null)
+                throw new ArgumentNullException("description is a required property for Clan and cannot be null.");
+
+            if (badgeUrls == null)
+                throw new ArgumentNullException("badgeUrls is a required property for Clan and cannot be null.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            BadgeUrls = badgeUrls;
+            ClanLevel = clanLevel;
+            ClanPoints = clanPoints;
+            ClanVersusPoints = clanVersusPoints;
+            Description = description;
+            IsWarLogPublic = isWarLogPublic;
+            Labels = labels;
+            MemberList = memberList;
+            Members = members;
+            Name = name;
+            RequiredTrophies = requiredTrophies;
+            Tag = tag;
+            WarLeague = warLeague;
+            WarWinStreak = warWinStreak;
+            WarWins = warWins;
+            ChatLanguage = chatLanguage;
+            Location = location;
+            Type = type;
+            WarFrequency = warFrequency;
+            WarLosses = warLosses;
+            WarTies = warTies;
+        }
+
+        /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
@@ -81,6 +182,18 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("labels")]
         public List<Label> Labels { get; }
+
+        /// <summary>
+        /// Gets or Sets MemberList
+        /// </summary>
+        [JsonPropertyName("memberList")]
+        public List<ClanMember> MemberList { get; }
+
+        /// <summary>
+        /// Gets or Sets Members
+        /// </summary>
+        [JsonPropertyName("members")]
+        public int Members { get; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -157,6 +270,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  IsWarLogPublic: ").Append(IsWarLogPublic).Append("\n");
             sb.Append("  Labels: ").Append(Labels).Append("\n");
+            sb.Append("  MemberList: ").Append(MemberList).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  RequiredTrophies: ").Append(RequiredTrophies).Append("\n");
@@ -230,6 +344,12 @@ namespace CocApi.Rest.Models
                     Labels != null &&
                     input.Labels != null &&
                     Labels.SequenceEqual(input.Labels)
+                ) && 
+                (
+                    MemberList == input.MemberList ||
+                    MemberList != null &&
+                    input.MemberList != null &&
+                    MemberList.SequenceEqual(input.MemberList)
                 ) && 
                 (
                     Members == input.Members ||
@@ -314,6 +434,7 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Description.GetHashCode();
                 hashCode = (hashCode * 59) + IsWarLogPublic.GetHashCode();
                 hashCode = (hashCode * 59) + Labels.GetHashCode();
+                hashCode = (hashCode * 59) + MemberList.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
                 hashCode = (hashCode * 59) + RequiredTrophies.GetHashCode();
@@ -375,6 +496,7 @@ namespace CocApi.Rest.Models
             bool isWarLogPublic = default;
             List<Label> labels = default;
             List<ClanMember> memberList = default;
+            int members = default;
             string name = default;
             int requiredTrophies = default;
             string tag = default;
@@ -429,6 +551,9 @@ namespace CocApi.Rest.Models
                         case "memberList":
                             Utf8JsonReader memberListReader = reader;
                             memberList = JsonSerializer.Deserialize<List<ClanMember>>(ref reader, options);
+                            break;
+                        case "members":
+                            members = reader.GetInt32();
                             break;
                         case "name":
                             name = reader.GetString();
@@ -502,6 +627,7 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clan.Labels, options);
             writer.WritePropertyName("memberList");
             JsonSerializer.Serialize(writer, clan.Members, options);
+            writer.WriteNumber("members", (int)clan.Members);
             writer.WriteString("name", clan.Name);
             writer.WriteNumber("requiredTrophies", (int)clan.RequiredTrophies);
             writer.WriteString("tag", clan.Tag);
