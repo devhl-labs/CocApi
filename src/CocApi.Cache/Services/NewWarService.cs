@@ -51,7 +51,7 @@ namespace CocApi.Cache.Services
                 .Where(c =>
                     !c.CurrentWar.Added &&
                     c.CurrentWar.State != null &&
-                    c.CurrentWar.State != WarState.NotInWar &&
+                    c.CurrentWar.State != Rest.Models.WarState.NotInWar &&
                     c.Id > _id)
                 .OrderBy(c => c.Id)
                 .Take(options.ConcurrentUpdates)
@@ -111,11 +111,11 @@ namespace CocApi.Cache.Services
 
                     if (ClanWarAdded != null)
                     {
-                        CocApi.Model.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
+                        Rest.Models.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
                             ? cachedClan.Content
                             : null;
 
-                        CocApi.Model.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
+                        Rest.Models.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
                             ? cachedClan.Content
                             : null;
 

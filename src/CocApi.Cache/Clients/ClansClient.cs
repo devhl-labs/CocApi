@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
-using CocApi.Model;
+using CocApi.Rest.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
@@ -27,12 +27,12 @@ namespace CocApi.Cache
         public event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
 
-        public ClansApi ClansApi { get; }
+        public IClansApi ClansApi { get; }
 
 
         public ClansClient(
             ILogger<ClansClient> logger,
-            ClansApi clansApi, 
+            IClansApi clansApi, 
             IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
@@ -171,8 +171,8 @@ namespace CocApi.Cache
             if (cache.Count == 0)
                 return null;
 
-            return cache.FirstOrDefault(c => c.State == WarState.InWar && c.EndTime > DateTime.UtcNow)
-                ?? cache.FirstOrDefault(c => c.State == WarState.Preparation && c.EndTime > DateTime.UtcNow)
+            return cache.FirstOrDefault(c => c.State == Rest.Models.WarState.InWar && c.EndTime > DateTime.UtcNow)
+                ?? cache.FirstOrDefault(c => c.State == Rest.Models.WarState.Preparation && c.EndTime > DateTime.UtcNow)
                 ?? cache.First();
         }
 

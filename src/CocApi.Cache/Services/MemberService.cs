@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
@@ -17,7 +18,7 @@ namespace CocApi.Cache.Services
         internal event AsyncEventHandler<MemberUpdatedEventArgs>? MemberUpdated;
 
 
-        internal PlayersApi PlayersApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
         internal IOptions<CacheOptions> Options { get; }
@@ -27,15 +28,15 @@ namespace CocApi.Cache.Services
         public MemberService(
             ILogger<MemberService> logger,
             IServiceScopeFactory scopeFactory,
-            PlayersApi playersApi, 
+            IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
-            IOptions<CacheOptions> options) 
+            IOptions<CacheOptions> options)
             : base(logger, scopeFactory, options.Value.ClanMembers.DelayBeforeExecution, options.Value.ClanMembers.DelayBetweenExecutions)
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.ClanMembers.Enabled;
-            PlayersApi = playersApi;
+            ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
             Options = options;
@@ -113,7 +114,9 @@ namespace CocApi.Cache.Services
 
         private async Task MonitorMemberAsync(CachedPlayer cachedPlayer, CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, Ttl, PlayersApi, cancellationToken).ConfigureAwait(false);
+            IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
+
+            CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, Ttl, playersApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && MemberUpdated != null)
                 await MemberUpdated(this, new(cachedClan, cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);

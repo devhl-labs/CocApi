@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using CocApi.Cache.Context;
 using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -97,7 +96,7 @@ namespace CocApi.Cache
                         Season = oldWar.Season,
                         State = oldWar.State,
                         StatusCode = oldWar.StatusCode,
-                        Type = !string.IsNullOrWhiteSpace(oldWar.WarTag) ? WarType.SCCWL : oldWar.Type,
+                        Type = !string.IsNullOrWhiteSpace(oldWar.WarTag) ? Rest.Models.WarType.SCCWL : oldWar.Type,
                         WarTag = oldWar.WarTag
                     };
 
@@ -291,7 +290,7 @@ namespace CocApi.Cache
             } while (oldPlayers.Count == 100);
         }
 
-        private static DateTime? DateOrNull(DateTime dte) => dte == DateTime.MinValue ? null : dte;
+        private static DateTime? DateOrNull(DateTime dte) => dte == DateTime.MinValue.ToUniversalTime() ? null : dte;
 
         private void EnsureMigrated()
         {

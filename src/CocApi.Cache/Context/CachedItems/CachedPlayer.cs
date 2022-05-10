@@ -5,16 +5,16 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Models;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Context
 {
     public class CachedPlayer : CachedItem<Player>
     {
-        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, TimeToLiveProvider ttl, PlayersApi playersApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, TimeToLiveProvider ttl, IPlayersApi playersApi, CancellationToken? cancellationToken = default)
         {
             try
             {

@@ -4,12 +4,14 @@ using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using Polly;
-using CocApi.Cache;
 using Serilog;
 using Microsoft.EntityFrameworkCore;
-using Polly.Extensions.Http;
-using Polly.Timeout;
+using CocApi.Rest.Client;
+using System.Collections.Generic;
+using System.Linq;
+using CocApi.Rest.Apis;
+using CocApi.Rest.Extensions;
+using CocApi.Cache.Extensions;
 
 namespace CocApi.Test
 {
@@ -19,6 +21,7 @@ namespace CocApi.Test
         {
             try
             {
+                AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
                 await CreateHostBuilder(args).Build().RunAsync();
             }
             catch (Exception e)
@@ -46,12 +49,29 @@ namespace CocApi.Test
                 })
 
 
-                .ConfigureCocApi("cocApi", (context, tokenProvider) =>
+                .ConfigureCocApi<CustomClansApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>((context, options) =>
                 {
-                    string[] tokens = context.Configuration.GetSection("CocApi.Test:Rest:Tokens").Get<string[]>();
+                    List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>();
 
-                    foreach (string token in tokens)
-                        tokenProvider.Tokens.Add(new TokenBuilder(token, TimeSpan.FromSeconds(1)));
+                    ApiKeyToken[] tokens = tokenValues.Select(t => new ApiKeyToken(t, timeout: TimeSpan.FromSeconds(1))).ToArray();
+
+                    options.AddTokens(tokens);
+
+                    var section = context.Configuration.GetRequiredSection("CocApi:Rest:HttpClient");
+
+                    options.AddCocApiHttpClients(
+                        builder: builder => builder
+                            .AddRetryPolicy(section.GetValue<int>("Retries"))
+                            .AddTimeoutPolicy(TimeSpan.FromMilliseconds(section.GetValue<long>("Timeout")))
+                            .AddCircuitBreakerPolicy(
+                                section.GetValue<int>("DurationOfBreak"),
+                                TimeSpan.FromSeconds(section.GetValue<int>("HandledEventsAllowedBeforeBreaking")))
+                            .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler
+                            {
+                                // this property is important if you query the api very fast
+                                MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
+                            })
+                    );
                 })
 
 
@@ -76,45 +96,7 @@ namespace CocApi.Test
                 })
 
 
-                .ConfigureServices((hostBuilder, services) =>
-                {
-                    // use appsettings.json like this or configure the CacheOptions as above
-                    //services.Configure<CacheOptions>(hostBuilder.Configuration.GetSection("CocApi:Cache"));
-
-                    IConfigurationSection httpConfig = hostBuilder.Configuration.GetSection("CocApi:Rest:HttpClient");
-
-                    // define the HttpClient named "cocApi" that CocApi will request
-                    services.AddHttpClient("cocApi", config => config.BaseAddress = new Uri(httpConfig.GetValue<string>("BaseAddress")))
-                    
-                    // optionally configure Polly to handle timeouts and http request error handling
-                    .AddPolicyHandler(RetryPolicy(httpConfig))
-                    .AddPolicyHandler(TimeoutPolicy(httpConfig))
-                    .AddTransientHttpErrorPolicy(builder => CircuitBreakerPolicy(builder, httpConfig))
-                    .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler
-                    {
-                        // this property is important if you query the api very fast
-                        MaxConnectionsPerServer = httpConfig.GetValue<int>("MaxConnectionsPerServer")
-                    });
-
-
-                    services.AddHostedService<TestService>();
-                });
+                .ConfigureServices((hostBuilder, services) => services.AddHostedService<TestService>());
         }
-
-        private static Polly.Retry.AsyncRetryPolicy<HttpResponseMessage> RetryPolicy(IConfigurationSection config)
-            => HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .Or<TimeoutRejectedException>()
-                .RetryAsync(config.GetValue<int>("Retries"));
-
-        private static AsyncTimeoutPolicy<HttpResponseMessage> TimeoutPolicy(IConfigurationSection config)
-            => Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromMilliseconds(config.GetValue<long>("Timeout")));
-
-        private static Polly.CircuitBreaker.AsyncCircuitBreakerPolicy<HttpResponseMessage> CircuitBreakerPolicy(
-                PolicyBuilder<HttpResponseMessage> builder, 
-                IConfigurationSection config)
-            => builder.CircuitBreakerAsync(
-                handledEventsAllowedBeforeBreaking: config.GetValue<int>("HandledEventsAllowedBeforeBreaking"),
-                durationOfBreak: TimeSpan.FromSeconds(config.GetValue<int>("DurationOfBreak")));
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
@@ -16,7 +16,7 @@ namespace CocApi.Cache
             Logger = logger;
         }
 
-        internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
+        internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T?> apiResponse) where T : class
         {
             try
             {
@@ -28,7 +28,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(TimeToLiveAsync));
+                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -46,7 +46,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(TimeToLiveAsync));
+                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
 
                 return TimeSpan.FromMinutes(0);
             }
@@ -68,7 +68,7 @@ namespace CocApi.Cache
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
         }
 
-        protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
+        protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T?> apiResponse) where T : class
         {
             if (apiResponse is ApiResponse<Clan>)
                 return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
@@ -80,7 +80,7 @@ namespace CocApi.Cache
 
             if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)
                 if (!Clash.IsCwlEnabled ||
-                    (group.Content?.State == GroupState.Ended && DateTime.UtcNow.Month == group.Content.Season.Month) ||
+                    (group.Content?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == group.Content.Season.Month) ||
                     (group.Content == null && DateTime.UtcNow.Day >= 3))
                     return new ValueTask<TimeSpan>(
                         new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
@@ -92,7 +92,7 @@ namespace CocApi.Cache
                 if (war.StatusCode == HttpStatusCode.Forbidden)
                     return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
 
-                if (war.Content?.State == WarState.Preparation)
+                if (war.Content?.State == Rest.Models.WarState.Preparation)
                     return new ValueTask<TimeSpan>(war.Content.StartTime.AddHours(-1) - DateTime.UtcNow);
             }
 

@@ -1,8 +1,8 @@
 ﻿using System;
-using CocApi.Model;
-using CocApi.Client;
+using CocApi.Rest.Models;
+using CocApi.Rest.Client;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.Apis;
 using System.Threading;
 
 namespace CocApi.Cache.Models

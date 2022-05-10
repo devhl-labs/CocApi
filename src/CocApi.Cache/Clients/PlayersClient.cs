@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
-using CocApi.Model;
+using CocApi.Rest.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
@@ -20,7 +20,7 @@ namespace CocApi.Cache
 
         public PlayersClient(
             ILogger<PlayersClient> logger,
-            PlayersApi playersApi, 
+            IPlayersApi playersApi, 
             IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
@@ -38,7 +38,7 @@ namespace CocApi.Cache
         }
 
 
-        public PlayersApi PlayersApi { get; }
+        public IPlayersApi PlayersApi { get; }
 
         public async Task AddOrUpdateAsync(string tag, bool download = true) => await AddOrUpdateAsync(new string[] { tag }, download);
 

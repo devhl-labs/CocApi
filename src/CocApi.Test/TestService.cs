@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Model;
+using CocApi.Rest.IApis;
+using CocApi.Rest.Models;
 using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Test
@@ -10,22 +10,25 @@ namespace CocApi.Test
     {
         public CustomClansClient ClansClient { get; }
         public CustomPlayersClient PlayersClient { get; }
-        public PlayersApi PlayersApi { get; }
-        public LocationsApi LocationsApi { get; }
-        public LeaguesApi LeaguesApi { get; }
+        public IPlayersApi PlayersApi { get; }
+        public ILocationsApi LocationsApi { get; }
+        public ILeaguesApi LeaguesApi { get; }
+        public IClansApi ClansApi { get; }
 
         public TestService(
             CustomClansClient clansClient, 
             CustomPlayersClient playersClient, 
-            PlayersApi playersApi, 
-            LocationsApi locationsApi, 
-            LeaguesApi leaguesApi)
+            IPlayersApi playersApi, 
+            ILocationsApi locationsApi, 
+            ILeaguesApi leaguesApi,
+            IClansApi clansApi)
         {
             ClansClient = clansClient;
             PlayersClient = playersClient;
             PlayersApi = playersApi;
             LocationsApi = locationsApi;
             LeaguesApi = leaguesApi;
+            ClansApi = clansApi;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
@@ -47,6 +50,7 @@ namespace CocApi.Test
             await ClansClient.AddOrUpdateAsync("#JYULPG28", downloadMembers: false); // inphase
             await ClansClient.AddOrUpdateAsync("#2P0YUY0L0", downloadMembers: false); // testing closed war log
             await ClansClient.AddOrUpdateAsync("#PJYPYG9P", downloadMembers: false); // war heads
+            await ClansClient.AddOrUpdateAsync("#8PU9VR82", downloadMembers: false); // kronos
             await ClansClient.AddOrUpdateAsync("#2900Y0PP2"); // crimine sas
         }
 
@@ -57,7 +61,7 @@ namespace CocApi.Test
             var clanGlobalRankings = await LocationsApi.FetchClanRankingOrDefaultAsync("global");
             var clanGlobalVersusRankings = await LocationsApi.FetchClanVersusRankingAsync("global");
             var leagueList = await LeaguesApi.FetchWarLeaguesOrDefaultAsync();
-            var playerToken = await PlayersApi.VerifyTokenResponseAsync("#29GPU9CUJ", new VerifyTokenRequest("a"));
+            var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
         }
     }
 }

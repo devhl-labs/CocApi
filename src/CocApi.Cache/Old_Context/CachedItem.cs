@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
-using CocApi.Client;
-using CocApi.Model;
-using Newtonsoft.Json;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Models
 {
@@ -33,7 +32,7 @@ namespace CocApi.Cache.Models
                 lock(_dataLock)
                     if (_data == null && !string.IsNullOrWhiteSpace(RawContent))
                     {
-                        _data = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
+                        _data = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
 
                         if (_data is ClanWar clanWar)
                             if (this is CachedWar cachedWar)
@@ -60,7 +59,7 @@ namespace CocApi.Cache.Models
         protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
         {
             StatusCode = apiResponse.StatusCode;
-            Downloaded = apiResponse.Downloaded;
+            Downloaded = apiResponse.DownloadedAt;
             ServerExpiration = apiResponse.ServerExpiration;
 
             LocalExpiration = localExpiration == TimeSpan.MaxValue

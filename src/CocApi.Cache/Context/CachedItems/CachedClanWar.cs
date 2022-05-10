@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.IApis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 using System.Linq;
 
 namespace CocApi.Cache.Context
 {
     public class CachedClanWar : CachedItem<ClanWar>
     {
-        internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, TimeToLiveProvider ttl, ClansApi clansApi, CancellationToken? cancellationToken = default)
+        internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
@@ -32,7 +32,7 @@ namespace CocApi.Cache.Context
 
         internal static bool IsNewWar(CachedClanWar stored, CachedClanWar fetched)
         {
-            if (fetched.Content == null || fetched.Content.State == WarState.NotInWar)
+            if (fetched.Content == null || fetched.Content.State == Rest.Models.WarState.NotInWar)
                 return false;
 
             if (stored.Content == null)
@@ -45,11 +45,11 @@ namespace CocApi.Cache.Context
 
         public string? EnemyTag { get { return _enemyTag; } internal set { _enemyTag = value == null ? null : Clash.FormatTag(value); } }
 
-        public WarState? State { get; internal set; }
+        public Rest.Models.WarState? State { get; internal set; }
 
         public DateTime? PreparationStartTime { get; internal set; }
 
-        public WarType? Type { get; internal set; }
+        public Rest.Models.WarType? Type { get; internal set; }
 
         public int CachedClanId { get; internal set; }
 
@@ -57,7 +57,7 @@ namespace CocApi.Cache.Context
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
-            if (apiResponse.Content != null && apiResponse.Content.State != WarState.NotInWar)
+            if (apiResponse.Content != null && apiResponse.Content.State != Rest.Models.WarState.NotInWar)
             {
                 EnemyTag = apiResponse.Content.Clans.Keys.FirstOrDefault(k => k != tag);
 

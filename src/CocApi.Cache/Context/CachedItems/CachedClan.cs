@@ -1,15 +1,15 @@
 ﻿using System;
-using CocApi.Model;
-using CocApi.Client;
+using CocApi.Rest.Models;
+using CocApi.Rest.Client;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using System.Threading;
 
 namespace CocApi.Cache.Context
 {
     public class CachedClan : CachedItem<Clan>
     {
-        internal static async Task<CachedClan> FromClanResponseAsync(string tag, TimeToLiveProvider ttl, ClansApi clansApi, CancellationToken? cancellationToken)
+        internal static async Task<CachedClan> FromClanResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken)
         {
             try
             {
@@ -40,8 +40,8 @@ namespace CocApi.Cache.Context
         {
             Tag = tag;
 
-            if (response.Content != null)            
-                IsWarLogPublic = response.Content.IsWarLogPublic;                        
+            if (response.Content != null)
+                IsWarLogPublic = response.Content.IsWarLogPublic;
         }
 
         private CachedClan(string tag, TimeSpan localExpiration) : base(localExpiration)

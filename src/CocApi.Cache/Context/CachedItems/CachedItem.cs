@@ -1,9 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
-using CocApi.Client;
-using CocApi.Model;
-using Newtonsoft.Json;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Context
 {
@@ -13,7 +12,7 @@ namespace CocApi.Cache.Context
 
         public DateTime? DownloadedAt { get; internal set; }
 
-        public DateTime? ExpiresAt { get; internal set; } 
+        public DateTime? ExpiresAt { get; internal set; }
 
         public DateTime? KeepUntil { get; internal set; }
 
@@ -30,10 +29,10 @@ namespace CocApi.Cache.Context
         {
             get
             {
-                lock(_contentLock)
+                lock (_contentLock)
                     if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
                     {
-                        _content = JsonConvert.DeserializeObject<T>(RawContent, Clash.JsonSerializerSettings);
+                        _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
 
                         if (_content is ClanWar clanWar)
                             if (this is CachedWar cachedWar)
@@ -56,8 +55,8 @@ namespace CocApi.Cache.Context
         public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration) => UpdateFrom(apiResponse, localExpiration);
 
         public CachedItem(TimeSpan localExpiration) => UpdateFrom(localExpiration);
-        
-        protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
+
+        protected void UpdateFrom(ApiResponse<T?> apiResponse, TimeSpan localExpiration)
         {
             StatusCode = apiResponse.StatusCode;
             DownloadedAt = apiResponse.Downloaded;
@@ -84,7 +83,7 @@ namespace CocApi.Cache.Context
                 : DateTime.UtcNow.Add(localExpiration);
         }
 
-        protected void UpdateFrom(CachedItem<T> fetched)
+        protected void UpdateFrom(CachedItem<T?> fetched)
         {
             StatusCode = fetched.StatusCode;
             DownloadedAt = fetched.DownloadedAt;
@@ -95,22 +94,18 @@ namespace CocApi.Cache.Context
             RawContent = !string.IsNullOrWhiteSpace(fetched.RawContent) ? fetched.RawContent : RawContent;
         }
 
-        private bool IsServerExpired 
-        { 
+        private bool IsServerExpired
+        {
             get
             {
-                var foo = DateTime.UtcNow > (ExpiresAt ?? DateTime.MinValue).AddSeconds(3);
-
                 return DateTime.UtcNow > (ExpiresAt ?? DateTime.MinValue).AddSeconds(3);
-            } 
+            }
         }
 
         private bool IsLocallyExpired
         {
             get
             {
-                var foo = DateTime.UtcNow > (KeepUntil ?? DateTime.MinValue);
-
                 return DateTime.UtcNow > (KeepUntil ?? DateTime.MinValue);
             }
         }
@@ -119,8 +114,6 @@ namespace CocApi.Cache.Context
         {
             get
             {
-                var foo = IsServerExpired && IsLocallyExpired;
-
                 return IsServerExpired && IsLocallyExpired;
             }
         }

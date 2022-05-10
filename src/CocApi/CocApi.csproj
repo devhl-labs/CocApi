@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!--<GenerateAssemblyInfo>false</GenerateAssemblyInfo>--> <!-- removing GenerateAssemblyInfo due to https://github.com/dotnet/project-system/issues/3934 --> 
-    <!--<TargetFramework>netstandard2.1</TargetFramework>-->
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>CocApi</AssemblyName>
     <PackageId>CocApi</PackageId>
     <OutputType>Library</OutputType>
@@ -20,27 +18,18 @@
     <PackageReleaseNotes>OrDefault methods now swallow exceptions.</PackageReleaseNotes>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags> 
     <Nullable>enable</Nullable>
-    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageIcon>Barbarian King.png</PackageIcon>
-    <Version>1.14.6</Version>
+    <Version>2.0.0-preview1.14.7</Version>
     <AssemblyVersion>1.14.6.0</AssemblyVersion>
     <FileVersion>1.14.6.0</FileVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="JsonSubTypes" Version="1.8.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="5.0.0" />    
-    <!--<PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />-->
     <None Include="..\..\Barbarian King.png">
       <Pack>True</Pack>
-      <PackagePath></PackagePath>
-    </None>
-    <None Include="..\..\LICENSE.md">
-      <Pack>True</Pack>
-      <PackagePath></PackagePath>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 

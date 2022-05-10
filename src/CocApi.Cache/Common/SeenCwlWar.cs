@@ -1,5 +1,5 @@
 ﻿using System;
-using CocApi.Client;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache
 {
@@ -13,9 +13,9 @@ namespace CocApi.Cache
 
         public string WarTag { get; }
         
-        public ApiResponse<Model.ClanWar>? ApiResponse { get; set; }
+        public ApiResponse<Rest.Models.ClanWar>? ApiResponse { get; set; }
 
-        public SeenCwlWar(DateTime season, string clanTag, string opponentTag, string warTag, ApiResponse<Model.ClanWar>? apiResponse)
+        public SeenCwlWar(DateTime season, string clanTag, string opponentTag, string warTag, ApiResponse<Rest.Models.ClanWar>? apiResponse)
         {
             ApiResponse = apiResponse;
             Season = season;

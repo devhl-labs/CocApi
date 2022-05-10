@@ -49,7 +49,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", ((T)(object)this).GetType().Name, nameof(TryPollAsync));
+                    Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", ((T)(object)this).GetType().Name, nameof(TryPollAsync));
             }
         }
 
@@ -71,24 +71,24 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", ((T)(object)this).GetType().Name, nameof(ExecuteAsync));
+                    Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", ((T)(object)this).GetType().Name, nameof(ExecuteAsync));
             }
         }
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            Logger.LogTrace("{status} {service}", "Starting", ((T)(object)this).GetType().Name);
-
             await base.StartAsync(cancellationToken);
+
+            Logger.LogInformation("{status} {service}", "Started", ((T)(object)this).GetType().Name);
         }
         
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            Logger.LogTrace("{status} {service}", "Stoping", ((T)(object)this).GetType().Name);
-
             await base.StopAsync(cancellationToken);
+
+            Logger.LogInformation("{status} {service}", "Stopped", ((T)(object)this).GetType().Name);
         }
     }
 }

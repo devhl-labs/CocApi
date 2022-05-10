@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo> <!-- setting GenerateAssemblyInfo to false causes this bug https://github.com/dotnet/project-system/issues/3934 -->
+    <TargetFramework>net6.0</TargetFramework>
+    <AssemblyName>CocApi.Rest</AssemblyName>
+    <PackageId>CocApi.Rest</PackageId>
+    <OutputType>Library</OutputType>
+    <Authors>devhl</Authors>
+    <Company>devhl</Company>
+    <AssemblyTitle>CocApi.Rest</AssemblyTitle>
+    <Description>A wrapper for the Clash of Clans API</Description>
+    <Copyright>No Copyright</Copyright>
+    <RootNamespace>CocApi.Rest</RootNamespace>
+    <Version>2.0.0-preview1.14.11</Version>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.Rest.xml</DocumentationFile>
+    <RepositoryUrl>https://github.com/devhl-labs/CocApi.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml.</PackageReleaseNotes>
+    <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="6.0.4" />
+    <PackageReference Include="Polly" Version="7.2.3" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PackageIcon>Barbarian King.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CocApi\CocApi.csproj" />
+    <None Include="..\..\Barbarian King.png" Pack="true" PackagePath="">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+</Project>

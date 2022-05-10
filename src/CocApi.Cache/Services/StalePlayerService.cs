@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
     public sealed class StalePlayerService : PerpetualService<StalePlayerService>
     {
         internal Synchronizer Synchronizer { get; }
-        internal PlayersApi PlayersApi { get; }
         internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
@@ -26,7 +26,6 @@ namespace CocApi.Cache.Services
             IServiceScopeFactory scopeFactory,
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
-            PlayersApi playersApi,
             IOptions<CacheOptions> options) 
         : base(logger, scopeFactory, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
         {
@@ -34,7 +33,6 @@ namespace CocApi.Cache.Services
             IsEnabled = options.Value.DeleteStalePlayers.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
-            PlayersApi = playersApi;
             Options = options;
         }
 

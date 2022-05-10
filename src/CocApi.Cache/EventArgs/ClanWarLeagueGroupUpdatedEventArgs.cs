@@ -1,4 +1,4 @@
-﻿using CocApi.Model;
+﻿using CocApi.Rest.Models;
 using System.Threading;
 
 namespace CocApi.Cache

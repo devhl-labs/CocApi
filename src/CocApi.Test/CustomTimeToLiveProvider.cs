@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CocApi.Cache;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 
 namespace CocApi.Test
@@ -14,7 +14,7 @@ namespace CocApi.Test
 
         }
 
-        protected override ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse)
+        protected override ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T?> apiResponse) where T : class
         {
             // in this example if we downloaded a clan, we will keep it for one minutes past the server expiration
             if (apiResponse is ApiResponse<Clan>)

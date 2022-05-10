@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
@@ -19,7 +20,7 @@ namespace CocApi.Cache.Services
         internal event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
 
 
-        internal ClansApi ClansApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
         internal IOptions<CacheOptions> Options { get; }
@@ -29,7 +30,7 @@ namespace CocApi.Cache.Services
         public ClanService(
             ILogger<ClanService> logger,
             IServiceScopeFactory scopeFactory,
-            ClansApi clansApi, 
+            IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
@@ -37,7 +38,7 @@ namespace CocApi.Cache.Services
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.Clans.Enabled;
-            ClansApi = clansApi;
+            ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
             Options = options;
@@ -107,17 +108,19 @@ namespace CocApi.Cache.Services
 
                 List<Task> tasks = new();
 
+                IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
                 if (Options.Value.Clans.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
-                    tasks.Add(MonitorClanAsync(cachedClan, cancellationToken));
+                    tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
                 if (Options.Value.Clans.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
-                    tasks.Add(MonitorClanWarAsync(cachedClan, cancellationToken));
+                    tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, cancellationToken));
 
                 if (Options.Value.Clans.DownloadWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
-                    tasks.Add(MonitorWarLogAsync(cachedClan, cancellationToken));
+                    tasks.Add(MonitorWarLogAsync(clansApi, cachedClan, cancellationToken));
 
                 if (Options.Value.Clans.DownloadGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
-                    tasks.Add(MonitorGroupAsync(cachedClan, cancellationToken));
+                    tasks.Add(MonitorGroupAsync(clansApi, cachedClan, cancellationToken));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);
             }
@@ -126,9 +129,9 @@ namespace CocApi.Cache.Services
             }
         }
 
-        private async Task MonitorClanAsync(CachedClan cachedClan, CancellationToken cancellationToken)
+        private async Task MonitorClanAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedClan fetched = await CachedClan.FromClanResponseAsync(cachedClan.Tag, Ttl, ClansApi, cancellationToken).ConfigureAwait(false);
+            CachedClan fetched = await CachedClan.FromClanResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && ClanUpdated != null && CachedClan.HasUpdated(cachedClan, fetched))
                 await ClanUpdated
@@ -138,9 +141,9 @@ namespace CocApi.Cache.Services
             cachedClan.UpdateFrom(fetched);
         }
 
-        private async Task MonitorClanWarAsync(CachedClan cachedClan, CancellationToken cancellationToken)
+        private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedClanWar? fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, ClansApi, cancellationToken).ConfigureAwait(false);
+            CachedClanWar? fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
             {
@@ -152,9 +155,9 @@ namespace CocApi.Cache.Services
             cachedClan.CurrentWar.UpdateFrom(fetched);
         }
 
-        private async Task MonitorWarLogAsync(CachedClan cachedClan, CancellationToken cancellationToken)
+        private async Task MonitorWarLogAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedClanWarLog fetched = await CachedClanWarLog.FromClanWarLogResponseAsync(cachedClan.Tag, Ttl, ClansApi, cancellationToken).ConfigureAwait(false);
+            CachedClanWarLog fetched = await CachedClanWarLog.FromClanWarLogResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWarLog.HasUpdated(cachedClan.WarLog, fetched) && ClanWarLogUpdated != null)
                 await ClanWarLogUpdated
@@ -164,10 +167,10 @@ namespace CocApi.Cache.Services
             cachedClan.WarLog.UpdateFrom(fetched);
         }
 
-        private async Task MonitorGroupAsync(CachedClan cachedClan, CancellationToken cancellationToken)
+        private async Task MonitorGroupAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
         {
             CachedClanWarLeagueGroup? fetched = await CachedClanWarLeagueGroup
-                .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, Ttl, ClansApi, cancellationToken)
+                .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken)
                 .ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWarLeagueGroup.HasUpdated(cachedClan.Group, fetched))
@@ -177,7 +180,7 @@ namespace CocApi.Cache.Services
                         .Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content, cancellationToken))
                         .ConfigureAwait(false);
 
-                cachedClan.Group.Added = false;                
+                cachedClan.Group.Added = false;
             }
 
             cachedClan.Group.UpdateFrom(fetched);
@@ -187,10 +190,10 @@ namespace CocApi.Cache.Services
         {
             if (!Clash.IsCwlEnabled ||
                 !Options.Value.CwlWars.Enabled ||
-                cachedClan.CurrentWar.Content?.State == WarState.InWar ||
-                cachedClan.CurrentWar.Content?.State == WarState.Preparation ||
+                cachedClan.CurrentWar.Content?.State == Rest.Models.WarState.InWar ||
+                cachedClan.CurrentWar.Content?.State == Rest.Models.WarState.Preparation ||
                 cachedClan.Group.Content == null ||
-                cachedClan.Group.Content.State == GroupState.Ended ||
+                cachedClan.Group.Content.State == Rest.Models.GroupState.Ended ||
                 cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month ||
                 (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month))
                 return;

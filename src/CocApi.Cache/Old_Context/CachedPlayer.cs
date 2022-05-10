@@ -5,10 +5,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.Apis;
 using CocApi.Cache.Models;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Models
 {

@@ -1,0 +1,15 @@
+  <PropertyGroup>
+    <PackageIcon>Barbarian King.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CocApi\CocApi.csproj" />
+    <None Include="..\..\Barbarian King.png" Pack="true" PackagePath="">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>

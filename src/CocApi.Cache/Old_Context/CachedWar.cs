@@ -5,9 +5,9 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Apis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Models
 {
@@ -23,7 +23,7 @@ namespace CocApi.Cache.Models
 
                 TimeSpan timeToLive = await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
-                if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == WarState.NotInWar)
+                if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == Rest.Models.WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
 
                 return new CachedWar(apiResponse, timeToLive, warTag, season)
@@ -49,7 +49,7 @@ namespace CocApi.Cache.Models
 
         public string? WarTag { get; internal set; }
 
-        public WarState? State { get; internal set; }
+        public Rest.Models.WarState? State { get; internal set; }
 
         public bool IsFinal { get; internal set; }
 
@@ -57,7 +57,7 @@ namespace CocApi.Cache.Models
 
         public Announcements Announcements { get; internal set; }
 
-        public WarType Type { get; internal set; }
+        public Rest.Models.WarType Type { get; internal set; }
 
         private readonly SortedSet<string> _clanTags = new();
 

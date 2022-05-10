@@ -1,5 +1,5 @@
 ﻿using System.Threading;
-using CocApi.Model;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache
 {

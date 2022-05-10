@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using CocApi.Api;
 using CocApi.Cache;
 using CocApi.Cache.Services;
+using CocApi.Rest.IApis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -13,7 +13,7 @@ namespace CocApi.Test
         public CustomPlayersClient(
             ILogger<CustomPlayersClient> logger,
             IServiceScopeFactory scopeFactory, 
-            PlayersApi playersApi,
+            IPlayersApi playersApi,
             Synchronizer synchronizer,
             IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options) 
@@ -24,7 +24,7 @@ namespace CocApi.Test
 
         private Task OnPlayerUpdated(object sender, PlayerUpdatedEventArgs e)
         {
-            Logger.LogInformation("Player {0} {1} has updated.", e.Fetched.Tag, e.Fetched.Name);
+            Logger.LogInformation("Player {playerTag} {playerName} has updated.", e.Fetched.Tag, e.Fetched.Name);
 
             return Task.CompletedTask;
         }

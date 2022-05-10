@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
@@ -20,7 +21,7 @@ namespace CocApi.Cache.Services
         internal event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
 
-        internal ClansApi ClansApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
         internal IOptions<CacheOptions> Options { get; }
@@ -30,7 +31,7 @@ namespace CocApi.Cache.Services
         public CwlWarService(
             ILogger<CwlWarService> logger,
             IServiceScopeFactory scopeFactory,
-            ClansApi clansApi,
+            IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
@@ -38,7 +39,7 @@ namespace CocApi.Cache.Services
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.CwlWars.Enabled;
-            ClansApi = clansApi;
+            ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
             Options = options;
@@ -77,13 +78,15 @@ namespace CocApi.Cache.Services
 
             try
             {
+                IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
                 foreach (CachedWar cachedWar in cachedWars)
                 {
                     if (Synchronizer.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
                     {
                         updatingCwlWar.Add(cachedWar.WarTag);
 
-                        tasks.Add(UpdateCwlWarAsync(cachedWar, cancellationToken));
+                        tasks.Add(UpdateCwlWarAsync(clansApi, cachedWar, cancellationToken));
                     }
 
                     tasks.Add(SendWarAnnouncementsAsync(cachedWar, cancellationToken));
@@ -100,10 +103,10 @@ namespace CocApi.Cache.Services
             }
         }
 
-        private async Task UpdateCwlWarAsync(CachedWar cachedWar, CancellationToken cancellationToken)
+        private async Task UpdateCwlWarAsync(IClansApi clansApi, CachedWar cachedWar, CancellationToken cancellationToken)
         {
             CachedWar? fetched = await CachedWar
-                    .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, Ttl, ClansApi, cancellationToken)
+                    .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, Ttl, clansApi, cancellationToken)
                     .ConfigureAwait(false);
 
             if (cachedWar.Content != null &&
@@ -115,7 +118,7 @@ namespace CocApi.Cache.Services
                     .Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken))
                     .ConfigureAwait(false); 
 
-            cachedWar.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == WarState.WarEnded;
+            cachedWar.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
 
             cachedWar.UpdateFrom(fetched);
         }
@@ -166,7 +169,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
+                    Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
 
                 //throw;
             }

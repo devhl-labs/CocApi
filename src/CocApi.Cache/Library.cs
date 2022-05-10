@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System.Linq;
 using System.Threading.Tasks;
-using CocApi.Cache.Services;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache
 {
@@ -27,10 +26,12 @@ namespace CocApi.Cache
 
     public static class Library
     {
+        public static JsonSerializerOptions? JsonSerializerOptions { get; set; }
+
         internal static bool WarnOnSubsequentInstantiations<T>(ILogger<T> logger, bool instantiated)
         {
             if (instantiated)
-                logger.LogWarning("{0} is intended to be a singleton but was instantiated more than once.", typeof(T).Name);
+                logger.LogWarning("{typeName} is intended to be a singleton but was instantiated more than once.", typeof(T).Name);
 
             return true;
         }
@@ -62,7 +63,7 @@ namespace CocApi.Cache
             }
             catch (Exception e)
             {
-                logger.LogError(e, "An exception occured while executing {0}.{1}().", typeof(T).Name, methodName);
+                logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", typeof(T).Name, methodName);
             }
             finally
             {
@@ -82,138 +83,14 @@ namespace CocApi.Cache
             public static string War { get; set; } = "war";
         }
 
-
-
-
-        private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services) 
-            where TPlayersClient : PlayersClient
+        // this should be refactored out
+        internal static void AddStaticJsonOptions(IServiceCollection services)
         {
-            services.AddSingleton<TPlayersClient>();
+            ServiceDescriptor jsonSerializerServiceDescriptor = services.First(s => s.ServiceType == typeof(JsonSerializerOptionsProvider));
 
-            if (typeof(TPlayersClient) != typeof(PlayersClient))
-                services.AddSingleton(provider =>
-                {
-                    return (PlayersClient)provider.GetRequiredService<TPlayersClient>();
-                });
-        }
+            JsonSerializerOptionsProvider jsonOptions = (JsonSerializerOptionsProvider)jsonSerializerServiceDescriptor.ImplementationInstance!;
 
-        private static void AddClansClient<TClansClient>(this IServiceCollection services)
-            where TClansClient : ClansClient
-        {
-            services.AddSingleton<TClansClient>();
-
-            if (typeof(TClansClient) != typeof(ClansClient))
-                services.AddSingleton(provider =>
-                {
-                    return (ClansClient)provider.GetRequiredService<TClansClient>();
-                });
-        }
-
-        private static void AddSingletons<TTimeToLiveProvider>(this IServiceCollection services)
-            where TTimeToLiveProvider : TimeToLiveProvider
-        {
-            services.AddSingleton<TTimeToLiveProvider>();
-            if (typeof(TTimeToLiveProvider) != typeof(TimeToLiveProvider))
-                services.AddSingleton(provider =>
-                {
-                    return (TimeToLiveProvider)provider.GetRequiredService<TTimeToLiveProvider>();
-                });
-
-            services.AddSingleton<Synchronizer>();
-            services.AddSingleton<ActiveWarService>();
-            services.AddSingleton<ClanService>();
-            services.AddSingleton<CwlWarService>();
-            services.AddSingleton<MemberService>();
-            services.AddSingleton<NewCwlWarService>();
-            services.AddSingleton<NewWarService>();
-            services.AddSingleton<PlayerService>();
-            services.AddSingleton<WarService>();
-            services.AddSingleton<StalePlayerService>();
-            services.AddSingleton(services => new IPerpetualExecution<object>[]{
-                services.GetRequiredService<ActiveWarService>(),
-                services.GetRequiredService<ClanService>(),
-                services.GetRequiredService<CwlWarService>(),
-                services.GetRequiredService<MemberService>(),
-                services.GetRequiredService<NewCwlWarService>(),
-                services.GetRequiredService<NewWarService>(),
-                services.GetRequiredService<PlayerService>(),
-                services.GetRequiredService<StalePlayerService>(),
-                services.GetRequiredService<WarService>()
-            });
-        }
-
-        public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
-            this IServiceCollection services,
-            Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-            Action<CacheOptions>? cacheOptions = null)
-            where TClansClient : ClansClient
-            where TPlayersClient : PlayersClient
-            where TTimeToLiveProvider : TimeToLiveProvider
-        {
-            if (!services.Any(x => x.ServiceType == typeof(CocApi.Api.ClansApi)))
-                throw new InvalidOperationException("ClansApi was not found in the service collection. Add it using AddCocApi");
-
-            if (!services.Any(x => x.ServiceType == typeof(CocApi.Api.PlayersApi)))
-                throw new InvalidOperationException("PlayersApi was not found in the service collection. Add it using AddCocApi");
-
-            if (cacheOptions != null)
-                services.Configure(cacheOptions);
-
-            services.AddSingletons<TTimeToLiveProvider>();
-
-            services.AddDbContext<CocApi.Cache.CacheDbContext>(dbContextOptions);
-
-            services.AddPlayersClient<TPlayersClient>();
-
-            services.AddClansClient<TClansClient>();
-
-            services.AddHostedService(services => services.GetRequiredService<ActiveWarService>());
-            services.AddHostedService(services => services.GetRequiredService<ClanService>());
-            services.AddHostedService(services => services.GetRequiredService<CwlWarService>());
-            services.AddHostedService(services => services.GetRequiredService<MemberService>());
-            services.AddHostedService(services => services.GetRequiredService<NewCwlWarService>());
-            services.AddHostedService(services => services.GetRequiredService<NewWarService>());
-            services.AddHostedService(services => services.GetRequiredService<PlayerService>());
-            services.AddHostedService(services => services.GetRequiredService<WarService>());
-            services.AddHostedService(services => services.GetRequiredService<StalePlayerService>());
-        }
-
-
-
-
-
-
-        public static void AddCocApiCache(
-            this IServiceCollection services,
-            Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-            Action<CacheOptions>? cacheOptions = null)
-            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, dbContextOptions, cacheOptions);
-
-        public static IHostBuilder ConfigureCocApiCache(
-            this IHostBuilder builder,
-            Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-            Action<CacheOptions, HostBuilderContext>? cacheOptions = null)
-            => ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(
-                builder, dbContextOptions, cacheOptions);
-
-        public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
-            this IHostBuilder builder,
-            Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-            Action<CacheOptions, HostBuilderContext>? cacheOptions = null) 
-            where TClansClient : ClansClient
-            where TPlayersClient : PlayersClient
-            where TTimeToLiveProvider : TimeToLiveProvider
-        {
-            builder.ConfigureServices((context, services) =>
-            {
-                if (cacheOptions != null)
-                    services.AddOptions<CacheOptions>().Configure<HostBuilderContext>((a, b) => cacheOptions(a, b));
-
-                AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, dbContextOptions, null);
-            });
-
-
-            return builder;
+            JsonSerializerOptions = jsonOptions.Options;
         }
     }
 }

@@ -2,18 +2,20 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
     public sealed class ActiveWarService : PerpetualService<ActiveWarService>
     {
-        internal ClansApi ClansApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
         internal IOptions<CacheOptions> Options { get; }
@@ -23,15 +25,15 @@ namespace CocApi.Cache.Services
         public ActiveWarService(
             ILogger<ActiveWarService> logger,
             IServiceScopeFactory scopeFactory,
-            ClansApi clansApi, 
+            IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
-            IOptions<CacheOptions> options) 
+            IOptions<CacheOptions> options)
             : base(logger, scopeFactory, options.Value.ActiveWars.DelayBeforeExecution, options.Value.ActiveWars.DelayBetweenExecutions)
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.ActiveWars.Enabled;
-            ClansApi = clansApi;
+            ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
             Options = options;
@@ -113,7 +115,9 @@ namespace CocApi.Cache.Services
 
         private async Task MonitorClanWarAsync(CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, ClansApi, cancellationToken).ConfigureAwait(false);
+            IClansApi clansApi = ApiFactory.Create<IClansApi>(); // Services.GetRequiredService<IClansApi>();
+
+            CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
             {

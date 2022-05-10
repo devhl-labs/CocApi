@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Apis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Models
 {
@@ -31,7 +31,7 @@ namespace CocApi.Cache.Models
 
         public DateTime? Season { get; internal set; }
 
-        public GroupState? State { get; internal set; }
+        public Rest.Models.GroupState? State { get; internal set; }
 
         internal CachedClanWarLeagueGroup(string tag)
         {

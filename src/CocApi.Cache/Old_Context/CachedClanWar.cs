@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.Apis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Models
 {
@@ -27,7 +27,7 @@ namespace CocApi.Cache.Models
 
         internal static bool IsNewWar(CachedClanWar stored, CachedClanWar fetched)
         {
-            if (fetched.Data == null || fetched.Data.State == WarState.NotInWar)
+            if (fetched.Data == null || fetched.Data.State == Rest.Models.WarState.NotInWar)
                 return false;
 
             if (stored.Data == null)
@@ -41,11 +41,11 @@ namespace CocApi.Cache.Models
 
         public string Tag { get; internal set; }
 
-        public WarState? State { get; internal set; }
+        public Rest.Models.WarState? State { get; internal set; }
 
         public DateTime PreparationStartTime { get; internal set; }
 
-        public WarType Type { get; internal set; }
+        public Rest.Models.WarType Type { get; internal set; }
 
         internal CachedClanWar(string tag)
         {

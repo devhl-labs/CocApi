@@ -3,25 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
-using CocApi.Client;
-using CocApi.Model;
+using CocApi.Rest.IApis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Context
 {
     public class CachedWar : CachedItem<ClanWar>
     {
         internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
-            string warTag, DateTime season, TimeToLiveProvider ttl, 
-            ClansApi clansApi, CancellationToken? cancellationToken = default)
+            string warTag, DateTime season, TimeToLiveProvider ttl,
+            IClansApi clansApi, CancellationToken? cancellationToken = default)
         {
             try
             {
-                ApiResponse<ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWar?> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
                 TimeSpan timeToLive = await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
-                if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == WarState.NotInWar)
+                if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == Rest.Models.WarState.NotInWar)
                     return new CachedWar(warTag, timeToLive);
 
                 CachedWar result = new(apiResponse, timeToLive, warTag, season)
@@ -93,7 +93,7 @@ namespace CocApi.Cache.Context
 
         public string? WarTag { get { return _warTag; } internal set { _warTag = value == null ? null : CocApi.Clash.FormatTag(value); } }
 
-        public WarState? State { get; internal set; }
+        public Rest.Models.WarState? State { get; internal set; }
 
         public bool IsFinal { get; internal set; }
 
@@ -101,7 +101,7 @@ namespace CocApi.Cache.Context
 
         public Announcements Announcements { get; internal set; }
 
-        public WarType Type { get; internal set; }
+        public Rest.Models.WarType Type { get; internal set; }
 
         private readonly SortedSet<string> _clanTags = new();
 
@@ -144,7 +144,7 @@ namespace CocApi.Cache.Context
             UpdateFrom(cachedClanWar);
         }
 
-        internal CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
+        internal CachedWar(ApiResponse<ClanWar?> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
         {
             base.UpdateFrom(apiResponse, localExpiration);
 
@@ -235,7 +235,7 @@ namespace CocApi.Cache.Context
 
         public override int GetHashCode()
         {
-            HashCode hash = new HashCode();
+            HashCode hash = new();
             hash.Add(PreparationStartTime);
             hash.Add(ClanTags.First());
             hash.Add(ClanTags.Skip(1).First());

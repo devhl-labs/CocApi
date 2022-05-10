@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
-using CocApi.Client;
+using CocApi.Rest.Client;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,7 +19,7 @@ namespace CocApi.Cache.Services
         internal event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
 
 
-        internal ClansApi ClansApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
         internal IOptions<CacheOptions> Options { get; }
@@ -32,7 +32,7 @@ namespace CocApi.Cache.Services
         public NewCwlWarService(
             ILogger<NewCwlWarService> logger,
             IServiceScopeFactory scopeFactory,
-            ClansApi clansApi, 
+            IApiFactory apiFactory, 
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options) 
@@ -40,7 +40,7 @@ namespace CocApi.Cache.Services
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.NewCwlWars.Enabled;
-            ClansApi = clansApi;
+            ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
             Options = options;
@@ -76,13 +76,15 @@ namespace CocApi.Cache.Services
                 ? cachedClans.Max(c => c.Id)
                 : int.MinValue;
 
-            Dictionary<DateTime, Dictionary<string, Model.ClanWarLeagueGroup>> seasons = new();
+            Dictionary<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> seasons = new();
 
             List<Task<CachedWar>> announceNewWarTasks = new();
 
             ConcurrentDictionary<string, byte?> announcedWarTags = new();
 
             HashSet<string> updatingTags = new();
+
+            IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
             try
             {
@@ -121,9 +123,9 @@ namespace CocApi.Cache.Services
                             }
                             else
                             {
-                                seasons.TryAdd(group.Key, new Dictionary<string, Model.ClanWarLeagueGroup>());
+                                seasons.TryAdd(group.Key, new Dictionary<string, Rest.Models.ClanWarLeagueGroup>());
 
-                                Dictionary<string, Model.ClanWarLeagueGroup> season = seasons.Single(w => w.Key == group.Key).Value;
+                                Dictionary<string, Rest.Models.ClanWarLeagueGroup> season = seasons.Single(w => w.Key == group.Key).Value;
 
                                 season.TryAdd(warTag, cachedClan.Group.Content);
                             }
@@ -131,9 +133,9 @@ namespace CocApi.Cache.Services
 
                 List<Task> processRequests = new();
 
-                foreach (KeyValuePair<DateTime, Dictionary<string, Model.ClanWarLeagueGroup>> season in seasons)
+                foreach (KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> season in seasons)
                     foreach (var warTags in season.Value)
-                        processRequests.Add(ProcessRequest(announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
+                        processRequests.Add(ProcessRequest(clansApi, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
 
                 try
                 {
@@ -204,20 +206,21 @@ namespace CocApi.Cache.Services
         }
 
         private async Task ProcessRequest(
+            IClansApi clansApi,
             ConcurrentDictionary<string, byte?> announcedWars,
-            KeyValuePair<string, Model.ClanWarLeagueGroup> kvp, 
+            KeyValuePair<string, Rest.Models.ClanWarLeagueGroup> kvp, 
             List<CachedClan> cachedClans, 
             List<Task<CachedWar>> announceNewWarTasks, 
-            KeyValuePair<DateTime, Dictionary<string, Model.ClanWarLeagueGroup>> warTags,
+            KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> warTags,
             CancellationToken cancellationToken)
         {
             try
             {
-                ApiResponse<Model.ClanWar>? apiResponse = null;
+                ApiResponse<Rest.Models.ClanWar>? apiResponse = null;
 
                 try
                 {
-                    apiResponse = await ClansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, cancellationToken).ConfigureAwait(false);
+                    apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, cancellationToken).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
@@ -247,17 +250,17 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(ProcessRequest));
+                    Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(ProcessRequest));
 
                 throw;
             }
         }
 
         private async Task<CachedWar> NewWarFoundAsync(
-            Model.Clan? clan, 
-            Model.Clan? opponent, 
-            Model.ClanWarLeagueGroup group, 
-            ApiResponse<CocApi.Model.ClanWar> war,
+            Rest.Models.Clan? clan, 
+            Rest.Models.Clan? opponent,
+            Rest.Models.ClanWarLeagueGroup group, 
+            ApiResponse<Rest.Models.ClanWar> war,
             CancellationToken cancellationToken)
         {
             try
@@ -274,7 +277,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(NewWarFoundAsync));
+                    Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(NewWarFoundAsync));
 
                 throw;
             }

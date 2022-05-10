@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
@@ -21,7 +22,7 @@ namespace CocApi.Cache.Services
         internal event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
 
-        internal ClansApi ClansApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal Synchronizer Synchronizer { get; }
@@ -35,7 +36,7 @@ namespace CocApi.Cache.Services
         public WarService(
             ILogger<WarService> logger,
             IServiceScopeFactory scopeFactory,
-            ClansApi clansApi,
+            IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider timeToLiveProvider,
             IOptions<CacheOptions> options) 
@@ -43,7 +44,7 @@ namespace CocApi.Cache.Services
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             IsEnabled = options.Value.Wars.Enabled;
-            ClansApi = clansApi;
+            ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             TimeToLiveProvider = timeToLiveProvider;
             Options = options;
@@ -94,6 +95,8 @@ namespace CocApi.Cache.Services
 
             HashSet<string> updatingWar = new();
 
+            IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
             try
             {
                 foreach (CachedWar cachedWar in cachedWars)
@@ -104,10 +107,11 @@ namespace CocApi.Cache.Services
 
                     tasks.Add(
                         UpdateWarAsync(
-                            dbContext, 
-                            cachedWar, 
-                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag), 
-                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag), 
+                            clansApi,
+                            dbContext,
+                            cachedWar,
+                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag),
+                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag),
                             cancellationToken));
 
                     tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
@@ -128,17 +132,18 @@ namespace CocApi.Cache.Services
         }
 
         private async Task UpdateWarAsync(
-            CacheDbContext dbContext, 
-            CachedWar cachedWar, 
-            CachedClan? cachedClan, 
-            CachedClan? cachedOpponent, 
+            IClansApi clansApi,
+            CacheDbContext dbContext,
+            CachedWar cachedWar,
+            CachedClan? cachedClan,
+            CachedClan? cachedOpponent,
             CancellationToken cancellationToken)
         {
             if (cachedClan == null && cachedOpponent?.CurrentWar.IsExpired == true)
-                cachedClan = await CreateCachedClan(cachedWar.ClanTag, dbContext, cancellationToken).ConfigureAwait(false);
+                cachedClan = await CreateCachedClan(clansApi, cachedWar.ClanTag, dbContext, cancellationToken).ConfigureAwait(false);
 
             if (cachedOpponent == null && cachedClan?.CurrentWar.IsExpired == true)
-                cachedOpponent = await CreateCachedClan(cachedWar.OpponentTag, dbContext, cancellationToken).ConfigureAwait(false);
+                cachedOpponent = await CreateCachedClan(clansApi, cachedWar.OpponentTag, dbContext, cancellationToken).ConfigureAwait(false);
 
             List<CachedClan?> cachedClans = new() { cachedClan, cachedOpponent };
 
@@ -169,7 +174,7 @@ namespace CocApi.Cache.Services
             {
                 cachedWar.UpdateFrom(clan.CurrentWar);
 
-                cachedWar.IsFinal = clan.CurrentWar.State == WarState.WarEnded;
+                cachedWar.IsFinal = clan.CurrentWar.State == Rest.Models.WarState.WarEnded;
             }
             else if (cachedClans.All(c => 
                     c != null && 
@@ -180,7 +185,7 @@ namespace CocApi.Cache.Services
                 cachedWar.IsFinal = true;
         }
 
-        private async Task<CachedClan?> CreateCachedClan(string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
+        private async Task<CachedClan?> CreateCachedClan(IClansApi clansApi, string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
         {
             if (!Synchronizer.UpdatingClan.TryAdd(tag, null))
                 return null;
@@ -190,7 +195,7 @@ namespace CocApi.Cache.Services
                 _unmonitoredClans.Add(tag);
 
                 CachedClanWar cachedClanWar = await CachedClanWar
-                    .FromCurrentWarResponseAsync(tag, TimeToLiveProvider, ClansApi, cancellationToken)
+                    .FromCurrentWarResponseAsync(tag, TimeToLiveProvider, clansApi, cancellationToken)
                     .ConfigureAwait(false);
 
                 cachedClanWar.Added = true;
@@ -249,7 +254,7 @@ namespace CocApi.Cache.Services
                 }
 
                 if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
-                    cachedWar.State != WarState.WarEnded &&
+                    cachedWar.State != Rest.Models.WarState.WarEnded &&
                     now > cachedWar.EndTime &&
                     now < cachedWar.EndTime.AddHours(24) &&
                     cachedWar.Content.AllAttacksAreUsed() == false &&
@@ -275,7 +280,7 @@ namespace CocApi.Cache.Services
             catch (Exception e)
             {
                 if (!cancellationToken.IsCancellationRequested)
-                    Logger.LogError(e, "An exception occured while executing {0}.{1}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
+                    Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
             }
         }
     }

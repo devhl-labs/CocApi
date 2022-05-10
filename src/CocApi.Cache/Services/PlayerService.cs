@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Api;
+using CocApi.Rest.IApis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
@@ -18,7 +19,7 @@ namespace CocApi.Cache.Services
 
 
         internal Synchronizer Synchronizer { get; }
-        internal PlayersApi PlayersApi { get; }
+        internal IApiFactory ApiFactory { get; }
         internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
@@ -29,7 +30,7 @@ namespace CocApi.Cache.Services
             IServiceScopeFactory scopeFactory,
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
-            PlayersApi playersApi,
+            IApiFactory apiFactory,
             IOptions<CacheOptions> options) 
         : base(logger, scopeFactory, options.Value.Players.DelayBeforeExecution, options.Value.Players.DelayBetweenExecutions)
         {
@@ -37,7 +38,7 @@ namespace CocApi.Cache.Services
             IsEnabled = options.Value.Players.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
-            PlayersApi = playersApi;
+            ApiFactory = apiFactory;
             Options = options;
         }
 
@@ -71,6 +72,8 @@ namespace CocApi.Cache.Services
 
             HashSet<string> updatingTags = new();
 
+            IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
+
             try
             {
                 foreach (CachedPlayer trackedPlayer in trackedPlayers)
@@ -81,7 +84,7 @@ namespace CocApi.Cache.Services
                     updatingTags.Add(trackedPlayer.Tag);
 
                     if (trackedPlayer.Download && trackedPlayer.IsExpired)
-                        tasks.Add(MonitorPlayerAsync(trackedPlayer, cancellationToken));
+                        tasks.Add(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken));
                 }
 
                 await Task.WhenAll(tasks);
@@ -95,10 +98,10 @@ namespace CocApi.Cache.Services
             }
         }
 
-        private async Task MonitorPlayerAsync(CachedPlayer cachedPlayer, CancellationToken cancellationToken)
+        private async Task MonitorPlayerAsync(IPlayersApi playersApi, CachedPlayer cachedPlayer, CancellationToken cancellationToken)
         {
             CachedPlayer fetched = await CachedPlayer
-                .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, PlayersApi, cancellationToken)
+                .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, playersApi, cancellationToken)
                 .ConfigureAwait(false);
 
             if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && PlayerUpdated != null)

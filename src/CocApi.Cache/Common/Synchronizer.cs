@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using CocApi.Cache.Context;
-using CocApi.Model;
+using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 
 namespace CocApi.Cache
