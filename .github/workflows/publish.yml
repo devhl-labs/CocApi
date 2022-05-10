@@ -17,7 +17,7 @@ jobs:
 
       # Publish
       - name: publish CocApi
-        id: publish_nuget
+        id: publish_nuget_CocApi
         uses: rohith/publish-nuget@v2
         with:
           # Filepath of the project to be packaged, relative to root of repository
@@ -51,14 +51,14 @@ jobs:
           # INCLUDE_SYMBOLS: false
 
       - name: publish CocApi.Rest
-        id: publish_nuget
+        id: publish_nuget_CocApi_Rest
         uses: rohith/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: src/CocApi.Rest/CocApi.Rest.csproj
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
 
       - name: publish CocApi.Cache
-        id: publish_nuget
+        id: publish_nuget_CocApi_Cache
         uses: rohith/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: src/CocApi.Cache/CocApi.Cache.csproj
