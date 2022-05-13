@@ -18,9 +18,13 @@ namespace CocApi.Test
             IServiceScopeFactory scopeFactory,
             IClansApi clansApi, 
             Synchronizer synchronizer,
-            IPerpetualExecution<object>[] perpetualServices,
-            IOptions<CacheOptions> options) 
-            : base(logger, clansApi, scopeFactory, synchronizer, perpetualServices, options)
+            ClanService clanService,
+            NewWarService newWarService,
+            NewCwlWarService newCwlWarService,
+            CwlWarService cwlWarService,
+            WarService warService,
+            IOptions<CacheOptions> options)
+            : base(logger, clansApi, scopeFactory, synchronizer, clanService, newWarService, newCwlWarService, warService, cwlWarService, options)
         {
             ClanUpdated += OnClanUpdated;
             ClanWarAdded += OnClanWarAdded;

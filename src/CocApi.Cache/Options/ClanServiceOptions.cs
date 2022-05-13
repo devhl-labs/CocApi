@@ -1,6 +1,9 @@
-﻿namespace CocApi.Cache
+﻿using ScheduledServices.Services.Options;
+using System.ComponentModel;
+
+namespace CocApi.Cache
 {
-    public class ClanServiceOptions : ServiceOptions
+    public class ClanServiceOptions : RecurringServiceOptions
     {
         /// <summary>
         /// Default value is true.
@@ -21,5 +24,8 @@
         /// Default value is true.
         /// </summary>
         public bool DownloadWarLog { get; set; } = true;
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public int ConcurrentUpdates { get; set; } = 50;
     }
 }

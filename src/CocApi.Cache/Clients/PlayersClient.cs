@@ -23,16 +23,17 @@ namespace CocApi.Cache
             IPlayersApi playersApi, 
             IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
-            IPerpetualExecution<object>[] perpetualServices,
+            PlayerService playerService,
+            MemberService memberService,
             IOptions<CacheOptions> options) 
-        : base (logger, scopeFactory, synchronizer, perpetualServices, options)
+        : base (logger, scopeFactory, synchronizer, options)
         {
             PlayersApi = playersApi;
 
-            PlayerService playerService = (PlayerService) perpetualServices.Single(p => p.GetType() == typeof(PlayerService));
+            //PlayerService playerService = (PlayerService) perpetualServices.Single(p => p.GetType() == typeof(PlayerService));
             playerService.PlayerUpdated += OnPlayerUpdatedAsync;
 
-            MemberService memberService = (MemberService)perpetualServices.Single(p => p.GetType() == typeof(MemberService));
+            //MemberService memberService = (MemberService)perpetualServices.Single(p => p.GetType() == typeof(MemberService));
             memberService.MemberUpdated += OnMemberUpdatedAsync;
 
         }

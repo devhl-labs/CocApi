@@ -8,12 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
 using CocApi.Rest.Client;
+using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class ActiveWarService : PerpetualService<ActiveWarService>
+    public sealed class ActiveWarService : PerpetualService
     {
         internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
@@ -29,10 +29,9 @@ namespace CocApi.Cache.Services
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
             IOptions<CacheOptions> options)
-            : base(logger, scopeFactory, options.Value.ActiveWars.DelayBeforeExecution, options.Value.ActiveWars.DelayBetweenExecutions)
+            : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ActiveWars))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.ActiveWars.Enabled;
             ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
@@ -40,11 +39,11 @@ namespace CocApi.Cache.Services
         }
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 
-            ServiceOptions options = Options.Value.ActiveWars;
+            ActiveWarServiceOptions options = Options.Value.ActiveWars;
 
             using var scope = ScopeFactory.CreateScope();
 
@@ -115,7 +114,7 @@ namespace CocApi.Cache.Services
 
         private async Task MonitorClanWarAsync(CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            IClansApi clansApi = ApiFactory.Create<IClansApi>(); // Services.GetRequiredService<IClansApi>();
+            IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
             CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 

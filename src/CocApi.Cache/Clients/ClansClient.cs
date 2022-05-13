@@ -35,10 +35,14 @@ namespace CocApi.Cache
             IClansApi clansApi, 
             IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
-            IPerpetualExecution<object>[] perpetualServices,
+            ClanService clanService,
+            NewWarService newWarService,
+            NewCwlWarService newCwlWarService,
+            WarService warService,
+            CwlWarService cwlWarService,
             IOptions<CacheOptions> options
             )
-        : base(logger, scopeFactory, synchronizer, perpetualServices, options)
+        : base(logger, scopeFactory, synchronizer, options)
         {
             if (!(options.Value.CwlWars.Enabled == 
                     options.Value.Clans.DownloadGroup == 
@@ -49,7 +53,7 @@ namespace CocApi.Cache
                 // TODO: then why do all these booleans exist?
             }
 
-            if (!(options.Value.ClanMembers.Enabled == options.Value.DeleteStalePlayers.Enabled))            
+            if (!(options.Value.ClanMembers.Enabled == options.Value.DeleteStalePlayers.Enabled))
                 logger.LogWarning("You are downloading clan members but not deleting stale players. This will cause departed clan members to stay in cache forever.");
 
             if (!(options.Value.ActiveWars.Enabled ==
@@ -61,11 +65,11 @@ namespace CocApi.Cache
 
             ClansApi = clansApi;
 
-            ClanService clanService = (ClanService)perpetualServices.Single(p => p.GetType() == typeof(ClanService));
-            NewWarService newWarService = (NewWarService)perpetualServices.Single(p => p.GetType() == typeof(NewWarService));
-            NewCwlWarService newCwlWarService = (NewCwlWarService)perpetualServices.Single(p => p.GetType() == typeof(NewCwlWarService));
-            WarService warService = (WarService)perpetualServices.Single(p => p.GetType() == typeof(WarService));
-            CwlWarService cwlWarService = (CwlWarService)perpetualServices.Single(p => p.GetType() == typeof(CwlWarService));
+            //ClanService clanService = (ClanService)perpetualServices.Single(p => p.GetType() == typeof(ClanService));
+            //NewWarService newWarService = (NewWarService)perpetualServices.Single(p => p.GetType() == typeof(NewWarService));
+            //NewCwlWarService newCwlWarService = (NewCwlWarService)perpetualServices.Single(p => p.GetType() == typeof(NewCwlWarService));
+            //WarService warService = (WarService)perpetualServices.Single(p => p.GetType() == typeof(WarService));
+            //CwlWarService cwlWarService = (CwlWarService)perpetualServices.Single(p => p.GetType() == typeof(CwlWarService));
 
             clanService.ClanUpdated += OnClanUpdatedAsync;
             clanService.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;

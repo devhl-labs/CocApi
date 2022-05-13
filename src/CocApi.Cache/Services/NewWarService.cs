@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Cache.Context;
+using CocApi.Cache.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,13 +12,13 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class NewWarService : PerpetualService<NewWarService>
+    public sealed class NewWarService : PerpetualService
     {
         internal event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
         
         
         internal Synchronizer Synchronizer { get; }
-        internal IOptions<CacheOptions> Options { get; }
+        public IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
 
         
@@ -26,22 +27,21 @@ namespace CocApi.Cache.Services
             ILogger<NewWarService> logger,
             IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer,
-            IOptions<CacheOptions> options) 
-        : base(logger, scopeFactory, options.Value.NewWars.DelayBeforeExecution, options.Value.NewWars.DelayBetweenExecutions)
+            IOptions<CacheOptions> options)
+        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.NewWars))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.NewWars.Enabled;
             Synchronizer = synchronizer;
             Options = options;
         }
 
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 
-            ServiceOptions options = Options.Value.NewWars;
+            NewWarServiceOptions options = Options.Value.NewWars;
 
             using var scope = ScopeFactory.CreateScope();
 

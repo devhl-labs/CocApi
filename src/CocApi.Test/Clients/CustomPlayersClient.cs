@@ -15,9 +15,10 @@ namespace CocApi.Test
             IServiceScopeFactory scopeFactory, 
             IPlayersApi playersApi,
             Synchronizer synchronizer,
-            IPerpetualExecution<object>[] perpetualServices,
-            IOptions<CacheOptions> options) 
-        : base(logger, playersApi, scopeFactory, synchronizer, perpetualServices, options)
+            PlayerService playerService,
+            MemberService memberService,
+            IOptions<CacheOptions> options)
+        : base(logger, playersApi, scopeFactory, synchronizer, playerService, memberService, options)
         {
             PlayerUpdated += OnPlayerUpdated;
         }

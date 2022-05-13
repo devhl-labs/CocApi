@@ -1,6 +1,7 @@
 ﻿using CocApi.Cache.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -53,17 +54,17 @@ namespace CocApi.Cache.Extensions
             services.AddSingleton<PlayerService>();
             services.AddSingleton<WarService>();
             services.AddSingleton<StalePlayerService>();
-            services.AddSingleton(services => new IPerpetualExecution<object>[]{
-                services.GetRequiredService<ActiveWarService>(),
-                services.GetRequiredService<ClanService>(),
-                services.GetRequiredService<CwlWarService>(),
-                services.GetRequiredService<MemberService>(),
-                services.GetRequiredService<NewCwlWarService>(),
-                services.GetRequiredService<NewWarService>(),
-                services.GetRequiredService<PlayerService>(),
-                services.GetRequiredService<StalePlayerService>(),
-                services.GetRequiredService<WarService>()
-            });
+            //services.AddSingleton(services => new IPerpetualExecution<object>[]{
+            //    services.GetRequiredService<ActiveWarService>(),
+            //    services.GetRequiredService<ClanService>(),
+            //    services.GetRequiredService<CwlWarService>(),
+            //    services.GetRequiredService<MemberService>(),
+            //    services.GetRequiredService<NewCwlWarService>(),
+            //    services.GetRequiredService<NewWarService>(),
+            //    services.GetRequiredService<PlayerService>(),
+            //    services.GetRequiredService<StalePlayerService>(),
+            //    services.GetRequiredService<WarService>()
+            //});
         }
 
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
@@ -74,20 +75,20 @@ namespace CocApi.Cache.Extensions
             where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
         {
-            if (!services.Any(x => x.ServiceType == typeof(CocApi.Rest.IApis.IClansApi)))
+            if (!services.Any(x => x.ServiceType == typeof(Rest.IApis.IClansApi)))
                 throw new InvalidOperationException("ClansApi was not found in the service collection. Add it using AddCocApi");
 
-            if (!services.Any(x => x.ServiceType == typeof(CocApi.Rest.IApis.IPlayersApi)))
+            if (!services.Any(x => x.ServiceType == typeof(Rest.IApis.IPlayersApi)))
                 throw new InvalidOperationException("PlayersApi was not found in the service collection. Add it using AddCocApi");
 
             Library.AddStaticJsonOptions(services);
 
             if (cacheOptions != null)
-                services.Configure(cacheOptions);
+                services.Configure<CacheOptions>(instance => cacheOptions(instance));
 
             services.AddSingletons<TTimeToLiveProvider>();
 
-            services.AddDbContext<CocApi.Cache.CacheDbContext>(dbContextOptions);
+            services.AddDbContext<CacheDbContext>(dbContextOptions);
 
             services.AddPlayersClient<TPlayersClient>();
 

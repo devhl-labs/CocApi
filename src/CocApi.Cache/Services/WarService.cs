@@ -10,10 +10,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
+using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class WarService : PerpetualService<WarService>
+    public sealed class WarService : PerpetualService
     {
         internal event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
         internal event AsyncEventHandler<WarEventArgs>? ClanWarEndNotSeen;
@@ -21,13 +22,13 @@ namespace CocApi.Cache.Services
         internal event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
         internal event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
+        public ILogger<WarService> Logger { get; }
 
         internal IApiFactory ApiFactory { get; }
-        internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
-
+        public IOptions<WarServiceOptions> Options { get; }
 
         private readonly HashSet<string> _unmonitoredClans = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -39,23 +40,22 @@ namespace CocApi.Cache.Services
             IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider timeToLiveProvider,
-            IOptions<CacheOptions> options) 
-        : base(logger, scopeFactory, options.Value.Wars.DelayBeforeExecution, options.Value.Wars.DelayBetweenExecutions)
+            IOptions<WarServiceOptions> options)
+        : base(logger, scopeFactory, options)
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.Wars.Enabled;
+            Logger = logger;
             ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             TimeToLiveProvider = timeToLiveProvider;
             Options = options;
         }
 
-
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 
-            ServiceOptions options = Options.Value.Wars;
+            WarServiceOptions options = Options.Value;
 
             using var scope = ScopeFactory.CreateScope();
 

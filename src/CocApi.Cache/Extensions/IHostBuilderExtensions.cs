@@ -1,7 +1,7 @@
 ﻿using System;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CocApi.Cache.Extensions
 {
@@ -16,15 +16,15 @@ namespace CocApi.Cache.Extensions
         public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IHostBuilder builder,
             Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-            Action<CacheOptions, HostBuilderContext>? cacheOptions = null) 
+            Action<CacheOptions, HostBuilderContext>? cacheOptions = null)
             where TClansClient : ClansClient
             where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
         {
-            builder.ConfigureServices((context, services) =>
-            {
+            builder.ConfigureServices((context, services) => {
+
                 if (cacheOptions != null)
-                    services.AddOptions<CacheOptions>().Configure<HostBuilderContext>((a, b) => cacheOptions(a, b));
+                     services.AddOptions<CacheOptions>().Configure<HostBuilderContext>((instance, context) => cacheOptions(instance, context));
 
                 IServiceCollectionExtensions.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, dbContextOptions, null);
             });

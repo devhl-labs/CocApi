@@ -12,6 +12,7 @@ using System.Linq;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
+using CocApi.Cache;
 
 namespace CocApi.Test
 {
@@ -82,21 +83,14 @@ namespace CocApi.Test
                     string connection = configuration.GetConnectionString("CocApi.Test");
 
                     dbContextOptions.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
-
-                }, (cacheOptions, context) =>
-                {
-                    cacheOptions.ActiveWars.Enabled = true;
-                    cacheOptions.ClanMembers.Enabled = true;
-                    cacheOptions.Clans.Enabled = true;
-                    cacheOptions.NewCwlWars.Enabled = true;
-                    cacheOptions.NewWars.Enabled = true;
-                    cacheOptions.Wars.Enabled = true;
-                    cacheOptions.CwlWars.Enabled = true;
-                    cacheOptions.Players.Enabled = true;
                 })
 
+                .ConfigureServices((context, services) => {
+                    // configure the library to use your appsettings
+                    services.Configure<CacheOptions>(context.Configuration.GetRequiredSection("CocApi:Cache"));
 
-                .ConfigureServices((hostBuilder, services) => services.AddHostedService<TestService>());
+                    services.AddHostedService<TestService>();
+                });
         }
     }
 }

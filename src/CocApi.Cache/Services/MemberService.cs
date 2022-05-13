@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class MemberService : PerpetualService<MemberService>
+    public sealed class MemberService : PerpetualService
     {
         internal event AsyncEventHandler<MemberUpdatedEventArgs>? MemberUpdated;
 
@@ -21,7 +20,6 @@ namespace CocApi.Cache.Services
         internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
-        internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
 
 
@@ -31,29 +29,26 @@ namespace CocApi.Cache.Services
             IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
-            IOptions<CacheOptions> options)
-            : base(logger, scopeFactory, options.Value.ClanMembers.DelayBeforeExecution, options.Value.ClanMembers.DelayBetweenExecutions)
+            IOptions<CacheOptions> options
+            )
+            : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ClanMembers))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.ClanMembers.Enabled;
             ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
-            Options = options;
         }
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
-
-            ServiceOptionsBase options = Options.Value.ClanMembers;
 
             using var scope = ScopeFactory.CreateScope();
 
             CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
-            CachedClan cachedClan = await dbContext.Clans
+            CachedClan? cachedClan = await dbContext.Clans
                 .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, cancellationToken).ConfigureAwait(false);
 
             _id = cachedClan != null
@@ -102,8 +97,6 @@ namespace CocApi.Cache.Services
                 await Task.WhenAll(tasks);
 
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-
-                // todo does this swallow exceptions?
             }
             finally
             {

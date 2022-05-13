@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class StalePlayerService : PerpetualService<StalePlayerService>
+    public sealed class StalePlayerService : PerpetualService
     {
         internal Synchronizer Synchronizer { get; }
-        internal IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
 
@@ -26,18 +23,16 @@ namespace CocApi.Cache.Services
             IServiceScopeFactory scopeFactory,
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
-            IOptions<CacheOptions> options) 
-        : base(logger, scopeFactory, options.Value.DeleteStalePlayers.DelayBeforeExecution, options.Value.DeleteStalePlayers.DelayBetweenExecutions)
+            IOptions<CacheOptions> options)
+        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.DeleteStalePlayers))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.DeleteStalePlayers.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
-            Options = options;
         }
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 

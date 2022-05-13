@@ -14,7 +14,7 @@ namespace CocApi.Cache
     public class ClientBase<T>
     {
         internal Synchronizer Synchronizer { get; }
-        public IPerpetualExecution<object>[] PerpetualServices { get; }
+        //public IPerpetualExecution<object>[] PerpetualServices { get; }
         public ILogger<T> Logger { get; }
         public IServiceScopeFactory ScopeFactory { get; }
 
@@ -22,7 +22,7 @@ namespace CocApi.Cache
             ILogger<T> logger,
             IServiceScopeFactory scopeFactory,
             Synchronizer synchronizer, 
-            IPerpetualExecution<object>[] perpetualServices,
+            //IPerpetualExecution<object>[] perpetualServices,
             IOptions<CacheOptions> options)
         {
             Library.SetMaxConcurrentEvents(options.Value.MaxConcurrentEvents);
@@ -30,7 +30,7 @@ namespace CocApi.Cache
             ScopeFactory = scopeFactory;
             EnsureMigrated();
             Synchronizer = synchronizer;
-            PerpetualServices = perpetualServices;
+            //PerpetualServices = perpetualServices;
         }
 
 
@@ -308,16 +308,16 @@ namespace CocApi.Cache
             }
         }
 
-        public void Stop()
-        {
-            foreach (var perptualService in PerpetualServices)
-                perptualService.IsEnabled = false;
-        }
+        //public void Stop()
+        //{
+        //    foreach (var perptualService in PerpetualServices)
+        //        perptualService.IsEnabled = false;
+        //}
 
-        public void Start()
-        {
-            foreach (var perptualService in PerpetualServices)
-                perptualService.IsEnabled = true;
-        }
+        //public void Start()
+        //{
+        //    foreach (var perptualService in PerpetualServices)
+        //        perptualService.IsEnabled = true;
+        //}
     }
 }

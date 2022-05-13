@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,17 +9,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
+using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class PlayerService : PerpetualService<PlayerService>
+    public sealed class PlayerService : PerpetualService
     {
         internal event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
 
         internal Synchronizer Synchronizer { get; }
         internal IApiFactory ApiFactory { get; }
-        internal IOptions<CacheOptions> Options { get; }
+        public IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
 
@@ -31,11 +31,10 @@ namespace CocApi.Cache.Services
             TimeToLiveProvider timeToLiveProvider,
             Synchronizer synchronizer,
             IApiFactory apiFactory,
-            IOptions<CacheOptions> options) 
-        : base(logger, scopeFactory, options.Value.Players.DelayBeforeExecution, options.Value.Players.DelayBetweenExecutions)
+            IOptions<CacheOptions> options)
+        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Players))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.Players.Enabled;
             TimeToLiveProvider = timeToLiveProvider;
             Synchronizer = synchronizer;
             ApiFactory = apiFactory;
@@ -43,11 +42,11 @@ namespace CocApi.Cache.Services
         }
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 
-            ServiceOptions options = Options.Value.Players;
+            PlayerServiceOptions options = Options.Value.Players;
 
             using var scope = ScopeFactory.CreateScope();
 

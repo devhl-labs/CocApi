@@ -13,7 +13,7 @@ using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class ClanService : PerpetualService<ClanService>
+    public sealed class ClanService : PerpetualService
     {
         internal event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
         internal event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
@@ -33,11 +33,10 @@ namespace CocApi.Cache.Services
             IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
-            IOptions<CacheOptions> options) 
-            : base(logger, scopeFactory, options.Value.Clans.DelayBeforeExecution, options.Value.Clans.DelayBetweenExecutions)
+            IOptions<CacheOptions> options)
+            : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Clans))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.Clans.Enabled;
             ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
@@ -45,11 +44,11 @@ namespace CocApi.Cache.Services
         }
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 
-            ServiceOptions options = Options.Value.Clans;
+            ClanServiceOptions options = Options.Value.Clans;
 
             using var scope = ScopeFactory.CreateScope();
 
@@ -59,10 +58,10 @@ namespace CocApi.Cache.Services
                 .Where(c =>
                     c.Id > _id &&
                     (
-(Options.Value.Clans.DownloadClan && (c.ExpiresAt ?? min) < expires && (c.KeepUntil ?? min) < now && c.Download) ||
-(Options.Value.Clans.DownloadGroup && (c.Group.ExpiresAt ?? min) < expires && (c.Group.KeepUntil ?? min) < now && c.Group.Download) ||
-(Options.Value.Clans.DownloadCurrentWar && (c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false) ||
-(Options.Value.Clans.DownloadWarLog && (c.WarLog.ExpiresAt ?? min) < expires && (c.WarLog.KeepUntil ?? min) < now && c.WarLog.Download && c.IsWarLogPublic != false)
+(options.DownloadClan && (c.ExpiresAt ?? min) < expires && (c.KeepUntil ?? min) < now && c.Download) ||
+(options.DownloadGroup && (c.Group.ExpiresAt ?? min) < expires && (c.Group.KeepUntil ?? min) < now && c.Group.Download) ||
+(options.DownloadCurrentWar && (c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false) ||
+(options.DownloadWarLog && (c.WarLog.ExpiresAt ?? min) < expires && (c.WarLog.KeepUntil ?? min) < now && c.WarLog.Download && c.IsWarLogPublic != false)
                     ))
                 .OrderBy(c => c.Id)
                 .Take(options.ConcurrentUpdates)
@@ -110,16 +109,18 @@ namespace CocApi.Cache.Services
 
                 IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
-                if (Options.Value.Clans.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
+                ClanServiceOptions options = Options.Value.Clans;
+
+                if (options.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
                     tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
-                if (Options.Value.Clans.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
+                if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                     tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, cancellationToken));
 
-                if (Options.Value.Clans.DownloadWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
+                if (options.DownloadWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                     tasks.Add(MonitorWarLogAsync(clansApi, cachedClan, cancellationToken));
 
-                if (Options.Value.Clans.DownloadGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
+                if (options.DownloadGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
                     tasks.Add(MonitorGroupAsync(clansApi, cachedClan, cancellationToken));
 
                 await Task.WhenAll(tasks).ConfigureAwait(false);

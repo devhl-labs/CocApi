@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using ScheduledServices;
 
 namespace CocApi.Cache.Services
 {
-    public abstract class PerpetualService<T> : PerpetualExecutionBackgroundService<T> where T : class
+    public abstract class PerpetualService : RecurringService
     {
         private protected int _id = int.MinValue;
         private protected DateTime expires = DateTime.UtcNow.AddSeconds(-3);
@@ -16,10 +18,10 @@ namespace CocApi.Cache.Services
 
 
         public PerpetualService(
-            ILogger<T> logger, 
+            ILogger logger,
             IServiceScopeFactory scopeFactory,
-            TimeSpan delayBeforeExecution,
-            TimeSpan delayBetweenExecutions) : base(logger, delayBeforeExecution, delayBetweenExecutions)
+            IOptions<IRecurringServiceOptions> options
+            ) : base(logger, options)
         {
             ScopeFactory = scopeFactory;
         }

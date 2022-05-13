@@ -10,21 +10,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
+using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class CwlWarService : PerpetualService<CwlWarService>
+    public sealed class CwlWarService : PerpetualService
     {
         internal event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
         internal event AsyncEventHandler<WarEventArgs>? ClanWarEnded;
         internal event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
         internal event AsyncEventHandler<ClanWarUpdatedEventArgs>? ClanWarUpdated;
 
+        public ILogger<CwlWarService> Logger { get; }
 
         internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider Ttl { get; }
-        internal IOptions<CacheOptions> Options { get; }
+        public IOptions<CacheOptions> Options { get; }
         internal static bool Instantiated { get; private set; }
 
 
@@ -34,11 +36,11 @@ namespace CocApi.Cache.Services
             IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider ttl,
-            IOptions<CacheOptions> options) 
-        : base(logger, scopeFactory, options.Value.CwlWars.DelayBeforeExecution, options.Value.CwlWars.DelayBetweenExecutions)
+            IOptions<CacheOptions> options)
+        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.CwlWars))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            IsEnabled = options.Value.CwlWars.Enabled;
+            Logger = logger;
             ApiFactory = apiFactory;
             Synchronizer = synchronizer;
             Ttl = ttl;
@@ -46,11 +48,11 @@ namespace CocApi.Cache.Services
         }
 
 
-        private protected override async Task PollAsync(CancellationToken cancellationToken)
+        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
         {
             SetDateVariables();
 
-            ServiceOptions options = Options.Value.CwlWars;
+            CwlWarServiceOptions options = Options.Value.CwlWars;
 
             using var scope = ScopeFactory.CreateScope();
 
