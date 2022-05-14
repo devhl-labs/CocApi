@@ -16,7 +16,8 @@ $properties = @(
     'packageTags=ClashOfClans SuperCell devhl'
     'modelPackage=Models',
     'apiPackage=BaseApis',
-    'derivedApiPackage=Apis'
+    'derivedApiPackage=Apis',
+    'packageGuid=71B5E000-88E9-432B-BAEB-BB622EA7DC33'
 ) -join ","
 
 $global = @(
@@ -261,26 +262,32 @@ $membersConverter = @"
 
 "@
 
-$project = Resolve-Path -Path "$output\src\CocApi.Rest"
-$projectTest = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
+$restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
+$testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
+$apiDocPath = Resolve-Path -Path "$output\docs\apis"
+$modelDocPath = Resolve-Path -Path "$output\docs\models"
 
-$files = $(Get-ChildItem -Path $project -Recurse)
-$files += $(Get-ChildItem -Path $projectTest -Recurse)
-$files = $files | Where-Object { -Not($_.PSIsContainer)}
+$restFiles = $(Get-ChildItem -Path $restPath -Recurse)
+$testFiles = $(Get-ChildItem -Path $testPath -Recurse)
+$apiDocFiles = $(Get-ChildItem -Path $apiDocPath -Recurse)
+$modelDocfiles = $(Get-ChildItem -Path $modelDocPath -Recurse)
+$allDocFiles = $($apiDocFiles + $modelDocFiles) | Where-Object { -Not($_.PSIsContainer) -and ($_.FullName -match ".md" -or $_.FullName -match "") }
+$allCodeFiles = $($restFiles + $testFiles) |
+    Where-Object { -Not($_.PSIsContainer) -and ($_.FullName.EndsWith(".cs") -or $_.FullName.EndsWith(".json") -or $_.FullName.EndsWith((".txt")))}
 
-$restDirectory = "\\CocApi\\src\\CocApi.Rest\\"
-
-foreach ($file in $files)
+foreach ($file in $allDocFiles)
 {
-    $content=Get-Content -Path $file.FullName -Raw
-    $originalContent = $content
+    $content = $(Get-Content -Path $file.FullName) -join "`r`n"
+    Set-Content $file.FullName $content
+    $content = $null
+}
+
+foreach ($file in $allCodeFiles)
+{
+    $content = $(Get-Content -Path $file.FullName) -join "`r`n"
 
     if (-Not($content)){
         continue
-    }
-
-    if ($file.PSPath -match $restDirectory -and -Not($file.name -match ".Manual.") -and -Not($content -match "`r`n")){
-        $content = $content.Replace("`n", "`r`n")
     }
 
     $content=$content.Replace("WithHttpInfoAsync(", "ResponseAsync(")
@@ -360,15 +367,15 @@ foreach ($file in $files)
         $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
     }
 
-    if (-Not ($originalContent -ceq $content)){
-        try {
-            Set-Content $file.PSPath $content -ErrorAction Stop
-        }
-        catch {
-            Write-Error "An error occured writing to file $($file.Name)"
-            $content = $null
-        }
-    }
+    # if (-Not ($originalContent -ceq $content)){
+    #     try {
+    Set-Content $file.PSPath $content -ErrorAction Stop
+    #     }
+    #     catch {
+    #         Write-Error "An error occured writing to file $($file.Name)"
+    #         $content = $null
+    #     }
+    # }
     $content = $null
 }
 

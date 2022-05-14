@@ -247,4 +247,3 @@ namespace CocApi.Rest.Models
         }
     }
 }
-

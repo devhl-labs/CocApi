@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;using System.Text.Json.Serialization;
+using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 [assembly: InternalsVisibleTo("CocApi.Cache")]
 namespace CocApi.Rest.Models
@@ -11,28 +12,39 @@ namespace CocApi.Rest.Models
         public static bool IsSameWar(ClanWar? stored, ClanWar? fetched)
         {
             if (ReferenceEquals(stored, fetched))
-                return true;
+                return true;
+
             if (stored == null || fetched == null)
-                return true;
+                return true;
+
             if (stored.PreparationStartTime != fetched.PreparationStartTime)
-                return false;            if (stored.Clan.Tag == fetched.Clan.Tag)
-                return true;
+                return false;
+
+            if (stored.Clan.Tag == fetched.Clan.Tag)
+                return true;
+
             if (stored.Clan.Tag == fetched.Opponent.Tag)
-                return true;
+                return true;
+
             return false;
-        }
+        }
+
         public static string Url(string clanTag)
         {
             if (Clash.TryFormatTag(clanTag, out string? formattedTag) == false)
-                throw new InvalidTagException(clanTag);
+                throw new InvalidTagException(clanTag);
+
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
-        }
+        }
+
         [JsonPropertyName("warTag")]
         public string? WarTag { get; internal set; }
 
-        private SortedDictionary<string, WarClan> _clans = new();
+        private SortedDictionary<string, WarClan> _clans = new();
+
         private bool _isInitialized;
-        private readonly object _clansLock = new();
+        private readonly object _clansLock = new();
+
         public SortedDictionary<string, WarClan> Clans
         {
             get
@@ -40,7 +52,8 @@ namespace CocApi.Rest.Models
                 lock (_clansLock)
                 {
                     if (_clans.Count > 0)
-                        return _clans;
+                        return _clans;
+
                     if (Clan == null || Clan.Tag == null || Opponent == null || Opponent.Tag == null)
                         return _clans;
 
@@ -53,9 +66,11 @@ namespace CocApi.Rest.Models
                     return _clans;
                 }
             }
-        }
+        }
+
         private List<ClanWarAttack> _attacks = new();
-        private readonly object _attacksLock = new();
+        private readonly object _attacksLock = new();
+
         public List<ClanWarAttack> Attacks
         {
             get
@@ -63,7 +78,8 @@ namespace CocApi.Rest.Models
                 lock (_attacksLock)
                 {
                     if (Clans.Count == 0)
-                        return _attacks;
+                        return _attacks;
+
                     if (_attacks.Count == 0)
                         foreach (WarClan warClan in Clans.Values)
                             foreach (ClanWarMember member in warClan.Members)
@@ -72,7 +88,8 @@ namespace CocApi.Rest.Models
 
                     return _attacks;
                 }
-            }
+            }
+
             internal set
             {
                 lock (_attacksLock)
@@ -91,9 +108,11 @@ namespace CocApi.Rest.Models
             return attacks;
         }
 
-        public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
+        public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
+
         [JsonPropertyName("serverExpiration")]
-        public DateTime ServerExpiration { get; internal set; }
+        public DateTime ServerExpiration { get; internal set; }
+
         public bool AllAttacksAreUsed()
         {
             int totalAttacks = Clan.Members.Count + Opponent.Members.Count;
@@ -107,11 +126,13 @@ namespace CocApi.Rest.Models
         public bool AllAttacksAreUsedOrWarIsOver()
         {
             if (State == WarState.WarEnded)
-                return true;
+                return true;
+
             return AllAttacksAreUsed();
         }
 
-        private readonly object _initializeLock = new();
+        private readonly object _initializeLock = new();
+
         internal void Initialize(DateTime serverExpiration, string? warTag)
         {
             lock (_initializeLock)
@@ -120,7 +141,8 @@ namespace CocApi.Rest.Models
                     return;
 
                 ServerExpiration = serverExpiration;
-                WarTag = warTag;
+                WarTag = warTag;
+
                 _isInitialized = true;
             }
         }
@@ -136,7 +158,8 @@ namespace CocApi.Rest.Models
             {
                 { clan.Tag, clan },
                 { opponent.Tag, opponent }
-            };
+            };
+
             Clan = sorted.Values.First();
             Opponent = sorted.Values.Skip(1).First();
 
@@ -156,16 +179,21 @@ namespace CocApi.Rest.Models
                         warClan.Result = Result.Lose;
                     else
                         warClan.Result = Result.Tie;
-                }
-                int mapPosition = 1;
+                }
+
+                int mapPosition = 1;
+
                 foreach (ClanWarMember member in warClan.Members.OrderBy(m => m.RosterPosition))
                 {
                     member.MapPosition = mapPosition;
-                    mapPosition++;
+                    mapPosition++;
+
                     foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
                     {
-                        WarClan defendingClan = Clans.First(c => c.Key != warClan.Tag).Value;
-                        ClanWarMember defending = defendingClan.Members.First(m => m.Tag == attack.DefenderTag);
+                        WarClan defendingClan = Clans.First(c => c.Key != warClan.Tag).Value;
+
+                        ClanWarMember defending = defendingClan.Members.First(m => m.Tag == attack.DefenderTag);
+
                         attack.AttackerClanTag = warClan.Tag;
                         attack.DefenderClanTag = defendingClan.Tag;
                         attack.AttackerTownHall = member.TownhallLevel;
@@ -174,7 +202,8 @@ namespace CocApi.Rest.Models
                         attack.DefenderMapPosition = defending.RosterPosition;
                     }
                 }
-            }
+            }
+
             foreach (var wc in Clans.Values)
             {
                 var grouped = Attacks.Where(a => a.AttackerClanTag == wc.Tag).GroupBy(a => a.DefenderMapPosition);
@@ -201,7 +230,8 @@ namespace CocApi.Rest.Models
             if (WarTag != null)
                 return WarType.SCCWL;
 
-            TimeSpan timeSpan = StartTime - PreparationStartTime;
+            TimeSpan timeSpan = StartTime - PreparationStartTime;
+
             if (timeSpan.TotalHours == 24
                 || timeSpan.TotalHours == 20
                 || timeSpan.TotalHours == 16
@@ -213,10 +243,11 @@ namespace CocApi.Rest.Models
                 || timeSpan.TotalHours == 1
                 || timeSpan.TotalMinutes == 30
                 || timeSpan.TotalMinutes == 15
-                || timeSpan.TotalMinutes == 5)
+                || timeSpan.TotalMinutes == 5)
+
                 return WarType.Friendly;
 
             return WarType.Random;
         }
     }
-}
+}

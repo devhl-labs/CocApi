@@ -264,4 +264,3 @@ namespace CocApi.Rest.Client
         public const string ISO8601_DATETIME_FORMAT = "o";
     }
 }
-

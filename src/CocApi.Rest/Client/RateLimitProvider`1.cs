@@ -47,4 +47,3 @@ namespace CocApi.Rest.Client
             => await AvailableTokens.Reader.ReadAsync(cancellation.GetValueOrDefault()).ConfigureAwait(false);
     }
 } 
-

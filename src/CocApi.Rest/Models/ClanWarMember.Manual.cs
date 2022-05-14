@@ -5,7 +5,9 @@ namespace CocApi.Rest.Models
 {
     public partial class ClanWarMember
     {
-        public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
+        public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
+
+
         /// <summary>
         /// Gets or Sets MapPosition
         /// </summary>
@@ -18,4 +20,4 @@ namespace CocApi.Rest.Models
         [JsonPropertyName("mapPositionCorrected")]
         public int MapPosition { get; internal set; }
     }
-}
+}

@@ -4,8 +4,10 @@ using System.Linq;
 namespace CocApi.Rest.Models
 {
     public partial class Player
-    {
-        public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
+    {
+
+        public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
+
         public static string Url(string villageTag)
         {
             if (Clash.TryFormatTag(villageTag, out string? formattedTag) == false)

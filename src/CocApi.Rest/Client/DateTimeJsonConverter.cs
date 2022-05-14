@@ -55,4 +55,3 @@ namespace CocApi.Rest.Client
             writer.WriteStringValue(dateTimeValue.ToString(FORMATS[0], CultureInfo.InvariantCulture));
     }
 }
-

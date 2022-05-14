@@ -10,7 +10,8 @@ namespace CocApi.Rest.Models
             ClanMember = clanMember;
             OldValue = oldValue;
             NewValue = newValue;
-        }
+        }
+
         public int Quanity
         {
             get
