@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class StalePlayerService : PerpetualService
+    public sealed class StalePlayerService : ServiceBase
     {
         internal Synchronizer Synchronizer { get; }
         internal static bool Instantiated { get; private set; }

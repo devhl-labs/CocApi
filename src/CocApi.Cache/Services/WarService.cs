@@ -14,7 +14,7 @@ using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class WarService : PerpetualService
+    public sealed class WarService : ServiceBase
     {
         internal event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
         internal event AsyncEventHandler<WarEventArgs>? ClanWarEndNotSeen;
@@ -28,7 +28,7 @@ namespace CocApi.Cache.Services
         internal static bool Instantiated { get; private set; }
         internal Synchronizer Synchronizer { get; }
         internal TimeToLiveProvider TimeToLiveProvider { get; }
-        public IOptions<WarServiceOptions> Options { get; }
+        public IOptions<CacheOptions> Options { get; }
 
         private readonly HashSet<string> _unmonitoredClans = new();
         private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -40,8 +40,8 @@ namespace CocApi.Cache.Services
             IApiFactory apiFactory,
             Synchronizer synchronizer,
             TimeToLiveProvider timeToLiveProvider,
-            IOptions<WarServiceOptions> options)
-        : base(logger, scopeFactory, options)
+            IOptions<CacheOptions> options)
+        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Wars))
         {
             Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
             Logger = logger;
@@ -55,7 +55,7 @@ namespace CocApi.Cache.Services
         {
             SetDateVariables();
 
-            WarServiceOptions options = Options.Value;
+            WarServiceOptions options = Options.Value.Wars;
 
             using var scope = ScopeFactory.CreateScope();
 

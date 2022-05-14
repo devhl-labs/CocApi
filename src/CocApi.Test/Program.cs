@@ -90,6 +90,7 @@ namespace CocApi.Test
                     services.Configure<CacheOptions>(context.Configuration.GetRequiredSection("CocApi:Cache"));
 
                     services.AddHostedService<TestService>();
+                    services.AddHostedService<DownloaderServiceTest>();
                 });
         }
     }

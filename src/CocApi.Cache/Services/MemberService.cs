@@ -12,7 +12,7 @@ using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class MemberService : PerpetualService
+    public sealed class MemberService : ServiceBase
     {
         internal event AsyncEventHandler<MemberUpdatedEventArgs>? MemberUpdated;
 

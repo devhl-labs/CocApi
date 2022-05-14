@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class NewWarService : PerpetualService
+    public sealed class NewWarService : ServiceBase
     {
         internal event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
         

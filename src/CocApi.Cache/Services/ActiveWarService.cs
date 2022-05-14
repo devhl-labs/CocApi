@@ -13,7 +13,7 @@ using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class ActiveWarService : PerpetualService
+    public sealed class ActiveWarService : ServiceBase
     {
         internal IApiFactory ApiFactory { get; }
         internal Synchronizer Synchronizer { get; }

@@ -13,7 +13,7 @@ using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class PlayerService : PerpetualService
+    public sealed class PlayerService : ServiceBase
     {
         internal event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 

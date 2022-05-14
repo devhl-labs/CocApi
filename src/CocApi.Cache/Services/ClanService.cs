@@ -13,7 +13,7 @@ using CocApi.Rest.Client;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class ClanService : PerpetualService
+    public sealed class ClanService : ServiceBase
     {
         internal event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
         internal event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;

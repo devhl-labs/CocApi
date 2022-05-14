@@ -15,7 +15,7 @@ using CocApi.Cache.Options;
 
 namespace CocApi.Cache.Services
 {
-    public sealed class NewCwlWarService : PerpetualService
+    public sealed class NewCwlWarService : ServiceBase
     {
         internal event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
 

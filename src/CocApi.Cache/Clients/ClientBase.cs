@@ -307,17 +307,5 @@ namespace CocApi.Cache
                 throw new Exception("Failed to query the database. You may need to run a migration.", e);
             }
         }
-
-        //public void Stop()
-        //{
-        //    foreach (var perptualService in PerpetualServices)
-        //        perptualService.IsEnabled = false;
-        //}
-
-        //public void Start()
-        //{
-        //    foreach (var perptualService in PerpetualServices)
-        //        perptualService.IsEnabled = true;
-        //}
     }
 }

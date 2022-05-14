@@ -54,17 +54,7 @@ namespace CocApi.Cache.Extensions
             services.AddSingleton<PlayerService>();
             services.AddSingleton<WarService>();
             services.AddSingleton<StalePlayerService>();
-            //services.AddSingleton(services => new IPerpetualExecution<object>[]{
-            //    services.GetRequiredService<ActiveWarService>(),
-            //    services.GetRequiredService<ClanService>(),
-            //    services.GetRequiredService<CwlWarService>(),
-            //    services.GetRequiredService<MemberService>(),
-            //    services.GetRequiredService<NewCwlWarService>(),
-            //    services.GetRequiredService<NewWarService>(),
-            //    services.GetRequiredService<PlayerService>(),
-            //    services.GetRequiredService<StalePlayerService>(),
-            //    services.GetRequiredService<WarService>()
-            //});
+            services.AddSingleton<DownloaderService>();
         }
 
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(

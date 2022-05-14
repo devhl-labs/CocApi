@@ -16,10 +16,10 @@ namespace CocApi.Test
         public IClansApi ClansApi { get; }
 
         public TestService(
-            CustomClansClient clansClient, 
-            CustomPlayersClient playersClient, 
-            IPlayersApi playersApi, 
-            ILocationsApi locationsApi, 
+            CustomClansClient clansClient,
+            CustomPlayersClient playersClient,
+            IPlayersApi playersApi,
+            ILocationsApi locationsApi,
             ILeaguesApi leaguesApi,
             IClansApi clansApi)
         {
