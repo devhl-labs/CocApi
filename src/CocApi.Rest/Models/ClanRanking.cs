@@ -34,14 +34,14 @@ namespace CocApi.Rest.Models
         /// <param name="badgeUrls">badgeUrls</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="clanPoints">clanPoints</param>
-        /// <param name="location">location</param>
         /// <param name="members">members</param>
         /// <param name="name">name</param>
         /// <param name="previousRank">previousRank</param>
         /// <param name="rank">rank</param>
         /// <param name="tag">tag</param>
+        /// <param name="location">location</param>
         [JsonConstructor]
-        internal ClanRanking(BadgeUrls badgeUrls, int clanLevel, int clanPoints, Location location, int members, string name, int previousRank, int rank, string tag)
+        internal ClanRanking(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int members, string name, int previousRank, int rank, string tag, Location? location = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -51,9 +51,6 @@ namespace CocApi.Rest.Models
 
             if (clanPoints == null)
                 throw new ArgumentNullException("clanPoints is a required property for ClanRanking and cannot be null.");
-
-            if (location == null)
-                throw new ArgumentNullException("location is a required property for ClanRanking and cannot be null.");
 
             if (members == null)
                 throw new ArgumentNullException("members is a required property for ClanRanking and cannot be null.");
@@ -79,12 +76,12 @@ namespace CocApi.Rest.Models
             BadgeUrls = badgeUrls;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
-            Location = location;
             Members = members;
             Name = name;
             PreviousRank = previousRank;
             Rank = rank;
             Tag = tag;
+            Location = location;
         }
 
         /// <summary>
@@ -104,12 +101,6 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("clanPoints")]
         public int ClanPoints { get; }
-
-        /// <summary>
-        /// Gets or Sets Location
-        /// </summary>
-        [JsonPropertyName("location")]
-        public Location Location { get; }
 
         /// <summary>
         /// Gets or Sets Members
@@ -142,6 +133,12 @@ namespace CocApi.Rest.Models
         public string Tag { get; }
 
         /// <summary>
+        /// Gets or Sets Location
+        /// </summary>
+        [JsonPropertyName("location")]
+        public Location? Location { get; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -152,12 +149,12 @@ namespace CocApi.Rest.Models
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  ClanPoints: ").Append(ClanPoints).Append("\n");
-            sb.Append("  Location: ").Append(Location).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  PreviousRank: ").Append(PreviousRank).Append("\n");
             sb.Append("  Rank: ").Append(Rank).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
+            sb.Append("  Location: ").Append(Location).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -199,11 +196,6 @@ namespace CocApi.Rest.Models
                     ClanPoints.Equals(input.ClanPoints))
                 ) && 
                 (
-                    Location == input.Location ||
-                    (Location != null &&
-                    Location.Equals(input.Location))
-                ) && 
-                (
                     Members == input.Members ||
                     (Members != null &&
                     Members.Equals(input.Members))
@@ -227,6 +219,11 @@ namespace CocApi.Rest.Models
                     Tag == input.Tag ||
                     (Tag != null &&
                     Tag.Equals(input.Tag))
+                ) && 
+                (
+                    Location == input.Location ||
+                    (Location != null &&
+                    Location.Equals(input.Location))
                 );
         }
 
@@ -242,12 +239,14 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + ClanPoints.GetHashCode();
-                hashCode = (hashCode * 59) + Location.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
                 hashCode = (hashCode * 59) + PreviousRank.GetHashCode();
                 hashCode = (hashCode * 59) + Rank.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
+
+                if (Location != null)
+                    hashCode = (hashCode * 59) + Location.GetHashCode();
 
                 return hashCode;
             }
@@ -279,12 +278,12 @@ namespace CocApi.Rest.Models
             BadgeUrls badgeUrls = default;
             int clanLevel = default;
             int clanPoints = default;
-            Location location = default;
             int members = default;
             string name = default;
             int previousRank = default;
             int rank = default;
             string tag = default;
+            Location location = default;
 
             while (reader.Read())
             {
@@ -311,10 +310,6 @@ namespace CocApi.Rest.Models
                         case "clanPoints":
                             clanPoints = reader.GetInt32();
                             break;
-                        case "location":
-                            Utf8JsonReader locationReader = reader;
-                            location = JsonSerializer.Deserialize<Location>(ref reader, options);
-                            break;
                         case "members":
                             members = reader.GetInt32();
                             break;
@@ -330,11 +325,15 @@ namespace CocApi.Rest.Models
                         case "tag":
                             tag = reader.GetString();
                             break;
+                        case "location":
+                            Utf8JsonReader locationReader = reader;
+                            location = JsonSerializer.Deserialize<Location>(ref reader, options);
+                            break;
                     }
                 }
             }
 
-            return new ClanRanking(badgeUrls, clanLevel, clanPoints, location, members, name, previousRank, rank, tag);
+            return new ClanRanking(badgeUrls, clanLevel, clanPoints, members, name, previousRank, rank, tag, location);
         }
 
         /// <summary>
@@ -352,13 +351,13 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clanRanking.BadgeUrls, options);
             writer.WriteNumber("clanLevel", (int)clanRanking.ClanLevel);
             writer.WriteNumber("clanPoints", (int)clanRanking.ClanPoints);
-            writer.WritePropertyName("location");
-            JsonSerializer.Serialize(writer, clanRanking.Location, options);
             writer.WriteNumber("members", (int)clanRanking.Members);
             writer.WriteString("name", clanRanking.Name);
             writer.WriteNumber("previousRank", (int)clanRanking.PreviousRank);
             writer.WriteNumber("rank", (int)clanRanking.Rank);
             writer.WriteString("tag", clanRanking.Tag);
+            writer.WritePropertyName("location");
+            JsonSerializer.Serialize(writer, clanRanking.Location, options);
 
             writer.WriteEndObject();
         }
