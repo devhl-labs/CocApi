@@ -266,13 +266,12 @@ $projectTest = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
 
 $files = $(Get-ChildItem -Path $project -Recurse)
 $files += $(Get-ChildItem -Path $projectTest -Recurse)
+$files = $files | Where-Object { -Not($_.PSIsContainer)}
+
+$restDirectory = "\\CocApi\\src\\CocApi.Rest\\"
 
 foreach ($file in $files)
 {
-    if ($file.PSIsContainer){
-        continue
-    }
-
     $content=Get-Content -Path $file.FullName -Raw
     $originalContent = $content
 
@@ -280,11 +279,8 @@ foreach ($file in $files)
         continue
     }
 
-    if ($file.DirectoryName -match "CocApi.Rest" -and -Not($file.DirectoryName -match "CocApi.Rest.Test") -and -Not($file.name -match ".Manual.") -and -Not($content -match "`r`n")){
-        $content = $content.Replace("`n","`r`n")
-    } 
-    elseif ($file.DirectoryName -match "CocApi.Rest.Test" -and -Not($content -match "`r`n")){
-        $content = $content.Replace("`n","`r`n")
+    if ($file.PSPath -match $restDirectory -and -Not($file.name -match ".Manual.") -and -Not($content -match "`r`n")){
+        $content = $content.Replace("`n", "`r`n")
     }
 
     $content=$content.Replace("WithHttpInfoAsync(", "ResponseAsync(")
