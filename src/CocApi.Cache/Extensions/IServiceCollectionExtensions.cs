@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ScheduledServices.Extensions;
 using System;
 using System.Linq;
 
@@ -34,29 +35,6 @@ namespace CocApi.Cache.Extensions
                 });
         }
 
-        private static void AddSingletons<TTimeToLiveProvider>(this IServiceCollection services)
-            where TTimeToLiveProvider : TimeToLiveProvider
-        {
-            services.AddSingleton<TTimeToLiveProvider>();
-            if (typeof(TTimeToLiveProvider) != typeof(TimeToLiveProvider))
-                services.AddSingleton(provider =>
-                {
-                    return (TimeToLiveProvider)provider.GetRequiredService<TTimeToLiveProvider>();
-                });
-
-            services.AddSingleton<Synchronizer>();
-            services.AddSingleton<ActiveWarService>();
-            services.AddSingleton<ClanService>();
-            services.AddSingleton<CwlWarService>();
-            services.AddSingleton<MemberService>();
-            services.AddSingleton<NewCwlWarService>();
-            services.AddSingleton<NewWarService>();
-            services.AddSingleton<PlayerService>();
-            services.AddSingleton<WarService>();
-            services.AddSingleton<StalePlayerService>();
-            services.AddSingleton<DownloaderService>();
-        }
-
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IServiceCollection services,
             Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
@@ -76,23 +54,30 @@ namespace CocApi.Cache.Extensions
             if (cacheOptions != null)
                 services.Configure<CacheOptions>(instance => cacheOptions(instance));
 
-            services.AddSingletons<TTimeToLiveProvider>();
+            services.AddSingleton<TTimeToLiveProvider>();
+            if (typeof(TTimeToLiveProvider) != typeof(TimeToLiveProvider))
+                services.AddSingleton(provider =>
+                {
+                    return (TimeToLiveProvider)provider.GetRequiredService<TTimeToLiveProvider>();
+                });
+
+            services.AddSingleton<Synchronizer>();
+            services.AddSingleton<DownloaderService>();
 
             services.AddDbContext<CacheDbContext>(dbContextOptions);
 
             services.AddPlayersClient<TPlayersClient>();
-
             services.AddClansClient<TClansClient>();
 
-            services.AddHostedService(services => services.GetRequiredService<ActiveWarService>());
-            services.AddHostedService(services => services.GetRequiredService<ClanService>());
-            services.AddHostedService(services => services.GetRequiredService<CwlWarService>());
-            services.AddHostedService(services => services.GetRequiredService<MemberService>());
-            services.AddHostedService(services => services.GetRequiredService<NewCwlWarService>());
-            services.AddHostedService(services => services.GetRequiredService<NewWarService>());
-            services.AddHostedService(services => services.GetRequiredService<PlayerService>());
-            services.AddHostedService(services => services.GetRequiredService<WarService>());
-            services.AddHostedService(services => services.GetRequiredService<StalePlayerService>());
+            services.AddHostedSingleton<ActiveWarService>();
+            services.AddHostedSingleton<ClanService>();
+            services.AddHostedSingleton<CwlWarService>();
+            services.AddHostedSingleton<MemberService>();
+            services.AddHostedSingleton<NewCwlWarService>();
+            services.AddHostedSingleton<NewWarService>();
+            services.AddHostedSingleton<PlayerService>();
+            services.AddHostedSingleton<WarService>();
+            services.AddHostedSingleton<StalePlayerService>();
         }
 
         public static void AddCocApiCache(
