@@ -271,9 +271,20 @@ $restFiles = $(Get-ChildItem -Path $restPath -Recurse)
 $testFiles = $(Get-ChildItem -Path $testPath -Recurse)
 $apiDocFiles = $(Get-ChildItem -Path $apiDocPath -Recurse)
 $modelDocfiles = $(Get-ChildItem -Path $modelDocPath -Recurse)
-$allDocFiles = $($apiDocFiles + $modelDocFiles) | Where-Object { -Not($_.PSIsContainer) -and ($_.FullName -match ".md" -or $_.FullName -match "") }
+
+$allDocFiles = $($apiDocFiles + $modelDocFiles) |
+    Where-Object {
+        -Not($_.PSIsContainer) -and (
+            $_.FullName -match ".md" -or
+            $_.FullName -match "")}
+
 $allCodeFiles = $($restFiles + $testFiles) |
-    Where-Object { -Not($_.PSIsContainer) -and ($_.FullName.EndsWith(".cs") -or $_.FullName.EndsWith(".json") -or $_.FullName.EndsWith((".txt")))}
+    Where-Object {
+        -Not($_.PSIsContainer) -and (
+            $_.FullName.EndsWith(".cs") -or
+            $_.FullName.EndsWith(".json") -or
+            $_.FullName.EndsWith(".txt") -or
+            $_.FullName.EndsWith(".csproj"))}
 
 foreach ($file in $allDocFiles)
 {
@@ -285,10 +296,6 @@ foreach ($file in $allDocFiles)
 foreach ($file in $allCodeFiles)
 {
     $content = $(Get-Content -Path $file.FullName) -join "`r`n"
-
-    if (-Not($content)){
-        continue
-    }
 
     $content=$content.Replace("WithHttpInfoAsync(", "ResponseAsync(")
 
@@ -367,15 +374,9 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
     }
 
-    # if (-Not ($originalContent -ceq $content)){
-    #     try {
-    Set-Content $file.PSPath $content -ErrorAction Stop
-    #     }
-    #     catch {
-    #         Write-Error "An error occured writing to file $($file.Name)"
-    #         $content = $null
-    #     }
-    # }
+    if (-Not([string]::IsNullOrWhiteSpace($content))) {
+        Set-Content $file.PSPath $content -ErrorAction Stop
+    }
     $content = $null
 }
 
