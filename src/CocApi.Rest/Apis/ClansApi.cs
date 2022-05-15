@@ -92,32 +92,32 @@ namespace CocApi.Rest.Apis
             base.AfterFetchClanWarLeagueWar(apiResponse, warTag);
         }
 
-        protected override void OnErrorFetchClan(Exception exception, string clanTag)
+        protected override void OnErrorFetchClan(Exception exception, string clanTag, string pathFormat, string path)
         {
             Logger.LogError(exception, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);
         }
 
-        protected override void OnErrorFetchClanMembers(Exception exception, string clanTag, int? limit, string? after, string? before)
+        protected override void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "There was an error fetching the clan members for clanTag: {clanTag}", clanTag);
         }
 
-        protected override void OnErrorFetchClanWarLeagueGroup(Exception exception, string clanTag)
+        protected override void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag)
         {
             Logger.LogError(exception, "There was an error fetching the clan war league group for clanTag: {clanTag}", clanTag);
         }
 
-        protected override void OnErrorFetchClanWarLeagueWar(Exception exception, string warTag)
+        protected override void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag)
         {
             Logger.LogError(exception, "There was an error fetching the clan war league war for warTag: {warTag}", warTag);
         }
 
-        protected override void OnErrorFetchClanWarLog(Exception exception, string clanTag, int? limit, string? after, string? before)
+        protected override void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "There was an error fetching the clan war log for clanTag: {clanTag}", clanTag);
         }
 
-        protected override void OnErrorFetchCurrentWar(Exception exception, string clanTag)
+        protected override void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag)
         {
             Logger.LogError(exception, "There was an error fetching the current war for clanTag: {clanTag}", clanTag);
         }

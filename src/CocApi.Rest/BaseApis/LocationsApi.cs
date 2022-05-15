@@ -320,6 +320,10 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
+        /// <summary>
+        /// Logs the api response
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
@@ -409,11 +413,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanRanking(Exception exception, string locationId, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchClanRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -430,6 +435,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanRankingList"/></returns>
         public async Task<ApiResponse<ClanRankingList?>> FetchClanRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchClanRanking(locationId, limit, after, before);
@@ -440,7 +447,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans";
@@ -504,7 +510,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanRanking(e, locationId, limit, after, before);
+                OnErrorFetchClanRanking(e, "/locations/{locationId}/rankings/clans", uriBuilder.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -593,11 +599,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanVersusRanking(Exception exception, string locationId, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchClanVersusRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -614,6 +621,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanVersusRankingList"/></returns>
         public async Task<ApiResponse<ClanVersusRankingList?>> FetchClanVersusRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchClanVersusRanking(locationId, limit, after, before);
@@ -624,7 +633,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-versus";
@@ -688,7 +696,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanVersusRanking(e, locationId, limit, after, before);
+                OnErrorFetchClanVersusRanking(e, "/locations/{locationId}/rankings/clans-versus", uriBuilder.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -765,8 +773,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="locationId"></param>
-        protected virtual void OnErrorFetchLocation(Exception exception, string locationId)
+        protected virtual void OnErrorFetchLocation(Exception exception, string pathFormat, string path, string locationId)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -780,13 +789,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Location"/></returns>
         public async Task<ApiResponse<Location?>> FetchLocationResponseAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 locationId = OnFetchLocation(locationId);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}";
@@ -838,7 +848,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLocation(e, locationId);
+                OnErrorFetchLocation(e, "/locations/{locationId}", uriBuilder.Path, locationId);
                 throw;
             }
         }
@@ -914,10 +924,11 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLocations(Exception exception, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchLocations(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -933,6 +944,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LocationList"/></returns>
         public async Task<ApiResponse<LocationList?>> FetchLocationsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchLocations(limit, after, before);
@@ -942,7 +955,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations";
@@ -1005,7 +1017,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLocations(e, limit, after, before);
+                OnErrorFetchLocations(e, "/locations", uriBuilder.Path, limit, after, before);
                 throw;
             }
         }
@@ -1094,11 +1106,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerRanking(Exception exception, string locationId, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchPlayerRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1115,6 +1128,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
         public async Task<ApiResponse<PlayerRankingList?>> FetchPlayerRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchPlayerRanking(locationId, limit, after, before);
@@ -1125,7 +1140,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players";
@@ -1189,7 +1203,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerRanking(e, locationId, limit, after, before);
+                OnErrorFetchPlayerRanking(e, "/locations/{locationId}/rankings/players", uriBuilder.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -1278,11 +1292,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerVersusRanking(Exception exception, string locationId, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchPlayerVersusRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1299,6 +1314,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerVersusRankingList"/></returns>
         public async Task<ApiResponse<PlayerVersusRankingList?>> FetchPlayerVersusRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchPlayerVersusRanking(locationId, limit, after, before);
@@ -1309,7 +1326,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-versus";
@@ -1373,7 +1389,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerVersusRanking(e, locationId, limit, after, before);
+                OnErrorFetchPlayerVersusRanking(e, "/locations/{locationId}/rankings/players-versus", uriBuilder.Path, locationId, limit, after, before);
                 throw;
             }
         }

@@ -141,6 +141,10 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
+        /// <summary>
+        /// Logs the api response
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
@@ -218,8 +222,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="playerTag"></param>
-        protected virtual void OnErrorFetchPlayer(Exception exception, string playerTag)
+        protected virtual void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -233,13 +238,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Player"/></returns>
         public async Task<ApiResponse<Player?>> FetchPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 playerTag = OnFetchPlayer(playerTag);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}";
@@ -291,7 +297,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayer(e, playerTag);
+                OnErrorFetchPlayer(e, "/players/{playerTag}", uriBuilder.Path, playerTag);
                 throw;
             }
         }
@@ -375,9 +381,10 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        protected virtual void OnErrorVerifyToken(Exception exception, VerifyTokenRequest body, string playerTag)
+        protected virtual void OnErrorVerifyToken(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -392,6 +399,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="VerifyTokenResponse"/></returns>
         public async Task<ApiResponse<VerifyTokenResponse?>> VerifyTokenResponseAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnVerifyToken(body, playerTag);
@@ -400,7 +409,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}/verifytoken";
@@ -465,7 +473,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorVerifyToken(e, body, playerTag);
+                OnErrorVerifyToken(e, "/players/{playerTag}/verifytoken", uriBuilder.Path, body, playerTag);
                 throw;
             }
         }

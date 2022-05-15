@@ -150,6 +150,10 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
+        /// <summary>
+        /// Logs the api response
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
@@ -226,10 +230,11 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanLabels(Exception exception, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -245,6 +250,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
         public async Task<ApiResponse<LabelsObject?>> FetchClanLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchClanLabels(limit, after, before);
@@ -254,7 +261,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/labels/clans";
@@ -317,7 +323,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanLabels(e, limit, after, before);
+                OnErrorFetchClanLabels(e, "/labels/clans", uriBuilder.Path, limit, after, before);
                 throw;
             }
         }
@@ -393,10 +399,11 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerLabels(Exception exception, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -412,6 +419,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
         public async Task<ApiResponse<LabelsObject?>> FetchPlayerLabelsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchPlayerLabels(limit, after, before);
@@ -421,7 +430,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/labels/players";
@@ -484,7 +492,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerLabels(e, limit, after, before);
+                OnErrorFetchPlayerLabels(e, "/labels/players", uriBuilder.Path, limit, after, before);
                 throw;
             }
         }

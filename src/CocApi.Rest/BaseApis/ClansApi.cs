@@ -361,6 +361,10 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
+        /// <summary>
+        /// Logs the api response
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
@@ -438,8 +442,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="clanTag"></param>
-        protected virtual void OnErrorFetchClan(Exception exception, string clanTag)
+        protected virtual void OnErrorFetchClan(Exception exception, string pathFormat, string path, string clanTag)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -453,13 +458,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Clan"/></returns>
         public async Task<ApiResponse<Clan?>> FetchClanResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 clanTag = OnFetchClan(clanTag);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}";
@@ -511,7 +517,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClan(e, clanTag);
+                OnErrorFetchClan(e, "/clans/{clanTag}", uriBuilder.Path, clanTag);
                 throw;
             }
         }
@@ -600,11 +606,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanMembers(Exception exception, string clanTag, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -621,6 +628,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
         public async Task<ApiResponse<List<ClanMember>?>> FetchClanMembersResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchClanMembers(clanTag, limit, after, before);
@@ -631,7 +640,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/members";
@@ -695,7 +703,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanMembers(e, clanTag, limit, after, before);
+                OnErrorFetchClanMembers(e, "/clans/{clanTag}/members", uriBuilder.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -772,8 +780,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="clanTag"></param>
-        protected virtual void OnErrorFetchClanWarLeagueGroup(Exception exception, string clanTag)
+        protected virtual void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -787,13 +796,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
         public async Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 clanTag = OnFetchClanWarLeagueGroup(clanTag);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar/leaguegroup";
@@ -845,7 +855,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueGroup(e, clanTag);
+                OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilder.Path, clanTag);
                 throw;
             }
         }
@@ -922,8 +932,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="warTag"></param>
-        protected virtual void OnErrorFetchClanWarLeagueWar(Exception exception, string warTag)
+        protected virtual void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -937,13 +948,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
         public async Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 warTag = OnFetchClanWarLeagueWar(warTag);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clanwarleagues/wars/{warTag}";
@@ -995,7 +1007,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueWar(e, warTag);
+                OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilder.Path, warTag);
                 throw;
             }
         }
@@ -1084,11 +1096,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanWarLog(Exception exception, string clanTag, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1105,6 +1118,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
         public async Task<ApiResponse<ClanWarLog?>> FetchClanWarLogResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchClanWarLog(clanTag, limit, after, before);
@@ -1115,7 +1130,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/warlog";
@@ -1179,7 +1193,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLog(e, clanTag, limit, after, before);
+                OnErrorFetchClanWarLog(e, "/clans/{clanTag}/warlog", uriBuilder.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -1256,8 +1270,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="clanTag"></param>
-        protected virtual void OnErrorFetchCurrentWar(Exception exception, string clanTag)
+        protected virtual void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1271,13 +1286,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
         public async Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 clanTag = OnFetchCurrentWar(clanTag);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar";
@@ -1329,7 +1345,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentWar(e, clanTag);
+                OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilder.Path, clanTag);
                 throw;
             }
         }
@@ -1437,6 +1453,7 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="locationId"></param>
         /// <param name="minMembers"></param>
         /// <param name="maxMembers"></param>
@@ -1448,7 +1465,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        protected virtual void OnErrorSearchClans(Exception exception, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        protected virtual void OnErrorSearchClans(Exception exception, string pathFormat, string path, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1472,6 +1489,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
         public async Task<ApiResponse<ClanList?>> SearchClansResponseAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnSearchClans(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
@@ -1489,7 +1508,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans";
@@ -1576,7 +1594,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorSearchClans(e, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                OnErrorSearchClans(e, "/clans", uriBuilder.Path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
                 throw;
             }
         }

@@ -311,6 +311,10 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
+        /// <summary>
+        /// Logs the api response
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
@@ -388,8 +392,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="leagueId"></param>
-        protected virtual void OnErrorFetchLeague(Exception exception, string leagueId)
+        protected virtual void OnErrorFetchLeague(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -403,13 +408,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
         public async Task<ApiResponse<League?>> FetchLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 leagueId = OnFetchLeague(leagueId);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}";
@@ -461,7 +467,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeague(e, leagueId);
+                OnErrorFetchLeague(e, "/leagues/{leagueId}", uriBuilder.Path, leagueId);
                 throw;
             }
         }
@@ -557,12 +563,13 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLeagueSeasonRankings(Exception exception, string leagueId, string seasonId, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -580,6 +587,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
         public async Task<ApiResponse<PlayerRankingList?>> FetchLeagueSeasonRankingsResponseAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchLeagueSeasonRankings(leagueId, seasonId, limit, after, before);
@@ -591,7 +600,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons/{seasonId}";
@@ -656,7 +664,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagueSeasonRankings(e, leagueId, seasonId, limit, after, before);
+                OnErrorFetchLeagueSeasonRankings(e, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilder.Path, leagueId, seasonId, limit, after, before);
                 throw;
             }
         }
@@ -745,11 +753,12 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="leagueId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLeagueSeasons(Exception exception, string leagueId, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchLeagueSeasons(Exception exception, string pathFormat, string path, string leagueId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -766,6 +775,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
         public async Task<ApiResponse<LeagueSeasonList?>> FetchLeagueSeasonsResponseAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchLeagueSeasons(leagueId, limit, after, before);
@@ -776,7 +787,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons";
@@ -840,7 +850,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagueSeasons(e, leagueId, limit, after, before);
+                OnErrorFetchLeagueSeasons(e, "/leagues/{leagueId}/seasons", uriBuilder.Path, leagueId, limit, after, before);
                 throw;
             }
         }
@@ -916,10 +926,11 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLeagues(Exception exception, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -935,6 +946,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
         public async Task<ApiResponse<LeagueList?>> FetchLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchLeagues(limit, after, before);
@@ -944,7 +957,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues";
@@ -1007,7 +1019,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagues(e, limit, after, before);
+                OnErrorFetchLeagues(e, "/leagues", uriBuilder.Path, limit, after, before);
                 throw;
             }
         }
@@ -1084,8 +1096,9 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="leagueId"></param>
-        protected virtual void OnErrorFetchWarLeague(Exception exception, string leagueId)
+        protected virtual void OnErrorFetchWarLeague(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1099,13 +1112,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
         public async Task<ApiResponse<WarLeague?>> FetchWarLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 leagueId = OnFetchWarLeague(leagueId);
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/warleagues/{leagueId}";
@@ -1157,7 +1171,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchWarLeague(e, leagueId);
+                OnErrorFetchWarLeague(e, "/warleagues/{leagueId}", uriBuilder.Path, leagueId);
                 throw;
             }
         }
@@ -1233,10 +1247,11 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchWarLeagues(Exception exception, int? limit, string? after, string? before)
+        protected virtual void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -1252,6 +1267,8 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
         public async Task<ApiResponse<WarLeagueList?>> FetchWarLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 var validatedParameters = OnFetchWarLeagues(limit, after, before);
@@ -1261,7 +1278,6 @@ namespace CocApi.Rest.BaseApis
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/warleagues";
@@ -1324,7 +1340,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchWarLeagues(e, limit, after, before);
+                OnErrorFetchWarLeagues(e, "/warleagues", uriBuilder.Path, limit, after, before);
                 throw;
             }
         }

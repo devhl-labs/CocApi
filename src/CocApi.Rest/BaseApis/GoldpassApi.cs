@@ -100,6 +100,10 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
+        /// <summary>
+        /// Logs the api response
+        /// </summary>
+        /// <param name="args"></param>
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
@@ -164,7 +168,8 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="exception"></param>
-        protected virtual void OnErrorFetchCurrentGoldPassSeason(Exception exception)
+        /// <param name="pathFormat"></param>
+        protected virtual void OnErrorFetchCurrentGoldPassSeason(Exception exception, string pathFormat, string path)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");
         }
@@ -177,13 +182,14 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="GoldPassSeason"/></returns>
         public async Task<ApiResponse<GoldPassSeason?>> FetchCurrentGoldPassSeasonResponseAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
+            UriBuilder uriBuilder = new UriBuilder();
+
             try
             {
                 OnFetchCurrentGoldPassSeason();
 
                 using (HttpRequestMessage request = new HttpRequestMessage())
                 {
-                    UriBuilder uriBuilder = new UriBuilder();
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/goldpass/seasons/current";
@@ -234,7 +240,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentGoldPassSeason(e);
+                OnErrorFetchCurrentGoldPassSeason(e, "/goldpass/seasons/current", uriBuilder.Path);
                 throw;
             }
         }

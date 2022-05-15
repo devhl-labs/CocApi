@@ -11,21 +11,14 @@ namespace CocApi.Test
     {
         public CustomTimeToLiveProvider(ILogger<CustomTimeToLiveProvider> logger) : base(logger)
         {
-
         }
 
         protected override ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T?> apiResponse) where T : class
         {
             // in this example if we downloaded a clan, we will keep it for one minutes past the server expiration
-            if (apiResponse is ApiResponse<Clan>)
-                return ValueTask.FromResult(apiResponse.ServerExpiration.AddMinutes(1) - DateTime.UtcNow);
-
-            return base.TimeToLiveAsync(apiResponse);
-        }
-
-        protected override ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception)
-        {
-            return base.TimeToLiveAsync<T>(exception);
+            return apiResponse is ApiResponse<Clan>
+                ? ValueTask.FromResult(apiResponse.ServerExpiration.AddMinutes(1) - DateTime.UtcNow)
+                : base.TimeToLiveAsync(apiResponse);
         }
     }
 }

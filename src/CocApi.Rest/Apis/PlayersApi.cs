@@ -48,12 +48,12 @@ namespace CocApi.Rest.Apis
             return base.OnVerifyToken(body, playerTag);
         }
 
-        protected override void OnErrorFetchPlayer(Exception exception, string playerTag)
+        protected override void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag)
         {
             Logger.LogError(exception, "There was an error fetching the player for playerTag: {playerTag}", playerTag);
         }
 
-        protected override void OnErrorVerifyToken(Exception exception, VerifyTokenRequest body, string playerTag)
+        protected override void OnErrorVerifyToken(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
         {
             Logger.LogError(exception, "There was an error fetching the token for playerTag: {playerTag}", playerTag);
         }
