@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class LeaguesApiTests : ApiTestsBase
     {
-        private readonly ILeaguesApi _instance;
+        private readonly IApis.ILeaguesApi _instance;
 
         public LeaguesApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<ILeaguesApi>();
+            _instance = _host.Services.GetRequiredService<IApis.ILeaguesApi>();
         }
 
 
@@ -129,5 +129,3 @@ namespace CocApi.Rest.Test.Apis
         }
     }
 }
-
-

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Extensions
 {

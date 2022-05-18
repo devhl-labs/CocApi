@@ -1,8 +1,7 @@
-﻿using CocApi.Cache.Options;
-using System;
+﻿using System;
 using System.ComponentModel;
 
-namespace CocApi.Cache
+namespace CocApi.Cache.Services.Options
 {
     public class CacheOptions
     {

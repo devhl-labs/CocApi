@@ -1,30 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 namespace CocApi.Cache.Services
 {
-    public class DownloaderService
+    public sealed class CachingService
     {
-        private readonly ServiceBase[] _perpetualServices = new ServiceBase[9];
+        private readonly ServiceBase[] _perpetualServices;
 
-        public DownloaderService(ActiveWarService activeWarService, ClanService clanService, CwlWarService cwlWarService, MemberService memberService,
+        public CachingService(ActiveWarService activeWarService, ClanService clanService, CwlWarService cwlWarService, MemberService memberService,
             NewCwlWarService newCwlWarService, NewWarService newWarService, PlayerService playerService, StalePlayerService stalePlayerService, 
             WarService warService)
         {
-            _perpetualServices[0] = activeWarService;
-            _perpetualServices[1] = clanService;
-            _perpetualServices[2] = cwlWarService;
-            _perpetualServices[3] = memberService;
-            _perpetualServices[4] = newCwlWarService;
-            _perpetualServices[5] = newWarService;
-            _perpetualServices[6] = playerService;
-            _perpetualServices[7] = stalePlayerService;
-            _perpetualServices[8] = warService;
-
+            _perpetualServices = new ServiceBase[]
+            {
+                activeWarService,
+                clanService,
+                cwlWarService,
+                memberService,
+                newCwlWarService,
+                newWarService,
+                playerService,
+                stalePlayerService,
+                warService
+            };
         }
 
         public async Task StopAsync(CancellationToken? cancellationToken = null)

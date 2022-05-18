@@ -12,7 +12,7 @@ using System.Linq;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
-using CocApi.Cache;
+using CocApi.Cache.Services.Options;
 
 namespace CocApi.Test
 {
@@ -90,7 +90,7 @@ namespace CocApi.Test
                     services.Configure<CacheOptions>(context.Configuration.GetRequiredSection("CocApi:Cache"));
 
                     services.AddHostedService<TestService>();
-                    services.AddHostedService<DownloaderServiceTest>();
+                    services.AddHostedService<CachingServiceTest>();
                 });
         }
     }

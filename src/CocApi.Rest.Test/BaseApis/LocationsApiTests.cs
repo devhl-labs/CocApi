@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class LocationsApiTests : ApiTestsBase
     {
-        private readonly ILocationsApi _instance;
+        private readonly IApis.ILocationsApi _instance;
 
         public LocationsApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<ILocationsApi>();
+            _instance = _host.Services.GetRequiredService<IApis.ILocationsApi>();
         }
 
 
@@ -132,5 +132,3 @@ namespace CocApi.Rest.Test.Apis
         }
     }
 }
-
-

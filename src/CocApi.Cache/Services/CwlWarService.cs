@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
-using CocApi.Cache.Options;
+using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services
 {

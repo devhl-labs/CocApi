@@ -1,9 +1,9 @@
 ﻿using ScheduledServices.Services.Options;
 using System.ComponentModel;
 
-namespace CocApi.Cache.Options
+namespace CocApi.Cache.Services.Options
 {
-    public class WarServiceOptions : RecurringServiceOptions
+    public class CwlWarServiceOptions : RecurringServiceOptions
     {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int ConcurrentUpdates { get; set; } = 50;

@@ -81,14 +81,6 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'ClanPoints'
         }
         /// <summary>
-        /// Test the property 'Location'
-        /// </summary>
-        [Fact]
-        public void LocationTest()
-        {
-            // TODO unit test for the property 'Location'
-        }
-        /// <summary>
         /// Test the property 'Members'
         /// </summary>
         [Fact]
@@ -128,8 +120,15 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
+        /// <summary>
+        /// Test the property 'Location'
+        /// </summary>
+        [Fact]
+        public void LocationTest()
+        {
+            // TODO unit test for the property 'Location'
+        }
 
     }
 
 }
-

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CocApi.Cache.Context;
 using CocApi.Cache.Services;
+using CocApi.Cache.Services.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

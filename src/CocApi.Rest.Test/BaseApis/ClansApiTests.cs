@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class ClansApiTests : ApiTestsBase
     {
-        private readonly IClansApi _instance;
+        private readonly IApis.IClansApi _instance;
 
         public ClansApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IClansApi>();
+            _instance = _host.Services.GetRequiredService<IApis.IClansApi>();
         }
 
 
@@ -145,5 +145,3 @@ namespace CocApi.Rest.Test.Apis
         }
     }
 }
-
-

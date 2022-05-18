@@ -1,7 +1,7 @@
 ﻿using ScheduledServices.Services.Options;
 using System.ComponentModel;
 
-namespace CocApi.Cache
+namespace CocApi.Cache.Services.Options
 {
     public class ClanServiceOptions : RecurringServiceOptions
     {

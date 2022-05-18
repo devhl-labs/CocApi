@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class LabelsApiTests : ApiTestsBase
     {
-        private readonly ILabelsApi _instance;
+        private readonly IApis.ILabelsApi _instance;
 
         public LabelsApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<ILabelsApi>();
+            _instance = _host.Services.GetRequiredService<IApis.ILabelsApi>();
         }
 
 
@@ -78,5 +78,3 @@ namespace CocApi.Rest.Test.Apis
         }
     }
 }
-
-

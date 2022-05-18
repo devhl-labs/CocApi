@@ -102,7 +102,7 @@ namespace CocApi.Rest.Models
             List<ClanWarAttack> attacks = new();
 
             foreach (ClanWarAttack attack in fetched.Attacks)
-                if (stored.Attacks.Count(a => a.AttackerTag == attack.AttackerTag && a.DefenderTag == attack.DefenderTag) == 0)
+                if (!stored.Attacks.Any(a => a.AttackerTag == attack.AttackerTag && a.DefenderTag == attack.DefenderTag))
                     attacks.Add(attack);
 
             return attacks;

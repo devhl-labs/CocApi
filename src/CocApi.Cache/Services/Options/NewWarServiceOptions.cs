@@ -1,7 +1,7 @@
 ﻿using ScheduledServices.Services.Options;
 using System.ComponentModel;
 
-namespace CocApi.Cache.Options
+namespace CocApi.Cache.Services.Options
 {
     public class NewWarServiceOptions : RecurringServiceOptions
     {

@@ -1,4 +1,5 @@
 ﻿using CocApi.Cache.Services;
+using CocApi.Cache.Services.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -62,7 +63,7 @@ namespace CocApi.Cache.Extensions
                 });
 
             services.AddSingleton<Synchronizer>();
-            services.AddSingleton<DownloaderService>();
+            services.AddSingleton<CachingService>();
 
             services.AddDbContext<CacheDbContext>(dbContextOptions);
 

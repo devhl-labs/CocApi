@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.14.17"
+$packageVersion = "2.0.0-preview1.14.18"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -262,6 +262,53 @@ $membersConverter = @"
 
 "@
 
+$clanWarMemberConstructor = @"
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWarMember" /> class.
+        /// </summary>
+        /// <param name="mapPosition">mapPosition</param>
+        /// <param name="name">name</param>
+        /// <param name="opponentAttacks">opponentAttacks</param>
+        /// <param name="tag">tag</param>
+        /// <param name="townhallLevel">townhallLevel</param>
+        /// <param name="attacks">attacks</param>
+        /// <param name="bestOpponentAttack">bestOpponentAttack</param>
+        [JsonConstructor]
+        internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, List<ClanWarAttack>? attacks = default, ClanWarAttack? bestOpponentAttack = default)
+        {
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (tag == null)
+                throw new ArgumentNullException("tag is a required property for ClanWarMember and cannot be null.");
+
+            if (name == null)
+                throw new ArgumentNullException("name is a required property for ClanWarMember and cannot be null.");
+
+            if (mapPosition == null)
+                throw new ArgumentNullException("mapPosition is a required property for ClanWarMember and cannot be null.");
+
+            if (townhallLevel == null)
+                throw new ArgumentNullException("townhallLevel is a required property for ClanWarMember and cannot be null.");
+
+            if (opponentAttacks == null)
+                throw new ArgumentNullException("opponentAttacks is a required property for ClanWarMember and cannot be null.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            MapPosition = mapPosition;
+            Name = name;
+            OpponentAttacks = opponentAttacks;
+            Tag = tag;
+            TownhallLevel = townhallLevel;
+            Attacks = attacks;
+            BestOpponentAttack = bestOpponentAttack;
+        }
+
+
+"@
+
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
 $apiDocPath = Resolve-Path -Path "$output\docs\apis"
@@ -361,11 +408,12 @@ foreach ($file in $allCodeFiles)
     }
 
     if ($file.name -eq "WarType.cs"){
-        $content = $content.Replace("Sccwl", "SCCWL");
+        $content = $content.Replace("Sccwl", "SCCWL")
     }
 
     if ($file.name -eq "ClanWarMember.cs"){
-        $content = $content.Replace($mapPosition, "");
+        $content = $content.Replace($mapPosition, "")
+        $content = $content.Replace($clanWarMemberConstructor, "")
     }
 
     if ($file.name -eq "ClanWar.cs"){

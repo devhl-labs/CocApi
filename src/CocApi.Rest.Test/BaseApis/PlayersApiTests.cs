@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class PlayersApiTests : ApiTestsBase
     {
-        private readonly IPlayersApi _instance;
+        private readonly IApis.IPlayersApi _instance;
 
         public PlayersApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IPlayersApi>();
+            _instance = _host.Services.GetRequiredService<IApis.IPlayersApi>();
         }
 
 
@@ -75,5 +75,3 @@ namespace CocApi.Rest.Test.Apis
         }
     }
 }
-
-

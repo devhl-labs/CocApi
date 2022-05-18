@@ -100,4 +100,3 @@ namespace CocApi.Rest.Test.Model
     }
 
 }
-

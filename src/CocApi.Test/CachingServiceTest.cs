@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace CocApi.Test
 {
-    public class DownloaderServiceTest : BackgroundService
+    public class CachingServiceTest : BackgroundService
     {
-        public DownloaderServiceTest(ILogger<DownloaderService> logger, DownloaderService downloaderService)
+        public CachingServiceTest(ILogger<CachingService> logger, CachingService cachingService)
         {
             Logger = logger;
-            DownloaderService = downloaderService;
+            CachingService = cachingService;
         }
 
-        public ILogger<DownloaderService> Logger { get; }
-        public DownloaderService DownloaderService { get; }
+        public ILogger<CachingService> Logger { get; }
+        public CachingService CachingService { get; }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -24,13 +24,13 @@ namespace CocApi.Test
 
             Logger.LogInformation("pausing downloading");
 
-            await DownloaderService.StopAsync();
+            await CachingService.StopAsync();
 
             await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
 
             Logger.LogInformation("resuming downloading");
 
-            await DownloaderService.StartAsync();
+            await CachingService.StartAsync();
         }
     }
 }

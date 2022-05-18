@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class GoldpassApiTests : ApiTestsBase
     {
-        private readonly IGoldpassApi _instance;
+        private readonly IApis.IGoldpassApi _instance;
 
         public GoldpassApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IGoldpassApi>();
+            _instance = _host.Services.GetRequiredService<IApis.IGoldpassApi>();
         }
 
 
@@ -62,5 +62,3 @@ namespace CocApi.Rest.Test.Apis
         }
     }
 }
-
-
