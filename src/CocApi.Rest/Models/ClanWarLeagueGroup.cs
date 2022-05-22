@@ -221,7 +221,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "state":
                             string stateRawValue = reader.GetString();
-                            state = GroupStateConverter.FromString(stateRawValue);
+                            state = GroupStateConverter.FromStringOrDefault(stateRawValue);
                             break;
                     }
                 }

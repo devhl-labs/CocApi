@@ -60,6 +60,20 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type GroupState: '{value}'");
         }
 
+        public static GroupState? FromStringOrDefault(string value)
+        {
+            if (value == "preparation")
+                return GroupState.Preparation;
+
+            if (value == "inWar")
+                return GroupState.InWar;
+
+            if (value == "ended")
+                return GroupState.Ended;
+
+            return null;
+        }
+
         public static string ToJsonValue(GroupState value)
         {
             if (value == GroupState.Preparation)

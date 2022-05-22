@@ -60,6 +60,20 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type RecruitingType: '{value}'");
         }
 
+        public static RecruitingType? FromStringOrDefault(string value)
+        {
+            if (value == "inviteOnly")
+                return RecruitingType.InviteOnly;
+
+            if (value == "closed")
+                return RecruitingType.Closed;
+
+            if (value == "open")
+                return RecruitingType.Open;
+
+            return null;
+        }
+
         public static string ToJsonValue(RecruitingType value)
         {
             if (value == RecruitingType.InviteOnly)

@@ -60,6 +60,20 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type Result: '{value}'");
         }
 
+        public static Result? FromStringOrDefault(string value)
+        {
+            if (value == "lose")
+                return Result.Lose;
+
+            if (value == "tie")
+                return Result.Tie;
+
+            if (value == "win")
+                return Result.Win;
+
+            return null;
+        }
+
         public static string ToJsonValue(Result value)
         {
             if (value == Result.Lose)

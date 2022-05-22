@@ -724,7 +724,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "role":
                             string roleRawValue = reader.GetString();
-                            role = RoleConverter.FromString(roleRawValue);
+                            role = RoleConverter.FromStringOrDefault(roleRawValue);
                             break;
                         case "townHallWeaponLevel":
                             if (reader.TokenType != JsonTokenType.Null)
@@ -732,7 +732,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "warPreference":
                             string warPreferenceRawValue = reader.GetString();
-                            warPreference = WarPreferenceConverter.FromString(warPreferenceRawValue);
+                            warPreference = WarPreferenceConverter.FromStringOrDefault(warPreferenceRawValue);
                             break;
                     }
                 }

@@ -393,6 +393,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="leagueId"></param>
         protected virtual void OnErrorFetchLeague(Exception exception, string pathFormat, string path, string leagueId)
         {
@@ -564,6 +565,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
         /// <param name="limit"></param>
@@ -754,6 +756,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="leagueId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
@@ -927,6 +930,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
@@ -1097,6 +1101,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="leagueId"></param>
         protected virtual void OnErrorFetchWarLeague(Exception exception, string pathFormat, string path, string leagueId)
         {
@@ -1248,6 +1253,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>

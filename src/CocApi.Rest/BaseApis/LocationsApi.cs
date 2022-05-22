@@ -414,6 +414,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
@@ -600,6 +601,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
@@ -774,6 +776,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="locationId"></param>
         protected virtual void OnErrorFetchLocation(Exception exception, string pathFormat, string path, string locationId)
         {
@@ -925,6 +928,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
@@ -1107,6 +1111,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
@@ -1293,6 +1298,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>

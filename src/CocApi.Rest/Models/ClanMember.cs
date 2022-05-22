@@ -371,7 +371,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "role":
                             string roleRawValue = reader.GetString();
-                            role = RoleConverter.FromString(roleRawValue);
+                            role = RoleConverter.FromStringOrDefault(roleRawValue);
                             break;
                     }
                 }

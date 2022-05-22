@@ -84,6 +84,29 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarFrequency: '{value}'");
         }
 
+        public static WarFrequency? FromStringOrDefault(string value)
+        {
+            if (value == "unknown")
+                return WarFrequency.Unknown;
+
+            if (value == "never")
+                return WarFrequency.Never;
+
+            if (value == "lessThanOncePerWeek")
+                return WarFrequency.LessThanOncePerWeek;
+
+            if (value == "oncePerWeek")
+                return WarFrequency.OncePerWeek;
+
+            if (value == "moreThanOncePerWeek")
+                return WarFrequency.MoreThanOncePerWeek;
+
+            if (value == "always")
+                return WarFrequency.Always;
+
+            return null;
+        }
+
         public static string ToJsonValue(WarFrequency value)
         {
             if (value == WarFrequency.Unknown)

@@ -223,6 +223,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="playerTag"></param>
         protected virtual void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag)
         {
@@ -382,6 +383,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
         protected virtual void OnErrorVerifyToken(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)

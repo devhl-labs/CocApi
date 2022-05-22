@@ -310,7 +310,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "state":
                             string stateRawValue = reader.GetString();
-                            state = WarStateConverter.FromString(stateRawValue);
+                            state = WarStateConverter.FromStringOrDefault(stateRawValue);
                             break;
                     }
                 }

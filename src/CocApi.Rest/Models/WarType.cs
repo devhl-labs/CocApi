@@ -68,6 +68,23 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarType: '{value}'");
         }
 
+        public static WarType? FromStringOrDefault(string value)
+        {
+            if (value == "unknown")
+                return WarType.Unknown;
+
+            if (value == "random")
+                return WarType.Random;
+
+            if (value == "friendly")
+                return WarType.Friendly;
+
+            if (value == "sccwl")
+                return WarType.SCCWL;
+
+            return null;
+        }
+
         public static string ToJsonValue(WarType value)
         {
             if (value == WarType.Unknown)

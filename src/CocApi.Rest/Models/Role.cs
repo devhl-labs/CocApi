@@ -68,6 +68,23 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type Role: '{value}'");
         }
 
+        public static Role? FromStringOrDefault(string value)
+        {
+            if (value == "member")
+                return Role.Member;
+
+            if (value == "admin")
+                return Role.Elder;
+
+            if (value == "coLeader")
+                return Role.CoLeader;
+
+            if (value == "leader")
+                return Role.Leader;
+
+            return null;
+        }
+
         public static string ToJsonValue(Role value)
         {
             if (value == Role.Member)

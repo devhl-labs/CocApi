@@ -443,6 +443,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="clanTag"></param>
         protected virtual void OnErrorFetchClan(Exception exception, string pathFormat, string path, string clanTag)
         {
@@ -607,6 +608,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
@@ -781,6 +783,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="clanTag"></param>
         protected virtual void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag)
         {
@@ -933,6 +936,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="warTag"></param>
         protected virtual void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag)
         {
@@ -1097,6 +1101,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
@@ -1271,6 +1276,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="clanTag"></param>
         protected virtual void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag)
         {
@@ -1454,6 +1460,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="locationId"></param>
         /// <param name="minMembers"></param>
         /// <param name="maxMembers"></param>

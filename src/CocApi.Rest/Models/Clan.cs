@@ -459,11 +459,11 @@ namespace CocApi.Rest.Models
                             break;
                         case "type":
                             string typeRawValue = reader.GetString();
-                            type = RecruitingTypeConverter.FromString(typeRawValue);
+                            type = RecruitingTypeConverter.FromStringOrDefault(typeRawValue);
                             break;
                         case "warFrequency":
                             string warFrequencyRawValue = reader.GetString();
-                            warFrequency = WarFrequencyConverter.FromString(warFrequencyRawValue);
+                            warFrequency = WarFrequencyConverter.FromStringOrDefault(warFrequencyRawValue);
                             break;
                         case "warLosses":
                             if (reader.TokenType != JsonTokenType.Null)

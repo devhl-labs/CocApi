@@ -52,6 +52,17 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarPreference: '{value}'");
         }
 
+        public static WarPreference? FromStringOrDefault(string value)
+        {
+            if (value == "out")
+                return WarPreference.Out;
+
+            if (value == "in")
+                return WarPreference.In;
+
+            return null;
+        }
+
         public static string ToJsonValue(WarPreference value)
         {
             if (value == WarPreference.Out)

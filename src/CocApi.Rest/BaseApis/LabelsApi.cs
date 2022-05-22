@@ -231,6 +231,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
@@ -400,6 +401,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>

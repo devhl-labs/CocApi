@@ -62,6 +62,7 @@ namespace CocApi.Test
             var clanGlobalVersusRankings = await LocationsApi.FetchClanVersusRankingAsync("global");
             var leagueList = await LeaguesApi.FetchWarLeaguesOrDefaultAsync();
             var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
+            var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         }
     }
 }

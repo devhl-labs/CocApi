@@ -169,6 +169,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
         protected virtual void OnErrorFetchCurrentGoldPassSeason(Exception exception, string pathFormat, string path)
         {
             Logger.LogError(exception, "An error occured while sending the request to the server.");

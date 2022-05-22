@@ -68,6 +68,23 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarState: '{value}'");
         }
 
+        public static WarState? FromStringOrDefault(string value)
+        {
+            if (value == "notInWar")
+                return WarState.NotInWar;
+
+            if (value == "preparation")
+                return WarState.Preparation;
+
+            if (value == "inWar")
+                return WarState.InWar;
+
+            if (value == "warEnded")
+                return WarState.WarEnded;
+
+            return null;
+        }
+
         public static string ToJsonValue(WarState value)
         {
             if (value == WarState.NotInWar)

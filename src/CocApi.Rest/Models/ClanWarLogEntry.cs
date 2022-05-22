@@ -263,7 +263,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "result":
                             string resultRawValue = reader.GetString();
-                            result = ResultConverter.FromString(resultRawValue);
+                            result = ResultConverter.FromStringOrDefault(resultRawValue);
                             break;
                     }
                 }
