@@ -31,22 +31,22 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Enum Unknown for value: unknown
         /// </summary>
-        Unknown = 1,
+        Unknown = 0,
 
         /// <summary>
         /// Enum Random for value: random
         /// </summary>
-        Random = 2,
+        Random = 1,
 
         /// <summary>
         /// Enum Friendly for value: friendly
         /// </summary>
-        Friendly = 3,
+        Friendly = 2,
 
         /// <summary>
         /// Enum SCCWL for value: sccwl
         /// </summary>
-        SCCWL = 4
+        SCCWL = 3
     }
 
     public class WarTypeConverter : JsonConverter<WarType>

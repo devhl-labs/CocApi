@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.14.19"
+$packageVersion = "2.0.0-preview1.14.20"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -309,6 +309,92 @@ $clanWarMemberConstructor = @"
 
 "@
 
+$warPreference = @"
+    public enum WarPreference
+    {
+        /// <summary>
+        /// Enum Out for value: out
+        /// </summary>
+        Out = 1,
+
+        /// <summary>
+        /// Enum In for value: in
+        /// </summary>
+        In = 2
+    }
+
+"@
+
+$warPreferenceReplacement = @"
+    public enum WarPreference
+    {
+        /// <summary>
+        /// Enum Out for value: out
+        /// </summary>
+        Out = 0,
+
+        /// <summary>
+        /// Enum In for value: in
+        /// </summary>
+        In = 1
+    }
+
+"@
+
+$warType = @"
+    public enum WarType
+    {
+        /// <summary>
+        /// Enum Unknown for value: unknown
+        /// </summary>
+        Unknown = 1,
+
+        /// <summary>
+        /// Enum Random for value: random
+        /// </summary>
+        Random = 2,
+
+        /// <summary>
+        /// Enum Friendly for value: friendly
+        /// </summary>
+        Friendly = 3,
+
+        /// <summary>
+        /// Enum SCCWL for value: sccwl
+        /// </summary>
+        SCCWL = 4
+    }
+
+
+"@
+
+$warTypeReplacement = @"
+    public enum WarType
+    {
+        /// <summary>
+        /// Enum Unknown for value: unknown
+        /// </summary>
+        Unknown = 0,
+
+        /// <summary>
+        /// Enum Random for value: random
+        /// </summary>
+        Random = 1,
+
+        /// <summary>
+        /// Enum Friendly for value: friendly
+        /// </summary>
+        Friendly = 2,
+
+        /// <summary>
+        /// Enum SCCWL for value: sccwl
+        /// </summary>
+        SCCWL = 3
+    }
+
+
+"@
+
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
 $apiDocPath = Resolve-Path -Path "$output\docs\apis"
@@ -420,6 +506,14 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
+    }
+
+    if ($file.name -eq "WarPreference.cs"){
+        $content = $content.Replace($warPreference, $warPreferenceReplacement)
+    }
+
+    if ($file.name -eq "WarType.cs"){
+        $content = $content.Replace($warType, $warTypeReplacement)
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content))) {
