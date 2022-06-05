@@ -50,7 +50,7 @@ namespace CocApi.Rest.Test.Apis
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
-            .ConfigureCocApi((context, options) =>
+            .ConfigureCocApi((context, services, options) =>
             {
                 ApiKeyToken apiKeyToken = new ApiKeyToken(context.Configuration["<token>"], timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken);

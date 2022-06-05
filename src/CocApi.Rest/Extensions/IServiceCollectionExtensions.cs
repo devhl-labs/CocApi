@@ -26,15 +26,16 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
-        public static void AddCocApi<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IServiceCollection services, Action<HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
+        public static void AddCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IServiceCollection services, Action<HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
             where TClansApi : class, IApis.IClansApi
+            where TDeveloperApi : class, IApis.IDeveloperApi
             where TGoldpassApi : class, IApis.IGoldpassApi
             where TLabelsApi : class, IApis.ILabelsApi
             where TLeaguesApi : class, IApis.ILeaguesApi
             where TLocationsApi : class, IApis.ILocationsApi
             where TPlayersApi : class, IApis.IPlayersApi
         {
-            HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(services);
+            HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(services);
             options(config);
             AddCocApi(services, config);
         }
@@ -44,15 +45,16 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
-        public static void AddCocApi(this IServiceCollection services, Action<HostConfiguration<Apis.ClansApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>> options)
+        public static void AddCocApi(this IServiceCollection services, Action<HostConfiguration<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>> options)
         {
-            HostConfiguration<Apis.ClansApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi> config = new HostConfiguration<Apis.ClansApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>(services);
+            HostConfiguration<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi> config = new HostConfiguration<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>(services);
             options(config);
             AddCocApi(services, config);
         }
 
-        internal static void AddCocApi<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(IServiceCollection services, HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> host)
+        internal static void AddCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(IServiceCollection services, HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> host)
             where TClansApi : class, IApis.IClansApi
+            where TDeveloperApi : class, IApis.IDeveloperApi
             where TGoldpassApi : class, IApis.IGoldpassApi
             where TLabelsApi : class, IApis.ILabelsApi
             where TLeaguesApi : class, IApis.ILeaguesApi
@@ -61,6 +63,8 @@ namespace CocApi.Rest.Extensions
         {
             if (!host.HttpClientsAdded)
                 host.AddCocApiHttpClients();
+
+            services.AddSingleton<CookieContainer>();
 
             // ensure that a token provider was provided for this token type
             // if not, default to RateLimitProvider

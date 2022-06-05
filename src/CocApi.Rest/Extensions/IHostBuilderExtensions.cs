@@ -10,6 +10,7 @@
 #nullable enable
 
 using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CocApi.Rest.Client;
 
@@ -25,8 +26,9 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="options"></param>
-        public static IHostBuilder ConfigureCocApi<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IHostBuilder builder, Action<HostBuilderContext, HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
+        public static IHostBuilder ConfigureCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
             where TClansApi : class, IApis.IClansApi
+            where TDeveloperApi : class, IApis.IDeveloperApi
             where TGoldpassApi : class, IApis.IGoldpassApi
             where TLabelsApi : class, IApis.ILabelsApi
             where TLeaguesApi : class, IApis.ILeaguesApi
@@ -35,9 +37,9 @@ namespace CocApi.Rest.Extensions
         {
             builder.ConfigureServices((context, services) => 
             {
-                HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new HostConfiguration<TClansApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(services);
+                HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(services);
 
-                options(context, config);
+                options(context, services, config);
 
                 IServiceCollectionExtensions.AddCocApi(services, config);
             });
@@ -50,7 +52,7 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="options"></param>
-        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, HostConfiguration<Apis.ClansApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>> options)
-            => ConfigureCocApi<Apis.ClansApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>(builder, options);
+        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>> options)
+            => ConfigureCocApi<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>(builder, options);
     }
 }

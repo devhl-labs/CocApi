@@ -50,7 +50,7 @@ namespace CocApi.Test
                 })
 
 
-                .ConfigureCocApi<CustomClansApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>((context, options) =>
+                .ConfigureCocApi<CustomClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>((context, services, options) =>
                 {
                     List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>();
 
@@ -62,6 +62,13 @@ namespace CocApi.Test
 
                     options.AddCocApiHttpClients(
                         builder: builder => builder
+                            .ConfigurePrimaryHttpMessageHandler(services =>
+                            {
+                                return new HttpClientHandler()
+                                {
+                                    CookieContainer = services.GetRequiredService<CookieContainer>().Value
+                                };
+                            })
                             .AddRetryPolicy(section.GetValue<int>("Retries"))
                             .AddTimeoutPolicy(TimeSpan.FromMilliseconds(section.GetValue<long>("Timeout")))
                             .AddCircuitBreakerPolicy(
@@ -88,7 +95,9 @@ namespace CocApi.Test
                 .ConfigureServices((context, services) => {
                     // configure the library to use your appsettings
                     services.Configure<CacheOptions>(context.Configuration.GetRequiredSection("CocApi:Cache"));
+                    services.Configure<Rest.Models.LoginCredentials>(context.Configuration.GetRequiredSection("CocApi.Test:Rest"));
 
+                    services.AddHostedService<TokenService>();
                     services.AddHostedService<TestService>();
                     services.AddHostedService<CachingServiceTest>();
                 });

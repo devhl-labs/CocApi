@@ -451,9 +451,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
                         parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
 
@@ -638,9 +637,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-versus";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
                         parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
 
@@ -803,9 +801,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
 
                     ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -1148,9 +1145,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
                         parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
 
@@ -1335,9 +1331,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-versus";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
                         parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
 

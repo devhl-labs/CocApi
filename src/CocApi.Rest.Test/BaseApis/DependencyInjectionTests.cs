@@ -25,7 +25,7 @@ namespace CocApi.Rest.Test.BaseApis
     public class DependencyInjectionTest
     {
         private readonly IHost _hostUsingConfigureWithoutAClient = 
-            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureCocApi((context, options) =>
+            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureCocApi((context, services, options) =>
             {
                 ApiKeyToken apiKeyToken = new ApiKeyToken($"<token>", timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken);
@@ -34,7 +34,7 @@ namespace CocApi.Rest.Test.BaseApis
             .Build();
 
         private readonly IHost _hostUsingConfigureWithAClient =
-            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureCocApi((context, options) =>
+            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureCocApi((context, services, options) =>
             {
                 ApiKeyToken apiKeyToken = new ApiKeyToken($"<token>", timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken);
@@ -77,6 +77,9 @@ namespace CocApi.Rest.Test.BaseApis
             var clansApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
             
+            var developerApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
+            Assert.True(developerApi.HttpClient.BaseAddress != null);
+            
             var goldpassApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
             
@@ -101,6 +104,9 @@ namespace CocApi.Rest.Test.BaseApis
         {
             var clansApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
+            
+            var developerApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
+            Assert.True(developerApi.HttpClient.BaseAddress != null);
             
             var goldpassApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
@@ -127,6 +133,9 @@ namespace CocApi.Rest.Test.BaseApis
             var clansApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
             
+            var developerApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
+            Assert.True(developerApi.HttpClient.BaseAddress != null);
+            
             var goldpassApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
             
@@ -151,6 +160,9 @@ namespace CocApi.Rest.Test.BaseApis
         {
             var clansApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
+            
+            var developerApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
+            Assert.True(developerApi.HttpClient.BaseAddress != null);
             
             var goldpassApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);

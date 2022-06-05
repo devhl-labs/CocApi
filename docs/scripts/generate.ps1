@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.14.20"
+$packageVersion = "2.0.0-preview1.14.21"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -395,6 +395,23 @@ $warTypeReplacement = @"
 
 "@
 
+$apiKey = @"
+                    List<TokenBase> tokens = new List<TokenBase>();
+
+                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokens.Add(apiKey);
+
+
+"@
+
+$tokenRateLimit = @"
+                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase token in tokens)
+                                token.BeginRateLimit();
+
+"@
+
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
 $apiDocPath = Resolve-Path -Path "$output\docs\apis"
@@ -514,6 +531,11 @@ foreach ($file in $allCodeFiles)
 
     if ($file.name -eq "WarType.cs"){
         $content = $content.Replace($warType, $warTypeReplacement)
+    }
+
+    if ($file.name -eq "DeveloperApi.cs"){
+        $content = $content.Replace($apiKey, "")
+        $content = $content.Replace($tokenRateLimit, "")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content))) {

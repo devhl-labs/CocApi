@@ -250,9 +250,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
 
                     ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -414,9 +413,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}/verifytoken";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
-                    request.Content = (body as object) is System.IO.Stream stream
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));                    request.Content = (body as object) is System.IO.Stream stream
                         ? request.Content = new StreamContent(stream)
                         : request.Content = new StringContent(JsonSerializer.Serialize(body, _jsonSerializerOptions));
 
@@ -437,7 +435,7 @@ namespace CocApi.Rest.BaseApis
                     string? contentType = ClientUtils.SelectHeaderContentType(contentTypes);
 
                     if (contentType != null)
-                        request.Content.Headers.Add("ContentType", contentType);
+                        request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
                     string[] accepts = new string[] { 
                         "application/json" 

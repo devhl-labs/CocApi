@@ -37,8 +37,24 @@ namespace CocApi.Cache.Extensions
         }
 
         public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+                this IServiceCollection services,
+                Action<DbContextOptionsBuilder> dbContextOptions,
+                Action<CacheOptions>? cacheOptions = null)
+                where TClansClient : ClansClient
+                where TPlayersClient : PlayersClient
+                where TTimeToLiveProvider : TimeToLiveProvider
+            => services.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(dbContextOptions, cacheOptions);
+
+        public static void AddCocApiCache(
+                this IServiceCollection services,
+                Action<DbContextOptionsBuilder> dbContextOptions,
+                Action<CacheOptions>? cacheOptions = null)
+            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, dbContextOptions, cacheOptions);
+
+        internal static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IServiceCollection services,
-            Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
+            Action<DbContextOptionsBuilder>? dbContextOptions = null,
+            Action<IServiceProvider, DbContextOptionsBuilder>? dbContextOptionsBuilderWithServiceCollection = null,
             Action<CacheOptions>? cacheOptions = null)
             where TClansClient : ClansClient
             where TPlayersClient : PlayersClient
@@ -65,7 +81,11 @@ namespace CocApi.Cache.Extensions
             services.AddSingleton<Synchronizer>();
             services.AddSingleton<CachingService>();
 
-            services.AddDbContext<CacheDbContext>(dbContextOptions);
+            if (dbContextOptions != null)
+                services.AddDbContext<CacheDbContext>(dbContextOptions);
+
+            if (dbContextOptionsBuilderWithServiceCollection != null)
+                services.AddDbContext<CacheDbContext>(dbContextOptionsBuilderWithServiceCollection);
 
             services.AddPlayersClient<TPlayersClient>();
             services.AddClansClient<TClansClient>();
@@ -80,11 +100,5 @@ namespace CocApi.Cache.Extensions
             services.AddHostedSingleton<WarService>();
             services.AddHostedSingleton<StalePlayerService>();
         }
-
-        public static void AddCocApiCache(
-                this IServiceCollection services,
-                Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-                Action<CacheOptions>? cacheOptions = null)
-            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, dbContextOptions, cacheOptions);
     }
 }

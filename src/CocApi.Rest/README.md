@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.0.0-preview1.14.20',
+    'packageVersion=2.0.0-preview1.14.21',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -74,6 +74,13 @@ namespace YourProject
               // optionally choose the method the tokens will be provided with, default is RateLimitProvider
               options.UseProvider<RateLimitProvider<ApiKeyToken>, ApiKeyToken>();
 
+              // the type of token here depends on the api security specifications
+              ApiKeyToken token = new("<your token>");
+              options.AddTokens(token);
+
+              // optionally choose the method the tokens will be provided with, default is RateLimitProvider
+              options.UseProvider<RateLimitProvider<ApiKeyToken>, ApiKeyToken>();
+
               options.ConfigureJsonOptions((jsonOptions) =>
               {
                   // your custom converters if any
@@ -125,9 +132,16 @@ Authentication schemes defined for the API:
 - **API key parameter name**: authorization
 - **Location**: HTTP header
 
+<a name="cookieAuth"></a>
+### cookieAuth
+
+- **Type**: API key
+- **API key parameter name**: session
+- **Location**: 
+
 ## Build
-- SDK version: 2.0.0-preview1.14.20
-- Build date: 2022-06-04T18:57:59.537-04:00[America/New_York]
+- SDK version: 2.0.0-preview1.14.21
+- Build date: 2022-06-05T19:44:29.268-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpNetCoreClientCodegen
 
 ## Api Information
@@ -175,7 +189,7 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.0.0-preview1.14.20
+- packageVersion: 2.0.0-preview1.14.21
 - releaseNote: Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml.
 - returnICollection: false
 - sortParamsByRequiredFlag: 

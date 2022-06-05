@@ -470,9 +470,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
 
                     ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -645,9 +644,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/members";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
                         parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
 
@@ -810,9 +808,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar/leaguegroup";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
 
                     ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -963,9 +960,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clanwarleagues/wars/{warTag}";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
 
                     ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -1138,9 +1134,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/warlog";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
                         parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
 
@@ -1303,9 +1298,8 @@ namespace CocApi.Rest.BaseApis
                     uriBuilder.Host = HttpClient.BaseAddress!.Host;
                     uriBuilder.Scheme = ClientUtils.SCHEME;
                     uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar";
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
 
                     ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 

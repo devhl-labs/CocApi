@@ -27,7 +27,7 @@ namespace CocApi.Cache.Extensions
                 if (cacheOptions != null)
                      services.AddOptions<CacheOptions>().Configure<HostBuilderContext>((instance, context) => cacheOptions(instance, context));
 
-                IServiceCollectionExtensions.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, dbContextOptions, null);
+                IServiceCollectionExtensions.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, null, dbContextOptions, null);
             });
 
             return builder;
