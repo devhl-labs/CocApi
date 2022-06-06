@@ -43,19 +43,19 @@ namespace CocApi.Cache.Extensions
                 where TClansClient : ClansClient
                 where TPlayersClient : PlayersClient
                 where TTimeToLiveProvider : TimeToLiveProvider
-            => services.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(dbContextOptions, cacheOptions);
+            => services.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(dbContextOptions, null, cacheOptions);
 
         public static void AddCocApiCache(
                 this IServiceCollection services,
                 Action<DbContextOptionsBuilder> dbContextOptions,
                 Action<CacheOptions>? cacheOptions = null)
-            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, dbContextOptions, cacheOptions);
+            => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, dbContextOptions, null, cacheOptions);
 
         internal static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
             this IServiceCollection services,
-            Action<DbContextOptionsBuilder>? dbContextOptions = null,
-            Action<IServiceProvider, DbContextOptionsBuilder>? dbContextOptionsBuilderWithServiceCollection = null,
-            Action<CacheOptions>? cacheOptions = null)
+            Action<DbContextOptionsBuilder>? dbContextOptions,
+            Action<IServiceProvider, DbContextOptionsBuilder>? dbContextOptionsBuilderWithServiceCollection,
+            Action<CacheOptions>? cacheOptions)
             where TClansClient : ClansClient
             where TPlayersClient : PlayersClient
             where TTimeToLiveProvider : TimeToLiveProvider
