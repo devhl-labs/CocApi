@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,16 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Test
 {
+/*
+ * This shows how to query, delete, and create new tokens
+ * This is useful if your IP address changes frequently.
+ * The library does not update your tokens automatically,
+ * but that is easy enough to setup.
+ * 
+ * Simply create a HostedService, inject the TokenContainer<ApiKeyToken>
+ * and replace the tokens in the container with your newly created tokens.
+ */
+
     public class TokenService : IHostedService
     {
         public Rest.Client.CookieContainer CookieContainer { get; }
@@ -29,6 +38,10 @@ namespace CocApi.Test
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            // Be aware that if the Clash API server is down, calls to it in HostedService#StartAsync will crash your program
+            // If you do not want the program to crash on startup due to the Clash API server being down,
+            // use a background service instead.
+
             // login and save the cookie to the CookieContainer
             var login = await DeveloperApi.LoginResponseAsync(Options.Value);
             var rawValue = login.Headers.GetValues("set-cookie").Single();
