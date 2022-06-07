@@ -23,22 +23,39 @@ Use the static class CocApi.Clash for various helpers including FormatTag, TryFo
 Use the IHostBuilder extension method ConfigureCocApi to add all the API endpoints to your service provider.
 The TokenProvider object provides rate limiting on a per key basis.
 Then you can use dependency injection to inject ClansApi, LabelsApi, LeaguesApi, LocationsApi, and PlayersApi. 
-These classes allow you to query the API using the named HttpClient provided.
+These classes allow you to query the API using the typed HttpClient provided.
 ```csharp
 private static IHostBuilder CreateHostBuilder(string[] args) =>
     Host.CreateDefaultBuilder(args)
-        .ConfigureCocApi("cocApi", (context, tokenProvider) =>
+
+        // configure how to query the Clash API
+        .ConfigureCocApi((context, services, options) =>
         { 
-            tokenProvider.Tokens.Add(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
+            options.AddTokens(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
+
+            options.AddCocApiHttpClients(
+                builder: builder => builder
+
+                    // only required if you use the DeveloperApi class to query, create, and delete tokens
+                    .ConfigurePrimaryHttpMessageHandler(services =>
+                    {
+                        return new HttpClientHandler()
+                        {
+                            CookieContainer = services.GetRequiredService<CookieContainer>().Value
+                        };
+                    })
+
+                    // optionally configure how the HttpClient handles Clash API outages
+                    .AddRetryPolicy(3)
+                    .AddTimeoutPolicy(TimeSpan.FromMilliseconds(3000))
+                    .AddCircuitBreakerPolicy(30, TimeSpan.FromSeconds(10))
+
+                    // this property is important if you query the api very fast
+                    .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler
+                    {
+                        MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
+                    })
         })
-        .ConfigureServices((hostBuilder, services) => 
-        {
-            services.AddHttpClient("cocApi", httpClient =>
-            {
-                httpClient.BaseAddress = new Uri("https://api.clashofclans.com/v1");
-                httpClient.Timeout = TimeSpan.FromSeconds(3);
-            })
-        }
 ```
 
 ## Configuring CocApi.Cache
@@ -62,16 +79,6 @@ This requires that the CocApi is already added to the service provider as shown 
     string connection = configuration.GetConnectionString("your connection string");
 
     dbContextOptions.UseNpgsql(connection);
-},
-(cacheOptions, context) =>
-{
-    cacheOptions.ActiveWars.Enabled = true;
-    cacheOptions.ClanMembers.Enabled = true;
-    cacheOptions.Clans.Enabled = true;
-    cacheOptions.NewCwlWars.Enabled = true;
-    cacheOptions.NewWars.Enabled = true;
-    cacheOptions.Wars.Enabled = true;
-    cacheOptions.CwlWars.Enabled = true;
 })
 ```
 

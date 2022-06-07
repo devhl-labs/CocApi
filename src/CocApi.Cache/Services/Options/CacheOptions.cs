@@ -12,7 +12,7 @@ namespace CocApi.Cache.Services.Options
         /// It also helps get the final war stats in the event the clan searches for a new war immediately.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public ActiveWarServiceOptions ActiveWars { get; } = new ActiveWarServiceOptions { DelayBeforeExecution = TimeSpan.FromMinutes(5), DelayBetweenExecutions = TimeSpan.FromMinutes(10) };
+        public ActiveWarServiceOptions ActiveWars { get; } = new ActiveWarServiceOptions { ConcurrentUpdates = 50, DelayBeforeExecution = TimeSpan.FromMinutes(5), DelayBetweenExecutions = TimeSpan.FromMinutes(10), Enabled = true };
 
         /// <summary>
         /// Iterates the Clan cached table searching for any clan with DownloadMembers enabled.
@@ -22,20 +22,20 @@ namespace CocApi.Cache.Services.Options
         /// If you wish to continue tracking these villages, on the OnClanUpdated event check for new members
         /// using Clan.ClanMembersJoined(e.Stored, e.Fetched) and add them to the PlayersClient with Download set to true.
         /// </summary>
-        public MemberServiceOptions ClanMembers { get; } = new MemberServiceOptions { DelayBetweenExecutions = TimeSpan.FromSeconds(5) };
+        public MemberServiceOptions ClanMembers { get; } = new MemberServiceOptions { DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
 
         /// <summary>
         /// Download the clan, current war, war log, and CWL group.
         /// </summary>
-        public ClanServiceOptions Clans { get; } = new ClanServiceOptions { ConcurrentUpdates = 200, DelayBetweenExecutions = TimeSpan.FromSeconds(5) };
+        public ClanServiceOptions Clans { get; } = new ClanServiceOptions { ConcurrentUpdates = 200, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
         
         /// <summary>
         /// This will keep any already downloaded CWL war up to date.
         /// </summary>
-        public CwlWarServiceOptions CwlWars { get; } = new CwlWarServiceOptions { ConcurrentUpdates = 500, DelayBetweenExecutions = TimeSpan.FromSeconds(5) };
+        public CwlWarServiceOptions CwlWars { get; } = new CwlWarServiceOptions { ConcurrentUpdates = 500, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public StalePlayerServiceOptions DeleteStalePlayers { get; } = new StalePlayerServiceOptions { DelayBeforeExecution = TimeSpan.FromMinutes(20), DelayBetweenExecutions = TimeSpan.FromMinutes(20) };
+        public StalePlayerServiceOptions DeleteStalePlayers { get; } = new StalePlayerServiceOptions { DelayBeforeExecution = TimeSpan.FromMinutes(20), DelayBetweenExecutions = TimeSpan.FromMinutes(20), Enabled = true };
     
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int MaxConcurrentEvents { get; set; } = 25;
@@ -47,7 +47,7 @@ namespace CocApi.Cache.Services.Options
         /// If the resulting war does contain the desired clan the war the NewWar event will be fired.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public NewCwlWarServiceOptions NewCwlWars { get; } = new NewCwlWarServiceOptions { DelayBetweenExecutions = TimeSpan.FromMinutes(2), ConcurrentUpdates = 10 };
+        public NewCwlWarServiceOptions NewCwlWars { get; } = new NewCwlWarServiceOptions { ConcurrentUpdates = 10, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromMinutes(2), Enabled = true };
 
         /// <summary>
         /// Queries the current war cache for any war not yet announced.
@@ -55,18 +55,18 @@ namespace CocApi.Cache.Services.Options
         /// NOTE: the Clans service must be enabled as well as DownloadCurrentWar
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public NewWarServiceOptions NewWars { get; } = new NewWarServiceOptions { DelayBetweenExecutions = TimeSpan.FromSeconds(15) };
+        public NewWarServiceOptions NewWars { get; } = new NewWarServiceOptions { ConcurrentUpdates = 50, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(15), Enabled = true };
 
         /// <summary>
         /// Iterates the Players cached table searching for players with Download set to true.
         /// </summary>
-        public PlayerServiceOptions Players { get; } = new PlayerServiceOptions { DelayBetweenExecutions = TimeSpan.FromSeconds(5) };
+        public PlayerServiceOptions Players { get; } = new PlayerServiceOptions { ConcurrentUpdates = 50, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
 
         /// <summary>
         /// Iterates over the Wars cached table.
         /// Queries the CurrentWar cached table for both clans in the war.
         /// Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
         /// </summary>
-        public WarServiceOptions Wars { get; } = new WarServiceOptions { ConcurrentUpdates = 500, DelayBetweenExecutions = TimeSpan.FromSeconds(5) };
+        public WarServiceOptions Wars { get; } = new WarServiceOptions { ConcurrentUpdates = 500, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
     }
 }
