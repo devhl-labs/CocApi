@@ -1,5 +1,5 @@
 # CocApi
-A wrapper for [developer.clashofclans.com](https://developer.clashofclans.com/#/) written in .Net 5.0. 
+A wrapper for [developer.clashofclans.com](https://developer.clashofclans.com/#/) written in .Net 6.0. 
 CocApi is used to fetch results from the clash API. 
 CocApi.Cache will cache responses in a database of your choice.
 To keep objects up to date and receive events when the data changes, add the tag to the ClansClient or PlayersClient.
@@ -70,7 +70,7 @@ dotnet ef migrations add YourMigrationName `
 ```
 
 Use the IHostBuilder extension method ConfigureCocApiCache to your service provider.
-This requires that the CocApi is already added to the service provider as shown above. 
+This requires CocApi to already be added to the service provider as shown above. 
 ```csharp
 .ConfigureCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>((services, dbContextOptions) =>
 {
@@ -109,9 +109,6 @@ Iterates over the Wars cache table. Queries the CurrentWar cache table for both 
 
 ## Migrating from version 1
 Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. A future release of CocApi.Cache will remove this method and all traces of SQLite.
-
-## Logging
-Logs are sent using `Microsoft.Extensions.Logging.ILogger`. The test project shows how to use Serilog, but you can use whatever you like.
 
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).
