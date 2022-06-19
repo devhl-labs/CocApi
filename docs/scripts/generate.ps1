@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.14.23"
+$packageVersion = "2.0.0-preview1.15.0"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -438,14 +438,27 @@ $allCodeFiles = $($restFiles + $testFiles) |
 
 foreach ($file in $allDocFiles)
 {
-    $content = $(Get-Content -Path $file.FullName) -join "`r`n"
-    Set-Content $file.FullName $content
-    $content = $null
+    $rawContent = $(Get-Content -Path $file.FullName)
+    $originalContent = $rawContent -join "`n"
+    $content = $rawContent -join "`r`n"
+
+    if ($originalContent -cne $content){
+        try {
+            Set-Content $file.FullName $content -ErrorAction Stop
+        }
+        catch {
+            Write-Warning "Failed saving file $($file.FullName). Trying again in two seconds."
+            Start-Sleep -Seconds 2
+            Set-Content $file.FullName $content
+        }
+    }
 }
 
 foreach ($file in $allCodeFiles)
 {
-    $content = $(Get-Content -Path $file.FullName) -join "`r`n"
+    $rawContent = $(Get-Content -Path $file.FullName)
+    $originalContent = $rawContent -join "`n"
+    $content = $rawContent -join "`r`n"
 
     $content=$content.Replace("WithHttpInfoAsync(", "ResponseAsync(")
 
@@ -538,8 +551,15 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace($tokenRateLimit, "")
     }
 
-    if (-Not([string]::IsNullOrWhiteSpace($content))) {
-        Set-Content $file.PSPath $content -ErrorAction Stop
+    if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {
+        try {
+            Set-Content $file.PSPath $content -ErrorAction Stop
+        }
+        catch {
+            Write-Warning "Failed saving file $($file.FullName). Trying again in two seconds."
+            Start-Sleep -Seconds 2
+            Set-Content $file.PSPath $content
+        }
     }
     $content = $null
 }

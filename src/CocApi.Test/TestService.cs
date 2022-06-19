@@ -63,6 +63,7 @@ namespace CocApi.Test
             var leagueList = await LeaguesApi.FetchWarLeaguesOrDefaultAsync();
             var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
             var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
+            var clans = await ClansApi.SearchClansAsync(name: "fysb");
         }
     }
 }

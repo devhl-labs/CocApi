@@ -33,7 +33,7 @@ namespace CocApi.Rest.Models
         /// </summary>
         /// <param name="items">items</param>
         [JsonConstructor]
-        internal ClanList(List<Clan> items)
+        internal ClanList(List<ClanListEntry> items)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -51,7 +51,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Items
         /// </summary>
         [JsonPropertyName("items")]
-        public List<Clan> Items { get; }
+        public List<ClanListEntry> Items { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -133,7 +133,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = reader.TokenType;
 
-            List<Clan> items = default;
+            List<ClanListEntry> items = default;
 
             while (reader.Read())
             {
@@ -152,7 +152,7 @@ namespace CocApi.Rest.Models
                     {
                         case "items":
                             Utf8JsonReader itemsReader = reader;
-                            items = JsonSerializer.Deserialize<List<Clan>>(ref reader, options);
+                            items = JsonSerializer.Deserialize<List<ClanListEntry>>(ref reader, options);
                             break;
                     }
                 }

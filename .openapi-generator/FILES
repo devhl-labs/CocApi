@@ -9,6 +9,7 @@ docs/apis/PlayersApi.md
 docs/models/BadgeUrls.md
 docs/models/Clan.md
 docs/models/ClanList.md
+docs/models/ClanListEntry.md
 docs/models/ClanMember.md
 docs/models/ClanRanking.md
 docs/models/ClanRankingList.md
@@ -100,6 +101,7 @@ src/CocApi.Rest/Extensions/IServiceCollectionExtensions.cs
 src/CocApi.Rest/Models/BadgeUrls.cs
 src/CocApi.Rest/Models/Clan.cs
 src/CocApi.Rest/Models/ClanList.cs
+src/CocApi.Rest/Models/ClanListEntry.cs
 src/CocApi.Rest/Models/ClanMember.cs
 src/CocApi.Rest/Models/ClanRanking.cs
 src/CocApi.Rest/Models/ClanRankingList.cs

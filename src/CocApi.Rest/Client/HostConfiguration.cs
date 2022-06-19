@@ -50,6 +50,7 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
             _jsonOptions.Converters.Add(new ClanJsonConverter());
             _jsonOptions.Converters.Add(new ClanListJsonConverter());
+            _jsonOptions.Converters.Add(new ClanListEntryJsonConverter());
             _jsonOptions.Converters.Add(new ClanMemberJsonConverter());
             _jsonOptions.Converters.Add(new ClanRankingJsonConverter());
             _jsonOptions.Converters.Add(new ClanRankingListJsonConverter());
