@@ -18,7 +18,6 @@ using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
-using Newtonsoft.Json;
 
 namespace CocApi.Rest.Test.Model
 {
