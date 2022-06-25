@@ -5,20 +5,28 @@ namespace CocApi.Rest.Models
 {
     public partial class ClanWarLogEntry
     {
-        private readonly SortedDictionary<string, WarClanLogEntry> _clans = new();
+        private volatile SortedDictionary<string, WarClanLogEntry>? _clans;
         private readonly object _clansLock = new();
         public SortedDictionary<string, WarClanLogEntry> Clans
         {
             get
             {
+                if (_clans != null) // avoid the lock if we can
+                    return _clans;
+
                 lock (_clansLock)
                 {
-                    if (_clans.Count > 0)
+                    if (_clans != null)
                         return _clans;
-                    if (Clan != null)
-                        _clans.Add(Clan.Tag, Clan);
-                    if (Opponent.Tag != null)
-                        _clans.Add(Opponent.Tag, Opponent);
+
+                    _clans = (Clan?.Tag == null || Opponent?.Tag == null)
+                        ? new SortedDictionary<string, WarClanLogEntry>()
+                        : new SortedDictionary<string, WarClanLogEntry>
+                        {
+                            { Clan.Tag, Clan },
+                            { Opponent.Tag, Opponent }
+                        };
+
                     return _clans;
                 }
             }

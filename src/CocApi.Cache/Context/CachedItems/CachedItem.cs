@@ -20,7 +20,7 @@ namespace CocApi.Cache.Context
 
         public bool Download { get; set; } = true;
 
-        private T? _content;
+        private volatile T? _content;
 
         private readonly object _contentLock = new();
 
@@ -29,17 +29,20 @@ namespace CocApi.Cache.Context
         {
             get
             {
-                lock (_contentLock)
-                    if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
-                    {
-                        _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
+                if (_content == null && !string.IsNullOrWhiteSpace(RawContent)) // avoid the lock if we can
+                {
+                    lock (_contentLock)
+                        if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
+                        {
+                            _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
 
-                        if (_content is ClanWar clanWar)
-                            if (this is CachedWar cachedWar)
-                                clanWar.Initialize(ExpiresAt.Value, cachedWar.WarTag);
-                            else
-                                clanWar.Initialize(ExpiresAt.Value, null);
-                    }
+                            if (_content is ClanWar clanWar)
+                                if (this is CachedWar cachedWar)
+                                    clanWar.Initialize(ExpiresAt.Value, cachedWar.WarTag);
+                                else
+                                    clanWar.Initialize(ExpiresAt.Value, null);
+                        }
+                }
 
                 return _content;
             }

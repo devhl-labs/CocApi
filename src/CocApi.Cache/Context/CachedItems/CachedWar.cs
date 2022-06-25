@@ -103,7 +103,7 @@ namespace CocApi.Cache.Context
 
         public Rest.Models.WarType Type { get; internal set; }
 
-        private readonly SortedSet<string> _clanTags = new();
+        private volatile SortedSet<string>? _clanTags;
 
         private readonly object _clanTagsLock = new();
 
@@ -111,13 +111,19 @@ namespace CocApi.Cache.Context
         {
             get
             {
+                if (_clanTags != null) // avoid the lock if we can
+                    return _clanTags;
+
                 lock (_clanTagsLock)
                 {
-                    if (_clanTags.Count == 2)
+                    if (_clanTags != null)
                         return _clanTags;
 
-                    _clanTags.Add(ClanTag);
-                    _clanTags.Add(OpponentTag);
+                    _clanTags = new SortedSet<string>
+                    {
+                        ClanTag,
+                        OpponentTag
+                    };
 
                     return _clanTags;
                 }

@@ -40,7 +40,7 @@ namespace CocApi.Rest.Models
         [JsonPropertyName("warTag")]
         public string? WarTag { get; internal set; }
 
-        private SortedDictionary<string, WarClan> _clans = new();
+        private volatile SortedDictionary<string, WarClan>? _clans;
 
         private bool _isInitialized;
         private readonly object _clansLock = new();
@@ -49,51 +49,51 @@ namespace CocApi.Rest.Models
         {
             get
             {
+                if (_clans != null) // avoid the lock if we can
+                    return _clans;
+
                 lock (_clansLock)
                 {
-                    if (_clans.Count > 0)
+                    if (_clans != null)
                         return _clans;
 
-                    if (Clan == null || Clan.Tag == null || Opponent == null || Opponent.Tag == null)
-                        return _clans;
-
-                    _clans = new SortedDictionary<string, WarClan>
-                    {
-                        { Clan.Tag, Clan },
-                        { Opponent.Tag, Opponent }
-                    };
+                    _clans = (Clan?.Tag == null || Opponent?.Tag == null)
+                        ? new SortedDictionary<string, WarClan>()
+                        : new SortedDictionary<string, WarClan>
+                            {
+                                { Clan.Tag, Clan },
+                                { Opponent.Tag, Opponent }
+                            };
 
                     return _clans;
                 }
             }
         }
 
-        private List<ClanWarAttack> _attacks = new();
+        private volatile List<ClanWarAttack>? _attacks;
         private readonly object _attacksLock = new();
 
         public List<ClanWarAttack> Attacks
         {
             get
             {
+                if (_attacks != null) // avoid the lock if we can
+                    return _attacks;
+
                 lock (_attacksLock)
                 {
-                    if (Clans.Count == 0)
+                    if (_attacks != null)
                         return _attacks;
 
-                    if (_attacks.Count == 0)
-                        foreach (WarClan warClan in Clans.Values)
-                            foreach (ClanWarMember member in warClan.Members)
-                                foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
-                                    _attacks.Add(attack);
+                    _attacks = new List<ClanWarAttack>();
+
+                    foreach (WarClan warClan in Clans.Values)
+                        foreach (ClanWarMember member in warClan.Members)
+                            foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                                _attacks.Add(attack);
 
                     return _attacks;
                 }
-            }
-
-            internal set
-            {
-                lock (_attacksLock)
-                    _attacks = value ?? new List<ClanWarAttack>();
             }
         }
 
@@ -135,6 +135,9 @@ namespace CocApi.Rest.Models
 
         internal void Initialize(DateTime serverExpiration, string? warTag)
         {
+            if (_isInitialized) // avoid the lock if we can
+                return;
+
             lock (_initializeLock)
             {
                 if (_isInitialized)
