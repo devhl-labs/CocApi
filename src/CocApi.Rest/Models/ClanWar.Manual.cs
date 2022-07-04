@@ -226,6 +226,10 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+            // cwl does not include this property
+            if (AttacksPerMember == 0)
+                AttacksPerMember = 1;
         }
 
         public WarType GetWarType()

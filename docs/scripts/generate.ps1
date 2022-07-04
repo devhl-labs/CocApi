@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.16.0"
+$packageVersion = "2.0.0-preview1.16.1"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -536,6 +536,7 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
+        $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
     }
 
     if ($file.name -eq "WarPreference.cs"){

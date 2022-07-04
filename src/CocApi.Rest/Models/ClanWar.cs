@@ -90,7 +90,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets AttacksPerMember
         /// </summary>
         [JsonPropertyName("attacksPerMember")]
-        public int AttacksPerMember { get; }
+        public int AttacksPerMember { get; private set; }
 
         /// <summary>
         /// Gets or Sets Clan
