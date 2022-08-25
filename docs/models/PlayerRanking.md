@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.PlayerRanking
+﻿# CocApi.Rest.Models.PlayerRanking
 
 ## Properties
 

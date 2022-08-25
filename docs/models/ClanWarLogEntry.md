@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.ClanWarLogEntry
+﻿# CocApi.Rest.Models.ClanWarLogEntry
 
 ## Properties
 

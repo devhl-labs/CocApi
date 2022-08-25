@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.Language
+﻿# CocApi.Rest.Models.Language
 
 ## Properties
 

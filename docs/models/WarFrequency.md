@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.WarFrequency
+﻿# CocApi.Rest.Models.WarFrequency
 
 ## Properties
 

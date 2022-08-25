@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.Key
+﻿# CocApi.Rest.Models.Key
 
 ## Properties
 

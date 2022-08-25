@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.ClanWarLeagueClanMember
+﻿# CocApi.Rest.Models.ClanWarLeagueClanMember
 
 ## Properties
 

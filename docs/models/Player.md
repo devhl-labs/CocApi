@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.Player
+﻿# CocApi.Rest.Models.Player
 
 ## Properties
 

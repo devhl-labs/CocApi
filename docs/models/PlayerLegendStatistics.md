@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.PlayerLegendStatistics
+﻿# CocApi.Rest.Models.PlayerLegendStatistics
 
 ## Properties
 

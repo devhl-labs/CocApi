@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.Location
+﻿# CocApi.Rest.Models.Location
 
 ## Properties
 

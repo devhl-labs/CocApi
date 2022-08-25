@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.ClientError
+﻿# CocApi.Rest.Models.ClientError
 
 ## Properties
 

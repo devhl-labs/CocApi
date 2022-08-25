@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.PlayerRankingClan
+﻿# CocApi.Rest.Models.PlayerRankingClan
 
 ## Properties
 

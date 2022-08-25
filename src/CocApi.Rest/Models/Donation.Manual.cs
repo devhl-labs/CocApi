@@ -1,4 +1,4 @@
-namespace CocApi.Rest.Models
+﻿namespace CocApi.Rest.Models
 {
     public sealed class Donation
     {

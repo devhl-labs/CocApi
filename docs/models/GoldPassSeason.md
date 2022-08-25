@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.GoldPassSeason
+﻿# CocApi.Rest.Models.GoldPassSeason
 
 ## Properties
 

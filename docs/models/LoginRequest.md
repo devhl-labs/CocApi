@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.LoginRequest
+﻿# CocApi.Rest.Models.LoginRequest
 
 ## Properties
 

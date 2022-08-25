@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.Result
+﻿# CocApi.Rest.Models.Result
 
 ## Properties
 

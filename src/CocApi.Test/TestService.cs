@@ -56,6 +56,7 @@ namespace CocApi.Test
 
         private async Task SanityCheck()
         {
+            var clan = await ClansApi.FetchClanAsync("#29Y8PRCJR");
             var playerGlobalRankings = await LocationsApi.FetchPlayerRankingAsync("global");
             var playerVersusGlobalRankings = await LocationsApi.FetchPlayerVersusRankingAsync("global");
             var clanGlobalRankings = await LocationsApi.FetchClanRankingOrDefaultAsync("global");

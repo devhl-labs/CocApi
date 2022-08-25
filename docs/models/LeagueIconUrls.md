@@ -1,4 +1,4 @@
-# CocApi.Rest.Model.LeagueIconUrls
+﻿# CocApi.Rest.Model.LeagueIconUrls
 
 ## Properties
 

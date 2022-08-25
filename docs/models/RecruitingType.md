@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.RecruitingType
+﻿# CocApi.Rest.Models.RecruitingType
 
 ## Properties
 

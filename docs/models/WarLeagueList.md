@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.WarLeagueList
+﻿# CocApi.Rest.Models.WarLeagueList
 
 ## Properties
 

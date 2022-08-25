@@ -1,4 +1,4 @@
-# CocApi.Rest.Model.LabelIconUrls
+﻿# CocApi.Rest.Model.LabelIconUrls
 
 ## Properties
 

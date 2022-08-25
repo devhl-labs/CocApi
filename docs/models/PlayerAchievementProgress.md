@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.PlayerAchievementProgress
+﻿# CocApi.Rest.Models.PlayerAchievementProgress
 
 ## Properties
 

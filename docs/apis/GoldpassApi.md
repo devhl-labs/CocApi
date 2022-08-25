@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.GoldpassApi
+﻿# CocApi.Rest.BaseApis.GoldpassApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 

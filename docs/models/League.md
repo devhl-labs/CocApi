@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.League
+﻿# CocApi.Rest.Models.League
 
 ## Properties
 

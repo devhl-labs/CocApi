@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.VerifyTokenRequest
+﻿# CocApi.Rest.Models.VerifyTokenRequest
 
 ## Properties
 

@@ -1,4 +1,4 @@
-# CocApi.Rest.Models.Role
+﻿# CocApi.Rest.Models.Role
 
 ## Properties
 

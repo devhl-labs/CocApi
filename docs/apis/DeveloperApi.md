@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.DeveloperApi
+﻿# CocApi.Rest.BaseApis.DeveloperApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 

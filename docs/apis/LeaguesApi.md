@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.LeaguesApi
+﻿# CocApi.Rest.BaseApis.LeaguesApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
