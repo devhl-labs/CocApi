@@ -7,7 +7,7 @@
     <Authors>devhl</Authors>
     <Product />
     <Description>Caches response from the Clash of Clans API.</Description>
-    <Version>2.0.0-preview1.16.2</Version>
+    <Version>2.0.0-preview1.17.0</Version>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -41,7 +41,7 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
-    <PackageReference Include="ScheduledServices" Version="1.2.0" />
+    <PackageReference Include="ScheduledServices" Version="1.3.0" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
