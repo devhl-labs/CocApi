@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **BestTrophies** | **int** |  | [optional] [readonly] 
 **BestVersusTrophies** | **int** |  | [optional] [readonly] 
 **BuilderHallLevel** | **int** |  | [optional] [readonly] 
+**ClanCapitalContributions** | **int** |  | [optional] [readonly] 
 **DefenseWins** | **int** |  | [optional] [readonly] 
 **Donations** | **int** |  | [optional] [readonly] 
 **DonationsReceived** | **int** |  | [optional] [readonly] 

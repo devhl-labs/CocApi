@@ -24,63 +24,50 @@ using System.Text.Json.Serialization;
 namespace CocApi.Rest.Models
 {
     /// <summary>
-    /// PlayerItemLevel
+    /// ClanDistrictData
     /// </summary>
-    public partial class PlayerItemLevel : IEquatable<PlayerItemLevel?>
+    public partial class ClanDistrictData : IEquatable<ClanDistrictData?>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PlayerItemLevel" /> class.
+        /// Initializes a new instance of the <see cref="ClanDistrictData" /> class.
         /// </summary>
-        /// <param name="level">level</param>
-        /// <param name="maxLevel">maxLevel</param>
+        /// <param name="districtHallLevel">districtHallLevel</param>
+        /// <param name="id">id</param>
         /// <param name="name">name</param>
-        /// <param name="village">village</param>
-        /// <param name="superTroopIsActive">superTroopIsActive</param>
         [JsonConstructor]
-        internal PlayerItemLevel(int level, int maxLevel, string name, VillageType village, bool? superTroopIsActive = default)
+        internal ClanDistrictData(int districtHallLevel, int id, string name)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            if (level == null)
-                throw new ArgumentNullException("level is a required property for PlayerItemLevel and cannot be null.");
-
             if (name == null)
-                throw new ArgumentNullException("name is a required property for PlayerItemLevel and cannot be null.");
+                throw new ArgumentNullException("name is a required property for ClanDistrictData and cannot be null.");
 
-            if (maxLevel == null)
-                throw new ArgumentNullException("maxLevel is a required property for PlayerItemLevel and cannot be null.");
+            if (id == null)
+                throw new ArgumentNullException("id is a required property for ClanDistrictData and cannot be null.");
 
-            if (village == null)
-                throw new ArgumentNullException("village is a required property for PlayerItemLevel and cannot be null.");
+            if (districtHallLevel == null)
+                throw new ArgumentNullException("districtHallLevel is a required property for ClanDistrictData and cannot be null.");
 
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            Level = level;
-            MaxLevel = maxLevel;
+            DistrictHallLevel = districtHallLevel;
+            Id = id;
             Name = name;
-            Village = village;
-            SuperTroopIsActive = superTroopIsActive;
         }
 
         /// <summary>
-        /// Gets or Sets Village
+        /// Gets or Sets DistrictHallLevel
         /// </summary>
-        [JsonPropertyName("village")]
-        public VillageType Village { get; }
+        [JsonPropertyName("districtHallLevel")]
+        public int DistrictHallLevel { get; }
 
         /// <summary>
-        /// Gets or Sets Level
+        /// Gets or Sets Id
         /// </summary>
-        [JsonPropertyName("level")]
-        public int Level { get; }
-
-        /// <summary>
-        /// Gets or Sets MaxLevel
-        /// </summary>
-        [JsonPropertyName("maxLevel")]
-        public int MaxLevel { get; }
+        [JsonPropertyName("id")]
+        public int Id { get; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -89,24 +76,16 @@ namespace CocApi.Rest.Models
         public string Name { get; }
 
         /// <summary>
-        /// Gets or Sets SuperTroopIsActive
-        /// </summary>
-        [JsonPropertyName("superTroopIsActive")]
-        public bool? SuperTroopIsActive { get; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class PlayerItemLevel {\n");
-            sb.Append("  Level: ").Append(Level).Append("\n");
-            sb.Append("  MaxLevel: ").Append(MaxLevel).Append("\n");
+            sb.Append("class ClanDistrictData {\n");
+            sb.Append("  DistrictHallLevel: ").Append(DistrictHallLevel).Append("\n");
+            sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
-            sb.Append("  Village: ").Append(Village).Append("\n");
-            sb.Append("  SuperTroopIsActive: ").Append(SuperTroopIsActive).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -118,44 +97,34 @@ namespace CocApi.Rest.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object? input)
         {
-            return this.Equals(input as PlayerItemLevel);
+            return this.Equals(input as ClanDistrictData);
         }
 
         /// <summary>
-        /// Returns true if PlayerItemLevel instances are equal
+        /// Returns true if ClanDistrictData instances are equal
         /// </summary>
-        /// <param name="input">Instance of PlayerItemLevel to be compared</param>
+        /// <param name="input">Instance of ClanDistrictData to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(PlayerItemLevel? input)
+        public bool Equals(ClanDistrictData? input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
-                    Level == input.Level ||
-                    (Level != null &&
-                    Level.Equals(input.Level))
+                    DistrictHallLevel == input.DistrictHallLevel ||
+                    (DistrictHallLevel != null &&
+                    DistrictHallLevel.Equals(input.DistrictHallLevel))
                 ) && 
                 (
-                    MaxLevel == input.MaxLevel ||
-                    (MaxLevel != null &&
-                    MaxLevel.Equals(input.MaxLevel))
+                    Id == input.Id ||
+                    (Id != null &&
+                    Id.Equals(input.Id))
                 ) && 
                 (
                     Name == input.Name ||
                     (Name != null &&
                     Name.Equals(input.Name))
-                ) && 
-                (
-                    Village == input.Village ||
-                    (Village != null &&
-                    Village.Equals(input.Village))
-                ) && 
-                (
-                    SuperTroopIsActive == input.SuperTroopIsActive ||
-                    (SuperTroopIsActive != null &&
-                    SuperTroopIsActive.Equals(input.SuperTroopIsActive))
                 );
         }
 
@@ -168,13 +137,9 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + Level.GetHashCode();
-                hashCode = (hashCode * 59) + MaxLevel.GetHashCode();
+                hashCode = (hashCode * 59) + DistrictHallLevel.GetHashCode();
+                hashCode = (hashCode * 59) + Id.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
-                hashCode = (hashCode * 59) + Village.GetHashCode();
-
-                if (SuperTroopIsActive != null)
-                    hashCode = (hashCode * 59) + SuperTroopIsActive.GetHashCode();
 
                 return hashCode;
             }
@@ -182,9 +147,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerItemLevel
+    /// A Json converter for type ClanDistrictData
     /// </summary>
-    public class PlayerItemLevelJsonConverter : JsonConverter<PlayerItemLevel>
+    public class ClanDistrictDataJsonConverter : JsonConverter<ClanDistrictData>
     {
         /// <summary>
         /// A Json reader.
@@ -194,7 +159,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         /// <returns></returns>
         /// <exception cref="JsonException"></exception>
-        public override PlayerItemLevel Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override ClanDistrictData Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             int currentDepth = reader.CurrentDepth;
 
@@ -203,11 +168,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = reader.TokenType;
 
-            int level = default;
-            int maxLevel = default;
+            int districtHallLevel = default;
+            int id = default;
             string name = default;
-            VillageType village = default;
-            bool? superTroopIsActive = default;
 
             while (reader.Read())
             {
@@ -224,21 +187,14 @@ namespace CocApi.Rest.Models
 
                     switch (propertyName)
                     {
-                        case "level":
-                            level = reader.GetInt32();
+                        case "districtHallLevel":
+                            districtHallLevel = reader.GetInt32();
                             break;
-                        case "maxLevel":
-                            maxLevel = reader.GetInt32();
+                        case "id":
+                            id = reader.GetInt32();
                             break;
                         case "name":
                             name = reader.GetString();
-                            break;
-                        case "village":
-                            string villageRawValue = reader.GetString();
-                            village = VillageTypeConverter.FromString(villageRawValue);
-                            break;
-                        case "superTroopIsActive":
-                            superTroopIsActive = reader.GetBoolean();
                             break;
                         default:
                             break;
@@ -246,32 +202,23 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new PlayerItemLevel(level, maxLevel, name, village, superTroopIsActive);
+            return new ClanDistrictData(districtHallLevel, id, name);
         }
 
         /// <summary>
         /// A Json writer
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="playerItemLevel"></param>
+        /// <param name="clanDistrictData"></param>
         /// <param name="options"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public override void Write(Utf8JsonWriter writer, PlayerItemLevel playerItemLevel, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, ClanDistrictData clanDistrictData, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 
-            writer.WriteNumber("level", (int)playerItemLevel.Level);
-            writer.WriteNumber("maxLevel", (int)playerItemLevel.MaxLevel);
-            writer.WriteString("name", playerItemLevel.Name);
-            var villageRawValue = VillageTypeConverter.ToJsonValue(playerItemLevel.Village);
-            if (villageRawValue != null)
-                writer.WriteString("village", villageRawValue);
-            else
-                writer.WriteNull("village");
-            if (playerItemLevel.SuperTroopIsActive != null)
-                writer.WriteBoolean("superTroopIsActive", playerItemLevel.SuperTroopIsActive.Value);
-            else
-                writer.WriteNull("superTroopIsActive");
+            writer.WriteNumber("districtHallLevel", (int)clanDistrictData.DistrictHallLevel);
+            writer.WriteNumber("id", (int)clanDistrictData.Id);
+            writer.WriteString("name", clanDistrictData.Name);
 
             writer.WriteEndObject();
         }

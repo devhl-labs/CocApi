@@ -8,6 +8,8 @@ docs/apis/LocationsApi.md
 docs/apis/PlayersApi.md
 docs/models/BadgeUrls.md
 docs/models/Clan.md
+docs/models/ClanCapital.md
+docs/models/ClanDistrictData.md
 docs/models/ClanList.md
 docs/models/ClanListEntry.md
 docs/models/ClanMember.md
@@ -60,6 +62,7 @@ docs/models/Result.md
 docs/models/Role.md
 docs/models/VerifyTokenRequest.md
 docs/models/VerifyTokenResponse.md
+docs/models/VillageType.md
 docs/models/WarClan.md
 docs/models/WarClanLogEntry.md
 docs/models/WarFrequency.md
@@ -100,6 +103,8 @@ src/CocApi.Rest/Extensions/IHttpClientBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IServiceCollectionExtensions.cs
 src/CocApi.Rest/Models/BadgeUrls.cs
 src/CocApi.Rest/Models/Clan.cs
+src/CocApi.Rest/Models/ClanCapital.cs
+src/CocApi.Rest/Models/ClanDistrictData.cs
 src/CocApi.Rest/Models/ClanList.cs
 src/CocApi.Rest/Models/ClanListEntry.cs
 src/CocApi.Rest/Models/ClanMember.cs
@@ -152,6 +157,7 @@ src/CocApi.Rest/Models/Result.cs
 src/CocApi.Rest/Models/Role.cs
 src/CocApi.Rest/Models/VerifyTokenRequest.cs
 src/CocApi.Rest/Models/VerifyTokenResponse.cs
+src/CocApi.Rest/Models/VillageType.cs
 src/CocApi.Rest/Models/WarClan.cs
 src/CocApi.Rest/Models/WarClanLogEntry.cs
 src/CocApi.Rest/Models/WarFrequency.cs

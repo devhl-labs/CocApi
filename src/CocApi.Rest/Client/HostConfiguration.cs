@@ -49,6 +49,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new DateTimeNullableJsonConverter());
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
             _jsonOptions.Converters.Add(new ClanJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalJsonConverter());
+            _jsonOptions.Converters.Add(new ClanDistrictDataJsonConverter());
             _jsonOptions.Converters.Add(new ClanListJsonConverter());
             _jsonOptions.Converters.Add(new ClanListEntryJsonConverter());
             _jsonOptions.Converters.Add(new ClanMemberJsonConverter());
@@ -105,6 +107,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new RoleNullableConverter());
             _jsonOptions.Converters.Add(new VerifyTokenRequestJsonConverter());
             _jsonOptions.Converters.Add(new VerifyTokenResponseJsonConverter());
+            _jsonOptions.Converters.Add(new VillageTypeConverter());
+            _jsonOptions.Converters.Add(new VillageTypeNullableConverter());
             _jsonOptions.Converters.Add(new WarClanJsonConverter());
             _jsonOptions.Converters.Add(new WarClanLogEntryJsonConverter());
             _jsonOptions.Converters.Add(new WarFrequencyConverter());

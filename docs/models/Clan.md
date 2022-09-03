@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [optional] [readonly] 
+**ClanCapital** | [**ClanCapital**](ClanCapital.md) |  | [optional] [readonly] 
 **ClanLevel** | **int** |  | [optional] [readonly] 
 **ClanPoints** | **int** |  | [optional] [readonly] 
 **ClanVersusPoints** | **int** |  | [optional] [readonly] 

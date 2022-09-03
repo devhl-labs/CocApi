@@ -1,14 +1,12 @@
-﻿# CocApi.Rest.Models.PlayerItemLevel
+﻿# CocApi.Rest.Models.ClanDistrictData
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Level** | **int** |  | [optional] [readonly] 
-**MaxLevel** | **int** |  | [optional] [readonly] 
+**DistrictHallLevel** | **int** |  | [optional] [readonly] 
+**Id** | **int** |  | [optional] [readonly] 
 **Name** | **string** |  | [optional] [readonly] 
-**Village** | **VillageType** |  | [optional] [readonly] 
-**SuperTroopIsActive** | **bool?** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

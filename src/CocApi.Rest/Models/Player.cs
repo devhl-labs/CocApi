@@ -36,6 +36,7 @@ namespace CocApi.Rest.Models
         /// <param name="bestTrophies">bestTrophies</param>
         /// <param name="bestVersusTrophies">bestVersusTrophies</param>
         /// <param name="builderHallLevel">builderHallLevel</param>
+        /// <param name="clanCapitalContributions">clanCapitalContributions</param>
         /// <param name="defenseWins">defenseWins</param>
         /// <param name="donations">donations</param>
         /// <param name="donationsReceived">donationsReceived</param>
@@ -59,7 +60,7 @@ namespace CocApi.Rest.Models
         /// <param name="townHallWeaponLevel">townHallWeaponLevel</param>
         /// <param name="warPreference">warPreference</param>
         [JsonConstructor]
-        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderHallLevel, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int versusBattleWinCount, int versusBattleWins, int versusTrophies, int warStars, PlayerClan? clan = default, League? league = default, PlayerLegendStatistics? legendStatistics = default, Role? role = default, int? townHallWeaponLevel = default, WarPreference? warPreference = default)
+        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderHallLevel, int clanCapitalContributions, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int versusBattleWinCount, int versusBattleWins, int versusTrophies, int warStars, PlayerClan? clan = default, League? league = default, PlayerLegendStatistics? legendStatistics = default, Role? role = default, int? townHallWeaponLevel = default, WarPreference? warPreference = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -124,6 +125,9 @@ namespace CocApi.Rest.Models
             if (achievements == null)
                 throw new ArgumentNullException("achievements is a required property for Player and cannot be null.");
 
+            if (clanCapitalContributions == null)
+                throw new ArgumentNullException("clanCapitalContributions is a required property for Player and cannot be null.");
+
             if (versusBattleWinCount == null)
                 throw new ArgumentNullException("versusBattleWinCount is a required property for Player and cannot be null.");
 
@@ -135,6 +139,7 @@ namespace CocApi.Rest.Models
             BestTrophies = bestTrophies;
             BestVersusTrophies = bestVersusTrophies;
             BuilderHallLevel = builderHallLevel;
+            ClanCapitalContributions = clanCapitalContributions;
             DefenseWins = defenseWins;
             Donations = donations;
             DonationsReceived = donationsReceived;
@@ -200,6 +205,12 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("builderHallLevel")]
         public int BuilderHallLevel { get; }
+
+        /// <summary>
+        /// Gets or Sets ClanCapitalContributions
+        /// </summary>
+        [JsonPropertyName("clanCapitalContributions")]
+        public int ClanCapitalContributions { get; }
 
         /// <summary>
         /// Gets or Sets DefenseWins
@@ -334,6 +345,7 @@ namespace CocApi.Rest.Models
             sb.Append("  BestTrophies: ").Append(BestTrophies).Append("\n");
             sb.Append("  BestVersusTrophies: ").Append(BestVersusTrophies).Append("\n");
             sb.Append("  BuilderHallLevel: ").Append(BuilderHallLevel).Append("\n");
+            sb.Append("  ClanCapitalContributions: ").Append(ClanCapitalContributions).Append("\n");
             sb.Append("  DefenseWins: ").Append(DefenseWins).Append("\n");
             sb.Append("  Donations: ").Append(Donations).Append("\n");
             sb.Append("  DonationsReceived: ").Append(DonationsReceived).Append("\n");
@@ -406,6 +418,11 @@ namespace CocApi.Rest.Models
                     BuilderHallLevel == input.BuilderHallLevel ||
                     (BuilderHallLevel != null &&
                     BuilderHallLevel.Equals(input.BuilderHallLevel))
+                ) && 
+                (
+                    ClanCapitalContributions == input.ClanCapitalContributions ||
+                    (ClanCapitalContributions != null &&
+                    ClanCapitalContributions.Equals(input.ClanCapitalContributions))
                 ) && 
                 (
                     DefenseWins == input.DefenseWins ||
@@ -537,6 +554,7 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + BestTrophies.GetHashCode();
                 hashCode = (hashCode * 59) + BestVersusTrophies.GetHashCode();
                 hashCode = (hashCode * 59) + BuilderHallLevel.GetHashCode();
+                hashCode = (hashCode * 59) + ClanCapitalContributions.GetHashCode();
                 hashCode = (hashCode * 59) + DefenseWins.GetHashCode();
                 hashCode = (hashCode * 59) + Donations.GetHashCode();
                 hashCode = (hashCode * 59) + DonationsReceived.GetHashCode();
@@ -604,6 +622,7 @@ namespace CocApi.Rest.Models
             int bestTrophies = default;
             int bestVersusTrophies = default;
             int builderHallLevel = default;
+            int clanCapitalContributions = default;
             int defenseWins = default;
             int donations = default;
             int donationsReceived = default;
@@ -656,6 +675,9 @@ namespace CocApi.Rest.Models
                             break;
                         case "builderHallLevel":
                             builderHallLevel = reader.GetInt32();
+                            break;
+                        case "clanCapitalContributions":
+                            clanCapitalContributions = reader.GetInt32();
                             break;
                         case "defenseWins":
                             defenseWins = reader.GetInt32();
@@ -732,7 +754,7 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new Player(achievements, attackWins, bestTrophies, bestVersusTrophies, builderHallLevel, defenseWins, donations, donationsReceived, expLevel, heroes, labels, name, spells, tag, townHallLevel, troops, trophies, versusBattleWinCount, versusBattleWins, versusTrophies, warStars, clan, league, legendStatistics, role, townHallWeaponLevel, warPreference);
+            return new Player(achievements, attackWins, bestTrophies, bestVersusTrophies, builderHallLevel, clanCapitalContributions, defenseWins, donations, donationsReceived, expLevel, heroes, labels, name, spells, tag, townHallLevel, troops, trophies, versusBattleWinCount, versusBattleWins, versusTrophies, warStars, clan, league, legendStatistics, role, townHallWeaponLevel, warPreference);
         }
 
         /// <summary>
@@ -752,6 +774,7 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("bestTrophies", (int)player.BestTrophies);
             writer.WriteNumber("bestVersusTrophies", (int)player.BestVersusTrophies);
             writer.WriteNumber("builderHallLevel", (int)player.BuilderHallLevel);
+            writer.WriteNumber("clanCapitalContributions", (int)player.ClanCapitalContributions);
             writer.WriteNumber("defenseWins", (int)player.DefenseWins);
             writer.WriteNumber("donations", (int)player.Donations);
             writer.WriteNumber("donationsReceived", (int)player.DonationsReceived);

@@ -39,7 +39,7 @@ namespace CocApi.Rest.Models
         /// <param name="village">village</param>
         /// <param name="completionInfo">completionInfo</param>
         [JsonConstructor]
-        internal PlayerAchievementProgress(string info, string name, int stars, int target, int value, string village, string? completionInfo = default)
+        internal PlayerAchievementProgress(string info, string name, int stars, int target, int value, VillageType village, string? completionInfo = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -75,6 +75,12 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
+        /// Gets or Sets Village
+        /// </summary>
+        [JsonPropertyName("village")]
+        public VillageType Village { get; }
+
+        /// <summary>
         /// Gets or Sets Info
         /// </summary>
         [JsonPropertyName("info")]
@@ -103,12 +109,6 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("value")]
         public int Value { get; }
-
-        /// <summary>
-        /// Gets or Sets Village
-        /// </summary>
-        [JsonPropertyName("village")]
-        public string Village { get; }
 
         /// <summary>
         /// Gets or Sets CompletionInfo
@@ -244,7 +244,7 @@ namespace CocApi.Rest.Models
             int stars = default;
             int target = default;
             int value = default;
-            string village = default;
+            VillageType village = default;
             string completionInfo = default;
 
             while (reader.Read())
@@ -278,7 +278,8 @@ namespace CocApi.Rest.Models
                             value = reader.GetInt32();
                             break;
                         case "village":
-                            village = reader.GetString();
+                            string villageRawValue = reader.GetString();
+                            village = VillageTypeConverter.FromString(villageRawValue);
                             break;
                         case "completionInfo":
                             completionInfo = JsonSerializer.Deserialize<string>(ref reader, options);
@@ -308,7 +309,11 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("stars", (int)playerAchievementProgress.Stars);
             writer.WriteNumber("target", (int)playerAchievementProgress.Target);
             writer.WriteNumber("value", (int)playerAchievementProgress.Value);
-            writer.WriteString("village", playerAchievementProgress.Village);
+            var villageRawValue = VillageTypeConverter.ToJsonValue(playerAchievementProgress.Village);
+            if (villageRawValue != null)
+                writer.WriteString("village", villageRawValue);
+            else
+                writer.WriteNull("village");
             writer.WritePropertyName("completionInfo");
             JsonSerializer.Serialize(writer, playerAchievementProgress.CompletionInfo, options);
 

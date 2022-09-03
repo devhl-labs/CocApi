@@ -113,6 +113,7 @@ $clanConstructor = @"
         /// Initializes a new instance of the <see cref="Clan" /> class.
         /// </summary>
         /// <param name="badgeUrls">badgeUrls</param>
+        /// <param name="clanCapital">clanCapital</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="clanPoints">clanPoints</param>
         /// <param name="clanVersusPoints">clanVersusPoints</param>
@@ -134,7 +135,7 @@ $clanConstructor = @"
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal Clan(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        internal Clan(BadgeUrls badgeUrls, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -181,6 +182,9 @@ $clanConstructor = @"
             if (description == null)
                 throw new ArgumentNullException("description is a required property for Clan and cannot be null.");
 
+            if (clanCapital == null)
+                throw new ArgumentNullException("clanCapital is a required property for Clan and cannot be null.");
+
             if (badgeUrls == null)
                 throw new ArgumentNullException("badgeUrls is a required property for Clan and cannot be null.");
 
@@ -188,6 +192,7 @@ $clanConstructor = @"
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             BadgeUrls = badgeUrls;
+            ClanCapital = clanCapital;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
             ClanVersusPoints = clanVersusPoints;
@@ -501,8 +506,8 @@ foreach ($file in $allCodeFiles)
 
         # this is an openapi bug and should not be required
         $content=$content.Replace(
-            "return new Clan(badgeUrls, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);",
-            "return new Clan(badgeUrls, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);")
+            "return new Clan(badgeUrls, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);",
+            "return new Clan(badgeUrls, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);")
     }
 
     if ($file.name -eq "Role.cs"){
@@ -553,14 +558,18 @@ foreach ($file in $allCodeFiles)
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {
-        try {
-            Set-Content $file.PSPath $content -ErrorAction Stop
-        }
-        catch {
-            Write-Warning "Failed saving file $($file.FullName). Trying again in two seconds."
-            Start-Sleep -Seconds 2
-            Set-Content $file.PSPath $content
-        }
+        $isSet = $false
+        # when Visual Studio is open, sometimes writing the content will fail, so do this in a loop
+        do {
+            try {
+                Set-Content $file.PSPath $content -ErrorAction Stop
+                $isSet = $true
+            }
+            catch {
+                Write-Warning "Failed saving file $($file.FullName). Trying again..."
+                Start-Sleep -Milliseconds 500
+            }
+        } while(!$isSet)
     }
     $content = $null
 }

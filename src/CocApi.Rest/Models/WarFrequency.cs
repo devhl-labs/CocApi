@@ -56,7 +56,12 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Enum Always for value: always
         /// </summary>
-        Always = 6
+        Always = 6,
+
+        /// <summary>
+        /// Enum Any for value: any
+        /// </summary>
+        Any = 7
     }
 
     public class WarFrequencyConverter : JsonConverter<WarFrequency>
@@ -81,6 +86,9 @@ namespace CocApi.Rest.Models
             if (value == "always")
                 return WarFrequency.Always;
 
+            if (value == "any")
+                return WarFrequency.Any;
+
             throw new NotImplementedException($"Could not convert value to type WarFrequency: '{value}'");
         }
 
@@ -104,6 +112,9 @@ namespace CocApi.Rest.Models
             if (value == "always")
                 return WarFrequency.Always;
 
+            if (value == "any")
+                return WarFrequency.Any;
+
             return null;
         }
 
@@ -126,6 +137,9 @@ namespace CocApi.Rest.Models
 
             if (value == WarFrequency.Always)
                 return "always";
+
+            if (value == WarFrequency.Any)
+                return "any";
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }

@@ -47,6 +47,12 @@ namespace CocApi.Rest.Models
         public BadgeUrls BadgeUrls { get; }
 
         /// <summary>
+        /// Gets or Sets ClanCapital
+        /// </summary>
+        [JsonPropertyName("clanCapital")]
+        public ClanCapital ClanCapital { get; }
+
+        /// <summary>
         /// Gets or Sets ClanLevel
         /// </summary>
         [JsonPropertyName("clanLevel")]
@@ -151,6 +157,7 @@ namespace CocApi.Rest.Models
             StringBuilder sb = new StringBuilder();
             sb.Append("class Clan {\n");
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
+            sb.Append("  ClanCapital: ").Append(ClanCapital).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  ClanPoints: ").Append(ClanPoints).Append("\n");
             sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
@@ -199,6 +206,11 @@ namespace CocApi.Rest.Models
                     BadgeUrls == input.BadgeUrls ||
                     (BadgeUrls != null &&
                     BadgeUrls.Equals(input.BadgeUrls))
+                ) && 
+                (
+                    ClanCapital == input.ClanCapital ||
+                    (ClanCapital != null &&
+                    ClanCapital.Equals(input.ClanCapital))
                 ) && 
                 (
                     ClanLevel == input.ClanLevel ||
@@ -308,6 +320,7 @@ namespace CocApi.Rest.Models
             {
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
+                hashCode = (hashCode * 59) + ClanCapital.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + ClanPoints.GetHashCode();
                 hashCode = (hashCode * 59) + ClanVersusPoints.GetHashCode();
@@ -368,6 +381,7 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = reader.TokenType;
 
             BadgeUrls badgeUrls = default;
+            ClanCapital clanCapital = default;
             int clanLevel = default;
             int clanPoints = default;
             int clanVersusPoints = default;
@@ -405,6 +419,9 @@ namespace CocApi.Rest.Models
                     {
                         case "badgeUrls":
                             badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref reader, options);
+                            break;
+                        case "clanCapital":
+                            clanCapital = JsonSerializer.Deserialize<ClanCapital>(ref reader, options);
                             break;
                         case "clanLevel":
                             clanLevel = reader.GetInt32();
@@ -473,7 +490,7 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new Clan(badgeUrls, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);
+            return new Clan(badgeUrls, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);
         }
 
         /// <summary>
@@ -489,6 +506,8 @@ namespace CocApi.Rest.Models
 
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clan.BadgeUrls, options);
+            writer.WritePropertyName("clanCapital");
+            JsonSerializer.Serialize(writer, clan.ClanCapital, options);
             writer.WriteNumber("clanLevel", (int)clan.ClanLevel);
             writer.WriteNumber("clanPoints", (int)clan.ClanPoints);
             writer.WriteNumber("clanVersusPoints", (int)clan.ClanVersusPoints);
