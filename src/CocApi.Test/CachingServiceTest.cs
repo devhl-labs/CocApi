@@ -5,32 +5,31 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CocApi.Test
+namespace CocApi.Test;
+
+public class CachingServiceTest : BackgroundService
 {
-    public class CachingServiceTest : BackgroundService
+    public CachingServiceTest(ILogger<CachingService> logger, CachingService cachingService)
     {
-        public CachingServiceTest(ILogger<CachingService> logger, CachingService cachingService)
-        {
-            Logger = logger;
-            CachingService = cachingService;
-        }
+        Logger = logger;
+        CachingService = cachingService;
+    }
 
-        public ILogger<CachingService> Logger { get; }
-        public CachingService CachingService { get; }
+    public ILogger<CachingService> Logger { get; }
+    public CachingService CachingService { get; }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
 
-            Logger.LogInformation("pausing downloading");
+        Logger.LogInformation("pausing downloading");
 
-            await CachingService.StopAsync();
+        await CachingService.StopAsync();
 
-            await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
+        await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
 
-            Logger.LogInformation("resuming downloading");
+        Logger.LogInformation("resuming downloading");
 
-            await CachingService.StartAsync();
-        }
+        await CachingService.StartAsync();
     }
 }

@@ -7,28 +7,27 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace CocApi.Test
+namespace CocApi.Test;
+
+public class CustomPlayersClient : Cache.PlayersClient
 {
-    public class CustomPlayersClient : Cache.PlayersClient
+    public CustomPlayersClient(
+        ILogger<CustomPlayersClient> logger,
+        IServiceScopeFactory scopeFactory, 
+        IPlayersApi playersApi,
+        Synchronizer synchronizer,
+        PlayerService playerService,
+        MemberService memberService,
+        IOptions<CacheOptions> options)
+    : base(logger, playersApi, scopeFactory, synchronizer, playerService, memberService, options)
     {
-        public CustomPlayersClient(
-            ILogger<CustomPlayersClient> logger,
-            IServiceScopeFactory scopeFactory, 
-            IPlayersApi playersApi,
-            Synchronizer synchronizer,
-            PlayerService playerService,
-            MemberService memberService,
-            IOptions<CacheOptions> options)
-        : base(logger, playersApi, scopeFactory, synchronizer, playerService, memberService, options)
-        {
-            PlayerUpdated += OnPlayerUpdated;
-        }
+        PlayerUpdated += OnPlayerUpdated;
+    }
 
-        private Task OnPlayerUpdated(object sender, PlayerUpdatedEventArgs e)
-        {
-            Logger.LogInformation("Player {playerTag} {playerName} has updated.", e.Fetched.Tag, e.Fetched.Name);
+    private Task OnPlayerUpdated(object sender, PlayerUpdatedEventArgs e)
+    {
+        Logger.LogInformation("Player {playerTag} {playerName} has updated.", e.Fetched.Tag, e.Fetched.Name);
 
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
