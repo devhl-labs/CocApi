@@ -43,14 +43,14 @@ public class TestService : IHostedService
     {
         await PlayersClient.AddOrUpdateAsync("#29GPU9CUJ"); //squirrel man
 
-        await ClansClient.AddOrUpdateAsync("#8J82PV0C", downloadMembers: false); //fysb unbuckled
-        await ClansClient.AddOrUpdateAsync("#22G0JJR8", downloadMembers: false); //fysb
-        await ClansClient.AddOrUpdateAsync("#28RUGUYJU", downloadMembers: false); //devhls lab
-        await ClansClient.AddOrUpdateAsync("#2C8V29YJ", downloadMembers: false); // russian clan
-        await ClansClient.AddOrUpdateAsync("#JYULPG28", downloadMembers: false); // inphase
-        await ClansClient.AddOrUpdateAsync("#2P0YUY0L0", downloadMembers: false); // testing closed war log
-        await ClansClient.AddOrUpdateAsync("#PJYPYG9P", downloadMembers: false); // war heads
-        await ClansClient.AddOrUpdateAsync("#8PU9VR82", downloadMembers: false); // kronos
+        await ClansClient.AddOrUpdateAsync("#8J82PV0C"); //fysb unbuckled
+        await ClansClient.AddOrUpdateAsync("#22G0JJR8"); //fysb
+        await ClansClient.AddOrUpdateAsync("#28RUGUYJU"); //devhls lab
+        await ClansClient.AddOrUpdateAsync("#2C8V29YJ"); // russian clan
+        await ClansClient.AddOrUpdateAsync("#JYULPG28"); // inphase
+        await ClansClient.AddOrUpdateAsync("#2P0YUY0L0"); // testing closed war log
+        await ClansClient.AddOrUpdateAsync("#PJYPYG9P"); // war heads
+        await ClansClient.AddOrUpdateAsync("#8PU9VR82"); // kronos
         await ClansClient.AddOrUpdateAsync("#2900Y0PP2"); // crimine sas
     }
 

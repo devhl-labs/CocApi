@@ -107,7 +107,7 @@ namespace CocApi.Cache.Services
 
         private async Task UpdateCwlWarAsync(IClansApi clansApi, CachedWar cachedWar, CancellationToken cancellationToken)
         {
-            CachedWar? fetched = await CachedWar
+            CachedWar fetched = await CachedWar
                     .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, Ttl, clansApi, cancellationToken)
                     .ConfigureAwait(false);
 

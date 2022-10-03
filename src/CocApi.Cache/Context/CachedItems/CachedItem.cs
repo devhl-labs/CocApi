@@ -34,7 +34,9 @@ namespace CocApi.Cache.Context
                     lock (_contentLock)
                         if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
                         {
-                            _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
+                            // when the clan is not in cwl war, all the properties will be empty except state: notInWar so we cant deserialize this
+                            if (this is not CachedClanWarLeagueGroup || !RawContent.Contains("notInWar"))
+                                _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
 
                             if (_content is ClanWar clanWar)
                                 if (this is CachedWar cachedWar)
@@ -86,7 +88,7 @@ namespace CocApi.Cache.Context
                 : DateTime.UtcNow.Add(localExpiration);
         }
 
-        protected void UpdateFrom(CachedItem<T?> fetched)
+        protected void UpdateFrom(CachedItem<T> fetched)
         {
             StatusCode = fetched.StatusCode;
             DownloadedAt = fetched.DownloadedAt;

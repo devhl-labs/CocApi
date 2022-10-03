@@ -90,7 +90,7 @@ namespace CocApi.Cache.Services
 
             try
             {
-                foreach (CachedClan cachedClan in cachedClans)
+                foreach (CachedClan cachedClan in cachedClans.Where(c => c.Group.Content != null)) // content will be null if the RawContent contains notInWar
                 {
                     if (!Synchronizer.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
                         continue;
@@ -218,7 +218,7 @@ namespace CocApi.Cache.Services
         {
             try
             {
-                ApiResponse<Rest.Models.ClanWar>? apiResponse = null;
+                ApiResponse<Rest.Models.ClanWar?>? apiResponse = null;
 
                 try
                 {

@@ -145,7 +145,7 @@ namespace CocApi.Cache.Services
 
         private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedClanWar? fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
+            CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
             {
@@ -171,7 +171,7 @@ namespace CocApi.Cache.Services
 
         private async Task MonitorGroupAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
         {
-            CachedClanWarLeagueGroup? fetched = await CachedClanWarLeagueGroup
+            CachedClanWarLeagueGroup fetched = await CachedClanWarLeagueGroup
                 .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken)
                 .ConfigureAwait(false);
 

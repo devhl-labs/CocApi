@@ -13,7 +13,7 @@ namespace CocApi.Cache.Context
         {
             try
             {
-                ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.FetchClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
+                ApiResponse<ClanWarLeagueGroup?> apiResponse = await clansApi.FetchClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
                 return new CachedClanWarLeagueGroup(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
             }
@@ -46,7 +46,7 @@ namespace CocApi.Cache.Context
         {
         }
 
-        private CachedClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponse, TimeSpan localExpiration)
+        private CachedClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponse, TimeSpan localExpiration)
         {
             UpdateFrom(apiResponse, localExpiration);
 
