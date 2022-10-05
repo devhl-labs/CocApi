@@ -201,31 +201,34 @@ namespace CocApi
             return formattedTag;
         }
 
-        [return: NotNullIfNotNull("userInput")]
-        private static string? NormalizeTag(string? userInput)
+        /// <summary>
+        /// Attempts to correct the given string to make a proper tag. The result may not be a valid tag.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        [return: NotNullIfNotNull("value")]
+        public static string? NormalizeTag(string? value)
         {
-            if (userInput == null)
-                return userInput;
+            if (value == null)
+                return value;
 
-            if (userInput.StartsWith("\"") && userInput.EndsWith("\"") && userInput.Length > 2)
-                userInput = userInput[1..^1];
+            if (value.StartsWith("\"") && value.EndsWith("\"") && value.Length > 2)
+                value = value[1..^1];
 
-            else if (userInput.StartsWith("`") && userInput.EndsWith("`") && userInput.Length > 2)
-                userInput = userInput[1..^1];
+            else if (value.StartsWith("`") && value.EndsWith("`") && value.Length > 2)
+                value = value[1..^1];
 
-            else if (userInput.StartsWith("'") && userInput.EndsWith("'") && userInput.Length > 2)
-                userInput = userInput[1..^1];
+            else if (value.StartsWith("'") && value.EndsWith("'") && value.Length > 2)
+                value = value[1..^1];
 
-            string formattedTag = userInput.ToUpper();
+            value = value.ToUpper().Replace("O", "0");
 
-            formattedTag = formattedTag.Replace("O", "0");
+            value = Regex.Replace(value, "#+", "#");
 
-            formattedTag = Regex.Replace(formattedTag, "#+", "#");
+            if (!value.StartsWith("#"))
+                value = $"#{value}";
 
-            if (!formattedTag.StartsWith("#"))
-                formattedTag = $"#{formattedTag}";
-
-            return formattedTag;
+            return value;
         }
 
         public static bool IsCwlEnabled
