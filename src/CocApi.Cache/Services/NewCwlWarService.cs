@@ -80,7 +80,7 @@ namespace CocApi.Cache.Services
 
             Dictionary<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> seasons = new();
 
-            List<Task<CachedWar>> announceNewWarTasks = new();
+            ConcurrentBag<Task<CachedWar>> announceNewWarTasks = new();
 
             ConcurrentDictionary<string, byte?> announcedWarTags = new();
 
@@ -145,8 +145,9 @@ namespace CocApi.Cache.Services
 
                     await Task.WhenAll(announceNewWarTasks).ConfigureAwait(false);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    Logger.LogError(e, "An exception occured while processing new cwl wars.");
                 }
 
                 foreach (var task in announceNewWarTasks.Where(t => t.IsCompletedSuccessfully))
@@ -210,9 +211,9 @@ namespace CocApi.Cache.Services
         private async Task ProcessRequest(
             IClansApi clansApi,
             ConcurrentDictionary<string, byte?> announcedWars,
-            KeyValuePair<string, Rest.Models.ClanWarLeagueGroup> kvp, 
-            List<CachedClan> cachedClans, 
-            List<Task<CachedWar>> announceNewWarTasks, 
+            KeyValuePair<string, Rest.Models.ClanWarLeagueGroup> kvp,
+            List<CachedClan> cachedClans,
+            ConcurrentBag<Task<CachedWar>> announceNewWarTasks,
             KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> warTags,
             CancellationToken cancellationToken)
         {
