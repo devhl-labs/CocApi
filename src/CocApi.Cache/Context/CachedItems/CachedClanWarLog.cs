@@ -5,58 +5,57 @@ using CocApi.Rest.IApis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
-namespace CocApi.Cache.Context
+namespace CocApi.Cache.Context;
+
+public class CachedClanWarLog : CachedItem<ClanWarLog>
 {
-    public class CachedClanWarLog : CachedItem<ClanWarLog>
+    internal static async Task<CachedClanWarLog> FromClanWarLogResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
     {
-        internal static async Task<CachedClanWarLog> FromClanWarLogResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
+        try
         {
-            try
-            {
-                ApiResponse<ClanWarLog> apiResponse = await clansApi.FetchClanWarLogResponseAsync(tag, cancellationToken: cancellationToken);
+            ApiResponse<ClanWarLog> apiResponse = await clansApi.FetchClanWarLogResponseAsync(tag, cancellationToken: cancellationToken);
 
-                return new CachedClanWarLog(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
-            }
-            catch (Exception e)
-            {
-                cancellationToken?.ThrowIfCancellationRequested();
-
-                return new CachedClanWarLog(await ttl.TimeToLiveOrDefaultAsync<ClanWarLog>(e).ConfigureAwait(false));
-            }
+            return new CachedClanWarLog(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
-
-        internal static bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
+        catch (Exception e)
         {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+            cancellationToken?.ThrowIfCancellationRequested();
 
-            if (fetched.Content == null)
-                return false;
-
-            return !fetched.Content.Equals(stored.Content);
+            return new CachedClanWarLog(await ttl.TimeToLiveOrDefaultAsync<ClanWarLog>(e).ConfigureAwait(false));
         }
+    }
 
-        public CachedClanWarLog()
-        {
+    internal static bool HasUpdated(CachedClanWarLog stored, CachedClanWarLog fetched)
+    {
+        if (stored.ExpiresAt > fetched.ExpiresAt)
+            return false;
 
-        }
+        if (fetched.Content == null)
+            return false;
 
-        private CachedClanWarLog(ApiResponse<ClanWarLog> apiResponse, TimeSpan localExpiration)
-        {
-            UpdateFrom(apiResponse, localExpiration);
-        }
+        return !fetched.Content.Equals(stored.Content);
+    }
 
-        private CachedClanWarLog(TimeSpan localExpiration)
-        {
-            UpdateFrom(localExpiration);
-        }
+    public CachedClanWarLog()
+    {
 
-        internal void UpdateFrom(CachedClanWarLog fetched)
-        {
-            if (ExpiresAt > fetched.ExpiresAt)
-                return;
+    }
 
-            base.UpdateFrom(fetched);
-        }
+    private CachedClanWarLog(ApiResponse<ClanWarLog> apiResponse, TimeSpan localExpiration)
+    {
+        UpdateFrom(apiResponse, localExpiration);
+    }
+
+    private CachedClanWarLog(TimeSpan localExpiration)
+    {
+        UpdateFrom(localExpiration);
+    }
+
+    internal void UpdateFrom(CachedClanWarLog fetched)
+    {
+        if (ExpiresAt > fetched.ExpiresAt)
+            return;
+
+        base.UpdateFrom(fetched);
     }
 }

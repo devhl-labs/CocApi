@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Threading;
 
-namespace CocApi.Cache
-{
-    public class CancellableEventArgs : EventArgs
-    {
-        public CancellationToken CancellationToken {get;}
+namespace CocApi.Cache;
 
-        internal CancellableEventArgs(CancellationToken cancellationToken)
-        {
-            CancellationToken = cancellationToken;
-        }
+public class CancellableEventArgs : EventArgs
+{
+    public CancellationToken CancellationToken {get;}
+
+    internal CancellableEventArgs(CancellationToken cancellationToken)
+    {
+        CancellationToken = cancellationToken;
     }
 }

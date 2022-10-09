@@ -5,74 +5,73 @@ using CocApi.Rest.IApis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
-namespace CocApi.Cache.Context
+namespace CocApi.Cache.Context;
+
+public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
 {
-    public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
+    internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
     {
-        internal static async Task<CachedClanWarLeagueGroup> FromClanWarLeagueGroupResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
+        try
         {
-            try
-            {
-                ApiResponse<ClanWarLeagueGroup?> apiResponse = await clansApi.FetchClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWarLeagueGroup?> apiResponse = await clansApi.FetchClanWarLeagueGroupResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClanWarLeagueGroup(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
-            }
-            catch (Exception e)
-            {
-                cancellationToken?.ThrowIfCancellationRequested();
-
-                return new CachedClanWarLeagueGroup(await ttl.TimeToLiveOrDefaultAsync<ClanWarLeagueGroup>(e).ConfigureAwait(false));
-            }
+            return new CachedClanWarLeagueGroup(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
-
-        internal static bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
+        catch (Exception e)
         {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+            cancellationToken?.ThrowIfCancellationRequested();
 
-            if (fetched.Content == null)
-                return false;
-
-            return !fetched.Content.Equals(stored.Content);
+            return new CachedClanWarLeagueGroup(await ttl.TimeToLiveOrDefaultAsync<ClanWarLeagueGroup>(e).ConfigureAwait(false));
         }
+    }
 
-        public DateTime? Season { get; internal set; }
+    internal static bool HasUpdated(CachedClanWarLeagueGroup stored, CachedClanWarLeagueGroup fetched)
+    {
+        if (stored.ExpiresAt > fetched.ExpiresAt)
+            return false;
 
-        public Rest.Models.GroupState? State { get; internal set; }
+        if (fetched.Content == null)
+            return false;
 
-        public bool Added { get; internal set; }
+        return !fetched.Content.Equals(stored.Content);
+    }
 
-        internal CachedClanWarLeagueGroup()
+    public DateTime? Season { get; internal set; }
+
+    public Rest.Models.GroupState? State { get; internal set; }
+
+    public bool Added { get; internal set; }
+
+    internal CachedClanWarLeagueGroup()
+    {
+    }
+
+    private CachedClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponse, TimeSpan localExpiration)
+    {
+        UpdateFrom(apiResponse, localExpiration);
+
+        Season = apiResponse.Content?.Season;
+
+        State = apiResponse.Content?.State;
+    }
+
+    private CachedClanWarLeagueGroup(TimeSpan localExpiration)
+    {
+        UpdateFrom(localExpiration);
+    }
+
+    internal void UpdateFrom(CachedClanWarLeagueGroup fetched)
+    {
+        if (ExpiresAt > fetched.ExpiresAt)
+            return;
+
+        base.UpdateFrom(fetched);
+
+        if (fetched.StatusCode == System.Net.HttpStatusCode.OK)
         {
-        }
+            Season = fetched.Season;
 
-        private CachedClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponse, TimeSpan localExpiration)
-        {
-            UpdateFrom(apiResponse, localExpiration);
-
-            Season = apiResponse.Content?.Season;
-
-            State = apiResponse.Content?.State;
-        }
-
-        private CachedClanWarLeagueGroup(TimeSpan localExpiration)
-        {
-            UpdateFrom(localExpiration);
-        }
-
-        internal void UpdateFrom(CachedClanWarLeagueGroup fetched)
-        {
-            if (ExpiresAt > fetched.ExpiresAt)
-                return;
-
-            base.UpdateFrom(fetched);
-
-            if (fetched.StatusCode == System.Net.HttpStatusCode.OK)
-            {
-                Season = fetched.Season;
-
-                State = fetched.State;
-            }
+            State = fetched.State;
         }
     }
 }

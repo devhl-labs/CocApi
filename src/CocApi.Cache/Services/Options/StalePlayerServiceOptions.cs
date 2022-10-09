@@ -1,8 +1,7 @@
 ﻿using ScheduledServices.Services.Options;
 
-namespace CocApi.Cache.Services.Options
+namespace CocApi.Cache.Services.Options;
+
+public class StalePlayerServiceOptions : RecurringServiceOptions
 {
-    public class StalePlayerServiceOptions : RecurringServiceOptions
-    {
-    }
 }

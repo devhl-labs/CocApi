@@ -11,111 +11,110 @@ using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
 
-namespace CocApi.Cache.Services
+namespace CocApi.Cache.Services;
+
+public sealed class MemberService : ServiceBase
 {
-    public sealed class MemberService : ServiceBase
+    internal event AsyncEventHandler<MemberUpdatedEventArgs>? MemberUpdated;
+
+
+    internal IApiFactory ApiFactory { get; }
+    internal Synchronizer Synchronizer { get; }
+    internal TimeToLiveProvider Ttl { get; }
+    internal static bool Instantiated { get; private set; }
+
+
+    public MemberService(
+        ILogger<MemberService> logger,
+        IServiceScopeFactory scopeFactory,
+        IApiFactory apiFactory,
+        Synchronizer synchronizer,
+        TimeToLiveProvider ttl,
+        IOptions<CacheOptions> options
+        )
+        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ClanMembers))
     {
-        internal event AsyncEventHandler<MemberUpdatedEventArgs>? MemberUpdated;
+        Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
+        ApiFactory = apiFactory;
+        Synchronizer = synchronizer;
+        Ttl = ttl;
+    }
 
 
-        internal IApiFactory ApiFactory { get; }
-        internal Synchronizer Synchronizer { get; }
-        internal TimeToLiveProvider Ttl { get; }
-        internal static bool Instantiated { get; private set; }
+    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    {
+        SetDateVariables();
 
+        using var scope = ScopeFactory.CreateScope();
 
-        public MemberService(
-            ILogger<MemberService> logger,
-            IServiceScopeFactory scopeFactory,
-            IApiFactory apiFactory,
-            Synchronizer synchronizer,
-            TimeToLiveProvider ttl,
-            IOptions<CacheOptions> options
-            )
-            : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ClanMembers))
+        CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+
+        CachedClan? cachedClan = await dbContext.Clans
+            .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, cancellationToken).ConfigureAwait(false);
+
+        _id = cachedClan != null
+            ? cachedClan.Id
+            : int.MinValue;
+
+        if (cachedClan?.Content == null)
+            return;
+
+        HashSet<string> updatingTags = new();
+
+        foreach (var member in cachedClan.Content.Members)
+            if (Synchronizer.UpdatingVillage.TryAdd(member.Tag, null))
+                updatingTags.Add(member.Tag);
+
+        try
         {
-            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            ApiFactory = apiFactory;
-            Synchronizer = synchronizer;
-            Ttl = ttl;
-        }
+            List<CachedPlayer> cachedPlayers = await dbContext.Players
+                .Where(p => updatingTags.Contains(p.Tag) || p.ClanTag == cachedClan.Tag)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-
-        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
-        {
-            SetDateVariables();
-
-            using var scope = ScopeFactory.CreateScope();
-
-            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
-
-            CachedClan? cachedClan = await dbContext.Clans
-                .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, cancellationToken).ConfigureAwait(false);
-
-            _id = cachedClan != null
-                ? cachedClan.Id
-                : int.MinValue;
-
-            if (cachedClan?.Content == null)
-                return;
-
-            HashSet<string> updatingTags = new();
+            List<Task> tasks = new();
 
             foreach (var member in cachedClan.Content.Members)
-                if (Synchronizer.UpdatingVillage.TryAdd(member.Tag, null))
-                    updatingTags.Add(member.Tag);
-
-            try
             {
-                List<CachedPlayer> cachedPlayers = await dbContext.Players
-                    .Where(p => updatingTags.Contains(p.Tag) || p.ClanTag == cachedClan.Tag)
-                    .ToListAsync(cancellationToken)
-                    .ConfigureAwait(false);
+                CachedPlayer? cachedPlayer = cachedPlayers.FirstOrDefault(p => p.Tag == member.Tag);
 
-                List<Task> tasks = new();
-
-                foreach (var member in cachedClan.Content.Members)
+                if (cachedPlayer == null)
                 {
-                    CachedPlayer? cachedPlayer = cachedPlayers.FirstOrDefault(p => p.Tag == member.Tag);
-
-                    if (cachedPlayer == null)
+                    cachedPlayer = new CachedPlayer(member.Tag)
                     {
-                        cachedPlayer = new CachedPlayer(member.Tag)
-                        {
-                            Download = false
-                        };
+                        Download = false
+                    };
 
-                        dbContext.Players.Add(cachedPlayer);
-                    }
-
-                    if (cachedPlayer.IsExpired)
-                        tasks.Add(MonitorMemberAsync(cachedPlayer, cachedClan, cancellationToken));
+                    dbContext.Players.Add(cachedPlayer);
                 }
 
-                foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.Members.Any(m => m.Tag == p.Tag)))
-                    player.ClanTag = null;
-
-                await Task.WhenAll(tasks);
-
-                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                if (cachedPlayer.IsExpired)
+                    tasks.Add(MonitorMemberAsync(cachedPlayer, cachedClan, cancellationToken));
             }
-            finally
-            {
-                foreach (string tag in updatingTags)
-                    Synchronizer.UpdatingVillage.TryRemove(tag, out _);
-            }
+
+            foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.Members.Any(m => m.Tag == p.Tag)))
+                player.ClanTag = null;
+
+            await Task.WhenAll(tasks);
+
+            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
-
-        private async Task MonitorMemberAsync(CachedPlayer cachedPlayer, CachedClan cachedClan, CancellationToken cancellationToken)
+        finally
         {
-            IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
-
-            CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, Ttl, playersApi, cancellationToken).ConfigureAwait(false);
-
-            if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && MemberUpdated != null)
-                await MemberUpdated(this, new(cachedClan, cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
-
-            cachedPlayer.UpdateFrom(fetched);
+            foreach (string tag in updatingTags)
+                Synchronizer.UpdatingVillage.TryRemove(tag, out _);
         }
+    }
+
+    private async Task MonitorMemberAsync(CachedPlayer cachedPlayer, CachedClan cachedClan, CancellationToken cancellationToken)
+    {
+        IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
+
+        CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, Ttl, playersApi, cancellationToken).ConfigureAwait(false);
+
+        if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && MemberUpdated != null)
+            await MemberUpdated(this, new(cachedClan, cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
+
+        cachedPlayer.UpdateFrom(fetched);
     }
 }

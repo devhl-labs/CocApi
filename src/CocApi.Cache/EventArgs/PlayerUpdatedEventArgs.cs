@@ -1,19 +1,18 @@
 ﻿using CocApi.Rest.Models;
 using System.Threading;
 
-namespace CocApi.Cache
+namespace CocApi.Cache;
+
+public class PlayerUpdatedEventArgs : CancellableEventArgs
 {
-    public class PlayerUpdatedEventArgs : CancellableEventArgs
+    public Player Fetched { get; }
+
+    public Player? Stored { get; }
+
+    internal PlayerUpdatedEventArgs(Player? stored, Player fetched, CancellationToken cancellationtoken) : base(cancellationtoken)
     {
-        public Player Fetched { get; }
+        Fetched = fetched;
 
-        public Player? Stored { get; }
-
-        internal PlayerUpdatedEventArgs(Player? stored, Player fetched, CancellationToken cancellationtoken) : base(cancellationtoken)
-        {
-            Fetched = fetched;
-
-            Stored = stored;
-        }
+        Stored = stored;
     }
 }

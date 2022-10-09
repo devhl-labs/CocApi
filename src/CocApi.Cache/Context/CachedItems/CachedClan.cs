@@ -5,111 +5,110 @@ using System.Threading.Tasks;
 using CocApi.Rest.IApis;
 using System.Threading;
 
-namespace CocApi.Cache.Context
+namespace CocApi.Cache.Context;
+
+public class CachedClan : CachedItem<Clan>
 {
-    public class CachedClan : CachedItem<Clan>
+    internal static async Task<CachedClan> FromClanResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken)
     {
-        internal static async Task<CachedClan> FromClanResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken)
+        try
         {
-            try
-            {
-                ApiResponse<Clan> apiResponse = await clansApi.FetchClanResponseAsync(tag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<Clan> apiResponse = await clansApi.FetchClanResponseAsync(tag, cancellationToken).ConfigureAwait(false);
 
-                return new CachedClan(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
-            }
-            catch (Exception e) 
-            {
-                cancellationToken?.ThrowIfCancellationRequested();
+            return new CachedClan(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
+        }
+        catch (Exception e) 
+        {
+            cancellationToken?.ThrowIfCancellationRequested();
 
-                return new CachedClan(tag, await ttl.TimeToLiveOrDefaultAsync<Clan>(e).ConfigureAwait(false));
-            }
+            return new CachedClan(tag, await ttl.TimeToLiveOrDefaultAsync<Clan>(e).ConfigureAwait(false));
+        }
+    }
+
+    internal static bool HasUpdated(CachedClan stored, CachedClan fetched)
+    {
+        if (stored.ExpiresAt > fetched.ExpiresAt)
+            return false;
+
+        if (fetched.Content == null)
+            return false;
+        
+        return !fetched.Content.Equals(stored.Content);
+    }
+
+    private CachedClan(string tag, ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
+    {
+        Tag = tag;
+
+        if (response.Content != null)
+            IsWarLogPublic = response.Content.IsWarLogPublic;
+    }
+
+    private CachedClan(string tag, TimeSpan localExpiration) : base(localExpiration)
+    {
+        Tag = tag;
+    }
+
+    public void UpdateFrom(CachedClan fetched)
+    {
+        if (ExpiresAt > fetched.ExpiresAt)
+            return;
+
+        IsWarLogPublic = fetched.IsWarLogPublic;
+
+        base.UpdateFrom(fetched);
+    }
+
+
+
+
+
+
+
+
+
+    public bool DownloadMembers { get; internal set; }
+
+    public bool? IsWarLogPublic { get; internal set; }
+
+    private string _tag;
+
+    public string Tag
+    {
+        get
+        {
+            return _tag;
         }
 
-        internal static bool HasUpdated(CachedClan stored, CachedClan fetched)
-        {
-            if (stored.ExpiresAt > fetched.ExpiresAt)
-                return false;
+        set { _tag = CocApi.Clash.FormatTag(value); }
+    }
 
-            if (fetched.Content == null)
-                return false;
-            
-            return !fetched.Content.Equals(stored.Content);
-        }
+    public int Id { get; internal set; }
 
-        private CachedClan(string tag, ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
-        {
-            Tag = tag;
+    public CachedClanWar CurrentWar { get; internal set; } = new();
 
-            if (response.Content != null)
-                IsWarLogPublic = response.Content.IsWarLogPublic;
-        }
+    public CachedClanWarLog WarLog { get; internal set; } = new();
 
-        private CachedClan(string tag, TimeSpan localExpiration) : base(localExpiration)
-        {
-            Tag = tag;
-        }
+    public CachedClanWarLeagueGroup Group { get; internal set; } = new();
 
-        public void UpdateFrom(CachedClan fetched)
-        {
-            if (ExpiresAt > fetched.ExpiresAt)
-                return;
+    public CachedClan(string tag, bool downloadClan, bool downloadWar, bool downloadLog, bool downloadGroup, bool downloadMembers)
+    {
+        Tag = tag;
 
-            IsWarLogPublic = fetched.IsWarLogPublic;
+        Download = downloadClan;
 
-            base.UpdateFrom(fetched);
-        }
+        CurrentWar.Download = downloadWar;
 
+        WarLog.Download = downloadLog;
 
+        Group.Download = downloadGroup;
 
+        DownloadMembers = downloadMembers;
+    }
 
-
-
-
-
-
-        public bool DownloadMembers { get; internal set; }
-
-        public bool? IsWarLogPublic { get; internal set; }
-
-        private string _tag;
-
-        public string Tag
-        {
-            get
-            {
-                return _tag;
-            }
-
-            set { _tag = CocApi.Clash.FormatTag(value); }
-        }
-
-        public int Id { get; internal set; }
-
-        public CachedClanWar CurrentWar { get; internal set; } = new();
-
-        public CachedClanWarLog WarLog { get; internal set; } = new();
-
-        public CachedClanWarLeagueGroup Group { get; internal set; } = new();
-
-        public CachedClan(string tag, bool downloadClan, bool downloadWar, bool downloadLog, bool downloadGroup, bool downloadMembers)
-        {
-            Tag = tag;
-
-            Download = downloadClan;
-
-            CurrentWar.Download = downloadWar;
-
-            WarLog.Download = downloadLog;
-
-            Group.Download = downloadGroup;
-
-            DownloadMembers = downloadMembers;
-        }
-
-        internal CachedClan()
-        {
-
-        }
+    internal CachedClan()
+    {
 
     }
+
 }

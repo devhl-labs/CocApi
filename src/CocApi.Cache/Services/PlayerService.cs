@@ -11,102 +11,101 @@ using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
 
-namespace CocApi.Cache.Services
+namespace CocApi.Cache.Services;
+
+public sealed class PlayerService : ServiceBase
 {
-    public sealed class PlayerService : ServiceBase
+    internal event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
+
+
+    internal Synchronizer Synchronizer { get; }
+    internal IApiFactory ApiFactory { get; }
+    public IOptions<CacheOptions> Options { get; }
+    internal static bool Instantiated { get; private set; }
+    internal TimeToLiveProvider TimeToLiveProvider { get; }
+
+
+    public PlayerService(
+        ILogger<PlayerService> logger,
+        IServiceScopeFactory scopeFactory,
+        TimeToLiveProvider timeToLiveProvider,
+        Synchronizer synchronizer,
+        IApiFactory apiFactory,
+        IOptions<CacheOptions> options)
+    : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Players))
     {
-        internal event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
+        Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
+        TimeToLiveProvider = timeToLiveProvider;
+        Synchronizer = synchronizer;
+        ApiFactory = apiFactory;
+        Options = options;
+    }
 
 
-        internal Synchronizer Synchronizer { get; }
-        internal IApiFactory ApiFactory { get; }
-        public IOptions<CacheOptions> Options { get; }
-        internal static bool Instantiated { get; private set; }
-        internal TimeToLiveProvider TimeToLiveProvider { get; }
+    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    {
+        SetDateVariables();
 
+        PlayerServiceOptions options = Options.Value.Players;
 
-        public PlayerService(
-            ILogger<PlayerService> logger,
-            IServiceScopeFactory scopeFactory,
-            TimeToLiveProvider timeToLiveProvider,
-            Synchronizer synchronizer,
-            IApiFactory apiFactory,
-            IOptions<CacheOptions> options)
-        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Players))
+        using var scope = ScopeFactory.CreateScope();
+
+        CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+
+        List<CachedPlayer> trackedPlayers = await dbContext.Players
+            .Where(p =>
+                (p.ExpiresAt ?? min) < expires &&
+                (p.KeepUntil ?? min) < now &&
+                p.Download &&
+                p.Id > _id)
+            .OrderBy(p => p.Id)
+            .Take(options.ConcurrentUpdates)
+            .ToListAsync(cancellationToken)
+            .ConfigureAwait(false);
+
+        _id = trackedPlayers.Count == options.ConcurrentUpdates
+            ? trackedPlayers.Max(c => c.Id)
+            : int.MinValue;
+
+        List<Task> tasks = new();
+
+        HashSet<string> updatingTags = new();
+
+        IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
+
+        try
         {
-            Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-            TimeToLiveProvider = timeToLiveProvider;
-            Synchronizer = synchronizer;
-            ApiFactory = apiFactory;
-            Options = options;
-        }
-
-
-        protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
-        {
-            SetDateVariables();
-
-            PlayerServiceOptions options = Options.Value.Players;
-
-            using var scope = ScopeFactory.CreateScope();
-
-            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
-
-            List<CachedPlayer> trackedPlayers = await dbContext.Players
-                .Where(p =>
-                    (p.ExpiresAt ?? min) < expires &&
-                    (p.KeepUntil ?? min) < now &&
-                    p.Download &&
-                    p.Id > _id)
-                .OrderBy(p => p.Id)
-                .Take(options.ConcurrentUpdates)
-                .ToListAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            _id = trackedPlayers.Count == options.ConcurrentUpdates
-                ? trackedPlayers.Max(c => c.Id)
-                : int.MinValue;
-
-            List<Task> tasks = new();
-
-            HashSet<string> updatingTags = new();
-
-            IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
-
-            try
+            foreach (CachedPlayer trackedPlayer in trackedPlayers)
             {
-                foreach (CachedPlayer trackedPlayer in trackedPlayers)
-                {
-                    if (!Synchronizer.UpdatingVillage.TryAdd(trackedPlayer.Tag, trackedPlayer))
-                        continue;
+                if (!Synchronizer.UpdatingVillage.TryAdd(trackedPlayer.Tag, trackedPlayer))
+                    continue;
 
-                    updatingTags.Add(trackedPlayer.Tag);
+                updatingTags.Add(trackedPlayer.Tag);
 
-                    if (trackedPlayer.Download && trackedPlayer.IsExpired)
-                        tasks.Add(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken));
-                }
-
-                await Task.WhenAll(tasks);
-
-                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                if (trackedPlayer.Download && trackedPlayer.IsExpired)
+                    tasks.Add(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken));
             }
-            finally
-            {
-                foreach (string tag in updatingTags)
-                    Synchronizer.UpdatingVillage.TryRemove(tag, out _);
-            }
+
+            await Task.WhenAll(tasks);
+
+            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
-
-        private async Task MonitorPlayerAsync(IPlayersApi playersApi, CachedPlayer cachedPlayer, CancellationToken cancellationToken)
+        finally
         {
-            CachedPlayer fetched = await CachedPlayer
-                .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, playersApi, cancellationToken)
-                .ConfigureAwait(false);
-
-            if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && PlayerUpdated != null)
-                await PlayerUpdated(this, new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
-
-            cachedPlayer.UpdateFrom(fetched);
+            foreach (string tag in updatingTags)
+                Synchronizer.UpdatingVillage.TryRemove(tag, out _);
         }
+    }
+
+    private async Task MonitorPlayerAsync(IPlayersApi playersApi, CachedPlayer cachedPlayer, CancellationToken cancellationToken)
+    {
+        CachedPlayer fetched = await CachedPlayer
+            .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, playersApi, cancellationToken)
+            .ConfigureAwait(false);
+
+        if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && PlayerUpdated != null)
+            await PlayerUpdated(this, new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
+
+        cachedPlayer.UpdateFrom(fetched);
     }
 }
