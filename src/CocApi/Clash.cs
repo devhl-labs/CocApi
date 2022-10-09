@@ -153,7 +153,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 6, 4, "Flame Flinger", 91)
         };
 
-        public const int MAX_TOWN_HALL_LEVEL = 14;
+        public const int MAX_TOWN_HALL_LEVEL = 15;
 
         public const int MAX_BUILD_BASE_LEVEL = 9;
 
