@@ -26,14 +26,15 @@ namespace CocApi.Rest.Client
             {
                 var cacheControlString = Headers.FirstOrDefault(h => h.Key == "Cache-Control").Value.FirstOrDefault();
 
-                if (cacheControlString == null)
+                if (cacheControlString != null)
+                    cacheControlString = cacheControlString.Replace("public ", "").Replace("max-age=", "");
+
+                if (cacheControlString == null || cacheControlString == "0")
                 {
-                    string? envVar = Environment.GetEnvironmentVariable("COCAPI_CURRENT_WAR_CACHE_CONTROL") ?? "5";
+                    string? envVar = Environment.GetEnvironmentVariable("COCAPI_CACHE_CONTROL") ?? "5";
 
                     return DateTime.UtcNow.AddSeconds(int.Parse(envVar));
                 }
-
-                cacheControlString = cacheControlString.Replace("public ", "").Replace("max-age=", "");
 
                 double cacheControl = double.Parse(cacheControlString);
 
