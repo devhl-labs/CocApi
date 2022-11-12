@@ -294,7 +294,7 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, warClan.BadgeUrls, options);
             writer.WriteNumber("clanLevel", (int)warClan.ClanLevel);
-            writer.WriteNumber("destructionPercentage", (int)warClan.DestructionPercentage);
+            writer.WriteNumber("destructionPercentage", warClan.DestructionPercentage);
             writer.WriteNumber("expEarned", (int)warClan.ExpEarned);
             writer.WritePropertyName("members");
             JsonSerializer.Serialize(writer, warClan.Members, options);

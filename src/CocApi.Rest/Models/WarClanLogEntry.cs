@@ -328,7 +328,7 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, warClanLogEntry.BadgeUrls, options);
             writer.WriteNumber("clanLevel", (int)warClanLogEntry.ClanLevel);
-            writer.WriteNumber("destructionPercentage", (int)warClanLogEntry.DestructionPercentage);
+            writer.WriteNumber("destructionPercentage", warClanLogEntry.DestructionPercentage);
             writer.WriteNumber("stars", (int)warClanLogEntry.Stars);
             if (warClanLogEntry.ExpEarned != null)
                 writer.WriteNumber("expEarned", (int)warClanLogEntry.ExpEarned.Value);
