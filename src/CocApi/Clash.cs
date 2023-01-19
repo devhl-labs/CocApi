@@ -44,15 +44,17 @@ namespace CocApi
             new Unit(Village.Home, Resource.DarkElixir, 4, 10, "Unicorn")
         };
 
-        private static readonly Unit _barbarian   = new(Village.Home, Resource.Elixir, 101, 10, "Barbarian", 0);
-        private static readonly Unit _archer      = new(Village.Home, Resource.Elixir, 102, 10, "Archer", 1);
-        private static readonly Unit _giant       = new(Village.Home, Resource.Elixir, 103, 10, "Giant", 3);
-        private static readonly Unit _goblin      = new(Village.Home, Resource.Elixir, 104, 8, "Goblin", 2);
-        private static readonly Unit _wallBreaker = new(Village.Home, Resource.Elixir, 105, 10, "Wall Breaker", 4);
-        private static readonly Unit _balloon     = new(Village.Home, Resource.Elixir, 106, 10, "Balloon", 5);
-        private static readonly Unit _wizard      = new(Village.Home, Resource.Elixir, 107, 10, "Wizard", 6);
-        private static readonly Unit _dragon      = new(Village.Home, Resource.Elixir, 109, 9,  "Dragon", 8);
-        private static readonly Unit _babyDragon  = new(Village.Home, Resource.Elixir, 111, 8, "Baby Dragon", 23);
+        private static readonly Unit _barbarian    = new(Village.Home, Resource.Elixir, 101, 10, "Barbarian", 0);
+        private static readonly Unit _archer       = new(Village.Home, Resource.Elixir, 102, 10, "Archer", 1);
+        private static readonly Unit _giant        = new(Village.Home, Resource.Elixir, 103, 10, "Giant", 3);
+        private static readonly Unit _goblin       = new(Village.Home, Resource.Elixir, 104, 8, "Goblin", 2);
+        private static readonly Unit _wallBreaker  = new(Village.Home, Resource.Elixir, 105, 10, "Wall Breaker", 4);
+        private static readonly Unit _balloon      = new(Village.Home, Resource.Elixir, 106, 10, "Balloon", 5);
+        private static readonly Unit _wizard       = new(Village.Home, Resource.Elixir, 107, 10, "Wizard", 6);
+        private static readonly Unit _dragon       = new(Village.Home, Resource.Elixir, 109, 9,  "Dragon", 8);
+        private static readonly Unit _babyDragon   = new(Village.Home, Resource.Elixir, 111, 8, "Baby Dragon", 23);
+        private static readonly Unit _miner        = new(Village.Home, Resource.Elixir, 112, 7, "Miner", 24);
+        private static readonly Unit _electroTitan = new(Village.Home, Resource.Elixir, 113, 3, "Electro Titan", 95);
 
         private static readonly Unit _minion      = new(Village.Home, Resource.DarkElixir, 201, 10, "Minion", 10);
         private static readonly Unit _valkyrie    = new(Village.Home, Resource.DarkElixir, 203, 9, "Valkyrie", 12);
@@ -74,10 +76,11 @@ namespace CocApi
             _valkyrie,
             _witch,
             _lavaHound,
+            _electroTitan,
 
             new Unit(Village.Home, Resource.Elixir, 108, 7, "Healer", 7),
             new Unit(Village.Home, Resource.Elixir, 110, 9, "P.E.K.K.A", 9),
-            new Unit(Village.Home, Resource.Elixir, 112, 7, "Miner", 24),
+            new Unit(Village.Home, Resource.Elixir, 112, _miner.MaxLevel, "Miner", 24),
             new Unit(Village.Home, Resource.Elixir, 113, 5, "Electro Dragon", 59),
             new Unit(Village.Home, Resource.Elixir, 114, 3, "Yeti", 53),
             new Unit(Village.Home, Resource.Elixir, 115, 3, "Dragon Rider", 65),
@@ -110,6 +113,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.DarkElixir, 312, _witch, "Super Witch", 66),
             new Unit(Village.Home, Resource.DarkElixir, 313, _lavaHound, "Ice Hound", 76),
             new Unit(Village.Home, Resource.DarkElixir, 314, _bowler, "Super Bowler", 80),
+            new Unit(Village.Home, Resource.DarkElixir, 315, _miner, "Super Miner", 56),
 
             new Unit(Village.BuilderBase, Resource.Elixir, 401, 18, "Raged Barbarian"),
             new Unit(Village.BuilderBase, Resource.Elixir, 402, 18, "Sneaky Archer"),
@@ -135,6 +139,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 107, 4, "Invisibility Spell", 35),
             new Unit(Village.Home, Resource.Elixir, 108, 1, "Santa's Surprise", 4, true),
             new Unit(Village.Home, Resource.Elixir, 109, 1, "Birthday Boom", 22, true),
+            new Unit(Village.Home, Resource.Elixir, 110, 4, "Recall Spell", 53),
 
             new Unit(Village.Home, Resource.DarkElixir, 201, 8, "Poison Spell", 9),
             new Unit(Village.Home, Resource.DarkElixir, 202, 5, "Earthquake Spell", 10),
@@ -150,7 +155,8 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 3, 4, "Stone Slammer", 62),
             new Unit(Village.Home, Resource.Elixir, 4, 4, "Siege Barracks", 75),
             new Unit(Village.Home, Resource.Elixir, 5, 4, "Log Launcher", 87),
-            new Unit(Village.Home, Resource.Elixir, 6, 4, "Flame Flinger", 91)
+            new Unit(Village.Home, Resource.Elixir, 6, 4, "Flame Flinger", 91),
+            new Unit(Village.Home, Resource.Elixir, 7, 4, "Battle Drill", 92)
         };
 
         public const int MAX_TOWN_HALL_LEVEL = 15;
