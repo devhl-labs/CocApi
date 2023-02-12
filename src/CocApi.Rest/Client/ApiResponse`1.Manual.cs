@@ -6,8 +6,8 @@ namespace CocApi.Rest.Client
 {
     public partial class ApiResponse<T>
     {
-        public DateTime Downloaded 
-        { 
+        public DateTime Downloaded
+        {
             get
             {
                 string? downloadDateString = Headers.FirstOrDefault(h => h.Key == "Date").Value.FirstOrDefault();
@@ -26,6 +26,8 @@ namespace CocApi.Rest.Client
             {
                 var cacheControlString = Headers.FirstOrDefault(h => h.Key == "Cache-Control").Value.FirstOrDefault();
 
+                Console.WriteLine($"Cache-Control: { cacheControlString ?? "null" }");
+
                 if (cacheControlString != null)
                     cacheControlString = cacheControlString.Replace("public ", "").Replace("max-age=", "");
 
@@ -33,27 +35,17 @@ namespace CocApi.Rest.Client
                 {
                     string? envVar = Environment.GetEnvironmentVariable("COCAPI_CACHE_CONTROL") ?? "5";
 
+                    Console.WriteLine($"Delaying for { envVar }");
+
                     return DateTime.UtcNow.AddSeconds(int.Parse(envVar));
                 }
 
                 double cacheControl = double.Parse(cacheControlString);
+
+                Console.WriteLine($"Response expires in { cacheControl } seconds.");
 
                 return Downloaded.AddSeconds(cacheControl);
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
