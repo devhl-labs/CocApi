@@ -24,27 +24,12 @@ namespace CocApi.Rest.Client
         {
             get
             {
-                var cacheControlString = Headers.FirstOrDefault(h => h.Key == "Cache-Control").Value.FirstOrDefault();
+                double maxAge = (Headers.CacheControl?.MaxAge?.TotalSeconds) ?? 0;
 
-                Console.WriteLine($"Cache-Control: { cacheControlString ?? "null" }");
+                if (maxAge == 0)
+                    maxAge = int.Parse(Environment.GetEnvironmentVariable("COCAPI_CACHE_CONTROL_MAX_AGE") ?? "5");
 
-                if (cacheControlString != null)
-                    cacheControlString = cacheControlString.Replace("public ", "").Replace("max-age=", "");
-
-                if (cacheControlString == null || cacheControlString == "0")
-                {
-                    string? envVar = Environment.GetEnvironmentVariable("COCAPI_CACHE_CONTROL") ?? "5";
-
-                    Console.WriteLine($"Delaying for { envVar }");
-
-                    return DateTime.UtcNow.AddSeconds(int.Parse(envVar));
-                }
-
-                double cacheControl = double.Parse(cacheControlString);
-
-                Console.WriteLine($"Response expires in { cacheControl } seconds.");
-
-                return Downloaded.AddSeconds(cacheControl);
+                return Downloaded.AddSeconds(maxAge);
             }
         }
     }
