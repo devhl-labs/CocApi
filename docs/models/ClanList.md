@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.ClanList
+# CocApi.Rest.Models.ClanList
 
 ## Properties
 

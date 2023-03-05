@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Rest.IApis;
+using CocApi.Rest.IBaseApis;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Hosting;
 
@@ -66,5 +66,7 @@ public class TestService : IHostedService
         var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
         var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         var clans = await ClansApi.SearchClansAsync(name: "fysb");
+        ClanCapitalRaidSeasons a = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
+        System.Console.WriteLine();
     }
 }

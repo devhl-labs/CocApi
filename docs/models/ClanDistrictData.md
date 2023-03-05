@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.ClanDistrictData
+# CocApi.Rest.Models.ClanDistrictData
 
 ## Properties
 

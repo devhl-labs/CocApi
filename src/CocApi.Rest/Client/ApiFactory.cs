@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -14,7 +14,7 @@ namespace CocApi.Rest.Client
         /// </summary>
         /// <typeparam name="IResult"></typeparam>
         /// <returns></returns>
-        IResult Create<IResult>() where IResult : IApis.IApi;
+        IResult Create<IResult>() where IResult : IBaseApis.IApi;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace CocApi.Rest.Client
         /// </summary>
         /// <typeparam name="IResult"></typeparam>
         /// <returns></returns>
-        public IResult Create<IResult>() where IResult : IApis.IApi
+        public IResult Create<IResult>() where IResult : IBaseApis.IApi
         {
             return Services.GetRequiredService<IResult>();
         }

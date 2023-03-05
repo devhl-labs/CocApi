@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.WarState
+# CocApi.Rest.Models.WarState
 
 ## Properties
 

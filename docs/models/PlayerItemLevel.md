@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.PlayerItemLevel
+# CocApi.Rest.Models.PlayerItemLevel
 
 ## Properties
 

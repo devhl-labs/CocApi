@@ -1,11 +1,10 @@
-﻿# CocApi.Rest.BaseApis.GoldpassApi
+# CocApi.Rest.BaseApis.GoldpassApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**GetCurrentGoldPassSeason**](GoldpassApi.md#getcurrentgoldpassseason) | **GET** /goldpass/seasons/current | Get information about the current gold pass season.
-
+| Method | HTTP request | Description |
+|--------|--------------|-------------|
+| [**GetCurrentGoldPassSeason**](GoldpassApi.md#getcurrentgoldpassseason) | **GET** /goldpass/seasons/current | Get information about the current gold pass season. |
 
 <a name="getcurrentgoldpassseason"></a>
 # **GetCurrentGoldPassSeason**
@@ -46,8 +45,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling GoldpassApi.GetCurrentGoldPassSeason: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling GoldpassApi.GetCurrentGoldPassSeason: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -55,9 +54,28 @@ namespace Example
 }
 ```
 
+#### Using the GetCurrentGoldPassSeasonWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get information about the current gold pass season.
+    ApiResponse<GoldPassSeason> response = apiInstance.GetCurrentGoldPassSeasonWithHttpInfo();
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling GoldpassApi.GetCurrentGoldPassSeasonWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 This endpoint does not need any parameter.
-
 ### Return type
 
 [**GoldPassSeason**](GoldPassSeason.md)

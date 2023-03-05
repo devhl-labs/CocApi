@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.17.0"
+$packageVersion = "2.0.0-preview1.18.0"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -262,7 +262,7 @@ $mapPosition = @"
 
 $membersConverter = @"
                         case "members":
-                            members = reader.GetInt32();
+                            members = utf8JsonReader.GetInt32();
                             break;
 
 "@
@@ -326,6 +326,7 @@ $warPreference = @"
         /// Enum In for value: in
         /// </summary>
         In = 2
+
     }
 
 "@
@@ -368,6 +369,7 @@ $warType = @"
         /// Enum SCCWL for value: sccwl
         /// </summary>
         SCCWL = 4
+
     }
 
 
@@ -400,6 +402,56 @@ $warTypeReplacement = @"
 
 "@
 
+$clanCapitalRaidSeasonState = @"
+        /// <summary>
+        /// Defines State
+        /// </summary>
+        public enum StateEnum
+        {
+            /// <summary>
+            /// Enum Unknown for value: unknown
+            /// </summary>
+            Unknown = 1,
+
+            /// <summary>
+            /// Enum Ongoing for value: ongoing
+            /// </summary>
+            Ongoing = 2,
+
+            /// <summary>
+            /// Enum Ended for value: ended
+            /// </summary>
+            Ended = 3
+
+        }
+
+"@
+
+$clanCapitalRaidSeasonStateReplacement = @"
+        /// <summary>
+        /// Defines State
+        /// </summary>
+        public enum StateEnum
+        {
+            /// <summary>
+            /// Enum Unknown for value: unknown
+            /// </summary>
+            Unknown = 0,
+
+            /// <summary>
+            /// Enum Ongoing for value: ongoing
+            /// </summary>
+            Ongoing = 1,
+
+            /// <summary>
+            /// Enum Ended for value: ended
+            /// </summary>
+            Ended = 2
+
+        }
+
+"@
+
 $apiKey = @"
                     List<TokenBase> tokens = new List<TokenBase>();
 
@@ -416,6 +468,19 @@ $tokenRateLimit = @"
                                 token.BeginRateLimit();
 
 "@
+
+$groupDeserialize = @"
+                        if (apiResponse.IsSuccessStatusCode)
+                        {
+                            apiResponse.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup>(apiResponse.RawContent, _jsonSerializerOptions);
+"@
+
+$groupDeserializeReplacement = @"
+                        if (apiResponse.IsSuccessStatusCode && !apiResponse.RawContent.Contains("notInWar"))
+                        {
+                            apiResponse.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponse.RawContent, _jsonSerializerOptions);
+"@
+
 
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
@@ -482,6 +547,7 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace(".GetLeague", ".FetchLeague")
         $content = $content.Replace(".GetWar", ".FetchWar")
         $content = $content.Replace(".GetLocation", ".FetchLocation")
+        $content = $content.Replace(".GetCapitalRaidSeasonsAsync", ".FetchCapitalRaidSeasonsAsync")
     }
 
     if ($file.name -eq "WarClan.cs"){
@@ -500,8 +566,8 @@ foreach ($file in $allCodeFiles)
 ", '')
         $content=$content.Replace("members, ", "")
 
-        $content=$content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, options);", "JsonSerializer.Serialize(writer, clan.Members, options);")
-        $content=$content.Replace("            writer.WriteNumber(`"members`", (int)clan.Members);
+        $content=$content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
+        $content=$content.Replace("            writer.WriteNumber(`"members`", clan.Members);
 ", "")
 
         # this is an openapi bug and should not be required
@@ -542,6 +608,28 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
+        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
+    }
+
+    if ($file.name -eq "ClanWarLogEntry.cs"){
+        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
+    }
+
+    if ($file.name -eq "Key.cs"){
+        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
+    }
+
+    if ($file.name -eq "ClanCapitalRaidSeason.cs"){
+        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
+    }
+
+    if ($file.name -eq "LegendLeagueTournamentSeasonResult.cs"){
+        $content = $content.Replace("yyyy-MM-dd", "yyyy-MM")
+    }
+
+    if ($file.name -eq "ClanCapitalRaidSeason.cs"){
+        # TODO: figure out why the index starts at 1
+        $content = $content.Replace($clanCapitalRaidSeasonState, $clanCapitalRaidSeasonStateReplacement)
     }
 
     if ($file.name -eq "WarPreference.cs"){
@@ -555,6 +643,14 @@ foreach ($file in $allCodeFiles)
     if ($file.name -eq "DeveloperApi.cs"){
         $content = $content.Replace($apiKey, "")
         $content = $content.Replace($tokenRateLimit, "")
+    }
+
+    if ($file.name -eq "ClansApi.cs"){
+        $content = $content.Replace($groupDeserialize, $groupDeserializeReplacement)
+    }
+
+    if ($file.name -eq "ClanWarLeagueGroup.cs"){
+        $content = $content.Replace("public static string SeasonFormat { get; set; } = `"yyyy-MM-dd`";", "public static string SeasonFormat { get; set; } = `"yyyy-MM`";")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {

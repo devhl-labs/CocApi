@@ -1,16 +1,15 @@
-﻿# CocApi.Rest.BaseApis.LeaguesApi
+# CocApi.Rest.BaseApis.LeaguesApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**GetLeague**](LeaguesApi.md#getleague) | **GET** /leagues/{leagueId} | Get league information
-[**GetLeagueSeasonRankings**](LeaguesApi.md#getleagueseasonrankings) | **GET** /leagues/{leagueId}/seasons/{seasonId} | Get league season rankings
-[**GetLeagueSeasons**](LeaguesApi.md#getleagueseasons) | **GET** /leagues/{leagueId}/seasons | Get league seasons
-[**GetLeagues**](LeaguesApi.md#getleagues) | **GET** /leagues | List leagues
-[**GetWarLeague**](LeaguesApi.md#getwarleague) | **GET** /warleagues/{leagueId} | Get war league information
-[**GetWarLeagues**](LeaguesApi.md#getwarleagues) | **GET** /warleagues | List war leagues
-
+| Method | HTTP request | Description |
+|--------|--------------|-------------|
+| [**GetLeague**](LeaguesApi.md#getleague) | **GET** /leagues/{leagueId} | Get league information |
+| [**GetLeagueSeasonRankings**](LeaguesApi.md#getleagueseasonrankings) | **GET** /leagues/{leagueId}/seasons/{seasonId} | Get league season rankings |
+| [**GetLeagueSeasons**](LeaguesApi.md#getleagueseasons) | **GET** /leagues/{leagueId}/seasons | Get league seasons |
+| [**GetLeagues**](LeaguesApi.md#getleagues) | **GET** /leagues | List leagues |
+| [**GetWarLeague**](LeaguesApi.md#getwarleague) | **GET** /warleagues/{leagueId} | Get war league information |
+| [**GetWarLeagues**](LeaguesApi.md#getwarleagues) | **GET** /warleagues | List war leagues |
 
 <a name="getleague"></a>
 # **GetLeague**
@@ -52,8 +51,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LeaguesApi.GetLeague: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LeaguesApi.GetLeague: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -61,11 +60,31 @@ namespace Example
 }
 ```
 
+#### Using the GetLeagueWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get league information
+    ApiResponse<League> response = apiInstance.GetLeagueWithHttpInfo(leagueId);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetLeagueWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **leagueId** | **string**| Identifier of the league. | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueId** | **string** | Identifier of the league. |  |
 
 ### Return type
 
@@ -138,8 +157,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonRankings: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonRankings: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -147,15 +166,35 @@ namespace Example
 }
 ```
 
+#### Using the GetLeagueSeasonRankingsWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get league season rankings
+    ApiResponse<PlayerRankingList> response = apiInstance.GetLeagueSeasonRankingsWithHttpInfo(leagueId, seasonId, limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonRankingsWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **leagueId** | **string**| Identifier of the league. | 
- **seasonId** | **string**| Identifier of the season. | 
- **limit** | **int?**| Limit the number of items returned in the response. | [optional] 
- **after** | **string?**| Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
- **before** | **string?**| Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueId** | **string** | Identifier of the league. |  |
+| **seasonId** | **string** | Identifier of the season. |  |
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -227,8 +266,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasons: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasons: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -236,14 +275,34 @@ namespace Example
 }
 ```
 
+#### Using the GetLeagueSeasonsWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get league seasons
+    ApiResponse<LeagueSeasonList> response = apiInstance.GetLeagueSeasonsWithHttpInfo(leagueId, limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonsWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **leagueId** | **string**| Identifier of the league. | 
- **limit** | **int?**| Limit the number of items returned in the response. | [optional] 
- **after** | **string?**| Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
- **before** | **string?**| Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueId** | **string** | Identifier of the league. |  |
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -314,8 +373,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LeaguesApi.GetLeagues: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LeaguesApi.GetLeagues: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -323,13 +382,33 @@ namespace Example
 }
 ```
 
+#### Using the GetLeaguesWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // List leagues
+    ApiResponse<LeagueList> response = apiInstance.GetLeaguesWithHttpInfo(limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetLeaguesWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **limit** | **int?**| Limit the number of items returned in the response. | [optional] 
- **after** | **string?**| Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
- **before** | **string?**| Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -398,8 +477,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LeaguesApi.GetWarLeague: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LeaguesApi.GetWarLeague: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -407,11 +486,31 @@ namespace Example
 }
 ```
 
+#### Using the GetWarLeagueWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get war league information
+    ApiResponse<WarLeague> response = apiInstance.GetWarLeagueWithHttpInfo(leagueId);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetWarLeagueWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **leagueId** | **string**| Identifier of the league. | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueId** | **string** | Identifier of the league. |  |
 
 ### Return type
 
@@ -482,8 +581,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LeaguesApi.GetWarLeagues: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LeaguesApi.GetWarLeagues: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -491,13 +590,33 @@ namespace Example
 }
 ```
 
+#### Using the GetWarLeaguesWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // List war leagues
+    ApiResponse<WarLeagueList> response = apiInstance.GetWarLeaguesWithHttpInfo(limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetWarLeaguesWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **limit** | **int?**| Limit the number of items returned in the response. | [optional] 
- **after** | **string?**| Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
- **before** | **string?**| Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 

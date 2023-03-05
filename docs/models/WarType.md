@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.WarType
+# CocApi.Rest.Models.WarType
 
 ## Properties
 

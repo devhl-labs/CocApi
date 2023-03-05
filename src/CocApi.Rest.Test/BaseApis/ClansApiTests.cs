@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Clash of Clans API
  *
  * Check out <a href=\"https://developer.clashofclans.com/#/getting-started\" target=\"_parent\">Getting Started</a> for instructions and links to other resources. Clash of Clans API uses <a href=\"https://jwt.io/\" target=\"_blank\">JSON Web Tokens</a> for authorizing the requests. Tokens are created by developers on <a href=\"https://developer.clashofclans.com/#/account\" target=\"_parent\">My Account</a> page and must be passed in every API request in Authorization HTTP header using Bearer authentication scheme. Correct Authorization header looks like this: \"Authorization: Bearer API_TOKEN\". 
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IApis;
+using CocApi.Rest.IBaseApis;
 using CocApi.Rest.Models;
 
 
@@ -36,20 +36,34 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.Apis
+namespace CocApi.Rest.Test.BaseApis
 {
     /// <summary>
     ///  Class for testing ClansApi
     /// </summary>
     public sealed class ClansApiTests : ApiTestsBase
     {
-        private readonly IApis.IClansApi _instance;
+        private readonly IBaseApis.IClansApi _instance;
 
         public ClansApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IApis.IClansApi>();
+            _instance = _host.Services.GetRequiredService<IBaseApis.IClansApi>();
         }
 
+
+        /// <summary>
+        /// Test GetCapitalRaidSeasons
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetCapitalRaidSeasonsAsyncTest()
+        {
+            string clanTag = default;
+            int? limit = default;
+            string? after = default;
+            string? before = default;
+            var response = await _instance.FetchCapitalRaidSeasonsAsync(clanTag, limit, after, before);
+            Assert.IsType<List<ClanCapitalRaidSeason>>(response);
+        }
 
         /// <summary>
         /// Test GetClan

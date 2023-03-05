@@ -1,14 +1,13 @@
-﻿# CocApi.Rest.BaseApis.DeveloperApi
+# CocApi.Rest.BaseApis.DeveloperApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**Create**](DeveloperApi.md#create) | **POST** /apikey/create | Create an api token.
-[**Keys**](DeveloperApi.md#keys) | **POST** /apikey/list | List all tokens.
-[**Login**](DeveloperApi.md#login) | **POST** /api/login | Login to the developer portal.
-[**Revoke**](DeveloperApi.md#revoke) | **POST** /apikey/revoke | Revoke an api token.
-
+| Method | HTTP request | Description |
+|--------|--------------|-------------|
+| [**Create**](DeveloperApi.md#create) | **POST** /apikey/create | Create an api token. |
+| [**Keys**](DeveloperApi.md#keys) | **POST** /apikey/list | List all tokens. |
+| [**Login**](DeveloperApi.md#login) | **POST** /api/login | Login to the developer portal. |
+| [**Revoke**](DeveloperApi.md#revoke) | **POST** /apikey/revoke | Revoke an api token. |
 
 <a name="create"></a>
 # **Create**
@@ -48,8 +47,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling DeveloperApi.Create: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling DeveloperApi.Create: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -57,11 +56,31 @@ namespace Example
 }
 ```
 
+#### Using the CreateWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Create an api token.
+    ApiResponse<KeyInstance> response = apiInstance.CreateWithHttpInfo(createTokenRequest);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling DeveloperApi.CreateWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **createTokenRequest** | [**CreateTokenRequest**](CreateTokenRequest.md)| Request body | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **createTokenRequest** | [**CreateTokenRequest**](CreateTokenRequest.md) | Request body |  |
 
 ### Return type
 
@@ -127,8 +146,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling DeveloperApi.Keys: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling DeveloperApi.Keys: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -136,9 +155,28 @@ namespace Example
 }
 ```
 
+#### Using the KeysWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // List all tokens.
+    ApiResponse<KeyList> response = apiInstance.KeysWithHttpInfo();
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling DeveloperApi.KeysWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 This endpoint does not need any parameter.
-
 ### Return type
 
 [**KeyList**](KeyList.md)
@@ -199,8 +237,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling DeveloperApi.Login: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling DeveloperApi.Login: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -208,11 +246,31 @@ namespace Example
 }
 ```
 
+#### Using the LoginWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Login to the developer portal.
+    ApiResponse<LoginResponse> response = apiInstance.LoginWithHttpInfo(loginCredentials);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling DeveloperApi.LoginWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **loginCredentials** | [**LoginCredentials**](LoginCredentials.md)| Request body | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **loginCredentials** | [**LoginCredentials**](LoginCredentials.md) | Request body |  |
 
 ### Return type
 
@@ -279,8 +337,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling DeveloperApi.Revoke: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling DeveloperApi.Revoke: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -288,11 +346,31 @@ namespace Example
 }
 ```
 
+#### Using the RevokeWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Revoke an api token.
+    ApiResponse<KeyInstance> response = apiInstance.RevokeWithHttpInfo(key);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling DeveloperApi.RevokeWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **key** | [**Key**](Key.md)| Request body | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **key** | [**Key**](Key.md) | Request body |  |
 
 ### Return type
 

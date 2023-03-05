@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Clash of Clans API
  *
  * Check out <a href=\"https://developer.clashofclans.com/#/getting-started\" target=\"_parent\">Getting Started</a> for instructions and links to other resources. Clash of Clans API uses <a href=\"https://jwt.io/\" target=\"_blank\">JSON Web Tokens</a> for authorizing the requests. Tokens are created by developers on <a href=\"https://developer.clashofclans.com/#/account\" target=\"_parent\">My Account</a> page and must be passed in every API request in Authorization HTTP header using Bearer authentication scheme. Correct Authorization header looks like this: \"Authorization: Bearer API_TOKEN\". 
@@ -13,6 +13,7 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CocApi.Rest.Client;
+using CocApi.Rest.BaseApis;
 
 namespace CocApi.Rest.Extensions
 {
@@ -27,13 +28,13 @@ namespace CocApi.Rest.Extensions
         /// <param name="builder"></param>
         /// <param name="options"></param>
         public static IHostBuilder ConfigureCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
-            where TClansApi : class, IApis.IClansApi
-            where TDeveloperApi : class, IApis.IDeveloperApi
-            where TGoldpassApi : class, IApis.IGoldpassApi
-            where TLabelsApi : class, IApis.ILabelsApi
-            where TLeaguesApi : class, IApis.ILeaguesApi
-            where TLocationsApi : class, IApis.ILocationsApi
-            where TPlayersApi : class, IApis.IPlayersApi
+            where TClansApi : class, IBaseApis.IClansApi
+            where TDeveloperApi : class, IBaseApis.IDeveloperApi
+            where TGoldpassApi : class, IBaseApis.IGoldpassApi
+            where TLabelsApi : class, IBaseApis.ILabelsApi
+            where TLeaguesApi : class, IBaseApis.ILeaguesApi
+            where TLocationsApi : class, IBaseApis.ILocationsApi
+            where TPlayersApi : class, IBaseApis.IPlayersApi
         {
             builder.ConfigureServices((context, services) => 
             {
@@ -52,7 +53,7 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="options"></param>
-        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>> options)
-            => ConfigureCocApi<Apis.ClansApi, Apis.DeveloperApi, Apis.GoldpassApi, Apis.LabelsApi, Apis.LeaguesApi, Apis.LocationsApi, Apis.PlayersApi>(builder, options);
+        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>> options)
+            => ConfigureCocApi<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>(builder, options);
     }
 }

@@ -1,12 +1,11 @@
-﻿# CocApi.Rest.BaseApis.LabelsApi
+# CocApi.Rest.BaseApis.LabelsApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**GetClanLabels**](LabelsApi.md#getclanlabels) | **GET** /labels/clans | List clan labels
-[**GetPlayerLabels**](LabelsApi.md#getplayerlabels) | **GET** /labels/players | List player labels
-
+| Method | HTTP request | Description |
+|--------|--------------|-------------|
+| [**GetClanLabels**](LabelsApi.md#getclanlabels) | **GET** /labels/clans | List clan labels |
+| [**GetPlayerLabels**](LabelsApi.md#getplayerlabels) | **GET** /labels/players | List player labels |
 
 <a name="getclanlabels"></a>
 # **GetClanLabels**
@@ -50,8 +49,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LabelsApi.GetClanLabels: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LabelsApi.GetClanLabels: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -59,13 +58,33 @@ namespace Example
 }
 ```
 
+#### Using the GetClanLabelsWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // List clan labels
+    ApiResponse<LabelsObject> response = apiInstance.GetClanLabelsWithHttpInfo(limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LabelsApi.GetClanLabelsWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **limit** | **int?**| Limit the number of items returned in the response. | [optional] 
- **after** | **string?**| Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
- **before** | **string?**| Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -136,8 +155,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling LabelsApi.GetPlayerLabels: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling LabelsApi.GetPlayerLabels: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -145,13 +164,33 @@ namespace Example
 }
 ```
 
+#### Using the GetPlayerLabelsWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // List player labels
+    ApiResponse<LabelsObject> response = apiInstance.GetPlayerLabelsWithHttpInfo(limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LabelsApi.GetPlayerLabelsWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **limit** | **int?**| Limit the number of items returned in the response. | [optional] 
- **after** | **string?**| Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
- **before** | **string?**| Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional] 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 

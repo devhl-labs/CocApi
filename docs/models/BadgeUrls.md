@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.BadgeUrls
+# CocApi.Rest.Models.BadgeUrls
 
 ## Properties
 

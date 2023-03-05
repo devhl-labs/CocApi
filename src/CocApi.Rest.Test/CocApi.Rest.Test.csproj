@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <AssemblyName>CocApi.Rest.Test</AssemblyName>
@@ -17,5 +17,4 @@
   <ItemGroup>
     <ProjectReference Include="..\CocApi.Rest\CocApi.Rest.csproj" />
   </ItemGroup>
-
 </Project>

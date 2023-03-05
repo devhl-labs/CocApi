@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Model.ClanRankingBadgeUrls
+# CocApi.Rest.Model.ClanRankingBadgeUrls
 
 ## Properties
 

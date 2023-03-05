@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.ClanCapital
+# CocApi.Rest.Models.ClanCapital
 
 ## Properties
 

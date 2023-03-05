@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.ClanVersusRankingList
+# CocApi.Rest.Models.ClanVersusRankingList
 
 ## Properties
 

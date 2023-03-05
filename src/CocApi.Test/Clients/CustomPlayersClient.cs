@@ -2,7 +2,7 @@
 using CocApi.Cache;
 using CocApi.Cache.Services;
 using CocApi.Cache.Services.Options;
-using CocApi.Rest.IApis;
+using CocApi.Rest.IBaseApis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

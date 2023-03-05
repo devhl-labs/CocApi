@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.VillageType
+# CocApi.Rest.Models.VillageType
 
 ## Properties
 

@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.WarLeague
+# CocApi.Rest.Models.WarLeague
 
 ## Properties
 

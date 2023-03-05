@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Rest.IApis;
+using CocApi.Rest.IBaseApis;
 using CocApi.Cache.Models;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;

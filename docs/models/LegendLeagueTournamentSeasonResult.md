@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.LegendLeagueTournamentSeasonResult
+# CocApi.Rest.Models.LegendLeagueTournamentSeasonResult
 
 ## Properties
 

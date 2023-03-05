@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Clash of Clans API
  *
  * Check out <a href=\"https://developer.clashofclans.com/#/getting-started\" target=\"_parent\">Getting Started</a> for instructions and links to other resources. Clash of Clans API uses <a href=\"https://jwt.io/\" target=\"_blank\">JSON Web Tokens</a> for authorizing the requests. Tokens are created by developers on <a href=\"https://developer.clashofclans.com/#/account\" target=\"_parent\">My Account</a> page and must be passed in every API request in Authorization HTTP header using Bearer authentication scheme. Correct Authorization header looks like this: \"Authorization: Bearer API_TOKEN\". 
@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IApis;
+using CocApi.Rest.IBaseApis;
 using CocApi.Rest.Models;
 
 
@@ -36,18 +36,18 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.Apis
+namespace CocApi.Rest.Test.BaseApis
 {
     /// <summary>
     ///  Class for testing DeveloperApi
     /// </summary>
     public sealed class DeveloperApiTests : ApiTestsBase
     {
-        private readonly IApis.IDeveloperApi _instance;
+        private readonly IBaseApis.IDeveloperApi _instance;
 
         public DeveloperApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IApis.IDeveloperApi>();
+            _instance = _host.Services.GetRequiredService<IBaseApis.IDeveloperApi>();
         }
 
 

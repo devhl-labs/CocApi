@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Clash of Clans API
  *
  * Check out <a href=\"https://developer.clashofclans.com/#/getting-started\" target=\"_parent\">Getting Started</a> for instructions and links to other resources. Clash of Clans API uses <a href=\"https://jwt.io/\" target=\"_blank\">JSON Web Tokens</a> for authorizing the requests. Tokens are created by developers on <a href=\"https://developer.clashofclans.com/#/account\" target=\"_parent\">My Account</a> page and must be passed in every API request in Authorization HTTP header using Bearer authentication scheme. Correct Authorization header looks like this: \"Authorization: Bearer API_TOKEN\". 
@@ -24,13 +24,13 @@ namespace CocApi.Rest.Client
     /// Provides hosting configuration for CocApi.Rest
     /// </summary>
     public class HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>
-        where TClansApi : class, IApis.IClansApi
-        where TDeveloperApi : class, IApis.IDeveloperApi
-        where TGoldpassApi : class, IApis.IGoldpassApi
-        where TLabelsApi : class, IApis.ILabelsApi
-        where TLeaguesApi : class, IApis.ILeaguesApi
-        where TLocationsApi : class, IApis.ILocationsApi
-        where TPlayersApi : class, IApis.IPlayersApi
+        where TClansApi : class, IBaseApis.IClansApi
+        where TDeveloperApi : class, IBaseApis.IDeveloperApi
+        where TGoldpassApi : class, IBaseApis.IGoldpassApi
+        where TLabelsApi : class, IBaseApis.ILabelsApi
+        where TLeaguesApi : class, IBaseApis.ILeaguesApi
+        where TLocationsApi : class, IBaseApis.ILocationsApi
+        where TPlayersApi : class, IBaseApis.IPlayersApi
     {
         private readonly IServiceCollection _services;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions();
@@ -50,6 +50,15 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
             _jsonOptions.Converters.Add(new ClanJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonAttackJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonAttackLogEntryJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonAttackerJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonClanInfoJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonDefenseLogEntryJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonDistrictJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonMemberJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonsJsonConverter());
             _jsonOptions.Converters.Add(new ClanDistrictDataJsonConverter());
             _jsonOptions.Converters.Add(new ClanListJsonConverter());
             _jsonOptions.Converters.Add(new ClanListEntryJsonConverter());
@@ -147,13 +156,13 @@ namespace CocApi.Rest.Client
 
             List<IHttpClientBuilder> builders = new List<IHttpClientBuilder>();
 
-            builders.Add(_services.AddHttpClient<IApis.IClansApi, TClansApi>(client));
-            builders.Add(_services.AddHttpClient<IApis.IDeveloperApi, TDeveloperApi>(client));
-            builders.Add(_services.AddHttpClient<IApis.IGoldpassApi, TGoldpassApi>(client));
-            builders.Add(_services.AddHttpClient<IApis.ILabelsApi, TLabelsApi>(client));
-            builders.Add(_services.AddHttpClient<IApis.ILeaguesApi, TLeaguesApi>(client));
-            builders.Add(_services.AddHttpClient<IApis.ILocationsApi, TLocationsApi>(client));
-            builders.Add(_services.AddHttpClient<IApis.IPlayersApi, TPlayersApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.IClansApi, TClansApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.IDeveloperApi, TDeveloperApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.IGoldpassApi, TGoldpassApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.ILabelsApi, TLabelsApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.ILeaguesApi, TLeaguesApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.ILocationsApi, TLocationsApi>(client));
+            builders.Add(_services.AddHttpClient<IBaseApis.IPlayersApi, TPlayersApi>(client));
             
             if (builder != null)
                 foreach (IHttpClientBuilder instance in builders)

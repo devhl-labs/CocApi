@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.GroupState
+# CocApi.Rest.Models.GroupState
 
 ## Properties
 

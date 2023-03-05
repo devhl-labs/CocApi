@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.LeagueSeason
+# CocApi.Rest.Models.LeagueSeason
 
 ## Properties
 

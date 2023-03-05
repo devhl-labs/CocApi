@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.0.0-preview1.17.0',
+    'packageVersion=2.0.0-preview1.18.0',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -61,7 +61,7 @@ namespace YourProject
         {
             var host = CreateHostBuilder(args).Build();
             var api = host.Services.GetRequiredService<IClansApi>();
-            ApiResponse<Clan?> foo = await api.GetClanWithHttpInfoAsync("todo");
+            ApiResponse<ClanCapitalRaidSeasons?> foo = await api.GetCapitalRaidSeasonsWithHttpInfoAsync("todo");
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
@@ -140,8 +140,8 @@ Authentication schemes defined for the API:
 - **Location**: 
 
 ## Build
-- SDK version: 2.0.0-preview1.17.0
-- Build date: 2022-09-03T18:59:15.021-04:00[America/New_York]
+- SDK version: 2.0.0-preview1.18.0
+- Build date: 2023-03-04T19:26:17.474405900-05:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpNetCoreClientCodegen
 
 ## Api Information
@@ -160,7 +160,7 @@ Authentication schemes defined for the API:
 - modelTests: true
 - withXml: 
 
-## [OpenApi Generator Parameteres](https://openapi-generator.tech/docs/generators/csharp-netcore)
+## [OpenApi Generator Parameters](https://openapi-generator.tech/docs/generators/csharp-netcore)
 - allowUnicodeIdentifiers: 
 - apiName: CocApi
 - caseInsensitiveResponseHeaders: 
@@ -189,7 +189,7 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.0.0-preview1.17.0
+- packageVersion: 2.0.0-preview1.18.0
 - releaseNote: Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml.
 - returnICollection: false
 - sortParamsByRequiredFlag: 

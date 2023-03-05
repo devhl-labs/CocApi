@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.LabelsObject
+# CocApi.Rest.Models.LabelsObject
 
 ## Properties
 

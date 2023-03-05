@@ -1,4 +1,4 @@
-﻿# CocApi.Rest.Models.CreateTokenRequest
+# CocApi.Rest.Models.CreateTokenRequest
 
 ## Properties
 

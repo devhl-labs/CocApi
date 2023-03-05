@@ -1,12 +1,11 @@
-﻿# CocApi.Rest.BaseApis.PlayersApi
+# CocApi.Rest.BaseApis.PlayersApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
-Method | HTTP request | Description
-------------- | ------------- | -------------
-[**GetPlayer**](PlayersApi.md#getplayer) | **GET** /players/{playerTag} | Get player information
-[**VerifyToken**](PlayersApi.md#verifytoken) | **POST** /players/{playerTag}/verifytoken | Verify player API token that can be found from the game settings.
-
+| Method | HTTP request | Description |
+|--------|--------------|-------------|
+| [**GetPlayer**](PlayersApi.md#getplayer) | **GET** /players/{playerTag} | Get player information |
+| [**VerifyToken**](PlayersApi.md#verifytoken) | **POST** /players/{playerTag}/verifytoken | Verify player API token that can be found from the game settings. |
 
 <a name="getplayer"></a>
 # **GetPlayer**
@@ -48,8 +47,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling PlayersApi.GetPlayer: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling PlayersApi.GetPlayer: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -57,11 +56,31 @@ namespace Example
 }
 ```
 
+#### Using the GetPlayerWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get player information
+    ApiResponse<Player> response = apiInstance.GetPlayerWithHttpInfo(playerTag);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling PlayersApi.GetPlayerWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **playerTag** | **string**| Tag of the player. | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **playerTag** | **string** | Tag of the player. |  |
 
 ### Return type
 
@@ -131,8 +150,8 @@ namespace Example
             }
             catch (ApiException  e)
             {
-                Debug.Print("Exception when calling PlayersApi.VerifyToken: " + e.Message );
-                Debug.Print("Status Code: "+ e.ErrorCode);
+                Debug.Print("Exception when calling PlayersApi.VerifyToken: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
                 Debug.Print(e.StackTrace);
             }
         }
@@ -140,12 +159,32 @@ namespace Example
 }
 ```
 
+#### Using the VerifyTokenWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Verify player API token that can be found from the game settings.
+    ApiResponse<VerifyTokenResponse> response = apiInstance.VerifyTokenWithHttpInfo(body, playerTag);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling PlayersApi.VerifyTokenWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
 ### Parameters
 
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **body** | [**VerifyTokenRequest**](VerifyTokenRequest.md)| Request body | 
- **playerTag** | **string**| Tag of the player. | 
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **body** | [**VerifyTokenRequest**](VerifyTokenRequest.md) | Request body |  |
+| **playerTag** | **string** | Tag of the player. |  |
 
 ### Return type
 
