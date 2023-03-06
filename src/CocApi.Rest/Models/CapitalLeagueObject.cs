@@ -26,14 +26,14 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// CapitalLeagueObject
     /// </summary>
-    public partial class CapitalLeagueObject
+    public partial class CapitalLeagueObject : IEquatable<CapitalLeagueObject?>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CapitalLeagueObject" /> class.
         /// </summary>
         /// <param name="items">items</param>
         [JsonConstructor]
-        public CapitalLeagueObject(List<CapitalLeague> items)
+        internal CapitalLeagueObject(List<CapitalLeague> items)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -51,7 +51,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Items
         /// </summary>
         [JsonPropertyName("items")]
-        public List<CapitalLeague> Items { get; set; }
+        public List<CapitalLeague> Items { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -64,6 +64,50 @@ namespace CocApi.Rest.Models
             sb.Append("  Items: ").Append(Items).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Returns true if objects are equal
+        /// </summary>
+        /// <param name="input">Object to be compared</param>
+        /// <returns>Boolean</returns>
+        public override bool Equals(object? input)
+        {
+            return this.Equals(input as CapitalLeagueObject);
+        }
+
+        /// <summary>
+        /// Returns true if CapitalLeagueObject instances are equal
+        /// </summary>
+        /// <param name="input">Instance of CapitalLeagueObject to be compared</param>
+        /// <returns>Boolean</returns>
+        public bool Equals(CapitalLeagueObject? input)
+        {
+            if (input == null)
+                return false;
+
+            return 
+                (
+                    Items == input.Items ||
+                    Items != null &&
+                    input.Items != null &&
+                    Items.SequenceEqual(input.Items)
+                );
+        }
+
+        /// <summary>
+        /// Gets the hash code
+        /// </summary>
+        /// <returns>Hash code</returns>
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hashCode = 41;
+                hashCode = (hashCode * 59) + Items.GetHashCode();
+
+                return hashCode;
+            }
         }
     }
 
