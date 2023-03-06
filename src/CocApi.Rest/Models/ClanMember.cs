@@ -41,9 +41,10 @@ namespace CocApi.Rest.Models
         /// <param name="tag">tag</param>
         /// <param name="trophies">trophies</param>
         /// <param name="versusTrophies">versusTrophies</param>
+        /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
         [JsonConstructor]
-        internal ClanMember(int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, int versusTrophies, Role? role = default)
+        internal ClanMember(int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, int versusTrophies, PlayerHouse? playerHouse = default, Role? role = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -91,6 +92,7 @@ namespace CocApi.Rest.Models
             Tag = tag;
             Trophies = trophies;
             VersusTrophies = versusTrophies;
+            PlayerHouse = playerHouse;
             Role = role;
         }
 
@@ -161,6 +163,12 @@ namespace CocApi.Rest.Models
         public int VersusTrophies { get; }
 
         /// <summary>
+        /// Gets or Sets PlayerHouse
+        /// </summary>
+        [JsonPropertyName("playerHouse")]
+        public PlayerHouse? PlayerHouse { get; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -178,6 +186,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("  VersusTrophies: ").Append(VersusTrophies).Append("\n");
+            sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -255,6 +264,11 @@ namespace CocApi.Rest.Models
                     VersusTrophies.Equals(input.VersusTrophies))
                 ) && 
                 (
+                    PlayerHouse == input.PlayerHouse ||
+                    (PlayerHouse != null &&
+                    PlayerHouse.Equals(input.PlayerHouse))
+                ) && 
+                (
                     Role == input.Role ||
                     (Role != null &&
                     Role.Equals(input.Role))
@@ -280,6 +294,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
                 hashCode = (hashCode * 59) + VersusTrophies.GetHashCode();
+
+                if (PlayerHouse != null)
+                    hashCode = (hashCode * 59) + PlayerHouse.GetHashCode();
 
                 if (Role != null)
                     hashCode = (hashCode * 59) + Role.GetHashCode();
@@ -321,6 +338,7 @@ namespace CocApi.Rest.Models
             string tag = default;
             int trophies = default;
             int versusTrophies = default;
+            PlayerHouse playerHouse = default;
             Role? role = default;
 
             while (utf8JsonReader.Read())
@@ -368,6 +386,9 @@ namespace CocApi.Rest.Models
                         case "versusTrophies":
                             versusTrophies = utf8JsonReader.GetInt32();
                             break;
+                        case "playerHouse":
+                            playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
+                            break;
                         case "role":
                             string roleRawValue = utf8JsonReader.GetString();
                             role = RoleConverter.FromStringOrDefault(roleRawValue);
@@ -378,7 +399,7 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new ClanMember(clanRank, donations, donationsReceived, expLevel, league, name, previousClanRank, tag, trophies, versusTrophies, role);
+            return new ClanMember(clanRank, donations, donationsReceived, expLevel, league, name, previousClanRank, tag, trophies, versusTrophies, playerHouse, role);
         }
 
         /// <summary>
@@ -403,6 +424,8 @@ namespace CocApi.Rest.Models
             writer.WriteString("tag", clanMember.Tag);
             writer.WriteNumber("trophies", clanMember.Trophies);
             writer.WriteNumber("versusTrophies", clanMember.VersusTrophies);
+            writer.WritePropertyName("playerHouse");
+            JsonSerializer.Serialize(writer, clanMember.PlayerHouse, jsonSerializerOptions);
             if (clanMember.Role == null)
                 writer.WriteNull("role");
             var roleRawValue = RoleConverter.ToJsonValue(clanMember.Role.Value);

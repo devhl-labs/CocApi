@@ -5,11 +5,13 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [optional] [readonly] 
+**CapitalLeague** | [**CapitalLeague**](CapitalLeague.md) |  | [optional] [readonly] 
 **ClanCapital** | [**ClanCapital**](ClanCapital.md) |  | [optional] [readonly] 
 **ClanLevel** | **int** |  | [optional] [readonly] 
 **ClanPoints** | **int** |  | [optional] [readonly] 
 **ClanVersusPoints** | **int** |  | [optional] [readonly] 
 **Description** | **string** |  | [optional] [readonly] 
+**IsFamilyFriendly** | **bool** |  | [optional] [readonly] 
 **IsWarLogPublic** | **bool** |  | [optional] [readonly] 
 **Labels** | **List&lt;Label&gt;** |  | [optional] [readonly] 
 **MemberList** | **List&lt;ClanMember&gt;** |  | [optional] [readonly] 

@@ -7,6 +7,8 @@ docs/apis/LeaguesApi.md
 docs/apis/LocationsApi.md
 docs/apis/PlayersApi.md
 docs/models/BadgeUrls.md
+docs/models/CapitalLeague.md
+docs/models/CapitalLeagueObject.md
 docs/models/Clan.md
 docs/models/ClanCapital.md
 docs/models/ClanCapitalRaidSeason.md
@@ -18,6 +20,8 @@ docs/models/ClanCapitalRaidSeasonDefenseLogEntry.md
 docs/models/ClanCapitalRaidSeasonDistrict.md
 docs/models/ClanCapitalRaidSeasonMember.md
 docs/models/ClanCapitalRaidSeasons.md
+docs/models/ClanCapitalRanking.md
+docs/models/ClanCapitalRankingObject.md
 docs/models/ClanDistrictData.md
 docs/models/ClanList.md
 docs/models/ClanListEntry.md
@@ -59,6 +63,8 @@ docs/models/LoginResponse.md
 docs/models/Player.md
 docs/models/PlayerAchievementProgress.md
 docs/models/PlayerClan.md
+docs/models/PlayerHouse.md
+docs/models/PlayerHouseElement.md
 docs/models/PlayerItemLevel.md
 docs/models/PlayerLegendStatistics.md
 docs/models/PlayerRanking.md
@@ -111,6 +117,8 @@ src/CocApi.Rest/Extensions/IHostBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IHttpClientBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IServiceCollectionExtensions.cs
 src/CocApi.Rest/Models/BadgeUrls.cs
+src/CocApi.Rest/Models/CapitalLeague.cs
+src/CocApi.Rest/Models/CapitalLeagueObject.cs
 src/CocApi.Rest/Models/Clan.cs
 src/CocApi.Rest/Models/ClanCapital.cs
 src/CocApi.Rest/Models/ClanCapitalRaidSeason.cs
@@ -122,6 +130,8 @@ src/CocApi.Rest/Models/ClanCapitalRaidSeasonDefenseLogEntry.cs
 src/CocApi.Rest/Models/ClanCapitalRaidSeasonDistrict.cs
 src/CocApi.Rest/Models/ClanCapitalRaidSeasonMember.cs
 src/CocApi.Rest/Models/ClanCapitalRaidSeasons.cs
+src/CocApi.Rest/Models/ClanCapitalRanking.cs
+src/CocApi.Rest/Models/ClanCapitalRankingObject.cs
 src/CocApi.Rest/Models/ClanDistrictData.cs
 src/CocApi.Rest/Models/ClanList.cs
 src/CocApi.Rest/Models/ClanListEntry.cs
@@ -163,6 +173,8 @@ src/CocApi.Rest/Models/LoginResponse.cs
 src/CocApi.Rest/Models/Player.cs
 src/CocApi.Rest/Models/PlayerAchievementProgress.cs
 src/CocApi.Rest/Models/PlayerClan.cs
+src/CocApi.Rest/Models/PlayerHouse.cs
+src/CocApi.Rest/Models/PlayerHouseElement.cs
 src/CocApi.Rest/Models/PlayerItemLevel.cs
 src/CocApi.Rest/Models/PlayerLegendStatistics.cs
 src/CocApi.Rest/Models/PlayerRanking.cs

@@ -113,7 +113,7 @@ namespace CocApi.Rest.Models
         /// <param name="type">type</param>
         /// <param name="warFrequency">warFrequency</param>
         [JsonConstructor]
-        public Clan(BadgeUrls badgeUrls, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int? warLosses, int? warTies, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default)
+        public Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int? warLosses, int? warTies, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -157,6 +157,9 @@ namespace CocApi.Rest.Models
             if (description == null)
                 throw new ArgumentNullException("description is a required property for Clan and cannot be null.");
 
+            if (capitalLeague == null)
+                throw new ArgumentNullException("capitalLeague is a required property for Clan and cannot be null.");
+
             if (clanCapital == null)
                 throw new ArgumentNullException("clanCapital is a required property for Clan and cannot be null.");
 
@@ -187,6 +190,7 @@ namespace CocApi.Rest.Models
             Location = location;
             Type = type;
             WarFrequency = warFrequency;
+            IsFamilyFriendly = isFamilyFriendly;
         }
 
         /// <summary>

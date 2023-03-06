@@ -1,12 +1,10 @@
-# CocApi.Rest.Models.ClanCapitalRaidSeasonAttack
+# CocApi.Rest.Models.CapitalLeagueObject
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Attacker** | [**ClanCapitalRaidSeasonAttacker**](ClanCapitalRaidSeasonAttacker.md) |  | [optional] [readonly] 
-**DestructionPercent** | **int** |  | [optional] [readonly] 
-**Stars** | **int** |  | [optional] [readonly] 
+**Items** | [**List&lt;CapitalLeague&gt;**](CapitalLeague.md) |  | [optional] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

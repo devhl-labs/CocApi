@@ -9,6 +9,7 @@ Name | Type | Description | Notes
 **DistrictHallLevel** | **int** |  | [optional] [readonly] 
 **Id** | **int** |  | [optional] [readonly] 
 **Name** | **string** |  | [optional] [readonly] 
+**Stars** | **int** |  | [optional] [readonly] 
 **TotalLooted** | **int** |  | [optional] [readonly] 
 **Attacks** | **List&lt;ClanCapitalRaidSeasonAttack&gt;** |  | [optional] [readonly] 
 

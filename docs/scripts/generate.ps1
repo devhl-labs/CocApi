@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0-preview1.18.0"
+$packageVersion = "2.0.0-preview1.19.0"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -113,11 +113,13 @@ $clanConstructor = @"
         /// Initializes a new instance of the <see cref="Clan" /> class.
         /// </summary>
         /// <param name="badgeUrls">badgeUrls</param>
+        /// <param name="capitalLeague">capitalLeague</param>
         /// <param name="clanCapital">clanCapital</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="clanPoints">clanPoints</param>
         /// <param name="clanVersusPoints">clanVersusPoints</param>
         /// <param name="description">description</param>
+        /// <param name="isFamilyFriendly">isFamilyFriendly</param>
         /// <param name="isWarLogPublic">isWarLogPublic</param>
         /// <param name="labels">labels</param>
         /// <param name="memberList">memberList</param>
@@ -135,7 +137,7 @@ $clanConstructor = @"
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal Clan(BadgeUrls badgeUrls, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -188,15 +190,23 @@ $clanConstructor = @"
             if (badgeUrls == null)
                 throw new ArgumentNullException("badgeUrls is a required property for Clan and cannot be null.");
 
+            if (capitalLeague == null)
+                throw new ArgumentNullException("capitalLeague is a required property for Clan and cannot be null.");
+
+            if (isFamilyFriendly == null)
+                throw new ArgumentNullException("isFamilyFriendly is a required property for Clan and cannot be null.");
+
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             BadgeUrls = badgeUrls;
+            CapitalLeague = capitalLeague;
             ClanCapital = clanCapital;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
             ClanVersusPoints = clanVersusPoints;
             Description = description;
+            IsFamilyFriendly = isFamilyFriendly;
             IsWarLogPublic = isWarLogPublic;
             Labels = labels;
             MemberList = memberList;
@@ -572,8 +582,8 @@ foreach ($file in $allCodeFiles)
 
         # this is an openapi bug and should not be required
         $content=$content.Replace(
-            "return new Clan(badgeUrls, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);",
-            "return new Clan(badgeUrls, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);")
+            "return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);",
+            "return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);")
     }
 
     if ($file.name -eq "Role.cs"){

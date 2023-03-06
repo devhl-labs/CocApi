@@ -1,12 +1,11 @@
-# CocApi.Rest.Models.ClanCapitalRaidSeasonAttack
+# CocApi.Rest.Models.PlayerHouseElement
 
 ## Properties
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Attacker** | [**ClanCapitalRaidSeasonAttacker**](ClanCapitalRaidSeasonAttacker.md) |  | [optional] [readonly] 
-**DestructionPercent** | **int** |  | [optional] [readonly] 
-**Stars** | **int** |  | [optional] [readonly] 
+**Id** | **int** |  | [optional] [readonly] 
+**Type** | **string** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

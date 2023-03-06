@@ -66,7 +66,10 @@ public class TestService : IHostedService
         var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
         var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         var clans = await ClansApi.SearchClansAsync(name: "fysb");
-        ClanCapitalRaidSeasons a = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
+        var clanCapitalRaidSeasons = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
+        var clanCapitalRanking = await LocationsApi.FetchClanCapitalRankingResponseAsync("global");
+        var b = await LeaguesApi.FetchCapitalLeaguesOrDefaultAsync();
+        var a = await LeaguesApi.FetchCapitalLeagueResponseAsync("85000018");
         System.Console.WriteLine();
     }
 }

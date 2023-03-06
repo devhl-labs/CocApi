@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **Tag** | **string** |  | [optional] [readonly] 
 **Trophies** | **int** |  | [optional] [readonly] 
 **VersusTrophies** | **int** |  | [optional] [readonly] 
+**PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 
 **Role** | **Role** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)

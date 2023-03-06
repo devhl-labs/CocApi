@@ -48,6 +48,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new DateTimeJsonConverter());
             _jsonOptions.Converters.Add(new DateTimeNullableJsonConverter());
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
+            _jsonOptions.Converters.Add(new CapitalLeagueJsonConverter());
+            _jsonOptions.Converters.Add(new CapitalLeagueObjectJsonConverter());
             _jsonOptions.Converters.Add(new ClanJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonJsonConverter());
@@ -59,6 +61,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonDistrictJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonMemberJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonsJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRankingJsonConverter());
+            _jsonOptions.Converters.Add(new ClanCapitalRankingObjectJsonConverter());
             _jsonOptions.Converters.Add(new ClanDistrictDataJsonConverter());
             _jsonOptions.Converters.Add(new ClanListJsonConverter());
             _jsonOptions.Converters.Add(new ClanListEntryJsonConverter());
@@ -101,6 +105,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new PlayerJsonConverter());
             _jsonOptions.Converters.Add(new PlayerAchievementProgressJsonConverter());
             _jsonOptions.Converters.Add(new PlayerClanJsonConverter());
+            _jsonOptions.Converters.Add(new PlayerHouseJsonConverter());
+            _jsonOptions.Converters.Add(new PlayerHouseElementJsonConverter());
             _jsonOptions.Converters.Add(new PlayerItemLevelJsonConverter());
             _jsonOptions.Converters.Add(new PlayerLegendStatisticsJsonConverter());
             _jsonOptions.Converters.Add(new PlayerRankingJsonConverter());

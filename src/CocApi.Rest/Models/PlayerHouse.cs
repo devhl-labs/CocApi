@@ -24,56 +24,34 @@ using System.Text.Json.Serialization;
 namespace CocApi.Rest.Models
 {
     /// <summary>
-    /// ClanCapitalRaidSeasonAttack
+    /// PlayerHouse
     /// </summary>
-    public partial class ClanCapitalRaidSeasonAttack : IEquatable<ClanCapitalRaidSeasonAttack?>
+    public partial class PlayerHouse : IEquatable<PlayerHouse?>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClanCapitalRaidSeasonAttack" /> class.
+        /// Initializes a new instance of the <see cref="PlayerHouse" /> class.
         /// </summary>
-        /// <param name="attacker">attacker</param>
-        /// <param name="destructionPercent">destructionPercent</param>
-        /// <param name="stars">stars</param>
+        /// <param name="elements">elements</param>
         [JsonConstructor]
-        internal ClanCapitalRaidSeasonAttack(ClanCapitalRaidSeasonAttacker attacker, int destructionPercent, int stars)
+        internal PlayerHouse(List<PlayerHouseElement> elements)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            if (attacker == null)
-                throw new ArgumentNullException("attacker is a required property for ClanCapitalRaidSeasonAttack and cannot be null.");
-
-            if (destructionPercent == null)
-                throw new ArgumentNullException("destructionPercent is a required property for ClanCapitalRaidSeasonAttack and cannot be null.");
-
-            if (stars == null)
-                throw new ArgumentNullException("stars is a required property for ClanCapitalRaidSeasonAttack and cannot be null.");
+            if (elements == null)
+                throw new ArgumentNullException("elements is a required property for PlayerHouse and cannot be null.");
 
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            Attacker = attacker;
-            DestructionPercent = destructionPercent;
-            Stars = stars;
+            Elements = elements;
         }
 
         /// <summary>
-        /// Gets or Sets Attacker
+        /// Gets or Sets Elements
         /// </summary>
-        [JsonPropertyName("attacker")]
-        public ClanCapitalRaidSeasonAttacker Attacker { get; }
-
-        /// <summary>
-        /// Gets or Sets DestructionPercent
-        /// </summary>
-        [JsonPropertyName("destructionPercent")]
-        public int DestructionPercent { get; }
-
-        /// <summary>
-        /// Gets or Sets Stars
-        /// </summary>
-        [JsonPropertyName("stars")]
-        public int Stars { get; }
+        [JsonPropertyName("elements")]
+        public List<PlayerHouseElement> Elements { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -82,10 +60,8 @@ namespace CocApi.Rest.Models
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class ClanCapitalRaidSeasonAttack {\n");
-            sb.Append("  Attacker: ").Append(Attacker).Append("\n");
-            sb.Append("  DestructionPercent: ").Append(DestructionPercent).Append("\n");
-            sb.Append("  Stars: ").Append(Stars).Append("\n");
+            sb.Append("class PlayerHouse {\n");
+            sb.Append("  Elements: ").Append(Elements).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -97,34 +73,25 @@ namespace CocApi.Rest.Models
         /// <returns>Boolean</returns>
         public override bool Equals(object? input)
         {
-            return this.Equals(input as ClanCapitalRaidSeasonAttack);
+            return this.Equals(input as PlayerHouse);
         }
 
         /// <summary>
-        /// Returns true if ClanCapitalRaidSeasonAttack instances are equal
+        /// Returns true if PlayerHouse instances are equal
         /// </summary>
-        /// <param name="input">Instance of ClanCapitalRaidSeasonAttack to be compared</param>
+        /// <param name="input">Instance of PlayerHouse to be compared</param>
         /// <returns>Boolean</returns>
-        public bool Equals(ClanCapitalRaidSeasonAttack? input)
+        public bool Equals(PlayerHouse? input)
         {
             if (input == null)
                 return false;
 
             return 
                 (
-                    Attacker == input.Attacker ||
-                    (Attacker != null &&
-                    Attacker.Equals(input.Attacker))
-                ) && 
-                (
-                    DestructionPercent == input.DestructionPercent ||
-                    (DestructionPercent != null &&
-                    DestructionPercent.Equals(input.DestructionPercent))
-                ) && 
-                (
-                    Stars == input.Stars ||
-                    (Stars != null &&
-                    Stars.Equals(input.Stars))
+                    Elements == input.Elements ||
+                    Elements != null &&
+                    input.Elements != null &&
+                    Elements.SequenceEqual(input.Elements)
                 );
         }
 
@@ -137,9 +104,7 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + Attacker.GetHashCode();
-                hashCode = (hashCode * 59) + DestructionPercent.GetHashCode();
-                hashCode = (hashCode * 59) + Stars.GetHashCode();
+                hashCode = (hashCode * 59) + Elements.GetHashCode();
 
                 return hashCode;
             }
@@ -147,9 +112,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanCapitalRaidSeasonAttack
+    /// A Json converter for type PlayerHouse
     /// </summary>
-    public class ClanCapitalRaidSeasonAttackJsonConverter : JsonConverter<ClanCapitalRaidSeasonAttack>
+    public class PlayerHouseJsonConverter : JsonConverter<PlayerHouse>
     {
         /// <summary>
         /// A Json reader.
@@ -159,7 +124,7 @@ namespace CocApi.Rest.Models
         /// <param name="jsonSerializerOptions"></param>
         /// <returns></returns>
         /// <exception cref="JsonException"></exception>
-        public override ClanCapitalRaidSeasonAttack Read(ref Utf8JsonReader utf8JsonReader, Type typeToConvert, JsonSerializerOptions jsonSerializerOptions)
+        public override PlayerHouse Read(ref Utf8JsonReader utf8JsonReader, Type typeToConvert, JsonSerializerOptions jsonSerializerOptions)
         {
             int currentDepth = utf8JsonReader.CurrentDepth;
 
@@ -168,9 +133,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            ClanCapitalRaidSeasonAttacker attacker = default;
-            int destructionPercent = default;
-            int stars = default;
+            List<PlayerHouseElement> elements = default;
 
             while (utf8JsonReader.Read())
             {
@@ -187,14 +150,8 @@ namespace CocApi.Rest.Models
 
                     switch (propertyName)
                     {
-                        case "attacker":
-                            attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions);
-                            break;
-                        case "destructionPercent":
-                            destructionPercent = utf8JsonReader.GetInt32();
-                            break;
-                        case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                        case "elements":
+                            elements = JsonSerializer.Deserialize<List<PlayerHouseElement>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;
@@ -202,24 +159,22 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new ClanCapitalRaidSeasonAttack(attacker, destructionPercent, stars);
+            return new PlayerHouse(elements);
         }
 
         /// <summary>
         /// A Json writer
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="clanCapitalRaidSeasonAttack"></param>
+        /// <param name="playerHouse"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public override void Write(Utf8JsonWriter writer, ClanCapitalRaidSeasonAttack clanCapitalRaidSeasonAttack, JsonSerializerOptions jsonSerializerOptions)
+        public override void Write(Utf8JsonWriter writer, PlayerHouse playerHouse, JsonSerializerOptions jsonSerializerOptions)
         {
             writer.WriteStartObject();
 
-            writer.WritePropertyName("attacker");
-            JsonSerializer.Serialize(writer, clanCapitalRaidSeasonAttack.Attacker, jsonSerializerOptions);
-            writer.WriteNumber("destructionPercent", clanCapitalRaidSeasonAttack.DestructionPercent);
-            writer.WriteNumber("stars", clanCapitalRaidSeasonAttack.Stars);
+            writer.WritePropertyName("elements");
+            JsonSerializer.Serialize(writer, playerHouse.Elements, jsonSerializerOptions);
 
             writer.WriteEndObject();
         }

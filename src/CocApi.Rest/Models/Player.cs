@@ -56,11 +56,12 @@ namespace CocApi.Rest.Models
         /// <param name="clan">clan</param>
         /// <param name="league">league</param>
         /// <param name="legendStatistics">legendStatistics</param>
+        /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
         /// <param name="townHallWeaponLevel">townHallWeaponLevel</param>
         /// <param name="warPreference">warPreference</param>
         [JsonConstructor]
-        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderHallLevel, int clanCapitalContributions, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int versusBattleWinCount, int versusBattleWins, int versusTrophies, int warStars, PlayerClan? clan = default, League? league = default, PlayerLegendStatistics? legendStatistics = default, Role? role = default, int? townHallWeaponLevel = default, WarPreference? warPreference = default)
+        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderHallLevel, int clanCapitalContributions, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int versusBattleWinCount, int versusBattleWins, int versusTrophies, int warStars, PlayerClan? clan = default, League? league = default, PlayerLegendStatistics? legendStatistics = default, PlayerHouse? playerHouse = default, Role? role = default, int? townHallWeaponLevel = default, WarPreference? warPreference = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -159,6 +160,7 @@ namespace CocApi.Rest.Models
             Clan = clan;
             League = league;
             LegendStatistics = legendStatistics;
+            PlayerHouse = playerHouse;
             Role = role;
             TownHallWeaponLevel = townHallWeaponLevel;
             WarPreference = warPreference;
@@ -327,6 +329,12 @@ namespace CocApi.Rest.Models
         public PlayerLegendStatistics? LegendStatistics { get; }
 
         /// <summary>
+        /// Gets or Sets PlayerHouse
+        /// </summary>
+        [JsonPropertyName("playerHouse")]
+        public PlayerHouse? PlayerHouse { get; }
+
+        /// <summary>
         /// Gets or Sets TownHallWeaponLevel
         /// </summary>
         [JsonPropertyName("townHallWeaponLevel")]
@@ -365,6 +373,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Clan: ").Append(Clan).Append("\n");
             sb.Append("  League: ").Append(League).Append("\n");
             sb.Append("  LegendStatistics: ").Append(LegendStatistics).Append("\n");
+            sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
             sb.Append("  TownHallWeaponLevel: ").Append(TownHallWeaponLevel).Append("\n");
             sb.Append("  WarPreference: ").Append(WarPreference).Append("\n");
@@ -524,6 +533,11 @@ namespace CocApi.Rest.Models
                     LegendStatistics.Equals(input.LegendStatistics))
                 ) && 
                 (
+                    PlayerHouse == input.PlayerHouse ||
+                    (PlayerHouse != null &&
+                    PlayerHouse.Equals(input.PlayerHouse))
+                ) && 
+                (
                     Role == input.Role ||
                     (Role != null &&
                     Role.Equals(input.Role))
@@ -580,6 +594,9 @@ namespace CocApi.Rest.Models
 
                 if (LegendStatistics != null)
                     hashCode = (hashCode * 59) + LegendStatistics.GetHashCode();
+
+                if (PlayerHouse != null)
+                    hashCode = (hashCode * 59) + PlayerHouse.GetHashCode();
 
                 if (Role != null)
                     hashCode = (hashCode * 59) + Role.GetHashCode();
@@ -642,6 +659,7 @@ namespace CocApi.Rest.Models
             PlayerClan clan = default;
             League league = default;
             PlayerLegendStatistics legendStatistics = default;
+            PlayerHouse playerHouse = default;
             Role? role = default;
             int? townHallWeaponLevel = default;
             WarPreference? warPreference = default;
@@ -736,6 +754,9 @@ namespace CocApi.Rest.Models
                         case "legendStatistics":
                             legendStatistics = JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
+                        case "playerHouse":
+                            playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
+                            break;
                         case "role":
                             string roleRawValue = utf8JsonReader.GetString();
                             role = RoleConverter.FromStringOrDefault(roleRawValue);
@@ -754,7 +775,7 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new Player(achievements, attackWins, bestTrophies, bestVersusTrophies, builderHallLevel, clanCapitalContributions, defenseWins, donations, donationsReceived, expLevel, heroes, labels, name, spells, tag, townHallLevel, troops, trophies, versusBattleWinCount, versusBattleWins, versusTrophies, warStars, clan, league, legendStatistics, role, townHallWeaponLevel, warPreference);
+            return new Player(achievements, attackWins, bestTrophies, bestVersusTrophies, builderHallLevel, clanCapitalContributions, defenseWins, donations, donationsReceived, expLevel, heroes, labels, name, spells, tag, townHallLevel, troops, trophies, versusBattleWinCount, versusBattleWins, versusTrophies, warStars, clan, league, legendStatistics, playerHouse, role, townHallWeaponLevel, warPreference);
         }
 
         /// <summary>
@@ -801,6 +822,8 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, player.League, jsonSerializerOptions);
             writer.WritePropertyName("legendStatistics");
             JsonSerializer.Serialize(writer, player.LegendStatistics, jsonSerializerOptions);
+            writer.WritePropertyName("playerHouse");
+            JsonSerializer.Serialize(writer, player.PlayerHouse, jsonSerializerOptions);
             if (player.Role == null)
                 writer.WriteNull("role");
             var roleRawValue = RoleConverter.ToJsonValue(player.Role.Value);

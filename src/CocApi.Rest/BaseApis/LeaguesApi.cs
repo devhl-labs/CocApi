@@ -30,6 +30,82 @@ namespace CocApi.Rest.IBaseApis
     public interface ILeaguesApi : IApi
     {
         /// <summary>
+        /// Get capital league information
+        /// </summary>
+        /// <remarks>
+        /// Get capital league information
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&lt;CapitalLeague?&gt;&gt;</returns>
+        Task<ApiResponse<CapitalLeague?>> FetchCapitalLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get capital league information
+        /// </summary>
+        /// <remarks>
+        /// Get capital league information
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse&lt;CapitalLeague&gt;</returns>
+        Task<CapitalLeague> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get capital league information
+        /// </summary>
+        /// <remarks>
+        /// Get capital league information
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse&lt;CapitalLeague?&gt;</returns>
+        Task<CapitalLeague?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List capital leagues
+        /// </summary>
+        /// <remarks>
+        /// List capital leagues
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&lt;CapitalLeagueObject?&gt;&gt;</returns>
+        Task<ApiResponse<CapitalLeagueObject?>> FetchCapitalLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List capital leagues
+        /// </summary>
+        /// <remarks>
+        /// List capital leagues
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse&lt;CapitalLeagueObject&gt;</returns>
+        Task<CapitalLeagueObject> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List capital leagues
+        /// </summary>
+        /// <remarks>
+        /// List capital leagues
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task of ApiResponse&lt;CapitalLeagueObject?&gt;</returns>
+        Task<CapitalLeagueObject?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
         /// Get league information
         /// </summary>
         /// <remarks>
@@ -318,6 +394,330 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
+        }
+
+        /// <summary>
+        /// Get capital league information Get capital league information
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeague"/>&gt;</returns>
+        public async Task<CapitalLeague> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            ApiResponse<CapitalLeague?> result = await FetchCapitalLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+
+            if (result.Content == null)
+                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+
+            return result.Content;
+        }
+
+        /// <summary>
+        /// Get capital league information Get capital league information
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeague"/>&gt;</returns>
+        public async Task<CapitalLeague?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            ApiResponse<CapitalLeague?>? result = null;
+            try 
+            {
+                result = await FetchCapitalLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+            }
+
+            return result != null && result.IsSuccessStatusCode
+                ? result.Content
+                : null;
+        }
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="leagueId"></param>
+        /// <returns></returns>
+        protected virtual string OnFetchCapitalLeague(string leagueId)
+        {
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (leagueId == null)
+                throw new ArgumentNullException(nameof(leagueId));
+
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            return leagueId;
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponse"></param>
+        /// <param name="leagueId"></param>
+        protected virtual void AfterFetchCapitalLeague(ApiResponse<CapitalLeague?> apiResponse, string leagueId)
+        {
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        protected virtual void OnErrorFetchCapitalLeague(Exception exception, string pathFormat, string path, string leagueId)
+        {
+            Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get capital league information Get capital league information
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
+        public async Task<ApiResponse<CapitalLeague?>> FetchCapitalLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            UriBuilder uriBuilder = new UriBuilder();
+
+            try
+            {
+                leagueId = OnFetchCapitalLeague(leagueId);
+
+                using (HttpRequestMessage request = new HttpRequestMessage())
+                {
+                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilder.Port = HttpClient.BaseAddress.Port;
+                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues/{leagueId}";
+
+                    uriBuilder.Path = uriBuilder.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+
+                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokens.Add(apiKey);
+
+                    apiKey.UseInHeader(request, "authorization");
+
+                    request.RequestUri = uriBuilder.Uri;
+
+                    string[] accepts = new string[] { 
+                        "application/json" 
+                    };
+
+                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+
+                    if (accept != null)
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+
+                    request.Method = HttpMethod.Get;
+
+                    DateTime requestedAt = DateTime.UtcNow;
+
+                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    {
+                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/capitalleagues/{leagueId}", uriBuilder.Path));
+
+                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                        ApiResponse<CapitalLeague?> apiResponse = new ApiResponse<CapitalLeague?>(responseMessage, responseContent);
+
+                        if (apiResponse.IsSuccessStatusCode)
+                        {
+                            apiResponse.Content = JsonSerializer.Deserialize<CapitalLeague>(apiResponse.RawContent, _jsonSerializerOptions);
+                            AfterFetchCapitalLeague(apiResponse, leagueId);
+                        }
+                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase token in tokens)
+                                token.BeginRateLimit();
+
+                        return apiResponse;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorFetchCapitalLeague(e, "/capitalleagues/{leagueId}", uriBuilder.Path, leagueId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// List capital leagues List capital leagues
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeagueObject"/>&gt;</returns>
+        public async Task<CapitalLeagueObject> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            ApiResponse<CapitalLeagueObject?> result = await FetchCapitalLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+
+            if (result.Content == null)
+                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+
+            return result.Content;
+        }
+
+        /// <summary>
+        /// List capital leagues List capital leagues
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeagueObject"/>&gt;</returns>
+        public async Task<CapitalLeagueObject?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            ApiResponse<CapitalLeagueObject?>? result = null;
+            try 
+            {
+                result = await FetchCapitalLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+            }
+
+            return result != null && result.IsSuccessStatusCode
+                ? result.Content
+                : null;
+        }
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <returns></returns>
+        protected virtual (int?, string?, string?) OnFetchCapitalLeagues(int? limit, string? after, string? before)
+        {
+            return (limit, after, before);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponse"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void AfterFetchCapitalLeagues(ApiResponse<CapitalLeagueObject?> apiResponse, int? limit, string? after, string? before)
+        {
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        {
+            Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List capital leagues List capital leagues
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
+        public async Task<ApiResponse<CapitalLeagueObject?>> FetchCapitalLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            UriBuilder uriBuilder = new UriBuilder();
+
+            try
+            {
+                var validatedParameters = OnFetchCapitalLeagues(limit, after, before);
+                limit = validatedParameters.Item1;
+                after = validatedParameters.Item2;
+                before = validatedParameters.Item3;
+
+                using (HttpRequestMessage request = new HttpRequestMessage())
+                {
+                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilder.Port = HttpClient.BaseAddress.Port;
+                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues";
+
+                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (limit != null)
+                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+
+                    if (after != null)
+                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+
+                    if (before != null)
+                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+
+                    uriBuilder.Query = parseQueryString.ToString();
+
+                    List<TokenBase> tokens = new List<TokenBase>();
+
+                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokens.Add(apiKey);
+
+                    apiKey.UseInHeader(request, "authorization");
+
+                    request.RequestUri = uriBuilder.Uri;
+
+                    string[] accepts = new string[] { 
+                        "application/json" 
+                    };
+
+                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+
+                    if (accept != null)
+                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+
+                    request.Method = HttpMethod.Get;
+
+                    DateTime requestedAt = DateTime.UtcNow;
+
+                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    {
+                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/capitalleagues", uriBuilder.Path));
+
+                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                        ApiResponse<CapitalLeagueObject?> apiResponse = new ApiResponse<CapitalLeagueObject?>(responseMessage, responseContent);
+
+                        if (apiResponse.IsSuccessStatusCode)
+                        {
+                            apiResponse.Content = JsonSerializer.Deserialize<CapitalLeagueObject>(apiResponse.RawContent, _jsonSerializerOptions);
+                            AfterFetchCapitalLeagues(apiResponse, limit, after, before);
+                        }
+                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase token in tokens)
+                                token.BeginRateLimit();
+
+                        return apiResponse;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorFetchCapitalLeagues(e, "/capitalleagues", uriBuilder.Path, limit, after, before);
+                throw;
+            }
         }
 
         /// <summary>

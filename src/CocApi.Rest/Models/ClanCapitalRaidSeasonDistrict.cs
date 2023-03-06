@@ -36,13 +36,17 @@ namespace CocApi.Rest.Models
         /// <param name="districtHallLevel">districtHallLevel</param>
         /// <param name="id">id</param>
         /// <param name="name">name</param>
+        /// <param name="stars">stars</param>
         /// <param name="totalLooted">totalLooted</param>
         /// <param name="attacks">attacks</param>
         [JsonConstructor]
-        internal ClanCapitalRaidSeasonDistrict(int attackCount, int destructionPercent, int districtHallLevel, int id, string name, int totalLooted, List<ClanCapitalRaidSeasonAttack>? attacks = default)
+        internal ClanCapitalRaidSeasonDistrict(int attackCount, int destructionPercent, int districtHallLevel, int id, string name, int stars, int totalLooted, List<ClanCapitalRaidSeasonAttack>? attacks = default)
         {
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (stars == null)
+                throw new ArgumentNullException("stars is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
 
             if (name == null)
                 throw new ArgumentNullException("name is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
@@ -70,6 +74,7 @@ namespace CocApi.Rest.Models
             DistrictHallLevel = districtHallLevel;
             Id = id;
             Name = name;
+            Stars = stars;
             TotalLooted = totalLooted;
             Attacks = attacks;
         }
@@ -105,6 +110,12 @@ namespace CocApi.Rest.Models
         public string Name { get; }
 
         /// <summary>
+        /// Gets or Sets Stars
+        /// </summary>
+        [JsonPropertyName("stars")]
+        public int Stars { get; }
+
+        /// <summary>
         /// Gets or Sets TotalLooted
         /// </summary>
         [JsonPropertyName("totalLooted")]
@@ -129,6 +140,7 @@ namespace CocApi.Rest.Models
             sb.Append("  DistrictHallLevel: ").Append(DistrictHallLevel).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  Stars: ").Append(Stars).Append("\n");
             sb.Append("  TotalLooted: ").Append(TotalLooted).Append("\n");
             sb.Append("  Attacks: ").Append(Attacks).Append("\n");
             sb.Append("}\n");
@@ -182,6 +194,11 @@ namespace CocApi.Rest.Models
                     Name.Equals(input.Name))
                 ) && 
                 (
+                    Stars == input.Stars ||
+                    (Stars != null &&
+                    Stars.Equals(input.Stars))
+                ) && 
+                (
                     TotalLooted == input.TotalLooted ||
                     (TotalLooted != null &&
                     TotalLooted.Equals(input.TotalLooted))
@@ -208,6 +225,7 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + DistrictHallLevel.GetHashCode();
                 hashCode = (hashCode * 59) + Id.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
+                hashCode = (hashCode * 59) + Stars.GetHashCode();
                 hashCode = (hashCode * 59) + TotalLooted.GetHashCode();
 
                 if (Attacks != null)
@@ -245,6 +263,7 @@ namespace CocApi.Rest.Models
             int districtHallLevel = default;
             int id = default;
             string name = default;
+            int stars = default;
             int totalLooted = default;
             List<ClanCapitalRaidSeasonAttack> attacks = default;
 
@@ -278,6 +297,9 @@ namespace CocApi.Rest.Models
                         case "name":
                             name = JsonSerializer.Deserialize<string>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
+                        case "stars":
+                            stars = utf8JsonReader.GetInt32();
+                            break;
                         case "totalLooted":
                             totalLooted = utf8JsonReader.GetInt32();
                             break;
@@ -290,7 +312,7 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new ClanCapitalRaidSeasonDistrict(attackCount, destructionPercent, districtHallLevel, id, name, totalLooted, attacks);
+            return new ClanCapitalRaidSeasonDistrict(attackCount, destructionPercent, districtHallLevel, id, name, stars, totalLooted, attacks);
         }
 
         /// <summary>
@@ -310,6 +332,7 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("id", clanCapitalRaidSeasonDistrict.Id);
             writer.WritePropertyName("name");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDistrict.Name, jsonSerializerOptions);
+            writer.WriteNumber("stars", clanCapitalRaidSeasonDistrict.Stars);
             writer.WriteNumber("totalLooted", clanCapitalRaidSeasonDistrict.TotalLooted);
             writer.WritePropertyName("attacks");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDistrict.Attacks, jsonSerializerOptions);

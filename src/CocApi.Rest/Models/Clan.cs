@@ -47,6 +47,12 @@ namespace CocApi.Rest.Models
         public BadgeUrls BadgeUrls { get; }
 
         /// <summary>
+        /// Gets or Sets CapitalLeague
+        /// </summary>
+        [JsonPropertyName("capitalLeague")]
+        public CapitalLeague CapitalLeague { get; }
+
+        /// <summary>
         /// Gets or Sets ClanCapital
         /// </summary>
         [JsonPropertyName("clanCapital")]
@@ -75,6 +81,12 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("description")]
         public string Description { get; }
+
+        /// <summary>
+        /// Gets or Sets IsFamilyFriendly
+        /// </summary>
+        [JsonPropertyName("isFamilyFriendly")]
+        public bool IsFamilyFriendly { get; }
 
         /// <summary>
         /// Gets or Sets IsWarLogPublic
@@ -157,11 +169,13 @@ namespace CocApi.Rest.Models
             StringBuilder sb = new StringBuilder();
             sb.Append("class Clan {\n");
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
+            sb.Append("  CapitalLeague: ").Append(CapitalLeague).Append("\n");
             sb.Append("  ClanCapital: ").Append(ClanCapital).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  ClanPoints: ").Append(ClanPoints).Append("\n");
             sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
+            sb.Append("  IsFamilyFriendly: ").Append(IsFamilyFriendly).Append("\n");
             sb.Append("  IsWarLogPublic: ").Append(IsWarLogPublic).Append("\n");
             sb.Append("  Labels: ").Append(Labels).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
@@ -208,6 +222,11 @@ namespace CocApi.Rest.Models
                     BadgeUrls.Equals(input.BadgeUrls))
                 ) && 
                 (
+                    CapitalLeague == input.CapitalLeague ||
+                    (CapitalLeague != null &&
+                    CapitalLeague.Equals(input.CapitalLeague))
+                ) && 
+                (
                     ClanCapital == input.ClanCapital ||
                     (ClanCapital != null &&
                     ClanCapital.Equals(input.ClanCapital))
@@ -231,6 +250,11 @@ namespace CocApi.Rest.Models
                     Description == input.Description ||
                     (Description != null &&
                     Description.Equals(input.Description))
+                ) && 
+                (
+                    IsFamilyFriendly == input.IsFamilyFriendly ||
+                    (IsFamilyFriendly != null &&
+                    IsFamilyFriendly.Equals(input.IsFamilyFriendly))
                 ) && 
                 (
                     IsWarLogPublic == input.IsWarLogPublic ||
@@ -320,11 +344,13 @@ namespace CocApi.Rest.Models
             {
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
+                hashCode = (hashCode * 59) + CapitalLeague.GetHashCode();
                 hashCode = (hashCode * 59) + ClanCapital.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + ClanPoints.GetHashCode();
                 hashCode = (hashCode * 59) + ClanVersusPoints.GetHashCode();
                 hashCode = (hashCode * 59) + Description.GetHashCode();
+                hashCode = (hashCode * 59) + IsFamilyFriendly.GetHashCode();
                 hashCode = (hashCode * 59) + IsWarLogPublic.GetHashCode();
                 hashCode = (hashCode * 59) + Labels.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
@@ -381,11 +407,13 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
             BadgeUrls badgeUrls = default;
+            CapitalLeague capitalLeague = default;
             ClanCapital clanCapital = default;
             int clanLevel = default;
             int clanPoints = default;
             int clanVersusPoints = default;
             string description = default;
+            bool isFamilyFriendly = default;
             bool isWarLogPublic = default;
             List<Label> labels = default;
             List<ClanMember> memberList = default;
@@ -420,6 +448,9 @@ namespace CocApi.Rest.Models
                         case "badgeUrls":
                             badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
+                        case "capitalLeague":
+                            capitalLeague = JsonSerializer.Deserialize<CapitalLeague>(ref utf8JsonReader, jsonSerializerOptions);
+                            break;
                         case "clanCapital":
                             clanCapital = JsonSerializer.Deserialize<ClanCapital>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
@@ -434,6 +465,9 @@ namespace CocApi.Rest.Models
                             break;
                         case "description":
                             description = utf8JsonReader.GetString();
+                            break;
+                        case "isFamilyFriendly":
+                            isFamilyFriendly = utf8JsonReader.GetBoolean();
                             break;
                         case "isWarLogPublic":
                             isWarLogPublic = utf8JsonReader.GetBoolean();
@@ -490,7 +524,7 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            return new Clan(badgeUrls, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);
+            return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);
         }
 
         /// <summary>
@@ -506,12 +540,15 @@ namespace CocApi.Rest.Models
 
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clan.BadgeUrls, jsonSerializerOptions);
+            writer.WritePropertyName("capitalLeague");
+            JsonSerializer.Serialize(writer, clan.CapitalLeague, jsonSerializerOptions);
             writer.WritePropertyName("clanCapital");
             JsonSerializer.Serialize(writer, clan.ClanCapital, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", clan.ClanLevel);
             writer.WriteNumber("clanPoints", clan.ClanPoints);
             writer.WriteNumber("clanVersusPoints", clan.ClanVersusPoints);
             writer.WriteString("description", clan.Description);
+            writer.WriteBoolean("isFamilyFriendly", clan.IsFamilyFriendly);
             writer.WriteBoolean("isWarLogPublic", clan.IsWarLogPublic);
             writer.WritePropertyName("labels");
             JsonSerializer.Serialize(writer, clan.Labels, jsonSerializerOptions);

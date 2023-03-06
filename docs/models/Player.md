@@ -29,6 +29,7 @@ Name | Type | Description | Notes
 **Clan** | [**PlayerClan**](PlayerClan.md) |  | [optional] [readonly] 
 **League** | [**League**](League.md) |  | [optional] [readonly] 
 **LegendStatistics** | [**PlayerLegendStatistics**](PlayerLegendStatistics.md) |  | [optional] [readonly] 
+**PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 
 **Role** | **Role** |  | [optional] [readonly] 
 **TownHallWeaponLevel** | **int?** |  | [optional] [readonly] 
 **WarPreference** | **WarPreference** |  | [optional] [readonly] 
