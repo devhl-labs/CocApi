@@ -540,13 +540,13 @@ namespace CocApi.Rest.BaseApis
 
                     uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+                        parseQueryString["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+                        parseQueryString["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+                        parseQueryString["before"] = before.ToString();
 
                     uriBuilder.Query = parseQueryString.ToString();
 
@@ -880,13 +880,13 @@ namespace CocApi.Rest.BaseApis
 
                     uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+                        parseQueryString["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+                        parseQueryString["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+                        parseQueryString["before"] = before.ToString();
 
                     uriBuilder.Query = parseQueryString.ToString();
 
@@ -1373,13 +1373,13 @@ namespace CocApi.Rest.BaseApis
 
                     uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+                        parseQueryString["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+                        parseQueryString["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+                        parseQueryString["before"] = before.ToString();
 
                     uriBuilder.Query = parseQueryString.ToString();
 
@@ -1753,37 +1753,37 @@ namespace CocApi.Rest.BaseApis
 
                     System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (locationId != null)
-                        parseQueryString["locationId"] = Uri.EscapeDataString(locationId.ToString()!);
+                        parseQueryString["locationId"] = locationId.ToString();
 
                     if (minMembers != null)
-                        parseQueryString["minMembers"] = Uri.EscapeDataString(minMembers.ToString()!);
+                        parseQueryString["minMembers"] = minMembers.ToString();
 
                     if (maxMembers != null)
-                        parseQueryString["maxMembers"] = Uri.EscapeDataString(maxMembers.ToString()!);
+                        parseQueryString["maxMembers"] = maxMembers.ToString();
 
                     if (minClanPoints != null)
-                        parseQueryString["minClanPoints"] = Uri.EscapeDataString(minClanPoints.ToString()!);
+                        parseQueryString["minClanPoints"] = minClanPoints.ToString();
 
                     if (minClanLevel != null)
-                        parseQueryString["minClanLevel"] = Uri.EscapeDataString(minClanLevel.ToString()!);
+                        parseQueryString["minClanLevel"] = minClanLevel.ToString();
 
                     if (limit != null)
-                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+                        parseQueryString["limit"] = limit.ToString();
 
                     if (name != null)
-                        parseQueryString["name"] = Uri.EscapeDataString(name.ToString()!);
+                        parseQueryString["name"] = name.ToString();
 
                     if (warFrequency != null)
-                        parseQueryString["warFrequency"] = Uri.EscapeDataString(warFrequency.ToString()!);
+                        parseQueryString["warFrequency"] = warFrequency.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+                        parseQueryString["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+                        parseQueryString["before"] = before.ToString();
 
                     if (labelIds != null)
-                        parseQueryString["labelIds"] = Uri.EscapeDataString(labelIds.ToString()!);
+                        parseQueryString["labelIds"] = labelIds.ToString();
 
                     uriBuilder.Query = parseQueryString.ToString();
 

@@ -194,7 +194,7 @@ namespace CocApi.Rest.Models
                             id = utf8JsonReader.GetInt32();
                             break;
                         case "name":
-                            name = JsonSerializer.Deserialize<string>(ref utf8JsonReader, jsonSerializerOptions);
+                            name = utf8JsonReader.GetString();
                             break;
                         default:
                             break;
@@ -219,8 +219,7 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("iconUrls");
             JsonSerializer.Serialize(writer, label.IconUrls, jsonSerializerOptions);
             writer.WriteNumber("id", label.Id);
-            writer.WritePropertyName("name");
-            JsonSerializer.Serialize(writer, label.Name, jsonSerializerOptions);
+            writer.WriteString("name", label.Name);
 
             writer.WriteEndObject();
         }

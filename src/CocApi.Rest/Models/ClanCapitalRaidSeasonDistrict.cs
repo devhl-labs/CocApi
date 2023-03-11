@@ -295,7 +295,7 @@ namespace CocApi.Rest.Models
                             id = utf8JsonReader.GetInt32();
                             break;
                         case "name":
-                            name = JsonSerializer.Deserialize<string>(ref utf8JsonReader, jsonSerializerOptions);
+                            name = utf8JsonReader.GetString();
                             break;
                         case "stars":
                             stars = utf8JsonReader.GetInt32();
@@ -330,8 +330,7 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("destructionPercent", clanCapitalRaidSeasonDistrict.DestructionPercent);
             writer.WriteNumber("districtHallLevel", clanCapitalRaidSeasonDistrict.DistrictHallLevel);
             writer.WriteNumber("id", clanCapitalRaidSeasonDistrict.Id);
-            writer.WritePropertyName("name");
-            JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDistrict.Name, jsonSerializerOptions);
+            writer.WriteString("name", clanCapitalRaidSeasonDistrict.Name);
             writer.WriteNumber("stars", clanCapitalRaidSeasonDistrict.Stars);
             writer.WriteNumber("totalLooted", clanCapitalRaidSeasonDistrict.TotalLooted);
             writer.WritePropertyName("attacks");

@@ -17,7 +17,9 @@ $properties = @(
     'modelPackage=Models',
     'apiPackage=BaseApis',
     'derivedApiPackage=Apis',
-    'packageGuid=71B5E000-88E9-432B-BAEB-BB622EA7DC33'
+    'packageGuid=71B5E000-88E9-432B-BAEB-BB622EA7DC33',
+    "dateTimeFormat=yyyyMMdd'T'HHmmss.fff'Z'",
+    "dateFormat=yyyy'-'MM"
 ) -join ","
 
 $global = @(
@@ -618,23 +620,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
-        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
-    }
-
-    if ($file.name -eq "ClanWarLogEntry.cs"){
-        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
-    }
-
-    if ($file.name -eq "Key.cs"){
-        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
-    }
-
-    if ($file.name -eq "ClanCapitalRaidSeason.cs"){
-        $content = $content.Replace("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK", "yyyyMMdd'T'HHmmss.fff'Z'")
-    }
-
-    if ($file.name -eq "LegendLeagueTournamentSeasonResult.cs"){
-        $content = $content.Replace("yyyy-MM-dd", "yyyy-MM")
     }
 
     if ($file.name -eq "ClanCapitalRaidSeason.cs"){

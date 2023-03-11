@@ -11,7 +11,7 @@ Name | Type | Description | Notes
 **Name** | **string** |  | [optional] [readonly] 
 **Stars** | **int** |  | [optional] [readonly] 
 **TotalLooted** | **int** |  | [optional] [readonly] 
-**Attacks** | **List&lt;ClanCapitalRaidSeasonAttack&gt;** |  | [optional] [readonly] 
+**Attacks** | [**List&lt;ClanCapitalRaidSeasonAttack&gt;**](ClanCapitalRaidSeasonAttack.md) |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

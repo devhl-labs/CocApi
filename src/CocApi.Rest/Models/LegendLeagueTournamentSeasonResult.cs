@@ -154,7 +154,7 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// The format to use to serialize Id
         /// </summary>
-        public static string IdFormat { get; set; } = "yyyy-MM";
+        public static string IdFormat { get; set; } = "yyyy'-'MM";
 
         /// <summary>
         /// A Json reader.

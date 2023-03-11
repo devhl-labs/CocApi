@@ -173,7 +173,7 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// The format to use to serialize Season
         /// </summary>
-        public static string SeasonFormat { get; set; } = "yyyy-MM";
+        public static string SeasonFormat { get; set; } = "yyyy'-'MM";
 
         /// <summary>
         /// A Json reader.

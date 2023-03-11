@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **ClanPoints** | **int** |  | [optional] [readonly] 
 **ClanVersusPoints** | **int** |  | [optional] [readonly] 
 **IsWarLogPublic** | **bool** |  | [optional] [readonly] 
-**Labels** | **List&lt;Label&gt;** |  | [optional] [readonly] 
+**Labels** | [**List&lt;Label&gt;**](Label.md) |  | [optional] [readonly] 
 **Members** | **int** |  | [optional] [readonly] 
 **Name** | **string** |  | [optional] [readonly] 
 **RequiredTrophies** | **int** |  | [optional] [readonly] 

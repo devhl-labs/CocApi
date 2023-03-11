@@ -269,13 +269,13 @@ namespace CocApi.Rest.BaseApis
 
                     System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+                        parseQueryString["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+                        parseQueryString["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+                        parseQueryString["before"] = before.ToString();
 
                     uriBuilder.Query = parseQueryString.ToString();
 
@@ -440,13 +440,13 @@ namespace CocApi.Rest.BaseApis
 
                     System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = Uri.EscapeDataString(limit.ToString()!);
+                        parseQueryString["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = Uri.EscapeDataString(after.ToString()!);
+                        parseQueryString["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = Uri.EscapeDataString(before.ToString()!);
+                        parseQueryString["before"] = before.ToString();
 
                     uriBuilder.Query = parseQueryString.ToString();
 

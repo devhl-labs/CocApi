@@ -282,7 +282,7 @@ namespace CocApi.Rest.Models
                             village = VillageTypeConverter.FromString(villageRawValue);
                             break;
                         case "completionInfo":
-                            completionInfo = JsonSerializer.Deserialize<string>(ref utf8JsonReader, jsonSerializerOptions);
+                            completionInfo = utf8JsonReader.GetString();
                             break;
                         default:
                             break;
@@ -314,8 +314,7 @@ namespace CocApi.Rest.Models
                 writer.WriteString("village", villageRawValue);
             else
                 writer.WriteNull("village");
-            writer.WritePropertyName("completionInfo");
-            JsonSerializer.Serialize(writer, playerAchievementProgress.CompletionInfo, jsonSerializerOptions);
+            writer.WriteString("completionInfo", playerAchievementProgress.CompletionInfo);
 
             writer.WriteEndObject();
         }
