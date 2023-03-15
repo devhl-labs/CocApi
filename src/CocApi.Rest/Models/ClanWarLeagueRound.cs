@@ -151,7 +151,8 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "warTags":
-                            warTags = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                warTags = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

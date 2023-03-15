@@ -214,25 +214,30 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "mapPosition":
-                            mapPosition = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out mapPosition);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "opponentAttacks":
-                            opponentAttacks = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out opponentAttacks);
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "townhallLevel":
-                            townhallLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out townhallLevel);
                             break;
                         case "attacks":
-                            attacks = JsonSerializer.Deserialize<List<ClanWarAttack>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                attacks = JsonSerializer.Deserialize<List<ClanWarAttack>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "bestOpponentAttack":
-                            bestOpponentAttack = JsonSerializer.Deserialize<ClanWarAttack>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                bestOpponentAttack = JsonSerializer.Deserialize<ClanWarAttack>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

@@ -249,19 +249,24 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attacksPerMember":
-                            attacksPerMember = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attacksPerMember);
                             break;
                         case "clan":
-                            clan = JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                clan = JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "endTime":
-                            endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "opponent":
-                            opponent = JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                opponent = JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "teamSize":
-                            teamSize = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out teamSize);
                             break;
                         case "result":
                             string resultRawValue = utf8JsonReader.GetString();

@@ -280,23 +280,34 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attacks":
-                            attacks = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attacks);
                             break;
                         case "badgeUrls":
-                            badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "clanLevel":
-                            clanLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanLevel);
                             break;
                         case "destructionPercentage":
-                            destructionPercentage = (float)utf8JsonReader.GetDouble();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                            {
+                                utf8JsonReader.TryGetDouble(out double destructionPercentageResult);
+                                destructionPercentage = (float)destructionPercentageResult;
+                            }
                             break;
                         case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out stars);
                             break;
                         case "expEarned":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expEarned = utf8JsonReader.GetInt32();
+                            {
+                                utf8JsonReader.TryGetInt32(out int expEarnedResult);
+                                expEarned = expEarnedResult;
+                            }
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

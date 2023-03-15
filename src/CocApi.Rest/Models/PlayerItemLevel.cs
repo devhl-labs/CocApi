@@ -225,10 +225,12 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "level":
-                            level = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out level);
                             break;
                         case "maxLevel":
-                            maxLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out maxLevel);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
@@ -238,7 +240,8 @@ namespace CocApi.Rest.Models
                             village = VillageTypeConverter.FromString(villageRawValue);
                             break;
                         case "superTroopIsActive":
-                            superTroopIsActive = utf8JsonReader.GetBoolean();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                superTroopIsActive = utf8JsonReader.GetBoolean();
                             break;
                         default:
                             break;

@@ -301,31 +301,38 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "badgeUrls":
-                            badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "clanLevel":
-                            clanLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanLevel);
                             break;
                         case "clanPoints":
-                            clanPoints = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanPoints);
                             break;
                         case "members":
-                            members = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out members);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "previousRank":
-                            previousRank = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out previousRank);
                             break;
                         case "rank":
-                            rank = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out rank);
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "location":
-                            location = JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                location = JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

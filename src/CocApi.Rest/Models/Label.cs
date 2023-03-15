@@ -188,10 +188,12 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "iconUrls":
-                            iconUrls = JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                iconUrls = JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "id":
-                            id = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out id);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

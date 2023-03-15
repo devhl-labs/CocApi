@@ -59,7 +59,7 @@ namespace CocApi.Rest.Client
             if (dateTimeValue == null)
                 writer.WriteNullValue();
             else
-                writer.WriteStringValue(dateTimeValue.Value.ToString(Formats[0], CultureInfo.InvariantCulture));
+                writer.WriteStringValue(dateTimeValue.Value.ToString("yyyyMMdd'T'HHmmss.fff'Z'", CultureInfo.InvariantCulture));
         }
     }
 }

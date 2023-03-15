@@ -133,13 +133,16 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "keys":
-                            keys = JsonSerializer.Deserialize<List<Key>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                keys = JsonSerializer.Deserialize<List<Key>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "sessionExpiresInSeconds":
-                            sessionExpiresInSeconds = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out sessionExpiresInSeconds);
                             break;
                         case "status":
-                            status = JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                status = JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

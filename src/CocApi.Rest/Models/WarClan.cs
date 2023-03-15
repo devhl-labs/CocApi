@@ -244,28 +244,38 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attacks":
-                            attacks = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attacks);
                             break;
                         case "badgeUrls":
-                            badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "clanLevel":
-                            clanLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanLevel);
                             break;
                         case "destructionPercentage":
-                            destructionPercentage = (float)utf8JsonReader.GetDouble();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                            {
+                                utf8JsonReader.TryGetDouble(out double destructionPercentageResult);
+                                destructionPercentage = (float)destructionPercentageResult;
+                            }
                             break;
                         case "expEarned":
-                            expEarned = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out expEarned);
                             break;
                         case "members":
-                            members = JsonSerializer.Deserialize<List<ClanWarMember>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                members = JsonSerializer.Deserialize<List<ClanWarMember>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out stars);
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();

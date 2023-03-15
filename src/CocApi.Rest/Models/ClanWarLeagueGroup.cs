@@ -213,13 +213,16 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "clans":
-                            clans = JsonSerializer.Deserialize<List<ClanWarLeagueClan>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                clans = JsonSerializer.Deserialize<List<ClanWarLeagueClan>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "rounds":
-                            rounds = JsonSerializer.Deserialize<List<ClanWarLeagueRound>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                rounds = JsonSerializer.Deserialize<List<ClanWarLeagueRound>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "season":
-                            season = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                season = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "state":
                             string stateRawValue = utf8JsonReader.GetString();

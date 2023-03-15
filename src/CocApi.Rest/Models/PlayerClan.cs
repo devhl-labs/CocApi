@@ -207,10 +207,12 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "badgeUrls":
-                            badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "clanLevel":
-                            clanLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanLevel);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

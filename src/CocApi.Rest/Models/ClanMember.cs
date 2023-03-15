@@ -357,37 +357,46 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "clanRank":
-                            clanRank = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanRank);
                             break;
                         case "donations":
-                            donations = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out donations);
                             break;
                         case "donationsReceived":
-                            donationsReceived = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out donationsReceived);
                             break;
                         case "expLevel":
-                            expLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out expLevel);
                             break;
                         case "league":
-                            league = JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                league = JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "previousClanRank":
-                            previousClanRank = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out previousClanRank);
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "trophies":
-                            trophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out trophies);
                             break;
                         case "versusTrophies":
-                            versusTrophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out versusTrophies);
                             break;
                         case "playerHouse":
-                            playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "role":
                             string roleRawValue = utf8JsonReader.GetString();

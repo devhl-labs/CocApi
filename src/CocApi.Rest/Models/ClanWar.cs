@@ -298,25 +298,32 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attacksPerMember":
-                            attacksPerMember = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attacksPerMember);
                             break;
                         case "clan":
-                            clan = JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                clan = JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "endTime":
-                            endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "opponent":
-                            opponent = JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                opponent = JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "preparationStartTime":
-                            preparationStartTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                preparationStartTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "startTime":
-                            startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "teamSize":
-                            teamSize = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out teamSize);
                             break;
                         case "state":
                             string stateRawValue = utf8JsonReader.GetString();

@@ -120,7 +120,8 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "sessionExpiresInSeconds":
-                            sessionExpiresInSeconds = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out sessionExpiresInSeconds);
                             break;
                         case "temporaryAPIToken":
                             temporaryAPIToken = utf8JsonReader.GetString();

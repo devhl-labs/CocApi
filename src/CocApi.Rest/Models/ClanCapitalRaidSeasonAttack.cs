@@ -188,13 +188,16 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attacker":
-                            attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "destructionPercent":
-                            destructionPercent = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out destructionPercent);
                             break;
                         case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out stars);
                             break;
                         default:
                             break;

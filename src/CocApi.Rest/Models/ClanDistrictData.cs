@@ -188,10 +188,12 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "districtHallLevel":
-                            districtHallLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out districtHallLevel);
                             break;
                         case "id":
-                            id = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out id);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

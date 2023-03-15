@@ -133,7 +133,8 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "cidrRanges":
-                            cidrRanges = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                cidrRanges = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "description":
                             description = utf8JsonReader.GetString();

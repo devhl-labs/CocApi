@@ -680,82 +680,106 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "achievements":
-                            achievements = JsonSerializer.Deserialize<List<PlayerAchievementProgress>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                achievements = JsonSerializer.Deserialize<List<PlayerAchievementProgress>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "attackWins":
-                            attackWins = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attackWins);
                             break;
                         case "bestTrophies":
-                            bestTrophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out bestTrophies);
                             break;
                         case "bestVersusTrophies":
-                            bestVersusTrophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out bestVersusTrophies);
                             break;
                         case "builderHallLevel":
-                            builderHallLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out builderHallLevel);
                             break;
                         case "clanCapitalContributions":
-                            clanCapitalContributions = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out clanCapitalContributions);
                             break;
                         case "defenseWins":
-                            defenseWins = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out defenseWins);
                             break;
                         case "donations":
-                            donations = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out donations);
                             break;
                         case "donationsReceived":
-                            donationsReceived = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out donationsReceived);
                             break;
                         case "expLevel":
-                            expLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out expLevel);
                             break;
                         case "heroes":
-                            heroes = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                heroes = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "labels":
-                            labels = JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                labels = JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "spells":
-                            spells = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                spells = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "townHallLevel":
-                            townHallLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out townHallLevel);
                             break;
                         case "troops":
-                            troops = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                troops = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "trophies":
-                            trophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out trophies);
                             break;
                         case "versusBattleWinCount":
-                            versusBattleWinCount = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out versusBattleWinCount);
                             break;
                         case "versusBattleWins":
-                            versusBattleWins = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out versusBattleWins);
                             break;
                         case "versusTrophies":
-                            versusTrophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out versusTrophies);
                             break;
                         case "warStars":
-                            warStars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out warStars);
                             break;
                         case "clan":
-                            clan = JsonSerializer.Deserialize<PlayerClan>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                clan = JsonSerializer.Deserialize<PlayerClan>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "league":
-                            league = JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                league = JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "legendStatistics":
-                            legendStatistics = JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                legendStatistics = JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "playerHouse":
-                            playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "role":
                             string roleRawValue = utf8JsonReader.GetString();
@@ -763,7 +787,10 @@ namespace CocApi.Rest.Models
                             break;
                         case "townHallWeaponLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallWeaponLevel = utf8JsonReader.GetInt32();
+                            {
+                                utf8JsonReader.TryGetInt32(out int townHallWeaponLevelResult);
+                                townHallWeaponLevel = townHallWeaponLevelResult;
+                            }
                             break;
                         case "warPreference":
                             string warPreferenceRawValue = utf8JsonReader.GetString();

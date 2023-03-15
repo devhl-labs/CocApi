@@ -251,16 +251,20 @@ namespace CocApi.Rest.Models
                             defenderTag = utf8JsonReader.GetString();
                             break;
                         case "destructionPercentage":
-                            destructionPercentage = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out destructionPercentage);
                             break;
                         case "duration":
-                            duration = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out duration);
                             break;
                         case "order":
-                            order = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out order);
                             break;
                         case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out stars);
                             break;
                         default:
                             break;

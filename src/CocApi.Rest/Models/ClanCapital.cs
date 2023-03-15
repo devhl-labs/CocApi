@@ -163,10 +163,14 @@ namespace CocApi.Rest.Models
                     {
                         case "capitalHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                capitalHallLevel = utf8JsonReader.GetInt32();
+                            {
+                                utf8JsonReader.TryGetInt32(out int capitalHallLevelResult);
+                                capitalHallLevel = capitalHallLevelResult;
+                            }
                             break;
                         case "districts":
-                            districts = JsonSerializer.Deserialize<List<ClanDistrictData>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                districts = JsonSerializer.Deserialize<List<ClanDistrictData>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

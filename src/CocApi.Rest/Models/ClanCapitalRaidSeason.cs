@@ -432,41 +432,52 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attackLog":
-                            attackLog = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttackLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                attackLog = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttackLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "capitalTotalLoot":
-                            capitalTotalLoot = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out capitalTotalLoot);
                             break;
                         case "defenseLog":
-                            defenseLog = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDefenseLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                defenseLog = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDefenseLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "defensiveReward":
-                            defensiveReward = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out defensiveReward);
                             break;
                         case "endTime":
-                            endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "enemyDistrictsDestroyed":
-                            enemyDistrictsDestroyed = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out enemyDistrictsDestroyed);
                             break;
                         case "offensiveReward":
-                            offensiveReward = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out offensiveReward);
                             break;
                         case "raidsCompleted":
-                            raidsCompleted = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out raidsCompleted);
                             break;
                         case "startTime":
-                            startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "state":
                             string stateRawValue = utf8JsonReader.GetString();
                             state = ClanCapitalRaidSeason.StateEnumFromString(stateRawValue);
                             break;
                         case "totalAttacks":
-                            totalAttacks = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out totalAttacks);
                             break;
                         case "members":
-                            members = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonMember>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                members = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonMember>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

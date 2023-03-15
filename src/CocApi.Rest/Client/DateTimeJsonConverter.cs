@@ -55,6 +55,6 @@ namespace CocApi.Rest.Client
         /// <param name="dateTimeValue"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, DateTime dateTimeValue, JsonSerializerOptions options) =>
-            writer.WriteStringValue(dateTimeValue.ToString(Formats[0], CultureInfo.InvariantCulture));
+            writer.WriteStringValue(dateTimeValue.ToString("yyyyMMdd'T'HHmmss.fff'Z'", CultureInfo.InvariantCulture));
     }
 }

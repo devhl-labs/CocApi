@@ -245,16 +245,20 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attackLimit":
-                            attackLimit = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attackLimit);
                             break;
                         case "attacks":
-                            attacks = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attacks);
                             break;
                         case "bonusAttackLimit":
-                            bonusAttackLimit = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out bonusAttackLimit);
                             break;
                         case "capitalResourcesLooted":
-                            capitalResourcesLooted = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out capitalResourcesLooted);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

@@ -223,7 +223,8 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "cidrRanges":
-                            cidrRanges = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                cidrRanges = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "description":
                             description = utf8JsonReader.GetString();
@@ -241,7 +242,8 @@ namespace CocApi.Rest.Models
                             name = utf8JsonReader.GetString();
                             break;
                         case "scopes":
-                            scopes = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                scopes = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "tier":
                             tier = utf8JsonReader.GetString();
@@ -250,7 +252,8 @@ namespace CocApi.Rest.Models
                             origins = utf8JsonReader.GetString();
                             break;
                         case "validUntil":
-                            validUntil = JsonSerializer.Deserialize<DateTime?>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                validUntil = JsonSerializer.Deserialize<DateTime?>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

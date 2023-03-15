@@ -227,19 +227,24 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attackCount":
-                            attackCount = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attackCount);
                             break;
                         case "attacker":
-                            attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonClanInfo>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonClanInfo>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "districtCount":
-                            districtCount = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out districtCount);
                             break;
                         case "districts":
-                            districts = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDistrict>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                districts = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDistrict>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "districtsDestroyed":
-                            districtsDestroyed = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out districtsDestroyed);
                             break;
                         default:
                             break;

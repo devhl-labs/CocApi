@@ -269,13 +269,16 @@ namespace CocApi.Rest.Models
                             name = utf8JsonReader.GetString();
                             break;
                         case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out stars);
                             break;
                         case "target":
-                            target = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out target);
                             break;
                         case "value":
-                            value = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out value);
                             break;
                         case "village":
                             string villageRawValue = utf8JsonReader.GetString();

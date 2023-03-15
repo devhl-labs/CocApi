@@ -241,22 +241,28 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "currentSeason":
-                            currentSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                currentSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "legendTrophies":
-                            legendTrophies = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out legendTrophies);
                             break;
                         case "bestSeason":
-                            bestSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                bestSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "bestVersusSeason":
-                            bestVersusSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                bestVersusSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "previousSeason":
-                            previousSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                previousSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "previousVersusSeason":
-                            previousVersusSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                previousVersusSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

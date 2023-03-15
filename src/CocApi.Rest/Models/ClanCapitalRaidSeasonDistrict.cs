@@ -283,28 +283,35 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "attackCount":
-                            attackCount = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out attackCount);
                             break;
                         case "destructionPercent":
-                            destructionPercent = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out destructionPercent);
                             break;
                         case "districtHallLevel":
-                            districtHallLevel = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out districtHallLevel);
                             break;
                         case "id":
-                            id = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out id);
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "stars":
-                            stars = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out stars);
                             break;
                         case "totalLooted":
-                            totalLooted = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out totalLooted);
                             break;
                         case "attacks":
-                            attacks = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttack>>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                attacks = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttack>>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         default:
                             break;

@@ -207,7 +207,8 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "detail":
-                            detail = JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions);
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                detail = JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "message":
                             message = utf8JsonReader.GetString();

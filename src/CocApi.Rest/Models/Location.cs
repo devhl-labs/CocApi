@@ -224,10 +224,12 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "id":
-                            id = utf8JsonReader.GetInt32();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                utf8JsonReader.TryGetInt32(out id);
                             break;
                         case "isCountry":
-                            isCountry = utf8JsonReader.GetBoolean();
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                isCountry = utf8JsonReader.GetBoolean();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
