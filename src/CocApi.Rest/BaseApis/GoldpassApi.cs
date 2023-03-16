@@ -117,12 +117,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="GoldPassSeason"/>&gt;</returns>
         public async Task<GoldPassSeason> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<GoldPassSeason?> result = await FetchCurrentGoldPassSeasonResponseAsync(cancellationToken).ConfigureAwait(false);
+            ApiResponse<GoldPassSeason?> apiResponseLocalVar = await FetchCurrentGoldPassSeasonResponseAsync(cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -133,17 +133,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="GoldPassSeason"/>&gt;</returns>
         public async Task<GoldPassSeason?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<GoldPassSeason?>? result = null;
+            ApiResponse<GoldPassSeason?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchCurrentGoldPassSeasonResponseAsync(cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchCurrentGoldPassSeasonResponseAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -159,8 +159,8 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
-        protected virtual void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason?> apiResponse)
+        /// <param name="apiResponseLocalVar"></param>
+        protected virtual void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason?> apiResponseLocalVar)
         {
         }
 
@@ -183,66 +183,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="GoldPassSeason"/></returns>
         public async Task<ApiResponse<GoldPassSeason?>> FetchCurrentGoldPassSeasonResponseAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 OnFetchCurrentGoldPassSeason();
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/goldpass/seasons/current";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/goldpass/seasons/current";
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/goldpass/seasons/current", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/goldpass/seasons/current", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<GoldPassSeason?> apiResponse = new ApiResponse<GoldPassSeason?>(responseMessage, responseContent);
+                        ApiResponse<GoldPassSeason?> apiResponseLocalVar = new ApiResponse<GoldPassSeason?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<GoldPassSeason>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchCurrentGoldPassSeason(apiResponse);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<GoldPassSeason>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchCurrentGoldPassSeason(apiResponseLocalVar);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentGoldPassSeason(e, "/goldpass/seasons/current", uriBuilder.Path);
+                OnErrorFetchCurrentGoldPassSeason(e, "/goldpass/seasons/current", uriBuilderLocalVar.Path);
                 throw;
             }
         }

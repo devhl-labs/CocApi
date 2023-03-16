@@ -405,12 +405,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeague"/>&gt;</returns>
         public async Task<CapitalLeague> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<CapitalLeague?> result = await FetchCapitalLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            ApiResponse<CapitalLeague?> apiResponseLocalVar = await FetchCapitalLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -422,17 +422,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeague"/>&gt;</returns>
         public async Task<CapitalLeague?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<CapitalLeague?>? result = null;
+            ApiResponse<CapitalLeague?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchCapitalLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchCapitalLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -458,9 +458,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchCapitalLeague(ApiResponse<CapitalLeague?> apiResponse, string leagueId)
+        protected virtual void AfterFetchCapitalLeague(ApiResponse<CapitalLeague?> apiResponseLocalVar, string leagueId)
         {
         }
 
@@ -485,66 +485,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
         public async Task<ApiResponse<CapitalLeague?>> FetchCapitalLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 leagueId = OnFetchCapitalLeague(leagueId);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues/{leagueId}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues/{leagueId}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/capitalleagues/{leagueId}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<CapitalLeague?> apiResponse = new ApiResponse<CapitalLeague?>(responseMessage, responseContent);
+                        ApiResponse<CapitalLeague?> apiResponseLocalVar = new ApiResponse<CapitalLeague?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<CapitalLeague>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchCapitalLeague(apiResponse, leagueId);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<CapitalLeague>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchCapitalLeague(apiResponseLocalVar, leagueId);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchCapitalLeague(e, "/capitalleagues/{leagueId}", uriBuilder.Path, leagueId);
+                OnErrorFetchCapitalLeague(e, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -560,12 +560,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeagueObject"/>&gt;</returns>
         public async Task<CapitalLeagueObject> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<CapitalLeagueObject?> result = await FetchCapitalLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<CapitalLeagueObject?> apiResponseLocalVar = await FetchCapitalLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -579,17 +579,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="CapitalLeagueObject"/>&gt;</returns>
         public async Task<CapitalLeagueObject?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<CapitalLeagueObject?>? result = null;
+            ApiResponse<CapitalLeagueObject?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchCapitalLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchCapitalLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -608,11 +608,11 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchCapitalLeagues(ApiResponse<CapitalLeagueObject?> apiResponse, int? limit, string? after, string? before)
+        protected virtual void AfterFetchCapitalLeagues(ApiResponse<CapitalLeagueObject?> apiResponseLocalVar, int? limit, string? after, string? before)
         {
         }
 
@@ -641,81 +641,81 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
         public async Task<ApiResponse<CapitalLeagueObject?>> FetchCapitalLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchCapitalLeagues(limit, after, before);
-                limit = validatedParameters.Item1;
-                after = validatedParameters.Item2;
-                before = validatedParameters.Item3;
+                var validatedParameterLocalVars = OnFetchCapitalLeagues(limit, after, before);
+                limit = validatedParameterLocalVars.Item1;
+                after = validatedParameterLocalVars.Item2;
+                before = validatedParameterLocalVars.Item3;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues";
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/capitalleagues", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/capitalleagues", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<CapitalLeagueObject?> apiResponse = new ApiResponse<CapitalLeagueObject?>(responseMessage, responseContent);
+                        ApiResponse<CapitalLeagueObject?> apiResponseLocalVar = new ApiResponse<CapitalLeagueObject?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<CapitalLeagueObject>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchCapitalLeagues(apiResponse, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<CapitalLeagueObject>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchCapitalLeagues(apiResponseLocalVar, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchCapitalLeagues(e, "/capitalleagues", uriBuilder.Path, limit, after, before);
+                OnErrorFetchCapitalLeagues(e, "/capitalleagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -729,12 +729,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="League"/>&gt;</returns>
         public async Task<League> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<League?> result = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            ApiResponse<League?> apiResponseLocalVar = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -746,17 +746,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="League"/>&gt;</returns>
         public async Task<League?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<League?>? result = null;
+            ApiResponse<League?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -782,9 +782,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchLeague(ApiResponse<League?> apiResponse, string leagueId)
+        protected virtual void AfterFetchLeague(ApiResponse<League?> apiResponseLocalVar, string leagueId)
         {
         }
 
@@ -809,66 +809,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
         public async Task<ApiResponse<League?>> FetchLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 leagueId = OnFetchLeague(leagueId);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/leagues/{leagueId}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<League?> apiResponse = new ApiResponse<League?>(responseMessage, responseContent);
+                        ApiResponse<League?> apiResponseLocalVar = new ApiResponse<League?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<League>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchLeague(apiResponse, leagueId);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<League>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchLeague(apiResponseLocalVar, leagueId);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchLeague(e, "/leagues/{leagueId}", uriBuilder.Path, leagueId);
+                OnErrorFetchLeague(e, "/leagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -886,12 +886,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="PlayerRankingList"/>&gt;</returns>
         public async Task<PlayerRankingList> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<PlayerRankingList?> result = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<PlayerRankingList?> apiResponseLocalVar = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -907,17 +907,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="PlayerRankingList"/>&gt;</returns>
         public async Task<PlayerRankingList?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<PlayerRankingList?>? result = null;
+            ApiResponse<PlayerRankingList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchLeagueSeasonRankingsResponseAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -950,13 +950,13 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLeagueSeasonRankings(ApiResponse<PlayerRankingList?> apiResponse, string leagueId, string seasonId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchLeagueSeasonRankings(ApiResponse<PlayerRankingList?> apiResponseLocalVar, string leagueId, string seasonId, int? limit, string? after, string? before)
         {
         }
 
@@ -989,83 +989,83 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
         public async Task<ApiResponse<PlayerRankingList?>> FetchLeagueSeasonRankingsResponseAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchLeagueSeasonRankings(leagueId, seasonId, limit, after, before);
-                leagueId = validatedParameters.Item1;
-                seasonId = validatedParameters.Item2;
-                limit = validatedParameters.Item3;
-                after = validatedParameters.Item4;
-                before = validatedParameters.Item5;
+                var validatedParameterLocalVars = OnFetchLeagueSeasonRankings(leagueId, seasonId, limit, after, before);
+                leagueId = validatedParameterLocalVars.Item1;
+                seasonId = validatedParameterLocalVars.Item2;
+                limit = validatedParameterLocalVars.Item3;
+                after = validatedParameterLocalVars.Item4;
+                before = validatedParameterLocalVars.Item5;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons/{seasonId}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons/{seasonId}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    uriBuilder.Path = uriBuilder.Path.Replace("%7BseasonId%7D", Uri.EscapeDataString(seasonId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BseasonId%7D", Uri.EscapeDataString(seasonId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<PlayerRankingList?> apiResponse = new ApiResponse<PlayerRankingList?>(responseMessage, responseContent);
+                        ApiResponse<PlayerRankingList?> apiResponseLocalVar = new ApiResponse<PlayerRankingList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<PlayerRankingList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchLeagueSeasonRankings(apiResponse, leagueId, seasonId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<PlayerRankingList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchLeagueSeasonRankings(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagueSeasonRankings(e, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilder.Path, leagueId, seasonId, limit, after, before);
+                OnErrorFetchLeagueSeasonRankings(e, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path, leagueId, seasonId, limit, after, before);
                 throw;
             }
         }
@@ -1082,12 +1082,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LeagueSeasonList"/>&gt;</returns>
         public async Task<LeagueSeasonList> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LeagueSeasonList?> result = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<LeagueSeasonList?> apiResponseLocalVar = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1102,17 +1102,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LeagueSeasonList"/>&gt;</returns>
         public async Task<LeagueSeasonList?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LeagueSeasonList?>? result = null;
+            ApiResponse<LeagueSeasonList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchLeagueSeasonsResponseAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1141,12 +1141,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLeagueSeasons(ApiResponse<LeagueSeasonList?> apiResponse, string leagueId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchLeagueSeasons(ApiResponse<LeagueSeasonList?> apiResponseLocalVar, string leagueId, int? limit, string? after, string? before)
         {
         }
 
@@ -1177,82 +1177,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
         public async Task<ApiResponse<LeagueSeasonList?>> FetchLeagueSeasonsResponseAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchLeagueSeasons(leagueId, limit, after, before);
-                leagueId = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchLeagueSeasons(leagueId, limit, after, before);
+                leagueId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/leagues/{leagueId}/seasons", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<LeagueSeasonList?> apiResponse = new ApiResponse<LeagueSeasonList?>(responseMessage, responseContent);
+                        ApiResponse<LeagueSeasonList?> apiResponseLocalVar = new ApiResponse<LeagueSeasonList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<LeagueSeasonList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchLeagueSeasons(apiResponse, leagueId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<LeagueSeasonList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchLeagueSeasons(apiResponseLocalVar, leagueId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagueSeasons(e, "/leagues/{leagueId}/seasons", uriBuilder.Path, leagueId, limit, after, before);
+                OnErrorFetchLeagueSeasons(e, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path, leagueId, limit, after, before);
                 throw;
             }
         }
@@ -1268,12 +1268,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LeagueList"/>&gt;</returns>
         public async Task<LeagueList> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LeagueList?> result = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<LeagueList?> apiResponseLocalVar = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1287,17 +1287,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LeagueList"/>&gt;</returns>
         public async Task<LeagueList?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LeagueList?>? result = null;
+            ApiResponse<LeagueList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1316,11 +1316,11 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLeagues(ApiResponse<LeagueList?> apiResponse, int? limit, string? after, string? before)
+        protected virtual void AfterFetchLeagues(ApiResponse<LeagueList?> apiResponseLocalVar, int? limit, string? after, string? before)
         {
         }
 
@@ -1349,81 +1349,81 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
         public async Task<ApiResponse<LeagueList?>> FetchLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchLeagues(limit, after, before);
-                limit = validatedParameters.Item1;
-                after = validatedParameters.Item2;
-                before = validatedParameters.Item3;
+                var validatedParameterLocalVars = OnFetchLeagues(limit, after, before);
+                limit = validatedParameterLocalVars.Item1;
+                after = validatedParameterLocalVars.Item2;
+                before = validatedParameterLocalVars.Item3;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/leagues";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues";
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/leagues", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<LeagueList?> apiResponse = new ApiResponse<LeagueList?>(responseMessage, responseContent);
+                        ApiResponse<LeagueList?> apiResponseLocalVar = new ApiResponse<LeagueList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<LeagueList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchLeagues(apiResponse, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<LeagueList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchLeagues(apiResponseLocalVar, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagues(e, "/leagues", uriBuilder.Path, limit, after, before);
+                OnErrorFetchLeagues(e, "/leagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -1437,12 +1437,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="WarLeague"/>&gt;</returns>
         public async Task<WarLeague> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<WarLeague?> result = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            ApiResponse<WarLeague?> apiResponseLocalVar = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1454,17 +1454,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="WarLeague"/>&gt;</returns>
         public async Task<WarLeague?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<WarLeague?>? result = null;
+            ApiResponse<WarLeague?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchWarLeagueResponseAsync(leagueId, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1490,9 +1490,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchWarLeague(ApiResponse<WarLeague?> apiResponse, string leagueId)
+        protected virtual void AfterFetchWarLeague(ApiResponse<WarLeague?> apiResponseLocalVar, string leagueId)
         {
         }
 
@@ -1517,66 +1517,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
         public async Task<ApiResponse<WarLeague?>> FetchWarLeagueResponseAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 leagueId = OnFetchWarLeague(leagueId);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/warleagues/{leagueId}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/warleagues/{leagueId}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/warleagues/{leagueId}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/warleagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<WarLeague?> apiResponse = new ApiResponse<WarLeague?>(responseMessage, responseContent);
+                        ApiResponse<WarLeague?> apiResponseLocalVar = new ApiResponse<WarLeague?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<WarLeague>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchWarLeague(apiResponse, leagueId);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<WarLeague>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchWarLeague(apiResponseLocalVar, leagueId);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchWarLeague(e, "/warleagues/{leagueId}", uriBuilder.Path, leagueId);
+                OnErrorFetchWarLeague(e, "/warleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -1592,12 +1592,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="WarLeagueList"/>&gt;</returns>
         public async Task<WarLeagueList> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<WarLeagueList?> result = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<WarLeagueList?> apiResponseLocalVar = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1611,17 +1611,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="WarLeagueList"/>&gt;</returns>
         public async Task<WarLeagueList?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<WarLeagueList?>? result = null;
+            ApiResponse<WarLeagueList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchWarLeaguesResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1640,11 +1640,11 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchWarLeagues(ApiResponse<WarLeagueList?> apiResponse, int? limit, string? after, string? before)
+        protected virtual void AfterFetchWarLeagues(ApiResponse<WarLeagueList?> apiResponseLocalVar, int? limit, string? after, string? before)
         {
         }
 
@@ -1673,81 +1673,81 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
         public async Task<ApiResponse<WarLeagueList?>> FetchWarLeaguesResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchWarLeagues(limit, after, before);
-                limit = validatedParameters.Item1;
-                after = validatedParameters.Item2;
-                before = validatedParameters.Item3;
+                var validatedParameterLocalVars = OnFetchWarLeagues(limit, after, before);
+                limit = validatedParameterLocalVars.Item1;
+                after = validatedParameterLocalVars.Item2;
+                before = validatedParameterLocalVars.Item3;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/warleagues";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/warleagues";
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/warleagues", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/warleagues", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<WarLeagueList?> apiResponse = new ApiResponse<WarLeagueList?>(responseMessage, responseContent);
+                        ApiResponse<WarLeagueList?> apiResponseLocalVar = new ApiResponse<WarLeagueList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<WarLeagueList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchWarLeagues(apiResponse, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<WarLeagueList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchWarLeagues(apiResponseLocalVar, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchWarLeagues(e, "/warleagues", uriBuilder.Path, limit, after, before);
+                OnErrorFetchWarLeagues(e, "/warleagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }

@@ -223,12 +223,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
         public async Task<KeyInstance> CreateAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<KeyInstance?> result = await CreateResponseAsync(createTokenRequest, cancellationToken).ConfigureAwait(false);
+            ApiResponse<KeyInstance?> apiResponseLocalVar = await CreateResponseAsync(createTokenRequest, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -240,17 +240,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
         public async Task<KeyInstance?> CreateOrDefaultAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<KeyInstance?>? result = null;
+            ApiResponse<KeyInstance?>? apiResponseLocalVar = null;
             try 
             {
-                result = await CreateResponseAsync(createTokenRequest, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await CreateResponseAsync(createTokenRequest, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -276,9 +276,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="createTokenRequest"></param>
-        protected virtual void AfterCreate(ApiResponse<KeyInstance?> apiResponse, CreateTokenRequest createTokenRequest)
+        protected virtual void AfterCreate(ApiResponse<KeyInstance?> apiResponseLocalVar, CreateTokenRequest createTokenRequest)
         {
         }
 
@@ -303,68 +303,77 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="KeyInstance"/></returns>
         public async Task<ApiResponse<KeyInstance?>> CreateResponseAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 createTokenRequest = OnCreate(createTokenRequest);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    var url = request.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/create");
-                    uriBuilder.Host = url.Authority;
-                    uriBuilder.Scheme = url.Scheme;
-                    uriBuilder.Path = url.AbsolutePath;
+                    Uri urlLocalVar = httpRequestMessageLocalVar.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/create");
+                    uriBuilderLocalVar.Host = urlLocalVar.Authority;
+                    uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
+                    uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    request.Content = (createTokenRequest as object) is System.IO.Stream stream
-                        ? request.Content = new StreamContent(stream)
-                        : request.Content = new StringContent(JsonSerializer.Serialize(createTokenRequest, _jsonSerializerOptions));
+                    httpRequestMessageLocalVar.Content = (createTokenRequest as object) is System.IO.Stream stream
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                        : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(createTokenRequest, _jsonSerializerOptions));
 
-                    request.RequestUri = uriBuilder.Uri;
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] contentTypes = new string[] {
                         "application/json" 
                     };
 
-                    string? contentType = ClientUtils.SelectHeaderContentType(contentTypes);
+                    string? contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
 
-                    if (contentType != null)
-                        request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                    if (contentTypeLocalVar != null)
+                        httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Post;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Post;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/apikey/create", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/apikey/create", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<KeyInstance?> apiResponse = new ApiResponse<KeyInstance?>(responseMessage, responseContent);
+                        ApiResponse<KeyInstance?> apiResponseLocalVar = new ApiResponse<KeyInstance?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterCreate(apiResponse, createTokenRequest);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterCreate(apiResponseLocalVar, createTokenRequest);
                         }
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorCreate(e, "/apikey/create", uriBuilder.Path, createTokenRequest);
+                OnErrorCreate(e, "/apikey/create", uriBuilderLocalVar.Path, createTokenRequest);
                 throw;
             }
         }
@@ -377,12 +386,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="KeyList"/>&gt;</returns>
         public async Task<KeyList> KeysAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<KeyList?> result = await KeysResponseAsync(cancellationToken).ConfigureAwait(false);
+            ApiResponse<KeyList?> apiResponseLocalVar = await KeysResponseAsync(cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -393,17 +402,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="KeyList"/>&gt;</returns>
         public async Task<KeyList?> KeysOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<KeyList?>? result = null;
+            ApiResponse<KeyList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await KeysResponseAsync(cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await KeysResponseAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -419,8 +428,8 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
-        protected virtual void AfterKeys(ApiResponse<KeyList?> apiResponse)
+        /// <param name="apiResponseLocalVar"></param>
+        protected virtual void AfterKeys(ApiResponse<KeyList?> apiResponseLocalVar)
         {
         }
 
@@ -443,55 +452,64 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="KeyList"/></returns>
         public async Task<ApiResponse<KeyList?>> KeysResponseAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 OnKeys();
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    var url = request.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/list");
-                    uriBuilder.Host = url.Authority;
-                    uriBuilder.Scheme = url.Scheme;
-                    uriBuilder.Path = url.AbsolutePath;
+                    Uri urlLocalVar = httpRequestMessageLocalVar.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/list");
+                    uriBuilderLocalVar.Host = urlLocalVar.Authority;
+                    uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
+                    uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    request.RequestUri = uriBuilder.Uri;
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    string[] accepts = new string[] { 
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
+
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Post;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Post;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/apikey/list", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/apikey/list", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<KeyList?> apiResponse = new ApiResponse<KeyList?>(responseMessage, responseContent);
+                        ApiResponse<KeyList?> apiResponseLocalVar = new ApiResponse<KeyList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<KeyList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterKeys(apiResponse);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterKeys(apiResponseLocalVar);
                         }
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorKeys(e, "/apikey/list", uriBuilder.Path);
+                OnErrorKeys(e, "/apikey/list", uriBuilderLocalVar.Path);
                 throw;
             }
         }
@@ -505,12 +523,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LoginResponse"/>&gt;</returns>
         public async Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LoginResponse?> result = await LoginResponseAsync(loginCredentials, cancellationToken).ConfigureAwait(false);
+            ApiResponse<LoginResponse?> apiResponseLocalVar = await LoginResponseAsync(loginCredentials, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -522,17 +540,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LoginResponse"/>&gt;</returns>
         public async Task<LoginResponse?> LoginOrDefaultAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LoginResponse?>? result = null;
+            ApiResponse<LoginResponse?>? apiResponseLocalVar = null;
             try 
             {
-                result = await LoginResponseAsync(loginCredentials, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await LoginResponseAsync(loginCredentials, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -558,9 +576,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="loginCredentials"></param>
-        protected virtual void AfterLogin(ApiResponse<LoginResponse?> apiResponse, LoginCredentials loginCredentials)
+        protected virtual void AfterLogin(ApiResponse<LoginResponse?> apiResponseLocalVar, LoginCredentials loginCredentials)
         {
         }
 
@@ -585,70 +603,70 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LoginResponse"/></returns>
         public async Task<ApiResponse<LoginResponse?>> LoginResponseAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 loginCredentials = OnLogin(loginCredentials);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    var url = request.RequestUri = new Uri("https://developer.clashofclans.com/api/login");
-                    uriBuilder.Host = url.Authority;
-                    uriBuilder.Scheme = url.Scheme;
-                    uriBuilder.Path = url.AbsolutePath;
+                    Uri urlLocalVar = httpRequestMessageLocalVar.RequestUri = new Uri("https://developer.clashofclans.com/api/login");
+                    uriBuilderLocalVar.Host = urlLocalVar.Authority;
+                    uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
+                    uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    request.Content = (loginCredentials as object) is System.IO.Stream stream
-                        ? request.Content = new StreamContent(stream)
-                        : request.Content = new StringContent(JsonSerializer.Serialize(loginCredentials, _jsonSerializerOptions));
+                    httpRequestMessageLocalVar.Content = (loginCredentials as object) is System.IO.Stream stream
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                        : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(loginCredentials, _jsonSerializerOptions));
 
 
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] contentTypes = new string[] {
                         "application/json" 
                     };
 
-                    string? contentType = ClientUtils.SelectHeaderContentType(contentTypes);
+                    string? contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
 
-                    if (contentType != null)
-                        request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                    if (contentTypeLocalVar != null)
+                        httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Post;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Post;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/api/login", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/api/login", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<LoginResponse?> apiResponse = new ApiResponse<LoginResponse?>(responseMessage, responseContent);
+                        ApiResponse<LoginResponse?> apiResponseLocalVar = new ApiResponse<LoginResponse?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<LoginResponse>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterLogin(apiResponse, loginCredentials);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<LoginResponse>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterLogin(apiResponseLocalVar, loginCredentials);
                         }
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorLogin(e, "/api/login", uriBuilder.Path, loginCredentials);
+                OnErrorLogin(e, "/api/login", uriBuilderLocalVar.Path, loginCredentials);
                 throw;
             }
         }
@@ -662,12 +680,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
         public async Task<KeyInstance> RevokeAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<KeyInstance?> result = await RevokeResponseAsync(key, cancellationToken).ConfigureAwait(false);
+            ApiResponse<KeyInstance?> apiResponseLocalVar = await RevokeResponseAsync(key, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -679,17 +697,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
         public async Task<KeyInstance?> RevokeOrDefaultAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<KeyInstance?>? result = null;
+            ApiResponse<KeyInstance?>? apiResponseLocalVar = null;
             try 
             {
-                result = await RevokeResponseAsync(key, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await RevokeResponseAsync(key, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -715,9 +733,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="key"></param>
-        protected virtual void AfterRevoke(ApiResponse<KeyInstance?> apiResponse, Key key)
+        protected virtual void AfterRevoke(ApiResponse<KeyInstance?> apiResponseLocalVar, Key key)
         {
         }
 
@@ -742,68 +760,77 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="KeyInstance"/></returns>
         public async Task<ApiResponse<KeyInstance?>> RevokeResponseAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 key = OnRevoke(key);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    var url = request.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/revoke");
-                    uriBuilder.Host = url.Authority;
-                    uriBuilder.Scheme = url.Scheme;
-                    uriBuilder.Path = url.AbsolutePath;
+                    Uri urlLocalVar = httpRequestMessageLocalVar.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/revoke");
+                    uriBuilderLocalVar.Host = urlLocalVar.Authority;
+                    uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
+                    uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    request.Content = (key as object) is System.IO.Stream stream
-                        ? request.Content = new StreamContent(stream)
-                        : request.Content = new StringContent(JsonSerializer.Serialize(key, _jsonSerializerOptions));
+                    httpRequestMessageLocalVar.Content = (key as object) is System.IO.Stream stream
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                        : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(key, _jsonSerializerOptions));
 
-                    request.RequestUri = uriBuilder.Uri;
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] contentTypes = new string[] {
                         "application/json" 
                     };
 
-                    string? contentType = ClientUtils.SelectHeaderContentType(contentTypes);
+                    string? contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
 
-                    if (contentType != null)
-                        request.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
+                    if (contentTypeLocalVar != null)
+                        httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Post;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Post;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/apikey/revoke", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/apikey/revoke", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<KeyInstance?> apiResponse = new ApiResponse<KeyInstance?>(responseMessage, responseContent);
+                        ApiResponse<KeyInstance?> apiResponseLocalVar = new ApiResponse<KeyInstance?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterRevoke(apiResponse, key);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterRevoke(apiResponseLocalVar, key);
                         }
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorRevoke(e, "/apikey/revoke", uriBuilder.Path, key);
+                OnErrorRevoke(e, "/apikey/revoke", uriBuilderLocalVar.Path, key);
                 throw;
             }
         }

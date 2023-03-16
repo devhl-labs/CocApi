@@ -385,12 +385,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanCapitalRankingObject"/>&gt;</returns>
         public async Task<ClanCapitalRankingObject> FetchClanCapitalRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanCapitalRankingObject?> result = await FetchClanCapitalRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanCapitalRankingObject?> apiResponseLocalVar = await FetchClanCapitalRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -405,17 +405,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanCapitalRankingObject"/>&gt;</returns>
         public async Task<ClanCapitalRankingObject?> FetchClanCapitalRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanCapitalRankingObject?>? result = null;
+            ApiResponse<ClanCapitalRankingObject?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanCapitalRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanCapitalRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -444,12 +444,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanCapitalRanking(ApiResponse<ClanCapitalRankingObject?> apiResponse, string locationId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanCapitalRanking(ApiResponse<ClanCapitalRankingObject?> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
         }
 
@@ -480,82 +480,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRankingObject"/></returns>
         public async Task<ApiResponse<ClanCapitalRankingObject?>> FetchClanCapitalRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchClanCapitalRanking(locationId, limit, after, before);
-                locationId = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchClanCapitalRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/capitals";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/capitals";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations/{locationId}/rankings/capitals", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/capitals", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanCapitalRankingObject?> apiResponse = new ApiResponse<ClanCapitalRankingObject?>(responseMessage, responseContent);
+                        ApiResponse<ClanCapitalRankingObject?> apiResponseLocalVar = new ApiResponse<ClanCapitalRankingObject?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanCapitalRankingObject>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanCapitalRanking(apiResponse, locationId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanCapitalRankingObject>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanCapitalRanking(apiResponseLocalVar, locationId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanCapitalRanking(e, "/locations/{locationId}/rankings/capitals", uriBuilder.Path, locationId, limit, after, before);
+                OnErrorFetchClanCapitalRanking(e, "/locations/{locationId}/rankings/capitals", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -572,12 +572,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanRankingList"/>&gt;</returns>
         public async Task<ClanRankingList> FetchClanRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanRankingList?> result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanRankingList?> apiResponseLocalVar = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -592,17 +592,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanRankingList"/>&gt;</returns>
         public async Task<ClanRankingList?> FetchClanRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanRankingList?>? result = null;
+            ApiResponse<ClanRankingList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -631,12 +631,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanRanking(ApiResponse<ClanRankingList?> apiResponse, string locationId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanRanking(ApiResponse<ClanRankingList?> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
         }
 
@@ -667,82 +667,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanRankingList"/></returns>
         public async Task<ApiResponse<ClanRankingList?>> FetchClanRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchClanRanking(locationId, limit, after, before);
-                locationId = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchClanRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations/{locationId}/rankings/clans", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/clans", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanRankingList?> apiResponse = new ApiResponse<ClanRankingList?>(responseMessage, responseContent);
+                        ApiResponse<ClanRankingList?> apiResponseLocalVar = new ApiResponse<ClanRankingList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanRankingList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanRanking(apiResponse, locationId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanRankingList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanRanking(apiResponseLocalVar, locationId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanRanking(e, "/locations/{locationId}/rankings/clans", uriBuilder.Path, locationId, limit, after, before);
+                OnErrorFetchClanRanking(e, "/locations/{locationId}/rankings/clans", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -759,12 +759,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanVersusRankingList"/>&gt;</returns>
         public async Task<ClanVersusRankingList> FetchClanVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanVersusRankingList?> result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanVersusRankingList?> apiResponseLocalVar = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -779,17 +779,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanVersusRankingList"/>&gt;</returns>
         public async Task<ClanVersusRankingList?> FetchClanVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanVersusRankingList?>? result = null;
+            ApiResponse<ClanVersusRankingList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -818,12 +818,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanVersusRanking(ApiResponse<ClanVersusRankingList?> apiResponse, string locationId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanVersusRanking(ApiResponse<ClanVersusRankingList?> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
         }
 
@@ -854,82 +854,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanVersusRankingList"/></returns>
         public async Task<ApiResponse<ClanVersusRankingList?>> FetchClanVersusRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchClanVersusRanking(locationId, limit, after, before);
-                locationId = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchClanVersusRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-versus";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-versus";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations/{locationId}/rankings/clans-versus", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/clans-versus", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanVersusRankingList?> apiResponse = new ApiResponse<ClanVersusRankingList?>(responseMessage, responseContent);
+                        ApiResponse<ClanVersusRankingList?> apiResponseLocalVar = new ApiResponse<ClanVersusRankingList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanVersusRankingList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanVersusRanking(apiResponse, locationId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanVersusRankingList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanVersusRanking(apiResponseLocalVar, locationId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanVersusRanking(e, "/locations/{locationId}/rankings/clans-versus", uriBuilder.Path, locationId, limit, after, before);
+                OnErrorFetchClanVersusRanking(e, "/locations/{locationId}/rankings/clans-versus", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -943,12 +943,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="Location"/>&gt;</returns>
         public async Task<Location> FetchLocationAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<Location?> result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
+            ApiResponse<Location?> apiResponseLocalVar = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -960,17 +960,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="Location"/>&gt;</returns>
         public async Task<Location?> FetchLocationOrDefaultAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<Location?>? result = null;
+            ApiResponse<Location?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchLocationResponseAsync(locationId, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -996,9 +996,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
-        protected virtual void AfterFetchLocation(ApiResponse<Location?> apiResponse, string locationId)
+        protected virtual void AfterFetchLocation(ApiResponse<Location?> apiResponseLocalVar, string locationId)
         {
         }
 
@@ -1023,66 +1023,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Location"/></returns>
         public async Task<ApiResponse<Location?>> FetchLocationResponseAsync(string locationId, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 locationId = OnFetchLocation(locationId);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations/{locationId}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<Location?> apiResponse = new ApiResponse<Location?>(responseMessage, responseContent);
+                        ApiResponse<Location?> apiResponseLocalVar = new ApiResponse<Location?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<Location>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchLocation(apiResponse, locationId);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<Location>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchLocation(apiResponseLocalVar, locationId);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchLocation(e, "/locations/{locationId}", uriBuilder.Path, locationId);
+                OnErrorFetchLocation(e, "/locations/{locationId}", uriBuilderLocalVar.Path, locationId);
                 throw;
             }
         }
@@ -1098,12 +1098,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LocationList"/>&gt;</returns>
         public async Task<LocationList> FetchLocationsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LocationList?> result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<LocationList?> apiResponseLocalVar = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1117,17 +1117,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="LocationList"/>&gt;</returns>
         public async Task<LocationList?> FetchLocationsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<LocationList?>? result = null;
+            ApiResponse<LocationList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchLocationsResponseAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1146,11 +1146,11 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLocations(ApiResponse<LocationList?> apiResponse, int? limit, string? after, string? before)
+        protected virtual void AfterFetchLocations(ApiResponse<LocationList?> apiResponseLocalVar, int? limit, string? after, string? before)
         {
         }
 
@@ -1179,81 +1179,81 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LocationList"/></returns>
         public async Task<ApiResponse<LocationList?>> FetchLocationsResponseAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchLocations(limit, after, before);
-                limit = validatedParameters.Item1;
-                after = validatedParameters.Item2;
-                before = validatedParameters.Item3;
+                var validatedParameterLocalVars = OnFetchLocations(limit, after, before);
+                limit = validatedParameterLocalVars.Item1;
+                after = validatedParameterLocalVars.Item2;
+                before = validatedParameterLocalVars.Item3;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations";
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<LocationList?> apiResponse = new ApiResponse<LocationList?>(responseMessage, responseContent);
+                        ApiResponse<LocationList?> apiResponseLocalVar = new ApiResponse<LocationList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<LocationList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchLocations(apiResponse, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<LocationList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchLocations(apiResponseLocalVar, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchLocations(e, "/locations", uriBuilder.Path, limit, after, before);
+                OnErrorFetchLocations(e, "/locations", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -1270,12 +1270,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="PlayerRankingList"/>&gt;</returns>
         public async Task<PlayerRankingList> FetchPlayerRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<PlayerRankingList?> result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<PlayerRankingList?> apiResponseLocalVar = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1290,17 +1290,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="PlayerRankingList"/>&gt;</returns>
         public async Task<PlayerRankingList?> FetchPlayerRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<PlayerRankingList?>? result = null;
+            ApiResponse<PlayerRankingList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchPlayerRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1329,12 +1329,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchPlayerRanking(ApiResponse<PlayerRankingList?> apiResponse, string locationId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchPlayerRanking(ApiResponse<PlayerRankingList?> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
         }
 
@@ -1365,82 +1365,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
         public async Task<ApiResponse<PlayerRankingList?>> FetchPlayerRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchPlayerRanking(locationId, limit, after, before);
-                locationId = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchPlayerRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations/{locationId}/rankings/players", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<PlayerRankingList?> apiResponse = new ApiResponse<PlayerRankingList?>(responseMessage, responseContent);
+                        ApiResponse<PlayerRankingList?> apiResponseLocalVar = new ApiResponse<PlayerRankingList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<PlayerRankingList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchPlayerRanking(apiResponse, locationId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<PlayerRankingList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchPlayerRanking(apiResponseLocalVar, locationId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerRanking(e, "/locations/{locationId}/rankings/players", uriBuilder.Path, locationId, limit, after, before);
+                OnErrorFetchPlayerRanking(e, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -1457,12 +1457,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="PlayerVersusRankingList"/>&gt;</returns>
         public async Task<PlayerVersusRankingList> FetchPlayerVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<PlayerVersusRankingList?> result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<PlayerVersusRankingList?> apiResponseLocalVar = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1477,17 +1477,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="PlayerVersusRankingList"/>&gt;</returns>
         public async Task<PlayerVersusRankingList?> FetchPlayerVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<PlayerVersusRankingList?>? result = null;
+            ApiResponse<PlayerVersusRankingList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchPlayerVersusRankingResponseAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1516,12 +1516,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchPlayerVersusRanking(ApiResponse<PlayerVersusRankingList?> apiResponse, string locationId, int? limit, string? after, string? before)
+        protected virtual void AfterFetchPlayerVersusRanking(ApiResponse<PlayerVersusRankingList?> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
         }
 
@@ -1552,82 +1552,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerVersusRankingList"/></returns>
         public async Task<ApiResponse<PlayerVersusRankingList?>> FetchPlayerVersusRankingResponseAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchPlayerVersusRanking(locationId, limit, after, before);
-                locationId = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchPlayerVersusRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-versus";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-versus";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/locations/{locationId}/rankings/players-versus", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/players-versus", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<PlayerVersusRankingList?> apiResponse = new ApiResponse<PlayerVersusRankingList?>(responseMessage, responseContent);
+                        ApiResponse<PlayerVersusRankingList?> apiResponseLocalVar = new ApiResponse<PlayerVersusRankingList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<PlayerVersusRankingList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchPlayerVersusRanking(apiResponse, locationId, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<PlayerVersusRankingList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchPlayerVersusRanking(apiResponseLocalVar, locationId, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerVersusRanking(e, "/locations/{locationId}/rankings/players-versus", uriBuilder.Path, locationId, limit, after, before);
+                OnErrorFetchPlayerVersusRanking(e, "/locations/{locationId}/rankings/players-versus", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }

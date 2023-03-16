@@ -426,12 +426,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanCapitalRaidSeasons"/>&gt;</returns>
         public async Task<ClanCapitalRaidSeasons> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanCapitalRaidSeasons?> result = await FetchCapitalRaidSeasonsResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanCapitalRaidSeasons?> apiResponseLocalVar = await FetchCapitalRaidSeasonsResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -446,17 +446,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanCapitalRaidSeasons"/>&gt;</returns>
         public async Task<ClanCapitalRaidSeasons?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanCapitalRaidSeasons?>? result = null;
+            ApiResponse<ClanCapitalRaidSeasons?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchCapitalRaidSeasonsResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchCapitalRaidSeasonsResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -485,12 +485,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons?> apiResponse, string clanTag, int? limit, string? after, string? before)
+        protected virtual void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons?> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
         }
 
@@ -521,82 +521,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRaidSeasons"/></returns>
         public async Task<ApiResponse<ClanCapitalRaidSeasons?>> FetchCapitalRaidSeasonsResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchCapitalRaidSeasons(clanTag, limit, after, before);
-                clanTag = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchCapitalRaidSeasons(clanTag, limit, after, before);
+                clanTag = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/capitalraidseasons";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/capitalraidseasons";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans/{clanTag}/capitalraidseasons", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanCapitalRaidSeasons?> apiResponse = new ApiResponse<ClanCapitalRaidSeasons?>(responseMessage, responseContent);
+                        ApiResponse<ClanCapitalRaidSeasons?> apiResponseLocalVar = new ApiResponse<ClanCapitalRaidSeasons?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanCapitalRaidSeasons>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchCapitalRaidSeasons(apiResponse, clanTag, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanCapitalRaidSeasons>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchCapitalRaidSeasons(apiResponseLocalVar, clanTag, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchCapitalRaidSeasons(e, "/clans/{clanTag}/capitalraidseasons", uriBuilder.Path, clanTag, limit, after, before);
+                OnErrorFetchCapitalRaidSeasons(e, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -610,12 +610,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="Clan"/>&gt;</returns>
         public async Task<Clan> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<Clan?> result = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<Clan?> apiResponseLocalVar = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -627,17 +627,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="Clan"/>&gt;</returns>
         public async Task<Clan?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<Clan?>? result = null;
+            ApiResponse<Clan?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -663,9 +663,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchClan(ApiResponse<Clan?> apiResponse, string clanTag)
+        protected virtual void AfterFetchClan(ApiResponse<Clan?> apiResponseLocalVar, string clanTag)
         {
         }
 
@@ -690,66 +690,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Clan"/></returns>
         public async Task<ApiResponse<Clan?>> FetchClanResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 clanTag = OnFetchClan(clanTag);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans/{clanTag}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<Clan?> apiResponse = new ApiResponse<Clan?>(responseMessage, responseContent);
+                        ApiResponse<Clan?> apiResponseLocalVar = new ApiResponse<Clan?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<Clan>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClan(apiResponse, clanTag);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<Clan>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClan(apiResponseLocalVar, clanTag);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClan(e, "/clans/{clanTag}", uriBuilder.Path, clanTag);
+                OnErrorFetchClan(e, "/clans/{clanTag}", uriBuilderLocalVar.Path, clanTag);
                 throw;
             }
         }
@@ -766,12 +766,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="List&lt;ClanMember&gt;"/>&gt;</returns>
         public async Task<List<ClanMember>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<List<ClanMember>?> result = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<List<ClanMember>?> apiResponseLocalVar = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -786,17 +786,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="List&lt;ClanMember&gt;"/>&gt;</returns>
         public async Task<List<ClanMember>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<List<ClanMember>?>? result = null;
+            ApiResponse<List<ClanMember>?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -825,12 +825,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanMembers(ApiResponse<List<ClanMember>?> apiResponse, string clanTag, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanMembers(ApiResponse<List<ClanMember>?> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
         }
 
@@ -861,82 +861,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
         public async Task<ApiResponse<List<ClanMember>?>> FetchClanMembersResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchClanMembers(clanTag, limit, after, before);
-                clanTag = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchClanMembers(clanTag, limit, after, before);
+                clanTag = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/members";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/members";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans/{clanTag}/members", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/members", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<List<ClanMember>?> apiResponse = new ApiResponse<List<ClanMember>?>(responseMessage, responseContent);
+                        ApiResponse<List<ClanMember>?> apiResponseLocalVar = new ApiResponse<List<ClanMember>?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<List<ClanMember>>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanMembers(apiResponse, clanTag, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<List<ClanMember>>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanMembers(apiResponseLocalVar, clanTag, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanMembers(e, "/clans/{clanTag}/members", uriBuilder.Path, clanTag, limit, after, before);
+                OnErrorFetchClanMembers(e, "/clans/{clanTag}/members", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -950,12 +950,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLeagueGroup"/>&gt;</returns>
         public async Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWarLeagueGroup?> result = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -967,17 +967,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLeagueGroup"/>&gt;</returns>
         public async Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWarLeagueGroup?>? result = null;
+            ApiResponse<ClanWarLeagueGroup?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1003,9 +1003,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponse, string clanTag)
+        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar, string clanTag)
         {
         }
 
@@ -1030,66 +1030,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
         public async Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 clanTag = OnFetchClanWarLeagueGroup(clanTag);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar/leaguegroup";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar/leaguegroup";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWarLeagueGroup?> apiResponse = new ApiResponse<ClanWarLeagueGroup?>(responseMessage, responseContent);
+                        ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode && !apiResponse.RawContent.Contains("notInWar"))
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueGroup(apiResponse, clanTag);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilder.Path, clanTag);
+                OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag);
                 throw;
             }
         }
@@ -1103,12 +1103,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
         public async Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWar?> result = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1120,17 +1120,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
         public async Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWar?>? result = null;
+            ApiResponse<ClanWar?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1156,9 +1156,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="warTag"></param>
-        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar?> apiResponse, string warTag)
+        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar?> apiResponseLocalVar, string warTag)
         {
         }
 
@@ -1183,66 +1183,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
         public async Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 warTag = OnFetchClanWarLeagueWar(warTag);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clanwarleagues/wars/{warTag}";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clanwarleagues/wars/{warTag}";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clanwarleagues/wars/{warTag}", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWar?> apiResponse = new ApiResponse<ClanWar?>(responseMessage, responseContent);
+                        ApiResponse<ClanWar?> apiResponseLocalVar = new ApiResponse<ClanWar?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanWar>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueWar(apiResponse, warTag);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilder.Path, warTag);
+                OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag);
                 throw;
             }
         }
@@ -1259,12 +1259,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLog"/>&gt;</returns>
         public async Task<ClanWarLog> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWarLog?> result = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWarLog?> apiResponseLocalVar = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1279,17 +1279,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLog"/>&gt;</returns>
         public async Task<ClanWarLog?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWarLog?>? result = null;
+            ApiResponse<ClanWarLog?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1318,12 +1318,12 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanWarLog(ApiResponse<ClanWarLog?> apiResponse, string clanTag, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanWarLog(ApiResponse<ClanWarLog?> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
         }
 
@@ -1354,82 +1354,82 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
         public async Task<ApiResponse<ClanWarLog?>> FetchClanWarLogResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnFetchClanWarLog(clanTag, limit, after, before);
-                clanTag = validatedParameters.Item1;
-                limit = validatedParameters.Item2;
-                after = validatedParameters.Item3;
-                before = validatedParameters.Item4;
+                var validatedParameterLocalVars = OnFetchClanWarLog(clanTag, limit, after, before);
+                clanTag = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/warlog";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/warlog";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans/{clanTag}/warlog", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWarLog?> apiResponse = new ApiResponse<ClanWarLog?>(responseMessage, responseContent);
+                        ApiResponse<ClanWarLog?> apiResponseLocalVar = new ApiResponse<ClanWarLog?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanWarLog>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLog(apiResponse, clanTag, limit, after, before);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLog>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanWarLog(apiResponseLocalVar, clanTag, limit, after, before);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLog(e, "/clans/{clanTag}/warlog", uriBuilder.Path, clanTag, limit, after, before);
+                OnErrorFetchClanWarLog(e, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -1443,12 +1443,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
         public async Task<ClanWar> FetchCurrentWarAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWar?> result = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1460,17 +1460,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
         public async Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWar?>? result = null;
+            ApiResponse<ClanWar?>? apiResponseLocalVar = null;
             try 
             {
-                result = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1496,9 +1496,9 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar?> apiResponse, string clanTag)
+        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar?> apiResponseLocalVar, string clanTag)
         {
         }
 
@@ -1523,66 +1523,66 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
         public async Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
                 clanTag = OnFetchCurrentWar(clanTag);
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar";
 
-                    uriBuilder.Path = uriBuilder.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokens = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans/{clanTag}/currentwar", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWar?> apiResponse = new ApiResponse<ClanWar?>(responseMessage, responseContent);
+                        ApiResponse<ClanWar?> apiResponseLocalVar = new ApiResponse<ClanWar?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanWar>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterFetchCurrentWar(apiResponse, clanTag);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchCurrentWar(apiResponseLocalVar, clanTag);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilder.Path, clanTag);
+                OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag);
                 throw;
             }
         }
@@ -1606,12 +1606,12 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanList"/>&gt;</returns>
         public async Task<ClanList> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanList?> result = await SearchClansResponseAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanList?> apiResponseLocalVar = await SearchClansResponseAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds, cancellationToken).ConfigureAwait(false);
 
-            if (result.Content == null)
-                throw new ApiException(result.ReasonPhrase, result.StatusCode, result.RawContent);
+            if (apiResponseLocalVar.Content == null)
+                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
 
-            return result.Content;
+            return apiResponseLocalVar.Content;
         }
 
         /// <summary>
@@ -1633,17 +1633,17 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ClanList"/>&gt;</returns>
         public async Task<ClanList?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanList?>? result = null;
+            ApiResponse<ClanList?>? apiResponseLocalVar = null;
             try 
             {
-                result = await SearchClansResponseAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await SearchClansResponseAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
-            return result != null && result.IsSuccessStatusCode
-                ? result.Content
+            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
+                ? apiResponseLocalVar.Content
                 : null;
         }
 
@@ -1670,7 +1670,7 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Processes the server response
         /// </summary>
-        /// <param name="apiResponse"></param>
+        /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="minMembers"></param>
         /// <param name="maxMembers"></param>
@@ -1682,7 +1682,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        protected virtual void AfterSearchClans(ApiResponse<ClanList?> apiResponse, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        protected virtual void AfterSearchClans(ApiResponse<ClanList?> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
         {
         }
 
@@ -1727,113 +1727,113 @@ namespace CocApi.Rest.BaseApis
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
         public async Task<ApiResponse<ClanList?>> SearchClansResponseAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            UriBuilder uriBuilder = new UriBuilder();
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                var validatedParameters = OnSearchClans(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
-                locationId = validatedParameters.Item1;
-                minMembers = validatedParameters.Item2;
-                maxMembers = validatedParameters.Item3;
-                minClanPoints = validatedParameters.Item4;
-                minClanLevel = validatedParameters.Item5;
-                limit = validatedParameters.Item6;
-                name = validatedParameters.Item7;
-                warFrequency = validatedParameters.Item8;
-                after = validatedParameters.Item9;
-                before = validatedParameters.Item10;
-                labelIds = validatedParameters.Item11;
+                var validatedParameterLocalVars = OnSearchClans(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                locationId = validatedParameterLocalVars.Item1;
+                minMembers = validatedParameterLocalVars.Item2;
+                maxMembers = validatedParameterLocalVars.Item3;
+                minClanPoints = validatedParameterLocalVars.Item4;
+                minClanLevel = validatedParameterLocalVars.Item5;
+                limit = validatedParameterLocalVars.Item6;
+                name = validatedParameterLocalVars.Item7;
+                warFrequency = validatedParameterLocalVars.Item8;
+                after = validatedParameterLocalVars.Item9;
+                before = validatedParameterLocalVars.Item10;
+                labelIds = validatedParameterLocalVars.Item11;
 
-                using (HttpRequestMessage request = new HttpRequestMessage())
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
-                    uriBuilder.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilder.Port = HttpClient.BaseAddress.Port;
-                    uriBuilder.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilder.Path = ClientUtils.CONTEXT_PATH + "/clans";
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans";
 
-                    System.Collections.Specialized.NameValueCollection parseQueryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
                     if (locationId != null)
-                        parseQueryString["locationId"] = locationId.ToString();
+                        parseQueryStringLocalVar["locationId"] = locationId.ToString();
 
                     if (minMembers != null)
-                        parseQueryString["minMembers"] = minMembers.ToString();
+                        parseQueryStringLocalVar["minMembers"] = minMembers.ToString();
 
                     if (maxMembers != null)
-                        parseQueryString["maxMembers"] = maxMembers.ToString();
+                        parseQueryStringLocalVar["maxMembers"] = maxMembers.ToString();
 
                     if (minClanPoints != null)
-                        parseQueryString["minClanPoints"] = minClanPoints.ToString();
+                        parseQueryStringLocalVar["minClanPoints"] = minClanPoints.ToString();
 
                     if (minClanLevel != null)
-                        parseQueryString["minClanLevel"] = minClanLevel.ToString();
+                        parseQueryStringLocalVar["minClanLevel"] = minClanLevel.ToString();
 
                     if (limit != null)
-                        parseQueryString["limit"] = limit.ToString();
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
 
                     if (name != null)
-                        parseQueryString["name"] = name.ToString();
+                        parseQueryStringLocalVar["name"] = name.ToString();
 
                     if (warFrequency != null)
-                        parseQueryString["warFrequency"] = warFrequency.ToString();
+                        parseQueryStringLocalVar["warFrequency"] = warFrequency.ToString();
 
                     if (after != null)
-                        parseQueryString["after"] = after.ToString();
+                        parseQueryStringLocalVar["after"] = after.ToString();
 
                     if (before != null)
-                        parseQueryString["before"] = before.ToString();
+                        parseQueryStringLocalVar["before"] = before.ToString();
 
                     if (labelIds != null)
-                        parseQueryString["labelIds"] = labelIds.ToString();
+                        parseQueryStringLocalVar["labelIds"] = labelIds.ToString();
 
-                    uriBuilder.Query = parseQueryString.ToString();
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
 
-                    apiKey.UseInHeader(request, "authorization");
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
-                    request.RequestUri = uriBuilder.Uri;
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] accepts = new string[] { 
+                    string[] acceptLocalVars = new string[] { 
                         "application/json" 
                     };
 
-                    string? accept = ClientUtils.SelectHeaderAccept(accepts);
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
 
-                    if (accept != null)
-                        request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(accept));
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
 
-                    request.Method = HttpMethod.Get;
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
 
-                    DateTime requestedAt = DateTime.UtcNow;
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage responseMessage = await HttpClient.SendAsync(request, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAt, DateTime.UtcNow, responseMessage.StatusCode, "/clans", uriBuilder.Path));
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans", uriBuilderLocalVar.Path));
 
-                        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanList?> apiResponse = new ApiResponse<ClanList?>(responseMessage, responseContent);
+                        ApiResponse<ClanList?> apiResponseLocalVar = new ApiResponse<ClanList?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanList>(apiResponse.RawContent, _jsonSerializerOptions);
-                            AfterSearchClans(apiResponse, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterSearchClans(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
                         }
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
-                        return apiResponse;
+                        return apiResponseLocalVar;
                     }
                 }
             }
             catch(Exception e)
             {
-                OnErrorSearchClans(e, "/clans", uriBuilder.Path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                OnErrorSearchClans(e, "/clans", uriBuilderLocalVar.Path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
                 throw;
             }
         }
