@@ -437,7 +437,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "capitalTotalLoot":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out capitalTotalLoot);
+                                capitalTotalLoot = utf8JsonReader.GetInt32();
                             break;
                         case "defenseLog":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -445,7 +445,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "defensiveReward":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out defensiveReward);
+                                defensiveReward = utf8JsonReader.GetInt32();
                             break;
                         case "endTime":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -453,15 +453,15 @@ namespace CocApi.Rest.Models
                             break;
                         case "enemyDistrictsDestroyed":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out enemyDistrictsDestroyed);
+                                enemyDistrictsDestroyed = utf8JsonReader.GetInt32();
                             break;
                         case "offensiveReward":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out offensiveReward);
+                                offensiveReward = utf8JsonReader.GetInt32();
                             break;
                         case "raidsCompleted":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out raidsCompleted);
+                                raidsCompleted = utf8JsonReader.GetInt32();
                             break;
                         case "startTime":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -473,7 +473,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "totalAttacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out totalAttacks);
+                                totalAttacks = utf8JsonReader.GetInt32();
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)

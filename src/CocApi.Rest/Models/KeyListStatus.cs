@@ -131,7 +131,7 @@ namespace CocApi.Rest.Models
                     {
                         case "code":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out code);
+                                code = utf8JsonReader.GetInt32();
                             break;
                         case "message":
                             message = utf8JsonReader.GetString();

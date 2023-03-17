@@ -306,26 +306,26 @@ namespace CocApi.Rest.Models
                             break;
                         case "clanCapitalPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanCapitalPoints);
+                                clanCapitalPoints = utf8JsonReader.GetInt32();
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanLevel);
+                                clanLevel = utf8JsonReader.GetInt32();
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out members);
+                                members = utf8JsonReader.GetInt32();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "previousRank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out previousRank);
+                                previousRank = utf8JsonReader.GetInt32();
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out rank);
+                                rank = utf8JsonReader.GetInt32();
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();

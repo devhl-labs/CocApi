@@ -299,7 +299,7 @@ namespace CocApi.Rest.Models
                     {
                         case "attacksPerMember":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out attacksPerMember);
+                                attacksPerMember = utf8JsonReader.GetInt32();
                             break;
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -323,7 +323,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "teamSize":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out teamSize);
+                                teamSize = utf8JsonReader.GetInt32();
                             break;
                         case "state":
                             string stateRawValue = utf8JsonReader.GetString();

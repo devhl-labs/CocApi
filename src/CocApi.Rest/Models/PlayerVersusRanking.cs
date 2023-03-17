@@ -283,29 +283,29 @@ namespace CocApi.Rest.Models
                     {
                         case "expLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out expLevel);
+                                expLevel = utf8JsonReader.GetInt32();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "previousRank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out previousRank);
+                                previousRank = utf8JsonReader.GetInt32();
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out rank);
+                                rank = utf8JsonReader.GetInt32();
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "versusBattleWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out versusBattleWins);
+                                versusBattleWins = utf8JsonReader.GetInt32();
                             break;
                         case "versusTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out versusTrophies);
+                                versusTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)

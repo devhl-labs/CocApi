@@ -195,7 +195,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "townHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out townHallLevel);
+                                townHallLevel = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;

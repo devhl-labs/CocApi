@@ -215,21 +215,21 @@ namespace CocApi.Rest.Models
                     {
                         case "mapPosition":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out mapPosition);
+                                mapPosition = utf8JsonReader.GetInt32();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "opponentAttacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out opponentAttacks);
+                                opponentAttacks = utf8JsonReader.GetInt32();
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "townhallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out townhallLevel);
+                                townhallLevel = utf8JsonReader.GetInt32();
                             break;
                         case "attacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)

@@ -245,7 +245,7 @@ namespace CocApi.Rest.Models
                     {
                         case "attacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out attacks);
+                                attacks = utf8JsonReader.GetInt32();
                             break;
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -253,18 +253,15 @@ namespace CocApi.Rest.Models
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanLevel);
+                                clanLevel = utf8JsonReader.GetInt32();
                             break;
                         case "destructionPercentage":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                            {
-                                utf8JsonReader.TryGetDouble(out double destructionPercentageResult);
-                                destructionPercentage = (float)destructionPercentageResult;
-                            }
+                                destructionPercentage = (float)utf8JsonReader.GetDouble();
                             break;
                         case "expEarned":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out expEarned);
+                                expEarned = utf8JsonReader.GetInt32();
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -275,7 +272,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out stars);
+                                stars = utf8JsonReader.GetInt32();
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();

@@ -284,30 +284,30 @@ namespace CocApi.Rest.Models
                     {
                         case "attackCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out attackCount);
+                                attackCount = utf8JsonReader.GetInt32();
                             break;
                         case "destructionPercent":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out destructionPercent);
+                                destructionPercent = utf8JsonReader.GetInt32();
                             break;
                         case "districtHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out districtHallLevel);
+                                districtHallLevel = utf8JsonReader.GetInt32();
                             break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out id);
+                                id = utf8JsonReader.GetInt32();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out stars);
+                                stars = utf8JsonReader.GetInt32();
                             break;
                         case "totalLooted":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out totalLooted);
+                                totalLooted = utf8JsonReader.GetInt32();
                             break;
                         case "attacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)

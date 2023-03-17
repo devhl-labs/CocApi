@@ -121,7 +121,7 @@ namespace CocApi.Rest.Models
                     {
                         case "sessionExpiresInSeconds":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out sessionExpiresInSeconds);
+                                sessionExpiresInSeconds = utf8JsonReader.GetInt32();
                             break;
                         case "temporaryAPIToken":
                             temporaryAPIToken = utf8JsonReader.GetString();

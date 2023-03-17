@@ -198,11 +198,11 @@ namespace CocApi.Rest.Models
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out rank);
+                                rank = utf8JsonReader.GetInt32();
                             break;
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out trophies);
+                                trophies = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;

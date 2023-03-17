@@ -321,15 +321,15 @@ namespace CocApi.Rest.Models
                     {
                         case "attackWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out attackWins);
+                                attackWins = utf8JsonReader.GetInt32();
                             break;
                         case "defenseWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out defenseWins);
+                                defenseWins = utf8JsonReader.GetInt32();
                             break;
                         case "expLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out expLevel);
+                                expLevel = utf8JsonReader.GetInt32();
                             break;
                         case "league":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -340,18 +340,18 @@ namespace CocApi.Rest.Models
                             break;
                         case "previousRank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out previousRank);
+                                previousRank = utf8JsonReader.GetInt32();
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out rank);
+                                rank = utf8JsonReader.GetInt32();
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out trophies);
+                                trophies = utf8JsonReader.GetInt32();
                             break;
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)

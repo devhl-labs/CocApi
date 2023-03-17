@@ -189,11 +189,11 @@ namespace CocApi.Rest.Models
                     {
                         case "districtHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out districtHallLevel);
+                                districtHallLevel = utf8JsonReader.GetInt32();
                             break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out id);
+                                id = utf8JsonReader.GetInt32();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

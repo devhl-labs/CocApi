@@ -275,7 +275,7 @@ $mapPosition = @"
 $membersConverter = @"
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out members);
+                                members = utf8JsonReader.GetInt32();
                             break;
 
 "@

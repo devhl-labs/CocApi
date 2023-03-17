@@ -459,15 +459,15 @@ namespace CocApi.Rest.Models
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanLevel);
+                                clanLevel = utf8JsonReader.GetInt32();
                             break;
                         case "clanPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanPoints);
+                                clanPoints = utf8JsonReader.GetInt32();
                             break;
                         case "clanVersusPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanVersusPoints);
+                                clanVersusPoints = utf8JsonReader.GetInt32();
                             break;
                         case "description":
                             description = utf8JsonReader.GetString();
@@ -493,7 +493,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "requiredTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out requiredTrophies);
+                                requiredTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "tag":
                             tag = utf8JsonReader.GetString();
@@ -504,11 +504,11 @@ namespace CocApi.Rest.Models
                             break;
                         case "warWinStreak":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out warWinStreak);
+                                warWinStreak = utf8JsonReader.GetInt32();
                             break;
                         case "warWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out warWins);
+                                warWins = utf8JsonReader.GetInt32();
                             break;
                         case "chatLanguage":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -528,17 +528,11 @@ namespace CocApi.Rest.Models
                             break;
                         case "warLosses":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                            {
-                                utf8JsonReader.TryGetInt32(out int warLossesResult);
-                                warLosses = warLossesResult;
-                            }
+                                warLosses = utf8JsonReader.GetInt32();
                             break;
                         case "warTies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                            {
-                                utf8JsonReader.TryGetInt32(out int warTiesResult);
-                                warTies = warTiesResult;
-                            }
+                                warTies = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;

@@ -228,7 +228,7 @@ namespace CocApi.Rest.Models
                     {
                         case "attackCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out attackCount);
+                                attackCount = utf8JsonReader.GetInt32();
                             break;
                         case "attacker":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -236,7 +236,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "districtCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out districtCount);
+                                districtCount = utf8JsonReader.GetInt32();
                             break;
                         case "districts":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -244,7 +244,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "districtsDestroyed":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out districtsDestroyed);
+                                districtsDestroyed = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;

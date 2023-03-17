@@ -226,11 +226,11 @@ namespace CocApi.Rest.Models
                     {
                         case "level":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out level);
+                                level = utf8JsonReader.GetInt32();
                             break;
                         case "maxLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out maxLevel);
+                                maxLevel = utf8JsonReader.GetInt32();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();

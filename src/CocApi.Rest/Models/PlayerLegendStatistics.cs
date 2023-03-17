@@ -246,7 +246,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "legendTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out legendTrophies);
+                                legendTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "bestSeason":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)

@@ -685,39 +685,39 @@ namespace CocApi.Rest.Models
                             break;
                         case "attackWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out attackWins);
+                                attackWins = utf8JsonReader.GetInt32();
                             break;
                         case "bestTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out bestTrophies);
+                                bestTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "bestVersusTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out bestVersusTrophies);
+                                bestVersusTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "builderHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out builderHallLevel);
+                                builderHallLevel = utf8JsonReader.GetInt32();
                             break;
                         case "clanCapitalContributions":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out clanCapitalContributions);
+                                clanCapitalContributions = utf8JsonReader.GetInt32();
                             break;
                         case "defenseWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out defenseWins);
+                                defenseWins = utf8JsonReader.GetInt32();
                             break;
                         case "donations":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out donations);
+                                donations = utf8JsonReader.GetInt32();
                             break;
                         case "donationsReceived":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out donationsReceived);
+                                donationsReceived = utf8JsonReader.GetInt32();
                             break;
                         case "expLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out expLevel);
+                                expLevel = utf8JsonReader.GetInt32();
                             break;
                         case "heroes":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -739,7 +739,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "townHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out townHallLevel);
+                                townHallLevel = utf8JsonReader.GetInt32();
                             break;
                         case "troops":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -747,23 +747,23 @@ namespace CocApi.Rest.Models
                             break;
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out trophies);
+                                trophies = utf8JsonReader.GetInt32();
                             break;
                         case "versusBattleWinCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out versusBattleWinCount);
+                                versusBattleWinCount = utf8JsonReader.GetInt32();
                             break;
                         case "versusBattleWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out versusBattleWins);
+                                versusBattleWins = utf8JsonReader.GetInt32();
                             break;
                         case "versusTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out versusTrophies);
+                                versusTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "warStars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out warStars);
+                                warStars = utf8JsonReader.GetInt32();
                             break;
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -787,10 +787,7 @@ namespace CocApi.Rest.Models
                             break;
                         case "townHallWeaponLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                            {
-                                utf8JsonReader.TryGetInt32(out int townHallWeaponLevelResult);
-                                townHallWeaponLevel = townHallWeaponLevelResult;
-                            }
+                                townHallWeaponLevel = utf8JsonReader.GetInt32();
                             break;
                         case "warPreference":
                             string warPreferenceRawValue = utf8JsonReader.GetString();

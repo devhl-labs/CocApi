@@ -252,19 +252,19 @@ namespace CocApi.Rest.Models
                             break;
                         case "destructionPercentage":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out destructionPercentage);
+                                destructionPercentage = utf8JsonReader.GetInt32();
                             break;
                         case "duration":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out duration);
+                                duration = utf8JsonReader.GetInt32();
                             break;
                         case "order":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out order);
+                                order = utf8JsonReader.GetInt32();
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                utf8JsonReader.TryGetInt32(out stars);
+                                stars = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;
