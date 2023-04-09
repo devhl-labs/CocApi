@@ -160,9 +160,10 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLeagueGroup?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -172,9 +173,10 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse&lt;ClanWarLeagueGroup&gt;</returns>
-        Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -183,9 +185,10 @@ namespace CocApi.Rest.IBaseApis
         /// Retrieve information about clan&#39;s current clan war league group
         /// </remarks>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse&lt;ClanWarLeagueGroup?&gt;</returns>
-        Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -195,9 +198,10 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -207,9 +211,10 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse&lt;ClanWar&gt;</returns>
-        Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -218,9 +223,10 @@ namespace CocApi.Rest.IBaseApis
         /// Retrieve information about individual clan war league war
         /// </remarks>
         /// <param name="warTag">Tag of the war.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse&lt;ClanWar?&gt;</returns>
-        Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log
@@ -274,9 +280,10 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -286,9 +293,10 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse&lt;ClanWar&gt;</returns>
-        Task<ClanWar> FetchCurrentWarAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ClanWar> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -297,9 +305,10 @@ namespace CocApi.Rest.IBaseApis
         /// Retrieve information about clan&#39;s current clan war
         /// </remarks>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse&lt;ClanWar?&gt;</returns>
-        Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Search clans
@@ -946,11 +955,12 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLeagueGroup"/>&gt;</returns>
-        public async Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
 
             if (apiResponseLocalVar.Content == null)
                 throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
@@ -963,14 +973,15 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLeagueGroup"/>&gt;</returns>
-        public async Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             ApiResponse<ClanWarLeagueGroup?>? apiResponseLocalVar = null;
             try 
             {
-                apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -985,8 +996,9 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
+        /// <param name="realtime"></param>
         /// <returns></returns>
-        protected virtual string OnFetchClanWarLeagueGroup(string clanTag)
+        protected virtual (string, bool?) OnFetchClanWarLeagueGroup(string clanTag, bool? realtime)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -997,7 +1009,7 @@ namespace CocApi.Rest.BaseApis
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return clanTag;
+            return (clanTag, realtime);
         }
 
         /// <summary>
@@ -1005,7 +1017,8 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar, string clanTag)
+        /// <param name="realtime"></param>
+        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar, string clanTag, bool? realtime)
         {
         }
 
@@ -1016,7 +1029,8 @@ namespace CocApi.Rest.BaseApis
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
-        protected virtual void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag)
+        /// <param name="realtime"></param>
+        protected virtual void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
@@ -1026,15 +1040,18 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
-        public async Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                clanTag = OnFetchClanWarLeagueGroup(clanTag);
+                var validatedParameterLocalVars = OnFetchClanWarLeagueGroup(clanTag, realtime);
+                clanTag = validatedParameterLocalVars.Item1;
+                realtime = validatedParameterLocalVars.Item2;
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1043,7 +1060,13 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar/leaguegroup";
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (realtime != null)
+                        parseQueryStringLocalVar["realtime"] = realtime.ToString();
+
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
                     ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -1077,7 +1100,7 @@ namespace CocApi.Rest.BaseApis
                         if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
                         {
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag);
+                            AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag, realtime);
                         }
                         else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1089,7 +1112,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag);
+                OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag, realtime);
                 throw;
             }
         }
@@ -1099,11 +1122,12 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
 
             if (apiResponseLocalVar.Content == null)
                 throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
@@ -1116,14 +1140,15 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             ApiResponse<ClanWar?>? apiResponseLocalVar = null;
             try 
             {
-                apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -1138,8 +1163,9 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="warTag"></param>
+        /// <param name="realtime"></param>
         /// <returns></returns>
-        protected virtual string OnFetchClanWarLeagueWar(string warTag)
+        protected virtual (string, bool?) OnFetchClanWarLeagueWar(string warTag, bool? realtime)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1150,7 +1176,7 @@ namespace CocApi.Rest.BaseApis
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return warTag;
+            return (warTag, realtime);
         }
 
         /// <summary>
@@ -1158,7 +1184,8 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="warTag"></param>
-        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar?> apiResponseLocalVar, string warTag)
+        /// <param name="realtime"></param>
+        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar?> apiResponseLocalVar, string warTag, bool? realtime)
         {
         }
 
@@ -1169,7 +1196,8 @@ namespace CocApi.Rest.BaseApis
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="warTag"></param>
-        protected virtual void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag)
+        /// <param name="realtime"></param>
+        protected virtual void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, bool? realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
@@ -1179,15 +1207,18 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="warTag">Tag of the war.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                warTag = OnFetchClanWarLeagueWar(warTag);
+                var validatedParameterLocalVars = OnFetchClanWarLeagueWar(warTag, realtime);
+                warTag = validatedParameterLocalVars.Item1;
+                realtime = validatedParameterLocalVars.Item2;
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1196,7 +1227,13 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clanwarleagues/wars/{warTag}";
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (realtime != null)
+                        parseQueryStringLocalVar["realtime"] = realtime.ToString();
+
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
                     ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -1230,7 +1267,7 @@ namespace CocApi.Rest.BaseApis
                         if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag);
+                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
                         }
                         else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1242,7 +1279,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag);
+                OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag, realtime);
                 throw;
             }
         }
@@ -1439,11 +1476,12 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar> FetchCurrentWarAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ClanWar> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
-            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
 
             if (apiResponseLocalVar.Content == null)
                 throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
@@ -1456,14 +1494,15 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             ApiResponse<ClanWar?>? apiResponseLocalVar = null;
             try 
             {
-                apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
+                apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -1478,8 +1517,9 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
+        /// <param name="realtime"></param>
         /// <returns></returns>
-        protected virtual string OnFetchCurrentWar(string clanTag)
+        protected virtual (string, bool?) OnFetchCurrentWar(string clanTag, bool? realtime)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1490,7 +1530,7 @@ namespace CocApi.Rest.BaseApis
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return clanTag;
+            return (clanTag, realtime);
         }
 
         /// <summary>
@@ -1498,7 +1538,8 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar?> apiResponseLocalVar, string clanTag)
+        /// <param name="realtime"></param>
+        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar?> apiResponseLocalVar, string clanTag, bool? realtime)
         {
         }
 
@@ -1509,7 +1550,8 @@ namespace CocApi.Rest.BaseApis
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
-        protected virtual void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag)
+        /// <param name="realtime"></param>
+        protected virtual void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
@@ -1519,15 +1561,18 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="clanTag">Tag of the clan.</param>
+        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                clanTag = OnFetchCurrentWar(clanTag);
+                var validatedParameterLocalVars = OnFetchCurrentWar(clanTag, realtime);
+                clanTag = validatedParameterLocalVars.Item1;
+                realtime = validatedParameterLocalVars.Item2;
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1536,7 +1581,13 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar";
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (realtime != null)
+                        parseQueryStringLocalVar["realtime"] = realtime.ToString();
+
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
                     ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -1570,7 +1621,7 @@ namespace CocApi.Rest.BaseApis
                         if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchCurrentWar(apiResponseLocalVar, clanTag);
+                            AfterFetchCurrentWar(apiResponseLocalVar, clanTag, realtime);
                         }
                         else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1582,7 +1633,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag);
+                OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag, realtime);
                 throw;
             }
         }

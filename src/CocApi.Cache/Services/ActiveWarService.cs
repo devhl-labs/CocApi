@@ -98,7 +98,7 @@ public sealed class ActiveWarService : ServiceBase
 
                 updatingTags.Add(cachedClan.Tag);
 
-                tasks.Add(MonitorClanWarAsync(cachedClan, cancellationToken));
+                tasks.Add(MonitorClanWarAsync(cachedClan, Options.Value.RealTime, cancellationToken));
             }
 
             await Task.WhenAll(tasks);
@@ -112,11 +112,11 @@ public sealed class ActiveWarService : ServiceBase
         }
     }
 
-    private async Task MonitorClanWarAsync(CachedClan cachedClan, CancellationToken cancellationToken)
+    private async Task MonitorClanWarAsync(CachedClan cachedClan, bool? realtime, CancellationToken cancellationToken)
     {
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
-        CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
+        CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
         if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
         {

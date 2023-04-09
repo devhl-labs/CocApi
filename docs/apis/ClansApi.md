@@ -333,7 +333,7 @@ catch (ApiException e)
 
 <a name="getclanwarleaguegroup"></a>
 # **GetClanWarLeagueGroup**
-> ClanWarLeagueGroup GetClanWarLeagueGroup (string clanTag)
+> ClanWarLeagueGroup GetClanWarLeagueGroup (string clanTag, bool? realtime = null)
 
 Retrieve information about clan's current clan war league group
 
@@ -362,11 +362,12 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
+            var realtime = true;  // bool? | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
 
             try
             {
                 // Retrieve information about clan's current clan war league group
-                ClanWarLeagueGroup result = apiInstance.GetClanWarLeagueGroup(clanTag);
+                ClanWarLeagueGroup result = apiInstance.GetClanWarLeagueGroup(clanTag, realtime);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -387,7 +388,7 @@ This returns an ApiResponse object which contains the response data, status code
 try
 {
     // Retrieve information about clan's current clan war league group
-    ApiResponse<ClanWarLeagueGroup> response = apiInstance.GetClanWarLeagueGroupWithHttpInfo(clanTag);
+    ApiResponse<ClanWarLeagueGroup> response = apiInstance.GetClanWarLeagueGroupWithHttpInfo(clanTag, realtime);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);
     Debug.Write("Response Body: " + response.Data);
@@ -405,6 +406,7 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
+| **realtime** | **bool?** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
 
 ### Return type
 
@@ -435,7 +437,7 @@ catch (ApiException e)
 
 <a name="getclanwarleaguewar"></a>
 # **GetClanWarLeagueWar**
-> ClanWar GetClanWarLeagueWar (string warTag)
+> ClanWar GetClanWarLeagueWar (string warTag, bool? realtime = null)
 
 Retrieve information about individual clan war league war
 
@@ -464,11 +466,12 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var warTag = "warTag_example";  // string | Tag of the war.
+            var realtime = true;  // bool? | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
 
             try
             {
                 // Retrieve information about individual clan war league war
-                ClanWar result = apiInstance.GetClanWarLeagueWar(warTag);
+                ClanWar result = apiInstance.GetClanWarLeagueWar(warTag, realtime);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -489,7 +492,7 @@ This returns an ApiResponse object which contains the response data, status code
 try
 {
     // Retrieve information about individual clan war league war
-    ApiResponse<ClanWar> response = apiInstance.GetClanWarLeagueWarWithHttpInfo(warTag);
+    ApiResponse<ClanWar> response = apiInstance.GetClanWarLeagueWarWithHttpInfo(warTag, realtime);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);
     Debug.Write("Response Body: " + response.Data);
@@ -507,6 +510,7 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **warTag** | **string** | Tag of the war. |  |
+| **realtime** | **bool?** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
 
 ### Return type
 
@@ -645,7 +649,7 @@ catch (ApiException e)
 
 <a name="getcurrentwar"></a>
 # **GetCurrentWar**
-> ClanWar GetCurrentWar (string clanTag)
+> ClanWar GetCurrentWar (string clanTag, bool? realtime = null)
 
 Retrieve information about clan's current clan war
 
@@ -674,11 +678,12 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
+            var realtime = true;  // bool? | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
 
             try
             {
                 // Retrieve information about clan's current clan war
-                ClanWar result = apiInstance.GetCurrentWar(clanTag);
+                ClanWar result = apiInstance.GetCurrentWar(clanTag, realtime);
                 Debug.WriteLine(result);
             }
             catch (ApiException  e)
@@ -699,7 +704,7 @@ This returns an ApiResponse object which contains the response data, status code
 try
 {
     // Retrieve information about clan's current clan war
-    ApiResponse<ClanWar> response = apiInstance.GetCurrentWarWithHttpInfo(clanTag);
+    ApiResponse<ClanWar> response = apiInstance.GetCurrentWarWithHttpInfo(clanTag, realtime);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);
     Debug.Write("Response Body: " + response.Data);
@@ -717,6 +722,7 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
+| **realtime** | **bool?** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
 
 ### Return type
 

@@ -88,7 +88,7 @@ public sealed class CwlWarService : ServiceBase
                 {
                     updatingCwlWar.Add(cachedWar.WarTag);
 
-                    tasks.Add(UpdateCwlWarAsync(clansApi, cachedWar, cancellationToken));
+                    tasks.Add(UpdateCwlWarAsync(clansApi, cachedWar, Options.Value.RealTime, cancellationToken));
                 }
 
                 tasks.Add(SendWarAnnouncementsAsync(cachedWar, cancellationToken));
@@ -105,10 +105,10 @@ public sealed class CwlWarService : ServiceBase
         }
     }
 
-    private async Task UpdateCwlWarAsync(IClansApi clansApi, CachedWar cachedWar, CancellationToken cancellationToken)
+    private async Task UpdateCwlWarAsync(IClansApi clansApi, CachedWar cachedWar, bool? realtime, CancellationToken cancellationToken)
     {
         CachedWar fetched = await CachedWar
-                .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, Ttl, clansApi, cancellationToken)
+                .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, realtime, Ttl, clansApi, cancellationToken)
                 .ConfigureAwait(false);
 
         if (cachedWar.Content != null &&

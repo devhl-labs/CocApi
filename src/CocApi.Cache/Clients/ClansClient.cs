@@ -181,7 +181,7 @@ public class ClansClient : ClientBase<ClansClient>
             ?? cache.First();
     }
 
-    public async Task<ClanWarLeagueGroup> GetOrFetchLeagueGroupAsync(string tag, CancellationToken? cancellationToken = null)
+    public async Task<ClanWarLeagueGroup> GetOrFetchLeagueGroupAsync(string tag, bool? realtime = null, CancellationToken? cancellationToken = null)
     {
         string formattedTag = Clash.FormatTag(tag);
 
@@ -190,10 +190,10 @@ public class ClansClient : ClientBase<ClansClient>
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
         return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
-            ?? await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, cancellationToken).ConfigureAwait(false);
+            ?? await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
+    public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, bool? realtime = null, CancellationToken? cancellationToken = null)
     {
         string formattedTag = Clash.FormatTag(tag);
 
@@ -202,7 +202,7 @@ public class ClansClient : ClientBase<ClansClient>
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
         return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
-            ?? await ClansApi.FetchClanWarLeagueGroupOrDefaultAsync(formattedTag, cancellationToken).ConfigureAwait(false);
+            ?? await ClansApi.FetchClanWarLeagueGroupOrDefaultAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false);
     }
 
     public async Task<CachedWar> GetLeagueWarAsync(string warTag, DateTime season, CancellationToken? cancellationToken = null)
@@ -241,7 +241,7 @@ public class ClansClient : ClientBase<ClansClient>
         return war;
     }
 
-    public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, CancellationToken? cancellationToken = null)
+    public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, bool? realtime = null, CancellationToken? cancellationToken = null)
     {
         List<ClanWar> result = new();
 
@@ -251,7 +251,7 @@ public class ClansClient : ClientBase<ClansClient>
                 ClanWar? clanWar = (await GetLeagueWarOrDefaultAsync(warTag, group.Season, cancellationToken).ConfigureAwait(false))?.Content;
 
                 if (clanWar == null)
-                    clanWar = await ClansApi.FetchClanWarLeagueWarAsync(warTag, cancellationToken).ConfigureAwait(false);
+                    clanWar = await ClansApi.FetchClanWarLeagueWarAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
 
                 if (clanWar.PreparationStartTime.Month == group.Season.Month && clanWar.PreparationStartTime.Year == group.Season.Year)
                     result.Add(clanWar);

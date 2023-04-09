@@ -10,11 +10,11 @@ namespace CocApi.Cache.Context;
 
 public class CachedClanWar : CachedItem<ClanWar>
 {
-    internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
+    internal static async Task<CachedClanWar> FromCurrentWarResponseAsync(string tag, bool? realtime, TimeToLiveProvider ttl, IClansApi clansApi, CancellationToken? cancellationToken = default)
     {
         try
         {
-            ApiResponse<ClanWar> apiResponse = await clansApi.FetchCurrentWarResponseAsync(tag, cancellationToken);
+            ApiResponse<ClanWar?> apiResponse = await clansApi.FetchCurrentWarResponseAsync(tag, realtime, cancellationToken);
 
             return new CachedClanWar(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
@@ -53,7 +53,7 @@ public class CachedClanWar : CachedItem<ClanWar>
 
     public int CachedClanId { get; internal set; }
 
-    private CachedClanWar(string tag, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
+    private CachedClanWar(string tag, ApiResponse<ClanWar?> apiResponse, TimeSpan localExpiration)
     {
         base.UpdateFrom(apiResponse, localExpiration);
 

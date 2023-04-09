@@ -68,4 +68,9 @@ public class CacheOptions
     /// Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
     /// </summary>
     public WarServiceOptions Wars { get; } = new WarServiceOptions { ConcurrentUpdates = 500, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
+
+    /// <summary>
+    /// Used to bypass cache. Only SuperCell approved users may use this operation.
+    /// </summary>
+    public bool? RealTime { get; set; }
 }

@@ -13,6 +13,7 @@ using CocApi.Rest.Apis;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
 using CocApi.Cache.Services.Options;
+using CocApi.Rest.DelegatingHandlers;
 
 namespace CocApi.Test;
 
@@ -61,8 +62,9 @@ class Program
                 var section = context.Configuration.GetRequiredSection("CocApi:Rest:HttpClient");
 
                 options.AddCocApiHttpClients(
-                    builder: builder => builder
-                        .ConfigurePrimaryHttpMessageHandler(services =>
+                    builder: builder =>
+                    {
+                        builder.ConfigurePrimaryHttpMessageHandler(services =>
                         {
                             return new HttpClientHandler()
                             {
@@ -78,7 +80,14 @@ class Program
                         {
                             // this property is important if you query the api very fast
                             MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
-                        })
+                        });
+
+                        // this is important if you use real time responses
+                        // when using the real time option, the response headers will still contain max-age header
+                        // this message handler will remove the max-age header since it will prevent us from querying in real time
+                        if (context.Configuration.GetValue<bool?>("CocApi:Cache:RealTime") == true)
+                            builder.AddHttpMessageHandler(() => new PatchRealTimeResponse());
+                    }
                 );
             })
 

@@ -52,11 +52,11 @@ namespace CocApi.Cache.Models
 
         }
 
-        public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration) => UpdateFrom(apiResponse, localExpiration);
+        public CachedItem(ApiResponse<T?> apiResponse, TimeSpan localExpiration) => UpdateFrom(apiResponse, localExpiration);
 
         public CachedItem(TimeSpan localExpiration) => UpdateFrom(localExpiration);
         
-        protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
+        protected void UpdateFrom(ApiResponse<T?> apiResponse, TimeSpan localExpiration)
         {
             StatusCode = apiResponse.StatusCode;
             Downloaded = apiResponse.DownloadedAt;

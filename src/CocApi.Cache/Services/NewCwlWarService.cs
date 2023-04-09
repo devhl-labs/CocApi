@@ -137,7 +137,7 @@ public sealed class NewCwlWarService : ServiceBase
 
             foreach (KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> season in seasons)
                 foreach (var warTags in season.Value)
-                    processRequests.Add(ProcessRequest(clansApi, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
+                    processRequests.Add(ProcessRequest(clansApi, Options.Value.RealTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
 
             try
             {
@@ -210,6 +210,7 @@ public sealed class NewCwlWarService : ServiceBase
 
     private async Task ProcessRequest(
         IClansApi clansApi,
+        bool? realtime,
         ConcurrentDictionary<string, byte?> announcedWars,
         KeyValuePair<string, Rest.Models.ClanWarLeagueGroup> kvp,
         List<CachedClan> cachedClans,
@@ -223,7 +224,7 @@ public sealed class NewCwlWarService : ServiceBase
 
             try
             {
-                apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, cancellationToken).ConfigureAwait(false);
+                apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, realtime, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {

@@ -116,13 +116,13 @@ public sealed class ClanService : ServiceBase
                 tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
             if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
-                tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, cancellationToken));
+                tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, Options.Value.RealTime, cancellationToken));
 
             if (options.DownloadWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 tasks.Add(MonitorWarLogAsync(clansApi, cachedClan, cancellationToken));
 
             if (options.DownloadGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
-                tasks.Add(MonitorGroupAsync(clansApi, cachedClan, cancellationToken));
+                tasks.Add(MonitorGroupAsync(clansApi, Options.Value.RealTime, cachedClan, cancellationToken));
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
         }
@@ -143,9 +143,9 @@ public sealed class ClanService : ServiceBase
         cachedClan.UpdateFrom(fetched);
     }
 
-    private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
+    private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, bool? realtime, CancellationToken cancellationToken)
     {
-        CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
+        CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
         if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
         {
@@ -169,10 +169,10 @@ public sealed class ClanService : ServiceBase
         cachedClan.WarLog.UpdateFrom(fetched);
     }
 
-    private async Task MonitorGroupAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
+    private async Task MonitorGroupAsync(IClansApi clansApi, bool? realtime, CachedClan cachedClan, CancellationToken cancellationToken)
     {
         CachedClanWarLeagueGroup fetched = await CachedClanWarLeagueGroup
-            .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken)
+            .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken)
             .ConfigureAwait(false);
 
         if (fetched.Content != null && CachedClanWarLeagueGroup.HasUpdated(cachedClan.Group, fetched))
