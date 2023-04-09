@@ -42,33 +42,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanCapitalRaidSeasonDistrict(int attackCount, int destructionPercent, int districtHallLevel, int id, string name, int stars, int totalLooted, List<ClanCapitalRaidSeasonAttack>? attacks = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (stars == null)
-                throw new ArgumentNullException("stars is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-            if (id == null)
-                throw new ArgumentNullException("id is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-            if (destructionPercent == null)
-                throw new ArgumentNullException("destructionPercent is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-            if (attackCount == null)
-                throw new ArgumentNullException("attackCount is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-            if (totalLooted == null)
-                throw new ArgumentNullException("totalLooted is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-            if (districtHallLevel == null)
-                throw new ArgumentNullException("districtHallLevel is a required property for ClanCapitalRaidSeasonDistrict and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             AttackCount = attackCount;
             DestructionPercent = destructionPercent;
             DistrictHallLevel = districtHallLevel;
@@ -318,6 +291,33 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (destructionPercent == null)
+                throw new ArgumentNullException(nameof(destructionPercent), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (attackCount == null)
+                throw new ArgumentNullException(nameof(attackCount), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (totalLooted == null)
+                throw new ArgumentNullException(nameof(totalLooted), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (districtHallLevel == null)
+                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeasonDistrict(attackCount, destructionPercent, districtHallLevel, id, name, stars, totalLooted, attacks);
         }

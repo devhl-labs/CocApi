@@ -53,51 +53,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanListEntry(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int clanVersusPoints, bool isWarLogPublic, List<Label> labels, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (warLeague == null)
-                throw new ArgumentNullException("warLeague is a required property for ClanListEntry and cannot be null.");
-
-            if (requiredTrophies == null)
-                throw new ArgumentNullException("requiredTrophies is a required property for ClanListEntry and cannot be null.");
-
-            if (clanVersusPoints == null)
-                throw new ArgumentNullException("clanVersusPoints is a required property for ClanListEntry and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for ClanListEntry and cannot be null.");
-
-            if (isWarLogPublic == null)
-                throw new ArgumentNullException("isWarLogPublic is a required property for ClanListEntry and cannot be null.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException("clanLevel is a required property for ClanListEntry and cannot be null.");
-
-            if (warWinStreak == null)
-                throw new ArgumentNullException("warWinStreak is a required property for ClanListEntry and cannot be null.");
-
-            if (warWins == null)
-                throw new ArgumentNullException("warWins is a required property for ClanListEntry and cannot be null.");
-
-            if (clanPoints == null)
-                throw new ArgumentNullException("clanPoints is a required property for ClanListEntry and cannot be null.");
-
-            if (labels == null)
-                throw new ArgumentNullException("labels is a required property for ClanListEntry and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanListEntry and cannot be null.");
-
-            if (members == null)
-                throw new ArgumentNullException("members is a required property for ClanListEntry and cannot be null.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException("badgeUrls is a required property for ClanListEntry and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             BadgeUrls = badgeUrls;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
@@ -565,6 +520,51 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (warLeague == null)
+                throw new ArgumentNullException(nameof(warLeague), "Property is required for class ClanListEntry.");
+
+            if (requiredTrophies == null)
+                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class ClanListEntry.");
+
+            if (clanVersusPoints == null)
+                throw new ArgumentNullException(nameof(clanVersusPoints), "Property is required for class ClanListEntry.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanListEntry.");
+
+            if (isWarLogPublic == null)
+                throw new ArgumentNullException(nameof(isWarLogPublic), "Property is required for class ClanListEntry.");
+
+            if (clanLevel == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanListEntry.");
+
+            if (warWinStreak == null)
+                throw new ArgumentNullException(nameof(warWinStreak), "Property is required for class ClanListEntry.");
+
+            if (warWins == null)
+                throw new ArgumentNullException(nameof(warWins), "Property is required for class ClanListEntry.");
+
+            if (clanPoints == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanListEntry.");
+
+            if (labels == null)
+                throw new ArgumentNullException(nameof(labels), "Property is required for class ClanListEntry.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanListEntry.");
+
+            if (members == null)
+                throw new ArgumentNullException(nameof(members), "Property is required for class ClanListEntry.");
+
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanListEntry.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanListEntry(badgeUrls, clanLevel, clanPoints, clanVersusPoints, isWarLogPublic, labels, members, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }

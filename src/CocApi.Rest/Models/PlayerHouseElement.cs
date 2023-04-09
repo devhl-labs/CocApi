@@ -36,18 +36,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal PlayerHouseElement(int id, TypeEnum type)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (id == null)
-                throw new ArgumentNullException("id is a required property for PlayerHouseElement and cannot be null.");
-
-            if (type == null)
-                throw new ArgumentNullException("type is a required property for PlayerHouseElement and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Id = id;
             Type = type;
         }
@@ -275,6 +263,18 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class PlayerHouseElement.");
+
+            if (type == null)
+                throw new ArgumentNullException(nameof(type), "Property is required for class PlayerHouseElement.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new PlayerHouseElement(id, type);
         }

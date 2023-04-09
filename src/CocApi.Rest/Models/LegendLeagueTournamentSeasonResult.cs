@@ -37,21 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal LegendLeagueTournamentSeasonResult(DateTime id, int rank, int trophies)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (trophies == null)
-                throw new ArgumentNullException("trophies is a required property for LegendLeagueTournamentSeasonResult and cannot be null.");
-
-            if (id == null)
-                throw new ArgumentNullException("id is a required property for LegendLeagueTournamentSeasonResult and cannot be null.");
-
-            if (rank == null)
-                throw new ArgumentNullException("rank is a required property for LegendLeagueTournamentSeasonResult and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Id = id;
             Rank = rank;
             Trophies = trophies;
@@ -209,6 +194,21 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (trophies == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is required for class LegendLeagueTournamentSeasonResult.");
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class LegendLeagueTournamentSeasonResult.");
+
+            if (rank == null)
+                throw new ArgumentNullException(nameof(rank), "Property is required for class LegendLeagueTournamentSeasonResult.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new LegendLeagueTournamentSeasonResult(id, rank, trophies);
         }

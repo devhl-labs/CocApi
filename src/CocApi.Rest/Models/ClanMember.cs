@@ -46,42 +46,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanMember(int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, int versusTrophies, PlayerHouse? playerHouse = default, Role? role = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (league == null)
-                throw new ArgumentNullException("league is a required property for ClanMember and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for ClanMember and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanMember and cannot be null.");
-
-            if (expLevel == null)
-                throw new ArgumentNullException("expLevel is a required property for ClanMember and cannot be null.");
-
-            if (clanRank == null)
-                throw new ArgumentNullException("clanRank is a required property for ClanMember and cannot be null.");
-
-            if (previousClanRank == null)
-                throw new ArgumentNullException("previousClanRank is a required property for ClanMember and cannot be null.");
-
-            if (donations == null)
-                throw new ArgumentNullException("donations is a required property for ClanMember and cannot be null.");
-
-            if (donationsReceived == null)
-                throw new ArgumentNullException("donationsReceived is a required property for ClanMember and cannot be null.");
-
-            if (trophies == null)
-                throw new ArgumentNullException("trophies is a required property for ClanMember and cannot be null.");
-
-            if (versusTrophies == null)
-                throw new ArgumentNullException("versusTrophies is a required property for ClanMember and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             ClanRank = clanRank;
             Donations = donations;
             DonationsReceived = donationsReceived;
@@ -407,6 +371,42 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (league == null)
+                throw new ArgumentNullException(nameof(league), "Property is required for class ClanMember.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanMember.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanMember.");
+
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class ClanMember.");
+
+            if (clanRank == null)
+                throw new ArgumentNullException(nameof(clanRank), "Property is required for class ClanMember.");
+
+            if (previousClanRank == null)
+                throw new ArgumentNullException(nameof(previousClanRank), "Property is required for class ClanMember.");
+
+            if (donations == null)
+                throw new ArgumentNullException(nameof(donations), "Property is required for class ClanMember.");
+
+            if (donationsReceived == null)
+                throw new ArgumentNullException(nameof(donationsReceived), "Property is required for class ClanMember.");
+
+            if (trophies == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is required for class ClanMember.");
+
+            if (versusTrophies == null)
+                throw new ArgumentNullException(nameof(versusTrophies), "Property is required for class ClanMember.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanMember(clanRank, donations, donationsReceived, expLevel, league, name, previousClanRank, tag, trophies, versusTrophies, playerHouse, role);
         }

@@ -115,60 +115,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         public Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int? warLosses, int? warTies, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (warLeague == null)
-                throw new ArgumentNullException("warLeague is a required property for Clan and cannot be null.");
-
-            if (requiredTrophies == null)
-                throw new ArgumentNullException("requiredTrophies is a required property for Clan and cannot be null.");
-
-            if (clanVersusPoints == null)
-                throw new ArgumentNullException("clanVersusPoints is a required property for Clan and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for Clan and cannot be null.");
-
-            if (isWarLogPublic == null)
-                throw new ArgumentNullException("isWarLogPublic is a required property for Clan and cannot be null.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException("clanLevel is a required property for Clan and cannot be null.");
-
-            if (warWinStreak == null)
-                throw new ArgumentNullException("warWinStreak is a required property for Clan and cannot be null.");
-
-            if (warWins == null)
-                throw new ArgumentNullException("warWins is a required property for Clan and cannot be null.");
-
-            if (clanPoints == null)
-                throw new ArgumentNullException("clanPoints is a required property for Clan and cannot be null.");
-
-            if (labels == null)
-                throw new ArgumentNullException("labels is a required property for Clan and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for Clan and cannot be null.");
-
-            if (members == null)
-                throw new ArgumentNullException("members is a required property for Clan and cannot be null.");
-
-            if (description == null)
-                throw new ArgumentNullException("description is a required property for Clan and cannot be null.");
-
-            if (capitalLeague == null)
-                throw new ArgumentNullException("capitalLeague is a required property for Clan and cannot be null.");
-
-            if (clanCapital == null)
-                throw new ArgumentNullException("clanCapital is a required property for Clan and cannot be null.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException("badgeUrls is a required property for Clan and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             BadgeUrls = badgeUrls;
             ClanCapital = clanCapital;
             ClanLevel = clanLevel;

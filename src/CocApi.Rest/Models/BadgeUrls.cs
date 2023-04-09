@@ -37,21 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal BadgeUrls(string large, string medium, string small)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (small == null)
-                throw new ArgumentNullException("small is a required property for BadgeUrls and cannot be null.");
-
-            if (medium == null)
-                throw new ArgumentNullException("medium is a required property for BadgeUrls and cannot be null.");
-
-            if (large == null)
-                throw new ArgumentNullException("large is a required property for BadgeUrls and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Large = large;
             Medium = medium;
             Small = small;
@@ -201,6 +186,21 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (small == null)
+                throw new ArgumentNullException(nameof(small), "Property is required for class BadgeUrls.");
+
+            if (medium == null)
+                throw new ArgumentNullException(nameof(medium), "Property is required for class BadgeUrls.");
+
+            if (large == null)
+                throw new ArgumentNullException(nameof(large), "Property is required for class BadgeUrls.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new BadgeUrls(large, medium, small);
         }

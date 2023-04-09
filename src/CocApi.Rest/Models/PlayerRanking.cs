@@ -44,39 +44,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal PlayerRanking(int attackWins, int defenseWins, int expLevel, League league, string name, int previousRank, int rank, string tag, int trophies, PlayerRankingClan? clan = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (league == null)
-                throw new ArgumentNullException("league is a required property for PlayerRanking and cannot be null.");
-
-            if (attackWins == null)
-                throw new ArgumentNullException("attackWins is a required property for PlayerRanking and cannot be null.");
-
-            if (defenseWins == null)
-                throw new ArgumentNullException("defenseWins is a required property for PlayerRanking and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for PlayerRanking and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for PlayerRanking and cannot be null.");
-
-            if (expLevel == null)
-                throw new ArgumentNullException("expLevel is a required property for PlayerRanking and cannot be null.");
-
-            if (rank == null)
-                throw new ArgumentNullException("rank is a required property for PlayerRanking and cannot be null.");
-
-            if (previousRank == null)
-                throw new ArgumentNullException("previousRank is a required property for PlayerRanking and cannot be null.");
-
-            if (trophies == null)
-                throw new ArgumentNullException("trophies is a required property for PlayerRanking and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             AttackWins = attackWins;
             DefenseWins = defenseWins;
             ExpLevel = expLevel;
@@ -362,6 +329,39 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (league == null)
+                throw new ArgumentNullException(nameof(league), "Property is required for class PlayerRanking.");
+
+            if (attackWins == null)
+                throw new ArgumentNullException(nameof(attackWins), "Property is required for class PlayerRanking.");
+
+            if (defenseWins == null)
+                throw new ArgumentNullException(nameof(defenseWins), "Property is required for class PlayerRanking.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerRanking.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerRanking.");
+
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class PlayerRanking.");
+
+            if (rank == null)
+                throw new ArgumentNullException(nameof(rank), "Property is required for class PlayerRanking.");
+
+            if (previousRank == null)
+                throw new ArgumentNullException(nameof(previousRank), "Property is required for class PlayerRanking.");
+
+            if (trophies == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is required for class PlayerRanking.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new PlayerRanking(attackWins, defenseWins, expLevel, league, name, previousRank, rank, tag, trophies, clan);
         }

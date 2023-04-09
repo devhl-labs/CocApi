@@ -47,68 +47,6 @@ java -jar $generator generate `
     -t $templates.Path `
     --release-note $releaseNote
 
-$warClanConstructor = @"
-        /// <summary>
-        /// Initializes a new instance of the <see cref="WarClan" /> class.
-        /// </summary>
-        /// <param name="attacks">attacks</param>
-        /// <param name="badgeUrls">badgeUrls</param>
-        /// <param name="clanLevel">clanLevel</param>
-        /// <param name="destructionPercentage">destructionPercentage</param>
-        /// <param name="expEarned">expEarned</param>
-        /// <param name="members">members</param>
-        /// <param name="name">name</param>
-        /// <param name="stars">stars</param>
-        /// <param name="tag">tag</param>
-        [JsonConstructor]
-        internal WarClan(int attacks, BadgeUrls badgeUrls, int clanLevel, float destructionPercentage, int expEarned, List<ClanWarMember> members, string name, int stars, string tag)
-        {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (destructionPercentage == null)
-                throw new ArgumentNullException("destructionPercentage is a required property for WarClan and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for WarClan and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for WarClan and cannot be null.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException("badgeUrls is a required property for WarClan and cannot be null.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException("clanLevel is a required property for WarClan and cannot be null.");
-
-            if (attacks == null)
-                throw new ArgumentNullException("attacks is a required property for WarClan and cannot be null.");
-
-            if (stars == null)
-                throw new ArgumentNullException("stars is a required property for WarClan and cannot be null.");
-
-            if (expEarned == null)
-                throw new ArgumentNullException("expEarned is a required property for WarClan and cannot be null.");
-
-            if (members == null)
-                throw new ArgumentNullException("members is a required property for WarClan and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            Attacks = attacks;
-            BadgeUrls = badgeUrls;
-            ClanLevel = clanLevel;
-            DestructionPercentage = destructionPercentage;
-            ExpEarned = expEarned;
-            Members = members;
-            Name = name;
-            Stars = stars;
-            Tag = tag;
-        }
-
-
-"@
 
 $clanConstructor = @"
         /// <summary>
@@ -141,66 +79,6 @@ $clanConstructor = @"
         [JsonConstructor]
         internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (warLeague == null)
-                throw new ArgumentNullException("warLeague is a required property for Clan and cannot be null.");
-
-            if (memberList == null)
-                throw new ArgumentNullException("memberList is a required property for Clan and cannot be null.");
-
-            if (requiredTrophies == null)
-                throw new ArgumentNullException("requiredTrophies is a required property for Clan and cannot be null.");
-
-            if (clanVersusPoints == null)
-                throw new ArgumentNullException("clanVersusPoints is a required property for Clan and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for Clan and cannot be null.");
-
-            if (isWarLogPublic == null)
-                throw new ArgumentNullException("isWarLogPublic is a required property for Clan and cannot be null.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException("clanLevel is a required property for Clan and cannot be null.");
-
-            if (warWinStreak == null)
-                throw new ArgumentNullException("warWinStreak is a required property for Clan and cannot be null.");
-
-            if (warWins == null)
-                throw new ArgumentNullException("warWins is a required property for Clan and cannot be null.");
-
-            if (clanPoints == null)
-                throw new ArgumentNullException("clanPoints is a required property for Clan and cannot be null.");
-
-            if (labels == null)
-                throw new ArgumentNullException("labels is a required property for Clan and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for Clan and cannot be null.");
-
-            if (members == null)
-                throw new ArgumentNullException("members is a required property for Clan and cannot be null.");
-
-            if (description == null)
-                throw new ArgumentNullException("description is a required property for Clan and cannot be null.");
-
-            if (clanCapital == null)
-                throw new ArgumentNullException("clanCapital is a required property for Clan and cannot be null.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException("badgeUrls is a required property for Clan and cannot be null.");
-
-            if (capitalLeague == null)
-                throw new ArgumentNullException("capitalLeague is a required property for Clan and cannot be null.");
-
-            if (isFamilyFriendly == null)
-                throw new ArgumentNullException("isFamilyFriendly is a required property for Clan and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             BadgeUrls = badgeUrls;
             CapitalLeague = capitalLeague;
             ClanCapital = clanCapital;
@@ -294,27 +172,6 @@ $clanWarMemberConstructor = @"
         [JsonConstructor]
         internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, List<ClanWarAttack>? attacks = default, ClanWarAttack? bestOpponentAttack = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for ClanWarMember and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanWarMember and cannot be null.");
-
-            if (mapPosition == null)
-                throw new ArgumentNullException("mapPosition is a required property for ClanWarMember and cannot be null.");
-
-            if (townhallLevel == null)
-                throw new ArgumentNullException("townhallLevel is a required property for ClanWarMember and cannot be null.");
-
-            if (opponentAttacks == null)
-                throw new ArgumentNullException("opponentAttacks is a required property for ClanWarMember and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             MapPosition = mapPosition;
             Name = name;
             OpponentAttacks = opponentAttacks;
@@ -323,6 +180,20 @@ $clanWarMemberConstructor = @"
             Attacks = attacks;
             BestOpponentAttack = bestOpponentAttack;
         }
+
+
+"@
+
+$memberListDeserialization = @"
+            if (members == null)
+                throw new ArgumentNullException(nameof(members), "Property is required for class Clan.");
+
+
+"@
+
+$memberListDeserializationReplacement = @"
+            if (memberList == null)
+                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
 
 
 "@
@@ -466,32 +337,96 @@ $clanCapitalRaidSeasonStateReplacement = @"
 "@
 
 $apiKey = @"
-                    List<TokenBase> tokens = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
-                    ApiKeyToken apiKey = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
-                    tokens.Add(apiKey);
+                    tokenBaseLocalVars.Add(apiKey);
 
 
 "@
 
 $tokenRateLimit = @"
-                        else if (apiResponse.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase token in tokens)
-                                token.BeginRateLimit();
+                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
 "@
 
 $groupDeserialize = @"
-                        if (apiResponse.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup>(apiResponse.RawContent, _jsonSerializerOptions);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
 "@
 
 $groupDeserializeReplacement = @"
-                        if (apiResponse.IsSuccessStatusCode && !apiResponse.RawContent.Contains("notInWar"))
+                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
                         {
-                            apiResponse.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponse.RawContent, _jsonSerializerOptions);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+"@
+
+
+$warClanNullChecks = @"
+            if (destructionPercentage == null)
+                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
+
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClan.");
+
+            if (clanLevel == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClan.");
+
+            if (attacks == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
+
+            if (expEarned == null)
+                throw new ArgumentNullException(nameof(expEarned), "Property is required for class WarClan.");
+
+            if (members == null)
+                throw new ArgumentNullException(nameof(members), "Property is required for class WarClan.");
+
+
+"@
+
+
+$warClanNullChecksReplacement = @"
+            if (destructionPercentage == null)
+                throw new ArgumentNullException("destructionPercentage is a required property for WarClan and cannot be null.");
+
+            //if (tag == null)
+                //    throw new ArgumentNullException("tag is a required property for WarClan and cannot be null.");
+
+            //if (name == null)
+                //    throw new ArgumentNullException("name is a required property for WarClan and cannot be null.");
+
+            if (badgeUrls == null)
+                throw new ArgumentNullException("badgeUrls is a required property for WarClan and cannot be null.");
+
+            if (clanLevel == null)
+                throw new ArgumentNullException("clanLevel is a required property for WarClan and cannot be null.");
+
+            if (attacks == null)
+                throw new ArgumentNullException("attacks is a required property for WarClan and cannot be null.");
+
+            if (stars == null)
+                throw new ArgumentNullException("stars is a required property for WarClan and cannot be null.");
+
+            //if (expEarned == null)
+            //    throw new ArgumentNullException("expEarned is a required property for WarClan and cannot be null.");
+
+            //if (members == null)
+            //    throw new ArgumentNullException("members is a required property for WarClan and cannot be null.");
+
+
 "@
 
 
@@ -564,7 +499,7 @@ foreach ($file in $allCodeFiles)
     }
 
     if ($file.name -eq "WarClan.cs"){
-        $content=$content.Replace($warClanConstructor, "")
+        $content=$content.Replace($warClanNullChecks, $warClanNullChecksReplacement)
     }
 
     if ($file.name -eq "Clan.cs"){
@@ -587,6 +522,8 @@ foreach ($file in $allCodeFiles)
         $content=$content.Replace(
             "return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);",
             "return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);")
+
+        $content=$content.Replace($memberListDeserialization, $memberListDeserializationReplacement)
     }
 
     if ($file.name -eq "Role.cs"){

@@ -40,27 +40,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanWarLogEntry(int attacksPerMember, WarClanLogEntry clan, DateTime endTime, WarClanLogEntry opponent, int teamSize, Result? result = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (clan == null)
-                throw new ArgumentNullException("clan is a required property for ClanWarLogEntry and cannot be null.");
-
-            if (teamSize == null)
-                throw new ArgumentNullException("teamSize is a required property for ClanWarLogEntry and cannot be null.");
-
-            if (attacksPerMember == null)
-                throw new ArgumentNullException("attacksPerMember is a required property for ClanWarLogEntry and cannot be null.");
-
-            if (opponent == null)
-                throw new ArgumentNullException("opponent is a required property for ClanWarLogEntry and cannot be null.");
-
-            if (endTime == null)
-                throw new ArgumentNullException("endTime is a required property for ClanWarLogEntry and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             AttacksPerMember = attacksPerMember;
             Clan = clan;
             EndTime = endTime;
@@ -277,6 +256,27 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (clan == null)
+                throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWarLogEntry.");
+
+            if (teamSize == null)
+                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWarLogEntry.");
+
+            if (attacksPerMember == null)
+                throw new ArgumentNullException(nameof(attacksPerMember), "Property is required for class ClanWarLogEntry.");
+
+            if (opponent == null)
+                throw new ArgumentNullException(nameof(opponent), "Property is required for class ClanWarLogEntry.");
+
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWarLogEntry.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanWarLogEntry(attacksPerMember, clan, endTime, opponent, teamSize, result);
         }

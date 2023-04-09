@@ -63,78 +63,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderHallLevel, int clanCapitalContributions, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int versusBattleWinCount, int versusBattleWins, int versusTrophies, int warStars, PlayerClan? clan = default, League? league = default, PlayerLegendStatistics? legendStatistics = default, PlayerHouse? playerHouse = default, Role? role = default, int? townHallWeaponLevel = default, WarPreference? warPreference = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (attackWins == null)
-                throw new ArgumentNullException("attackWins is a required property for Player and cannot be null.");
-
-            if (defenseWins == null)
-                throw new ArgumentNullException("defenseWins is a required property for Player and cannot be null.");
-
-            if (townHallLevel == null)
-                throw new ArgumentNullException("townHallLevel is a required property for Player and cannot be null.");
-
-            if (versusBattleWins == null)
-                throw new ArgumentNullException("versusBattleWins is a required property for Player and cannot be null.");
-
-            if (troops == null)
-                throw new ArgumentNullException("troops is a required property for Player and cannot be null.");
-
-            if (heroes == null)
-                throw new ArgumentNullException("heroes is a required property for Player and cannot be null.");
-
-            if (spells == null)
-                throw new ArgumentNullException("spells is a required property for Player and cannot be null.");
-
-            if (labels == null)
-                throw new ArgumentNullException("labels is a required property for Player and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for Player and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for Player and cannot be null.");
-
-            if (expLevel == null)
-                throw new ArgumentNullException("expLevel is a required property for Player and cannot be null.");
-
-            if (trophies == null)
-                throw new ArgumentNullException("trophies is a required property for Player and cannot be null.");
-
-            if (bestTrophies == null)
-                throw new ArgumentNullException("bestTrophies is a required property for Player and cannot be null.");
-
-            if (donations == null)
-                throw new ArgumentNullException("donations is a required property for Player and cannot be null.");
-
-            if (donationsReceived == null)
-                throw new ArgumentNullException("donationsReceived is a required property for Player and cannot be null.");
-
-            if (builderHallLevel == null)
-                throw new ArgumentNullException("builderHallLevel is a required property for Player and cannot be null.");
-
-            if (versusTrophies == null)
-                throw new ArgumentNullException("versusTrophies is a required property for Player and cannot be null.");
-
-            if (bestVersusTrophies == null)
-                throw new ArgumentNullException("bestVersusTrophies is a required property for Player and cannot be null.");
-
-            if (warStars == null)
-                throw new ArgumentNullException("warStars is a required property for Player and cannot be null.");
-
-            if (achievements == null)
-                throw new ArgumentNullException("achievements is a required property for Player and cannot be null.");
-
-            if (clanCapitalContributions == null)
-                throw new ArgumentNullException("clanCapitalContributions is a required property for Player and cannot be null.");
-
-            if (versusBattleWinCount == null)
-                throw new ArgumentNullException("versusBattleWinCount is a required property for Player and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Achievements = achievements;
             AttackWins = attackWins;
             BestTrophies = bestTrophies;
@@ -798,6 +726,78 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (attackWins == null)
+                throw new ArgumentNullException(nameof(attackWins), "Property is required for class Player.");
+
+            if (defenseWins == null)
+                throw new ArgumentNullException(nameof(defenseWins), "Property is required for class Player.");
+
+            if (townHallLevel == null)
+                throw new ArgumentNullException(nameof(townHallLevel), "Property is required for class Player.");
+
+            if (versusBattleWins == null)
+                throw new ArgumentNullException(nameof(versusBattleWins), "Property is required for class Player.");
+
+            if (troops == null)
+                throw new ArgumentNullException(nameof(troops), "Property is required for class Player.");
+
+            if (heroes == null)
+                throw new ArgumentNullException(nameof(heroes), "Property is required for class Player.");
+
+            if (spells == null)
+                throw new ArgumentNullException(nameof(spells), "Property is required for class Player.");
+
+            if (labels == null)
+                throw new ArgumentNullException(nameof(labels), "Property is required for class Player.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class Player.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Player.");
+
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class Player.");
+
+            if (trophies == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is required for class Player.");
+
+            if (bestTrophies == null)
+                throw new ArgumentNullException(nameof(bestTrophies), "Property is required for class Player.");
+
+            if (donations == null)
+                throw new ArgumentNullException(nameof(donations), "Property is required for class Player.");
+
+            if (donationsReceived == null)
+                throw new ArgumentNullException(nameof(donationsReceived), "Property is required for class Player.");
+
+            if (builderHallLevel == null)
+                throw new ArgumentNullException(nameof(builderHallLevel), "Property is required for class Player.");
+
+            if (versusTrophies == null)
+                throw new ArgumentNullException(nameof(versusTrophies), "Property is required for class Player.");
+
+            if (bestVersusTrophies == null)
+                throw new ArgumentNullException(nameof(bestVersusTrophies), "Property is required for class Player.");
+
+            if (warStars == null)
+                throw new ArgumentNullException(nameof(warStars), "Property is required for class Player.");
+
+            if (achievements == null)
+                throw new ArgumentNullException(nameof(achievements), "Property is required for class Player.");
+
+            if (clanCapitalContributions == null)
+                throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is required for class Player.");
+
+            if (versusBattleWinCount == null)
+                throw new ArgumentNullException(nameof(versusBattleWinCount), "Property is required for class Player.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new Player(achievements, attackWins, bestTrophies, bestVersusTrophies, builderHallLevel, clanCapitalContributions, defenseWins, donations, donationsReceived, expLevel, heroes, labels, name, spells, tag, townHallLevel, troops, trophies, versusBattleWinCount, versusBattleWins, versusTrophies, warStars, clan, league, legendStatistics, playerHouse, role, townHallWeaponLevel, warPreference);
         }

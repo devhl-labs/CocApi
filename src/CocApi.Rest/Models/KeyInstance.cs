@@ -37,18 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         public KeyInstance(int sessionExpiresInSeconds, KeyListStatus status, Key? key = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (status == null)
-                throw new ArgumentNullException("status is a required property for KeyInstance and cannot be null.");
-
-            if (sessionExpiresInSeconds == null)
-                throw new ArgumentNullException("sessionExpiresInSeconds is a required property for KeyInstance and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             SessionExpiresInSeconds = sessionExpiresInSeconds;
             Status = status;
             Key = key;
@@ -146,6 +134,18 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (status == null)
+                throw new ArgumentNullException(nameof(status), "Property is required for class KeyInstance.");
+
+            if (sessionExpiresInSeconds == null)
+                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class KeyInstance.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new KeyInstance(sessionExpiresInSeconds, status, key);
         }

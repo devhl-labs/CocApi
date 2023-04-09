@@ -37,21 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal Language(int id, string languageCode, string name)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for Language and cannot be null.");
-
-            if (id == null)
-                throw new ArgumentNullException("id is a required property for Language and cannot be null.");
-
-            if (languageCode == null)
-                throw new ArgumentNullException("languageCode is a required property for Language and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Id = id;
             LanguageCode = languageCode;
             Name = name;
@@ -202,6 +187,21 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Language.");
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class Language.");
+
+            if (languageCode == null)
+                throw new ArgumentNullException(nameof(languageCode), "Property is required for class Language.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new Language(id, languageCode, name);
         }

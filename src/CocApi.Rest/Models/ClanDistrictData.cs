@@ -37,21 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanDistrictData(int districtHallLevel, int id, string name)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanDistrictData and cannot be null.");
-
-            if (id == null)
-                throw new ArgumentNullException("id is a required property for ClanDistrictData and cannot be null.");
-
-            if (districtHallLevel == null)
-                throw new ArgumentNullException("districtHallLevel is a required property for ClanDistrictData and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             DistrictHallLevel = districtHallLevel;
             Id = id;
             Name = name;
@@ -203,6 +188,21 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanDistrictData.");
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class ClanDistrictData.");
+
+            if (districtHallLevel == null)
+                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanDistrictData.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanDistrictData(districtHallLevel, id, name);
         }

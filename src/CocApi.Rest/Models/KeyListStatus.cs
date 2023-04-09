@@ -37,18 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         public KeyListStatus(int code, string message, string? detail = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (code == null)
-                throw new ArgumentNullException("code is a required property for KeyListStatus and cannot be null.");
-
-            if (message == null)
-                throw new ArgumentNullException("message is a required property for KeyListStatus and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Code = code;
             Message = message;
             Detail = detail;
@@ -144,6 +132,18 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (code == null)
+                throw new ArgumentNullException(nameof(code), "Property is required for class KeyListStatus.");
+
+            if (message == null)
+                throw new ArgumentNullException(nameof(message), "Property is required for class KeyListStatus.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new KeyListStatus(code, message, detail);
         }

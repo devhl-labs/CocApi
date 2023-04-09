@@ -46,45 +46,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanCapitalRaidSeason(List<ClanCapitalRaidSeasonAttackLogEntry> attackLog, int capitalTotalLoot, List<ClanCapitalRaidSeasonDefenseLogEntry> defenseLog, int defensiveReward, DateTime endTime, int enemyDistrictsDestroyed, int offensiveReward, int raidsCompleted, DateTime startTime, StateEnum state, int totalAttacks, List<ClanCapitalRaidSeasonMember>? members = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (attackLog == null)
-                throw new ArgumentNullException("attackLog is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (defenseLog == null)
-                throw new ArgumentNullException("defenseLog is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (state == null)
-                throw new ArgumentNullException("state is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (startTime == null)
-                throw new ArgumentNullException("startTime is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (endTime == null)
-                throw new ArgumentNullException("endTime is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (capitalTotalLoot == null)
-                throw new ArgumentNullException("capitalTotalLoot is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (raidsCompleted == null)
-                throw new ArgumentNullException("raidsCompleted is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (totalAttacks == null)
-                throw new ArgumentNullException("totalAttacks is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (enemyDistrictsDestroyed == null)
-                throw new ArgumentNullException("enemyDistrictsDestroyed is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (offensiveReward == null)
-                throw new ArgumentNullException("offensiveReward is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-            if (defensiveReward == null)
-                throw new ArgumentNullException("defensiveReward is a required property for ClanCapitalRaidSeason and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             AttackLog = attackLog;
             CapitalTotalLoot = capitalTotalLoot;
             DefenseLog = defenseLog;
@@ -484,6 +445,45 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (attackLog == null)
+                throw new ArgumentNullException(nameof(attackLog), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (defenseLog == null)
+                throw new ArgumentNullException(nameof(defenseLog), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (state == null)
+                throw new ArgumentNullException(nameof(state), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (startTime == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (capitalTotalLoot == null)
+                throw new ArgumentNullException(nameof(capitalTotalLoot), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (raidsCompleted == null)
+                throw new ArgumentNullException(nameof(raidsCompleted), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (totalAttacks == null)
+                throw new ArgumentNullException(nameof(totalAttacks), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (enemyDistrictsDestroyed == null)
+                throw new ArgumentNullException(nameof(enemyDistrictsDestroyed), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (offensiveReward == null)
+                throw new ArgumentNullException(nameof(offensiveReward), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (defensiveReward == null)
+                throw new ArgumentNullException(nameof(defensiveReward), "Property is required for class ClanCapitalRaidSeason.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeason(attackLog, capitalTotalLoot, defenseLog, defensiveReward, endTime, enemyDistrictsDestroyed, offensiveReward, raidsCompleted, startTime, state, totalAttacks, members);
         }

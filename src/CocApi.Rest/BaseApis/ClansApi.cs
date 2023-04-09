@@ -1074,9 +1074,9 @@ namespace CocApi.Rest.BaseApis
 
                         ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
                         {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
                             AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag);
                         }
                         else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)

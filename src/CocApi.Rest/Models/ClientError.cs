@@ -38,24 +38,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClientError(Object detail, string message, string reason, string type)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (reason == null)
-                throw new ArgumentNullException("reason is a required property for ClientError and cannot be null.");
-
-            if (message == null)
-                throw new ArgumentNullException("message is a required property for ClientError and cannot be null.");
-
-            if (type == null)
-                throw new ArgumentNullException("type is a required property for ClientError and cannot be null.");
-
-            if (detail == null)
-                throw new ArgumentNullException("detail is a required property for ClientError and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Detail = detail;
             Message = message;
             Reason = reason;
@@ -224,6 +206,24 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (reason == null)
+                throw new ArgumentNullException(nameof(reason), "Property is required for class ClientError.");
+
+            if (message == null)
+                throw new ArgumentNullException(nameof(message), "Property is required for class ClientError.");
+
+            if (type == null)
+                throw new ArgumentNullException(nameof(type), "Property is required for class ClientError.");
+
+            if (detail == null)
+                throw new ArgumentNullException(nameof(detail), "Property is required for class ClientError.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClientError(detail, message, reason, type);
         }

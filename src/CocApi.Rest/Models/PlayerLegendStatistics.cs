@@ -40,18 +40,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal PlayerLegendStatistics(LegendLeagueTournamentSeasonResult currentSeason, int legendTrophies, LegendLeagueTournamentSeasonResult? bestSeason = default, LegendLeagueTournamentSeasonResult? bestVersusSeason = default, LegendLeagueTournamentSeasonResult? previousSeason = default, LegendLeagueTournamentSeasonResult? previousVersusSeason = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (currentSeason == null)
-                throw new ArgumentNullException("currentSeason is a required property for PlayerLegendStatistics and cannot be null.");
-
-            if (legendTrophies == null)
-                throw new ArgumentNullException("legendTrophies is a required property for PlayerLegendStatistics and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             CurrentSeason = currentSeason;
             LegendTrophies = legendTrophies;
             BestSeason = bestSeason;
@@ -269,6 +257,18 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (currentSeason == null)
+                throw new ArgumentNullException(nameof(currentSeason), "Property is required for class PlayerLegendStatistics.");
+
+            if (legendTrophies == null)
+                throw new ArgumentNullException(nameof(legendTrophies), "Property is required for class PlayerLegendStatistics.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new PlayerLegendStatistics(currentSeason, legendTrophies, bestSeason, bestVersusSeason, previousSeason, previousVersusSeason);
         }

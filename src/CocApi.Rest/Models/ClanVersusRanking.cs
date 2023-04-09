@@ -36,18 +36,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanVersusRanking(int clanPoints, int clanVersusPoints)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (clanVersusPoints == null)
-                throw new ArgumentNullException("clanVersusPoints is a required property for ClanVersusRanking and cannot be null.");
-
-            if (clanPoints == null)
-                throw new ArgumentNullException("clanPoints is a required property for ClanVersusRanking and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             ClanPoints = clanPoints;
             ClanVersusPoints = clanVersusPoints;
         }
@@ -181,6 +169,18 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (clanVersusPoints == null)
+                throw new ArgumentNullException(nameof(clanVersusPoints), "Property is required for class ClanVersusRanking.");
+
+            if (clanPoints == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanVersusRanking.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanVersusRanking(clanPoints, clanVersusPoints);
         }

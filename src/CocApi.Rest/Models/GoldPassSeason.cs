@@ -36,18 +36,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal GoldPassSeason(string endTime, string startTime)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (startTime == null)
-                throw new ArgumentNullException("startTime is a required property for GoldPassSeason and cannot be null.");
-
-            if (endTime == null)
-                throw new ArgumentNullException("endTime is a required property for GoldPassSeason and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             EndTime = endTime;
             StartTime = startTime;
         }
@@ -179,6 +167,18 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (startTime == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is required for class GoldPassSeason.");
+
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class GoldPassSeason.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new GoldPassSeason(endTime, startTime);
         }

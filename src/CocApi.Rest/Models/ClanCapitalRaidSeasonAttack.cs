@@ -37,21 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanCapitalRaidSeasonAttack(ClanCapitalRaidSeasonAttacker attacker, int destructionPercent, int stars)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (attacker == null)
-                throw new ArgumentNullException("attacker is a required property for ClanCapitalRaidSeasonAttack and cannot be null.");
-
-            if (destructionPercent == null)
-                throw new ArgumentNullException("destructionPercent is a required property for ClanCapitalRaidSeasonAttack and cannot be null.");
-
-            if (stars == null)
-                throw new ArgumentNullException("stars is a required property for ClanCapitalRaidSeasonAttack and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Attacker = attacker;
             DestructionPercent = destructionPercent;
             Stars = stars;
@@ -204,6 +189,21 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (attacker == null)
+                throw new ArgumentNullException(nameof(attacker), "Property is required for class ClanCapitalRaidSeasonAttack.");
+
+            if (destructionPercent == null)
+                throw new ArgumentNullException(nameof(destructionPercent), "Property is required for class ClanCapitalRaidSeasonAttack.");
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanCapitalRaidSeasonAttack.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeasonAttack(attacker, destructionPercent, stars);
         }

@@ -540,6 +540,66 @@ namespace CocApi.Rest.Models
                 }
             }
 
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (warLeague == null)
+                throw new ArgumentNullException(nameof(warLeague), "Property is required for class Clan.");
+
+            if (memberList == null)
+                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
+
+            if (requiredTrophies == null)
+                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class Clan.");
+
+            if (clanVersusPoints == null)
+                throw new ArgumentNullException(nameof(clanVersusPoints), "Property is required for class Clan.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class Clan.");
+
+            if (isWarLogPublic == null)
+                throw new ArgumentNullException(nameof(isWarLogPublic), "Property is required for class Clan.");
+
+            if (clanLevel == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class Clan.");
+
+            if (warWinStreak == null)
+                throw new ArgumentNullException(nameof(warWinStreak), "Property is required for class Clan.");
+
+            if (warWins == null)
+                throw new ArgumentNullException(nameof(warWins), "Property is required for class Clan.");
+
+            if (clanPoints == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class Clan.");
+
+            if (labels == null)
+                throw new ArgumentNullException(nameof(labels), "Property is required for class Clan.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Clan.");
+
+            if (memberList == null)
+                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
+
+            if (description == null)
+                throw new ArgumentNullException(nameof(description), "Property is required for class Clan.");
+
+            if (clanCapital == null)
+                throw new ArgumentNullException(nameof(clanCapital), "Property is required for class Clan.");
+
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class Clan.");
+
+            if (capitalLeague == null)
+                throw new ArgumentNullException(nameof(capitalLeague), "Property is required for class Clan.");
+
+            if (isFamilyFriendly == null)
+                throw new ArgumentNullException(nameof(isFamilyFriendly), "Property is required for class Clan.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
             return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);
         }
 

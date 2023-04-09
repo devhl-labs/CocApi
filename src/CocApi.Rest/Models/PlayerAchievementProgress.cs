@@ -41,30 +41,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal PlayerAchievementProgress(string info, string name, int stars, int target, int value, VillageType village, string? completionInfo = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (stars == null)
-                throw new ArgumentNullException("stars is a required property for PlayerAchievementProgress and cannot be null.");
-
-            if (value == null)
-                throw new ArgumentNullException("value is a required property for PlayerAchievementProgress and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for PlayerAchievementProgress and cannot be null.");
-
-            if (target == null)
-                throw new ArgumentNullException("target is a required property for PlayerAchievementProgress and cannot be null.");
-
-            if (info == null)
-                throw new ArgumentNullException("info is a required property for PlayerAchievementProgress and cannot be null.");
-
-            if (village == null)
-                throw new ArgumentNullException("village is a required property for PlayerAchievementProgress and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Info = info;
             Name = name;
             Stars = stars;
@@ -292,6 +268,30 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class PlayerAchievementProgress.");
+
+            if (value == null)
+                throw new ArgumentNullException(nameof(value), "Property is required for class PlayerAchievementProgress.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerAchievementProgress.");
+
+            if (target == null)
+                throw new ArgumentNullException(nameof(target), "Property is required for class PlayerAchievementProgress.");
+
+            if (info == null)
+                throw new ArgumentNullException(nameof(info), "Property is required for class PlayerAchievementProgress.");
+
+            if (village == null)
+                throw new ArgumentNullException(nameof(village), "Property is required for class PlayerAchievementProgress.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new PlayerAchievementProgress(info, name, stars, target, value, village, completionInfo);
         }

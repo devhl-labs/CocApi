@@ -39,27 +39,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanCapitalRaidSeasonAttackLogEntry(int attackCount, ClanCapitalRaidSeasonClanInfo defender, int districtCount, List<ClanCapitalRaidSeasonDistrict> districts, int districtsDestroyed)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (defender == null)
-                throw new ArgumentNullException("defender is a required property for ClanCapitalRaidSeasonAttackLogEntry and cannot be null.");
-
-            if (attackCount == null)
-                throw new ArgumentNullException("attackCount is a required property for ClanCapitalRaidSeasonAttackLogEntry and cannot be null.");
-
-            if (districtCount == null)
-                throw new ArgumentNullException("districtCount is a required property for ClanCapitalRaidSeasonAttackLogEntry and cannot be null.");
-
-            if (districtsDestroyed == null)
-                throw new ArgumentNullException("districtsDestroyed is a required property for ClanCapitalRaidSeasonAttackLogEntry and cannot be null.");
-
-            if (districts == null)
-                throw new ArgumentNullException("districts is a required property for ClanCapitalRaidSeasonAttackLogEntry and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             AttackCount = attackCount;
             Defender = defender;
             DistrictCount = districtCount;
@@ -251,6 +230,27 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (defender == null)
+                throw new ArgumentNullException(nameof(defender), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+            if (attackCount == null)
+                throw new ArgumentNullException(nameof(attackCount), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+            if (districtCount == null)
+                throw new ArgumentNullException(nameof(districtCount), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+            if (districtsDestroyed == null)
+                throw new ArgumentNullException(nameof(districtsDestroyed), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+            if (districts == null)
+                throw new ArgumentNullException(nameof(districts), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeasonAttackLogEntry(attackCount, defender, districtCount, districts, districtsDestroyed);
         }

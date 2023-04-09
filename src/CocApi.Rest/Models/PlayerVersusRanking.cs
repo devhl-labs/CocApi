@@ -42,33 +42,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal PlayerVersusRanking(int expLevel, string name, int previousRank, int rank, string tag, int versusBattleWins, int versusTrophies, PlayerRankingClan? clan = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (versusBattleWins == null)
-                throw new ArgumentNullException("versusBattleWins is a required property for PlayerVersusRanking and cannot be null.");
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for PlayerVersusRanking and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for PlayerVersusRanking and cannot be null.");
-
-            if (expLevel == null)
-                throw new ArgumentNullException("expLevel is a required property for PlayerVersusRanking and cannot be null.");
-
-            if (rank == null)
-                throw new ArgumentNullException("rank is a required property for PlayerVersusRanking and cannot be null.");
-
-            if (previousRank == null)
-                throw new ArgumentNullException("previousRank is a required property for PlayerVersusRanking and cannot be null.");
-
-            if (versusTrophies == null)
-                throw new ArgumentNullException("versusTrophies is a required property for PlayerVersusRanking and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             ExpLevel = expLevel;
             Name = name;
             PreviousRank = previousRank;
@@ -316,6 +289,33 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (versusBattleWins == null)
+                throw new ArgumentNullException(nameof(versusBattleWins), "Property is required for class PlayerVersusRanking.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerVersusRanking.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerVersusRanking.");
+
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class PlayerVersusRanking.");
+
+            if (rank == null)
+                throw new ArgumentNullException(nameof(rank), "Property is required for class PlayerVersusRanking.");
+
+            if (previousRank == null)
+                throw new ArgumentNullException(nameof(previousRank), "Property is required for class PlayerVersusRanking.");
+
+            if (versusTrophies == null)
+                throw new ArgumentNullException(nameof(versusTrophies), "Property is required for class PlayerVersusRanking.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new PlayerVersusRanking(expLevel, name, previousRank, rank, tag, versusBattleWins, versusTrophies, clan);
         }

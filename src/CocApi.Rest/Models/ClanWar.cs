@@ -42,33 +42,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, WarState? state = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (clan == null)
-                throw new ArgumentNullException("clan is a required property for ClanWar and cannot be null.");
-
-            if (teamSize == null)
-                throw new ArgumentNullException("teamSize is a required property for ClanWar and cannot be null.");
-
-            if (attacksPerMember == null)
-                throw new ArgumentNullException("attacksPerMember is a required property for ClanWar and cannot be null.");
-
-            if (opponent == null)
-                throw new ArgumentNullException("opponent is a required property for ClanWar and cannot be null.");
-
-            if (startTime == null)
-                throw new ArgumentNullException("startTime is a required property for ClanWar and cannot be null.");
-
-            if (endTime == null)
-                throw new ArgumentNullException("endTime is a required property for ClanWar and cannot be null.");
-
-            if (preparationStartTime == null)
-                throw new ArgumentNullException("preparationStartTime is a required property for ClanWar and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             AttacksPerMember = attacksPerMember;
             Clan = clan;
             EndTime = endTime;
@@ -334,6 +307,33 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (clan == null)
+                throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWar.");
+
+            if (teamSize == null)
+                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWar.");
+
+            if (attacksPerMember == null)
+                throw new ArgumentNullException(nameof(attacksPerMember), "Property is required for class ClanWar.");
+
+            if (opponent == null)
+                throw new ArgumentNullException(nameof(opponent), "Property is required for class ClanWar.");
+
+            if (startTime == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is required for class ClanWar.");
+
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWar.");
+
+            if (preparationStartTime == null)
+                throw new ArgumentNullException(nameof(preparationStartTime), "Property is required for class ClanWar.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanWar(attacksPerMember, clan, endTime, opponent, preparationStartTime, startTime, teamSize, state);
         }

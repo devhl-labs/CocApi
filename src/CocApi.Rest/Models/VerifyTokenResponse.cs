@@ -37,21 +37,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal VerifyTokenResponse(string status, string tag, string token)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for VerifyTokenResponse and cannot be null.");
-
-            if (token == null)
-                throw new ArgumentNullException("token is a required property for VerifyTokenResponse and cannot be null.");
-
-            if (status == null)
-                throw new ArgumentNullException("status is a required property for VerifyTokenResponse and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             Status = status;
             Tag = tag;
             Token = token;
@@ -201,6 +186,21 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class VerifyTokenResponse.");
+
+            if (token == null)
+                throw new ArgumentNullException(nameof(token), "Property is required for class VerifyTokenResponse.");
+
+            if (status == null)
+                throw new ArgumentNullException(nameof(status), "Property is required for class VerifyTokenResponse.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new VerifyTokenResponse(status, tag, token);
         }

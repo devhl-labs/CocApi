@@ -23,27 +23,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, List<ClanWarAttack>? attacks = default, ClanWarAttack? bestOpponentAttack = default)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for ClanWarMember and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanWarMember and cannot be null.");
-
-            if (mapPosition == null)
-                throw new ArgumentNullException("mapPosition is a required property for ClanWarMember and cannot be null.");
-
-            if (townhallLevel == null)
-                throw new ArgumentNullException("townhallLevel is a required property for ClanWarMember and cannot be null.");
-
-            if (opponentAttacks == null)
-                throw new ArgumentNullException("opponentAttacks is a required property for ClanWarMember and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#Initialize
             Name = name;
             OpponentAttacks = opponentAttacks;

@@ -363,9 +363,6 @@ namespace CocApi.Rest.BaseApis
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
                             AfterCreate(apiResponseLocalVar, createTokenRequest);
                         }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
-                                tokenBaseLocalVar.BeginRateLimit();
 
                         return apiResponseLocalVar;
                     }
@@ -499,9 +496,6 @@ namespace CocApi.Rest.BaseApis
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
                             AfterKeys(apiResponseLocalVar);
                         }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
-                                tokenBaseLocalVar.BeginRateLimit();
 
                         return apiResponseLocalVar;
                     }
@@ -820,9 +814,6 @@ namespace CocApi.Rest.BaseApis
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
                             AfterRevoke(apiResponseLocalVar, key);
                         }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
-                                tokenBaseLocalVar.BeginRateLimit();
 
                         return apiResponseLocalVar;
                     }

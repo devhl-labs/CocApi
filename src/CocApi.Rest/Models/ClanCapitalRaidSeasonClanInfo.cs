@@ -38,24 +38,6 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanCapitalRaidSeasonClanInfo(BadgeUrls badgeUrls, int level, string name, string tag)
         {
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (tag == null)
-                throw new ArgumentNullException("tag is a required property for ClanCapitalRaidSeasonClanInfo and cannot be null.");
-
-            if (name == null)
-                throw new ArgumentNullException("name is a required property for ClanCapitalRaidSeasonClanInfo and cannot be null.");
-
-            if (level == null)
-                throw new ArgumentNullException("level is a required property for ClanCapitalRaidSeasonClanInfo and cannot be null.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException("badgeUrls is a required property for ClanCapitalRaidSeasonClanInfo and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             BadgeUrls = badgeUrls;
             Level = level;
             Name = name;
@@ -225,6 +207,24 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
+
+#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+
+            if (level == null)
+                throw new ArgumentNullException(nameof(level), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+
+#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeasonClanInfo(badgeUrls, level, name, tag);
         }
