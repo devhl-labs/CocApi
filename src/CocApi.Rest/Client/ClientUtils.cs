@@ -12,9 +12,12 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using CocApi.Rest.Models;
 
 namespace CocApi.Rest.Client
 {
@@ -84,7 +87,7 @@ namespace CocApi.Rest.Client
         /// <returns>Filename</returns>
         public static string SanitizeFilename(string filename)
         {
-            Match match = Regex.Match(filename, @".*[/\\](.*)$");
+            Match match = Regex.Match(filename, ".*[/\\](.*)$");
             return match.Success ? match.Groups[1].Value : filename;
         }
 
@@ -111,9 +114,38 @@ namespace CocApi.Rest.Client
                 // For example: 2009-06-15T13:45:30.0000000
                 return dateTimeOffset.ToString(format);
             if (obj is bool boolean)
-                return boolean ? "true" : "false";
-            if (obj is System.Collections.ICollection collection)
-                return string.Join(",", collection.Cast<object>());
+                return boolean
+                    ? "true"
+                    : "false";
+            if (obj is ClanCapitalRaidSeason.StateEnum clanCapitalRaidSeasonStateEnum)
+                return ClanCapitalRaidSeason.StateEnumToJsonValue(clanCapitalRaidSeasonStateEnum);
+            if (obj is GroupState groupState)
+                return GroupStateConverter.ToJsonValue(groupState);
+            if (obj is PlayerHouseElement.TypeEnum playerHouseElementTypeEnum)
+                return PlayerHouseElement.TypeEnumToJsonValue(playerHouseElementTypeEnum);
+            if (obj is RecruitingType recruitingType)
+                return RecruitingTypeConverter.ToJsonValue(recruitingType);
+            if (obj is Result result)
+                return ResultConverter.ToJsonValue(result);
+            if (obj is Role role)
+                return RoleConverter.ToJsonValue(role);
+            if (obj is VillageType villageType)
+                return VillageTypeConverter.ToJsonValue(villageType);
+            if (obj is WarFrequency warFrequency)
+                return WarFrequencyConverter.ToJsonValue(warFrequency);
+            if (obj is WarPreference warPreference)
+                return WarPreferenceConverter.ToJsonValue(warPreference);
+            if (obj is WarState warState)
+                return WarStateConverter.ToJsonValue(warState);
+            if (obj is WarType warType)
+                return WarTypeConverter.ToJsonValue(warType);
+            if (obj is ICollection collection)
+            {
+                List<string?> entries = new List<string?>();
+                foreach (var entry in collection)
+                    entries.Add(ParameterToString(entry));
+                return string.Join(",", entries);
+            }
 
             return Convert.ToString(obj, System.Globalization.CultureInfo.InvariantCulture);
         }

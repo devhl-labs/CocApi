@@ -28,3 +28,4 @@ docs/scripts/git_push.sh
 docs/scripts/git_push.ps1
 README.md
 CocApi.Rest.Generated.sln
+api/openapi.yaml

@@ -13,7 +13,6 @@ using CocApi.Rest.Apis;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
 using CocApi.Cache.Services.Options;
-using System.Text.RegularExpressions;
 
 namespace CocApi.Test;
 
