@@ -93,10 +93,13 @@ namespace CocApi.Rest.Models
         /// Initializes a new instance of the <see cref="Clan" /> class.
         /// </summary>
         /// <param name="badgeUrls">badgeUrls</param>
+        /// <param name="capitalLeague">capitalLeague</param>
+        /// <param name="clanCapital">clanCapital</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="clanPoints">clanPoints</param>
         /// <param name="clanVersusPoints">clanVersusPoints</param>
         /// <param name="description">description</param>
+        /// <param name="isFamilyFriendly">isFamilyFriendly</param>
         /// <param name="isWarLogPublic">isWarLogPublic</param>
         /// <param name="labels">labels</param>
         /// <param name="members">members</param>
@@ -116,6 +119,7 @@ namespace CocApi.Rest.Models
         public Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int? warLosses, int? warTies, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default)
         {
             BadgeUrls = badgeUrls;
+            CapitalLeague = capitalLeague;
             ClanCapital = clanCapital;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
