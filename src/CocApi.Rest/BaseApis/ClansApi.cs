@@ -1264,7 +1264,7 @@ namespace CocApi.Rest.BaseApis
 
                         ApiResponse<ClanWar?> apiResponseLocalVar = new ApiResponse<ClanWar?>(httpResponseMessageLocalVar, responseContentLocalVar);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
+                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
                         {
                             apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
                             AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);

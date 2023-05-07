@@ -118,7 +118,7 @@ public sealed class CwlWarService : ServiceBase
             ClanWarUpdated != null)
             await ClanWarUpdated
                 .Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken))
-                .ConfigureAwait(false); 
+                .ConfigureAwait(false);
 
         cachedWar.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
 

@@ -21,7 +21,7 @@ public class CachedWar : CachedItem<ClanWar>
 
             TimeSpan timeToLive = await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
-            if (!apiResponse.IsSuccessStatusCode || apiResponse.Content?.State == Rest.Models.WarState.NotInWar)
+            if (!apiResponse.IsSuccessStatusCode || apiResponse.Content == null || apiResponse.Content.State == Rest.Models.WarState.NotInWar)
                 return new CachedWar(warTag, timeToLive);
 
             CachedWar result = new(apiResponse, timeToLive, warTag, season)
@@ -150,7 +150,7 @@ public class CachedWar : CachedItem<ClanWar>
         UpdateFrom(cachedClanWar);
     }
 
-    internal CachedWar(ApiResponse<ClanWar?> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
+    internal CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
     {
         base.UpdateFrom(apiResponse, localExpiration);
 

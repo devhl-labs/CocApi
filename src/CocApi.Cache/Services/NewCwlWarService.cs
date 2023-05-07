@@ -220,17 +220,9 @@ public sealed class NewCwlWarService : ServiceBase
     {
         try
         {
-            ApiResponse<Rest.Models.ClanWar?>? apiResponse = null;
+            ApiResponse<Rest.Models.ClanWar?> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, realtime, cancellationToken).ConfigureAwait(false);
 
-            try
-            {
-                apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, realtime, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            if (cancellationToken.IsCancellationRequested || apiResponse?.Content == null)
+            if (cancellationToken.IsCancellationRequested || !apiResponse.IsSuccessStatusCode || apiResponse.Content == null)
                 return;
 
             SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, kvp.Key, apiResponse);
@@ -261,9 +253,9 @@ public sealed class NewCwlWarService : ServiceBase
     }
 
     private async Task<CachedWar> NewWarFoundAsync(
-        Rest.Models.Clan? clan, 
+        Rest.Models.Clan? clan,
         Rest.Models.Clan? opponent,
-        Rest.Models.ClanWarLeagueGroup group, 
+        Rest.Models.ClanWarLeagueGroup group,
         ApiResponse<Rest.Models.ClanWar> war,
         CancellationToken cancellationToken)
     {
