@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo> <!-- setting GenerateAssemblyInfo to false causes this bug https://github.com/dotnet/project-system/issues/3934 -->
@@ -12,7 +12,7 @@
     <Description>A wrapper for the Clash of Clans API</Description>
     <Copyright>No Copyright</Copyright>
     <RootNamespace>CocApi.Rest</RootNamespace>
-    <Version>2.0.0</Version>
+    <Version>2.0.2</Version>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.Rest.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/devhl-labs/CocApi.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

@@ -1,4 +1,4 @@
-$packageVersion = "2.0.0"
+$packageVersion = "2.0.2"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -366,6 +366,21 @@ $groupDeserializeReplacement = @"
 "@
 
 
+$leagueWarDeserialization = @"
+                        if (apiResponseLocalVar.IsSuccessStatusCode)
+                        {
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
+"@
+
+$leagueWarDeserializationReplacement = @"
+                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
+                        {
+                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
+                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
+"@
+
+
 $warClanNullChecks = @"
             if (destructionPercentage == null)
                 throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
@@ -580,6 +595,7 @@ foreach ($file in $allCodeFiles)
 
     if ($file.name -eq "ClansApi.cs"){
         $content = $content.Replace($groupDeserialize, $groupDeserializeReplacement)
+        $content = $content.Replace($leagueWarDeserialization, $leagueWarDeserializationReplacement)
     }
 
     if ($file.name -eq "ClanWarLeagueGroup.cs"){
