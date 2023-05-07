@@ -108,7 +108,7 @@ Iterates the Players cache table searching for players with Download set to true
 Iterates over the Wars cache table. Queries the CurrentWar cache table for both clans in the war. Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
 
 ## Migrating from version 1
-Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. A future release of CocApi.Cache will remove this method and all traces of SQLite.
+Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. You must use verson 2.0.0 to migrate. Later versions have removed all traces of SQLite.
 
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).
