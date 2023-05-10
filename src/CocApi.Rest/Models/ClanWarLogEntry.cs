@@ -46,7 +46,10 @@ namespace CocApi.Rest.Models
             Opponent = opponent;
             TeamSize = teamSize;
             Result = result;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Result

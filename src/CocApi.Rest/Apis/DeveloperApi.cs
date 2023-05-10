@@ -56,7 +56,7 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="apiResponse"></param>
         /// <param name="loginRequest"></param>
-        protected override void AfterLogin(ApiResponse<LoginResponse?> apiResponse, LoginCredentials loginRequest)
+        protected override void AfterLogin(ApiResponse<LoginResponse> apiResponse, LoginCredentials loginRequest)
         {
             base.AfterLogin(apiResponse, loginRequest);
         }

@@ -38,28 +38,7 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;GoldPassSeason?&gt;&gt;</returns>
-        Task<ApiResponse<GoldPassSeason?>> FetchCurrentGoldPassSeasonResponseAsync(System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get information about the current gold pass season.
-        /// </summary>
-        /// <remarks>
-        /// Get information about the current gold pass season.
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;GoldPassSeason&gt;</returns>
-        Task<GoldPassSeason> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get information about the current gold pass season.
-        /// </summary>
-        /// <remarks>
-        /// Get information about the current gold pass season.
-        /// </remarks>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;GoldPassSeason?&gt;</returns>
-        Task<GoldPassSeason?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -91,7 +70,7 @@ namespace CocApi.Rest.BaseApis
         /// Initializes a new instance of the <see cref="GoldpassApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public GoldpassApi(ILogger<GoldpassApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, 
+        public GoldpassApi(ILogger<GoldpassApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
@@ -110,44 +89,6 @@ namespace CocApi.Rest.BaseApis
         }
 
         /// <summary>
-        /// Get information about the current gold pass season. Get information about the current gold pass season.
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="GoldPassSeason"/>&gt;</returns>
-        public async Task<GoldPassSeason> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<GoldPassSeason?> apiResponseLocalVar = await FetchCurrentGoldPassSeasonResponseAsync(cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Get information about the current gold pass season. Get information about the current gold pass season.
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="GoldPassSeason"/>&gt;</returns>
-        public async Task<GoldPassSeason?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<GoldPassSeason?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchCurrentGoldPassSeasonResponseAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
-        }
-
-        /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <returns></returns>
@@ -160,7 +101,7 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
-        protected virtual void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason?> apiResponseLocalVar)
+        protected virtual void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason> apiResponseLocalVar)
         {
         }
 
@@ -181,7 +122,7 @@ namespace CocApi.Rest.BaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="GoldPassSeason"/></returns>
-        public async Task<ApiResponse<GoldPassSeason?>> FetchCurrentGoldPassSeasonResponseAsync(System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -225,14 +166,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<GoldPassSeason?> apiResponseLocalVar = new ApiResponse<GoldPassSeason?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<GoldPassSeason> apiResponseLocalVar = new ApiResponse<GoldPassSeason>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<GoldPassSeason>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchCurrentGoldPassSeason(apiResponseLocalVar);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchCurrentGoldPassSeason(apiResponseLocalVar);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 

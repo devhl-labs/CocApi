@@ -38,7 +38,10 @@ namespace CocApi.Rest.Models
         {
             Id = id;
             Type = type;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Defines Type

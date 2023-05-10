@@ -50,7 +50,10 @@ namespace CocApi.Rest.Models
             Stars = stars;
             TotalLooted = totalLooted;
             Attacks = attacks;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets AttackCount

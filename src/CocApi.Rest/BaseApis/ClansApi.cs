@@ -42,36 +42,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanCapitalRaidSeasons?&gt;&gt;</returns>
-        Task<ApiResponse<ClanCapitalRaidSeasons?>> FetchCapitalRaidSeasonsResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve clan&#39;s capital raid seasons
-        /// </summary>
-        /// <remarks>
-        /// Retrieve clan&#39;s capital raid seasons
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanCapitalRaidSeasons&gt;</returns>
-        Task<ClanCapitalRaidSeasons> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve clan&#39;s capital raid seasons
-        /// </summary>
-        /// <remarks>
-        /// Retrieve clan&#39;s capital raid seasons
-        /// </remarks>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanCapitalRaidSeasons?&gt;</returns>
-        Task<ClanCapitalRaidSeasons?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Get clan information
@@ -83,30 +54,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="clanTag">Tag of the clan.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;Clan?&gt;&gt;</returns>
-        Task<ApiResponse<Clan?>> FetchClanResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get clan information
-        /// </summary>
-        /// <remarks>
-        /// Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;Clan&gt;</returns>
-        Task<Clan> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get clan information
-        /// </summary>
-        /// <remarks>
-        /// Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </remarks>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;Clan?&gt;</returns>
-        Task<Clan?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<Clan>> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// List clan members
@@ -121,36 +69,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;List&lt;ClanMember&gt;?&gt;&gt;</returns>
-        Task<ApiResponse<List<ClanMember>?>> FetchClanMembersResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// List clan members
-        /// </summary>
-        /// <remarks>
-        /// List clan members.
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;List&lt;ClanMember&gt;&gt;</returns>
-        Task<List<ClanMember>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// List clan members
-        /// </summary>
-        /// <remarks>
-        /// List clan members.
-        /// </remarks>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;List&lt;ClanMember&gt;?&gt;</returns>
-        Task<List<ClanMember>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -163,32 +82,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLeagueGroup?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war league group
-        /// </summary>
-        /// <remarks>
-        /// Retrieve information about clan&#39;s current clan war league group
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWarLeagueGroup&gt;</returns>
-        Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war league group
-        /// </summary>
-        /// <remarks>
-        /// Retrieve information about clan&#39;s current clan war league group
-        /// </remarks>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWarLeagueGroup?&gt;</returns>
-        Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -201,32 +95,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve information about individual clan war league war
-        /// </summary>
-        /// <remarks>
-        /// Retrieve information about individual clan war league war
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="warTag">Tag of the war.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWar&gt;</returns>
-        Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve information about individual clan war league war
-        /// </summary>
-        /// <remarks>
-        /// Retrieve information about individual clan war league war
-        /// </remarks>
-        /// <param name="warTag">Tag of the war.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWar?&gt;</returns>
-        Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log
@@ -241,36 +110,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLog?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLog?>> FetchClanWarLogResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve clan&#39;s clan war log
-        /// </summary>
-        /// <remarks>
-        /// Retrieve clan&#39;s clan war log
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWarLog&gt;</returns>
-        Task<ClanWarLog> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve clan&#39;s clan war log
-        /// </summary>
-        /// <remarks>
-        /// Retrieve clan&#39;s clan war log
-        /// </remarks>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWarLog?&gt;</returns>
-        Task<ClanWarLog?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -283,32 +123,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar?&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war
-        /// </summary>
-        /// <remarks>
-        /// Retrieve information about clan&#39;s current clan war
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWar&gt;</returns>
-        Task<ClanWar> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war
-        /// </summary>
-        /// <remarks>
-        /// Retrieve information about clan&#39;s current clan war
-        /// </remarks>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanWar?&gt;</returns>
-        Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Search clans
@@ -330,50 +145,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanList?&gt;&gt;</returns>
-        Task<ApiResponse<ClanList?>> SearchClansResponseAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Search clans
-        /// </summary>
-        /// <remarks>
-        /// Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional)</param>
-        /// <param name="minMembers">Filter by minimum number of clan members (optional)</param>
-        /// <param name="maxMembers">Filter by maximum number of clan members (optional)</param>
-        /// <param name="minClanPoints">Filter by minimum amount of clan points. (optional)</param>
-        /// <param name="minClanLevel">Filter by minimum clan level. (optional)</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="name">Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional)</param>
-        /// <param name="warFrequency">Filter by clan war frequency (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanList&gt;</returns>
-        Task<ClanList> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Search clans
-        /// </summary>
-        /// <remarks>
-        /// Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
-        /// </remarks>
-        /// <param name="locationId">Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional)</param>
-        /// <param name="minMembers">Filter by minimum number of clan members (optional)</param>
-        /// <param name="maxMembers">Filter by maximum number of clan members (optional)</param>
-        /// <param name="minClanPoints">Filter by minimum amount of clan points. (optional)</param>
-        /// <param name="minClanLevel">Filter by minimum clan level. (optional)</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="name">Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional)</param>
-        /// <param name="warFrequency">Filter by clan war frequency (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;ClanList?&gt;</returns>
-        Task<ClanList?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -405,7 +177,7 @@ namespace CocApi.Rest.BaseApis
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public ClansApi(ILogger<ClansApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, 
+        public ClansApi(ILogger<ClansApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
@@ -421,52 +193,6 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
-        /// <summary>
-        /// Retrieve clan&#39;s capital raid seasons Retrieve clan&#39;s capital raid seasons
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanCapitalRaidSeasons"/>&gt;</returns>
-        public async Task<ClanCapitalRaidSeasons> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanCapitalRaidSeasons?> apiResponseLocalVar = await FetchCapitalRaidSeasonsResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Retrieve clan&#39;s capital raid seasons Retrieve clan&#39;s capital raid seasons
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanCapitalRaidSeasons"/>&gt;</returns>
-        public async Task<ClanCapitalRaidSeasons?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanCapitalRaidSeasons?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchCapitalRaidSeasonsResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -499,7 +225,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons?> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        protected virtual void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
         }
 
@@ -528,7 +254,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRaidSeasons"/></returns>
-        public async Task<ApiResponse<ClanCapitalRaidSeasons?>> FetchCapitalRaidSeasonsResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -588,14 +314,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanCapitalRaidSeasons?> apiResponseLocalVar = new ApiResponse<ClanCapitalRaidSeasons?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar = new ApiResponse<ClanCapitalRaidSeasons>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanCapitalRaidSeasons>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchCapitalRaidSeasons(apiResponseLocalVar, clanTag, limit, after, before);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchCapitalRaidSeasons(apiResponseLocalVar, clanTag, limit, after, before);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -608,46 +331,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchCapitalRaidSeasons(e, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="Clan"/>&gt;</returns>
-        public async Task<Clan> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<Clan?> apiResponseLocalVar = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="Clan"/>&gt;</returns>
-        public async Task<Clan?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<Clan?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchClanResponseAsync(clanTag, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -674,7 +357,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchClan(ApiResponse<Clan?> apiResponseLocalVar, string clanTag)
+        protected virtual void AfterFetchClan(ApiResponse<Clan> apiResponseLocalVar, string clanTag)
         {
         }
 
@@ -697,7 +380,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="clanTag">Tag of the clan.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Clan"/></returns>
-        public async Task<ApiResponse<Clan?>> FetchClanResponseAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<Clan>> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -741,14 +424,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<Clan?> apiResponseLocalVar = new ApiResponse<Clan?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<Clan> apiResponseLocalVar = new ApiResponse<Clan>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<Clan>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClan(apiResponseLocalVar, clanTag);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchClan(apiResponseLocalVar, clanTag);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -761,52 +441,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchClan(e, "/clans/{clanTag}", uriBuilderLocalVar.Path, clanTag);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// List clan members List clan members.
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="List&lt;ClanMember&gt;"/>&gt;</returns>
-        public async Task<List<ClanMember>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<List<ClanMember>?> apiResponseLocalVar = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// List clan members List clan members.
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="List&lt;ClanMember&gt;"/>&gt;</returns>
-        public async Task<List<ClanMember>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<List<ClanMember>?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchClanMembersResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -839,7 +473,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanMembers(ApiResponse<List<ClanMember>?> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanMembers(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
         }
 
@@ -868,7 +502,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
-        public async Task<ApiResponse<List<ClanMember>?>> FetchClanMembersResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -928,14 +562,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<List<ClanMember>?> apiResponseLocalVar = new ApiResponse<List<ClanMember>?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<List<ClanMember>> apiResponseLocalVar = new ApiResponse<List<ClanMember>>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<List<ClanMember>>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanMembers(apiResponseLocalVar, clanTag, limit, after, before);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchClanMembers(apiResponseLocalVar, clanTag, limit, after, before);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -948,48 +579,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchClanMembers(e, "/clans/{clanTag}/members", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLeagueGroup"/>&gt;</returns>
-        public async Task<ClanWarLeagueGroup> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLeagueGroup"/>&gt;</returns>
-        public async Task<ClanWarLeagueGroup?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWarLeagueGroup?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchClanWarLeagueGroupResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -1018,7 +607,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar, string clanTag, bool? realtime)
+        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, bool? realtime)
         {
         }
 
@@ -1043,7 +632,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
-        public async Task<ApiResponse<ClanWarLeagueGroup?>> FetchClanWarLeagueGroupResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1095,14 +684,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWarLeagueGroup?> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag, realtime);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag, realtime);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -1115,48 +701,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag, realtime);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="warTag">Tag of the war.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="warTag">Tag of the war.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWar?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchClanWarLeagueWarResponseAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -1185,7 +729,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar?> apiResponseLocalVar, string warTag, bool? realtime)
+        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, bool? realtime)
         {
         }
 
@@ -1210,7 +754,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar?>> FetchClanWarLeagueWarResponseAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1262,14 +806,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWar?> apiResponseLocalVar = new ApiResponse<ClanWar?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -1282,52 +823,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag, realtime);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLog"/>&gt;</returns>
-        public async Task<ClanWarLog> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWarLog?> apiResponseLocalVar = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWarLog"/>&gt;</returns>
-        public async Task<ClanWarLog?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWarLog?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchClanWarLogResponseAsync(clanTag, limit, after, before, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -1360,7 +855,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanWarLog(ApiResponse<ClanWarLog?> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        protected virtual void AfterFetchClanWarLog(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
         }
 
@@ -1389,7 +884,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
-        public async Task<ApiResponse<ClanWarLog?>> FetchClanWarLogResponseAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1449,14 +944,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWarLog?> apiResponseLocalVar = new ApiResponse<ClanWarLog?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<ClanWarLog> apiResponseLocalVar = new ApiResponse<ClanWarLog>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLog>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLog(apiResponseLocalVar, clanTag, limit, after, before);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchClanWarLog(apiResponseLocalVar, clanTag, limit, after, before);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -1469,48 +961,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchClanWarLog(e, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWar?> apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="clanTag">Tag of the clan.</param>
-        /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanWar"/>&gt;</returns>
-        public async Task<ClanWar?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanWar?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchCurrentWarResponseAsync(clanTag, realtime, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -1539,7 +989,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar?> apiResponseLocalVar, string clanTag, bool? realtime)
+        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, bool? realtime)
         {
         }
 
@@ -1564,7 +1014,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar?>> FetchCurrentWarResponseAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1616,14 +1066,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanWar?> apiResponseLocalVar = new ApiResponse<ClanWar?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchCurrentWar(apiResponseLocalVar, clanTag, realtime);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchCurrentWar(apiResponseLocalVar, clanTag, realtime);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -1636,66 +1083,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag, realtime);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional)</param>
-        /// <param name="minMembers">Filter by minimum number of clan members (optional)</param>
-        /// <param name="maxMembers">Filter by maximum number of clan members (optional)</param>
-        /// <param name="minClanPoints">Filter by minimum amount of clan points. (optional)</param>
-        /// <param name="minClanLevel">Filter by minimum clan level. (optional)</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="name">Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional)</param>
-        /// <param name="warFrequency">Filter by clan war frequency (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanList"/>&gt;</returns>
-        public async Task<ClanList> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanList?> apiResponseLocalVar = await SearchClansResponseAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional)</param>
-        /// <param name="minMembers">Filter by minimum number of clan members (optional)</param>
-        /// <param name="maxMembers">Filter by maximum number of clan members (optional)</param>
-        /// <param name="minClanPoints">Filter by minimum amount of clan points. (optional)</param>
-        /// <param name="minClanLevel">Filter by minimum clan level. (optional)</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="name">Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional)</param>
-        /// <param name="warFrequency">Filter by clan war frequency (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ClanList"/>&gt;</returns>
-        public async Task<ClanList?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<ClanList?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await SearchClansResponseAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -1733,7 +1120,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        protected virtual void AfterSearchClans(ApiResponse<ClanList?> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        protected virtual void AfterSearchClans(ApiResponse<ClanList> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
         {
         }
 
@@ -1776,7 +1163,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
-        public async Task<ApiResponse<ClanList?>> SearchClansResponseAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1867,14 +1254,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<ClanList?> apiResponseLocalVar = new ApiResponse<ClanList?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<ClanList> apiResponseLocalVar = new ApiResponse<ClanList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterSearchClans(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterSearchClans(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 

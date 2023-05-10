@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             SessionExpiresInSeconds = sessionExpiresInSeconds;
             Status = status;
             Key = key;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets SessionExpiresInSeconds

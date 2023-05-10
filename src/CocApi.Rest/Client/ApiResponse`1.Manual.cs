@@ -1,6 +1,8 @@
+using CocApi.Rest.Models;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Net.Http;
 
 namespace CocApi.Rest.Client
 {
@@ -31,6 +33,38 @@ namespace CocApi.Rest.Client
 
                 return Downloaded.AddSeconds(maxAge);
             }
+        }
+
+        partial void OnCreated(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage)
+        {
+            if (ResponseType == typeof(ClanWar))
+            {
+                if (ToModel() as object is not ClanWar clanWar)
+                    return;
+
+                clanWar.ServerExpiration = ServerExpiration;
+                string? url = httpRequestMessage.RequestUri?.LocalPath;
+                if (url?.Contains("clanwarleagues/wars/") == true)
+                {
+                    string[] parts = url.Split("/");
+                    clanWar.WarTag = parts.Last();
+                }
+
+                RawContent = System.Text.Json.JsonSerializer.Serialize(clanWar, _jsonSerializerOptions);
+            }
+        }
+
+        /// <summary>
+        /// Deserializes the server's response
+        /// </summary>
+        public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
+        {
+            if (ResponseType == typeof(ClanWar) && RawContent.Contains("notInWar"))
+                return default;
+
+            return IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, options ?? _jsonSerializerOptions)
+                : default;
         }
     }
 }

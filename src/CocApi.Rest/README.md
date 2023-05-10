@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.0.2',
+    'packageVersion=2.1.0',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -61,7 +61,8 @@ namespace YourProject
         {
             var host = CreateHostBuilder(args).Build();
             var api = host.Services.GetRequiredService<IClansApi>();
-            ApiResponse<ClanCapitalRaidSeasons?> foo = await api.GetCapitalRaidSeasonsWithHttpInfoAsync("todo");
+            ApiResponse<ClanCapitalRaidSeasons> response = await api.GetCapitalRaidSeasonsAsync("todo");
+            ClanCapitalRaidSeasons model = response.ToModel();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
@@ -140,8 +141,8 @@ Authentication schemes defined for the API:
 - **Location**: 
 
 ## Build
-- SDK version: 2.0.2
-- Build date: 2023-05-07T18:04:31.531776-04:00[America/New_York]
+- SDK version: 2.1.0
+- Build date: 2023-05-09T21:12:27.283026100-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpNetCoreClientCodegen
 
 ## Api Information
@@ -189,7 +190,7 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.0.2
+- packageVersion: 2.1.0
 - releaseNote: Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml.
 - returnICollection: false
 - sortParamsByRequiredFlag: 

@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             Code = code;
             Message = message;
             Detail = detail;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Code

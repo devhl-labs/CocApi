@@ -46,7 +46,10 @@ namespace CocApi.Rest.Models
             Duration = duration;
             Order = order;
             Stars = stars;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets AttackerTag

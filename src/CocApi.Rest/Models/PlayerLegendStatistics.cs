@@ -46,7 +46,10 @@ namespace CocApi.Rest.Models
             BestVersusSeason = bestVersusSeason;
             PreviousSeason = previousSeason;
             PreviousVersusSeason = previousVersusSeason;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets CurrentSeason

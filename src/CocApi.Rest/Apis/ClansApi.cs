@@ -72,23 +72,13 @@ namespace CocApi.Rest.Apis
             return base.OnFetchCurrentWar(clanTag, realtime);
         }
 
-        protected override void AfterFetchCurrentWar(ApiResponse<ClanWar?> apiResponse, string clanTag, bool? realtime)
+        protected override void AfterFetchCurrentWar(ApiResponse<ClanWar> apiResponse, string clanTag, bool? realtime)
         {
-            if (apiResponse.Content != null)
-            {
-                apiResponse.Content.ServerExpiration = apiResponse.ServerExpiration;
-                apiResponse.Content.WarTag = null;
-            }
             base.AfterFetchCurrentWar(apiResponse, clanTag, realtime);
         }
 
-        protected override void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar?> apiResponse, string warTag, bool? realtime)
+        protected override void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar> apiResponse, string warTag, bool? realtime)
         {
-            if (apiResponse.Content != null)
-            {
-                apiResponse.Content.ServerExpiration = apiResponse.ServerExpiration;
-                apiResponse.Content.WarTag = warTag;
-            }
             base.AfterFetchClanWarLeagueWar(apiResponse, warTag, realtime);
         }
 

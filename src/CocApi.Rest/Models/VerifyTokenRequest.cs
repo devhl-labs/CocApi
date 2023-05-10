@@ -36,7 +36,10 @@ namespace CocApi.Rest.Models
         public VerifyTokenRequest(string token)
         {
             Token = token;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Token

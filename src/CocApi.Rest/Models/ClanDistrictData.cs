@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             DistrictHallLevel = districtHallLevel;
             Id = id;
             Name = name;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets DistrictHallLevel

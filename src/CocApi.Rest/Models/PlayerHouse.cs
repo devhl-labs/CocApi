@@ -36,7 +36,10 @@ namespace CocApi.Rest.Models
         internal PlayerHouse(List<PlayerHouseElement> elements)
         {
             Elements = elements;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Elements

@@ -133,7 +133,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
         if (result == null)
-            result = await PlayersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);            
+            result = (await PlayersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false)).ToModel();
 
         return result;
     }
@@ -143,7 +143,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
         if (result == null)
-            result = await PlayersApi.FetchPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false);
+            result = (await PlayersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false)).ToModel();
 
         return result;
     }

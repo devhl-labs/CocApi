@@ -28,6 +28,8 @@ namespace CocApi.Rest.Models
     /// </summary>
     public partial class ClanWarMember : IEquatable<ClanWarMember?>
     {
+        partial void OnCreated();
+
         /// <summary>
         /// Gets or Sets Name
         /// </summary>

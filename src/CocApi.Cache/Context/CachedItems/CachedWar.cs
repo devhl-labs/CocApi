@@ -17,11 +17,11 @@ public class CachedWar : CachedItem<ClanWar>
     {
         try
         {
-            ApiResponse<ClanWar?> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
+            ApiResponse<ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
 
             TimeSpan timeToLive = await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
-            if (!apiResponse.IsSuccessStatusCode || apiResponse.Content == null || apiResponse.Content.State == Rest.Models.WarState.NotInWar)
+            if (!apiResponse.IsSuccessStatusCode || !apiResponse.TryToModel(out ClanWar? model) || model.State == Rest.Models.WarState.NotInWar)
                 return new CachedWar(warTag, timeToLive);
 
             CachedWar result = new(apiResponse, timeToLive, warTag, season)
@@ -154,17 +154,19 @@ public class CachedWar : CachedItem<ClanWar>
     {
         base.UpdateFrom(apiResponse, localExpiration);
 
-        ClanTag = apiResponse.Content.Clans.First().Value.Tag;
+        ClanWar model = apiResponse.ToModel();
 
-        OpponentTag = apiResponse.Content.Clans.Skip(1).First().Value.Tag;
+        ClanTag = model.Clans.First().Value.Tag;
 
-        State = apiResponse.Content.State;
+        OpponentTag = model.Clans.Skip(1).First().Value.Tag;
 
-        PreparationStartTime = apiResponse.Content.PreparationStartTime;
+        State = model.State;
 
-        EndTime = apiResponse.Content.EndTime;
+        PreparationStartTime = model.PreparationStartTime;
 
-        Type = apiResponse.Content.GetWarType();
+        EndTime = model.EndTime;
+
+        Type = model.GetWarType();
 
         //if (State == WarState.WarEnded)
         //    IsFinal = true;

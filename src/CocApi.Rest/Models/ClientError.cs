@@ -42,7 +42,10 @@ namespace CocApi.Rest.Models
             Message = message;
             Reason = reason;
             Type = type;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Detail

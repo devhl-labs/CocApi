@@ -28,6 +28,8 @@ namespace CocApi.Rest.Models
     /// </summary>
     public partial class Clan : IEquatable<Clan?>
     {
+        partial void OnCreated();
+
         /// <summary>
         /// Gets or Sets Type
         /// </summary>

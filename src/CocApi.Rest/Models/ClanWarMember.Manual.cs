@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
 namespace CocApi.Rest.Models
@@ -23,13 +21,14 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, List<ClanWarAttack>? attacks = default, ClanWarAttack? bestOpponentAttack = default)
         {
-            RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#Initialize
+            RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#OnCreated
             Name = name;
             OpponentAttacks = opponentAttacks;
             Tag = tag;
             TownhallLevel = townhallLevel;
             Attacks = attacks;
             BestOpponentAttack = bestOpponentAttack;
+            OnCreated();
         }
 
 

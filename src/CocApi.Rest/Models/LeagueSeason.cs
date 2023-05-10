@@ -36,7 +36,10 @@ namespace CocApi.Rest.Models
         internal LeagueSeason(string id)
         {
             Id = id;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Id

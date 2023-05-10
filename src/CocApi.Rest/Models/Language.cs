@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             Id = id;
             LanguageCode = languageCode;
             Name = name;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Id

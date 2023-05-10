@@ -54,7 +54,10 @@ namespace CocApi.Rest.Models
             Tier = tier;
             Origins = origins;
             ValidUntil = validUntil;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets CidrRanges

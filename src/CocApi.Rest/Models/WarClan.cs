@@ -52,7 +52,10 @@ namespace CocApi.Rest.Models
             Name = name;
             Stars = stars;
             Tag = tag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Attacks

@@ -141,6 +141,7 @@ namespace CocApi.Rest.Models
             Type = type;
             WarFrequency = warFrequency;
             IsFamilyFriendly = isFamilyFriendly;
+            OnCreated();
         }
 
         /// <summary>

@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             Id = id;
             Rank = rank;
             Trophies = trophies;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Id

@@ -110,12 +110,12 @@ public sealed class NewCwlWarService : ServiceBase
                             if (!announcedWarTags.TryAdd(warTag, null))
                                 continue;
 
-                            if (seenCwlWar.ApiResponse?.Content == null || (seenCwlWar.ClanTag != cachedClan.Tag && seenCwlWar.OpponentTag != cachedClan.Tag))
+                            if (seenCwlWar.ApiResponse == null || !seenCwlWar.ApiResponse.TryToModel(out Rest.Models.ClanWar? model) || (seenCwlWar.ClanTag != cachedClan.Tag && seenCwlWar.OpponentTag != cachedClan.Tag))
                                 continue; // if null we already announced it
 
-                            CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Clan.Tag);
+                            CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == model.Clan.Tag);
 
-                            CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == seenCwlWar.ApiResponse.Content.Opponent.Tag);
+                            CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == model.Opponent.Tag);
 
                             announceNewWarTasks.Add(
                                 NewWarFoundAsync(
@@ -220,20 +220,20 @@ public sealed class NewCwlWarService : ServiceBase
     {
         try
         {
-            ApiResponse<Rest.Models.ClanWar?> apiResponse = await clansApi.FetchClanWarLeagueWarResponseAsync(kvp.Key, realtime, cancellationToken).ConfigureAwait(false);
+            ApiResponse<Rest.Models.ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarAsync(kvp.Key, realtime, cancellationToken).ConfigureAwait(false);
 
-            if (cancellationToken.IsCancellationRequested || !apiResponse.IsSuccessStatusCode || apiResponse.Content == null)
+            if (cancellationToken.IsCancellationRequested || !apiResponse.IsSuccessStatusCode || !apiResponse.TryToModel(out Rest.Models.ClanWar? model))
                 return;
 
-            SeenCwlWar seenCwlWar = new(warTags.Key, apiResponse.Content.Clan.Tag, apiResponse.Content.Opponent.Tag, kvp.Key, apiResponse);
+            SeenCwlWar seenCwlWar = new(warTags.Key, model.Clan.Tag, model.Opponent.Tag, kvp.Key, apiResponse);
 
             var group = _downloadedSeasons.Single(w => w.Key == warTags.Key).Value;
 
             group.TryAdd(kvp.Key, seenCwlWar);
 
-            CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Clan.Tag);
+            CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == model.Clan.Tag);
 
-            CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == apiResponse.Content.Opponent.Tag);
+            CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == model.Opponent.Tag);
 
             if ((cachedClan != null || cachedOpponent != null) && announcedWars.TryAdd(kvp.Key, null))
             {
@@ -261,12 +261,14 @@ public sealed class NewCwlWarService : ServiceBase
     {
         try
         {
+            Rest.Models.ClanWar clanWar = war.ToModel();
+
             if (ClanWarAdded != null)
-                await ClanWarAdded.Invoke(this, new CwlWarAddedEventArgs(clan, opponent, war.Content, group, cancellationToken)).ConfigureAwait(false);
+                await ClanWarAdded.Invoke(this, new CwlWarAddedEventArgs(clan, opponent, clanWar, group, cancellationToken)).ConfigureAwait(false);
 
             TimeSpan timeToLive = await Ttl.TimeToLiveOrDefaultAsync(war).ConfigureAwait(false);
 
-            CachedWar cachedWar = new(war, timeToLive, war.Content.WarTag, group.Season);
+            CachedWar cachedWar = new(war, timeToLive, clanWar.WarTag, group.Season);
 
             return cachedWar;
         }

@@ -92,7 +92,10 @@ namespace CocApi.Rest.Models
             Role = role;
             TownHallWeaponLevel = townHallWeaponLevel;
             WarPreference = warPreference;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Role

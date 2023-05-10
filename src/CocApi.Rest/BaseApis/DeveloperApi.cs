@@ -39,30 +39,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="createTokenRequest">Request body</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;KeyInstance?&gt;&gt;</returns>
-        Task<ApiResponse<KeyInstance?>> CreateResponseAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Create an api token.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createTokenRequest">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;KeyInstance&gt;</returns>
-        Task<KeyInstance> CreateAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Create an api token.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <param name="createTokenRequest">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;KeyInstance?&gt;</returns>
-        Task<KeyInstance?> CreateOrDefaultAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<KeyInstance>> CreateAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// List all tokens.
@@ -73,28 +50,7 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;KeyList?&gt;&gt;</returns>
-        Task<ApiResponse<KeyList?>> KeysResponseAsync(System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// List all tokens.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;KeyList&gt;</returns>
-        Task<KeyList> KeysAsync(System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// List all tokens.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;KeyList?&gt;</returns>
-        Task<KeyList?> KeysOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<KeyList>> KeysAsync(System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Login to the developer portal.
@@ -106,30 +62,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="loginCredentials">Request body</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LoginResponse?&gt;&gt;</returns>
-        Task<ApiResponse<LoginResponse?>> LoginResponseAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Login to the developer portal.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="loginCredentials">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;LoginResponse&gt;</returns>
-        Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Login to the developer portal.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <param name="loginCredentials">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;LoginResponse?&gt;</returns>
-        Task<LoginResponse?> LoginOrDefaultAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<LoginResponse>> LoginAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Revoke an api token.
@@ -141,30 +74,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="key">Request body</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;KeyInstance?&gt;&gt;</returns>
-        Task<ApiResponse<KeyInstance?>> RevokeResponseAsync(Key key, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Revoke an api token.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="key">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;KeyInstance&gt;</returns>
-        Task<KeyInstance> RevokeAsync(Key key, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Revoke an api token.
-        /// </summary>
-        /// <remarks>
-        /// 
-        /// </remarks>
-        /// <param name="key">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;KeyInstance?&gt;</returns>
-        Task<KeyInstance?> RevokeOrDefaultAsync(Key key, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<KeyInstance>> RevokeAsync(Key key, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -196,7 +106,7 @@ namespace CocApi.Rest.BaseApis
         /// Initializes a new instance of the <see cref="DeveloperApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public DeveloperApi(ILogger<DeveloperApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, 
+        public DeveloperApi(ILogger<DeveloperApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
@@ -212,46 +122,6 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
-        /// <summary>
-        /// Create an api token. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createTokenRequest">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
-        public async Task<KeyInstance> CreateAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<KeyInstance?> apiResponseLocalVar = await CreateResponseAsync(createTokenRequest, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Create an api token. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="createTokenRequest">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
-        public async Task<KeyInstance?> CreateOrDefaultAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<KeyInstance?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await CreateResponseAsync(createTokenRequest, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -278,7 +148,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="createTokenRequest"></param>
-        protected virtual void AfterCreate(ApiResponse<KeyInstance?> apiResponseLocalVar, CreateTokenRequest createTokenRequest)
+        protected virtual void AfterCreate(ApiResponse<KeyInstance> apiResponseLocalVar, CreateTokenRequest createTokenRequest)
         {
         }
 
@@ -301,7 +171,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="createTokenRequest">Request body</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="KeyInstance"/></returns>
-        public async Task<ApiResponse<KeyInstance?>> CreateResponseAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<KeyInstance>> CreateAsync(CreateTokenRequest createTokenRequest, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -356,13 +226,13 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<KeyInstance?> apiResponseLocalVar = new ApiResponse<KeyInstance?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterCreate(apiResponseLocalVar, createTokenRequest);
-                        }
+                        AfterCreate(apiResponseLocalVar, createTokenRequest);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
                         return apiResponseLocalVar;
                     }
@@ -373,44 +243,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorCreate(e, "/apikey/create", uriBuilderLocalVar.Path, createTokenRequest);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// List all tokens. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="KeyList"/>&gt;</returns>
-        public async Task<KeyList> KeysAsync(System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<KeyList?> apiResponseLocalVar = await KeysResponseAsync(cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// List all tokens. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="KeyList"/>&gt;</returns>
-        public async Task<KeyList?> KeysOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<KeyList?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await KeysResponseAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -426,7 +258,7 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
-        protected virtual void AfterKeys(ApiResponse<KeyList?> apiResponseLocalVar)
+        protected virtual void AfterKeys(ApiResponse<KeyList> apiResponseLocalVar)
         {
         }
 
@@ -447,7 +279,7 @@ namespace CocApi.Rest.BaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="KeyList"/></returns>
-        public async Task<ApiResponse<KeyList?>> KeysResponseAsync(System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<KeyList>> KeysAsync(System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -489,13 +321,13 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<KeyList?> apiResponseLocalVar = new ApiResponse<KeyList?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<KeyList> apiResponseLocalVar = new ApiResponse<KeyList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyList>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterKeys(apiResponseLocalVar);
-                        }
+                        AfterKeys(apiResponseLocalVar);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
                         return apiResponseLocalVar;
                     }
@@ -506,46 +338,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorKeys(e, "/apikey/list", uriBuilderLocalVar.Path);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Login to the developer portal. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="loginCredentials">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="LoginResponse"/>&gt;</returns>
-        public async Task<LoginResponse> LoginAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<LoginResponse?> apiResponseLocalVar = await LoginResponseAsync(loginCredentials, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Login to the developer portal. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="loginCredentials">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="LoginResponse"/>&gt;</returns>
-        public async Task<LoginResponse?> LoginOrDefaultAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<LoginResponse?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await LoginResponseAsync(loginCredentials, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -572,7 +364,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="loginCredentials"></param>
-        protected virtual void AfterLogin(ApiResponse<LoginResponse?> apiResponseLocalVar, LoginCredentials loginCredentials)
+        protected virtual void AfterLogin(ApiResponse<LoginResponse> apiResponseLocalVar, LoginCredentials loginCredentials)
         {
         }
 
@@ -595,7 +387,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="loginCredentials">Request body</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LoginResponse"/></returns>
-        public async Task<ApiResponse<LoginResponse?>> LoginResponseAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<LoginResponse>> LoginAsync(LoginCredentials loginCredentials, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -646,13 +438,9 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<LoginResponse?> apiResponseLocalVar = new ApiResponse<LoginResponse?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<LoginResponse> apiResponseLocalVar = new ApiResponse<LoginResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<LoginResponse>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterLogin(apiResponseLocalVar, loginCredentials);
-                        }
+                        AfterLogin(apiResponseLocalVar, loginCredentials);
 
                         return apiResponseLocalVar;
                     }
@@ -663,46 +451,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorLogin(e, "/api/login", uriBuilderLocalVar.Path, loginCredentials);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Revoke an api token. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="key">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
-        public async Task<KeyInstance> RevokeAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<KeyInstance?> apiResponseLocalVar = await RevokeResponseAsync(key, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Revoke an api token. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="key">Request body</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="KeyInstance"/>&gt;</returns>
-        public async Task<KeyInstance?> RevokeOrDefaultAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<KeyInstance?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await RevokeResponseAsync(key, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -729,7 +477,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="key"></param>
-        protected virtual void AfterRevoke(ApiResponse<KeyInstance?> apiResponseLocalVar, Key key)
+        protected virtual void AfterRevoke(ApiResponse<KeyInstance> apiResponseLocalVar, Key key)
         {
         }
 
@@ -752,7 +500,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="key">Request body</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="KeyInstance"/></returns>
-        public async Task<ApiResponse<KeyInstance?>> RevokeResponseAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<KeyInstance>> RevokeAsync(Key key, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -807,13 +555,13 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<KeyInstance?> apiResponseLocalVar = new ApiResponse<KeyInstance?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<KeyInstance>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterRevoke(apiResponseLocalVar, key);
-                        }
+                        AfterRevoke(apiResponseLocalVar, key);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
 
                         return apiResponseLocalVar;
                     }

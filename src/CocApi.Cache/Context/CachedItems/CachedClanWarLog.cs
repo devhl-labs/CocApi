@@ -13,7 +13,7 @@ public class CachedClanWarLog : CachedItem<ClanWarLog>
     {
         try
         {
-            ApiResponse<ClanWarLog> apiResponse = await clansApi.FetchClanWarLogResponseAsync(tag, cancellationToken: cancellationToken);
+            ApiResponse<ClanWarLog> apiResponse = await clansApi.FetchClanWarLogAsync(tag, cancellationToken: cancellationToken);
 
             return new CachedClanWarLog(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }

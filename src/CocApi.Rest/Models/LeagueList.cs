@@ -36,7 +36,10 @@ namespace CocApi.Rest.Models
         internal LeagueList(List<League> items)
         {
             Items = items;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Items

@@ -1,4 +1,4 @@
-$packageVersion = "2.0.2"
+$packageVersion = "2.1.0"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
@@ -30,7 +30,7 @@ $global = @(
 ) -join ","
 
 $generator = Resolve-Path -Path "$PSScriptRoot\..\..\..\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar"
-$yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0.yml"
+$yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-added-ClanWar-properties.yml"
 $output = Resolve-Path -Path "$PSScriptRoot\..\.."
 $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
 
@@ -103,6 +103,7 @@ $clanConstructor = @"
             WarFrequency = warFrequency;
             WarLosses = warLosses;
             WarTies = warTies;
+            OnCreated();
         }
 
 
@@ -179,6 +180,7 @@ $clanWarMemberConstructor = @"
             TownhallLevel = townhallLevel;
             Attacks = attacks;
             BestOpponentAttack = bestOpponentAttack;
+            OnCreated();
         }
 
 
@@ -353,34 +355,6 @@ $tokenRateLimit = @"
 
 "@
 
-$groupDeserialize = @"
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-"@
-
-$groupDeserializeReplacement = @"
-                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWarLeagueGroup?>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-"@
-
-
-$leagueWarDeserialization = @"
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
-"@
-
-$leagueWarDeserializationReplacement = @"
-                        if (apiResponseLocalVar.IsSuccessStatusCode && !apiResponseLocalVar.RawContent.Contains("notInWar"))
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<ClanWar>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
-"@
-
-
 $warClanNullChecks = @"
             if (destructionPercentage == null)
                 throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
@@ -444,6 +418,20 @@ $warClanNullChecksReplacement = @"
 
 "@
 
+$deserialize = @"
+        /// <summary>
+        /// Deserializes the server's response
+        /// </summary>
+        public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
+        {
+            return IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, options ?? _jsonSerializerOptions)
+                : default(T);
+        }
+
+
+"@
+
 
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
@@ -492,8 +480,6 @@ foreach ($file in $allCodeFiles)
     $rawContent = $(Get-Content -Path $file.FullName)
     $originalContent = $rawContent -join "`n"
     $content = $rawContent -join "`r`n"
-
-    $content=$content.Replace("WithHttpInfoAsync(", "ResponseAsync(")
 
     if ($file.name.EndsWith("Api.cs")){
         $content=$content.Replace('> Get', '> Fetch')
@@ -571,8 +557,9 @@ foreach ($file in $allCodeFiles)
     if ($file.name -eq "ClanWar.cs"){
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
-        $content = $content.Replace("State = state;", "State = state;`n            Initialize();")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
+        $content = $content.Replace("public DateTime ServerExpiration { get; }", "public DateTime ServerExpiration { get; internal set; }")
+        $content = $content.Replace("public string? WarTag { get; }", "public string? WarTag { get; internal set; }")
     }
 
     if ($file.name -eq "ClanCapitalRaidSeason.cs"){
@@ -593,13 +580,12 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace($tokenRateLimit, "")
     }
 
-    if ($file.name -eq "ClansApi.cs"){
-        $content = $content.Replace($groupDeserialize, $groupDeserializeReplacement)
-        $content = $content.Replace($leagueWarDeserialization, $leagueWarDeserializationReplacement)
-    }
-
     if ($file.name -eq "ClanWarLeagueGroup.cs"){
         $content = $content.Replace("public static string SeasonFormat { get; set; } = `"yyyy-MM-dd`";", "public static string SeasonFormat { get; set; } = `"yyyy-MM`";")
+    }
+
+    if ($($file.name) -eq "ApiResponse``1.cs"){
+        $content = $content.Replace($deserialize, "")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {

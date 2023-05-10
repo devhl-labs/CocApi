@@ -44,7 +44,10 @@ namespace CocApi.Rest.Models
             DistrictCount = districtCount;
             Districts = districts;
             DistrictsDestroyed = districtsDestroyed;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets AttackCount

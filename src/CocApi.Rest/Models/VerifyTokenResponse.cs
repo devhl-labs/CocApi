@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             Status = status;
             Tag = tag;
             Token = token;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Status

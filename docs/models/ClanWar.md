@@ -9,9 +9,11 @@ Name | Type | Description | Notes
 **EndTime** | **DateTime** |  | [optional] [readonly] 
 **Opponent** | [**WarClan**](WarClan.md) |  | [optional] [readonly] 
 **PreparationStartTime** | **DateTime** |  | [optional] [readonly] 
+**ServerExpiration** | **DateTime** |  | [optional] [readonly] 
 **StartTime** | **DateTime** |  | [optional] [readonly] 
 **TeamSize** | **int** |  | [optional] [readonly] 
 **State** | **WarState** |  | [optional] [readonly] 
+**WarTag** | **string** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

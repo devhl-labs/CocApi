@@ -50,7 +50,10 @@ namespace CocApi.Rest.Models
             ExpEarned = expEarned;
             Name = name;
             Tag = tag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Attacks

@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             CidrRanges = cidrRanges;
             Description = description;
             Name = name;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets CidrRanges

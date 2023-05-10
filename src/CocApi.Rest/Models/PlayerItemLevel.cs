@@ -44,7 +44,10 @@ namespace CocApi.Rest.Models
             Name = name;
             Village = village;
             SuperTroopIsActive = superTroopIsActive;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Village

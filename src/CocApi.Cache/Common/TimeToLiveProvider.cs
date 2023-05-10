@@ -16,7 +16,7 @@ public class TimeToLiveProvider
         Logger = logger;
     }
 
-    internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T?> apiResponse) where T : class
+    internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
     {
         try
         {
@@ -68,7 +68,7 @@ public class TimeToLiveProvider
         return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
     }
 
-    protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T?> apiResponse) where T : class
+    protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
     {
         if (apiResponse is ApiResponse<Clan>)
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
@@ -79,21 +79,27 @@ public class TimeToLiveProvider
                 : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
         if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)
+        {
+            ClanWarLeagueGroup? model = group.ToModel();
+
             if (!Clash.IsCwlEnabled ||
-                (group.Content?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == group.Content.Season.Month) ||
-                (group.Content == null && DateTime.UtcNow.Day >= 3))
+                (model?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == model.Season.Month) ||
+                (model == null && DateTime.UtcNow.Day >= 3))
                 return new ValueTask<TimeSpan>(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                         .AddMonths(1)
                         .Subtract(DateTime.UtcNow));
+        }
 
         if (apiResponse is ApiResponse<ClanWar> war)
         {
+            ClanWar? model = war.ToModel();
+
             if (war.StatusCode == HttpStatusCode.Forbidden)
                 return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));
 
-            if (war.Content?.State == Rest.Models.WarState.Preparation)
-                return new ValueTask<TimeSpan>(war.Content.StartTime.AddHours(-1) - DateTime.UtcNow);
+            if (model?.State == Rest.Models.WarState.Preparation)
+                return new ValueTask<TimeSpan>(model.StartTime.AddHours(-1) - DateTime.UtcNow);
         }
 
         return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));

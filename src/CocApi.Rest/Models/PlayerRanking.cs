@@ -54,7 +54,10 @@ namespace CocApi.Rest.Models
             Tag = tag;
             Trophies = trophies;
             Clan = clan;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets AttackWins

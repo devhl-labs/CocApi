@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             Attacker = attacker;
             DestructionPercent = destructionPercent;
             Stars = stars;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Attacker

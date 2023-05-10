@@ -38,7 +38,10 @@ namespace CocApi.Rest.Models
         {
             CapitalHallLevel = capitalHallLevel;
             Districts = districts;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets CapitalHallLevel

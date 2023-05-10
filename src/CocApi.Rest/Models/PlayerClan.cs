@@ -42,7 +42,10 @@ namespace CocApi.Rest.Models
             ClanLevel = clanLevel;
             Name = name;
             Tag = tag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets BadgeUrls

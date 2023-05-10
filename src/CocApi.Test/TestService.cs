@@ -60,16 +60,16 @@ public class TestService : IHostedService
         var devhlsLab = await ClansApi.FetchClanAsync("#28RUGUYJU");
         var playerGlobalRankings = await LocationsApi.FetchPlayerRankingAsync("global");
         var playerVersusGlobalRankings = await LocationsApi.FetchPlayerVersusRankingAsync("global");
-        var clanGlobalRankings = await LocationsApi.FetchClanRankingOrDefaultAsync("global");
+        var clanGlobalRankings = await LocationsApi.FetchClanRankingAsync("global");
         var clanGlobalVersusRankings = await LocationsApi.FetchClanVersusRankingAsync("global");
-        var leagueList = await LeaguesApi.FetchWarLeaguesOrDefaultAsync();
+        var leagueList = await LeaguesApi.FetchWarLeaguesAsync();
         var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
         var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         var clans = await ClansApi.SearchClansAsync(name: "fysb");
         var clanCapitalRaidSeasons = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
-        var clanCapitalRanking = await LocationsApi.FetchClanCapitalRankingResponseAsync("global");
-        var b = await LeaguesApi.FetchCapitalLeaguesOrDefaultAsync();
-        var a = await LeaguesApi.FetchCapitalLeagueResponseAsync("85000018");
+        var clanCapitalRanking = await LocationsApi.FetchClanCapitalRankingAsync("global");
+        var b = await LeaguesApi.FetchCapitalLeaguesAsync();
+        var a = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
         System.Console.WriteLine();
     }
 }

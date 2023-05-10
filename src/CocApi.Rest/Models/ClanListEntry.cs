@@ -72,7 +72,10 @@ namespace CocApi.Rest.Models
             WarFrequency = warFrequency;
             WarLosses = warLosses;
             WarTies = warTies;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Type

@@ -58,7 +58,10 @@ namespace CocApi.Rest.Models
             VersusTrophies = versusTrophies;
             PlayerHouse = playerHouse;
             Role = role;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Role

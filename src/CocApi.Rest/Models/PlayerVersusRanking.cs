@@ -50,7 +50,10 @@ namespace CocApi.Rest.Models
             VersusBattleWins = versusBattleWins;
             VersusTrophies = versusTrophies;
             Clan = clan;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets ExpLevel

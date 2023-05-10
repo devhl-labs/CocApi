@@ -36,22 +36,28 @@ namespace CocApi.Rest.Models
         /// <param name="endTime">endTime</param>
         /// <param name="opponent">opponent</param>
         /// <param name="preparationStartTime">preparationStartTime</param>
+        /// <param name="serverExpiration">serverExpiration</param>
         /// <param name="startTime">startTime</param>
         /// <param name="teamSize">teamSize</param>
         /// <param name="state">state</param>
+        /// <param name="warTag">warTag</param>
         [JsonConstructor]
-        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, WarState? state = default)
+        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime serverExpiration, DateTime startTime, int teamSize, WarState? state = default, string? warTag = default)
         {
             AttacksPerMember = attacksPerMember;
             Clan = clan;
             EndTime = endTime;
             Opponent = opponent;
             PreparationStartTime = preparationStartTime;
+            ServerExpiration = serverExpiration;
             StartTime = startTime;
             TeamSize = teamSize;
             State = state;
-            Initialize();
+            WarTag = warTag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets State
@@ -90,6 +96,12 @@ namespace CocApi.Rest.Models
         public DateTime PreparationStartTime { get; }
 
         /// <summary>
+        /// Gets or Sets ServerExpiration
+        /// </summary>
+        [JsonPropertyName("serverExpiration")]
+        public DateTime ServerExpiration { get; internal set; }
+
+        /// <summary>
         /// Gets or Sets StartTime
         /// </summary>
         [JsonPropertyName("startTime")]
@@ -100,6 +112,12 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("teamSize")]
         public int TeamSize { get; }
+
+        /// <summary>
+        /// Gets or Sets WarTag
+        /// </summary>
+        [JsonPropertyName("warTag")]
+        public string? WarTag { get; internal set; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -114,9 +132,11 @@ namespace CocApi.Rest.Models
             sb.Append("  EndTime: ").Append(EndTime).Append("\n");
             sb.Append("  Opponent: ").Append(Opponent).Append("\n");
             sb.Append("  PreparationStartTime: ").Append(PreparationStartTime).Append("\n");
+            sb.Append("  ServerExpiration: ").Append(ServerExpiration).Append("\n");
             sb.Append("  StartTime: ").Append(StartTime).Append("\n");
             sb.Append("  TeamSize: ").Append(TeamSize).Append("\n");
             sb.Append("  State: ").Append(State).Append("\n");
+            sb.Append("  WarTag: ").Append(WarTag).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -168,6 +188,11 @@ namespace CocApi.Rest.Models
                     PreparationStartTime.Equals(input.PreparationStartTime))
                 ) && 
                 (
+                    ServerExpiration == input.ServerExpiration ||
+                    (ServerExpiration != null &&
+                    ServerExpiration.Equals(input.ServerExpiration))
+                ) && 
+                (
                     StartTime == input.StartTime ||
                     (StartTime != null &&
                     StartTime.Equals(input.StartTime))
@@ -181,6 +206,11 @@ namespace CocApi.Rest.Models
                     State == input.State ||
                     (State != null &&
                     State.Equals(input.State))
+                ) && 
+                (
+                    WarTag == input.WarTag ||
+                    (WarTag != null &&
+                    WarTag.Equals(input.WarTag))
                 );
         }
 
@@ -198,11 +228,15 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + EndTime.GetHashCode();
                 hashCode = (hashCode * 59) + Opponent.GetHashCode();
                 hashCode = (hashCode * 59) + PreparationStartTime.GetHashCode();
+                hashCode = (hashCode * 59) + ServerExpiration.GetHashCode();
                 hashCode = (hashCode * 59) + StartTime.GetHashCode();
                 hashCode = (hashCode * 59) + TeamSize.GetHashCode();
 
                 if (State != null)
                     hashCode = (hashCode * 59) + State.GetHashCode();
+
+                if (WarTag != null)
+                    hashCode = (hashCode * 59) + WarTag.GetHashCode();
 
                 return hashCode;
             }
@@ -251,9 +285,11 @@ namespace CocApi.Rest.Models
             DateTime endTime = default;
             WarClan opponent = default;
             DateTime preparationStartTime = default;
+            DateTime serverExpiration = default;
             DateTime startTime = default;
             int teamSize = default;
             WarState? state = default;
+            string warTag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -290,6 +326,10 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 preparationStartTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
+                        case "serverExpiration":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                serverExpiration = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                            break;
                         case "startTime":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
@@ -301,6 +341,9 @@ namespace CocApi.Rest.Models
                         case "state":
                             string stateRawValue = utf8JsonReader.GetString();
                             state = WarStateConverter.FromStringOrDefault(stateRawValue);
+                            break;
+                        case "warTag":
+                            warTag = utf8JsonReader.GetString();
                             break;
                         default:
                             break;
@@ -332,10 +375,13 @@ namespace CocApi.Rest.Models
             if (preparationStartTime == null)
                 throw new ArgumentNullException(nameof(preparationStartTime), "Property is required for class ClanWar.");
 
+            if (serverExpiration == null)
+                throw new ArgumentNullException(nameof(serverExpiration), "Property is required for class ClanWar.");
+
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanWar(attacksPerMember, clan, endTime, opponent, preparationStartTime, startTime, teamSize, state);
+            return new ClanWar(attacksPerMember, clan, endTime, opponent, preparationStartTime, serverExpiration, startTime, teamSize, state, warTag);
         }
 
         /// <summary>
@@ -356,6 +402,8 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("opponent");
             JsonSerializer.Serialize(writer, clanWar.Opponent, jsonSerializerOptions);
             writer.WriteString("preparationStartTime", clanWar.PreparationStartTime.ToString(PreparationStartTimeFormat));
+            writer.WritePropertyName("serverExpiration");
+            JsonSerializer.Serialize(writer, clanWar.ServerExpiration, jsonSerializerOptions);
             writer.WriteString("startTime", clanWar.StartTime.ToString(StartTimeFormat));
             writer.WriteNumber("teamSize", clanWar.TeamSize);
             if (clanWar.State == null)
@@ -365,6 +413,7 @@ namespace CocApi.Rest.Models
                 writer.WriteString("state", stateRawValue);
             else
                 writer.WriteNull("state");
+            writer.WriteString("warTag", clanWar.WarTag);
 
             writer.WriteEndObject();
         }

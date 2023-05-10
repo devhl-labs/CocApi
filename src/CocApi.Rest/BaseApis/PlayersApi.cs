@@ -39,30 +39,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;Player?&gt;&gt;</returns>
-        Task<ApiResponse<Player?>> FetchPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get player information
-        /// </summary>
-        /// <remarks>
-        /// Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;Player&gt;</returns>
-        Task<Player> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get player information
-        /// </summary>
-        /// <remarks>
-        /// Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </remarks>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;Player?&gt;</returns>
-        Task<Player?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Verify player API token that can be found from the game settings.
@@ -75,32 +52,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;VerifyTokenResponse?&gt;&gt;</returns>
-        Task<ApiResponse<VerifyTokenResponse?>> VerifyTokenResponseAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Verify player API token that can be found from the game settings.
-        /// </summary>
-        /// <remarks>
-        /// Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="body">Request body</param>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;VerifyTokenResponse&gt;</returns>
-        Task<VerifyTokenResponse> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Verify player API token that can be found from the game settings.
-        /// </summary>
-        /// <remarks>
-        /// Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
-        /// </remarks>
-        /// <param name="body">Request body</param>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task of ApiResponse&lt;VerifyTokenResponse?&gt;</returns>
-        Task<VerifyTokenResponse?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -132,7 +84,7 @@ namespace CocApi.Rest.BaseApis
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(ILogger<PlayersApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, 
+        public PlayersApi(ILogger<PlayersApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
@@ -148,46 +100,6 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
-        /// <summary>
-        /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="Player"/>&gt;</returns>
-        public async Task<Player> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<Player?> apiResponseLocalVar = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="Player"/>&gt;</returns>
-        public async Task<Player?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<Player?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await FetchPlayerResponseAsync(playerTag, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -214,7 +126,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="playerTag"></param>
-        protected virtual void AfterFetchPlayer(ApiResponse<Player?> apiResponseLocalVar, string playerTag)
+        protected virtual void AfterFetchPlayer(ApiResponse<Player> apiResponseLocalVar, string playerTag)
         {
         }
 
@@ -237,7 +149,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Player"/></returns>
-        public async Task<ApiResponse<Player?>> FetchPlayerResponseAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -281,14 +193,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<Player?> apiResponseLocalVar = new ApiResponse<Player?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<Player> apiResponseLocalVar = new ApiResponse<Player>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<Player>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterFetchPlayer(apiResponseLocalVar, playerTag);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterFetchPlayer(apiResponseLocalVar, playerTag);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 
@@ -301,48 +210,6 @@ namespace CocApi.Rest.BaseApis
                 OnErrorFetchPlayer(e, "/players/{playerTag}", uriBuilderLocalVar.Path, playerTag);
                 throw;
             }
-        }
-
-        /// <summary>
-        /// Verify player API token that can be found from the game settings. Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="body">Request body</param>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="VerifyTokenResponse"/>&gt;</returns>
-        public async Task<VerifyTokenResponse> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<VerifyTokenResponse?> apiResponseLocalVar = await VerifyTokenResponseAsync(body, playerTag, cancellationToken).ConfigureAwait(false);
-
-            if (apiResponseLocalVar.Content == null)
-                throw new ApiException(apiResponseLocalVar.ReasonPhrase, apiResponseLocalVar.StatusCode, apiResponseLocalVar.RawContent);
-
-            return apiResponseLocalVar.Content;
-        }
-
-        /// <summary>
-        /// Verify player API token that can be found from the game settings. Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="body">Request body</param>
-        /// <param name="playerTag">Tag of the player.</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="VerifyTokenResponse"/>&gt;</returns>
-        public async Task<VerifyTokenResponse?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            ApiResponse<VerifyTokenResponse?>? apiResponseLocalVar = null;
-            try 
-            {
-                apiResponseLocalVar = await VerifyTokenResponseAsync(body, playerTag, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-            }
-
-            return apiResponseLocalVar != null && apiResponseLocalVar.IsSuccessStatusCode
-                ? apiResponseLocalVar.Content
-                : null;
         }
 
         /// <summary>
@@ -374,7 +241,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        protected virtual void AfterVerifyToken(ApiResponse<VerifyTokenResponse?> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
+        protected virtual void AfterVerifyToken(ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
         {
         }
 
@@ -399,7 +266,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="VerifyTokenResponse"/></returns>
-        public async Task<ApiResponse<VerifyTokenResponse?>> VerifyTokenResponseAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -458,14 +325,11 @@ namespace CocApi.Rest.BaseApis
 
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
 
-                        ApiResponse<VerifyTokenResponse?> apiResponseLocalVar = new ApiResponse<VerifyTokenResponse?>(httpResponseMessageLocalVar, responseContentLocalVar);
+                        ApiResponse<VerifyTokenResponse> apiResponseLocalVar = new ApiResponse<VerifyTokenResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
-                        if (apiResponseLocalVar.IsSuccessStatusCode)
-                        {
-                            apiResponseLocalVar.Content = JsonSerializer.Deserialize<VerifyTokenResponse>(apiResponseLocalVar.RawContent, _jsonSerializerOptions);
-                            AfterVerifyToken(apiResponseLocalVar, body, playerTag);
-                        }
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                        AfterVerifyToken(apiResponseLocalVar, body, playerTag);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
 

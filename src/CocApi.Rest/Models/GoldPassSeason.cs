@@ -38,7 +38,10 @@ namespace CocApi.Rest.Models
         {
             EndTime = endTime;
             StartTime = startTime;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets EndTime

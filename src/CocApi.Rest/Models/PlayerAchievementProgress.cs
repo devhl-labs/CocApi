@@ -48,7 +48,10 @@ namespace CocApi.Rest.Models
             Value = value;
             Village = village;
             CompletionInfo = completionInfo;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Village

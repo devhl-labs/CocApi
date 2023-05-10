@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             Large = large;
             Medium = medium;
             Small = small;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Large

@@ -38,7 +38,10 @@ namespace CocApi.Rest.Models
         {
             ClanPoints = clanPoints;
             ClanVersusPoints = clanVersusPoints;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets ClanPoints

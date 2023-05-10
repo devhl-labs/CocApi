@@ -46,7 +46,10 @@ namespace CocApi.Rest.Models
             CapitalResourcesLooted = capitalResourcesLooted;
             Name = name;
             Tag = tag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets AttackLimit

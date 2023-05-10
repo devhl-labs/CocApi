@@ -52,7 +52,10 @@ namespace CocApi.Rest.Models
             Rank = rank;
             Tag = tag;
             Location = location;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets BadgeUrls

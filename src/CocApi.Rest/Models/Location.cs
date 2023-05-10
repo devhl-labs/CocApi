@@ -44,7 +44,10 @@ namespace CocApi.Rest.Models
             Name = name;
             CountryCode = countryCode;
             LocalizedName = localizedName;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Id

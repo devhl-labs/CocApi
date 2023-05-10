@@ -36,7 +36,10 @@ namespace CocApi.Rest.Models
         internal PlayerVersusRankingList(List<PlayerVersusRanking> items)
         {
             Items = items;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Items

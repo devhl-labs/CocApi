@@ -38,7 +38,10 @@ namespace CocApi.Rest.Models
         {
             Name = name;
             Tag = tag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets Name

@@ -42,7 +42,10 @@ namespace CocApi.Rest.Models
             Rounds = rounds;
             Season = season;
             State = state;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets State

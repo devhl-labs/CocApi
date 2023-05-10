@@ -40,7 +40,10 @@ namespace CocApi.Rest.Models
             BadgeUrls = badgeUrls;
             Name = name;
             Tag = tag;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets BadgeUrls

@@ -58,7 +58,10 @@ namespace CocApi.Rest.Models
             State = state;
             TotalAttacks = totalAttacks;
             Members = members;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Defines State

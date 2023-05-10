@@ -36,7 +36,10 @@ namespace CocApi.Rest.Models
         internal ClanWarLeagueRound(List<string> warTags)
         {
             WarTags = warTags;
+            OnCreated();
         }
+
+        partial void OnCreated();
 
         /// <summary>
         /// Gets or Sets WarTags

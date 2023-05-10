@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text.Json.Serialization;
 
+// TODO: probably dont need this anymore
 [assembly: InternalsVisibleTo("CocApi.Cache")]
 namespace CocApi.Rest.Models
 {
@@ -36,9 +36,6 @@ namespace CocApi.Rest.Models
 
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
-
-        [JsonPropertyName("warTag")]
-        public string? WarTag { get; internal set; }
 
         private volatile SortedDictionary<string, WarClan>? _clans;
 
@@ -110,9 +107,6 @@ namespace CocApi.Rest.Models
 
         public List<ClanWarAttack> NewAttacks(ClanWar fetched) => NewAttacks(this, fetched);
 
-        [JsonPropertyName("serverExpiration")]
-        public DateTime ServerExpiration { get; internal set; }
-
         public bool AllAttacksAreUsed()
         {
             int totalAttacks = Clan.Members.Count + Opponent.Members.Count;
@@ -133,6 +127,9 @@ namespace CocApi.Rest.Models
 
         private readonly object _initializeLock = new();
 
+        // TODO: remove this at some point in the future
+        // it is no longer needed since the ApiResponse edits the json before deserialization
+        // leaving it here for now so the cache can get updated
         internal void Initialize(DateTime serverExpiration, string? warTag)
         {
             if (_isInitialized) // avoid the lock if we can
@@ -150,9 +147,9 @@ namespace CocApi.Rest.Models
             }
         }
 
-        private void Initialize()
+        partial void OnCreated()
         {
-            if (State == WarState.NotInWar)
+           if (State == WarState.NotInWar)
                 return;
 
             WarClan clan = Clan;
