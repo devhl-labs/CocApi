@@ -7,7 +7,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetClanLabels**](LabelsApi.md#getclanlabels) | **GET** /labels/clans | List clan labels |
 | [**GetPlayerLabels**](LabelsApi.md#getplayerlabels) | **GET** /labels/players | List player labels |
 
-<a name="getclanlabels"></a>
+<a id="getclanlabels"></a>
 # **GetClanLabels**
 > LabelsObject GetClanLabels (int? limit = null, string? after = null, string? before = null)
 
@@ -113,7 +113,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getplayerlabels"></a>
+<a id="getplayerlabels"></a>
 # **GetPlayerLabels**
 > LabelsObject GetPlayerLabels (int? limit = null, string? after = null, string? before = null)
 

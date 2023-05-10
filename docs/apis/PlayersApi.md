@@ -7,7 +7,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetPlayer**](PlayersApi.md#getplayer) | **GET** /players/{playerTag} | Get player information |
 | [**VerifyToken**](PlayersApi.md#verifytoken) | **POST** /players/{playerTag}/verifytoken | Verify player API token that can be found from the game settings. |
 
-<a name="getplayer"></a>
+<a id="getplayer"></a>
 # **GetPlayer**
 > Player GetPlayer (string playerTag)
 
@@ -109,7 +109,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="verifytoken"></a>
+<a id="verifytoken"></a>
 # **VerifyToken**
 > VerifyTokenResponse VerifyToken (VerifyTokenRequest body, string playerTag)
 

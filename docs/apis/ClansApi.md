@@ -13,7 +13,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetCurrentWar**](ClansApi.md#getcurrentwar) | **GET** /clans/{clanTag}/currentwar | Retrieve information about clan&#39;s current clan war |
 | [**SearchClans**](ClansApi.md#searchclans) | **GET** /clans | Search clans |
 
-<a name="getcapitalraidseasons"></a>
+<a id="getcapitalraidseasons"></a>
 # **GetCapitalRaidSeasons**
 > ClanCapitalRaidSeasons GetCapitalRaidSeasons (string clanTag, int? limit = null, string? after = null, string? before = null)
 
@@ -121,7 +121,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclan"></a>
+<a id="getclan"></a>
 # **GetClan**
 > Clan GetClan (string clanTag)
 
@@ -223,7 +223,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclanmembers"></a>
+<a id="getclanmembers"></a>
 # **GetClanMembers**
 > List&lt;ClanMember&gt; GetClanMembers (string clanTag, int? limit = null, string? after = null, string? before = null)
 
@@ -331,7 +331,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclanwarleaguegroup"></a>
+<a id="getclanwarleaguegroup"></a>
 # **GetClanWarLeagueGroup**
 > ClanWarLeagueGroup GetClanWarLeagueGroup (string clanTag, bool? realtime = null)
 
@@ -435,7 +435,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclanwarleaguewar"></a>
+<a id="getclanwarleaguewar"></a>
 # **GetClanWarLeagueWar**
 > ClanWar GetClanWarLeagueWar (string warTag, bool? realtime = null)
 
@@ -539,7 +539,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclanwarlog"></a>
+<a id="getclanwarlog"></a>
 # **GetClanWarLog**
 > ClanWarLog GetClanWarLog (string clanTag, int? limit = null, string? after = null, string? before = null)
 
@@ -647,7 +647,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getcurrentwar"></a>
+<a id="getcurrentwar"></a>
 # **GetCurrentWar**
 > ClanWar GetCurrentWar (string clanTag, bool? realtime = null)
 
@@ -751,7 +751,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="searchclans"></a>
+<a id="searchclans"></a>
 # **SearchClans**
 > ClanList SearchClans (int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null)
 

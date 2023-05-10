@@ -9,7 +9,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**Login**](DeveloperApi.md#login) | **POST** /api/login | Login to the developer portal. |
 | [**Revoke**](DeveloperApi.md#revoke) | **POST** /apikey/revoke | Revoke an api token. |
 
-<a name="create"></a>
+<a id="create"></a>
 # **Create**
 > KeyInstance Create (CreateTokenRequest createTokenRequest)
 
@@ -109,7 +109,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="keys"></a>
+<a id="keys"></a>
 # **Keys**
 > KeyList Keys ()
 
@@ -204,7 +204,7 @@ This endpoint does not need any parameter.
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="login"></a>
+<a id="login"></a>
 # **Login**
 > LoginResponse Login (LoginCredentials loginCredentials)
 
@@ -299,7 +299,7 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="revoke"></a>
+<a id="revoke"></a>
 # **Revoke**
 > KeyInstance Revoke (Key key)
 

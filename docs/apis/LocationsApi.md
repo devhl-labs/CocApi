@@ -12,7 +12,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetPlayerRanking**](LocationsApi.md#getplayerranking) | **GET** /locations/{locationId}/rankings/players | Get player rankings for a specific location |
 | [**GetPlayerVersusRanking**](LocationsApi.md#getplayerversusranking) | **GET** /locations/{locationId}/rankings/players-versus | Get player versus rankings for a specific location |
 
-<a name="getclancapitalranking"></a>
+<a id="getclancapitalranking"></a>
 # **GetClanCapitalRanking**
 > ClanCapitalRankingObject GetClanCapitalRanking (string locationId, int? limit = null, string? after = null, string? before = null)
 
@@ -120,7 +120,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclanranking"></a>
+<a id="getclanranking"></a>
 # **GetClanRanking**
 > ClanRankingList GetClanRanking (string locationId, int? limit = null, string? after = null, string? before = null)
 
@@ -228,7 +228,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getclanversusranking"></a>
+<a id="getclanversusranking"></a>
 # **GetClanVersusRanking**
 > ClanVersusRankingList GetClanVersusRanking (string locationId, int? limit = null, string? after = null, string? before = null)
 
@@ -336,7 +336,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getlocation"></a>
+<a id="getlocation"></a>
 # **GetLocation**
 > Location GetLocation (string locationId)
 
@@ -438,7 +438,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getlocations"></a>
+<a id="getlocations"></a>
 # **GetLocations**
 > LocationList GetLocations (int? limit = null, string? after = null, string? before = null)
 
@@ -544,7 +544,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getplayerranking"></a>
+<a id="getplayerranking"></a>
 # **GetPlayerRanking**
 > PlayerRankingList GetPlayerRanking (string locationId, int? limit = null, string? after = null, string? before = null)
 
@@ -652,7 +652,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getplayerversusranking"></a>
+<a id="getplayerversusranking"></a>
 # **GetPlayerVersusRanking**
 > PlayerVersusRankingList GetPlayerVersusRanking (string locationId, int? limit = null, string? after = null, string? before = null)
 

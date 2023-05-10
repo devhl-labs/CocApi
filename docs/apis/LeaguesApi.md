@@ -13,7 +13,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetWarLeague**](LeaguesApi.md#getwarleague) | **GET** /warleagues/{leagueId} | Get war league information |
 | [**GetWarLeagues**](LeaguesApi.md#getwarleagues) | **GET** /warleagues | List war leagues |
 
-<a name="getcapitalleague"></a>
+<a id="getcapitalleague"></a>
 # **GetCapitalLeague**
 > CapitalLeague GetCapitalLeague (string leagueId)
 
@@ -115,7 +115,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getcapitalleagues"></a>
+<a id="getcapitalleagues"></a>
 # **GetCapitalLeagues**
 > CapitalLeagueObject GetCapitalLeagues (int? limit = null, string? after = null, string? before = null)
 
@@ -221,7 +221,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getleague"></a>
+<a id="getleague"></a>
 # **GetLeague**
 > League GetLeague (string leagueId)
 
@@ -323,7 +323,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getleagueseasonrankings"></a>
+<a id="getleagueseasonrankings"></a>
 # **GetLeagueSeasonRankings**
 > PlayerRankingList GetLeagueSeasonRankings (string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null)
 
@@ -433,7 +433,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getleagueseasons"></a>
+<a id="getleagueseasons"></a>
 # **GetLeagueSeasons**
 > LeagueSeasonList GetLeagueSeasons (string leagueId, int? limit = null, string? after = null, string? before = null)
 
@@ -541,7 +541,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getleagues"></a>
+<a id="getleagues"></a>
 # **GetLeagues**
 > LeagueList GetLeagues (int? limit = null, string? after = null, string? before = null)
 
@@ -647,7 +647,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getwarleague"></a>
+<a id="getwarleague"></a>
 # **GetWarLeague**
 > WarLeague GetWarLeague (string leagueId)
 
@@ -749,7 +749,7 @@ catch (ApiException e)
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
-<a name="getwarleagues"></a>
+<a id="getwarleagues"></a>
 # **GetWarLeagues**
 > WarLeagueList GetWarLeagues (int? limit = null, string? after = null, string? before = null)
 

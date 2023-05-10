@@ -6,7 +6,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 |--------|--------------|-------------|
 | [**GetCurrentGoldPassSeason**](GoldpassApi.md#getcurrentgoldpassseason) | **GET** /goldpass/seasons/current | Get information about the current gold pass season. |
 
-<a name="getcurrentgoldpassseason"></a>
+<a id="getcurrentgoldpassseason"></a>
 # **GetCurrentGoldPassSeason**
 > GoldPassSeason GetCurrentGoldPassSeason ()
 
