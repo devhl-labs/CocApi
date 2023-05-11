@@ -418,21 +418,6 @@ $warClanNullChecksReplacement = @"
 
 "@
 
-$deserialize = @"
-        /// <summary>
-        /// Deserializes the server's response
-        /// </summary>
-        public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
-        {
-            return IsSuccessStatusCode
-                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, options ?? _jsonSerializerOptions)
-                : default(T);
-        }
-
-
-"@
-
-
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
 $apiDocPath = Resolve-Path -Path "$output\docs\apis"
@@ -582,10 +567,6 @@ foreach ($file in $allCodeFiles)
 
     if ($file.name -eq "ClanWarLeagueGroup.cs"){
         $content = $content.Replace("public static string SeasonFormat { get; set; } = `"yyyy-MM-dd`";", "public static string SeasonFormat { get; set; } = `"yyyy-MM`";")
-    }
-
-    if ($($file.name) -eq "ApiResponse``1.cs"){
-        $content = $content.Replace($deserialize, "")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {

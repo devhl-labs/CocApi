@@ -114,6 +114,20 @@ namespace CocApi.Rest.Client
         partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
         /// <summary>
+        /// Deserializes the server's response
+        /// </summary>
+        public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
+        {
+            // Modify this logic with the ToModel.mustache template
+            if (ResponseType == typeof(Models.ClanWar) && RawContent.Contains("notInWar"))
+                return default;
+
+            return IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, options ?? _jsonSerializerOptions)
+                : default;
+        }
+
+        /// <summary>
         /// Returns true when the model can be deserialized
         /// </summary>
         public bool TryToModel([NotNullWhen(true)] out T? model, System.Text.Json.JsonSerializerOptions? options = null)

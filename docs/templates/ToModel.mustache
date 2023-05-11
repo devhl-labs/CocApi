@@ -1,0 +1,7 @@
+            // Modify this logic with the ToModel.mustache template
+            if (ResponseType == typeof(Models.ClanWar) && RawContent.Contains("notInWar"))
+                return default;
+
+            return IsSuccessStatusCode
+                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, options ?? _jsonSerializerOptions)
+                : default;

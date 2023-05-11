@@ -53,18 +53,5 @@ namespace CocApi.Rest.Client
                 RawContent = System.Text.Json.JsonSerializer.Serialize(clanWar, _jsonSerializerOptions);
             }
         }
-
-        /// <summary>
-        /// Deserializes the server's response
-        /// </summary>
-        public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
-        {
-            if (ResponseType == typeof(ClanWar) && RawContent.Contains("notInWar"))
-                return default;
-
-            return IsSuccessStatusCode
-                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, options ?? _jsonSerializerOptions)
-                : default;
-        }
     }
 }
