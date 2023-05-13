@@ -28,6 +28,62 @@ namespace CocApi.Rest.Models
     /// </summary>
     public partial class Clan : IEquatable<Clan?>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Clan" /> class.
+        /// </summary>
+        /// <param name="badgeUrls">badgeUrls</param>
+        /// <param name="capitalLeague">capitalLeague</param>
+        /// <param name="clanCapital">clanCapital</param>
+        /// <param name="clanLevel">clanLevel</param>
+        /// <param name="clanPoints">clanPoints</param>
+        /// <param name="clanVersusPoints">clanVersusPoints</param>
+        /// <param name="description">description</param>
+        /// <param name="isFamilyFriendly">isFamilyFriendly</param>
+        /// <param name="isWarLogPublic">isWarLogPublic</param>
+        /// <param name="labels">labels</param>
+        /// <param name="memberList">memberList</param>
+        /// <param name="members">members</param>
+        /// <param name="name">name</param>
+        /// <param name="requiredTrophies">requiredTrophies</param>
+        /// <param name="tag">tag</param>
+        /// <param name="warLeague">warLeague</param>
+        /// <param name="warWinStreak">warWinStreak</param>
+        /// <param name="warWins">warWins</param>
+        /// <param name="chatLanguage">chatLanguage</param>
+        /// <param name="location">location</param>
+        /// <param name="type">type</param>
+        /// <param name="warFrequency">warFrequency</param>
+        /// <param name="warLosses">warLosses</param>
+        /// <param name="warTies">warTies</param>
+        [JsonConstructor]
+        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        {
+            BadgeUrls = badgeUrls;
+            CapitalLeague = capitalLeague;
+            ClanCapital = clanCapital;
+            ClanLevel = clanLevel;
+            ClanPoints = clanPoints;
+            ClanVersusPoints = clanVersusPoints;
+            Description = description;
+            IsFamilyFriendly = isFamilyFriendly;
+            IsWarLogPublic = isWarLogPublic;
+            Labels = labels;
+            Members = members;
+            Name = name;
+            RequiredTrophies = requiredTrophies;
+            Tag = tag;
+            WarLeague = warLeague;
+            WarWinStreak = warWinStreak;
+            WarWins = warWins;
+            ChatLanguage = chatLanguage;
+            Location = location;
+            Type = type;
+            WarFrequency = warFrequency;
+            WarLosses = warLosses;
+            WarTies = warTies;
+            OnCreated();
+        }
+
         partial void OnCreated();
 
         /// <summary>
@@ -602,7 +658,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);
+            return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>

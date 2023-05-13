@@ -90,61 +90,6 @@ namespace CocApi.Rest.Models
         public List<ClanMember> ClanMembersJoined(Clan fetched) => ClanMembersJoined(this, fetched);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Clan" /> class.
-        /// </summary>
-        /// <param name="badgeUrls">badgeUrls</param>
-        /// <param name="capitalLeague">capitalLeague</param>
-        /// <param name="clanCapital">clanCapital</param>
-        /// <param name="clanLevel">clanLevel</param>
-        /// <param name="clanPoints">clanPoints</param>
-        /// <param name="clanVersusPoints">clanVersusPoints</param>
-        /// <param name="description">description</param>
-        /// <param name="isFamilyFriendly">isFamilyFriendly</param>
-        /// <param name="isWarLogPublic">isWarLogPublic</param>
-        /// <param name="labels">labels</param>
-        /// <param name="members">members</param>
-        /// <param name="name">name</param>
-        /// <param name="requiredTrophies">requiredTrophies</param>
-        /// <param name="tag">tag</param>
-        /// <param name="warLeague">warLeague</param>
-        /// <param name="warLosses">warLosses</param>
-        /// <param name="warTies">warTies</param>
-        /// <param name="warWinStreak">warWinStreak</param>
-        /// <param name="warWins">warWins</param>
-        /// <param name="chatLanguage">chatLanguage</param>
-        /// <param name="location">location</param>
-        /// <param name="type">type</param>
-        /// <param name="warFrequency">warFrequency</param>
-        [JsonConstructor]
-        public Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int? warLosses, int? warTies, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default)
-        {
-            BadgeUrls = badgeUrls;
-            CapitalLeague = capitalLeague;
-            ClanCapital = clanCapital;
-            ClanLevel = clanLevel;
-            ClanPoints = clanPoints;
-            ClanVersusPoints = clanVersusPoints;
-            Description = description;
-            IsWarLogPublic = isWarLogPublic;
-            Labels = labels;
-            Members = members;
-            Name = name;
-            RequiredTrophies = requiredTrophies;
-            Tag = tag;
-            WarLeague = warLeague;
-            WarLosses = warLosses;
-            WarTies = warTies;
-            WarWinStreak = warWinStreak;
-            WarWins = warWins;
-            ChatLanguage = chatLanguage;
-            Location = location;
-            Type = type;
-            WarFrequency = warFrequency;
-            IsFamilyFriendly = isFamilyFriendly;
-            OnCreated();
-        }
-
-        /// <summary>
         /// Gets or Sets MemberList
         /// </summary>
         [JsonPropertyName("memberList")]

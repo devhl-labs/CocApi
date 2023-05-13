@@ -47,69 +47,6 @@ java -jar $generator generate `
     -t $templates.Path `
     --release-note $releaseNote
 
-
-$clanConstructor = @"
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Clan" /> class.
-        /// </summary>
-        /// <param name="badgeUrls">badgeUrls</param>
-        /// <param name="capitalLeague">capitalLeague</param>
-        /// <param name="clanCapital">clanCapital</param>
-        /// <param name="clanLevel">clanLevel</param>
-        /// <param name="clanPoints">clanPoints</param>
-        /// <param name="clanVersusPoints">clanVersusPoints</param>
-        /// <param name="description">description</param>
-        /// <param name="isFamilyFriendly">isFamilyFriendly</param>
-        /// <param name="isWarLogPublic">isWarLogPublic</param>
-        /// <param name="labels">labels</param>
-        /// <param name="memberList">memberList</param>
-        /// <param name="members">members</param>
-        /// <param name="name">name</param>
-        /// <param name="requiredTrophies">requiredTrophies</param>
-        /// <param name="tag">tag</param>
-        /// <param name="warLeague">warLeague</param>
-        /// <param name="warWinStreak">warWinStreak</param>
-        /// <param name="warWins">warWins</param>
-        /// <param name="chatLanguage">chatLanguage</param>
-        /// <param name="location">location</param>
-        /// <param name="type">type</param>
-        /// <param name="warFrequency">warFrequency</param>
-        /// <param name="warLosses">warLosses</param>
-        /// <param name="warTies">warTies</param>
-        [JsonConstructor]
-        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
-        {
-            BadgeUrls = badgeUrls;
-            CapitalLeague = capitalLeague;
-            ClanCapital = clanCapital;
-            ClanLevel = clanLevel;
-            ClanPoints = clanPoints;
-            ClanVersusPoints = clanVersusPoints;
-            Description = description;
-            IsFamilyFriendly = isFamilyFriendly;
-            IsWarLogPublic = isWarLogPublic;
-            Labels = labels;
-            MemberList = memberList;
-            Members = members;
-            Name = name;
-            RequiredTrophies = requiredTrophies;
-            Tag = tag;
-            WarLeague = warLeague;
-            WarWinStreak = warWinStreak;
-            WarWins = warWins;
-            ChatLanguage = chatLanguage;
-            Location = location;
-            Type = type;
-            WarFrequency = warFrequency;
-            WarLosses = warLosses;
-            WarTies = warTies;
-            OnCreated();
-        }
-
-
-"@
-
-
 $membersProperty = @"
         /// <summary>
         /// Gets or Sets MemberList
@@ -489,7 +426,9 @@ foreach ($file in $allCodeFiles)
     }
 
     if ($file.name -eq "Clan.cs"){
-        $content = $content.Replace($clanConstructor, "")
+        $content = $content.Replace("MemberList = memberList;`r`n            ", "")
+        $content = $content.Replace("List<ClanMember> memberList, int members", "List<ClanMember> members")
+
         $content = $content.Replace($membersProperty, "")
         $content=$content.Replace($memberListHash, "")
         $content=$content.Replace($membersEquals, "")
@@ -498,16 +437,11 @@ foreach ($file in $allCodeFiles)
         $content=$content.Replace($membersConverter, "")
         $content=$content.Replace("            int members = default;
 ", '')
-        $content=$content.Replace("members, ", "")
+        $content=$content.Replace("memberList, members,", "memberList,")
 
         $content=$content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
         $content=$content.Replace("            writer.WriteNumber(`"members`", clan.Members);
 ", "")
-
-        # this is an openapi bug and should not be required
-        $content=$content.Replace(
-            "return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);",
-            "return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warLosses, warTies, warWinStreak, warWins, chatLanguage, location, type, warFrequency);")
 
         $content=$content.Replace($memberListDeserialization, $memberListDeserializationReplacement)
     }
