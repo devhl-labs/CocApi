@@ -63,11 +63,6 @@ $membersProperty = @"
 
 "@
 
-$memberListHash = @"
-                hashCode = (hashCode * 59) + MemberList.GetHashCode();
-
-"@
-
 $membersEquals = @"
                 (
                     MemberList == input.MemberList ||
@@ -428,23 +423,37 @@ foreach ($file in $allCodeFiles)
     if ($file.name -eq "Clan.cs"){
         $content = $content.Replace("MemberList = memberList;`r`n            ", "")
         $content = $content.Replace("List<ClanMember> memberList, int members", "List<ClanMember> members")
-
         $content = $content.Replace($membersProperty, "")
-        $content=$content.Replace($memberListHash, "")
-        $content=$content.Replace($membersEquals, "")
-        $content=$content.Replace('            sb.Append("  MemberList: ").Append(MemberList).Append("\n");
-', '')
-        $content=$content.Replace($membersConverter, "")
-        $content=$content.Replace("            int members = default;
-", '')
-        $content=$content.Replace("memberList, members,", "memberList,")
+        $content = $content.Replace("hashCode = (hashCode * 59) + MemberList.GetHashCode();`r`n                ", "")
+        $content = $content.Replace($membersEquals, "")
+        $content = $content.Replace("sb.Append(`"  MemberList: `").Append(MemberList).Append(`"\n`");`r`n            ", '')
+        $content = $content.Replace($membersConverter, "")
+        $content = $content.Replace("int members = default;`r`n            ", '')
+        $content = $content.Replace("memberList, members,", "memberList,")
 
-        $content=$content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
-        $content=$content.Replace("            writer.WriteNumber(`"members`", clan.Members);
-", "")
+        $content = $content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
+        $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);`r`n            ", "")
 
-        $content=$content.Replace($memberListDeserialization, $memberListDeserializationReplacement)
+        # $content=$content.Replace($memberListDeserialization, $memberListDeserializationReplacement)
+        $content = $content.Replace("if (members == null)", "if (memberList == null)")
+        $content = $content.Replace("ArgumentNullException(nameof(members)", "ArgumentNullException(nameof(memberList)")
     }
+
+
+
+#     $memberListDeserialization = @"
+#             if (members == null)
+#                 throw new ArgumentNullException(nameof(members), "Property is required for class Clan.");
+
+
+# "@
+
+# $memberListDeserializationReplacement = @"
+#             if (memberList == null)
+#                 throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
+
+
+# "@
 
     if ($file.name -eq "Role.cs"){
         # here for legacy reasons
@@ -497,10 +506,6 @@ foreach ($file in $allCodeFiles)
     if ($file.name -eq "DeveloperApi.cs"){
         $content = $content.Replace($apiKey, "")
         $content = $content.Replace($tokenRateLimit, "")
-    }
-
-    if ($file.name -eq "ClanWarLeagueGroup.cs"){
-        $content = $content.Replace("public static string SeasonFormat { get; set; } = `"yyyy-MM-dd`";", "public static string SeasonFormat { get; set; } = `"yyyy-MM`";")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {

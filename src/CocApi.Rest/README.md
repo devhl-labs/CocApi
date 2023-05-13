@@ -143,7 +143,7 @@ Authentication schemes defined for the API:
 
 ## Build
 - SDK version: 2.1.1
-- Build date: 2023-05-12T22:56:26.393123600-04:00[America/New_York]
+- Build date: 2023-05-12T23:12:54.167129500-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpNetCoreClientCodegen
 
 ## Api Information
