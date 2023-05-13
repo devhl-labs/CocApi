@@ -118,20 +118,6 @@ $clanWarMemberConstructor = @"
 
 "@
 
-$memberListDeserialization = @"
-            if (members == null)
-                throw new ArgumentNullException(nameof(members), "Property is required for class Clan.");
-
-
-"@
-
-$memberListDeserializationReplacement = @"
-            if (memberList == null)
-                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
-
-
-"@
-
 $warPreference = @"
     public enum WarPreference
     {
@@ -434,26 +420,9 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
         $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);`r`n            ", "")
 
-        # $content=$content.Replace($memberListDeserialization, $memberListDeserializationReplacement)
         $content = $content.Replace("if (members == null)", "if (memberList == null)")
         $content = $content.Replace("ArgumentNullException(nameof(members)", "ArgumentNullException(nameof(memberList)")
     }
-
-
-
-#     $memberListDeserialization = @"
-#             if (members == null)
-#                 throw new ArgumentNullException(nameof(members), "Property is required for class Clan.");
-
-
-# "@
-
-# $memberListDeserializationReplacement = @"
-#             if (memberList == null)
-#                 throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
-
-
-# "@
 
     if ($file.name -eq "Role.cs"){
         # here for legacy reasons
