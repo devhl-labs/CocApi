@@ -31,37 +31,37 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Enum Unknown for value: unknown
         /// </summary>
-        Unknown = 1,
+        Unknown,
 
         /// <summary>
         /// Enum Never for value: never
         /// </summary>
-        Never = 2,
+        Never,
 
         /// <summary>
         /// Enum LessThanOncePerWeek for value: lessThanOncePerWeek
         /// </summary>
-        LessThanOncePerWeek = 3,
+        LessThanOncePerWeek,
 
         /// <summary>
         /// Enum OncePerWeek for value: oncePerWeek
         /// </summary>
-        OncePerWeek = 4,
+        OncePerWeek,
 
         /// <summary>
         /// Enum MoreThanOncePerWeek for value: moreThanOncePerWeek
         /// </summary>
-        MoreThanOncePerWeek = 5,
+        MoreThanOncePerWeek,
 
         /// <summary>
         /// Enum Always for value: always
         /// </summary>
-        Always = 6,
+        Always,
 
         /// <summary>
         /// Enum Any for value: any
         /// </summary>
-        Any = 7
+        Any
 
     }
 

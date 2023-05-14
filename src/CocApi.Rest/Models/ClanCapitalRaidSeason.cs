@@ -71,17 +71,17 @@ namespace CocApi.Rest.Models
             /// <summary>
             /// Enum Unknown for value: unknown
             /// </summary>
-            Unknown = 0,
+            Unknown,
 
             /// <summary>
             /// Enum Ongoing for value: ongoing
             /// </summary>
-            Ongoing = 1,
+            Ongoing,
 
             /// <summary>
             /// Enum Ended for value: ended
             /// </summary>
-            Ended = 2
+            Ended
 
         }
 

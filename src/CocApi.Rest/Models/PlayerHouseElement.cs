@@ -51,32 +51,32 @@ namespace CocApi.Rest.Models
             /// <summary>
             /// Enum Unknown for value: unknown
             /// </summary>
-            Unknown = 1,
+            Unknown,
 
             /// <summary>
             /// Enum Ground for value: ground
             /// </summary>
-            Ground = 2,
+            Ground,
 
             /// <summary>
             /// Enum Roof for value: roof
             /// </summary>
-            Roof = 3,
+            Roof,
 
             /// <summary>
             /// Enum Foot for value: foot
             /// </summary>
-            Foot = 4,
+            Foot,
 
             /// <summary>
             /// Enum Decoration for value: decoration
             /// </summary>
-            Decoration = 5,
+            Decoration,
 
             /// <summary>
             /// Enum Walls for value: walls
             /// </summary>
-            Walls = 6
+            Walls
 
         }
 
