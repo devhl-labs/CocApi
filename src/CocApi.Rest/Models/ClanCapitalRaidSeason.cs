@@ -82,7 +82,6 @@ namespace CocApi.Rest.Models
             /// Enum Ended for value: ended
             /// </summary>
             Ended
-
         }
 
         /// <summary>

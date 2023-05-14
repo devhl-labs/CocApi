@@ -47,7 +47,6 @@ namespace CocApi.Rest.Models
         /// Enum Leader for value: leader
         /// </summary>
         Leader = 30
-
     }
 
     public class RoleConverter : JsonConverter<Role>

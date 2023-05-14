@@ -47,7 +47,6 @@ namespace CocApi.Rest.Models
         /// Enum WarEnded for value: warEnded
         /// </summary>
         WarEnded = 4
-
     }
 
     public class WarStateConverter : JsonConverter<WarState>

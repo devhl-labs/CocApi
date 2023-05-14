@@ -37,7 +37,6 @@ namespace CocApi.Rest.Models
         /// Enum In for value: in
         /// </summary>
         In = 2
-
     }
 
     public class WarPreferenceConverter : JsonConverter<WarPreference>

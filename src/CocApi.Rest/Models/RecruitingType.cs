@@ -42,7 +42,6 @@ namespace CocApi.Rest.Models
         /// Enum Open for value: open
         /// </summary>
         Open = 3
-
     }
 
     public class RecruitingTypeConverter : JsonConverter<RecruitingType>

@@ -62,7 +62,6 @@ namespace CocApi.Rest.Models
         /// Enum Any for value: any
         /// </summary>
         Any
-
     }
 
     public class WarFrequencyConverter : JsonConverter<WarFrequency>

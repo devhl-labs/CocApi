@@ -42,7 +42,6 @@ namespace CocApi.Rest.Models
         /// Enum Ended for value: ended
         /// </summary>
         Ended = 3
-
     }
 
     public class GroupStateConverter : JsonConverter<GroupState>

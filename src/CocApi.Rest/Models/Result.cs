@@ -42,7 +42,6 @@ namespace CocApi.Rest.Models
         /// Enum Win for value: win
         /// </summary>
         Win = 1,
-
     }
 
     public class ResultConverter : JsonConverter<Result>

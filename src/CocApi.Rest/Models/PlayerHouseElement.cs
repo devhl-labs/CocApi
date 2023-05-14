@@ -77,7 +77,6 @@ namespace CocApi.Rest.Models
             /// Enum Walls for value: walls
             /// </summary>
             Walls
-
         }
 
         /// <summary>

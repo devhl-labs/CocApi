@@ -37,7 +37,6 @@ namespace CocApi.Rest.Models
         /// Enum BuilderBase for value: builderBase
         /// </summary>
         BuilderBase = 2
-
     }
 
     public class VillageTypeConverter : JsonConverter<VillageType>

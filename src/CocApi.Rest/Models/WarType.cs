@@ -47,7 +47,6 @@ namespace CocApi.Rest.Models
         /// Enum SCCWL for value: sccwl
         /// </summary>
         SCCWL
-
     }
 
     public class WarTypeConverter : JsonConverter<WarType>
