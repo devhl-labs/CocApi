@@ -38,8 +38,19 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;CapitalLeague?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;CapitalLeague&gt;&gt;</returns>
         Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get capital league information
+        /// </summary>
+        /// <remarks>
+        /// Get capital league information
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;CapitalLeague&gt;?&gt;</returns>
+        Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// List capital leagues
@@ -52,8 +63,21 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;CapitalLeagueObject?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;CapitalLeagueObject&gt;&gt;</returns>
         Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List capital leagues
+        /// </summary>
+        /// <remarks>
+        /// List capital leagues
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;CapitalLeagueObject&gt;?&gt;</returns>
+        Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Get league information
@@ -64,8 +88,19 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;League?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;League&gt;&gt;</returns>
         Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get league information
+        /// </summary>
+        /// <remarks>
+        /// Get league information
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;League&gt;?&gt;</returns>
+        Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Get league season rankings
@@ -80,8 +115,23 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;PlayerRankingList?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;PlayerRankingList&gt;&gt;</returns>
         Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get league season rankings
+        /// </summary>
+        /// <remarks>
+        /// Get league season rankings. Note that league season information is available only for Legend League. 
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="seasonId">Identifier of the season.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;PlayerRankingList&gt;?&gt;</returns>
+        Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Get league seasons
@@ -95,8 +145,22 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;LeagueSeasonList?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;LeagueSeasonList&gt;&gt;</returns>
         Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get league seasons
+        /// </summary>
+        /// <remarks>
+        /// Get league seasons. Note that league season information is available only for Legend League. 
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;LeagueSeasonList&gt;?&gt;</returns>
+        Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// List leagues
@@ -109,8 +173,21 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;LeagueList?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;LeagueList&gt;&gt;</returns>
         Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List leagues
+        /// </summary>
+        /// <remarks>
+        /// List leagues
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;LeagueList&gt;?&gt;</returns>
+        Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Get war league information
@@ -121,8 +198,19 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;WarLeague?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;WarLeague&gt;&gt;</returns>
         Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get war league information
+        /// </summary>
+        /// <remarks>
+        /// Get war league information
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;WarLeague&gt;?&gt;</returns>
+        Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// List war leagues
@@ -135,8 +223,21 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;WarLeagueList?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;WarLeagueList&gt;&gt;</returns>
         Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List war leagues
+        /// </summary>
+        /// <remarks>
+        /// List war leagues
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;WarLeagueList&gt;?&gt;</returns>
+        Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -224,6 +325,24 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchCapitalLeague(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get capital league information Get capital league information
+        /// </summary>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
+        public async Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchCapitalLeagueAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -331,6 +450,26 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List capital leagues List capital leagues
+        /// </summary>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
+        public async Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchCapitalLeaguesAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -463,6 +602,24 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Get league information Get league information
         /// </summary>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
+        public async Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchLeagueAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get league information Get league information
+        /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -583,6 +740,28 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get league season rankings Get league season rankings. Note that league season information is available only for Legend League. 
+        /// </summary>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="seasonId">Identifier of the season.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
+        public async Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchLeagueSeasonRankingsAsync(leagueId, seasonId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -728,6 +907,27 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Get league seasons Get league seasons. Note that league season information is available only for Legend League. 
         /// </summary>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
+        public async Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchLeagueSeasonsAsync(leagueId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get league seasons Get league seasons. Note that league season information is available only for Legend League. 
+        /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
@@ -849,6 +1049,26 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List leagues List leagues
+        /// </summary>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
+        public async Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchLeaguesAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -981,6 +1201,24 @@ namespace CocApi.Rest.BaseApis
         /// <summary>
         /// Get war league information Get war league information
         /// </summary>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
+        public async Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchWarLeagueAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get war league information Get war league information
+        /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
@@ -1083,6 +1321,26 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List war leagues List war leagues
+        /// </summary>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
+        public async Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchWarLeaguesAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>

@@ -38,8 +38,19 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;Player?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;Player&gt;&gt;</returns>
         Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get player information
+        /// </summary>
+        /// <remarks>
+        /// Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
+        /// </remarks>
+        /// <param name="playerTag">Tag of the player.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;Player&gt;?&gt;</returns>
+        Task<ApiResponse<Player>?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// Verify player API token that can be found from the game settings.
@@ -51,8 +62,20 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="body">Request body</param>
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;VerifyTokenResponse?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;VerifyTokenResponse&gt;&gt;</returns>
         Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Verify player API token that can be found from the game settings.
+        /// </summary>
+        /// <remarks>
+        /// Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
+        /// </remarks>
+        /// <param name="body">Request body</param>
+        /// <param name="playerTag">Tag of the player.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;VerifyTokenResponse&gt;?&gt;</returns>
+        Task<ApiResponse<VerifyTokenResponse>?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -140,6 +163,24 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
+        /// </summary>
+        /// <param name="playerTag">Tag of the player.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Player"/></returns>
+        public async Task<ApiResponse<Player>?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchPlayerAsync(playerTag, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -256,6 +297,25 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorVerifyToken(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Verify player API token that can be found from the game settings. Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
+        /// </summary>
+        /// <param name="body">Request body</param>
+        /// <param name="playerTag">Tag of the player.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="VerifyTokenResponse"/></returns>
+        public async Task<ApiResponse<VerifyTokenResponse>?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await VerifyTokenAsync(body, playerTag, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>

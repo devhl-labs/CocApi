@@ -37,8 +37,18 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;GoldPassSeason?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;GoldPassSeason&gt;&gt;</returns>
         Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get information about the current gold pass season.
+        /// </summary>
+        /// <remarks>
+        /// Get information about the current gold pass season.
+        /// </remarks>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;GoldPassSeason&gt;?&gt;</returns>
+        Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -114,6 +124,23 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchCurrentGoldPassSeason(Exception exception, string pathFormat, string path)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get information about the current gold pass season. Get information about the current gold pass season.
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="GoldPassSeason"/></returns>
+        public async Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchCurrentGoldPassSeasonAsync(cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>

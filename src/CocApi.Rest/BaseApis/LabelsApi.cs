@@ -40,8 +40,21 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;LabelsObject?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;LabelsObject&gt;&gt;</returns>
         Task<ApiResponse<LabelsObject>> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List clan labels
+        /// </summary>
+        /// <remarks>
+        /// List clan labels
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;LabelsObject&gt;?&gt;</returns>
+        Task<ApiResponse<LabelsObject>?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
         /// List player labels
@@ -54,8 +67,21 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;LabelsObject?&gt;&gt;</returns>
+        /// <returns>Task&lt;ApiResponse&lt;LabelsObject&gt;&gt;</returns>
         Task<ApiResponse<LabelsObject>> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List player labels
+        /// </summary>
+        /// <remarks>
+        /// List player labels
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;LabelsObject&gt;?&gt;</returns>
+        Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -140,6 +166,26 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List clan labels List clan labels
+        /// </summary>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
+        public async Task<ApiResponse<LabelsObject>?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchClanLabelsAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -264,6 +310,26 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List player labels List player labels
+        /// </summary>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
+        public async Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchPlayerLabelsAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
