@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
@@ -70,6 +69,14 @@ namespace CocApi.Rest.Test.Model
         public void DestructionPercentTest()
         {
             // TODO unit test for the property 'DestructionPercent'
+        }
+        /// <summary>
+        /// Test the property 'Stars'
+        /// </summary>
+        [Fact]
+        public void StarsTest()
+        {
+            // TODO unit test for the property 'Stars'
         }
 
     }

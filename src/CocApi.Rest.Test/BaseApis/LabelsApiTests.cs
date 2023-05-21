@@ -61,7 +61,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchClanLabelsAsync(limit, after, before);
-            Assert.IsType<LabelsObject>(response);
+            var model = response.ToModel();
+            Assert.IsType<LabelsObject>(model);
         }
 
         /// <summary>
@@ -74,7 +75,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchPlayerLabelsAsync(limit, after, before);
-            Assert.IsType<LabelsObject>(response);
+            var model = response.ToModel();
+            Assert.IsType<LabelsObject>(model);
         }
     }
 }

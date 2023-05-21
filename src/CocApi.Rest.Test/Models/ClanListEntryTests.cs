@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
@@ -64,6 +63,14 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'BadgeUrls'
         }
         /// <summary>
+        /// Test the property 'ClanBuilderBasePoints'
+        /// </summary>
+        [Fact]
+        public void ClanBuilderBasePointsTest()
+        {
+            // TODO unit test for the property 'ClanBuilderBasePoints'
+        }
+        /// <summary>
         /// Test the property 'ClanLevel'
         /// </summary>
         [Fact]
@@ -78,14 +85,6 @@ namespace CocApi.Rest.Test.Model
         public void ClanPointsTest()
         {
             // TODO unit test for the property 'ClanPoints'
-        }
-        /// <summary>
-        /// Test the property 'ClanVersusPoints'
-        /// </summary>
-        [Fact]
-        public void ClanVersusPointsTest()
-        {
-            // TODO unit test for the property 'ClanVersusPoints'
         }
         /// <summary>
         /// Test the property 'IsWarLogPublic'

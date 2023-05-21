@@ -52,6 +52,58 @@ namespace CocApi.Rest.Test.BaseApis
 
 
         /// <summary>
+        /// Test GetBuilderBaseLeague
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetBuilderBaseLeagueAsyncTest()
+        {
+            string leagueId = default;
+            var response = await _instance.GetBuilderBaseLeagueAsync(leagueId);
+            var model = response.ToModel();
+            Assert.IsType<BuilderBaseLeague>(model);
+        }
+
+        /// <summary>
+        /// Test GetBuilderBaseLeagues
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetBuilderBaseLeaguesAsyncTest()
+        {
+            int? limit = default;
+            string? after = default;
+            string? before = default;
+            var response = await _instance.GetBuilderBaseLeaguesAsync(limit, after, before);
+            var model = response.ToModel();
+            Assert.IsType<BuilderBaseLeagueList>(model);
+        }
+
+        /// <summary>
+        /// Test GetCapitalLeague
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetCapitalLeagueAsyncTest()
+        {
+            string leagueId = default;
+            var response = await _instance.GetCapitalLeagueAsync(leagueId);
+            var model = response.ToModel();
+            Assert.IsType<CapitalLeague>(model);
+        }
+
+        /// <summary>
+        /// Test GetCapitalLeagues
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetCapitalLeaguesAsyncTest()
+        {
+            int? limit = default;
+            string? after = default;
+            string? before = default;
+            var response = await _instance.GetCapitalLeaguesAsync(limit, after, before);
+            var model = response.ToModel();
+            Assert.IsType<CapitalLeagueObject>(model);
+        }
+
+        /// <summary>
         /// Test GetLeague
         /// </summary>
         [Fact (Skip = "not implemented")]
@@ -59,7 +111,8 @@ namespace CocApi.Rest.Test.BaseApis
         {
             string leagueId = default;
             var response = await _instance.FetchLeagueAsync(leagueId);
-            Assert.IsType<League>(response);
+            var model = response.ToModel();
+            Assert.IsType<League>(model);
         }
 
         /// <summary>
@@ -74,7 +127,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchLeagueSeasonRankingsAsync(leagueId, seasonId, limit, after, before);
-            Assert.IsType<PlayerRankingList>(response);
+            var model = response.ToModel();
+            Assert.IsType<PlayerRankingList>(model);
         }
 
         /// <summary>
@@ -88,7 +142,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchLeagueSeasonsAsync(leagueId, limit, after, before);
-            Assert.IsType<LeagueSeasonList>(response);
+            var model = response.ToModel();
+            Assert.IsType<LeagueSeasonList>(model);
         }
 
         /// <summary>
@@ -101,7 +156,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchLeaguesAsync(limit, after, before);
-            Assert.IsType<LeagueList>(response);
+            var model = response.ToModel();
+            Assert.IsType<LeagueList>(model);
         }
 
         /// <summary>
@@ -112,7 +168,8 @@ namespace CocApi.Rest.Test.BaseApis
         {
             string leagueId = default;
             var response = await _instance.FetchWarLeagueAsync(leagueId);
-            Assert.IsType<WarLeague>(response);
+            var model = response.ToModel();
+            Assert.IsType<WarLeague>(model);
         }
 
         /// <summary>
@@ -125,7 +182,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchWarLeaguesAsync(limit, after, before);
-            Assert.IsType<WarLeagueList>(response);
+            var model = response.ToModel();
+            Assert.IsType<WarLeagueList>(model);
         }
     }
 }

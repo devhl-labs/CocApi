@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
@@ -96,6 +95,14 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'PreparationStartTime'
         }
         /// <summary>
+        /// Test the property 'ServerExpiration'
+        /// </summary>
+        [Fact]
+        public void ServerExpirationTest()
+        {
+            // TODO unit test for the property 'ServerExpiration'
+        }
+        /// <summary>
         /// Test the property 'StartTime'
         /// </summary>
         [Fact]
@@ -118,6 +125,14 @@ namespace CocApi.Rest.Test.Model
         public void StateTest()
         {
             // TODO unit test for the property 'State'
+        }
+        /// <summary>
+        /// Test the property 'WarTag'
+        /// </summary>
+        [Fact]
+        public void WarTagTest()
+        {
+            // TODO unit test for the property 'WarTag'
         }
 
     }

@@ -5,9 +5,9 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [optional] [readonly] 
+**ClanBuilderBasePoints** | **int** |  | [optional] [readonly] 
 **ClanLevel** | **int** |  | [optional] [readonly] 
 **ClanPoints** | **int** |  | [optional] [readonly] 
-**ClanVersusPoints** | **int** |  | [optional] [readonly] 
 **IsWarLogPublic** | **bool** |  | [optional] [readonly] 
 **Labels** | [**List&lt;Label&gt;**](Label.md) |  | [optional] [readonly] 
 **Members** | **int** |  | [optional] [readonly] 

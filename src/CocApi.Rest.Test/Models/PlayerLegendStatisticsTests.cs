@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
@@ -72,6 +71,14 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'LegendTrophies'
         }
         /// <summary>
+        /// Test the property 'BestBuilderBaseSeason'
+        /// </summary>
+        [Fact]
+        public void BestBuilderBaseSeasonTest()
+        {
+            // TODO unit test for the property 'BestBuilderBaseSeason'
+        }
+        /// <summary>
         /// Test the property 'BestSeason'
         /// </summary>
         [Fact]
@@ -80,12 +87,12 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'BestSeason'
         }
         /// <summary>
-        /// Test the property 'BestVersusSeason'
+        /// Test the property 'PreviousBuilderBaseSeason'
         /// </summary>
         [Fact]
-        public void BestVersusSeasonTest()
+        public void PreviousBuilderBaseSeasonTest()
         {
-            // TODO unit test for the property 'BestVersusSeason'
+            // TODO unit test for the property 'PreviousBuilderBaseSeason'
         }
         /// <summary>
         /// Test the property 'PreviousSeason'
@@ -94,14 +101,6 @@ namespace CocApi.Rest.Test.Model
         public void PreviousSeasonTest()
         {
             // TODO unit test for the property 'PreviousSeason'
-        }
-        /// <summary>
-        /// Test the property 'PreviousVersusSeason'
-        /// </summary>
-        [Fact]
-        public void PreviousVersusSeasonTest()
-        {
-            // TODO unit test for the property 'PreviousVersusSeason'
         }
 
     }

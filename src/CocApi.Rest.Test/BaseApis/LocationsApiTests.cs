@@ -52,6 +52,36 @@ namespace CocApi.Rest.Test.BaseApis
 
 
         /// <summary>
+        /// Test GetClanBuilderBaseRanking
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetClanBuilderBaseRankingAsyncTest()
+        {
+            string locationId = default;
+            int? limit = default;
+            string? after = default;
+            string? before = default;
+            var response = await _instance.FetchClanBuilderBaseRankingAsync(locationId, limit, after, before);
+            var model = response.ToModel();
+            Assert.IsType<ClanBuilderBaseRankingList>(model);
+        }
+
+        /// <summary>
+        /// Test GetClanCapitalRanking
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetClanCapitalRankingAsyncTest()
+        {
+            string locationId = default;
+            int? limit = default;
+            string? after = default;
+            string? before = default;
+            var response = await _instance.FetchClanCapitalRankingAsync(locationId, limit, after, before);
+            var model = response.ToModel();
+            Assert.IsType<ClanCapitalRankingObject>(model);
+        }
+
+        /// <summary>
         /// Test GetClanRanking
         /// </summary>
         [Fact (Skip = "not implemented")]
@@ -62,21 +92,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchClanRankingAsync(locationId, limit, after, before);
-            Assert.IsType<ClanRankingList>(response);
-        }
-
-        /// <summary>
-        /// Test GetClanVersusRanking
-        /// </summary>
-        [Fact (Skip = "not implemented")]
-        public async Task GetClanVersusRankingAsyncTest()
-        {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
-            var response = await _instance.FetchClanVersusRankingAsync(locationId, limit, after, before);
-            Assert.IsType<ClanVersusRankingList>(response);
+            var model = response.ToModel();
+            Assert.IsType<ClanRankingList>(model);
         }
 
         /// <summary>
@@ -87,7 +104,8 @@ namespace CocApi.Rest.Test.BaseApis
         {
             string locationId = default;
             var response = await _instance.FetchLocationAsync(locationId);
-            Assert.IsType<Location>(response);
+            var model = response.ToModel();
+            Assert.IsType<Location>(model);
         }
 
         /// <summary>
@@ -100,7 +118,23 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchLocationsAsync(limit, after, before);
-            Assert.IsType<LocationList>(response);
+            var model = response.ToModel();
+            Assert.IsType<LocationList>(model);
+        }
+
+        /// <summary>
+        /// Test GetPlayerBuilderBaseRanking
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetPlayerBuilderBaseRankingAsyncTest()
+        {
+            string locationId = default;
+            int? limit = default;
+            string? after = default;
+            string? before = default;
+            var response = await _instance.FetchPlayerBuilderBaseRankingAsync(locationId, limit, after, before);
+            var model = response.ToModel();
+            Assert.IsType<PlayerBuilderBaseRankingList>(model);
         }
 
         /// <summary>
@@ -114,21 +148,8 @@ namespace CocApi.Rest.Test.BaseApis
             string? after = default;
             string? before = default;
             var response = await _instance.FetchPlayerRankingAsync(locationId, limit, after, before);
-            Assert.IsType<PlayerRankingList>(response);
-        }
-
-        /// <summary>
-        /// Test GetPlayerVersusRanking
-        /// </summary>
-        [Fact (Skip = "not implemented")]
-        public async Task GetPlayerVersusRankingAsyncTest()
-        {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
-            var response = await _instance.FetchPlayerVersusRankingAsync(locationId, limit, after, before);
-            Assert.IsType<PlayerVersusRankingList>(response);
+            var model = response.ToModel();
+            Assert.IsType<PlayerRankingList>(model);
         }
     }
 }

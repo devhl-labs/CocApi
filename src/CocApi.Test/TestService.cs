@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Rest.IBaseApis;
 using CocApi.Rest.Models;
@@ -59,17 +60,19 @@ public class TestService : IHostedService
         var clan = await ClansApi.FetchClanAsync("#29Y8PRCJR");
         var devhlsLab = await ClansApi.FetchClanAsync("#28RUGUYJU");
         var playerGlobalRankings = await LocationsApi.FetchPlayerRankingAsync("global");
-        var playerVersusGlobalRankings = await LocationsApi.FetchPlayerVersusRankingAsync("global");
+        //var playerVersusGlobalRankings = await LocationsApi.FetchPlayerBuilderBaseRankingAsync("global"); // this endpoint is broken
         var clanGlobalRankings = await LocationsApi.FetchClanRankingAsync("global");
-        var clanGlobalVersusRankings = await LocationsApi.FetchClanVersusRankingAsync("global");
+        var clanGlobalVersusRankings = await LocationsApi.FetchClanBuilderBaseRankingAsync("global");
         var leagueList = await LeaguesApi.FetchWarLeaguesAsync();
         var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
         var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         var clans = await ClansApi.SearchClansAsync(name: "fysb");
         var clanCapitalRaidSeasons = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
         var clanCapitalRanking = await LocationsApi.FetchClanCapitalRankingAsync("global");
-        var b = await LeaguesApi.FetchCapitalLeaguesAsync();
-        var a = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
-        System.Console.WriteLine();
+        var capitalLeagues = await LeaguesApi.FetchCapitalLeaguesAsync();
+        var capitalLeague = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
+        var builderBaseLeagues = await LeaguesApi.FetchBuilderBaseLeaguesAsync();
+        var builderBaseLeague = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeagues.ToModel()!.Items.First().Id.ToString());
+        System.Console.WriteLine("Done sanity check.");
     }
 }

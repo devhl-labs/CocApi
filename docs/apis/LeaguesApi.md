@@ -4,6 +4,8 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 
 | Method | HTTP request | Description |
 |--------|--------------|-------------|
+| [**GetBuilderBaseLeague**](LeaguesApi.md#getbuilderbaseleague) | **GET** /builderbaseleagues/{leagueId} | Get Builder Base league information |
+| [**GetBuilderBaseLeagues**](LeaguesApi.md#getbuilderbaseleagues) | **GET** /builderbaseleagues | List Builder Base leagues |
 | [**GetCapitalLeague**](LeaguesApi.md#getcapitalleague) | **GET** /capitalleagues/{leagueId} | Get capital league information |
 | [**GetCapitalLeagues**](LeaguesApi.md#getcapitalleagues) | **GET** /capitalleagues | List capital leagues |
 | [**GetLeague**](LeaguesApi.md#getleague) | **GET** /leagues/{leagueId} | Get league information |
@@ -12,6 +14,214 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetLeagues**](LeaguesApi.md#getleagues) | **GET** /leagues | List leagues |
 | [**GetWarLeague**](LeaguesApi.md#getwarleague) | **GET** /warleagues/{leagueId} | Get war league information |
 | [**GetWarLeagues**](LeaguesApi.md#getwarleagues) | **GET** /warleagues | List war leagues |
+
+<a id="getbuilderbaseleague"></a>
+# **GetBuilderBaseLeague**
+> BuilderBaseLeague GetBuilderBaseLeague (string leagueId)
+
+Get Builder Base league information
+
+Get Builder Base league information
+
+### Example
+```csharp
+using System.Collections.Generic;
+using System.Diagnostics;
+using CocApi.Rest.BaseApis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
+
+namespace Example
+{
+    public class GetBuilderBaseLeagueExample
+    {
+        public static void Main()
+        {
+            Configuration config = new Configuration();
+            config.BasePath = "https://api.clashofclans.com/v1";
+            // Configure API key authorization: JWT
+            config.AddApiKey("authorization", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // config.AddApiKeyPrefix("authorization", "Bearer");
+
+            var apiInstance = new LeaguesApi(config);
+            var leagueId = "leagueId_example";  // string | Identifier of the league.
+
+            try
+            {
+                // Get Builder Base league information
+                BuilderBaseLeague result = apiInstance.GetBuilderBaseLeague(leagueId);
+                Debug.WriteLine(result);
+            }
+            catch (ApiException  e)
+            {
+                Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeague: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
+                Debug.Print(e.StackTrace);
+            }
+        }
+    }
+}
+```
+
+#### Using the GetBuilderBaseLeagueWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // Get Builder Base league information
+    ApiResponse<BuilderBaseLeague> response = apiInstance.GetBuilderBaseLeagueWithHttpInfo(leagueId);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeagueWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueId** | **string** | Identifier of the league. |  |
+
+### Return type
+
+[**BuilderBaseLeague**](BuilderBaseLeague.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful response |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+<a id="getbuilderbaseleagues"></a>
+# **GetBuilderBaseLeagues**
+> BuilderBaseLeagueList GetBuilderBaseLeagues (int? limit = null, string? after = null, string? before = null)
+
+List Builder Base leagues
+
+List Builder Base leagues
+
+### Example
+```csharp
+using System.Collections.Generic;
+using System.Diagnostics;
+using CocApi.Rest.BaseApis;
+using CocApi.Rest.Client;
+using CocApi.Rest.Models;
+
+namespace Example
+{
+    public class GetBuilderBaseLeaguesExample
+    {
+        public static void Main()
+        {
+            Configuration config = new Configuration();
+            config.BasePath = "https://api.clashofclans.com/v1";
+            // Configure API key authorization: JWT
+            config.AddApiKey("authorization", "YOUR_API_KEY");
+            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+            // config.AddApiKeyPrefix("authorization", "Bearer");
+
+            var apiInstance = new LeaguesApi(config);
+            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+
+            try
+            {
+                // List Builder Base leagues
+                BuilderBaseLeagueList result = apiInstance.GetBuilderBaseLeagues(limit, after, before);
+                Debug.WriteLine(result);
+            }
+            catch (ApiException  e)
+            {
+                Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeagues: " + e.Message);
+                Debug.Print("Status Code: " + e.ErrorCode);
+                Debug.Print(e.StackTrace);
+            }
+        }
+    }
+}
+```
+
+#### Using the GetBuilderBaseLeaguesWithHttpInfo variant
+This returns an ApiResponse object which contains the response data, status code and headers.
+
+```csharp
+try
+{
+    // List Builder Base leagues
+    ApiResponse<BuilderBaseLeagueList> response = apiInstance.GetBuilderBaseLeaguesWithHttpInfo(limit, after, before);
+    Debug.Write("Status Code: " + response.StatusCode);
+    Debug.Write("Response Headers: " + response.Headers);
+    Debug.Write("Response Body: " + response.Data);
+}
+catch (ApiException e)
+{
+    Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeaguesWithHttpInfo: " + e.Message);
+    Debug.Print("Status Code: " + e.ErrorCode);
+    Debug.Print(e.StackTrace);
+}
+```
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+
+### Return type
+
+[**BuilderBaseLeagueList**](BuilderBaseLeagueList.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful response |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 <a id="getcapitalleague"></a>
 # **GetCapitalLeague**
@@ -105,12 +315,12 @@ catch (ApiException e)
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **400** | Client provided incorrect parameters for the request. |  -  |
-| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
-| **404** | Resource was not found. |  -  |
-| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
-| **500** | Unknown error happened when handling the request. |  -  |
-| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+| **400** |  |  -  |
+| **403** |  |  -  |
+| **404** |  |  -  |
+| **429** |  |  -  |
+| **500** |  |  -  |
+| **503** |  |  -  |
 | **200** | Successful response |  -  |
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
@@ -211,12 +421,12 @@ catch (ApiException e)
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **400** | Client provided incorrect parameters for the request. |  -  |
-| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
-| **404** | Resource was not found. |  -  |
-| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
-| **500** | Unknown error happened when handling the request. |  -  |
-| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+| **400** |  |  -  |
+| **403** |  |  -  |
+| **404** |  |  -  |
+| **429** |  |  -  |
+| **500** |  |  -  |
+| **503** |  |  -  |
 | **200** | Successful response |  -  |
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)

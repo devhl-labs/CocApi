@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
@@ -55,6 +54,22 @@ namespace CocApi.Rest.Test.Model
         }
 
 
+        /// <summary>
+        /// Test the property 'BuilderBaseLeague'
+        /// </summary>
+        [Fact]
+        public void BuilderBaseLeagueTest()
+        {
+            // TODO unit test for the property 'BuilderBaseLeague'
+        }
+        /// <summary>
+        /// Test the property 'BuilderBaseTrophies'
+        /// </summary>
+        [Fact]
+        public void BuilderBaseTrophiesTest()
+        {
+            // TODO unit test for the property 'BuilderBaseTrophies'
+        }
         /// <summary>
         /// Test the property 'ClanRank'
         /// </summary>
@@ -134,6 +149,14 @@ namespace CocApi.Rest.Test.Model
         public void VersusTrophiesTest()
         {
             // TODO unit test for the property 'VersusTrophies'
+        }
+        /// <summary>
+        /// Test the property 'PlayerHouse'
+        /// </summary>
+        [Fact]
+        public void PlayerHouseTest()
+        {
+            // TODO unit test for the property 'PlayerHouse'
         }
         /// <summary>
         /// Test the property 'Role'

@@ -4,6 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**BuilderBaseLeague** | [**BuilderBaseLeague**](BuilderBaseLeague.md) |  | [optional] [readonly] 
+**BuilderBaseTrophies** | **int** |  | [optional] [readonly] 
 **ClanRank** | **int** |  | [optional] [readonly] 
 **Donations** | **int** |  | [optional] [readonly] 
 **DonationsReceived** | **int** |  | [optional] [readonly] 

@@ -30,6 +30,35 @@ namespace CocApi.Rest.IBaseApis
     public interface ILocationsApi : IApi
     {
         /// <summary>
+        /// Get clan versus rankings for a specific location
+        /// </summary>
+        /// <remarks>
+        /// Get clan versus rankings for a specific location
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&lt;ClanBuilderBaseRankingList&gt;&gt;</returns>
+        Task<ApiResponse<ClanBuilderBaseRankingList>> FetchClanBuilderBaseRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get clan versus rankings for a specific location
+        /// </summary>
+        /// <remarks>
+        /// Get clan versus rankings for a specific location
+        /// </remarks>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;ClanBuilderBaseRankingList&gt;?&gt;</returns>
+        Task<ApiResponse<ClanBuilderBaseRankingList>?> FetchClanBuilderBaseRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
         /// Get capital rankings for a specific location
         /// </summary>
         /// <remarks>
@@ -88,35 +117,6 @@ namespace CocApi.Rest.IBaseApis
         Task<ApiResponse<ClanRankingList>?> FetchClanRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
-        /// Get clan versus rankings for a specific location
-        /// </summary>
-        /// <remarks>
-        /// Get clan versus rankings for a specific location
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;ClanVersusRankingList&gt;&gt;</returns>
-        Task<ApiResponse<ClanVersusRankingList>> FetchClanVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get clan versus rankings for a specific location
-        /// </summary>
-        /// <remarks>
-        /// Get clan versus rankings for a specific location
-        /// </remarks>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;ClanVersusRankingList&gt;?&gt;</returns>
-        Task<ApiResponse<ClanVersusRankingList>?> FetchClanVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
         /// Get location information
         /// </summary>
         /// <remarks>
@@ -167,6 +167,35 @@ namespace CocApi.Rest.IBaseApis
         Task<ApiResponse<LocationList>?> FetchLocationsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
 
         /// <summary>
+        /// Get player versus rankings for a specific location
+        /// </summary>
+        /// <remarks>
+        /// Get player versus rankings for a specific location
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&lt;PlayerBuilderBaseRankingList&gt;&gt;</returns>
+        Task<ApiResponse<PlayerBuilderBaseRankingList>> FetchPlayerBuilderBaseRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get player versus rankings for a specific location
+        /// </summary>
+        /// <remarks>
+        /// Get player versus rankings for a specific location
+        /// </remarks>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;PlayerBuilderBaseRankingList&gt;?&gt;</returns>
+        Task<ApiResponse<PlayerBuilderBaseRankingList>?> FetchPlayerBuilderBaseRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
         /// Get player rankings for a specific location
         /// </summary>
         /// <remarks>
@@ -194,35 +223,6 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;PlayerRankingList&gt;?&gt;</returns>
         Task<ApiResponse<PlayerRankingList>?> FetchPlayerRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get player versus rankings for a specific location
-        /// </summary>
-        /// <remarks>
-        /// Get player versus rankings for a specific location
-        /// </remarks>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;PlayerVersusRankingList&gt;&gt;</returns>
-        Task<ApiResponse<PlayerVersusRankingList>> FetchPlayerVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
-
-        /// <summary>
-        /// Get player versus rankings for a specific location
-        /// </summary>
-        /// <remarks>
-        /// Get player versus rankings for a specific location
-        /// </remarks>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;PlayerVersusRankingList&gt;?&gt;</returns>
-        Task<ApiResponse<PlayerVersusRankingList>?> FetchPlayerVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
     }
 }
 
@@ -270,6 +270,165 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
+        }
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <returns></returns>
+        protected virtual (string, int?, string?, string?) OnFetchClanBuilderBaseRanking(string locationId, int? limit, string? after, string? before)
+        {
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (locationId == null)
+                throw new ArgumentNullException(nameof(locationId));
+
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            return (locationId, limit, after, before);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void AfterFetchClanBuilderBaseRanking(ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        {
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void OnErrorFetchClanBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        {
+            Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
+        /// </summary>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanBuilderBaseRankingList"/></returns>
+        public async Task<ApiResponse<ClanBuilderBaseRankingList>?> FetchClanBuilderBaseRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchClanBuilderBaseRankingAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanBuilderBaseRankingList"/></returns>
+        public async Task<ApiResponse<ClanBuilderBaseRankingList>> FetchClanBuilderBaseRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
+
+            try
+            {
+                var validatedParameterLocalVars = OnFetchClanBuilderBaseRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
+
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
+                {
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-builder-base";
+
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (limit != null)
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
+
+                    if (after != null)
+                        parseQueryStringLocalVar["after"] = after.ToString();
+
+                    if (before != null)
+                        parseQueryStringLocalVar["before"] = before.ToString();
+
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
+
+                    string[] acceptLocalVars = new string[] { 
+                        "application/json" 
+                    };
+
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
+
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
+
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    {
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/clans-builder-base", uriBuilderLocalVar.Path));
+
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                        ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<ClanBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+
+                        AfterFetchClanBuilderBaseRanking(apiResponseLocalVar, locationId, limit, after, before);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
+
+                        return apiResponseLocalVar;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorFetchClanBuilderBaseRanking(e, "/locations/{locationId}/rankings/clans-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                throw;
+            }
         }
 
         /// <summary>
@@ -594,165 +753,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (string, int?, string?, string?) OnFetchClanVersusRanking(string locationId, int? limit, string? after, string? before)
-        {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (locationId == null)
-                throw new ArgumentNullException(nameof(locationId));
-
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (locationId, limit, after, before);
-        }
-
-        /// <summary>
-        /// Processes the server response
-        /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        protected virtual void AfterFetchClanVersusRanking(ApiResponse<ClanVersusRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
-        {
-        }
-
-        /// <summary>
-        /// Processes the server response
-        /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
-        /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanVersusRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
-        {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-        }
-
-        /// <summary>
-        /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
-        /// </summary>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanVersusRankingList"/></returns>
-        public async Task<ApiResponse<ClanVersusRankingList>?> FetchClanVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            try
-            {
-                return await FetchClanVersusRankingAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanVersusRankingList"/></returns>
-        public async Task<ApiResponse<ClanVersusRankingList>> FetchClanVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            UriBuilder uriBuilderLocalVar = new UriBuilder();
-
-            try
-            {
-                var validatedParameterLocalVars = OnFetchClanVersusRanking(locationId, limit, after, before);
-                locationId = validatedParameterLocalVars.Item1;
-                limit = validatedParameterLocalVars.Item2;
-                after = validatedParameterLocalVars.Item3;
-                before = validatedParameterLocalVars.Item4;
-
-                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
-                {
-                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
-                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-versus";
-
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
-
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
-
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
-
-                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
-
-                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
-                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
-                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
-
-                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
-
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
-                    };
-
-                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
-
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
-
-                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
-
-                    DateTime requestedAtLocalVar = DateTime.UtcNow;
-
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
-                    {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/clans-versus", uriBuilderLocalVar.Path));
-
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-
-                        ApiResponse<ClanVersusRankingList> apiResponseLocalVar = new ApiResponse<ClanVersusRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
-
-                        AfterFetchClanVersusRanking(apiResponseLocalVar, locationId, limit, after, before);
-
-                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
-                                tokenBaseLocalVar.BeginRateLimit();
-
-                        return apiResponseLocalVar;
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                OnErrorFetchClanVersusRanking(e, "/locations/{locationId}/rankings/clans-versus", uriBuilderLocalVar.Path, locationId, limit, after, before);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="locationId"></param>
         /// <returns></returns>
         protected virtual string OnFetchLocation(string locationId)
         {
@@ -1029,6 +1029,165 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <returns></returns>
+        protected virtual (string, int?, string?, string?) OnFetchPlayerBuilderBaseRanking(string locationId, int? limit, string? after, string? before)
+        {
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (locationId == null)
+                throw new ArgumentNullException(nameof(locationId));
+
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            return (locationId, limit, after, before);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void AfterFetchPlayerBuilderBaseRanking(ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        {
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void OnErrorFetchPlayerBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        {
+            Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get player versus rankings for a specific location Get player versus rankings for a specific location
+        /// </summary>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerBuilderBaseRankingList"/></returns>
+        public async Task<ApiResponse<PlayerBuilderBaseRankingList>?> FetchPlayerBuilderBaseRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchPlayerBuilderBaseRankingAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get player versus rankings for a specific location Get player versus rankings for a specific location
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="locationId">Identifier of the location to retrieve.</param>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerBuilderBaseRankingList"/></returns>
+        public async Task<ApiResponse<PlayerBuilderBaseRankingList>> FetchPlayerBuilderBaseRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
+
+            try
+            {
+                var validatedParameterLocalVars = OnFetchPlayerBuilderBaseRanking(locationId, limit, after, before);
+                locationId = validatedParameterLocalVars.Item1;
+                limit = validatedParameterLocalVars.Item2;
+                after = validatedParameterLocalVars.Item3;
+                before = validatedParameterLocalVars.Item4;
+
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
+                {
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-builder-base";
+
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (limit != null)
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
+
+                    if (after != null)
+                        parseQueryStringLocalVar["after"] = after.ToString();
+
+                    if (before != null)
+                        parseQueryStringLocalVar["before"] = before.ToString();
+
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
+
+                    string[] acceptLocalVars = new string[] { 
+                        "application/json" 
+                    };
+
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
+
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
+
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    {
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/players-builder-base", uriBuilderLocalVar.Path));
+
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                        ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<PlayerBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+
+                        AfterFetchPlayerBuilderBaseRanking(apiResponseLocalVar, locationId, limit, after, before);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
+
+                        return apiResponseLocalVar;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorFetchPlayerBuilderBaseRanking(e, "/locations/{locationId}/rankings/players-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <returns></returns>
         protected virtual (string, int?, string?, string?) OnFetchPlayerRanking(string locationId, int? limit, string? after, string? before)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1176,165 +1335,6 @@ namespace CocApi.Rest.BaseApis
             catch(Exception e)
             {
                 OnErrorFetchPlayerRanking(e, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path, locationId, limit, after, before);
-                throw;
-            }
-        }
-
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (string, int?, string?, string?) OnFetchPlayerVersusRanking(string locationId, int? limit, string? after, string? before)
-        {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            if (locationId == null)
-                throw new ArgumentNullException(nameof(locationId));
-
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (locationId, limit, after, before);
-        }
-
-        /// <summary>
-        /// Processes the server response
-        /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        protected virtual void AfterFetchPlayerVersusRanking(ApiResponse<PlayerVersusRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
-        {
-        }
-
-        /// <summary>
-        /// Processes the server response
-        /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
-        /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerVersusRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
-        {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-        }
-
-        /// <summary>
-        /// Get player versus rankings for a specific location Get player versus rankings for a specific location
-        /// </summary>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerVersusRankingList"/></returns>
-        public async Task<ApiResponse<PlayerVersusRankingList>?> FetchPlayerVersusRankingOrDefaultAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            try
-            {
-                return await FetchPlayerVersusRankingAsync(locationId, limit, after, before, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get player versus rankings for a specific location Get player versus rankings for a specific location
-        /// </summary>
-        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="locationId">Identifier of the location to retrieve.</param>
-        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
-        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
-        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerVersusRankingList"/></returns>
-        public async Task<ApiResponse<PlayerVersusRankingList>> FetchPlayerVersusRankingAsync(string locationId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
-        {
-            UriBuilder uriBuilderLocalVar = new UriBuilder();
-
-            try
-            {
-                var validatedParameterLocalVars = OnFetchPlayerVersusRanking(locationId, limit, after, before);
-                locationId = validatedParameterLocalVars.Item1;
-                limit = validatedParameterLocalVars.Item2;
-                after = validatedParameterLocalVars.Item3;
-                before = validatedParameterLocalVars.Item4;
-
-                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
-                {
-                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
-                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
-                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-versus";
-
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
-
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
-
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
-
-                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
-
-                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
-                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
-                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
-
-                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
-
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
-                    };
-
-                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
-
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
-
-                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
-
-                    DateTime requestedAtLocalVar = DateTime.UtcNow;
-
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
-                    {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/players-versus", uriBuilderLocalVar.Path));
-
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
-
-                        ApiResponse<PlayerVersusRankingList> apiResponseLocalVar = new ApiResponse<PlayerVersusRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
-
-                        AfterFetchPlayerVersusRanking(apiResponseLocalVar, locationId, limit, after, before);
-
-                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
-                                tokenBaseLocalVar.BeginRateLimit();
-
-                        return apiResponseLocalVar;
-                    }
-                }
-            }
-            catch(Exception e)
-            {
-                OnErrorFetchPlayerVersusRanking(e, "/locations/{locationId}/rankings/players-versus", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }

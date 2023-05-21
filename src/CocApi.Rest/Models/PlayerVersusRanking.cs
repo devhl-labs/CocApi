@@ -89,6 +89,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets VersusBattleWins
         /// </summary>
         [JsonPropertyName("versusBattleWins")]
+        [Obsolete]
         public int VersusBattleWins { get; }
 
         /// <summary>

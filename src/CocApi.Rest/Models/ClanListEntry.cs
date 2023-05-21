@@ -32,9 +32,9 @@ namespace CocApi.Rest.Models
         /// Initializes a new instance of the <see cref="ClanListEntry" /> class.
         /// </summary>
         /// <param name="badgeUrls">badgeUrls</param>
+        /// <param name="clanBuilderBasePoints">clanBuilderBasePoints</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="clanPoints">clanPoints</param>
-        /// <param name="clanVersusPoints">clanVersusPoints</param>
         /// <param name="isWarLogPublic">isWarLogPublic</param>
         /// <param name="labels">labels</param>
         /// <param name="members">members</param>
@@ -51,12 +51,12 @@ namespace CocApi.Rest.Models
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal ClanListEntry(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int clanVersusPoints, bool isWarLogPublic, List<Label> labels, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        internal ClanListEntry(BadgeUrls badgeUrls, int clanBuilderBasePoints, int clanLevel, int clanPoints, bool isWarLogPublic, List<Label> labels, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
         {
             BadgeUrls = badgeUrls;
+            ClanBuilderBasePoints = clanBuilderBasePoints;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
-            ClanVersusPoints = clanVersusPoints;
             IsWarLogPublic = isWarLogPublic;
             Labels = labels;
             Members = members;
@@ -96,6 +96,12 @@ namespace CocApi.Rest.Models
         public BadgeUrls BadgeUrls { get; }
 
         /// <summary>
+        /// Gets or Sets ClanBuilderBasePoints
+        /// </summary>
+        [JsonPropertyName("clanBuilderBasePoints")]
+        public int ClanBuilderBasePoints { get; }
+
+        /// <summary>
         /// Gets or Sets ClanLevel
         /// </summary>
         [JsonPropertyName("clanLevel")]
@@ -106,12 +112,6 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("clanPoints")]
         public int ClanPoints { get; }
-
-        /// <summary>
-        /// Gets or Sets ClanVersusPoints
-        /// </summary>
-        [JsonPropertyName("clanVersusPoints")]
-        public int ClanVersusPoints { get; }
 
         /// <summary>
         /// Gets or Sets IsWarLogPublic
@@ -200,9 +200,9 @@ namespace CocApi.Rest.Models
             StringBuilder sb = new StringBuilder();
             sb.Append("class ClanListEntry {\n");
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
+            sb.Append("  ClanBuilderBasePoints: ").Append(ClanBuilderBasePoints).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  ClanPoints: ").Append(ClanPoints).Append("\n");
-            sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  IsWarLogPublic: ").Append(IsWarLogPublic).Append("\n");
             sb.Append("  Labels: ").Append(Labels).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
@@ -249,6 +249,11 @@ namespace CocApi.Rest.Models
                     BadgeUrls.Equals(input.BadgeUrls))
                 ) && 
                 (
+                    ClanBuilderBasePoints == input.ClanBuilderBasePoints ||
+                    (ClanBuilderBasePoints != null &&
+                    ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints))
+                ) && 
+                (
                     ClanLevel == input.ClanLevel ||
                     (ClanLevel != null &&
                     ClanLevel.Equals(input.ClanLevel))
@@ -257,11 +262,6 @@ namespace CocApi.Rest.Models
                     ClanPoints == input.ClanPoints ||
                     (ClanPoints != null &&
                     ClanPoints.Equals(input.ClanPoints))
-                ) && 
-                (
-                    ClanVersusPoints == input.ClanVersusPoints ||
-                    (ClanVersusPoints != null &&
-                    ClanVersusPoints.Equals(input.ClanVersusPoints))
                 ) && 
                 (
                     IsWarLogPublic == input.IsWarLogPublic ||
@@ -351,9 +351,9 @@ namespace CocApi.Rest.Models
             {
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
+                hashCode = (hashCode * 59) + ClanBuilderBasePoints.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + ClanPoints.GetHashCode();
-                hashCode = (hashCode * 59) + ClanVersusPoints.GetHashCode();
                 hashCode = (hashCode * 59) + IsWarLogPublic.GetHashCode();
                 hashCode = (hashCode * 59) + Labels.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
@@ -410,9 +410,9 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
             BadgeUrls badgeUrls = default;
+            int clanBuilderBasePoints = default;
             int clanLevel = default;
             int clanPoints = default;
-            int clanVersusPoints = default;
             bool isWarLogPublic = default;
             List<Label> labels = default;
             int members = default;
@@ -448,6 +448,10 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
+                        case "clanBuilderBasePoints":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                clanBuilderBasePoints = utf8JsonReader.GetInt32();
+                            break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanLevel = utf8JsonReader.GetInt32();
@@ -455,10 +459,6 @@ namespace CocApi.Rest.Models
                         case "clanPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanPoints = utf8JsonReader.GetInt32();
-                            break;
-                        case "clanVersusPoints":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanVersusPoints = utf8JsonReader.GetInt32();
                             break;
                         case "isWarLogPublic":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -533,8 +533,8 @@ namespace CocApi.Rest.Models
             if (requiredTrophies == null)
                 throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class ClanListEntry.");
 
-            if (clanVersusPoints == null)
-                throw new ArgumentNullException(nameof(clanVersusPoints), "Property is required for class ClanListEntry.");
+            if (clanBuilderBasePoints == null)
+                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class ClanListEntry.");
 
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag), "Property is required for class ClanListEntry.");
@@ -569,7 +569,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanListEntry(badgeUrls, clanLevel, clanPoints, clanVersusPoints, isWarLogPublic, labels, members, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            return new ClanListEntry(badgeUrls, clanBuilderBasePoints, clanLevel, clanPoints, isWarLogPublic, labels, members, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>
@@ -585,9 +585,9 @@ namespace CocApi.Rest.Models
 
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanListEntry.BadgeUrls, jsonSerializerOptions);
+            writer.WriteNumber("clanBuilderBasePoints", clanListEntry.ClanBuilderBasePoints);
             writer.WriteNumber("clanLevel", clanListEntry.ClanLevel);
             writer.WriteNumber("clanPoints", clanListEntry.ClanPoints);
-            writer.WriteNumber("clanVersusPoints", clanListEntry.ClanVersusPoints);
             writer.WriteBoolean("isWarLogPublic", clanListEntry.IsWarLogPublic);
             writer.WritePropertyName("labels");
             JsonSerializer.Serialize(writer, clanListEntry.Labels, jsonSerializerOptions);

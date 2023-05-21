@@ -14,7 +14,6 @@ using System;
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using CocApi.Rest.BaseApis;
 using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Reflection;
@@ -64,14 +63,6 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'AttackCount'
         }
         /// <summary>
-        /// Test the property 'Attacks'
-        /// </summary>
-        [Fact]
-        public void AttacksTest()
-        {
-            // TODO unit test for the property 'Attacks'
-        }
-        /// <summary>
         /// Test the property 'DestructionPercent'
         /// </summary>
         [Fact]
@@ -104,12 +95,28 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'Name'
         }
         /// <summary>
+        /// Test the property 'Stars'
+        /// </summary>
+        [Fact]
+        public void StarsTest()
+        {
+            // TODO unit test for the property 'Stars'
+        }
+        /// <summary>
         /// Test the property 'TotalLooted'
         /// </summary>
         [Fact]
         public void TotalLootedTest()
         {
             // TODO unit test for the property 'TotalLooted'
+        }
+        /// <summary>
+        /// Test the property 'Attacks'
+        /// </summary>
+        [Fact]
+        public void AttacksTest()
+        {
+            // TODO unit test for the property 'Attacks'
         }
 
     }

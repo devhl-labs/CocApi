@@ -48,9 +48,13 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new DateTimeJsonConverter());
             _jsonOptions.Converters.Add(new DateTimeNullableJsonConverter());
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
+            _jsonOptions.Converters.Add(new BuilderBaseLeagueJsonConverter());
+            _jsonOptions.Converters.Add(new BuilderBaseLeagueListJsonConverter());
             _jsonOptions.Converters.Add(new CapitalLeagueJsonConverter());
             _jsonOptions.Converters.Add(new CapitalLeagueObjectJsonConverter());
             _jsonOptions.Converters.Add(new ClanJsonConverter());
+            _jsonOptions.Converters.Add(new ClanBuilderBaseRankingJsonConverter());
+            _jsonOptions.Converters.Add(new ClanBuilderBaseRankingListJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonJsonConverter());
             _jsonOptions.Converters.Add(new ClanCapitalRaidSeasonAttackJsonConverter());
@@ -69,8 +73,6 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new ClanMemberJsonConverter());
             _jsonOptions.Converters.Add(new ClanRankingJsonConverter());
             _jsonOptions.Converters.Add(new ClanRankingListJsonConverter());
-            _jsonOptions.Converters.Add(new ClanVersusRankingJsonConverter());
-            _jsonOptions.Converters.Add(new ClanVersusRankingListJsonConverter());
             _jsonOptions.Converters.Add(new ClanWarJsonConverter());
             _jsonOptions.Converters.Add(new ClanWarAttackJsonConverter());
             _jsonOptions.Converters.Add(new ClanWarLeagueClanJsonConverter());
@@ -104,6 +106,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new LoginResponseJsonConverter());
             _jsonOptions.Converters.Add(new PlayerJsonConverter());
             _jsonOptions.Converters.Add(new PlayerAchievementProgressJsonConverter());
+            _jsonOptions.Converters.Add(new PlayerBuilderBaseRankingJsonConverter());
+            _jsonOptions.Converters.Add(new PlayerBuilderBaseRankingListJsonConverter());
             _jsonOptions.Converters.Add(new PlayerClanJsonConverter());
             _jsonOptions.Converters.Add(new PlayerHouseJsonConverter());
             _jsonOptions.Converters.Add(new PlayerHouseElementJsonConverter());
@@ -112,8 +116,6 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new PlayerRankingJsonConverter());
             _jsonOptions.Converters.Add(new PlayerRankingClanJsonConverter());
             _jsonOptions.Converters.Add(new PlayerRankingListJsonConverter());
-            _jsonOptions.Converters.Add(new PlayerVersusRankingJsonConverter());
-            _jsonOptions.Converters.Add(new PlayerVersusRankingListJsonConverter());
             _jsonOptions.Converters.Add(new RecruitingTypeConverter());
             _jsonOptions.Converters.Add(new RecruitingTypeNullableConverter());
             _jsonOptions.Converters.Add(new ResultConverter());

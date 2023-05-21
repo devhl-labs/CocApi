@@ -354,6 +354,9 @@ namespace CocApi.Rest.Models
 #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
+            if (serverExpiration == null)
+                throw new ArgumentNullException(nameof(serverExpiration), "Property is required for class ClanWar.");
+
             if (clan == null)
                 throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWar.");
 
@@ -374,9 +377,6 @@ namespace CocApi.Rest.Models
 
             if (preparationStartTime == null)
                 throw new ArgumentNullException(nameof(preparationStartTime), "Property is required for class ClanWar.");
-
-            if (serverExpiration == null)
-                throw new ArgumentNullException(nameof(serverExpiration), "Property is required for class ClanWar.");
 
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'

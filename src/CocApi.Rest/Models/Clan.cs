@@ -33,10 +33,10 @@ namespace CocApi.Rest.Models
         /// </summary>
         /// <param name="badgeUrls">badgeUrls</param>
         /// <param name="capitalLeague">capitalLeague</param>
+        /// <param name="clanBuilderBasePoints">clanBuilderBasePoints</param>
         /// <param name="clanCapital">clanCapital</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="clanPoints">clanPoints</param>
-        /// <param name="clanVersusPoints">clanVersusPoints</param>
         /// <param name="description">description</param>
         /// <param name="isFamilyFriendly">isFamilyFriendly</param>
         /// <param name="isWarLogPublic">isWarLogPublic</param>
@@ -44,6 +44,7 @@ namespace CocApi.Rest.Models
         /// <param name="memberList">memberList</param>
         /// <param name="members">members</param>
         /// <param name="name">name</param>
+        /// <param name="requiredBuilderBaseTrophies">requiredBuilderBaseTrophies</param>
         /// <param name="requiredTrophies">requiredTrophies</param>
         /// <param name="tag">tag</param>
         /// <param name="warLeague">warLeague</param>
@@ -56,20 +57,21 @@ namespace CocApi.Rest.Models
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, ClanCapital clanCapital, int clanLevel, int clanPoints, int clanVersusPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, int clanBuilderBasePoints, ClanCapital clanCapital, int clanLevel, int clanPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredBuilderBaseTrophies, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
         {
             BadgeUrls = badgeUrls;
             CapitalLeague = capitalLeague;
+            ClanBuilderBasePoints = clanBuilderBasePoints;
             ClanCapital = clanCapital;
             ClanLevel = clanLevel;
             ClanPoints = clanPoints;
-            ClanVersusPoints = clanVersusPoints;
             Description = description;
             IsFamilyFriendly = isFamilyFriendly;
             IsWarLogPublic = isWarLogPublic;
             Labels = labels;
             Members = members;
             Name = name;
+            RequiredBuilderBaseTrophies = requiredBuilderBaseTrophies;
             RequiredTrophies = requiredTrophies;
             Tag = tag;
             WarLeague = warLeague;
@@ -111,6 +113,12 @@ namespace CocApi.Rest.Models
         public CapitalLeague CapitalLeague { get; }
 
         /// <summary>
+        /// Gets or Sets ClanBuilderBasePoints
+        /// </summary>
+        [JsonPropertyName("clanBuilderBasePoints")]
+        public int ClanBuilderBasePoints { get; }
+
+        /// <summary>
         /// Gets or Sets ClanCapital
         /// </summary>
         [JsonPropertyName("clanCapital")]
@@ -127,12 +135,6 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("clanPoints")]
         public int ClanPoints { get; }
-
-        /// <summary>
-        /// Gets or Sets ClanVersusPoints
-        /// </summary>
-        [JsonPropertyName("clanVersusPoints")]
-        public int ClanVersusPoints { get; }
 
         /// <summary>
         /// Gets or Sets Description
@@ -163,6 +165,12 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("name")]
         public string Name { get; }
+
+        /// <summary>
+        /// Gets or Sets RequiredBuilderBaseTrophies
+        /// </summary>
+        [JsonPropertyName("requiredBuilderBaseTrophies")]
+        public int RequiredBuilderBaseTrophies { get; }
 
         /// <summary>
         /// Gets or Sets RequiredTrophies
@@ -228,16 +236,17 @@ namespace CocApi.Rest.Models
             sb.Append("class Clan {\n");
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
             sb.Append("  CapitalLeague: ").Append(CapitalLeague).Append("\n");
+            sb.Append("  ClanBuilderBasePoints: ").Append(ClanBuilderBasePoints).Append("\n");
             sb.Append("  ClanCapital: ").Append(ClanCapital).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  ClanPoints: ").Append(ClanPoints).Append("\n");
-            sb.Append("  ClanVersusPoints: ").Append(ClanVersusPoints).Append("\n");
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  IsFamilyFriendly: ").Append(IsFamilyFriendly).Append("\n");
             sb.Append("  IsWarLogPublic: ").Append(IsWarLogPublic).Append("\n");
             sb.Append("  Labels: ").Append(Labels).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  RequiredBuilderBaseTrophies: ").Append(RequiredBuilderBaseTrophies).Append("\n");
             sb.Append("  RequiredTrophies: ").Append(RequiredTrophies).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  WarLeague: ").Append(WarLeague).Append("\n");
@@ -285,6 +294,11 @@ namespace CocApi.Rest.Models
                     CapitalLeague.Equals(input.CapitalLeague))
                 ) && 
                 (
+                    ClanBuilderBasePoints == input.ClanBuilderBasePoints ||
+                    (ClanBuilderBasePoints != null &&
+                    ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints))
+                ) && 
+                (
                     ClanCapital == input.ClanCapital ||
                     (ClanCapital != null &&
                     ClanCapital.Equals(input.ClanCapital))
@@ -298,11 +312,6 @@ namespace CocApi.Rest.Models
                     ClanPoints == input.ClanPoints ||
                     (ClanPoints != null &&
                     ClanPoints.Equals(input.ClanPoints))
-                ) && 
-                (
-                    ClanVersusPoints == input.ClanVersusPoints ||
-                    (ClanVersusPoints != null &&
-                    ClanVersusPoints.Equals(input.ClanVersusPoints))
                 ) && 
                 (
                     Description == input.Description ||
@@ -334,6 +343,11 @@ namespace CocApi.Rest.Models
                     Name == input.Name ||
                     (Name != null &&
                     Name.Equals(input.Name))
+                ) && 
+                (
+                    RequiredBuilderBaseTrophies == input.RequiredBuilderBaseTrophies ||
+                    (RequiredBuilderBaseTrophies != null &&
+                    RequiredBuilderBaseTrophies.Equals(input.RequiredBuilderBaseTrophies))
                 ) && 
                 (
                     RequiredTrophies == input.RequiredTrophies ||
@@ -403,16 +417,17 @@ namespace CocApi.Rest.Models
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
                 hashCode = (hashCode * 59) + CapitalLeague.GetHashCode();
+                hashCode = (hashCode * 59) + ClanBuilderBasePoints.GetHashCode();
                 hashCode = (hashCode * 59) + ClanCapital.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + ClanPoints.GetHashCode();
-                hashCode = (hashCode * 59) + ClanVersusPoints.GetHashCode();
                 hashCode = (hashCode * 59) + Description.GetHashCode();
                 hashCode = (hashCode * 59) + IsFamilyFriendly.GetHashCode();
                 hashCode = (hashCode * 59) + IsWarLogPublic.GetHashCode();
                 hashCode = (hashCode * 59) + Labels.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
+                hashCode = (hashCode * 59) + RequiredBuilderBaseTrophies.GetHashCode();
                 hashCode = (hashCode * 59) + RequiredTrophies.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
                 hashCode = (hashCode * 59) + WarLeague.GetHashCode();
@@ -466,16 +481,17 @@ namespace CocApi.Rest.Models
 
             BadgeUrls badgeUrls = default;
             CapitalLeague capitalLeague = default;
+            int clanBuilderBasePoints = default;
             ClanCapital clanCapital = default;
             int clanLevel = default;
             int clanPoints = default;
-            int clanVersusPoints = default;
             string description = default;
             bool isFamilyFriendly = default;
             bool isWarLogPublic = default;
             List<Label> labels = default;
             List<ClanMember> memberList = default;
             string name = default;
+            int requiredBuilderBaseTrophies = default;
             int requiredTrophies = default;
             string tag = default;
             WarLeague warLeague = default;
@@ -511,6 +527,10 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 capitalLeague = JsonSerializer.Deserialize<CapitalLeague>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
+                        case "clanBuilderBasePoints":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                clanBuilderBasePoints = utf8JsonReader.GetInt32();
+                            break;
                         case "clanCapital":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanCapital = JsonSerializer.Deserialize<ClanCapital>(ref utf8JsonReader, jsonSerializerOptions);
@@ -522,10 +542,6 @@ namespace CocApi.Rest.Models
                         case "clanPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanPoints = utf8JsonReader.GetInt32();
-                            break;
-                        case "clanVersusPoints":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanVersusPoints = utf8JsonReader.GetInt32();
                             break;
                         case "description":
                             description = utf8JsonReader.GetString();
@@ -548,6 +564,10 @@ namespace CocApi.Rest.Models
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
+                            break;
+                        case "requiredBuilderBaseTrophies":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                requiredBuilderBaseTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "requiredTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -610,8 +630,11 @@ namespace CocApi.Rest.Models
             if (requiredTrophies == null)
                 throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class Clan.");
 
-            if (clanVersusPoints == null)
-                throw new ArgumentNullException(nameof(clanVersusPoints), "Property is required for class Clan.");
+            if (requiredBuilderBaseTrophies == null)
+                throw new ArgumentNullException(nameof(requiredBuilderBaseTrophies), "Property is required for class Clan.");
+
+            if (clanBuilderBasePoints == null)
+                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class Clan.");
 
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag), "Property is required for class Clan.");
@@ -658,7 +681,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new Clan(badgeUrls, capitalLeague, clanCapital, clanLevel, clanPoints, clanVersusPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            return new Clan(badgeUrls, capitalLeague, clanBuilderBasePoints, clanCapital, clanLevel, clanPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredBuilderBaseTrophies, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>
@@ -676,11 +699,11 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clan.BadgeUrls, jsonSerializerOptions);
             writer.WritePropertyName("capitalLeague");
             JsonSerializer.Serialize(writer, clan.CapitalLeague, jsonSerializerOptions);
+            writer.WriteNumber("clanBuilderBasePoints", clan.ClanBuilderBasePoints);
             writer.WritePropertyName("clanCapital");
             JsonSerializer.Serialize(writer, clan.ClanCapital, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", clan.ClanLevel);
             writer.WriteNumber("clanPoints", clan.ClanPoints);
-            writer.WriteNumber("clanVersusPoints", clan.ClanVersusPoints);
             writer.WriteString("description", clan.Description);
             writer.WriteBoolean("isFamilyFriendly", clan.IsFamilyFriendly);
             writer.WriteBoolean("isWarLogPublic", clan.IsWarLogPublic);
@@ -689,6 +712,7 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("memberList");
             JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);
             writer.WriteString("name", clan.Name);
+            writer.WriteNumber("requiredBuilderBaseTrophies", clan.RequiredBuilderBaseTrophies);
             writer.WriteNumber("requiredTrophies", clan.RequiredTrophies);
             writer.WriteString("tag", clan.Tag);
             writer.WritePropertyName("warLeague");

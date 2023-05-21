@@ -30,6 +30,56 @@ namespace CocApi.Rest.IBaseApis
     public interface ILeaguesApi : IApi
     {
         /// <summary>
+        /// Get Builder Base league information
+        /// </summary>
+        /// <remarks>
+        /// Get Builder Base league information
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeague&gt;&gt;</returns>
+        Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// Get Builder Base league information
+        /// </summary>
+        /// <remarks>
+        /// Get Builder Base league information
+        /// </remarks>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeague&gt;?&gt;</returns>
+        Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List Builder Base leagues
+        /// </summary>
+        /// <remarks>
+        /// List Builder Base leagues
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeagueList&gt;&gt;</returns>
+        Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
+        /// List Builder Base leagues
+        /// </summary>
+        /// <remarks>
+        /// List Builder Base leagues
+        /// </remarks>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeagueList&gt;?&gt;</returns>
+        Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+
+        /// <summary>
         /// Get capital league information
         /// </summary>
         /// <remarks>
@@ -285,6 +335,278 @@ namespace CocApi.Rest.BaseApis
         protected virtual void OnApiResponded(ApiResponseEventArgs args)
         {
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
+        }
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="leagueId"></param>
+        /// <returns></returns>
+        protected virtual string OnFetchBuilderBaseLeague(string leagueId)
+        {
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            if (leagueId == null)
+                throw new ArgumentNullException(nameof(leagueId));
+
+            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+
+            return leagueId;
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        protected virtual void AfterFetchBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId)
+        {
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        protected virtual void OnErrorFetchBuilderBaseLeague(Exception exception, string pathFormat, string path, string leagueId)
+        {
+            Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// Get Builder Base league information Get Builder Base league information
+        /// </summary>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeague"/></returns>
+        public async Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchBuilderBaseLeagueAsync(leagueId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get Builder Base league information Get Builder Base league information
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="leagueId">Identifier of the league.</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeague"/></returns>
+        public async Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
+
+            try
+            {
+                leagueId = OnFetchBuilderBaseLeague(leagueId);
+
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
+                {
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/builderbaseleagues/{leagueId}";
+
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
+
+                    string[] acceptLocalVars = new string[] { 
+                        "application/json" 
+                    };
+
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
+
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
+
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    {
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path));
+
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                        ApiResponse<BuilderBaseLeague> apiResponseLocalVar = new ApiResponse<BuilderBaseLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+
+                        AfterFetchBuilderBaseLeague(apiResponseLocalVar, leagueId);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
+
+                        return apiResponseLocalVar;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorFetchBuilderBaseLeague(e, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <returns></returns>
+        protected virtual (int?, string?, string?) OnFetchBuilderBaseLeagues(int? limit, string? after, string? before)
+        {
+            return (limit, after, before);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void AfterFetchBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        {
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        protected virtual void OnErrorFetchBuilderBaseLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        {
+            Logger.LogError(exception, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// List Builder Base leagues List Builder Base leagues
+        /// </summary>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
+        public async Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            try
+            {
+                return await FetchBuilderBaseLeaguesAsync(limit, after, before, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// List Builder Base leagues List Builder Base leagues
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
+        /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
+        public async Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        {
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
+
+            try
+            {
+                var validatedParameterLocalVars = OnFetchBuilderBaseLeagues(limit, after, before);
+                limit = validatedParameterLocalVars.Item1;
+                after = validatedParameterLocalVars.Item2;
+                before = validatedParameterLocalVars.Item3;
+
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
+                {
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/builderbaseleagues";
+
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    if (limit != null)
+                        parseQueryStringLocalVar["limit"] = limit.ToString();
+
+                    if (after != null)
+                        parseQueryStringLocalVar["after"] = after.ToString();
+
+                    if (before != null)
+                        parseQueryStringLocalVar["before"] = before.ToString();
+
+                    uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+
+                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
+
+                    apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
+
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
+
+                    string[] acceptLocalVars = new string[] { 
+                        "application/json" 
+                    };
+
+                    string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+
+                    if (acceptLocalVar != null)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+
+                    httpRequestMessageLocalVar.Method = HttpMethod.Get;
+
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
+
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    {
+                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/builderbaseleagues", uriBuilderLocalVar.Path));
+
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+
+                        ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar = new ApiResponse<BuilderBaseLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+
+                        AfterFetchBuilderBaseLeagues(apiResponseLocalVar, limit, after, before);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
+
+                        return apiResponseLocalVar;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorFetchBuilderBaseLeagues(e, "/builderbaseleagues", uriBuilderLocalVar.Path, limit, after, before);
+                throw;
+            }
         }
 
         /// <summary>
