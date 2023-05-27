@@ -141,8 +141,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int id = default;
-            string name = default;
+            int? id = default;
+            string? name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -184,7 +184,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new CapitalLeague(id, name);
+            return new CapitalLeague(id.Value, name);
         }
 
         /// <summary>

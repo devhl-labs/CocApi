@@ -169,15 +169,15 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<string> cidrRanges = default;
-            string description = default;
-            string developerId = default;
-            string id = default;
-            string keyProperty = default;
-            string name = default;
-            List<string> scopes = default;
-            string tier = default;
-            string origins = default;
+            List<string>? cidrRanges = default;
+            string? description = default;
+            string? developerId = default;
+            string? id = default;
+            string? keyProperty = default;
+            string? name = default;
+            List<string>? scopes = default;
+            string? tier = default;
+            string? origins = default;
             DateTime? validUntil = default;
 
             while (utf8JsonReader.Read())

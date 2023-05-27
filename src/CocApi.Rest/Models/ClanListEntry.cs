@@ -409,21 +409,21 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls badgeUrls = default;
-            int clanBuilderBasePoints = default;
-            int clanLevel = default;
-            int clanPoints = default;
-            bool isWarLogPublic = default;
-            List<Label> labels = default;
-            int members = default;
-            string name = default;
-            int requiredTrophies = default;
-            string tag = default;
-            WarLeague warLeague = default;
-            int warWinStreak = default;
-            int warWins = default;
-            Language chatLanguage = default;
-            Location location = default;
+            BadgeUrls? badgeUrls = default;
+            int? clanBuilderBasePoints = default;
+            int? clanLevel = default;
+            int? clanPoints = default;
+            bool? isWarLogPublic = default;
+            List<Label>? labels = default;
+            int? members = default;
+            string? name = default;
+            int? requiredTrophies = default;
+            string? tag = default;
+            WarLeague? warLeague = default;
+            int? warWinStreak = default;
+            int? warWins = default;
+            Language? chatLanguage = default;
+            Location? location = default;
             RecruitingType? type = default;
             WarFrequency? warFrequency = default;
             int? warLosses = default;
@@ -569,7 +569,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanListEntry(badgeUrls, clanBuilderBasePoints, clanLevel, clanPoints, isWarLogPublic, labels, members, name, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            return new ClanListEntry(badgeUrls, clanBuilderBasePoints.Value, clanLevel.Value, clanPoints.Value, isWarLogPublic.Value, labels, members.Value, name, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type.Value, warFrequency.Value, warLosses, warTies);
         }
 
         /// <summary>

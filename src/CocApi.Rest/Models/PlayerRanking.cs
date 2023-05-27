@@ -263,16 +263,16 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int attackWins = default;
-            int defenseWins = default;
-            int expLevel = default;
-            League league = default;
-            string name = default;
-            int previousRank = default;
-            int rank = default;
-            string tag = default;
-            int trophies = default;
-            PlayerRankingClan clan = default;
+            int? attackWins = default;
+            int? defenseWins = default;
+            int? expLevel = default;
+            League? league = default;
+            string? name = default;
+            int? previousRank = default;
+            int? rank = default;
+            string? tag = default;
+            int? trophies = default;
+            PlayerRankingClan? clan = default;
 
             while (utf8JsonReader.Read())
             {
@@ -366,7 +366,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new PlayerRanking(attackWins, defenseWins, expLevel, league, name, previousRank, rank, tag, trophies, clan);
+            return new PlayerRanking(attackWins.Value, defenseWins.Value, expLevel.Value, league, name, previousRank.Value, rank.Value, tag, trophies.Value, clan);
         }
 
         /// <summary>

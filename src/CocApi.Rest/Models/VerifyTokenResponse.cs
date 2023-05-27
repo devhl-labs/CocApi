@@ -156,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string status = default;
-            string tag = default;
-            string token = default;
+            string? status = default;
+            string? tag = default;
+            string? token = default;
 
             while (utf8JsonReader.Read())
             {

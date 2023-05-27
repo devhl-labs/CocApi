@@ -479,26 +479,27 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls badgeUrls = default;
-            CapitalLeague capitalLeague = default;
-            int clanBuilderBasePoints = default;
-            ClanCapital clanCapital = default;
-            int clanLevel = default;
-            int clanPoints = default;
-            string description = default;
-            bool isFamilyFriendly = default;
-            bool isWarLogPublic = default;
-            List<Label> labels = default;
-            List<ClanMember> memberList = default;
-            string name = default;
-            int requiredBuilderBaseTrophies = default;
-            int requiredTrophies = default;
-            string tag = default;
-            WarLeague warLeague = default;
-            int warWinStreak = default;
-            int warWins = default;
-            Language chatLanguage = default;
-            Location location = default;
+            BadgeUrls? badgeUrls = default;
+            CapitalLeague? capitalLeague = default;
+            int? clanBuilderBasePoints = default;
+            ClanCapital? clanCapital = default;
+            int? clanLevel = default;
+            int? clanPoints = default;
+            string? description = default;
+            bool? isFamilyFriendly = default;
+            bool? isWarLogPublic = default;
+            List<Label>? labels = default;
+            List<ClanMember>? memberList = default;
+            int? members = default;
+            string? name = default;
+            int? requiredBuilderBaseTrophies = default;
+            int? requiredTrophies = default;
+            string? tag = default;
+            WarLeague? warLeague = default;
+            int? warWinStreak = default;
+            int? warWins = default;
+            Language? chatLanguage = default;
+            Location? location = default;
             RecruitingType? type = default;
             WarFrequency? warFrequency = default;
             int? warLosses = default;
@@ -681,7 +682,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new Clan(badgeUrls, capitalLeague, clanBuilderBasePoints, clanCapital, clanLevel, clanPoints, description, isFamilyFriendly, isWarLogPublic, labels, memberList, name, requiredBuilderBaseTrophies, requiredTrophies, tag, warLeague, warWinStreak, warWins, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            return new Clan(badgeUrls, capitalLeague, clanBuilderBasePoints.Value, clanCapital, clanLevel.Value, clanPoints.Value, description, isFamilyFriendly.Value, isWarLogPublic.Value, labels, memberList, name, requiredBuilderBaseTrophies.Value, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type.Value, warFrequency.Value, warLosses, warTies);
         }
 
         /// <summary>

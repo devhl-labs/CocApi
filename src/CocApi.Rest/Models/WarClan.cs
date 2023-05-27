@@ -247,15 +247,15 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int attacks = default;
-            BadgeUrls badgeUrls = default;
-            int clanLevel = default;
-            float destructionPercentage = default;
-            int expEarned = default;
-            List<ClanWarMember> members = default;
-            string name = default;
-            int stars = default;
-            string tag = default;
+            int? attacks = default;
+            BadgeUrls? badgeUrls = default;
+            int? clanLevel = default;
+            float? destructionPercentage = default;
+            int? expEarned = default;
+            List<ClanWarMember>? members = default;
+            string? name = default;
+            int? stars = default;
+            string? tag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -345,7 +345,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new WarClan(attacks, badgeUrls, clanLevel, destructionPercentage, expEarned, members, name, stars, tag);
+            return new WarClan(attacks.Value, badgeUrls, clanLevel.Value, destructionPercentage.Value, expEarned.GetValueOrDefault(), members, name, stars.Value, tag);
         }
 
         /// <summary>

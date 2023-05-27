@@ -188,10 +188,10 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int level = default;
-            int maxLevel = default;
-            string name = default;
-            VillageType village = default;
+            int? level = default;
+            int? maxLevel = default;
+            string? name = default;
+            VillageType? village = default;
             bool? superTroopIsActive = default;
 
             while (utf8JsonReader.Read())
@@ -252,7 +252,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new PlayerItemLevel(level, maxLevel, name, village, superTroopIsActive);
+            return new PlayerItemLevel(level.Value, maxLevel.Value, name, village.Value, superTroopIsActive);
         }
 
         /// <summary>

@@ -201,12 +201,12 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string attackerTag = default;
-            string defenderTag = default;
-            int destructionPercentage = default;
-            int duration = default;
-            int order = default;
-            int stars = default;
+            string? attackerTag = default;
+            string? defenderTag = default;
+            int? destructionPercentage = default;
+            int? duration = default;
+            int? order = default;
+            int? stars = default;
 
             while (utf8JsonReader.Read())
             {
@@ -275,7 +275,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanWarAttack(attackerTag, defenderTag, destructionPercentage, duration, order, stars);
+            return new ClanWarAttack(attackerTag, defenderTag, destructionPercentage.Value, duration.Value, order.Value, stars.Value);
         }
 
         /// <summary>

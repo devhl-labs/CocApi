@@ -190,11 +190,11 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int id = default;
-            bool isCountry = default;
-            string name = default;
-            string countryCode = default;
-            string localizedName = default;
+            int? id = default;
+            bool? isCountry = default;
+            string? name = default;
+            string? countryCode = default;
+            string? localizedName = default;
 
             while (utf8JsonReader.Read())
             {
@@ -249,7 +249,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new Location(id, isCountry, name, countryCode, localizedName);
+            return new Location(id.Value, isCountry.Value, name, countryCode, localizedName);
         }
 
         /// <summary>

@@ -127,7 +127,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<LeagueSeason> items = default;
+            List<LeagueSeason>? items = default;
 
             while (utf8JsonReader.Read())
             {

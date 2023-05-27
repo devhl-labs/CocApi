@@ -11,7 +11,6 @@ Name | Type | Description | Notes
 **PreviousRank** | **int** |  | [optional] [readonly] 
 **Rank** | **int** |  | [optional] [readonly] 
 **Tag** | **string** |  | [optional] [readonly] 
-**VersusBattleWins** | **int** |  | [optional] [readonly] 
 **VersusTrophies** | **int** |  | [optional] [readonly] 
 **Clan** | [**PlayerRankingClan**](PlayerRankingClan.md) |  | [optional] [readonly] 
 

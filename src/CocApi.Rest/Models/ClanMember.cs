@@ -325,19 +325,19 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BuilderBaseLeague builderBaseLeague = default;
-            int builderBaseTrophies = default;
-            int clanRank = default;
-            int donations = default;
-            int donationsReceived = default;
-            int expLevel = default;
-            League league = default;
-            string name = default;
-            int previousClanRank = default;
-            string tag = default;
-            int trophies = default;
-            int versusTrophies = default;
-            PlayerHouse playerHouse = default;
+            BuilderBaseLeague? builderBaseLeague = default;
+            int? builderBaseTrophies = default;
+            int? clanRank = default;
+            int? donations = default;
+            int? donationsReceived = default;
+            int? expLevel = default;
+            League? league = default;
+            string? name = default;
+            int? previousClanRank = default;
+            string? tag = default;
+            int? trophies = default;
+            int? versusTrophies = default;
+            PlayerHouse? playerHouse = default;
             Role? role = default;
 
             while (utf8JsonReader.Read())
@@ -457,7 +457,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanMember(builderBaseLeague, builderBaseTrophies, clanRank, donations, donationsReceived, expLevel, league, name, previousClanRank, tag, trophies, versusTrophies, playerHouse, role);
+            return new ClanMember(builderBaseLeague, builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, versusTrophies.Value, playerHouse, role.Value);
         }
 
         /// <summary>

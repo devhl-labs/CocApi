@@ -366,18 +366,18 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<ClanCapitalRaidSeasonAttackLogEntry> attackLog = default;
-            int capitalTotalLoot = default;
-            List<ClanCapitalRaidSeasonDefenseLogEntry> defenseLog = default;
-            int defensiveReward = default;
-            DateTime endTime = default;
-            int enemyDistrictsDestroyed = default;
-            int offensiveReward = default;
-            int raidsCompleted = default;
-            DateTime startTime = default;
-            ClanCapitalRaidSeason.StateEnum state = default;
-            int totalAttacks = default;
-            List<ClanCapitalRaidSeasonMember> members = default;
+            List<ClanCapitalRaidSeasonAttackLogEntry>? attackLog = default;
+            int? capitalTotalLoot = default;
+            List<ClanCapitalRaidSeasonDefenseLogEntry>? defenseLog = default;
+            int? defensiveReward = default;
+            DateTime? endTime = default;
+            int? enemyDistrictsDestroyed = default;
+            int? offensiveReward = default;
+            int? raidsCompleted = default;
+            DateTime? startTime = default;
+            ClanCapitalRaidSeason.StateEnum? state = default;
+            int? totalAttacks = default;
+            List<ClanCapitalRaidSeasonMember>? members = default;
 
             while (utf8JsonReader.Read())
             {
@@ -487,7 +487,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanCapitalRaidSeason(attackLog, capitalTotalLoot, defenseLog, defensiveReward, endTime, enemyDistrictsDestroyed, offensiveReward, raidsCompleted, startTime, state, totalAttacks, members);
+            return new ClanCapitalRaidSeason(attackLog, capitalTotalLoot.Value, defenseLog, defensiveReward.Value, endTime.Value, enemyDistrictsDestroyed.Value, offensiveReward.Value, raidsCompleted.Value, startTime.Value, state.Value, totalAttacks.Value, members);
         }
 
         /// <summary>

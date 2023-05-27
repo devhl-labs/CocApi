@@ -147,7 +147,7 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
             int? capitalHallLevel = default;
-            List<ClanDistrictData> districts = default;
+            List<ClanDistrictData>? districts = default;
 
             while (utf8JsonReader.Read())
             {

@@ -156,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls badgeUrls = default;
-            string name = default;
-            string tag = default;
+            BadgeUrls? badgeUrls = default;
+            string? name = default;
+            string? tag = default;
 
             while (utf8JsonReader.Read())
             {

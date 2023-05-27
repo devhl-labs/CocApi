@@ -127,7 +127,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<PlayerRanking> items = default;
+            List<PlayerRanking>? items = default;
 
             while (utf8JsonReader.Read())
             {

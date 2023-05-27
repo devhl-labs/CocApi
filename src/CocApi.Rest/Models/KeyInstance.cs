@@ -101,9 +101,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int sessionExpiresInSeconds = default;
-            KeyListStatus status = default;
-            Key key = default;
+            int? sessionExpiresInSeconds = default;
+            KeyListStatus? status = default;
+            Key? key = default;
 
             while (utf8JsonReader.Read())
             {
@@ -150,7 +150,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new KeyInstance(sessionExpiresInSeconds, status, key);
+            return new KeyInstance(sessionExpiresInSeconds.Value, status, key);
         }
 
         /// <summary>

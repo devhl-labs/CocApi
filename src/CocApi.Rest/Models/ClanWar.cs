@@ -280,16 +280,16 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int attacksPerMember = default;
-            WarClan clan = default;
-            DateTime endTime = default;
-            WarClan opponent = default;
-            DateTime preparationStartTime = default;
-            DateTime serverExpiration = default;
-            DateTime startTime = default;
-            int teamSize = default;
+            int? attacksPerMember = default;
+            WarClan? clan = default;
+            DateTime? endTime = default;
+            WarClan? opponent = default;
+            DateTime? preparationStartTime = default;
+            DateTime? serverExpiration = default;
+            DateTime? startTime = default;
+            int? teamSize = default;
             WarState? state = default;
-            string warTag = default;
+            string? warTag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -381,7 +381,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanWar(attacksPerMember, clan, endTime, opponent, preparationStartTime, serverExpiration, startTime, teamSize, state, warTag);
+            return new ClanWar(attacksPerMember.Value, clan, endTime.Value, opponent, preparationStartTime.Value, serverExpiration.Value, startTime.Value, teamSize.Value, state.Value, warTag);
         }
 
         /// <summary>

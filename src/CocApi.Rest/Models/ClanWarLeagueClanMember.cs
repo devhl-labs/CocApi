@@ -156,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string name = default;
-            string tag = default;
-            int townHallLevel = default;
+            string? name = default;
+            string? tag = default;
+            int? townHallLevel = default;
 
             while (utf8JsonReader.Read())
             {
@@ -206,7 +206,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new ClanWarLeagueClanMember(name, tag, townHallLevel);
+            return new ClanWarLeagueClanMember(name, tag, townHallLevel.Value);
         }
 
         /// <summary>

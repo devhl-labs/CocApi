@@ -209,12 +209,12 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            LegendLeagueTournamentSeasonResult currentSeason = default;
-            int legendTrophies = default;
-            LegendLeagueTournamentSeasonResult bestBuilderBaseSeason = default;
-            LegendLeagueTournamentSeasonResult bestSeason = default;
-            LegendLeagueTournamentSeasonResult previousBuilderBaseSeason = default;
-            LegendLeagueTournamentSeasonResult previousSeason = default;
+            LegendLeagueTournamentSeasonResult? currentSeason = default;
+            int? legendTrophies = default;
+            LegendLeagueTournamentSeasonResult? bestBuilderBaseSeason = default;
+            LegendLeagueTournamentSeasonResult? bestSeason = default;
+            LegendLeagueTournamentSeasonResult? previousBuilderBaseSeason = default;
+            LegendLeagueTournamentSeasonResult? previousSeason = default;
 
             while (utf8JsonReader.Read())
             {
@@ -273,7 +273,7 @@ namespace CocApi.Rest.Models
 #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
 #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
-            return new PlayerLegendStatistics(currentSeason, legendTrophies, bestBuilderBaseSeason, bestSeason, previousBuilderBaseSeason, previousSeason);
+            return new PlayerLegendStatistics(currentSeason, legendTrophies.Value, bestBuilderBaseSeason, bestSeason, previousBuilderBaseSeason, previousSeason);
         }
 
         /// <summary>
