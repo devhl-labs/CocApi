@@ -2,7 +2,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
 using CocApi.Rest.Client;
-using CocApi.Rest.Models;
 
 namespace CocApi.Cache.Context;
 
@@ -32,18 +31,29 @@ public class CachedItem<T> where T : class
             if (_content == null && !string.IsNullOrWhiteSpace(RawContent)) // avoid the lock if we can
             {
                 lock (_contentLock)
+                {
                     if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
                     {
+                        if ((this is CachedClanWarLeagueGroup || this is CachedClanWar) && !RawContent.Contains("notInWar"))
+                        {
+                            RawContent = RawContent[..^1];
+                            if (!RawContent.Contains("serverExpiration"))
+                            {
+                                string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ExpiresAt ?? DateTime.UtcNow, Library.JsonSerializerOptions);
+                                RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
+                            }
+
+                            if (this is CachedWar cachedWar)
+                                RawContent = $"{RawContent}, \"warTag\": \"{cachedWar.WarTag}\"";
+
+                            RawContent = $"{RawContent}}}";
+                        }
+
                         // when the clan is not in cwl war, all the properties will be empty except state: notInWar so we cant deserialize this
                         if ((this is not CachedClanWarLeagueGroup && this is not CachedClanWar) || !RawContent.Contains("notInWar"))
                             _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
-
-                        if (_content is ClanWar clanWar)
-                            if (this is CachedWar cachedWar)
-                                clanWar.Initialize(ExpiresAt.Value, cachedWar.WarTag);
-                            else
-                                clanWar.Initialize(ExpiresAt.Value, null);
                     }
+                }
             }
 
             return _content;

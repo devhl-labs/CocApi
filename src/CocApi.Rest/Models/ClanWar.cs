@@ -99,7 +99,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets ServerExpiration
         /// </summary>
         [JsonPropertyName("serverExpiration")]
-        public DateTime ServerExpiration { get; internal set; }
+        public DateTime ServerExpiration { get; }
 
         /// <summary>
         /// Gets or Sets StartTime
@@ -117,7 +117,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets WarTag
         /// </summary>
         [JsonPropertyName("warTag")]
-        public string? WarTag { get; internal set; }
+        public string? WarTag { get; }
 
         /// <summary>
         /// Returns the string presentation of the object

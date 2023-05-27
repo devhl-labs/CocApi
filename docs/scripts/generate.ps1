@@ -291,8 +291,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
-        $content = $content.Replace("public DateTime ServerExpiration { get; }", "public DateTime ServerExpiration { get; internal set; }")
-        $content = $content.Replace("public string? WarTag { get; }", "public string? WarTag { get; internal set; }")
     }
 
     if ($file.name -eq "DeveloperApi.cs"){

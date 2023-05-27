@@ -212,8 +212,6 @@ public class ClansClient : ClientBase<ClansClient>
             .FirstAsync(w => w.WarTag == formattedTag && w.Season == season, cancellationToken.GetValueOrDefault())
             .ConfigureAwait(false);
 
-        war.Content?.Initialize(war.ExpiresAt.Value, formattedTag);
-
         return war;
     }
 
@@ -229,8 +227,6 @@ public class ClansClient : ClientBase<ClansClient>
             .AsNoTracking()
             .FirstOrDefaultAsync(w => w.WarTag == formattedTag && w.Season == season, cancellationToken.GetValueOrDefault())
             .ConfigureAwait(false);
-
-        war?.Content?.Initialize(war.ExpiresAt.Value, formattedTag);
 
         return war;
     }

@@ -39,7 +39,6 @@ namespace CocApi.Rest.Models
 
         private volatile SortedDictionary<string, WarClan>? _clans;
 
-        private bool _isInitialized;
         private readonly object _clansLock = new();
 
         public SortedDictionary<string, WarClan> Clans
@@ -123,28 +122,6 @@ namespace CocApi.Rest.Models
                 return true;
 
             return AllAttacksAreUsed();
-        }
-
-        private readonly object _initializeLock = new();
-
-        // TODO: remove this at some point in the future
-        // it is no longer needed since the ApiResponse edits the json before deserialization
-        // leaving it here for now so the cache can get updated
-        internal void Initialize(DateTime serverExpiration, string? warTag)
-        {
-            if (_isInitialized) // avoid the lock if we can
-                return;
-
-            lock (_initializeLock)
-            {
-                if (_isInitialized)
-                    return;
-
-                ServerExpiration = serverExpiration;
-                WarTag = warTag;
-
-                _isInitialized = true;
-            }
         }
 
         partial void OnCreated()
