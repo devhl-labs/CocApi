@@ -9,7 +9,7 @@ namespace CocApi.Cache.Context;
 
 public class CachedPlayer : CachedItem<Player>
 {
-    internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, TimeToLiveProvider ttl, IPlayersApi playersApi, CancellationToken? cancellationToken = default)
+    internal static async Task<CachedPlayer> FromPlayerResponseAsync(string tag, TimeToLiveProvider ttl, IPlayersApi playersApi, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -19,7 +19,7 @@ public class CachedPlayer : CachedItem<Player>
         }
         catch (Exception e)
         {
-            cancellationToken?.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
             return new CachedPlayer(tag, await ttl.TimeToLiveOrDefaultAsync<Player>(e).ConfigureAwait(false));
         }

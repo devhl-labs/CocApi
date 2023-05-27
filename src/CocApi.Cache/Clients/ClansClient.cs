@@ -66,12 +66,6 @@ public class ClansClient : ClientBase<ClansClient>
 
         ClansApi = clansApi;
 
-        //ClanService clanService = (ClanService)perpetualServices.Single(p => p.GetType() == typeof(ClanService));
-        //NewWarService newWarService = (NewWarService)perpetualServices.Single(p => p.GetType() == typeof(NewWarService));
-        //NewCwlWarService newCwlWarService = (NewCwlWarService)perpetualServices.Single(p => p.GetType() == typeof(NewCwlWarService));
-        //WarService warService = (WarService)perpetualServices.Single(p => p.GetType() == typeof(WarService));
-        //CwlWarService cwlWarService = (CwlWarService)perpetualServices.Single(p => p.GetType() == typeof(CwlWarService));
-
         clanService.ClanUpdated += OnClanUpdatedAsync;
         clanService.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;
         clanService.ClanWarLogUpdated += OnClanWarLogUpdatedAsync;
@@ -106,7 +100,7 @@ public class ClansClient : ClientBase<ClansClient>
 
         try
         {
-            CachedClan cachedClan = await dbContext.Clans.FirstOrDefaultAsync(c => c.Tag == formattedTag).ConfigureAwait(false);
+            CachedClan? cachedClan = await dbContext.Clans.FirstOrDefaultAsync(c => c.Tag == formattedTag).ConfigureAwait(false);
 
             if (cachedClan != null)
                 dbContext.Clans.Remove(cachedClan);
@@ -181,7 +175,7 @@ public class ClansClient : ClientBase<ClansClient>
             ?? cache.First();
     }
 
-    public async Task<ClanWarLeagueGroup> GetOrFetchLeagueGroupAsync(string tag, bool? realtime = null, CancellationToken? cancellationToken = null)
+    public async Task<ClanWarLeagueGroup> GetOrFetchLeagueGroupAsync(string tag, bool? realtime = null, CancellationToken cancellationToken = default)
     {
         string formattedTag = Clash.FormatTag(tag);
 
@@ -190,10 +184,10 @@ public class ClansClient : ClientBase<ClansClient>
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
         return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
-            ?? (await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false)).ToModel();
+            ?? (await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false)).ToModel()!;
     }
 
-    public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, bool? realtime = null, CancellationToken? cancellationToken = null)
+    public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, bool? realtime = null, CancellationToken cancellationToken = default)
     {
         string formattedTag = Clash.FormatTag(tag);
 
@@ -202,7 +196,7 @@ public class ClansClient : ClientBase<ClansClient>
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
         return (await dbContext.Clans.FirstOrDefaultAsync(g => g.Tag == formattedTag).ConfigureAwait(false))?.Group.Content
-            ?? (await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false)).ToModel();
+            ?? (await ClansApi.FetchClanWarLeagueGroupOrDefaultAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false))?.ToModel();
     }
 
     public async Task<CachedWar> GetLeagueWarAsync(string warTag, DateTime season, CancellationToken? cancellationToken = null)
@@ -241,7 +235,7 @@ public class ClansClient : ClientBase<ClansClient>
         return war;
     }
 
-    public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, bool? realtime = null, CancellationToken? cancellationToken = null)
+    public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, bool? realtime = null, CancellationToken cancellationToken = default)
     {
         List<ClanWar> result = new();
 
@@ -323,18 +317,18 @@ public class ClansClient : ClientBase<ClansClient>
             .ConfigureAwait(false);
     }
 
-    public async Task<Clan> GetOrFetchClanAsync(string tag, CancellationToken? cancellationToken = null)
+    public async Task<Clan> GetOrFetchClanAsync(string tag, CancellationToken cancellationToken = default)
     {
         Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
-        return result ?? (await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false)).ToModel();
+        return result ?? (await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false)).ToModel()!;
     }
 
-    public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken? cancellationToken = null)
+    public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken cancellationToken = default)
     {
         Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
-        return result ?? (await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false)).ToModel();
+        return result ?? (await ClansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.ToModel();
     }
 
     private async Task OnClanUpdatedAsync(object sender, ClanUpdatedEventArgs eventArgs)

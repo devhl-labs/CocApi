@@ -38,7 +38,7 @@ namespace CocApi.Rest.IBaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;GoldPassSeason&gt;&gt;</returns>
-        Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get information about the current gold pass season.
@@ -48,7 +48,7 @@ namespace CocApi.Rest.IBaseApis
         /// </remarks>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;GoldPassSeason&gt;?&gt;</returns>
-        Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -131,7 +131,7 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="GoldPassSeason"/></returns>
-        public async Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -149,7 +149,7 @@ namespace CocApi.Rest.BaseApis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="GoldPassSeason"/></returns>
-        public async Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<GoldPassSeason>> FetchCurrentGoldPassSeasonAsync(System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -187,11 +187,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/goldpass/seasons/current", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<GoldPassSeason> apiResponseLocalVar = new ApiResponse<GoldPassSeason>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 

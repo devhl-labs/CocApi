@@ -13,7 +13,7 @@ public class CachedWar : CachedItem<ClanWar>
 {
     internal static async Task<CachedWar> FromClanWarLeagueWarResponseAsync(
         string warTag, DateTime season, bool? realtime, TimeToLiveProvider ttl,
-        IClansApi clansApi, CancellationToken? cancellationToken = default)
+        IClansApi clansApi, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -33,7 +33,7 @@ public class CachedWar : CachedItem<ClanWar>
         }
         catch (Exception e)
         {
-            cancellationToken?.ThrowIfCancellationRequested();
+            cancellationToken.ThrowIfCancellationRequested();
 
             return new CachedWar(warTag, await ttl.TimeToLiveOrDefaultAsync<ClanWar>(e).ConfigureAwait(false));
         }

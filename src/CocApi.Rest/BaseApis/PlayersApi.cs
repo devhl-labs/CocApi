@@ -39,7 +39,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;Player&gt;&gt;</returns>
-        Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get player information
@@ -50,7 +50,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;Player&gt;?&gt;</returns>
-        Task<ApiResponse<Player>?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<Player>?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Verify player API token that can be found from the game settings.
@@ -63,7 +63,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;VerifyTokenResponse&gt;&gt;</returns>
-        Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Verify player API token that can be found from the game settings.
@@ -75,7 +75,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;VerifyTokenResponse&gt;?&gt;</returns>
-        Task<ApiResponse<VerifyTokenResponse>?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<VerifyTokenResponse>?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -171,7 +171,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Player"/></returns>
-        public async Task<ApiResponse<Player>?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<Player>?> FetchPlayerOrDefaultAsync(string playerTag, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -190,7 +190,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Player"/></returns>
-        public async Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<Player>> FetchPlayerAsync(string playerTag, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -228,11 +228,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/players/{playerTag}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<Player> apiResponseLocalVar = new ApiResponse<Player>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -306,7 +306,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="VerifyTokenResponse"/></returns>
-        public async Task<ApiResponse<VerifyTokenResponse>?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<VerifyTokenResponse>?> VerifyTokenOrDefaultAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -326,7 +326,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="playerTag">Tag of the player.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="VerifyTokenResponse"/></returns>
-        public async Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<VerifyTokenResponse>> VerifyTokenAsync(VerifyTokenRequest body, string playerTag, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -379,11 +379,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/players/{playerTag}/verifytoken", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<VerifyTokenResponse> apiResponseLocalVar = new ApiResponse<VerifyTokenResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 

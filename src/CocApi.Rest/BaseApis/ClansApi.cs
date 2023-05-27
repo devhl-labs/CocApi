@@ -42,7 +42,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanCapitalRaidSeasons&gt;&gt;</returns>
-        Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons
@@ -56,7 +56,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanCapitalRaidSeasons&gt;?&gt;</returns>
-        Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get clan information
@@ -68,7 +68,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="clanTag">Tag of the clan.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;Clan&gt;&gt;</returns>
-        Task<ApiResponse<Clan>> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<Clan>> FetchClanAsync(string clanTag, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get clan information
@@ -79,7 +79,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="clanTag">Tag of the clan.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;Clan&gt;?&gt;</returns>
-        Task<ApiResponse<Clan>?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<Clan>?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List clan members
@@ -94,7 +94,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;List&lt;ClanMember&gt;&gt;&gt;</returns>
-        Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List clan members
@@ -108,7 +108,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;List&lt;ClanMember&gt;&gt;?&gt;</returns>
-        Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -121,7 +121,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLeagueGroup&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -133,7 +133,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWarLeagueGroup&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -146,7 +146,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -158,7 +158,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWar&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log
@@ -173,7 +173,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLog&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log
@@ -187,7 +187,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWarLog&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -200,7 +200,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -212,7 +212,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWar&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Search clans
@@ -234,7 +234,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanList&gt;&gt;</returns>
-        Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Search clans
@@ -255,7 +255,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanList&gt;?&gt;</returns>
-        Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -363,7 +363,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRaidSeasons"/></returns>
-        public async Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -385,7 +385,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRaidSeasons"/></returns>
-        public async Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -439,11 +439,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar = new ApiResponse<ClanCapitalRaidSeasons>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -510,7 +510,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="clanTag">Tag of the clan.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Clan"/></returns>
-        public async Task<ApiResponse<Clan>?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<Clan>?> FetchClanOrDefaultAsync(string clanTag, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -529,7 +529,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="clanTag">Tag of the clan.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="Clan"/></returns>
-        public async Task<ApiResponse<Clan>> FetchClanAsync(string clanTag, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<Clan>> FetchClanAsync(string clanTag, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -567,11 +567,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<Clan> apiResponseLocalVar = new ApiResponse<Clan>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -650,7 +650,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
-        public async Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -672,7 +672,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
-        public async Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -726,11 +726,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/members", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<List<ClanMember>> apiResponseLocalVar = new ApiResponse<List<ClanMember>>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -801,7 +801,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
-        public async Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -821,7 +821,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
-        public async Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -867,11 +867,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -942,7 +942,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -962,7 +962,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1008,11 +1008,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1091,7 +1091,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
-        public async Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1113,7 +1113,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
-        public async Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1167,11 +1167,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<ClanWarLog> apiResponseLocalVar = new ApiResponse<ClanWarLog>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1242,7 +1242,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1262,7 +1262,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1308,11 +1308,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1410,7 +1410,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
-        public async Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1439,7 +1439,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
-        public async Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1524,11 +1524,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<ClanList> apiResponseLocalVar = new ApiResponse<ClanList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 

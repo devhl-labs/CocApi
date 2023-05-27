@@ -39,7 +39,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeague&gt;&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get Builder Base league information
@@ -50,7 +50,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeague&gt;?&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List Builder Base leagues
@@ -64,7 +64,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeagueList&gt;&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List Builder Base leagues
@@ -77,7 +77,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get capital league information
@@ -89,7 +89,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;CapitalLeague&gt;&gt;</returns>
-        Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get capital league information
@@ -100,7 +100,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;CapitalLeague&gt;?&gt;</returns>
-        Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List capital leagues
@@ -114,7 +114,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;CapitalLeagueObject&gt;&gt;</returns>
-        Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List capital leagues
@@ -127,7 +127,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;CapitalLeagueObject&gt;?&gt;</returns>
-        Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league information
@@ -139,7 +139,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;League&gt;&gt;</returns>
-        Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league information
@@ -150,7 +150,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;League&gt;?&gt;</returns>
-        Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league season rankings
@@ -166,7 +166,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;PlayerRankingList&gt;&gt;</returns>
-        Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league season rankings
@@ -181,7 +181,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;PlayerRankingList&gt;?&gt;</returns>
-        Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league seasons
@@ -196,7 +196,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LeagueSeasonList&gt;&gt;</returns>
-        Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league seasons
@@ -210,7 +210,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;LeagueSeasonList&gt;?&gt;</returns>
-        Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List leagues
@@ -224,7 +224,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LeagueList&gt;&gt;</returns>
-        Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List leagues
@@ -237,7 +237,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;LeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get war league information
@@ -249,7 +249,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;WarLeague&gt;&gt;</returns>
-        Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get war league information
@@ -260,7 +260,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;WarLeague&gt;?&gt;</returns>
-        Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List war leagues
@@ -274,7 +274,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;WarLeagueList&gt;&gt;</returns>
-        Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List war leagues
@@ -287,7 +287,7 @@ namespace CocApi.Rest.IBaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;WarLeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null);
+        Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -383,7 +383,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeague"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -402,7 +402,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeague"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -440,11 +440,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<BuilderBaseLeague> apiResponseLocalVar = new ApiResponse<BuilderBaseLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -510,7 +510,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -531,7 +531,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -584,11 +584,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/builderbaseleagues", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar = new ApiResponse<BuilderBaseLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -655,7 +655,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
-        public async Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -674,7 +674,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
-        public async Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -712,11 +712,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<CapitalLeague> apiResponseLocalVar = new ApiResponse<CapitalLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -782,7 +782,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
-        public async Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -803,7 +803,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
-        public async Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -856,11 +856,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/capitalleagues", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<CapitalLeagueObject> apiResponseLocalVar = new ApiResponse<CapitalLeagueObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -927,7 +927,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
-        public async Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -946,7 +946,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
-        public async Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -984,11 +984,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<League> apiResponseLocalVar = new ApiResponse<League>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1074,7 +1074,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
-        public async Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1097,7 +1097,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
-        public async Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1152,11 +1152,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1235,7 +1235,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
-        public async Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1257,7 +1257,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
-        public async Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1311,11 +1311,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<LeagueSeasonList> apiResponseLocalVar = new ApiResponse<LeagueSeasonList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1381,7 +1381,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
-        public async Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1402,7 +1402,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
-        public async Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1455,11 +1455,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<LeagueList> apiResponseLocalVar = new ApiResponse<LeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1526,7 +1526,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
-        public async Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1545,7 +1545,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
-        public async Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1583,11 +1583,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/warleagues/{leagueId}", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<WarLeague> apiResponseLocalVar = new ApiResponse<WarLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 
@@ -1653,7 +1653,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
-        public async Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1674,7 +1674,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
-        public async Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken? cancellationToken = null)
+        public async Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1727,11 +1727,11 @@ namespace CocApi.Rest.BaseApis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken.GetValueOrDefault()).ConfigureAwait(false))
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
                         OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/warleagues", uriBuilderLocalVar.Path));
 
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken.GetValueOrDefault()).ConfigureAwait(false);
+                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
                         ApiResponse<WarLeagueList> apiResponseLocalVar = new ApiResponse<WarLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
 

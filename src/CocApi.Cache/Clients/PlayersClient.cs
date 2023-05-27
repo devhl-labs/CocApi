@@ -128,7 +128,7 @@ public class PlayersClient : ClientBase<PlayersClient>
             .ConfigureAwait(false);
     }
 
-    public async Task<Player> GetOrFetchPlayerAsync(string tag, CancellationToken? cancellationToken = default)
+    public async Task<Player> GetOrFetchPlayerAsync(string tag, CancellationToken cancellationToken = default)
     {
         Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
@@ -138,7 +138,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         return result;
     }
 
-    public async Task<Player?> GetOrFetchPlayerOrDefaultAsync(string tag, CancellationToken? cancellationToken = default)
+    public async Task<Player?> GetOrFetchPlayerOrDefaultAsync(string tag, CancellationToken cancellationToken = default)
     {
         Player? result = (await GetCachedPlayerOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
 
