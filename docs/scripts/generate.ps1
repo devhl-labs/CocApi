@@ -239,6 +239,7 @@ foreach ($file in $allCodeFiles)
 
     if ($file.name -eq "WarClan.cs"){
         $content=$content.Replace($warClanNullChecks, $warClanNullChecksReplacement)
+        $content=$content.Replace(", expEarned.Value,", ", expEarned.GetValueOrDefault(),")
     }
 
     if ($file.name -eq "Clan.cs"){
@@ -250,7 +251,7 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("sb.Append(`"  MemberList: `").Append(MemberList).Append(`"\n`");`r`n            ", '')
         $content = $content.Replace($membersConverter, "")
         $content = $content.Replace("int members = default;`r`n            ", '')
-        $content = $content.Replace("memberList, members,", "memberList,")
+        $content = $content.Replace("memberList, members.Value,", "memberList,")
 
         $content = $content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
         $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);`r`n            ", "")

@@ -1,5 +1,5 @@
             // Modify this logic with the ToModel.mustache template
-            if (ResponseType == typeof(Models.ClanWar) && RawContent.Contains("notInWar"))
+            if ((ResponseType == typeof(Models.ClanWar) || ResponseType == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
                 return default;
 
             return IsSuccessStatusCode

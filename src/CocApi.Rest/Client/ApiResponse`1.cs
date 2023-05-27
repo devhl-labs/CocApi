@@ -119,7 +119,7 @@ namespace CocApi.Rest.Client
         public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
         {
             // Modify this logic with the ToModel.mustache template
-            if (ResponseType == typeof(Models.ClanWar) && RawContent.Contains("notInWar"))
+            if ((ResponseType == typeof(Models.ClanWar) || ResponseType == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
                 return default;
 
             return IsSuccessStatusCode

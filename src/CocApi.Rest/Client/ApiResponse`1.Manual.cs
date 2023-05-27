@@ -39,18 +39,18 @@ namespace CocApi.Rest.Client
         {
             if (ResponseType == typeof(ClanWar))
             {
-                if (ToModel() as object is not ClanWar clanWar)
-                    return;
+                string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ServerExpiration, _jsonSerializerOptions);
+                RawContent = RawContent[..^1];
+                RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
 
-                clanWar.ServerExpiration = ServerExpiration;
                 string? url = httpRequestMessage.RequestUri?.LocalPath;
                 if (url?.Contains("clanwarleagues/wars/") == true)
                 {
                     string[] parts = url.Split("/");
-                    clanWar.WarTag = parts.Last();
+                    RawContent = $"{RawContent}, \"warTag\": \"{parts.Last()}\"";
                 }
 
-                RawContent = System.Text.Json.JsonSerializer.Serialize(clanWar, _jsonSerializerOptions);
+                RawContent = $"{RawContent}}}";
             }
         }
     }
