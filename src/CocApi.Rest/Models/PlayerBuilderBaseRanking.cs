@@ -38,10 +38,9 @@ namespace CocApi.Rest.Models
         /// <param name="previousRank">previousRank</param>
         /// <param name="rank">rank</param>
         /// <param name="tag">tag</param>
-        /// <param name="versusTrophies">versusTrophies</param>
         /// <param name="clan">clan</param>
         [JsonConstructor]
-        internal PlayerBuilderBaseRanking(BuilderBaseLeague builderBaseLeague, int builderBaseTrophies, int expLevel, string name, int previousRank, int rank, string tag, int versusTrophies, PlayerRankingClan? clan = default)
+        internal PlayerBuilderBaseRanking(BuilderBaseLeague builderBaseLeague, int builderBaseTrophies, int expLevel, string name, int previousRank, int rank, string tag, PlayerRankingClan? clan = default)
         {
             BuilderBaseLeague = builderBaseLeague;
             BuilderBaseTrophies = builderBaseTrophies;
@@ -50,7 +49,6 @@ namespace CocApi.Rest.Models
             PreviousRank = previousRank;
             Rank = rank;
             Tag = tag;
-            VersusTrophies = versusTrophies;
             Clan = clan;
             OnCreated();
         }
@@ -100,12 +98,6 @@ namespace CocApi.Rest.Models
         public string Tag { get; }
 
         /// <summary>
-        /// Gets or Sets VersusTrophies
-        /// </summary>
-        [JsonPropertyName("versusTrophies")]
-        public int VersusTrophies { get; }
-
-        /// <summary>
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
@@ -126,7 +118,6 @@ namespace CocApi.Rest.Models
             sb.Append("  PreviousRank: ").Append(PreviousRank).Append("\n");
             sb.Append("  Rank: ").Append(Rank).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
-            sb.Append("  VersusTrophies: ").Append(VersusTrophies).Append("\n");
             sb.Append("  Clan: ").Append(Clan).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -189,11 +180,6 @@ namespace CocApi.Rest.Models
                     Tag.Equals(input.Tag))
                 ) && 
                 (
-                    VersusTrophies == input.VersusTrophies ||
-                    (VersusTrophies != null &&
-                    VersusTrophies.Equals(input.VersusTrophies))
-                ) && 
-                (
                     Clan == input.Clan ||
                     (Clan != null &&
                     Clan.Equals(input.Clan))
@@ -216,7 +202,6 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + PreviousRank.GetHashCode();
                 hashCode = (hashCode * 59) + Rank.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
-                hashCode = (hashCode * 59) + VersusTrophies.GetHashCode();
 
                 if (Clan != null)
                     hashCode = (hashCode * 59) + Clan.GetHashCode();
@@ -255,7 +240,6 @@ namespace CocApi.Rest.Models
             int? previousRank = default;
             int? rank = default;
             string? tag = default;
-            int? versusTrophies = default;
             PlayerRankingClan? clan = default;
 
             while (utf8JsonReader.Read())
@@ -299,10 +283,6 @@ namespace CocApi.Rest.Models
                         case "tag":
                             tag = utf8JsonReader.GetString();
                             break;
-                        case "versusTrophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                versusTrophies = utf8JsonReader.GetInt32();
-                            break;
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clan = JsonSerializer.Deserialize<PlayerRankingClan>(ref utf8JsonReader, jsonSerializerOptions);
@@ -315,9 +295,6 @@ namespace CocApi.Rest.Models
 
             if (builderBaseLeague == null)
                 throw new ArgumentNullException(nameof(builderBaseLeague), "Property is required for class PlayerBuilderBaseRanking.");
-
-            if (versusTrophies == null)
-                throw new ArgumentNullException(nameof(versusTrophies), "Property is required for class PlayerBuilderBaseRanking.");
 
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerBuilderBaseRanking.");
@@ -337,7 +314,7 @@ namespace CocApi.Rest.Models
             if (builderBaseTrophies == null)
                 throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class PlayerBuilderBaseRanking.");
 
-            return new PlayerBuilderBaseRanking(builderBaseLeague, builderBaseTrophies.Value, expLevel.Value, name, previousRank.Value, rank.Value, tag, versusTrophies.Value, clan);
+            return new PlayerBuilderBaseRanking(builderBaseLeague, builderBaseTrophies.Value, expLevel.Value, name, previousRank.Value, rank.Value, tag, clan);
         }
 
         /// <summary>
@@ -359,7 +336,6 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("previousRank", playerBuilderBaseRanking.PreviousRank);
             writer.WriteNumber("rank", playerBuilderBaseRanking.Rank);
             writer.WriteString("tag", playerBuilderBaseRanking.Tag);
-            writer.WriteNumber("versusTrophies", playerBuilderBaseRanking.VersusTrophies);
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, playerBuilderBaseRanking.Clan, jsonSerializerOptions);
 
