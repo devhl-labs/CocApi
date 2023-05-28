@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.4.0',
+    'packageVersion=2.5.0',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -142,8 +142,8 @@ Authentication schemes defined for the API:
 
 
 ## Build
-- SDK version: 2.4.0
-- Build date: 2023-05-28T13:47:04.166791500-04:00[America/New_York]
+- SDK version: 2.5.0
+- Build date: 2023-05-28T14:04:34.920753100-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpNetCoreClientCodegen
 
 ## Api Information
@@ -191,7 +191,7 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.4.0
+- packageVersion: 2.5.0
 - releaseNote: Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml.
 - returnICollection: false
 - sortParamsByRequiredFlag: 
