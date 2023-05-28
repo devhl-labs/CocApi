@@ -95,14 +95,6 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'BuilderBaseTrophies'
         }
         /// <summary>
-        /// Test the property 'BuilderHallLevel'
-        /// </summary>
-        [Fact]
-        public void BuilderHallLevelTest()
-        {
-            // TODO unit test for the property 'BuilderHallLevel'
-        }
-        /// <summary>
         /// Test the property 'ClanCapitalContributions'
         /// </summary>
         [Fact]
@@ -207,22 +199,6 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'Trophies'
         }
         /// <summary>
-        /// Test the property 'VersusBattleWinCount'
-        /// </summary>
-        [Fact]
-        public void VersusBattleWinCountTest()
-        {
-            // TODO unit test for the property 'VersusBattleWinCount'
-        }
-        /// <summary>
-        /// Test the property 'VersusBattleWins'
-        /// </summary>
-        [Fact]
-        public void VersusBattleWinsTest()
-        {
-            // TODO unit test for the property 'VersusBattleWins'
-        }
-        /// <summary>
         /// Test the property 'WarStars'
         /// </summary>
         [Fact]
@@ -237,6 +213,14 @@ namespace CocApi.Rest.Test.Model
         public void BuilderBaseLeagueTest()
         {
             // TODO unit test for the property 'BuilderBaseLeague'
+        }
+        /// <summary>
+        /// Test the property 'BuilderHallLevel'
+        /// </summary>
+        [Fact]
+        public void BuilderHallLevelTest()
+        {
+            // TODO unit test for the property 'BuilderHallLevel'
         }
         /// <summary>
         /// Test the property 'Clan'
@@ -285,6 +269,14 @@ namespace CocApi.Rest.Test.Model
         public void TownHallWeaponLevelTest()
         {
             // TODO unit test for the property 'TownHallWeaponLevel'
+        }
+        /// <summary>
+        /// Test the property 'VersusBattleWinCount'
+        /// </summary>
+        [Fact]
+        public void VersusBattleWinCountTest()
+        {
+            // TODO unit test for the property 'VersusBattleWinCount'
         }
         /// <summary>
         /// Test the property 'WarPreference'

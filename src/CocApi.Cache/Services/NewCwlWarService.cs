@@ -261,7 +261,7 @@ public sealed class NewCwlWarService : ServiceBase
     {
         try
         {
-            Rest.Models.ClanWar clanWar = war.ToModel();
+            Rest.Models.ClanWar clanWar = war.AsModel();
 
             if (ClanWarAdded != null)
                 await ClanWarAdded.Invoke(this, new CwlWarAddedEventArgs(clan, opponent, clanWar, group, cancellationToken)).ConfigureAwait(false);

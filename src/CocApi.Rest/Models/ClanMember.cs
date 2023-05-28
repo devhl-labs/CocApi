@@ -415,9 +415,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (league == null)
                 throw new ArgumentNullException(nameof(league), "Property is required for class ClanMember.");
 
@@ -453,9 +450,6 @@ namespace CocApi.Rest.Models
 
             if (builderBaseTrophies == null)
                 throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class ClanMember.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanMember(builderBaseLeague, builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, versusTrophies.Value, playerHouse, role.Value);
         }

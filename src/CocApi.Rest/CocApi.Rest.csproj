@@ -28,12 +28,6 @@
     <PackageReference Include="Polly" Version="7.2.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="System.Web" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Web" />
-  </ItemGroup>
   <PropertyGroup>
     <PackageIcon>Barbarian King.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>

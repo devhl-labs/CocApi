@@ -87,12 +87,12 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'Id'
         }
         /// <summary>
-        /// Test the property 'KeyProperty'
+        /// Test the property 'VarKey'
         /// </summary>
         [Fact]
-        public void KeyPropertyTest()
+        public void VarKeyTest()
         {
-            // TODO unit test for the property 'KeyProperty'
+            // TODO unit test for the property 'VarKey'
         }
         /// <summary>
         /// Test the property 'Name'

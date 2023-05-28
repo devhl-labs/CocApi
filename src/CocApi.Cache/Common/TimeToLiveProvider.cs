@@ -80,7 +80,7 @@ public class TimeToLiveProvider
 
         if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)
         {
-            ClanWarLeagueGroup? model = group.ToModel();
+            ClanWarLeagueGroup? model = group.AsModel();
 
             if (!Clash.IsCwlEnabled ||
                 (model?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == model.Season.Month) ||
@@ -93,7 +93,7 @@ public class TimeToLiveProvider
 
         if (apiResponse is ApiResponse<ClanWar> war)
         {
-            ClanWar? model = war.ToModel();
+            ClanWar? model = war.AsModel();
 
             if (war.StatusCode == HttpStatusCode.Forbidden)
                 return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));

@@ -59,7 +59,7 @@ namespace CocApi.Rest.Test.BaseApis
         {
             CreateTokenRequest createTokenRequest = default;
             var response = await _instance.CreateAsync(createTokenRequest);
-            var model = response.ToModel();
+            var model = response.AsModel();
             Assert.IsType<KeyInstance>(model);
         }
 
@@ -70,7 +70,7 @@ namespace CocApi.Rest.Test.BaseApis
         public async Task KeysAsyncTest()
         {
             var response = await _instance.KeysAsync();
-            var model = response.ToModel();
+            var model = response.AsModel();
             Assert.IsType<KeyList>(model);
         }
 
@@ -82,7 +82,7 @@ namespace CocApi.Rest.Test.BaseApis
         {
             LoginCredentials loginCredentials = default;
             var response = await _instance.LoginAsync(loginCredentials);
-            var model = response.ToModel();
+            var model = response.AsModel();
             Assert.IsType<LoginResponse>(model);
         }
 
@@ -94,7 +94,7 @@ namespace CocApi.Rest.Test.BaseApis
         {
             Key key = default;
             var response = await _instance.RevokeAsync(key);
-            var model = response.ToModel();
+            var model = response.AsModel();
             Assert.IsType<KeyInstance>(model);
         }
     }

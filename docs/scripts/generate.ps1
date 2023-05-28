@@ -235,6 +235,8 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace(".GetWar", ".FetchWar")
         $content = $content.Replace(".GetLocation", ".FetchLocation")
         $content = $content.Replace(".GetCapitalRaidSeasonsAsync", ".FetchCapitalRaidSeasonsAsync")
+        $content = $content.Replace(".GetBuilderBaseLeague", ".FetchBuilderBaseLeague")
+        $content = $content.Replace(".GetCapitalLeague", ".FetchCapitalLeague")
     }
 
     if ($file.name -eq "WarClan.cs"){

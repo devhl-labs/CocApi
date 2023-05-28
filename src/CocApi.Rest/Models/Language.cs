@@ -191,9 +191,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class Language.");
 
@@ -202,9 +199,6 @@ namespace CocApi.Rest.Models
 
             if (languageCode == null)
                 throw new ArgumentNullException(nameof(languageCode), "Property is required for class Language.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new Language(id.Value, languageCode, name);
         }

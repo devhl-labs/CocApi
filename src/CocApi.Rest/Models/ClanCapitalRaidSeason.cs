@@ -448,9 +448,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (attackLog == null)
                 throw new ArgumentNullException(nameof(attackLog), "Property is required for class ClanCapitalRaidSeason.");
 
@@ -483,9 +480,6 @@ namespace CocApi.Rest.Models
 
             if (defensiveReward == null)
                 throw new ArgumentNullException(nameof(defensiveReward), "Property is required for class ClanCapitalRaidSeason.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeason(attackLog, capitalTotalLoot.Value, defenseLog, defensiveReward.Value, endTime.Value, enemyDistrictsDestroyed.Value, offensiveReward.Value, raidsCompleted.Value, startTime.Value, state.Value, totalAttacks.Value, members);
         }

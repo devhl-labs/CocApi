@@ -736,9 +736,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (attackWins == null)
                 throw new ArgumentNullException(nameof(attackWins), "Property is required for class Player.");
 
@@ -795,9 +792,6 @@ namespace CocApi.Rest.Models
 
             if (clanCapitalContributions == null)
                 throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is required for class Player.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new Player(achievements, attackWins.Value, bestTrophies.Value, bestVersusTrophies.Value, builderBaseTrophies.Value, clanCapitalContributions.Value, defenseWins.Value, donations.Value, donationsReceived.Value, expLevel.Value, heroes, labels, name, spells, tag, townHallLevel.Value, troops, trophies.Value, warStars.Value, builderBaseLeague, builderHallLevel, clan, league, legendStatistics, playerHouse, role.Value, townHallWeaponLevel, versusBattleWinCount, warPreference.Value);
         }

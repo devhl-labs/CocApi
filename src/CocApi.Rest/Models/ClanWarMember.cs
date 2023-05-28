@@ -270,9 +270,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarMember.");
 
@@ -287,9 +284,6 @@ namespace CocApi.Rest.Models
 
             if (opponentAttacks == null)
                 throw new ArgumentNullException(nameof(opponentAttacks), "Property is required for class ClanWarMember.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanWarMember(mapPosition.Value, name, opponentAttacks.Value, tag, townhallLevel.Value, attacks, bestOpponentAttack);
         }

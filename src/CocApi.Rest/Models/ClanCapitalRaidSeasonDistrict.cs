@@ -295,9 +295,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (stars == null)
                 throw new ArgumentNullException(nameof(stars), "Property is required for class ClanCapitalRaidSeasonDistrict.");
 
@@ -318,9 +315,6 @@ namespace CocApi.Rest.Models
 
             if (districtHallLevel == null)
                 throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanCapitalRaidSeasonDistrict.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanCapitalRaidSeasonDistrict(attackCount.Value, destructionPercent.Value, districtHallLevel.Value, id.Value, name, stars.Value, totalLooted.Value, attacks);
         }

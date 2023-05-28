@@ -524,9 +524,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (warLeague == null)
                 throw new ArgumentNullException(nameof(warLeague), "Property is required for class ClanListEntry.");
 
@@ -565,9 +562,6 @@ namespace CocApi.Rest.Models
 
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanListEntry.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanListEntry(badgeUrls, clanBuilderBasePoints.Value, clanLevel.Value, clanPoints.Value, isWarLogPublic.Value, labels, members.Value, name, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type.Value, warFrequency.Value, warLosses, warTies);
         }

@@ -62,7 +62,7 @@ namespace YourProject
             var host = CreateHostBuilder(args).Build();
             var api = host.Services.GetRequiredService<IClansApi>();
             ApiResponse<ClanCapitalRaidSeasons> response = await api.GetCapitalRaidSeasonsAsync("todo");
-            ClanCapitalRaidSeasons model = response.ToModel();
+            ClanCapitalRaidSeasons model = response.AsModel();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
@@ -143,7 +143,7 @@ Authentication schemes defined for the API:
 
 ## Build
 - SDK version: 2.4.0
-- Build date: 2023-05-27T11:14:03.604080-04:00[America/New_York]
+- Build date: 2023-05-28T13:37:54.093199500-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpNetCoreClientCodegen
 
 ## Api Information

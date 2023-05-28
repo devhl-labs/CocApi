@@ -154,7 +154,7 @@ public class CachedWar : CachedItem<ClanWar>
     {
         base.UpdateFrom(apiResponse, localExpiration);
 
-        ClanWar model = apiResponse.ToModel();
+        ClanWar model = apiResponse.AsModel();
 
         ClanTag = model.Clans.First().Value.Tag;
 

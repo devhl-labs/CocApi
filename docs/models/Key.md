@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **Description** | **string** |  | [optional] 
 **DeveloperId** | **string** |  | [optional] 
 **Id** | **string** |  | [optional] 
-**KeyProperty** | **string** |  | [optional] 
+**VarKey** | **string** |  | [optional] 
 **Name** | **string** |  | [optional] 
 **Scopes** | **List&lt;string&gt;** |  | [optional] 
 **Tier** | **string** |  | [optional] 

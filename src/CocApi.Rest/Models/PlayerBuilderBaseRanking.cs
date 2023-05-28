@@ -313,9 +313,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (builderBaseLeague == null)
                 throw new ArgumentNullException(nameof(builderBaseLeague), "Property is required for class PlayerBuilderBaseRanking.");
 
@@ -339,9 +336,6 @@ namespace CocApi.Rest.Models
 
             if (builderBaseTrophies == null)
                 throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class PlayerBuilderBaseRanking.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new PlayerBuilderBaseRanking(builderBaseLeague, builderBaseTrophies.Value, expLevel.Value, name, previousRank.Value, rank.Value, tag, versusTrophies.Value, clan);
         }

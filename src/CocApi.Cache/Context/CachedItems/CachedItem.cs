@@ -84,7 +84,7 @@ public class CachedItem<T> where T : class
         if (apiResponse.IsSuccessStatusCode)
         {
             RawContent = apiResponse.RawContent;
-            Content = apiResponse.ToModel();
+            Content = apiResponse.AsModel();
         }
     }
 

@@ -222,9 +222,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (season == null)
                 throw new ArgumentNullException(nameof(season), "Property is required for class ClanWarLeagueGroup.");
 
@@ -233,9 +230,6 @@ namespace CocApi.Rest.Models
 
             if (rounds == null)
                 throw new ArgumentNullException(nameof(rounds), "Property is required for class ClanWarLeagueGroup.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new ClanWarLeagueGroup(clans, rounds, season.Value, state.Value);
         }

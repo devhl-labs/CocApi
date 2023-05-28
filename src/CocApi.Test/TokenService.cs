@@ -52,11 +52,11 @@ public class TokenService : IHostedService
         CookieContainer.Value.Add(domain, cookie);
 
         // Create a testing token
-        var token = new CreateTokenRequest(new List<string> { login.ToModel()!.IpAddress() }, "test description", "test name");
+        var token = new CreateTokenRequest(new List<string> { login.AsModel()!.IpAddress() }, "test description", "test name");
         var createResponse = await DeveloperApi.CreateAsync(token);
 
         // delete that testing token
-        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.ToModel()!.Key!);
+        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.AsModel()!.Key!);
 
         // query all keys
         var keys = await DeveloperApi.KeysAsync();

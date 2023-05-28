@@ -35,20 +35,20 @@ namespace CocApi.Rest.Models
         /// <param name="description">description</param>
         /// <param name="developerId">developerId</param>
         /// <param name="id">id</param>
-        /// <param name="keyProperty">keyProperty</param>
+        /// <param name="varKey">varKey</param>
         /// <param name="name">name</param>
         /// <param name="scopes">scopes</param>
         /// <param name="tier">tier</param>
         /// <param name="origins">origins</param>
         /// <param name="validUntil">validUntil</param>
         [JsonConstructor]
-        public Key(List<string> cidrRanges, string description, string developerId, string id, string keyProperty, string name, List<string> scopes, string tier, string? origins = default, DateTime? validUntil = default)
+        public Key(List<string> cidrRanges, string description, string developerId, string id, string varKey, string name, List<string> scopes, string tier, string? origins = default, DateTime? validUntil = default)
         {
             CidrRanges = cidrRanges;
             Description = description;
             DeveloperId = developerId;
             Id = id;
-            KeyProperty = keyProperty;
+            VarKey = varKey;
             Name = name;
             Scopes = scopes;
             Tier = tier;
@@ -84,10 +84,10 @@ namespace CocApi.Rest.Models
         public string Id { get; set; }
 
         /// <summary>
-        /// Gets or Sets KeyProperty
+        /// Gets or Sets VarKey
         /// </summary>
         [JsonPropertyName("key")]
-        public string KeyProperty { get; set; }
+        public string VarKey { get; set; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -131,7 +131,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Description: ").Append(Description).Append("\n");
             sb.Append("  DeveloperId: ").Append(DeveloperId).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
-            sb.Append("  KeyProperty: ").Append(KeyProperty).Append("\n");
+            sb.Append("  VarKey: ").Append(VarKey).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Scopes: ").Append(Scopes).Append("\n");
             sb.Append("  Tier: ").Append(Tier).Append("\n");
@@ -173,7 +173,7 @@ namespace CocApi.Rest.Models
             string? description = default;
             string? developerId = default;
             string? id = default;
-            string? keyProperty = default;
+            string? varKey = default;
             string? name = default;
             List<string>? scopes = default;
             string? tier = default;
@@ -209,7 +209,7 @@ namespace CocApi.Rest.Models
                             id = utf8JsonReader.GetString();
                             break;
                         case "key":
-                            keyProperty = utf8JsonReader.GetString();
+                            varKey = utf8JsonReader.GetString();
                             break;
                         case "name":
                             name = utf8JsonReader.GetString();
@@ -234,17 +234,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class Key.");
 
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class Key.");
 
-            if (keyProperty == null)
-                throw new ArgumentNullException(nameof(keyProperty), "Property is required for class Key.");
+            if (varKey == null)
+                throw new ArgumentNullException(nameof(varKey), "Property is required for class Key.");
 
             if (developerId == null)
                 throw new ArgumentNullException(nameof(developerId), "Property is required for class Key.");
@@ -261,10 +258,7 @@ namespace CocApi.Rest.Models
             if (cidrRanges == null)
                 throw new ArgumentNullException(nameof(cidrRanges), "Property is required for class Key.");
 
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return new Key(cidrRanges, description, developerId, id, keyProperty, name, scopes, tier, origins, validUntil);
+            return new Key(cidrRanges, description, developerId, id, varKey, name, scopes, tier, origins, validUntil);
         }
 
         /// <summary>
@@ -283,7 +277,7 @@ namespace CocApi.Rest.Models
             writer.WriteString("description", key.Description);
             writer.WriteString("developerId", key.DeveloperId);
             writer.WriteString("id", key.Id);
-            writer.WriteString("key", key.KeyProperty);
+            writer.WriteString("key", key.VarKey);
             writer.WriteString("name", key.Name);
             writer.WritePropertyName("scopes");
             JsonSerializer.Serialize(writer, key.Scopes, jsonSerializerOptions);

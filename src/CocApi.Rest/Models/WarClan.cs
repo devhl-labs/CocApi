@@ -312,9 +312,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-#pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (destructionPercentage == null)
                 throw new ArgumentNullException("destructionPercentage is a required property for WarClan and cannot be null.");
 
@@ -341,9 +338,6 @@ namespace CocApi.Rest.Models
 
             //if (members == null)
             //    throw new ArgumentNullException("members is a required property for WarClan and cannot be null.");
-
-#pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-#pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
 
             return new WarClan(attacks.Value, badgeUrls, clanLevel.Value, destructionPercentage.Value, expEarned.GetValueOrDefault(), members, name, stars.Value, tag);
         }

@@ -45,7 +45,7 @@ public class CachedPlayer : CachedItem<Player>
     {
         Tag = tag;
 
-        ClanTag = response.ToModel()?.Clan?.Tag;
+        ClanTag = response.AsModel()?.Clan?.Tag;
     }
 
     private CachedPlayer(string tag, TimeSpan localExpiration) : base (localExpiration)

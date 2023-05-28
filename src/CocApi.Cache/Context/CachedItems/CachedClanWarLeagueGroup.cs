@@ -50,7 +50,7 @@ public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
         UpdateFrom(apiResponse, localExpiration);
 
-        ClanWarLeagueGroup? model = apiResponse.ToModel();
+        ClanWarLeagueGroup? model = apiResponse.AsModel();
 
         Season = model?.Season;
 

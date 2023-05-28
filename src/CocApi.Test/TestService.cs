@@ -72,7 +72,7 @@ public class TestService : IHostedService
         var capitalLeagues = await LeaguesApi.FetchCapitalLeaguesAsync();
         var capitalLeague = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
         var builderBaseLeagues = await LeaguesApi.FetchBuilderBaseLeaguesAsync();
-        var builderBaseLeague = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeagues.ToModel()!.Items.First().Id.ToString());
+        var builderBaseLeague = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeagues.AsModel()!.Items.First().Id.ToString());
         System.Console.WriteLine("Done sanity check.");
     }
 }

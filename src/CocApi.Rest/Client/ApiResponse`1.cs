@@ -116,9 +116,9 @@ namespace CocApi.Rest.Client
         /// <summary>
         /// Deserializes the server's response
         /// </summary>
-        public T? ToModel(System.Text.Json.JsonSerializerOptions? options = null)
+        public T? AsModel(System.Text.Json.JsonSerializerOptions? options = null)
         {
-            // Modify this logic with the ToModel.mustache template
+            // Modify this logic with the AsModel.mustache template
             if ((ResponseType == typeof(Models.ClanWar) || ResponseType == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
                 return default;
 
@@ -134,7 +134,7 @@ namespace CocApi.Rest.Client
         {
             try
             {
-                model = ToModel(options);
+                model = AsModel(options);
                 return model != null;
             }
             catch
