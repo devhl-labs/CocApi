@@ -633,7 +633,7 @@ namespace CocApi.Rest.Models
                                 bestVersusTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "builderBaseTrophies":
-                        case "versusTrophies":
+                        case "versusTrophies": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 builderBaseTrophies = utf8JsonReader.GetInt32();
                             break;

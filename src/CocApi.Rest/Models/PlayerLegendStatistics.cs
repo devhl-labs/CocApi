@@ -240,7 +240,7 @@ namespace CocApi.Rest.Models
                                 legendTrophies = utf8JsonReader.GetInt32();
                             break;
                         case "bestBuilderBaseSeason":
-                        case "bestVersusSeason":
+                        case "bestVersusSeason": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 bestBuilderBaseSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
@@ -249,7 +249,7 @@ namespace CocApi.Rest.Models
                                 bestSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "previousBuilderBaseSeason":
-                        case "previousVersusSeason":
+                        case "previousVersusSeason": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 previousBuilderBaseSeason = JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
