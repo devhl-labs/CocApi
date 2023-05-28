@@ -352,7 +352,7 @@ namespace CocApi.Rest.Models
             }
 
             if (serverExpiration == null)
-                throw new ArgumentNullException(nameof(serverExpiration), "Property is required for class ClanWar.");
+                serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);
 
             if (clan == null)
                 throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWar.");

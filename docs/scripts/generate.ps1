@@ -343,6 +343,9 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
+
+        # this can be removed in the next update, just to ensure we can deserialize the old json data which wont have the serverExpiration value
+        $content = $content.Replace("throw new ArgumentNullException(nameof(serverExpiration), `"Property is required for class ClanWar.`");", "serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);")
     }
 
     if ($file.name -eq "DeveloperApi.cs"){
