@@ -31,7 +31,6 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanMember" /> class.
         /// </summary>
-        /// <param name="builderBaseLeague">builderBaseLeague</param>
         /// <param name="builderBaseTrophies">builderBaseTrophies</param>
         /// <param name="clanRank">clanRank</param>
         /// <param name="donations">donations</param>
@@ -43,12 +42,12 @@ namespace CocApi.Rest.Models
         /// <param name="tag">tag</param>
         /// <param name="trophies">trophies</param>
         /// <param name="versusTrophies">versusTrophies</param>
+        /// <param name="builderBaseLeague">builderBaseLeague</param>
         /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
         [JsonConstructor]
-        internal ClanMember(BuilderBaseLeague builderBaseLeague, int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, int versusTrophies, PlayerHouse? playerHouse = default, Role? role = default)
+        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, int versusTrophies, BuilderBaseLeague? builderBaseLeague = default, PlayerHouse? playerHouse = default, Role? role = default)
         {
-            BuilderBaseLeague = builderBaseLeague;
             BuilderBaseTrophies = builderBaseTrophies;
             ClanRank = clanRank;
             Donations = donations;
@@ -60,6 +59,7 @@ namespace CocApi.Rest.Models
             Tag = tag;
             Trophies = trophies;
             VersusTrophies = versusTrophies;
+            BuilderBaseLeague = builderBaseLeague;
             PlayerHouse = playerHouse;
             Role = role;
             OnCreated();
@@ -72,12 +72,6 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("role")]
         public Role? Role { get; }
-
-        /// <summary>
-        /// Gets or Sets BuilderBaseLeague
-        /// </summary>
-        [JsonPropertyName("builderBaseLeague")]
-        public BuilderBaseLeague BuilderBaseLeague { get; }
 
         /// <summary>
         /// Gets or Sets BuilderBaseTrophies
@@ -146,6 +140,12 @@ namespace CocApi.Rest.Models
         public int VersusTrophies { get; }
 
         /// <summary>
+        /// Gets or Sets BuilderBaseLeague
+        /// </summary>
+        [JsonPropertyName("builderBaseLeague")]
+        public BuilderBaseLeague? BuilderBaseLeague { get; }
+
+        /// <summary>
         /// Gets or Sets PlayerHouse
         /// </summary>
         [JsonPropertyName("playerHouse")]
@@ -159,7 +159,6 @@ namespace CocApi.Rest.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class ClanMember {\n");
-            sb.Append("  BuilderBaseLeague: ").Append(BuilderBaseLeague).Append("\n");
             sb.Append("  BuilderBaseTrophies: ").Append(BuilderBaseTrophies).Append("\n");
             sb.Append("  ClanRank: ").Append(ClanRank).Append("\n");
             sb.Append("  Donations: ").Append(Donations).Append("\n");
@@ -171,6 +170,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("  VersusTrophies: ").Append(VersusTrophies).Append("\n");
+            sb.Append("  BuilderBaseLeague: ").Append(BuilderBaseLeague).Append("\n");
             sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
             sb.Append("}\n");
@@ -198,11 +198,6 @@ namespace CocApi.Rest.Models
                 return false;
 
             return 
-                (
-                    BuilderBaseLeague == input.BuilderBaseLeague ||
-                    (BuilderBaseLeague != null &&
-                    BuilderBaseLeague.Equals(input.BuilderBaseLeague))
-                ) && 
                 (
                     BuilderBaseTrophies == input.BuilderBaseTrophies ||
                     (BuilderBaseTrophies != null &&
@@ -259,6 +254,11 @@ namespace CocApi.Rest.Models
                     VersusTrophies.Equals(input.VersusTrophies))
                 ) && 
                 (
+                    BuilderBaseLeague == input.BuilderBaseLeague ||
+                    (BuilderBaseLeague != null &&
+                    BuilderBaseLeague.Equals(input.BuilderBaseLeague))
+                ) && 
+                (
                     PlayerHouse == input.PlayerHouse ||
                     (PlayerHouse != null &&
                     PlayerHouse.Equals(input.PlayerHouse))
@@ -279,7 +279,6 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + BuilderBaseLeague.GetHashCode();
                 hashCode = (hashCode * 59) + BuilderBaseTrophies.GetHashCode();
                 hashCode = (hashCode * 59) + ClanRank.GetHashCode();
                 hashCode = (hashCode * 59) + Donations.GetHashCode();
@@ -291,6 +290,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
                 hashCode = (hashCode * 59) + VersusTrophies.GetHashCode();
+
+                if (BuilderBaseLeague != null)
+                    hashCode = (hashCode * 59) + BuilderBaseLeague.GetHashCode();
 
                 if (PlayerHouse != null)
                     hashCode = (hashCode * 59) + PlayerHouse.GetHashCode();
@@ -325,7 +327,6 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BuilderBaseLeague? builderBaseLeague = default;
             int? builderBaseTrophies = default;
             int? clanRank = default;
             int? donations = default;
@@ -337,6 +338,7 @@ namespace CocApi.Rest.Models
             string? tag = default;
             int? trophies = default;
             int? versusTrophies = default;
+            BuilderBaseLeague? builderBaseLeague = default;
             PlayerHouse? playerHouse = default;
             Role? role = default;
 
@@ -355,10 +357,6 @@ namespace CocApi.Rest.Models
 
                     switch (propertyName)
                     {
-                        case "builderBaseLeague":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseLeague = JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions);
-                            break;
                         case "builderBaseTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 builderBaseTrophies = utf8JsonReader.GetInt32();
@@ -401,6 +399,10 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 versusTrophies = utf8JsonReader.GetInt32();
                             break;
+                        case "builderBaseLeague":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                builderBaseLeague = JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions);
+                            break;
                         case "playerHouse":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
@@ -417,9 +419,6 @@ namespace CocApi.Rest.Models
 
             if (league == null)
                 throw new ArgumentNullException(nameof(league), "Property is required for class ClanMember.");
-
-            if (builderBaseLeague == null)
-                throw new ArgumentNullException(nameof(builderBaseLeague), "Property is required for class ClanMember.");
 
             if (versusTrophies == null)
                 throw new ArgumentNullException(nameof(versusTrophies), "Property is required for class ClanMember.");
@@ -451,7 +450,7 @@ namespace CocApi.Rest.Models
             if (builderBaseTrophies == null)
                 throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class ClanMember.");
 
-            return new ClanMember(builderBaseLeague, builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, versusTrophies.Value, playerHouse, role.Value);
+            return new ClanMember(builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, versusTrophies.Value, builderBaseLeague, playerHouse, role.Value);
         }
 
         /// <summary>
@@ -465,8 +464,6 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            writer.WritePropertyName("builderBaseLeague");
-            JsonSerializer.Serialize(writer, clanMember.BuilderBaseLeague, jsonSerializerOptions);
             writer.WriteNumber("builderBaseTrophies", clanMember.BuilderBaseTrophies);
             writer.WriteNumber("clanRank", clanMember.ClanRank);
             writer.WriteNumber("donations", clanMember.Donations);
@@ -479,6 +476,8 @@ namespace CocApi.Rest.Models
             writer.WriteString("tag", clanMember.Tag);
             writer.WriteNumber("trophies", clanMember.Trophies);
             writer.WriteNumber("versusTrophies", clanMember.VersusTrophies);
+            writer.WritePropertyName("builderBaseLeague");
+            JsonSerializer.Serialize(writer, clanMember.BuilderBaseLeague, jsonSerializerOptions);
             writer.WritePropertyName("playerHouse");
             JsonSerializer.Serialize(writer, clanMember.PlayerHouse, jsonSerializerOptions);
             if (clanMember.Role == null)
