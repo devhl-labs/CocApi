@@ -34,7 +34,7 @@ public class CachedItem<T> where T : class
                 {
                     if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
                     {
-                        if ((this is CachedClanWarLeagueGroup || this is CachedClanWar) && !RawContent.Contains("notInWar"))
+                        if ((this is CachedClanWarLeagueGroup || this is CachedWar || this is CachedClanWar) && !RawContent.Contains("notInWar"))
                         {
                             RawContent = RawContent[..^1];
                             if (!RawContent.Contains("serverExpiration"))
@@ -50,7 +50,7 @@ public class CachedItem<T> where T : class
                         }
 
                         // when the clan is not in cwl war, all the properties will be empty except state: notInWar so we cant deserialize this
-                        if ((this is not CachedClanWarLeagueGroup && this is not CachedClanWar) || !RawContent.Contains("notInWar"))
+                        if ((this is not CachedClanWarLeagueGroup && this is not CachedClanWar && this is not CachedWar) || !RawContent.Contains("notInWar"))
                             _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
                     }
                 }
