@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**BuilderBaseLeague** | [**BuilderBaseLeague**](BuilderBaseLeague.md) |  | [optional] [readonly] 
 **BuilderBaseTrophies** | **int** |  | [optional] [readonly] 
 **ClanRank** | **int** |  | [optional] [readonly] 
 **Donations** | **int** |  | [optional] [readonly] 
@@ -16,6 +15,7 @@ Name | Type | Description | Notes
 **Tag** | **string** |  | [optional] [readonly] 
 **Trophies** | **int** |  | [optional] [readonly] 
 **VersusTrophies** | **int** |  | [optional] [readonly] 
+**BuilderBaseLeague** | [**BuilderBaseLeague**](BuilderBaseLeague.md) |  | [optional] [readonly] 
 **PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 
 **Role** | **Role** |  | [optional] [readonly] 
 
