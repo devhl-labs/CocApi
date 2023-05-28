@@ -160,6 +160,7 @@ namespace CocApi.Rest.Models
                     switch (propertyName)
                     {
                         case "clanBuilderBasePoints":
+                        case "clanVersusPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanBuilderBasePoints = utf8JsonReader.GetInt32();
                             break;

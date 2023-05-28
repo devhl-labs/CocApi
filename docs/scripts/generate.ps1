@@ -287,6 +287,29 @@ foreach ($file in $allCodeFiles)
 
         $content = $content.Replace("if (members == null)", "if (memberList == null)")
         $content = $content.Replace("ArgumentNullException(nameof(members)", "ArgumentNullException(nameof(memberList)")
+        $content = $content.Replace("case `"clanBuilderBasePoints`":", "case `"clanBuilderBasePoints`":`r`n                        case `"clanVersusPoints`":")
+        $content = $content.Replace("case `"requiredBuilderBaseTrophies`":", "case `"requiredBuilderBaseTrophies`":`r`n                        case `"requiredVersusTrophies`":")
+    }
+
+    if ($file.name -eq "ClanMember.cs"){
+        $content = $content.Replace("case `"builderBaseTrophies`":", "case `"builderBaseTrophies`":`r`n                        case `"versusTrophies`":")
+    }
+
+    if ($file.name -eq "ClanBuilderBaseRanking.cs"){
+        $content = $content.Replace("case `"clanBuilderBasePoints`":", "case `"clanBuilderBasePoints`":`r`n                        case `"clanVersusPoints`":")
+    }
+
+    if ($file.name -eq "Player.cs"){
+        $content = $content.Replace("case `"builderBaseTrophies`":", "case `"builderBaseTrophies`":`r`n                        case `"versusTrophies`":")
+    }
+
+    if ($file.name -eq "PlayerLegendStatistics.cs"){
+        $content = $content.Replace("case `"previousBuilderBaseSeason`":", "case `"previousBuilderBaseSeason`":`r`n                        case `"previousVersusSeason`":")
+        $content = $content.Replace("case `"bestBuilderBaseSeason`":", "case `"bestBuilderBaseSeason`":`r`n                        case `"bestVersusSeason`":")
+    }
+
+    if ($file.name -eq "PlayerBuilderBaseRanking.cs"){
+        $content = $content.Replace("case `"builderBaseTrophies`":", "case `"builderBaseTrophies`":`r`n                        case `"versusTrophies`":")
     }
 
     if ($file.name -eq "Role.cs"){
