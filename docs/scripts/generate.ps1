@@ -29,14 +29,39 @@ $global = @(
     'modelTests=true'
 ) -join ","
 
+$clanWarProperties = @"
+    ClanWar:
+      type: object
+      properties:
+"@
+
+$clanWarPropertiesReplacement = @"
+    ClanWar:
+      type: object
+      properties:
+        # adding these for legacy reasons
+        warTag:
+            type: string
+            readOnly: true
+            nullable: true
+        serverExpiration:
+            type: date-time
+            readOnly: true
+"@
+
 $generator = Resolve-Path -Path "$PSScriptRoot\..\..\..\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar"
-$yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-added-ClanWar-properties.yml"
+$yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0.yml"
 $output = Resolve-Path -Path "$PSScriptRoot\..\.."
 $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
 
+$rawYml = $(Get-Content -Path $yml) -join "`r`n"
+$rawYml = $rawYml.Replace($clanWarProperties, $clanWarPropertiesReplacement)
+Set-Content "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml" $rawYml
+$appendedPropertiesYaml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
+
 java -jar $generator generate `
     -g csharp-netcore `
-    -i $yml `
+    -i $appendedPropertiesYaml `
     -o $($output.Path) `
     --library generichost `
     --additional-properties $properties `
@@ -46,6 +71,8 @@ java -jar $generator generate `
     --git-user-id "devhl-labs" `
     -t $templates.Path `
     --release-note $releaseNote
+
+Remove-Item "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
 $membersProperty = @"
         /// <summary>
