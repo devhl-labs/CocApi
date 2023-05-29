@@ -43,7 +43,7 @@ public class CachedItem<T> where T : class
                                 RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
                             }
 
-                            if (this is CachedWar cachedWar)
+                            if (this is CachedWar cachedWar && cachedWar.WarTag != null)
                                 RawContent = $"{RawContent}, \"warTag\": \"{cachedWar.WarTag}\"";
 
                             RawContent = $"{RawContent}}}";
