@@ -34,18 +34,18 @@ namespace CocApi.Rest.Models
         /// <param name="attackerTag">attackerTag</param>
         /// <param name="defenderTag">defenderTag</param>
         /// <param name="destructionPercentage">destructionPercentage</param>
-        /// <param name="duration">duration</param>
         /// <param name="order">order</param>
         /// <param name="stars">stars</param>
+        /// <param name="duration">duration</param>
         [JsonConstructor]
-        internal ClanWarAttack(string attackerTag, string defenderTag, int destructionPercentage, int duration, int order, int stars)
+        internal ClanWarAttack(string attackerTag, string defenderTag, int destructionPercentage, int order, int stars, int? duration = default)
         {
             AttackerTag = attackerTag;
             DefenderTag = defenderTag;
             DestructionPercentage = destructionPercentage;
-            Duration = duration;
             Order = order;
             Stars = stars;
+            Duration = duration;
             OnCreated();
         }
 
@@ -70,12 +70,6 @@ namespace CocApi.Rest.Models
         public int DestructionPercentage { get; }
 
         /// <summary>
-        /// Gets or Sets Duration
-        /// </summary>
-        [JsonPropertyName("duration")]
-        public int Duration { get; }
-
-        /// <summary>
         /// Gets or Sets Order
         /// </summary>
         [JsonPropertyName("order")]
@@ -88,6 +82,12 @@ namespace CocApi.Rest.Models
         public int Stars { get; }
 
         /// <summary>
+        /// Gets or Sets Duration
+        /// </summary>
+        [JsonPropertyName("duration")]
+        public int? Duration { get; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -98,9 +98,9 @@ namespace CocApi.Rest.Models
             sb.Append("  AttackerTag: ").Append(AttackerTag).Append("\n");
             sb.Append("  DefenderTag: ").Append(DefenderTag).Append("\n");
             sb.Append("  DestructionPercentage: ").Append(DestructionPercentage).Append("\n");
-            sb.Append("  Duration: ").Append(Duration).Append("\n");
             sb.Append("  Order: ").Append(Order).Append("\n");
             sb.Append("  Stars: ").Append(Stars).Append("\n");
+            sb.Append("  Duration: ").Append(Duration).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -142,11 +142,6 @@ namespace CocApi.Rest.Models
                     DestructionPercentage.Equals(input.DestructionPercentage))
                 ) && 
                 (
-                    Duration == input.Duration ||
-                    (Duration != null &&
-                    Duration.Equals(input.Duration))
-                ) && 
-                (
                     Order == input.Order ||
                     (Order != null &&
                     Order.Equals(input.Order))
@@ -155,6 +150,11 @@ namespace CocApi.Rest.Models
                     Stars == input.Stars ||
                     (Stars != null &&
                     Stars.Equals(input.Stars))
+                ) && 
+                (
+                    Duration == input.Duration ||
+                    (Duration != null &&
+                    Duration.Equals(input.Duration))
                 );
         }
 
@@ -170,9 +170,11 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + AttackerTag.GetHashCode();
                 hashCode = (hashCode * 59) + DefenderTag.GetHashCode();
                 hashCode = (hashCode * 59) + DestructionPercentage.GetHashCode();
-                hashCode = (hashCode * 59) + Duration.GetHashCode();
                 hashCode = (hashCode * 59) + Order.GetHashCode();
                 hashCode = (hashCode * 59) + Stars.GetHashCode();
+
+                if (Duration != null)
+                    hashCode = (hashCode * 59) + Duration.GetHashCode();
 
                 return hashCode;
             }
@@ -204,9 +206,9 @@ namespace CocApi.Rest.Models
             string? attackerTag = default;
             string? defenderTag = default;
             int? destructionPercentage = default;
-            int? duration = default;
             int? order = default;
             int? stars = default;
+            int? duration = default;
 
             while (utf8JsonReader.Read())
             {
@@ -233,10 +235,6 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 destructionPercentage = utf8JsonReader.GetInt32();
                             break;
-                        case "duration":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                duration = utf8JsonReader.GetInt32();
-                            break;
                         case "order":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 order = utf8JsonReader.GetInt32();
@@ -244,6 +242,10 @@ namespace CocApi.Rest.Models
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 stars = utf8JsonReader.GetInt32();
+                            break;
+                        case "duration":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                duration = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;
@@ -266,10 +268,7 @@ namespace CocApi.Rest.Models
             if (destructionPercentage == null)
                 throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class ClanWarAttack.");
 
-            if (duration == null)
-                throw new ArgumentNullException(nameof(duration), "Property is required for class ClanWarAttack.");
-
-            return new ClanWarAttack(attackerTag, defenderTag, destructionPercentage.Value, duration.Value, order.Value, stars.Value);
+            return new ClanWarAttack(attackerTag, defenderTag, destructionPercentage.Value, order.Value, stars.Value, duration);
         }
 
         /// <summary>
@@ -286,9 +285,12 @@ namespace CocApi.Rest.Models
             writer.WriteString("attackerTag", clanWarAttack.AttackerTag);
             writer.WriteString("defenderTag", clanWarAttack.DefenderTag);
             writer.WriteNumber("destructionPercentage", clanWarAttack.DestructionPercentage);
-            writer.WriteNumber("duration", clanWarAttack.Duration);
             writer.WriteNumber("order", clanWarAttack.Order);
             writer.WriteNumber("stars", clanWarAttack.Stars);
+            if (clanWarAttack.Duration != null)
+                writer.WriteNumber("duration", clanWarAttack.Duration.Value);
+            else
+                writer.WriteNull("duration");
 
             writer.WriteEndObject();
         }
