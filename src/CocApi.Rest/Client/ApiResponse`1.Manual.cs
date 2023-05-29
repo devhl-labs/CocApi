@@ -48,6 +48,9 @@ namespace CocApi.Rest.Client
                 {
                     string[] parts = url.Split("/");
                     RawContent = $"{RawContent}, \"warTag\": \"{parts.Last()}\"";
+
+                    if (!RawContent.Contains("attacksPerMember"))
+                        RawContent = $"{RawContent}, \"attacksPerMember\": 1";
                 }
 
                 RawContent = $"{RawContent}}}";

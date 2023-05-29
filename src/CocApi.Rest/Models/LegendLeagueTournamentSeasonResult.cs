@@ -31,37 +31,37 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="LegendLeagueTournamentSeasonResult" /> class.
         /// </summary>
+        /// <param name="trophies">trophies</param>
         /// <param name="id">id</param>
         /// <param name="rank">rank</param>
-        /// <param name="trophies">trophies</param>
         [JsonConstructor]
-        internal LegendLeagueTournamentSeasonResult(DateTime id, int rank, int trophies)
+        internal LegendLeagueTournamentSeasonResult(int trophies, DateTime? id = default, int? rank = default)
         {
+            Trophies = trophies;
             Id = id;
             Rank = rank;
-            Trophies = trophies;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Gets or Sets Trophies
+        /// </summary>
+        [JsonPropertyName("trophies")]
+        public int Trophies { get; }
+
+        /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonPropertyName("id")]
-        public DateTime Id { get; }
+        public DateTime? Id { get; }
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [JsonPropertyName("rank")]
-        public int Rank { get; }
-
-        /// <summary>
-        /// Gets or Sets Trophies
-        /// </summary>
-        [JsonPropertyName("trophies")]
-        public int Trophies { get; }
+        public int? Rank { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -71,9 +71,9 @@ namespace CocApi.Rest.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class LegendLeagueTournamentSeasonResult {\n");
+            sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Rank: ").Append(Rank).Append("\n");
-            sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -100,6 +100,11 @@ namespace CocApi.Rest.Models
 
             return 
                 (
+                    Trophies == input.Trophies ||
+                    (Trophies != null &&
+                    Trophies.Equals(input.Trophies))
+                ) && 
+                (
                     Id == input.Id ||
                     (Id != null &&
                     Id.Equals(input.Id))
@@ -108,11 +113,6 @@ namespace CocApi.Rest.Models
                     Rank == input.Rank ||
                     (Rank != null &&
                     Rank.Equals(input.Rank))
-                ) && 
-                (
-                    Trophies == input.Trophies ||
-                    (Trophies != null &&
-                    Trophies.Equals(input.Trophies))
                 );
         }
 
@@ -125,9 +125,13 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + Id.GetHashCode();
-                hashCode = (hashCode * 59) + Rank.GetHashCode();
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
+
+                if (Id != null)
+                    hashCode = (hashCode * 59) + Id.GetHashCode();
+
+                if (Rank != null)
+                    hashCode = (hashCode * 59) + Rank.GetHashCode();
 
                 return hashCode;
             }
@@ -161,9 +165,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
+            int? trophies = default;
             DateTime? id = default;
             int? rank = default;
-            int? trophies = default;
 
             while (utf8JsonReader.Read())
             {
@@ -180,17 +184,17 @@ namespace CocApi.Rest.Models
 
                     switch (propertyName)
                     {
+                        case "trophies":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                trophies = utf8JsonReader.GetInt32();
+                            break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                                id = JsonSerializer.Deserialize<DateTime?>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 rank = utf8JsonReader.GetInt32();
-                            break;
-                        case "trophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = utf8JsonReader.GetInt32();
                             break;
                         default:
                             break;
@@ -201,13 +205,7 @@ namespace CocApi.Rest.Models
             if (trophies == null)
                 throw new ArgumentNullException(nameof(trophies), "Property is required for class LegendLeagueTournamentSeasonResult.");
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class LegendLeagueTournamentSeasonResult.");
-
-            if (rank == null)
-                throw new ArgumentNullException(nameof(rank), "Property is required for class LegendLeagueTournamentSeasonResult.");
-
-            return new LegendLeagueTournamentSeasonResult(id.Value, rank.Value, trophies.Value);
+            return new LegendLeagueTournamentSeasonResult(trophies.Value, id, rank);
         }
 
         /// <summary>
@@ -221,9 +219,15 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            writer.WriteString("id", legendLeagueTournamentSeasonResult.Id.ToString(IdFormat));
-            writer.WriteNumber("rank", legendLeagueTournamentSeasonResult.Rank);
             writer.WriteNumber("trophies", legendLeagueTournamentSeasonResult.Trophies);
+            if (legendLeagueTournamentSeasonResult.Id != null)
+                writer.WriteString("id", legendLeagueTournamentSeasonResult.Id.Value.ToString(IdFormat));
+            else
+                writer.WriteNull("id");
+            if (legendLeagueTournamentSeasonResult.Rank != null)
+                writer.WriteNumber("rank", legendLeagueTournamentSeasonResult.Rank.Value);
+            else
+                writer.WriteNull("rank");
 
             writer.WriteEndObject();
         }

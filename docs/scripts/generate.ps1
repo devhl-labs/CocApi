@@ -56,6 +56,11 @@ $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
 
 $rawYml = $(Get-Content -Path $yml) -join "`r`n"
 $rawYml = $rawYml.Replace($clanWarProperties, $clanWarPropertiesReplacement)
+
+# TODO: mark attacksPerMember as nullable
+# but make it NOT be nullable in the appended-properties yaml, because we ensure that the property is there
+# but SC does not
+
 Set-Content "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml" $rawYml
 $appendedPropertiesYaml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
@@ -346,6 +351,7 @@ foreach ($file in $allCodeFiles)
 
         # this can be removed in the next update, just to ensure we can deserialize the old json data which wont have the serverExpiration value
         $content = $content.Replace("throw new ArgumentNullException(nameof(serverExpiration), `"Property is required for class ClanWar.`");", "serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);")
+        $content = $content.Replace("throw new ArgumentNullException(nameof(attacksPerMember), `"Property is required for class ClanWar.`");", "attacksPerMember = 1; // cwl war")
     }
 
     if ($file.name -eq "DeveloperApi.cs"){

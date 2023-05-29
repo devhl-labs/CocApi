@@ -361,7 +361,7 @@ namespace CocApi.Rest.Models
                 throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWar.");
 
             if (attacksPerMember == null)
-                throw new ArgumentNullException(nameof(attacksPerMember), "Property is required for class ClanWar.");
+                attacksPerMember = 1; // cwl war
 
             if (opponent == null)
                 throw new ArgumentNullException(nameof(opponent), "Property is required for class ClanWar.");
