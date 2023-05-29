@@ -1,4 +1,4 @@
-$packageVersion = "2.5.5"
+$packageVersion = "2.5.6"
 $releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
 
 $properties = @(
