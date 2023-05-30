@@ -794,7 +794,7 @@ namespace CocApi.Rest.Models
             if (clanCapitalContributions == null)
                 throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is required for class Player.");
 
-            return new Player(achievements, attackWins.Value, bestTrophies.Value, bestVersusTrophies.Value, builderBaseTrophies.Value, clanCapitalContributions.Value, defenseWins.Value, donations.Value, donationsReceived.Value, expLevel.Value, heroes, labels, name, spells, tag, townHallLevel.Value, troops, trophies.Value, warStars.Value, builderBaseLeague, builderHallLevel, clan, league, legendStatistics, playerHouse, role.Value, townHallWeaponLevel, versusBattleWinCount, warPreference.Value);
+            return new Player(achievements, attackWins.Value, bestTrophies.Value, bestVersusTrophies.Value, builderBaseTrophies.Value, clanCapitalContributions.Value, defenseWins.Value, donations.Value, donationsReceived.Value, expLevel.Value, heroes, labels, name, spells, tag, townHallLevel.Value, troops, trophies.Value, warStars.Value, builderBaseLeague, builderHallLevel, clan, league, legendStatistics, playerHouse, role, townHallWeaponLevel, versusBattleWinCount, warPreference);
         }
 
         /// <summary>

@@ -678,7 +678,7 @@ namespace CocApi.Rest.Models
             if (isFamilyFriendly == null)
                 throw new ArgumentNullException(nameof(isFamilyFriendly), "Property is required for class Clan.");
 
-            return new Clan(badgeUrls, capitalLeague, clanBuilderBasePoints.Value, clanCapital, clanLevel.Value, clanPoints.Value, description, isFamilyFriendly.Value, isWarLogPublic.Value, labels, memberList, name, requiredBuilderBaseTrophies.Value, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type.Value, warFrequency.Value, warLosses, warTies);
+            return new Clan(badgeUrls, capitalLeague, clanBuilderBasePoints.Value, clanCapital, clanLevel.Value, clanPoints.Value, description, isFamilyFriendly.Value, isWarLogPublic.Value, labels, memberList, name, requiredBuilderBaseTrophies.Value, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>

@@ -563,7 +563,7 @@ namespace CocApi.Rest.Models
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanListEntry.");
 
-            return new ClanListEntry(badgeUrls, clanBuilderBasePoints.Value, clanLevel.Value, clanPoints.Value, isWarLogPublic.Value, labels, members.Value, name, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type.Value, warFrequency.Value, warLosses, warTies);
+            return new ClanListEntry(badgeUrls, clanBuilderBasePoints.Value, clanLevel.Value, clanPoints.Value, isWarLogPublic.Value, labels, members.Value, name, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>

@@ -428,7 +428,7 @@ namespace CocApi.Rest.Models
             if (builderBaseTrophies == null)
                 throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class ClanMember.");
 
-            return new ClanMember(builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, builderBaseLeague, playerHouse, role.Value);
+            return new ClanMember(builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, builderBaseLeague, playerHouse, role);
         }
 
         /// <summary>

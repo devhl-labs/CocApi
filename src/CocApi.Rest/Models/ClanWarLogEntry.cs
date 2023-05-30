@@ -275,7 +275,7 @@ namespace CocApi.Rest.Models
             if (endTime == null)
                 throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWarLogEntry.");
 
-            return new ClanWarLogEntry(attacksPerMember.Value, clan, endTime.Value, opponent, teamSize.Value, result.Value);
+            return new ClanWarLogEntry(attacksPerMember.Value, clan, endTime.Value, opponent, teamSize.Value, result);
         }
 
         /// <summary>

@@ -231,7 +231,7 @@ namespace CocApi.Rest.Models
             if (rounds == null)
                 throw new ArgumentNullException(nameof(rounds), "Property is required for class ClanWarLeagueGroup.");
 
-            return new ClanWarLeagueGroup(clans, rounds, season.Value, state.Value);
+            return new ClanWarLeagueGroup(clans, rounds, season.Value, state);
         }
 
         /// <summary>

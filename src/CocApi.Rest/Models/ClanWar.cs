@@ -375,7 +375,7 @@ namespace CocApi.Rest.Models
             if (preparationStartTime == null)
                 throw new ArgumentNullException(nameof(preparationStartTime), "Property is required for class ClanWar.");
 
-            return new ClanWar(attacksPerMember.Value, clan, endTime.Value, opponent, preparationStartTime.Value, serverExpiration.Value, startTime.Value, teamSize.Value, state.Value, warTag);
+            return new ClanWar(attacksPerMember.Value, clan, endTime.Value, opponent, preparationStartTime.Value, serverExpiration.Value, startTime.Value, teamSize.Value, state, warTag);
         }
 
         /// <summary>
