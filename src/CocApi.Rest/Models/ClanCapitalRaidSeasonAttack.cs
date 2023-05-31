@@ -106,13 +106,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     DestructionPercent == input.DestructionPercent ||
-                    (DestructionPercent != null &&
-                    DestructionPercent.Equals(input.DestructionPercent))
+                    DestructionPercent.Equals(input.DestructionPercent)
                 ) && 
                 (
                     Stars == input.Stars ||
-                    (Stars != null &&
-                    Stars.Equals(input.Stars))
+                    Stars.Equals(input.Stars)
                 );
         }
 

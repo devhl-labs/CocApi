@@ -164,18 +164,15 @@ namespace CocApi.Rest.Models
             return 
                 (
                     AttackWins == input.AttackWins ||
-                    (AttackWins != null &&
-                    AttackWins.Equals(input.AttackWins))
+                    AttackWins.Equals(input.AttackWins)
                 ) && 
                 (
                     DefenseWins == input.DefenseWins ||
-                    (DefenseWins != null &&
-                    DefenseWins.Equals(input.DefenseWins))
+                    DefenseWins.Equals(input.DefenseWins)
                 ) && 
                 (
                     ExpLevel == input.ExpLevel ||
-                    (ExpLevel != null &&
-                    ExpLevel.Equals(input.ExpLevel))
+                    ExpLevel.Equals(input.ExpLevel)
                 ) && 
                 (
                     League == input.League ||
@@ -189,13 +186,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     PreviousRank == input.PreviousRank ||
-                    (PreviousRank != null &&
-                    PreviousRank.Equals(input.PreviousRank))
+                    PreviousRank.Equals(input.PreviousRank)
                 ) && 
                 (
                     Rank == input.Rank ||
-                    (Rank != null &&
-                    Rank.Equals(input.Rank))
+                    Rank.Equals(input.Rank)
                 ) && 
                 (
                     Tag == input.Tag ||
@@ -204,8 +199,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Trophies == input.Trophies ||
-                    (Trophies != null &&
-                    Trophies.Equals(input.Trophies))
+                    Trophies.Equals(input.Trophies)
                 ) && 
                 (
                     Clan == input.Clan ||

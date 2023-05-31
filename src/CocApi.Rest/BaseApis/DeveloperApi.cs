@@ -167,12 +167,14 @@ namespace CocApi.Rest.BaseApis
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
         }
 
+        partial void FormatCreate(CreateTokenRequest createTokenRequest);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="createTokenRequest"></param>
         /// <returns></returns>
-        protected virtual CreateTokenRequest OnCreate(CreateTokenRequest createTokenRequest)
+        private void ValidateCreate(CreateTokenRequest createTokenRequest)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -180,10 +182,8 @@ namespace CocApi.Rest.BaseApis
             if (createTokenRequest == null)
                 throw new ArgumentNullException(nameof(createTokenRequest));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return createTokenRequest;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -238,7 +238,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                createTokenRequest = OnCreate(createTokenRequest);
+                ValidateCreate(createTokenRequest);
+
+                FormatCreate(createTokenRequest);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -307,15 +309,6 @@ namespace CocApi.Rest.BaseApis
         }
 
         /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <returns></returns>
-        protected virtual void OnKeys()
-        {
-            return;
-        }
-
-        /// <summary>
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
@@ -363,8 +356,6 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                OnKeys();
-
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
                     Uri urlLocalVar = httpRequestMessageLocalVar.RequestUri = new Uri("https://developer.clashofclans.com/api/apikey/list");
@@ -418,12 +409,14 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatLogin(LoginCredentials loginCredentials);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="loginCredentials"></param>
         /// <returns></returns>
-        protected virtual LoginCredentials OnLogin(LoginCredentials loginCredentials)
+        private void ValidateLogin(LoginCredentials loginCredentials)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -431,10 +424,8 @@ namespace CocApi.Rest.BaseApis
             if (loginCredentials == null)
                 throw new ArgumentNullException(nameof(loginCredentials));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return loginCredentials;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -489,7 +480,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                loginCredentials = OnLogin(loginCredentials);
+                ValidateLogin(loginCredentials);
+
+                FormatLogin(loginCredentials);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -549,12 +542,14 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatRevoke(Key key);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        protected virtual Key OnRevoke(Key key)
+        private void ValidateRevoke(Key key)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -562,10 +557,8 @@ namespace CocApi.Rest.BaseApis
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return key;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -620,7 +613,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                key = OnRevoke(key);
+                ValidateRevoke(key);
+
+                FormatRevoke(key);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {

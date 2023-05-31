@@ -40,25 +40,5 @@ namespace CocApi.Rest.Apis
             apiKeyProvider)
         {
         }
-
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="loginRequest"></param>
-        /// <returns></returns>
-        protected override LoginCredentials OnLogin(LoginCredentials loginRequest)
-        {
-            return base.OnLogin(loginRequest);
-        }
-
-        /// <summary>
-        /// Processes the server response
-        /// </summary>
-        /// <param name="apiResponse"></param>
-        /// <param name="loginRequest"></param>
-        protected override void AfterLogin(ApiResponse<LoginResponse> apiResponse, LoginCredentials loginRequest)
-        {
-            base.AfterLogin(apiResponse, loginRequest);
-        }
     }
 }

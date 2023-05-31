@@ -111,8 +111,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     TownHallLevel == input.TownHallLevel ||
-                    (TownHallLevel != null &&
-                    TownHallLevel.Equals(input.TownHallLevel))
+                    TownHallLevel.Equals(input.TownHallLevel)
                 );
         }
 

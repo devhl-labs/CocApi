@@ -131,17 +131,7 @@ namespace CocApi.Rest.BaseApis
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (int?, string?, string?) OnFetchClanLabels(int? limit, string? after, string? before)
-        {
-            return (limit, after, before);
-        }
+        partial void FormatGetClanLabels(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
         /// Processes the server response
@@ -203,10 +193,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchClanLabels(limit, after, before);
-                limit = validatedParameterLocalVars.Item1;
-                after = validatedParameterLocalVars.Item2;
-                before = validatedParameterLocalVars.Item3;
+                FormatGetClanLabels(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -275,17 +262,7 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (int?, string?, string?) OnFetchPlayerLabels(int? limit, string? after, string? before)
-        {
-            return (limit, after, before);
-        }
+        partial void FormatGetPlayerLabels(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
         /// Processes the server response
@@ -347,10 +324,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchPlayerLabels(limit, after, before);
-                limit = validatedParameterLocalVars.Item1;
-                after = validatedParameterLocalVars.Item2;
-                before = validatedParameterLocalVars.Item3;
+                FormatGetPlayerLabels(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {

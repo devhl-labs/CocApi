@@ -147,23 +147,19 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Stars == input.Stars ||
-                    (Stars != null &&
-                    Stars.Equals(input.Stars))
+                    Stars.Equals(input.Stars)
                 ) && 
                 (
                     Target == input.Target ||
-                    (Target != null &&
-                    Target.Equals(input.Target))
+                    Target.Equals(input.Target)
                 ) && 
                 (
                     Value == input.Value ||
-                    (Value != null &&
-                    Value.Equals(input.Value))
+                    Value.Equals(input.Value)
                 ) && 
                 (
                     Village == input.Village ||
-                    (Village != null &&
-                    Village.Equals(input.Village))
+                    Village.Equals(input.Village)
                 ) && 
                 (
                     CompletionInfo == input.CompletionInfo ||

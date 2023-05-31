@@ -250,23 +250,19 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     ClanBuilderBasePoints == input.ClanBuilderBasePoints ||
-                    (ClanBuilderBasePoints != null &&
-                    ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints))
+                    ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints)
                 ) && 
                 (
                     ClanLevel == input.ClanLevel ||
-                    (ClanLevel != null &&
-                    ClanLevel.Equals(input.ClanLevel))
+                    ClanLevel.Equals(input.ClanLevel)
                 ) && 
                 (
                     ClanPoints == input.ClanPoints ||
-                    (ClanPoints != null &&
-                    ClanPoints.Equals(input.ClanPoints))
+                    ClanPoints.Equals(input.ClanPoints)
                 ) && 
                 (
                     IsWarLogPublic == input.IsWarLogPublic ||
-                    (IsWarLogPublic != null &&
-                    IsWarLogPublic.Equals(input.IsWarLogPublic))
+                    IsWarLogPublic.Equals(input.IsWarLogPublic)
                 ) && 
                 (
                     Labels == input.Labels ||
@@ -276,8 +272,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Members == input.Members ||
-                    (Members != null &&
-                    Members.Equals(input.Members))
+                    Members.Equals(input.Members)
                 ) && 
                 (
                     Name == input.Name ||
@@ -286,8 +281,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     RequiredTrophies == input.RequiredTrophies ||
-                    (RequiredTrophies != null &&
-                    RequiredTrophies.Equals(input.RequiredTrophies))
+                    RequiredTrophies.Equals(input.RequiredTrophies)
                 ) && 
                 (
                     Tag == input.Tag ||
@@ -301,13 +295,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     WarWinStreak == input.WarWinStreak ||
-                    (WarWinStreak != null &&
-                    WarWinStreak.Equals(input.WarWinStreak))
+                    WarWinStreak.Equals(input.WarWinStreak)
                 ) && 
                 (
                     WarWins == input.WarWins ||
-                    (WarWins != null &&
-                    WarWins.Equals(input.WarWins))
+                    WarWins.Equals(input.WarWins)
                 ) && 
                 (
                     ChatLanguage == input.ChatLanguage ||
@@ -321,13 +313,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Type == input.Type ||
-                    (Type != null &&
-                    Type.Equals(input.Type))
+                    Type.Equals(input.Type)
                 ) && 
                 (
                     WarFrequency == input.WarFrequency ||
-                    (WarFrequency != null &&
-                    WarFrequency.Equals(input.WarFrequency))
+                    WarFrequency.Equals(input.WarFrequency)
                 ) && 
                 (
                     WarLosses == input.WarLosses ||

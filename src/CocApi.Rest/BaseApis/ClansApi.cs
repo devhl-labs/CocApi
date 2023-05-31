@@ -305,6 +305,8 @@ namespace CocApi.Rest.BaseApis
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
         }
 
+        partial void FormatGetCapitalRaidSeasons(ref string clanTag, ref int? limit, ref string? after, ref string? before);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
@@ -313,7 +315,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        protected virtual (string, int?, string?, string?) OnFetchCapitalRaidSeasons(string clanTag, int? limit, string? after, string? before)
+        private void ValidateGetCapitalRaidSeasons(string clanTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -321,10 +323,8 @@ namespace CocApi.Rest.BaseApis
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (clanTag, limit, after, before);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -391,11 +391,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchCapitalRaidSeasons(clanTag, limit, after, before);
-                clanTag = validatedParameterLocalVars.Item1;
-                limit = validatedParameterLocalVars.Item2;
-                after = validatedParameterLocalVars.Item3;
-                before = validatedParameterLocalVars.Item4;
+                ValidateGetCapitalRaidSeasons(clanTag);
+
+                FormatGetCapitalRaidSeasons(ref clanTag, ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -464,12 +462,14 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetClan(ref string clanTag);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
         /// <returns></returns>
-        protected virtual string OnFetchClan(string clanTag)
+        private void ValidateGetClan(string clanTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -477,10 +477,8 @@ namespace CocApi.Rest.BaseApis
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return clanTag;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -535,7 +533,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                clanTag = OnFetchClan(clanTag);
+                ValidateGetClan(clanTag);
+
+                FormatGetClan(ref clanTag);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -592,6 +592,8 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetClanMembers(ref string clanTag, ref int? limit, ref string? after, ref string? before);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
@@ -600,7 +602,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        protected virtual (string, int?, string?, string?) OnFetchClanMembers(string clanTag, int? limit, string? after, string? before)
+        private void ValidateGetClanMembers(string clanTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -608,10 +610,8 @@ namespace CocApi.Rest.BaseApis
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (clanTag, limit, after, before);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -678,11 +678,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchClanMembers(clanTag, limit, after, before);
-                clanTag = validatedParameterLocalVars.Item1;
-                limit = validatedParameterLocalVars.Item2;
-                after = validatedParameterLocalVars.Item3;
-                before = validatedParameterLocalVars.Item4;
+                ValidateGetClanMembers(clanTag);
+
+                FormatGetClanMembers(ref clanTag, ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -751,13 +749,15 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetClanWarLeagueGroup(ref string clanTag, ref bool? realtime);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
         /// <returns></returns>
-        protected virtual (string, bool?) OnFetchClanWarLeagueGroup(string clanTag, bool? realtime)
+        private void ValidateGetClanWarLeagueGroup(string clanTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -765,10 +765,8 @@ namespace CocApi.Rest.BaseApis
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (clanTag, realtime);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -827,9 +825,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchClanWarLeagueGroup(clanTag, realtime);
-                clanTag = validatedParameterLocalVars.Item1;
-                realtime = validatedParameterLocalVars.Item2;
+                ValidateGetClanWarLeagueGroup(clanTag);
+
+                FormatGetClanWarLeagueGroup(ref clanTag, ref realtime);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -892,13 +890,15 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetClanWarLeagueWar(ref string warTag, ref bool? realtime);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
         /// <returns></returns>
-        protected virtual (string, bool?) OnFetchClanWarLeagueWar(string warTag, bool? realtime)
+        private void ValidateGetClanWarLeagueWar(string warTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -906,10 +906,8 @@ namespace CocApi.Rest.BaseApis
             if (warTag == null)
                 throw new ArgumentNullException(nameof(warTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (warTag, realtime);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -968,9 +966,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchClanWarLeagueWar(warTag, realtime);
-                warTag = validatedParameterLocalVars.Item1;
-                realtime = validatedParameterLocalVars.Item2;
+                ValidateGetClanWarLeagueWar(warTag);
+
+                FormatGetClanWarLeagueWar(ref warTag, ref realtime);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1033,6 +1031,8 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetClanWarLog(ref string clanTag, ref int? limit, ref string? after, ref string? before);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
@@ -1041,7 +1041,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        protected virtual (string, int?, string?, string?) OnFetchClanWarLog(string clanTag, int? limit, string? after, string? before)
+        private void ValidateGetClanWarLog(string clanTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1049,10 +1049,8 @@ namespace CocApi.Rest.BaseApis
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (clanTag, limit, after, before);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1119,11 +1117,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchClanWarLog(clanTag, limit, after, before);
-                clanTag = validatedParameterLocalVars.Item1;
-                limit = validatedParameterLocalVars.Item2;
-                after = validatedParameterLocalVars.Item3;
-                before = validatedParameterLocalVars.Item4;
+                ValidateGetClanWarLog(clanTag);
+
+                FormatGetClanWarLog(ref clanTag, ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1192,13 +1188,15 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetCurrentWar(ref string clanTag, ref bool? realtime);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
         /// <returns></returns>
-        protected virtual (string, bool?) OnFetchCurrentWar(string clanTag, bool? realtime)
+        private void ValidateGetCurrentWar(string clanTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1206,10 +1204,8 @@ namespace CocApi.Rest.BaseApis
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (clanTag, realtime);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1268,9 +1264,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchCurrentWar(clanTag, realtime);
-                clanTag = validatedParameterLocalVars.Item1;
-                realtime = validatedParameterLocalVars.Item2;
+                ValidateGetCurrentWar(clanTag);
+
+                FormatGetCurrentWar(ref clanTag, ref realtime);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1333,25 +1329,7 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="locationId"></param>
-        /// <param name="minMembers"></param>
-        /// <param name="maxMembers"></param>
-        /// <param name="minClanPoints"></param>
-        /// <param name="minClanLevel"></param>
-        /// <param name="limit"></param>
-        /// <param name="name"></param>
-        /// <param name="warFrequency"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <param name="labelIds"></param>
-        /// <returns></returns>
-        protected virtual (int?, int?, int?, int?, int?, int?, string?, string?, string?, string?, string?) OnSearchClans(int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
-        {
-            return (locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
-        }
+        partial void FormatSearchClans(ref int? locationId, ref int? minMembers, ref int? maxMembers, ref int? minClanPoints, ref int? minClanLevel, ref int? limit, ref string? name, ref string? warFrequency, ref string? after, ref string? before, ref string? labelIds);
 
         /// <summary>
         /// Processes the server response
@@ -1445,18 +1423,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnSearchClans(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
-                locationId = validatedParameterLocalVars.Item1;
-                minMembers = validatedParameterLocalVars.Item2;
-                maxMembers = validatedParameterLocalVars.Item3;
-                minClanPoints = validatedParameterLocalVars.Item4;
-                minClanLevel = validatedParameterLocalVars.Item5;
-                limit = validatedParameterLocalVars.Item6;
-                name = validatedParameterLocalVars.Item7;
-                warFrequency = validatedParameterLocalVars.Item8;
-                after = validatedParameterLocalVars.Item9;
-                before = validatedParameterLocalVars.Item10;
-                labelIds = validatedParameterLocalVars.Item11;
+                FormatSearchClans(ref locationId, ref minMembers, ref maxMembers, ref minClanPoints, ref minClanLevel, ref limit, ref name, ref warFrequency, ref after, ref before, ref labelIds);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {

@@ -99,15 +99,6 @@ namespace CocApi.Rest.BaseApis
         }
 
         /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <returns></returns>
-        protected virtual void OnFetchCurrentGoldPassSeason()
-        {
-            return;
-        }
-
-        /// <summary>
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
@@ -155,8 +146,6 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                OnFetchCurrentGoldPassSeason();
-
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;

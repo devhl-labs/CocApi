@@ -128,23 +128,19 @@ namespace CocApi.Rest.Models
             return 
                 (
                     AttackLimit == input.AttackLimit ||
-                    (AttackLimit != null &&
-                    AttackLimit.Equals(input.AttackLimit))
+                    AttackLimit.Equals(input.AttackLimit)
                 ) && 
                 (
                     Attacks == input.Attacks ||
-                    (Attacks != null &&
-                    Attacks.Equals(input.Attacks))
+                    Attacks.Equals(input.Attacks)
                 ) && 
                 (
                     BonusAttackLimit == input.BonusAttackLimit ||
-                    (BonusAttackLimit != null &&
-                    BonusAttackLimit.Equals(input.BonusAttackLimit))
+                    BonusAttackLimit.Equals(input.BonusAttackLimit)
                 ) && 
                 (
                     CapitalResourcesLooted == input.CapitalResourcesLooted ||
-                    (CapitalResourcesLooted != null &&
-                    CapitalResourcesLooted.Equals(input.CapitalResourcesLooted))
+                    CapitalResourcesLooted.Equals(input.CapitalResourcesLooted)
                 ) && 
                 (
                     Name == input.Name ||

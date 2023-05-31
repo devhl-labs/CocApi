@@ -146,23 +146,19 @@ namespace CocApi.Rest.Models
             return 
                 (
                     AttackCount == input.AttackCount ||
-                    (AttackCount != null &&
-                    AttackCount.Equals(input.AttackCount))
+                    AttackCount.Equals(input.AttackCount)
                 ) && 
                 (
                     DestructionPercent == input.DestructionPercent ||
-                    (DestructionPercent != null &&
-                    DestructionPercent.Equals(input.DestructionPercent))
+                    DestructionPercent.Equals(input.DestructionPercent)
                 ) && 
                 (
                     DistrictHallLevel == input.DistrictHallLevel ||
-                    (DistrictHallLevel != null &&
-                    DistrictHallLevel.Equals(input.DistrictHallLevel))
+                    DistrictHallLevel.Equals(input.DistrictHallLevel)
                 ) && 
                 (
                     Id == input.Id ||
-                    (Id != null &&
-                    Id.Equals(input.Id))
+                    Id.Equals(input.Id)
                 ) && 
                 (
                     Name == input.Name ||
@@ -171,13 +167,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Stars == input.Stars ||
-                    (Stars != null &&
-                    Stars.Equals(input.Stars))
+                    Stars.Equals(input.Stars)
                 ) && 
                 (
                     TotalLooted == input.TotalLooted ||
-                    (TotalLooted != null &&
-                    TotalLooted.Equals(input.TotalLooted))
+                    TotalLooted.Equals(input.TotalLooted)
                 ) && 
                 (
                     Attacks == input.Attacks ||

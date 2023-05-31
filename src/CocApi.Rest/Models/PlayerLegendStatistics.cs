@@ -133,8 +133,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     LegendTrophies == input.LegendTrophies ||
-                    (LegendTrophies != null &&
-                    LegendTrophies.Equals(input.LegendTrophies))
+                    LegendTrophies.Equals(input.LegendTrophies)
                 ) && 
                 (
                     BestBuilderBaseSeason == input.BestBuilderBaseSeason ||

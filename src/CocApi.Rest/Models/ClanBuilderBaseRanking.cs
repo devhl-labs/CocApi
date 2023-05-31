@@ -92,13 +92,11 @@ namespace CocApi.Rest.Models
             return 
                 (
                     ClanBuilderBasePoints == input.ClanBuilderBasePoints ||
-                    (ClanBuilderBasePoints != null &&
-                    ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints))
+                    ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints)
                 ) && 
                 (
                     ClanPoints == input.ClanPoints ||
-                    (ClanPoints != null &&
-                    ClanPoints.Equals(input.ClanPoints))
+                    ClanPoints.Equals(input.ClanPoints)
                 );
         }
 

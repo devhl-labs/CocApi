@@ -124,8 +124,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     ClanLevel == input.ClanLevel ||
-                    (ClanLevel != null &&
-                    ClanLevel.Equals(input.ClanLevel))
+                    ClanLevel.Equals(input.ClanLevel)
                 ) && 
                 (
                     Members == input.Members ||

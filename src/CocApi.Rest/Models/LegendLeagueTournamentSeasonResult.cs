@@ -101,8 +101,7 @@ namespace CocApi.Rest.Models
             return 
                 (
                     Trophies == input.Trophies ||
-                    (Trophies != null &&
-                    Trophies.Equals(input.Trophies))
+                    Trophies.Equals(input.Trophies)
                 ) && 
                 (
                     Id == input.Id ||

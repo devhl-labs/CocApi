@@ -119,13 +119,11 @@ namespace CocApi.Rest.Models
             return 
                 (
                     Level == input.Level ||
-                    (Level != null &&
-                    Level.Equals(input.Level))
+                    Level.Equals(input.Level)
                 ) && 
                 (
                     MaxLevel == input.MaxLevel ||
-                    (MaxLevel != null &&
-                    MaxLevel.Equals(input.MaxLevel))
+                    MaxLevel.Equals(input.MaxLevel)
                 ) && 
                 (
                     Name == input.Name ||
@@ -134,8 +132,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Village == input.Village ||
-                    (Village != null &&
-                    Village.Equals(input.Village))
+                    Village.Equals(input.Village)
                 ) && 
                 (
                     SuperTroopIsActive == input.SuperTroopIsActive ||

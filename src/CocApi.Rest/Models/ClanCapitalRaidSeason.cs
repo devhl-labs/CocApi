@@ -248,8 +248,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     CapitalTotalLoot == input.CapitalTotalLoot ||
-                    (CapitalTotalLoot != null &&
-                    CapitalTotalLoot.Equals(input.CapitalTotalLoot))
+                    CapitalTotalLoot.Equals(input.CapitalTotalLoot)
                 ) && 
                 (
                     DefenseLog == input.DefenseLog ||
@@ -259,8 +258,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     DefensiveReward == input.DefensiveReward ||
-                    (DefensiveReward != null &&
-                    DefensiveReward.Equals(input.DefensiveReward))
+                    DefensiveReward.Equals(input.DefensiveReward)
                 ) && 
                 (
                     EndTime == input.EndTime ||
@@ -269,18 +267,15 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     EnemyDistrictsDestroyed == input.EnemyDistrictsDestroyed ||
-                    (EnemyDistrictsDestroyed != null &&
-                    EnemyDistrictsDestroyed.Equals(input.EnemyDistrictsDestroyed))
+                    EnemyDistrictsDestroyed.Equals(input.EnemyDistrictsDestroyed)
                 ) && 
                 (
                     OffensiveReward == input.OffensiveReward ||
-                    (OffensiveReward != null &&
-                    OffensiveReward.Equals(input.OffensiveReward))
+                    OffensiveReward.Equals(input.OffensiveReward)
                 ) && 
                 (
                     RaidsCompleted == input.RaidsCompleted ||
-                    (RaidsCompleted != null &&
-                    RaidsCompleted.Equals(input.RaidsCompleted))
+                    RaidsCompleted.Equals(input.RaidsCompleted)
                 ) && 
                 (
                     StartTime == input.StartTime ||
@@ -289,13 +284,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     State == input.State ||
-                    (State != null &&
-                    State.Equals(input.State))
+                    State.Equals(input.State)
                 ) && 
                 (
                     TotalAttacks == input.TotalAttacks ||
-                    (TotalAttacks != null &&
-                    TotalAttacks.Equals(input.TotalAttacks))
+                    TotalAttacks.Equals(input.TotalAttacks)
                 ) && 
                 (
                     Members == input.Members ||

@@ -115,8 +115,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Level == input.Level ||
-                    (Level != null &&
-                    Level.Equals(input.Level))
+                    Level.Equals(input.Level)
                 ) && 
                 (
                     Name == input.Name ||

@@ -337,12 +337,14 @@ namespace CocApi.Rest.BaseApis
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
         }
 
+        partial void FormatGetBuilderBaseLeague(ref string leagueId);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
         /// <returns></returns>
-        protected virtual string OnFetchBuilderBaseLeague(string leagueId)
+        private void ValidateGetBuilderBaseLeague(string leagueId)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -350,10 +352,8 @@ namespace CocApi.Rest.BaseApis
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return leagueId;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -408,7 +408,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                leagueId = OnFetchBuilderBaseLeague(leagueId);
+                ValidateGetBuilderBaseLeague(leagueId);
+
+                FormatGetBuilderBaseLeague(ref leagueId);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -465,17 +467,7 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (int?, string?, string?) OnFetchBuilderBaseLeagues(int? limit, string? after, string? before)
-        {
-            return (limit, after, before);
-        }
+        partial void FormatGetBuilderBaseLeagues(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
         /// Processes the server response
@@ -537,10 +529,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchBuilderBaseLeagues(limit, after, before);
-                limit = validatedParameterLocalVars.Item1;
-                after = validatedParameterLocalVars.Item2;
-                before = validatedParameterLocalVars.Item3;
+                FormatGetBuilderBaseLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -609,12 +598,14 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetCapitalLeague(ref string leagueId);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
         /// <returns></returns>
-        protected virtual string OnFetchCapitalLeague(string leagueId)
+        private void ValidateGetCapitalLeague(string leagueId)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -622,10 +613,8 @@ namespace CocApi.Rest.BaseApis
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return leagueId;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -680,7 +669,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                leagueId = OnFetchCapitalLeague(leagueId);
+                ValidateGetCapitalLeague(leagueId);
+
+                FormatGetCapitalLeague(ref leagueId);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -737,17 +728,7 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (int?, string?, string?) OnFetchCapitalLeagues(int? limit, string? after, string? before)
-        {
-            return (limit, after, before);
-        }
+        partial void FormatGetCapitalLeagues(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
         /// Processes the server response
@@ -809,10 +790,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchCapitalLeagues(limit, after, before);
-                limit = validatedParameterLocalVars.Item1;
-                after = validatedParameterLocalVars.Item2;
-                before = validatedParameterLocalVars.Item3;
+                FormatGetCapitalLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -881,12 +859,14 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetLeague(ref string leagueId);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
         /// <returns></returns>
-        protected virtual string OnFetchLeague(string leagueId)
+        private void ValidateGetLeague(string leagueId)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -894,10 +874,8 @@ namespace CocApi.Rest.BaseApis
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return leagueId;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -952,7 +930,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                leagueId = OnFetchLeague(leagueId);
+                ValidateGetLeague(leagueId);
+
+                FormatGetLeague(ref leagueId);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1009,6 +989,8 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetLeagueSeasonRankings(ref string leagueId, ref string seasonId, ref int? limit, ref string? after, ref string? before);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
@@ -1018,7 +1000,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        protected virtual (string, string, int?, string?, string?) OnFetchLeagueSeasonRankings(string leagueId, string seasonId, int? limit, string? after, string? before)
+        private void ValidateGetLeagueSeasonRankings(string leagueId, string seasonId)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1029,10 +1011,8 @@ namespace CocApi.Rest.BaseApis
             if (seasonId == null)
                 throw new ArgumentNullException(nameof(seasonId));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (leagueId, seasonId, limit, after, before);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1103,12 +1083,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchLeagueSeasonRankings(leagueId, seasonId, limit, after, before);
-                leagueId = validatedParameterLocalVars.Item1;
-                seasonId = validatedParameterLocalVars.Item2;
-                limit = validatedParameterLocalVars.Item3;
-                after = validatedParameterLocalVars.Item4;
-                before = validatedParameterLocalVars.Item5;
+                ValidateGetLeagueSeasonRankings(leagueId, seasonId);
+
+                FormatGetLeagueSeasonRankings(ref leagueId, ref seasonId, ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1177,6 +1154,8 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetLeagueSeasons(ref string leagueId, ref int? limit, ref string? after, ref string? before);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
@@ -1185,7 +1164,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <returns></returns>
-        protected virtual (string, int?, string?, string?) OnFetchLeagueSeasons(string leagueId, int? limit, string? after, string? before)
+        private void ValidateGetLeagueSeasons(string leagueId)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1193,10 +1172,8 @@ namespace CocApi.Rest.BaseApis
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (leagueId, limit, after, before);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1263,11 +1240,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchLeagueSeasons(leagueId, limit, after, before);
-                leagueId = validatedParameterLocalVars.Item1;
-                limit = validatedParameterLocalVars.Item2;
-                after = validatedParameterLocalVars.Item3;
-                before = validatedParameterLocalVars.Item4;
+                ValidateGetLeagueSeasons(leagueId);
+
+                FormatGetLeagueSeasons(ref leagueId, ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1336,17 +1311,7 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (int?, string?, string?) OnFetchLeagues(int? limit, string? after, string? before)
-        {
-            return (limit, after, before);
-        }
+        partial void FormatGetLeagues(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
         /// Processes the server response
@@ -1408,10 +1373,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchLeagues(limit, after, before);
-                limit = validatedParameterLocalVars.Item1;
-                after = validatedParameterLocalVars.Item2;
-                before = validatedParameterLocalVars.Item3;
+                FormatGetLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1480,12 +1442,14 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatGetWarLeague(ref string leagueId);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
         /// <returns></returns>
-        protected virtual string OnFetchWarLeague(string leagueId)
+        private void ValidateGetWarLeague(string leagueId)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -1493,10 +1457,8 @@ namespace CocApi.Rest.BaseApis
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return leagueId;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1551,7 +1513,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                leagueId = OnFetchWarLeague(leagueId);
+                ValidateGetWarLeague(leagueId);
+
+                FormatGetWarLeague(ref leagueId);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -1608,17 +1572,7 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
-        /// <summary>
-        /// Validates the request parameters
-        /// </summary>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
-        /// <returns></returns>
-        protected virtual (int?, string?, string?) OnFetchWarLeagues(int? limit, string? after, string? before)
-        {
-            return (limit, after, before);
-        }
+        partial void FormatGetWarLeagues(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
         /// Processes the server response
@@ -1680,10 +1634,7 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnFetchWarLeagues(limit, after, before);
-                limit = validatedParameterLocalVars.Item1;
-                after = validatedParameterLocalVars.Item2;
-                before = validatedParameterLocalVars.Item3;
+                FormatGetWarLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {

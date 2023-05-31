@@ -151,13 +151,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     BuilderBaseTrophies == input.BuilderBaseTrophies ||
-                    (BuilderBaseTrophies != null &&
-                    BuilderBaseTrophies.Equals(input.BuilderBaseTrophies))
+                    BuilderBaseTrophies.Equals(input.BuilderBaseTrophies)
                 ) && 
                 (
                     ExpLevel == input.ExpLevel ||
-                    (ExpLevel != null &&
-                    ExpLevel.Equals(input.ExpLevel))
+                    ExpLevel.Equals(input.ExpLevel)
                 ) && 
                 (
                     Name == input.Name ||
@@ -166,13 +164,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     PreviousRank == input.PreviousRank ||
-                    (PreviousRank != null &&
-                    PreviousRank.Equals(input.PreviousRank))
+                    PreviousRank.Equals(input.PreviousRank)
                 ) && 
                 (
                     Rank == input.Rank ||
-                    (Rank != null &&
-                    Rank.Equals(input.Rank))
+                    Rank.Equals(input.Rank)
                 ) && 
                 (
                     Tag == input.Tag ||

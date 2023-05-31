@@ -191,28 +191,23 @@ namespace CocApi.Rest.Models
             return 
                 (
                     BuilderBaseTrophies == input.BuilderBaseTrophies ||
-                    (BuilderBaseTrophies != null &&
-                    BuilderBaseTrophies.Equals(input.BuilderBaseTrophies))
+                    BuilderBaseTrophies.Equals(input.BuilderBaseTrophies)
                 ) && 
                 (
                     ClanRank == input.ClanRank ||
-                    (ClanRank != null &&
-                    ClanRank.Equals(input.ClanRank))
+                    ClanRank.Equals(input.ClanRank)
                 ) && 
                 (
                     Donations == input.Donations ||
-                    (Donations != null &&
-                    Donations.Equals(input.Donations))
+                    Donations.Equals(input.Donations)
                 ) && 
                 (
                     DonationsReceived == input.DonationsReceived ||
-                    (DonationsReceived != null &&
-                    DonationsReceived.Equals(input.DonationsReceived))
+                    DonationsReceived.Equals(input.DonationsReceived)
                 ) && 
                 (
                     ExpLevel == input.ExpLevel ||
-                    (ExpLevel != null &&
-                    ExpLevel.Equals(input.ExpLevel))
+                    ExpLevel.Equals(input.ExpLevel)
                 ) && 
                 (
                     League == input.League ||
@@ -226,8 +221,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     PreviousClanRank == input.PreviousClanRank ||
-                    (PreviousClanRank != null &&
-                    PreviousClanRank.Equals(input.PreviousClanRank))
+                    PreviousClanRank.Equals(input.PreviousClanRank)
                 ) && 
                 (
                     Tag == input.Tag ||
@@ -236,8 +230,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Trophies == input.Trophies ||
-                    (Trophies != null &&
-                    Trophies.Equals(input.Trophies))
+                    Trophies.Equals(input.Trophies)
                 ) && 
                 (
                     BuilderBaseLeague == input.BuilderBaseLeague ||
@@ -251,8 +244,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Role == input.Role ||
-                    (Role != null &&
-                    Role.Equals(input.Role))
+                    Role.Equals(input.Role)
                 );
         }
 

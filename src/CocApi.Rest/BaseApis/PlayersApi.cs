@@ -125,12 +125,14 @@ namespace CocApi.Rest.BaseApis
             Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
         }
 
+        partial void FormatGetPlayer(ref string playerTag);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="playerTag"></param>
         /// <returns></returns>
-        protected virtual string OnFetchPlayer(string playerTag)
+        private void ValidateGetPlayer(string playerTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -138,10 +140,8 @@ namespace CocApi.Rest.BaseApis
             if (playerTag == null)
                 throw new ArgumentNullException(nameof(playerTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return playerTag;
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -196,7 +196,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                playerTag = OnFetchPlayer(playerTag);
+                ValidateGetPlayer(playerTag);
+
+                FormatGetPlayer(ref playerTag);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
@@ -253,13 +255,15 @@ namespace CocApi.Rest.BaseApis
             }
         }
 
+        partial void FormatVerifyToken(VerifyTokenRequest body, ref string playerTag);
+
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
         /// <returns></returns>
-        protected virtual (VerifyTokenRequest, string) OnVerifyToken(VerifyTokenRequest body, string playerTag)
+        private void ValidateVerifyToken(VerifyTokenRequest body, string playerTag)
         {
             #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
             #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
@@ -270,10 +274,8 @@ namespace CocApi.Rest.BaseApis
             if (playerTag == null)
                 throw new ArgumentNullException(nameof(playerTag));
 
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
-            return (body, playerTag);
+            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -332,9 +334,9 @@ namespace CocApi.Rest.BaseApis
 
             try
             {
-                var validatedParameterLocalVars = OnVerifyToken(body, playerTag);
-                body = validatedParameterLocalVars.Item1;
-                playerTag = validatedParameterLocalVars.Item2;
+                ValidateVerifyToken(body, playerTag);
+
+                FormatVerifyToken(body, ref playerTag);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {

@@ -160,18 +160,15 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     ClanCapitalPoints == input.ClanCapitalPoints ||
-                    (ClanCapitalPoints != null &&
-                    ClanCapitalPoints.Equals(input.ClanCapitalPoints))
+                    ClanCapitalPoints.Equals(input.ClanCapitalPoints)
                 ) && 
                 (
                     ClanLevel == input.ClanLevel ||
-                    (ClanLevel != null &&
-                    ClanLevel.Equals(input.ClanLevel))
+                    ClanLevel.Equals(input.ClanLevel)
                 ) && 
                 (
                     Members == input.Members ||
-                    (Members != null &&
-                    Members.Equals(input.Members))
+                    Members.Equals(input.Members)
                 ) && 
                 (
                     Name == input.Name ||
@@ -180,13 +177,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     PreviousRank == input.PreviousRank ||
-                    (PreviousRank != null &&
-                    PreviousRank.Equals(input.PreviousRank))
+                    PreviousRank.Equals(input.PreviousRank)
                 ) && 
                 (
                     Rank == input.Rank ||
-                    (Rank != null &&
-                    Rank.Equals(input.Rank))
+                    Rank.Equals(input.Rank)
                 ) && 
                 (
                     Tag == input.Tag ||

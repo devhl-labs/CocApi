@@ -164,8 +164,7 @@ namespace CocApi.Rest.Models
             return 
                 (
                     AttacksPerMember == input.AttacksPerMember ||
-                    (AttacksPerMember != null &&
-                    AttacksPerMember.Equals(input.AttacksPerMember))
+                    AttacksPerMember.Equals(input.AttacksPerMember)
                 ) && 
                 (
                     Clan == input.Clan ||
@@ -199,13 +198,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     TeamSize == input.TeamSize ||
-                    (TeamSize != null &&
-                    TeamSize.Equals(input.TeamSize))
+                    TeamSize.Equals(input.TeamSize)
                 ) && 
                 (
                     State == input.State ||
-                    (State != null &&
-                    State.Equals(input.State))
+                    State.Equals(input.State)
                 ) && 
                 (
                     WarTag == input.WarTag ||

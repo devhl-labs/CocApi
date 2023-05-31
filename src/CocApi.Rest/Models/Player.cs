@@ -341,48 +341,39 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     AttackWins == input.AttackWins ||
-                    (AttackWins != null &&
-                    AttackWins.Equals(input.AttackWins))
+                    AttackWins.Equals(input.AttackWins)
                 ) && 
                 (
                     BestTrophies == input.BestTrophies ||
-                    (BestTrophies != null &&
-                    BestTrophies.Equals(input.BestTrophies))
+                    BestTrophies.Equals(input.BestTrophies)
                 ) && 
                 (
                     BestVersusTrophies == input.BestVersusTrophies ||
-                    (BestVersusTrophies != null &&
-                    BestVersusTrophies.Equals(input.BestVersusTrophies))
+                    BestVersusTrophies.Equals(input.BestVersusTrophies)
                 ) && 
                 (
                     BuilderBaseTrophies == input.BuilderBaseTrophies ||
-                    (BuilderBaseTrophies != null &&
-                    BuilderBaseTrophies.Equals(input.BuilderBaseTrophies))
+                    BuilderBaseTrophies.Equals(input.BuilderBaseTrophies)
                 ) && 
                 (
                     ClanCapitalContributions == input.ClanCapitalContributions ||
-                    (ClanCapitalContributions != null &&
-                    ClanCapitalContributions.Equals(input.ClanCapitalContributions))
+                    ClanCapitalContributions.Equals(input.ClanCapitalContributions)
                 ) && 
                 (
                     DefenseWins == input.DefenseWins ||
-                    (DefenseWins != null &&
-                    DefenseWins.Equals(input.DefenseWins))
+                    DefenseWins.Equals(input.DefenseWins)
                 ) && 
                 (
                     Donations == input.Donations ||
-                    (Donations != null &&
-                    Donations.Equals(input.Donations))
+                    Donations.Equals(input.Donations)
                 ) && 
                 (
                     DonationsReceived == input.DonationsReceived ||
-                    (DonationsReceived != null &&
-                    DonationsReceived.Equals(input.DonationsReceived))
+                    DonationsReceived.Equals(input.DonationsReceived)
                 ) && 
                 (
                     ExpLevel == input.ExpLevel ||
-                    (ExpLevel != null &&
-                    ExpLevel.Equals(input.ExpLevel))
+                    ExpLevel.Equals(input.ExpLevel)
                 ) && 
                 (
                     Heroes == input.Heroes ||
@@ -414,8 +405,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     TownHallLevel == input.TownHallLevel ||
-                    (TownHallLevel != null &&
-                    TownHallLevel.Equals(input.TownHallLevel))
+                    TownHallLevel.Equals(input.TownHallLevel)
                 ) && 
                 (
                     Troops == input.Troops ||
@@ -425,13 +415,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Trophies == input.Trophies ||
-                    (Trophies != null &&
-                    Trophies.Equals(input.Trophies))
+                    Trophies.Equals(input.Trophies)
                 ) && 
                 (
                     WarStars == input.WarStars ||
-                    (WarStars != null &&
-                    WarStars.Equals(input.WarStars))
+                    WarStars.Equals(input.WarStars)
                 ) && 
                 (
                     BuilderBaseLeague == input.BuilderBaseLeague ||
@@ -465,8 +453,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Role == input.Role ||
-                    (Role != null &&
-                    Role.Equals(input.Role))
+                    Role.Equals(input.Role)
                 ) && 
                 (
                     TownHallWeaponLevel == input.TownHallWeaponLevel ||
@@ -480,8 +467,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     WarPreference == input.WarPreference ||
-                    (WarPreference != null &&
-                    WarPreference.Equals(input.WarPreference))
+                    WarPreference.Equals(input.WarPreference)
                 );
         }
 

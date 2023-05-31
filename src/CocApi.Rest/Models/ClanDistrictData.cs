@@ -101,13 +101,11 @@ namespace CocApi.Rest.Models
             return 
                 (
                     DistrictHallLevel == input.DistrictHallLevel ||
-                    (DistrictHallLevel != null &&
-                    DistrictHallLevel.Equals(input.DistrictHallLevel))
+                    DistrictHallLevel.Equals(input.DistrictHallLevel)
                 ) && 
                 (
                     Id == input.Id ||
-                    (Id != null &&
-                    Id.Equals(input.Id))
+                    Id.Equals(input.Id)
                 ) && 
                 (
                     Name == input.Name ||

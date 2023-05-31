@@ -36,52 +36,6 @@ namespace CocApi.Rest.Apis
         {
         }
 
-        protected override string OnFetchClan(string clanTag)
-        {
-            clanTag = Clash.FormatTag(clanTag);
-            return base.OnFetchClan(clanTag);
-        }
-
-        protected override (string, int?, string?, string?) OnFetchClanMembers(string clanTag, int? limit = null, string? after = null, string? before = null)
-        {
-            clanTag = Clash.FormatTag(clanTag);
-            return base.OnFetchClanMembers(clanTag, limit, after, before);
-        }
-
-        protected override (string, bool?) OnFetchClanWarLeagueGroup(string clanTag, bool? realtime)
-        {
-            clanTag = Clash.FormatTag(clanTag);
-            return base.OnFetchClanWarLeagueGroup(clanTag, realtime);
-        }
-
-        protected override (string, bool?) OnFetchClanWarLeagueWar(string warTag, bool? realtime)
-        {
-            warTag = Clash.FormatTag(warTag);
-            return base.OnFetchClanWarLeagueWar(warTag, realtime);
-        }
-
-        protected override (string, int?, string?, string?) OnFetchClanWarLog(string clanTag, int? limit = null, string? after = null, string? before = null)
-        {
-            clanTag = Clash.FormatTag(clanTag);
-            return base.OnFetchClanWarLog(clanTag, limit, after, before);
-        }
-
-        protected override (string, bool?) OnFetchCurrentWar(string clanTag, bool? realtime)
-        {
-            clanTag = Clash.FormatTag(clanTag);
-            return base.OnFetchCurrentWar(clanTag, realtime);
-        }
-
-        protected override void AfterFetchCurrentWar(ApiResponse<ClanWar> apiResponse, string clanTag, bool? realtime)
-        {
-            base.AfterFetchCurrentWar(apiResponse, clanTag, realtime);
-        }
-
-        protected override void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar> apiResponse, string warTag, bool? realtime)
-        {
-            base.AfterFetchClanWarLeagueWar(apiResponse, warTag, realtime);
-        }
-
         protected override void OnErrorFetchClan(Exception exception, string clanTag, string pathFormat, string path)
         {
             Logger.LogError(exception, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);

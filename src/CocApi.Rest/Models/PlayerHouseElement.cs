@@ -185,13 +185,11 @@ namespace CocApi.Rest.Models
             return 
                 (
                     Id == input.Id ||
-                    (Id != null &&
-                    Id.Equals(input.Id))
+                    Id.Equals(input.Id)
                 ) && 
                 (
                     Type == input.Type ||
-                    (Type != null &&
-                    Type.Equals(input.Type))
+                    Type.Equals(input.Type)
                 );
         }
 

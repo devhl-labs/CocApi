@@ -106,8 +106,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Id == input.Id ||
-                    (Id != null &&
-                    Id.Equals(input.Id))
+                    Id.Equals(input.Id)
                 ) && 
                 (
                     Name == input.Name ||

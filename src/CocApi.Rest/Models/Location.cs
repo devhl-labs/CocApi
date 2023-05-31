@@ -119,13 +119,11 @@ namespace CocApi.Rest.Models
             return 
                 (
                     Id == input.Id ||
-                    (Id != null &&
-                    Id.Equals(input.Id))
+                    Id.Equals(input.Id)
                 ) && 
                 (
                     IsCountry == input.IsCountry ||
-                    (IsCountry != null &&
-                    IsCountry.Equals(input.IsCountry))
+                    IsCountry.Equals(input.IsCountry)
                 ) && 
                 (
                     Name == input.Name ||

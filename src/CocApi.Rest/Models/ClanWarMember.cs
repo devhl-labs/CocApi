@@ -131,8 +131,7 @@ namespace CocApi.Rest.Models
             return 
                 (
                     MapPosition == input.MapPosition ||
-                    (MapPosition != null &&
-                    MapPosition.Equals(input.MapPosition))
+                    MapPosition.Equals(input.MapPosition)
                 ) && 
                 (
                     Name == input.Name ||
@@ -141,8 +140,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     OpponentAttacks == input.OpponentAttacks ||
-                    (OpponentAttacks != null &&
-                    OpponentAttacks.Equals(input.OpponentAttacks))
+                    OpponentAttacks.Equals(input.OpponentAttacks)
                 ) && 
                 (
                     Tag == input.Tag ||
@@ -151,8 +149,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     TownhallLevel == input.TownhallLevel ||
-                    (TownhallLevel != null &&
-                    TownhallLevel.Equals(input.TownhallLevel))
+                    TownhallLevel.Equals(input.TownhallLevel)
                 ) && 
                 (
                     Attacks == input.Attacks ||

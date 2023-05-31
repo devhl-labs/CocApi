@@ -119,8 +119,7 @@ namespace CocApi.Rest.Models
             return 
                 (
                     AttackCount == input.AttackCount ||
-                    (AttackCount != null &&
-                    AttackCount.Equals(input.AttackCount))
+                    AttackCount.Equals(input.AttackCount)
                 ) && 
                 (
                     Attacker == input.Attacker ||
@@ -129,8 +128,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     DistrictCount == input.DistrictCount ||
-                    (DistrictCount != null &&
-                    DistrictCount.Equals(input.DistrictCount))
+                    DistrictCount.Equals(input.DistrictCount)
                 ) && 
                 (
                     Districts == input.Districts ||
@@ -140,8 +138,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     DistrictsDestroyed == input.DistrictsDestroyed ||
-                    (DistrictsDestroyed != null &&
-                    DistrictsDestroyed.Equals(input.DistrictsDestroyed))
+                    DistrictsDestroyed.Equals(input.DistrictsDestroyed)
                 );
         }
 

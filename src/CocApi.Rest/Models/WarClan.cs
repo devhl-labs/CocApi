@@ -155,8 +155,7 @@ namespace CocApi.Rest.Models
             return 
                 (
                     Attacks == input.Attacks ||
-                    (Attacks != null &&
-                    Attacks.Equals(input.Attacks))
+                    Attacks.Equals(input.Attacks)
                 ) && 
                 (
                     BadgeUrls == input.BadgeUrls ||
@@ -165,18 +164,15 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     ClanLevel == input.ClanLevel ||
-                    (ClanLevel != null &&
-                    ClanLevel.Equals(input.ClanLevel))
+                    ClanLevel.Equals(input.ClanLevel)
                 ) && 
                 (
                     DestructionPercentage == input.DestructionPercentage ||
-                    (DestructionPercentage != null &&
-                    DestructionPercentage.Equals(input.DestructionPercentage))
+                    DestructionPercentage.Equals(input.DestructionPercentage)
                 ) && 
                 (
                     ExpEarned == input.ExpEarned ||
-                    (ExpEarned != null &&
-                    ExpEarned.Equals(input.ExpEarned))
+                    ExpEarned.Equals(input.ExpEarned)
                 ) && 
                 (
                     Members == input.Members ||
@@ -191,8 +187,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Stars == input.Stars ||
-                    (Stars != null &&
-                    Stars.Equals(input.Stars))
+                    Stars.Equals(input.Stars)
                 ) && 
                 (
                     Tag == input.Tag ||

@@ -36,18 +36,6 @@ namespace CocApi.Rest.Apis
         {
         }
 
-        protected override string OnFetchPlayer(string playerTag)
-        {
-            playerTag = Clash.FormatTag(playerTag);
-            return base.OnFetchPlayer(playerTag);
-        }
-
-        protected override (VerifyTokenRequest, string) OnVerifyToken(VerifyTokenRequest body, string playerTag)
-        {
-            playerTag = Clash.FormatTag(playerTag);
-            return base.OnVerifyToken(body, playerTag);
-        }
-
         protected override void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag)
         {
             Logger.LogError(exception, "There was an error fetching the player for playerTag: {playerTag}", playerTag);

@@ -127,8 +127,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     State == input.State ||
-                    (State != null &&
-                    State.Equals(input.State))
+                    State.Equals(input.State)
                 );
         }
 
