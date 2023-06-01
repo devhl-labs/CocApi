@@ -119,12 +119,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type WarLeague
+    /// A Json converter for type <see cref="WarLeague" />
     /// </summary>
     public class WarLeagueJsonConverter : JsonConverter<WarLeague>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="WarLeague" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -181,7 +181,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="WarLeague" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="warLeague"></param>

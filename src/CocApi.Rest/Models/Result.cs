@@ -44,8 +44,17 @@ namespace CocApi.Rest.Models
         Win = 1,
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="Result"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class ResultConverter : JsonConverter<Result>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="Result"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Result FromString(string value)
         {
             if (value == "lose")
@@ -60,6 +69,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type Result: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="Result"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Result? FromStringOrDefault(string value)
         {
             if (value == "lose")
@@ -74,6 +88,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="Result"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(Result value)
         {
             if (value == Result.Lose)
@@ -99,8 +119,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            Result? result = ResultConverter.FromString(rawValue);
-            
+            Result? result = rawValue == null
+                ? null
+                : ResultConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -119,6 +141,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="Result"/>
+    /// </summary>
     public class ResultNullableConverter : JsonConverter<Result?>
     {
         /// <summary>
@@ -132,10 +157,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            Result? result = ResultConverter.FromString(rawValue);
+            Result? result = rawValue == null
+                ? null
+                : ResultConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

@@ -221,12 +221,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type WarClan
+    /// A Json converter for type <see cref="WarClan" />
     /// </summary>
     public class WarClanJsonConverter : JsonConverter<WarClan>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="WarClan" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -338,7 +338,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="WarClan" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="warClan"></param>

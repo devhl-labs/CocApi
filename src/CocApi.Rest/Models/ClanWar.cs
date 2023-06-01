@@ -241,7 +241,7 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanWar
+    /// A Json converter for type <see cref="ClanWar" />
     /// </summary>
     public class ClanWarJsonConverter : JsonConverter<ClanWar>
     {
@@ -261,7 +261,7 @@ namespace CocApi.Rest.Models
         public static string StartTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanWar" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -336,8 +336,10 @@ namespace CocApi.Rest.Models
                                 teamSize = utf8JsonReader.GetInt32();
                             break;
                         case "state":
-                            string stateRawValue = utf8JsonReader.GetString();
-                            state = WarStateConverter.FromStringOrDefault(stateRawValue);
+                            string? stateRawValue = utf8JsonReader.GetString();
+                            state = stateRawValue == null
+                                ? null
+                                : WarStateConverter.FromStringOrDefault(stateRawValue);
                             break;
                         case "warTag":
                             warTag = utf8JsonReader.GetString();
@@ -376,7 +378,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanWar" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanWar"></param>

@@ -71,12 +71,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type LoginResponse
+    /// A Json converter for type <see cref="LoginResponse" />
     /// </summary>
     public class LoginResponseJsonConverter : JsonConverter<LoginResponse>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="LoginResponse" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -133,7 +133,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="LoginResponse" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="loginResponse"></param>

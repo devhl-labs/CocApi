@@ -179,12 +179,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanWarAttack
+    /// A Json converter for type <see cref="ClanWarAttack" />
     /// </summary>
     public class ClanWarAttackJsonConverter : JsonConverter<ClanWarAttack>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanWarAttack" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -269,7 +269,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanWarAttack" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanWarAttack"></param>

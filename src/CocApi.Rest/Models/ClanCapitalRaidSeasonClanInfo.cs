@@ -149,12 +149,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanCapitalRaidSeasonClanInfo
+    /// A Json converter for type <see cref="ClanCapitalRaidSeasonClanInfo" />
     /// </summary>
     public class ClanCapitalRaidSeasonClanInfoJsonConverter : JsonConverter<ClanCapitalRaidSeasonClanInfo>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanCapitalRaidSeasonClanInfo" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -226,7 +226,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanCapitalRaidSeasonClanInfo" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanCapitalRaidSeasonClanInfo"></param>

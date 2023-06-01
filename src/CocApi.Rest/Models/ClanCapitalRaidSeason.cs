@@ -85,10 +85,11 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Returns a StateEnum
+        /// Returns a <see cref="StateEnum"/>
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static StateEnum StateEnumFromString(string value)
         {
             if (value == "unknown")
@@ -104,7 +105,26 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Returns equivalent json value
+        /// Returns a <see cref="StateEnum"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static StateEnum? StateEnumFromStringOrDefault(string value)
+        {
+            if (value == "unknown")
+                return StateEnum.Unknown;
+
+            if (value == "ongoing")
+                return StateEnum.Ongoing;
+
+            if (value == "ended")
+                return StateEnum.Ended;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Converts the <see cref="StateEnum"/> to the json value
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -328,7 +348,7 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanCapitalRaidSeason
+    /// A Json converter for type <see cref="ClanCapitalRaidSeason" />
     /// </summary>
     public class ClanCapitalRaidSeasonJsonConverter : JsonConverter<ClanCapitalRaidSeason>
     {
@@ -343,7 +363,7 @@ namespace CocApi.Rest.Models
         public static string StartTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanCapitalRaidSeason" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -424,8 +444,10 @@ namespace CocApi.Rest.Models
                                 startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "state":
-                            string stateRawValue = utf8JsonReader.GetString();
-                            state = ClanCapitalRaidSeason.StateEnumFromString(stateRawValue);
+                            string? stateRawValue = utf8JsonReader.GetString();
+                            state = stateRawValue == null
+                                ? null
+                                : ClanCapitalRaidSeason.StateEnumFromStringOrDefault(stateRawValue);
                             break;
                         case "totalAttacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -478,7 +500,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanCapitalRaidSeason" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanCapitalRaidSeason"></param>

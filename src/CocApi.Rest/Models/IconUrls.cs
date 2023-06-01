@@ -141,12 +141,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type IconUrls
+    /// A Json converter for type <see cref="IconUrls" />
     /// </summary>
     public class IconUrlsJsonConverter : JsonConverter<IconUrls>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="IconUrls" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -200,7 +200,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="IconUrls" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="iconUrls"></param>

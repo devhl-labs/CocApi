@@ -187,12 +187,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerLegendStatistics
+    /// A Json converter for type <see cref="PlayerLegendStatistics" />
     /// </summary>
     public class PlayerLegendStatisticsJsonConverter : JsonConverter<PlayerLegendStatistics>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="PlayerLegendStatistics" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -272,7 +272,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="PlayerLegendStatistics" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="playerLegendStatistics"></param>

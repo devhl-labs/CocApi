@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanCapitalRankingObject
+    /// A Json converter for type <see cref="ClanCapitalRankingObject" />
     /// </summary>
     public class ClanCapitalRankingObjectJsonConverter : JsonConverter<ClanCapitalRankingObject>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanCapitalRankingObject" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanCapitalRankingObject" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanCapitalRankingObject"></param>

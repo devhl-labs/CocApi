@@ -311,9 +311,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetCapitalRaidSeasons(string clanTag)
         {
@@ -598,9 +595,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetClanMembers(string clanTag)
         {
@@ -649,7 +643,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List{TValue}"/></returns>
         public async Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             try
@@ -671,7 +665,7 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List&lt;ClanMember&gt;"/></returns>
+        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List{TValue}"/></returns>
         public async Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
@@ -755,7 +749,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
-        /// <param name="realtime"></param>
         /// <returns></returns>
         private void ValidateGetClanWarLeagueGroup(string clanTag)
         {
@@ -896,7 +889,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="warTag"></param>
-        /// <param name="realtime"></param>
         /// <returns></returns>
         private void ValidateGetClanWarLeagueWar(string warTag)
         {
@@ -1037,9 +1029,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetClanWarLog(string clanTag)
         {
@@ -1194,7 +1183,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
-        /// <param name="realtime"></param>
         /// <returns></returns>
         private void ValidateGetCurrentWar(string clanTag)
         {

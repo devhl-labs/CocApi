@@ -167,12 +167,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type Location
+    /// A Json converter for type <see cref="Location" />
     /// </summary>
     public class LocationJsonConverter : JsonConverter<Location>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="Location" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -245,7 +245,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="Location" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="location"></param>

@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanBuilderBaseRankingList
+    /// A Json converter for type <see cref="ClanBuilderBaseRankingList" />
     /// </summary>
     public class ClanBuilderBaseRankingListJsonConverter : JsonConverter<ClanBuilderBaseRankingList>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanBuilderBaseRankingList" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanBuilderBaseRankingList" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanBuilderBaseRankingList"></param>

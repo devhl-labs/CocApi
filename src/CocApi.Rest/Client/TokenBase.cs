@@ -62,7 +62,7 @@ namespace CocApi.Rest.Client
                 _nextAvailable = DateTime.UtcNow.AddSeconds(5);
         }
 
-        private void OnTimer(object sender, System.Timers.ElapsedEventArgs e)
+        private void OnTimer(object? sender, System.Timers.ElapsedEventArgs e)
         {
             if (TokenBecameAvailable != null && !IsRateLimited)
                 TokenBecameAvailable.Invoke(this);

@@ -80,12 +80,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type KeyInstance
+    /// A Json converter for type <see cref="KeyInstance" />
     /// </summary>
     public class KeyInstanceJsonConverter : JsonConverter<KeyInstance>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="KeyInstance" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -148,7 +148,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="KeyInstance" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="keyInstance"></param>

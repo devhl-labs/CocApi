@@ -44,8 +44,17 @@ namespace CocApi.Rest.Models
         Ended = 3
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="GroupState"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class GroupStateConverter : JsonConverter<GroupState>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="GroupState"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static GroupState FromString(string value)
         {
             if (value == "preparation")
@@ -60,6 +69,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type GroupState: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="GroupState"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static GroupState? FromStringOrDefault(string value)
         {
             if (value == "preparation")
@@ -74,6 +88,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="GroupState"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(GroupState value)
         {
             if (value == GroupState.Preparation)
@@ -99,8 +119,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            GroupState? result = GroupStateConverter.FromString(rawValue);
-            
+            GroupState? result = rawValue == null
+                ? null
+                : GroupStateConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -119,6 +141,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="GroupState"/>
+    /// </summary>
     public class GroupStateNullableConverter : JsonConverter<GroupState?>
     {
         /// <summary>
@@ -132,10 +157,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            GroupState? result = GroupStateConverter.FromString(rawValue);
+            GroupState? result = rawValue == null
+                ? null
+                : GroupStateConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

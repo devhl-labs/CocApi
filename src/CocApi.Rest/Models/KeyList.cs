@@ -80,12 +80,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type KeyList
+    /// A Json converter for type <see cref="KeyList" />
     /// </summary>
     public class KeyListJsonConverter : JsonConverter<KeyList>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="KeyList" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -151,7 +151,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="KeyList" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="keyList"></param>

@@ -62,12 +62,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type VerifyTokenRequest
+    /// A Json converter for type <see cref="VerifyTokenRequest" />
     /// </summary>
     public class VerifyTokenRequestJsonConverter : JsonConverter<VerifyTokenRequest>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="VerifyTokenRequest" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -116,7 +116,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="VerifyTokenRequest" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="verifyTokenRequest"></param>

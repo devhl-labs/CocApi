@@ -446,12 +446,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type Clan
+    /// A Json converter for type <see cref="Clan" />
     /// </summary>
     public class ClanJsonConverter : JsonConverter<Clan>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="Clan" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -588,12 +588,16 @@ namespace CocApi.Rest.Models
                                 location = JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "type":
-                            string typeRawValue = utf8JsonReader.GetString();
-                            type = RecruitingTypeConverter.FromStringOrDefault(typeRawValue);
+                            string? typeRawValue = utf8JsonReader.GetString();
+                            type = typeRawValue == null
+                                ? null
+                                : RecruitingTypeConverter.FromStringOrDefault(typeRawValue);
                             break;
                         case "warFrequency":
-                            string warFrequencyRawValue = utf8JsonReader.GetString();
-                            warFrequency = WarFrequencyConverter.FromStringOrDefault(warFrequencyRawValue);
+                            string? warFrequencyRawValue = utf8JsonReader.GetString();
+                            warFrequency = warFrequencyRawValue == null
+                                ? null
+                                : WarFrequencyConverter.FromStringOrDefault(warFrequencyRawValue);
                             break;
                         case "warLosses":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -670,7 +674,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="Clan" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clan"></param>

@@ -164,12 +164,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerItemLevel
+    /// A Json converter for type <see cref="PlayerItemLevel" />
     /// </summary>
     public class PlayerItemLevelJsonConverter : JsonConverter<PlayerItemLevel>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="PlayerItemLevel" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -218,8 +218,10 @@ namespace CocApi.Rest.Models
                             name = utf8JsonReader.GetString();
                             break;
                         case "village":
-                            string villageRawValue = utf8JsonReader.GetString();
-                            village = VillageTypeConverter.FromString(villageRawValue);
+                            string? villageRawValue = utf8JsonReader.GetString();
+                            village = villageRawValue == null
+                                ? null
+                                : VillageTypeConverter.FromStringOrDefault(villageRawValue);
                             break;
                         case "superTroopIsActive":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -247,7 +249,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="PlayerItemLevel" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="playerItemLevel"></param>

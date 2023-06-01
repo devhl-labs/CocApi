@@ -44,8 +44,17 @@ namespace CocApi.Rest.Models
         Open = 3
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="RecruitingType"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class RecruitingTypeConverter : JsonConverter<RecruitingType>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="RecruitingType"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static RecruitingType FromString(string value)
         {
             if (value == "inviteOnly")
@@ -60,6 +69,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type RecruitingType: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="RecruitingType"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static RecruitingType? FromStringOrDefault(string value)
         {
             if (value == "inviteOnly")
@@ -74,6 +88,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="RecruitingType"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(RecruitingType value)
         {
             if (value == RecruitingType.InviteOnly)
@@ -99,8 +119,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            RecruitingType? result = RecruitingTypeConverter.FromString(rawValue);
-            
+            RecruitingType? result = rawValue == null
+                ? null
+                : RecruitingTypeConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -119,6 +141,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="RecruitingType"/>
+    /// </summary>
     public class RecruitingTypeNullableConverter : JsonConverter<RecruitingType?>
     {
         /// <summary>
@@ -132,10 +157,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            RecruitingType? result = RecruitingTypeConverter.FromString(rawValue);
+            RecruitingType? result = rawValue == null
+                ? null
+                : RecruitingTypeConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

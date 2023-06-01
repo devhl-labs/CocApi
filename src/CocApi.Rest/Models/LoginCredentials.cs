@@ -71,12 +71,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type LoginCredentials
+    /// A Json converter for type <see cref="LoginCredentials" />
     /// </summary>
     public class LoginCredentialsJsonConverter : JsonConverter<LoginCredentials>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="LoginCredentials" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -132,7 +132,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="LoginCredentials" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="loginCredentials"></param>

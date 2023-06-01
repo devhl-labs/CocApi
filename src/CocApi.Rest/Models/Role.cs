@@ -49,8 +49,17 @@ namespace CocApi.Rest.Models
         Leader = 30
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="Role"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class RoleConverter : JsonConverter<Role>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="Role"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Role FromString(string value)
         {
             if (value == "member")
@@ -68,6 +77,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type Role: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="Role"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static Role? FromStringOrDefault(string value)
         {
             if (value == "member")
@@ -85,6 +99,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="Role"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(Role value)
         {
             if (value == Role.Member)
@@ -113,8 +133,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            Role? result = RoleConverter.FromString(rawValue);
-            
+            Role? result = rawValue == null
+                ? null
+                : RoleConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -133,6 +155,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="Role"/>
+    /// </summary>
     public class RoleNullableConverter : JsonConverter<Role?>
     {
         /// <summary>
@@ -146,10 +171,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            Role? result = RoleConverter.FromString(rawValue);
+            Role? result = rawValue == null
+                ? null
+                : RoleConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

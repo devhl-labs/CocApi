@@ -283,12 +283,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanMember
+    /// A Json converter for type <see cref="ClanMember" />
     /// </summary>
     public class ClanMemberJsonConverter : JsonConverter<ClanMember>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanMember" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -381,8 +381,10 @@ namespace CocApi.Rest.Models
                                 playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "role":
-                            string roleRawValue = utf8JsonReader.GetString();
-                            role = RoleConverter.FromStringOrDefault(roleRawValue);
+                            string? roleRawValue = utf8JsonReader.GetString();
+                            role = roleRawValue == null
+                                ? null
+                                : RoleConverter.FromStringOrDefault(roleRawValue);
                             break;
                         default:
                             break;
@@ -424,7 +426,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanMember" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanMember"></param>

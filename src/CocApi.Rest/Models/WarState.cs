@@ -49,8 +49,17 @@ namespace CocApi.Rest.Models
         WarEnded = 4
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarState"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class WarStateConverter : JsonConverter<WarState>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="WarState"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarState FromString(string value)
         {
             if (value == "notInWar")
@@ -68,6 +77,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarState: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="WarState"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarState? FromStringOrDefault(string value)
         {
             if (value == "notInWar")
@@ -85,6 +99,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="WarState"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(WarState value)
         {
             if (value == WarState.NotInWar)
@@ -113,8 +133,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            WarState? result = WarStateConverter.FromString(rawValue);
-            
+            WarState? result = rawValue == null
+                ? null
+                : WarStateConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -133,6 +155,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarState"/>
+    /// </summary>
     public class WarStateNullableConverter : JsonConverter<WarState?>
     {
         /// <summary>
@@ -146,10 +171,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            WarState? result = WarStateConverter.FromString(rawValue);
+            WarState? result = rawValue == null
+                ? null
+                : WarStateConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

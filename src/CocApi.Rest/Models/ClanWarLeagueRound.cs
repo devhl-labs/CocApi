@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanWarLeagueRound
+    /// A Json converter for type <see cref="ClanWarLeagueRound" />
     /// </summary>
     public class ClanWarLeagueRoundJsonConverter : JsonConverter<ClanWarLeagueRound>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanWarLeagueRound" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanWarLeagueRound" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanWarLeagueRound"></param>

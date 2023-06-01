@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerHouse
+    /// A Json converter for type <see cref="PlayerHouse" />
     /// </summary>
     public class PlayerHouseJsonConverter : JsonConverter<PlayerHouse>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="PlayerHouse" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="PlayerHouse" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="playerHouse"></param>

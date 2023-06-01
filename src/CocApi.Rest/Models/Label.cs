@@ -134,12 +134,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type Label
+    /// A Json converter for type <see cref="Label" />
     /// </summary>
     public class LabelJsonConverter : JsonConverter<Label>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="Label" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -204,7 +204,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="Label" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="label"></param>

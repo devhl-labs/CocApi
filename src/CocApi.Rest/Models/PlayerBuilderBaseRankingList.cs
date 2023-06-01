@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerBuilderBaseRankingList
+    /// A Json converter for type <see cref="PlayerBuilderBaseRankingList" />
     /// </summary>
     public class PlayerBuilderBaseRankingListJsonConverter : JsonConverter<PlayerBuilderBaseRankingList>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="PlayerBuilderBaseRankingList" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="PlayerBuilderBaseRankingList" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="playerBuilderBaseRankingList"></param>

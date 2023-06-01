@@ -193,12 +193,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerAchievementProgress
+    /// A Json converter for type <see cref="PlayerAchievementProgress" />
     /// </summary>
     public class PlayerAchievementProgressJsonConverter : JsonConverter<PlayerAchievementProgress>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="PlayerAchievementProgress" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -256,8 +256,10 @@ namespace CocApi.Rest.Models
                                 value = utf8JsonReader.GetInt32();
                             break;
                         case "village":
-                            string villageRawValue = utf8JsonReader.GetString();
-                            village = VillageTypeConverter.FromString(villageRawValue);
+                            string? villageRawValue = utf8JsonReader.GetString();
+                            village = villageRawValue == null
+                                ? null
+                                : VillageTypeConverter.FromStringOrDefault(villageRawValue);
                             break;
                         case "completionInfo":
                             completionInfo = utf8JsonReader.GetString();
@@ -290,7 +292,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="PlayerAchievementProgress" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="playerAchievementProgress"></param>

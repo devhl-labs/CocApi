@@ -138,7 +138,7 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type LegendLeagueTournamentSeasonResult
+    /// A Json converter for type <see cref="LegendLeagueTournamentSeasonResult" />
     /// </summary>
     public class LegendLeagueTournamentSeasonResultJsonConverter : JsonConverter<LegendLeagueTournamentSeasonResult>
     {
@@ -148,7 +148,7 @@ namespace CocApi.Rest.Models
         public static string IdFormat { get; set; } = "yyyy'-'MM";
 
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="LegendLeagueTournamentSeasonResult" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -208,7 +208,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="LegendLeagueTournamentSeasonResult" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="legendLeagueTournamentSeasonResult"></param>

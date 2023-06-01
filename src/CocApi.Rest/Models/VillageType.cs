@@ -39,8 +39,17 @@ namespace CocApi.Rest.Models
         BuilderBase = 2
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="VillageType"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class VillageTypeConverter : JsonConverter<VillageType>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="VillageType"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static VillageType FromString(string value)
         {
             if (value == "home")
@@ -52,6 +61,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type VillageType: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="VillageType"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static VillageType? FromStringOrDefault(string value)
         {
             if (value == "home")
@@ -63,6 +77,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="VillageType"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(VillageType value)
         {
             if (value == VillageType.Home)
@@ -85,8 +105,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            VillageType? result = VillageTypeConverter.FromString(rawValue);
-            
+            VillageType? result = rawValue == null
+                ? null
+                : VillageTypeConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -105,6 +127,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="VillageType"/>
+    /// </summary>
     public class VillageTypeNullableConverter : JsonConverter<VillageType?>
     {
         /// <summary>
@@ -118,10 +143,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            VillageType? result = VillageTypeConverter.FromString(rawValue);
+            VillageType? result = rawValue == null
+                ? null
+                : VillageTypeConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

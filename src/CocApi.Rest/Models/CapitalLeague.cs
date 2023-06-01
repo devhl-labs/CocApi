@@ -119,12 +119,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type CapitalLeague
+    /// A Json converter for type <see cref="CapitalLeague" />
     /// </summary>
     public class CapitalLeagueJsonConverter : JsonConverter<CapitalLeague>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="CapitalLeague" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -181,7 +181,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="CapitalLeague" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="capitalLeague"></param>

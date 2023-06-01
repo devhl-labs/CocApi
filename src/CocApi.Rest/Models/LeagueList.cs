@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type LeagueList
+    /// A Json converter for type <see cref="LeagueList" />
     /// </summary>
     public class LeagueListJsonConverter : JsonConverter<LeagueList>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="LeagueList" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="LeagueList" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="leagueList"></param>

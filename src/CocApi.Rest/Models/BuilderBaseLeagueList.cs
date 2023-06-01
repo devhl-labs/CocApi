@@ -106,12 +106,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type BuilderBaseLeagueList
+    /// A Json converter for type <see cref="BuilderBaseLeagueList" />
     /// </summary>
     public class BuilderBaseLeagueListJsonConverter : JsonConverter<BuilderBaseLeagueList>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="BuilderBaseLeagueList" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -161,7 +161,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="BuilderBaseLeagueList" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="builderBaseLeagueList"></param>

@@ -80,10 +80,11 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Returns a TypeEnum
+        /// Returns a <see cref="TypeEnum"/>
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static TypeEnum TypeEnumFromString(string value)
         {
             if (value == "unknown")
@@ -108,7 +109,35 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Returns equivalent json value
+        /// Returns a <see cref="TypeEnum"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static TypeEnum? TypeEnumFromStringOrDefault(string value)
+        {
+            if (value == "unknown")
+                return TypeEnum.Unknown;
+
+            if (value == "ground")
+                return TypeEnum.Ground;
+
+            if (value == "roof")
+                return TypeEnum.Roof;
+
+            if (value == "foot")
+                return TypeEnum.Foot;
+
+            if (value == "decoration")
+                return TypeEnum.Decoration;
+
+            if (value == "walls")
+                return TypeEnum.Walls;
+
+            return null;
+        }
+
+        /// <summary>
+        /// Converts the <see cref="TypeEnum"/> to the json value
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -211,12 +240,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type PlayerHouseElement
+    /// A Json converter for type <see cref="PlayerHouseElement" />
     /// </summary>
     public class PlayerHouseElementJsonConverter : JsonConverter<PlayerHouseElement>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="PlayerHouseElement" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -255,8 +284,10 @@ namespace CocApi.Rest.Models
                                 id = utf8JsonReader.GetInt32();
                             break;
                         case "type":
-                            string typeRawValue = utf8JsonReader.GetString();
-                            type = PlayerHouseElement.TypeEnumFromString(typeRawValue);
+                            string? typeRawValue = utf8JsonReader.GetString();
+                            type = typeRawValue == null
+                                ? null
+                                : PlayerHouseElement.TypeEnumFromStringOrDefault(typeRawValue);
                             break;
                         default:
                             break;
@@ -274,7 +305,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="PlayerHouseElement" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="playerHouseElement"></param>

@@ -153,7 +153,7 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClanWarLeagueGroup
+    /// A Json converter for type <see cref="ClanWarLeagueGroup" />
     /// </summary>
     public class ClanWarLeagueGroupJsonConverter : JsonConverter<ClanWarLeagueGroup>
     {
@@ -163,7 +163,7 @@ namespace CocApi.Rest.Models
         public static string SeasonFormat { get; set; } = "yyyy'-'MM";
 
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClanWarLeagueGroup" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -212,8 +212,10 @@ namespace CocApi.Rest.Models
                                 season = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "state":
-                            string stateRawValue = utf8JsonReader.GetString();
-                            state = GroupStateConverter.FromStringOrDefault(stateRawValue);
+                            string? stateRawValue = utf8JsonReader.GetString();
+                            state = stateRawValue == null
+                                ? null
+                                : GroupStateConverter.FromStringOrDefault(stateRawValue);
                             break;
                         default:
                             break;
@@ -234,7 +236,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClanWarLeagueGroup" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clanWarLeagueGroup"></param>

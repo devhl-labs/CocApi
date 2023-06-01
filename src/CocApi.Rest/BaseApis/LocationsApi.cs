@@ -278,9 +278,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetClanBuilderBaseRanking(string locationId)
         {
@@ -435,9 +432,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetClanCapitalRanking(string locationId)
         {
@@ -592,9 +586,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetClanRanking(string locationId)
         {
@@ -1010,9 +1001,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetPlayerBuilderBaseRanking(string locationId)
         {
@@ -1167,9 +1155,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="locationId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetPlayerRanking(string locationId)
         {

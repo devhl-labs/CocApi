@@ -996,9 +996,6 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetLeagueSeasonRankings(string leagueId, string seasonId)
         {
@@ -1160,9 +1157,6 @@ namespace CocApi.Rest.BaseApis
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
-        /// <param name="limit"></param>
-        /// <param name="after"></param>
-        /// <param name="before"></param>
         /// <returns></returns>
         private void ValidateGetLeagueSeasons(string leagueId)
         {

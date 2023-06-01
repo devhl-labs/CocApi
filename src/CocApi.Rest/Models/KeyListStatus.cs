@@ -80,12 +80,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type KeyListStatus
+    /// A Json converter for type <see cref="KeyListStatus" />
     /// </summary>
     public class KeyListStatusJsonConverter : JsonConverter<KeyListStatus>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="KeyListStatus" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -146,7 +146,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="KeyListStatus" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="keyListStatus"></param>

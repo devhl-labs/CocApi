@@ -143,7 +143,7 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type Key
+    /// A Json converter for type <see cref="Key" />
     /// </summary>
     public class KeyJsonConverter : JsonConverter<Key>
     {
@@ -153,7 +153,7 @@ namespace CocApi.Rest.Models
         public static string ValidUntilFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="Key" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -262,7 +262,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="Key" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="key"></param>

@@ -39,8 +39,17 @@ namespace CocApi.Rest.Models
         In = 2
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarPreference"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class WarPreferenceConverter : JsonConverter<WarPreference>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="WarPreference"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarPreference FromString(string value)
         {
             if (value == "out")
@@ -52,6 +61,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarPreference: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="WarPreference"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarPreference? FromStringOrDefault(string value)
         {
             if (value == "out")
@@ -63,6 +77,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="WarPreference"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(WarPreference value)
         {
             if (value == WarPreference.Out)
@@ -85,8 +105,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            WarPreference? result = WarPreferenceConverter.FromString(rawValue);
-            
+            WarPreference? result = rawValue == null
+                ? null
+                : WarPreferenceConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -105,6 +127,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarPreference"/>
+    /// </summary>
     public class WarPreferenceNullableConverter : JsonConverter<WarPreference?>
     {
         /// <summary>
@@ -118,10 +143,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            WarPreference? result = WarPreferenceConverter.FromString(rawValue);
+            WarPreference? result = rawValue == null
+                ? null
+                : WarPreferenceConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

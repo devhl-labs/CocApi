@@ -64,8 +64,17 @@ namespace CocApi.Rest.Models
         Any
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarFrequency"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class WarFrequencyConverter : JsonConverter<WarFrequency>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="WarFrequency"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarFrequency FromString(string value)
         {
             if (value == "unknown")
@@ -92,6 +101,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarFrequency: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="WarFrequency"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarFrequency? FromStringOrDefault(string value)
         {
             if (value == "unknown")
@@ -118,6 +132,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="WarFrequency"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(WarFrequency value)
         {
             if (value == WarFrequency.Unknown)
@@ -155,8 +175,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            WarFrequency? result = WarFrequencyConverter.FromString(rawValue);
-            
+            WarFrequency? result = rawValue == null
+                ? null
+                : WarFrequencyConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -175,6 +197,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarFrequency"/>
+    /// </summary>
     public class WarFrequencyNullableConverter : JsonConverter<WarFrequency?>
     {
         /// <summary>
@@ -188,10 +213,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            WarFrequency? result = WarFrequencyConverter.FromString(rawValue);
+            WarFrequency? result = rawValue == null
+                ? null
+                : WarFrequencyConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

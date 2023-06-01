@@ -536,12 +536,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type Player
+    /// A Json converter for type <see cref="Player" />
     /// </summary>
     public class PlayerJsonConverter : JsonConverter<Player>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="Player" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -702,8 +702,10 @@ namespace CocApi.Rest.Models
                                 playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "role":
-                            string roleRawValue = utf8JsonReader.GetString();
-                            role = RoleConverter.FromStringOrDefault(roleRawValue);
+                            string? roleRawValue = utf8JsonReader.GetString();
+                            role = roleRawValue == null
+                                ? null
+                                : RoleConverter.FromStringOrDefault(roleRawValue);
                             break;
                         case "townHallWeaponLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -714,8 +716,10 @@ namespace CocApi.Rest.Models
                                 versusBattleWinCount = utf8JsonReader.GetInt32();
                             break;
                         case "warPreference":
-                            string warPreferenceRawValue = utf8JsonReader.GetString();
-                            warPreference = WarPreferenceConverter.FromStringOrDefault(warPreferenceRawValue);
+                            string? warPreferenceRawValue = utf8JsonReader.GetString();
+                            warPreference = warPreferenceRawValue == null
+                                ? null
+                                : WarPreferenceConverter.FromStringOrDefault(warPreferenceRawValue);
                             break;
                         default:
                             break;
@@ -784,7 +788,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="Player" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="player"></param>

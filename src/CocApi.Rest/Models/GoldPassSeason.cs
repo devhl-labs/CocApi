@@ -120,12 +120,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type GoldPassSeason
+    /// A Json converter for type <see cref="GoldPassSeason" />
     /// </summary>
     public class GoldPassSeasonJsonConverter : JsonConverter<GoldPassSeason>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="GoldPassSeason" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -181,7 +181,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="GoldPassSeason" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="goldPassSeason"></param>

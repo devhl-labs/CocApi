@@ -49,8 +49,17 @@ namespace CocApi.Rest.Models
         SCCWL
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarType"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
     public class WarTypeConverter : JsonConverter<WarType>
     {
+        /// <summary>
+        /// Parses a given value to <see cref="WarType"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarType FromString(string value)
         {
             if (value == "unknown")
@@ -68,6 +77,11 @@ namespace CocApi.Rest.Models
             throw new NotImplementedException($"Could not convert value to type WarType: '{value}'");
         }
 
+        /// <summary>
+        /// Parses a given value to <see cref="WarType"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static WarType? FromStringOrDefault(string value)
         {
             if (value == "unknown")
@@ -85,6 +99,12 @@ namespace CocApi.Rest.Models
             return null;
         }
 
+        /// <summary>
+        /// Converts the <see cref="WarType"/> to the json value
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static string ToJsonValue(WarType value)
         {
             if (value == WarType.Unknown)
@@ -113,8 +133,10 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            WarType? result = WarTypeConverter.FromString(rawValue);
-            
+            WarType? result = rawValue == null
+                ? null
+                : WarTypeConverter.FromStringOrDefault(rawValue);
+
             if (result != null)
                 return result.Value;
 
@@ -133,6 +155,9 @@ namespace CocApi.Rest.Models
         }
     }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarType"/>
+    /// </summary>
     public class WarTypeNullableConverter : JsonConverter<WarType?>
     {
         /// <summary>
@@ -146,10 +171,9 @@ namespace CocApi.Rest.Models
         {
             string? rawValue = reader.GetString();
 
-            if (rawValue == null)
-                return null;
-
-            WarType? result = WarTypeConverter.FromString(rawValue);
+            WarType? result = rawValue == null
+                ? null
+                : WarTypeConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

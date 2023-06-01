@@ -150,12 +150,12 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type ClientError
+    /// A Json converter for type <see cref="ClientError" />
     /// </summary>
     public class ClientErrorJsonConverter : JsonConverter<ClientError>
     {
         /// <summary>
-        /// A Json reader.
+        /// Deserializes json to <see cref="ClientError" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
@@ -226,7 +226,7 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// A Json writer
+        /// Serializes a <see cref="ClientError" />
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="clientError"></param>
