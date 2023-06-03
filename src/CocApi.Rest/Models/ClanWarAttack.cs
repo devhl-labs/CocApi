@@ -250,20 +250,20 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (order == null)
-                throw new ArgumentNullException(nameof(order), "Property is required for class ClanWarAttack.");
-
             if (attackerTag == null)
                 throw new ArgumentNullException(nameof(attackerTag), "Property is required for class ClanWarAttack.");
 
             if (defenderTag == null)
                 throw new ArgumentNullException(nameof(defenderTag), "Property is required for class ClanWarAttack.");
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanWarAttack.");
-
             if (destructionPercentage == null)
                 throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class ClanWarAttack.");
+
+            if (order == null)
+                throw new ArgumentNullException(nameof(order), "Property is required for class ClanWarAttack.");
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanWarAttack.");
 
             return new ClanWarAttack(attackerTag, defenderTag, destructionPercentage.Value, order.Value, stars.Value, duration);
         }
@@ -284,6 +284,7 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("destructionPercentage", clanWarAttack.DestructionPercentage);
             writer.WriteNumber("order", clanWarAttack.Order);
             writer.WriteNumber("stars", clanWarAttack.Stars);
+
             if (clanWarAttack.Duration != null)
                 writer.WriteNumber("duration", clanWarAttack.Duration.Value);
             else

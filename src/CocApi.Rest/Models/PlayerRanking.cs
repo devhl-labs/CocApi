@@ -327,29 +327,29 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (league == null)
-                throw new ArgumentNullException(nameof(league), "Property is required for class PlayerRanking.");
-
             if (attackWins == null)
                 throw new ArgumentNullException(nameof(attackWins), "Property is required for class PlayerRanking.");
 
             if (defenseWins == null)
                 throw new ArgumentNullException(nameof(defenseWins), "Property is required for class PlayerRanking.");
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerRanking.");
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class PlayerRanking.");
+
+            if (league == null)
+                throw new ArgumentNullException(nameof(league), "Property is required for class PlayerRanking.");
 
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class PlayerRanking.");
 
-            if (expLevel == null)
-                throw new ArgumentNullException(nameof(expLevel), "Property is required for class PlayerRanking.");
+            if (previousRank == null)
+                throw new ArgumentNullException(nameof(previousRank), "Property is required for class PlayerRanking.");
 
             if (rank == null)
                 throw new ArgumentNullException(nameof(rank), "Property is required for class PlayerRanking.");
 
-            if (previousRank == null)
-                throw new ArgumentNullException(nameof(previousRank), "Property is required for class PlayerRanking.");
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerRanking.");
 
             if (trophies == null)
                 throw new ArgumentNullException(nameof(trophies), "Property is required for class PlayerRanking.");

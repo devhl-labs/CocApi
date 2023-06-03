@@ -190,14 +190,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
+            if (status == null)
+                throw new ArgumentNullException(nameof(status), "Property is required for class VerifyTokenResponse.");
+
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag), "Property is required for class VerifyTokenResponse.");
 
             if (token == null)
                 throw new ArgumentNullException(nameof(token), "Property is required for class VerifyTokenResponse.");
-
-            if (status == null)
-                throw new ArgumentNullException(nameof(status), "Property is required for class VerifyTokenResponse.");
 
             return new VerifyTokenResponse(status, tag, token);
         }

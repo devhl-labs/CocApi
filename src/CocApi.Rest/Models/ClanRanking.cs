@@ -308,6 +308,9 @@ namespace CocApi.Rest.Models
                 }
             }
 
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanRanking.");
+
             if (clanLevel == null)
                 throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanRanking.");
 
@@ -317,20 +320,17 @@ namespace CocApi.Rest.Models
             if (members == null)
                 throw new ArgumentNullException(nameof(members), "Property is required for class ClanRanking.");
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanRanking.");
-
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class ClanRanking.");
-
-            if (rank == null)
-                throw new ArgumentNullException(nameof(rank), "Property is required for class ClanRanking.");
 
             if (previousRank == null)
                 throw new ArgumentNullException(nameof(previousRank), "Property is required for class ClanRanking.");
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanRanking.");
+            if (rank == null)
+                throw new ArgumentNullException(nameof(rank), "Property is required for class ClanRanking.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanRanking.");
 
             return new ClanRanking(badgeUrls, clanLevel.Value, clanPoints.Value, members.Value, name, previousRank.Value, rank.Value, tag, location);
         }

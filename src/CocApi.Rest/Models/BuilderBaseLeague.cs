@@ -171,11 +171,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class BuilderBaseLeague.");
-
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class BuilderBaseLeague.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class BuilderBaseLeague.");
 
             return new BuilderBaseLeague(id.Value, name);
         }

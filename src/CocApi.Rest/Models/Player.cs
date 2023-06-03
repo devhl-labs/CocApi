@@ -727,41 +727,26 @@ namespace CocApi.Rest.Models
                 }
             }
 
+            if (achievements == null)
+                throw new ArgumentNullException(nameof(achievements), "Property is required for class Player.");
+
             if (attackWins == null)
                 throw new ArgumentNullException(nameof(attackWins), "Property is required for class Player.");
 
-            if (defenseWins == null)
-                throw new ArgumentNullException(nameof(defenseWins), "Property is required for class Player.");
-
-            if (townHallLevel == null)
-                throw new ArgumentNullException(nameof(townHallLevel), "Property is required for class Player.");
-
-            if (troops == null)
-                throw new ArgumentNullException(nameof(troops), "Property is required for class Player.");
-
-            if (heroes == null)
-                throw new ArgumentNullException(nameof(heroes), "Property is required for class Player.");
-
-            if (spells == null)
-                throw new ArgumentNullException(nameof(spells), "Property is required for class Player.");
-
-            if (labels == null)
-                throw new ArgumentNullException(nameof(labels), "Property is required for class Player.");
-
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class Player.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Player.");
-
-            if (expLevel == null)
-                throw new ArgumentNullException(nameof(expLevel), "Property is required for class Player.");
-
-            if (trophies == null)
-                throw new ArgumentNullException(nameof(trophies), "Property is required for class Player.");
-
             if (bestTrophies == null)
                 throw new ArgumentNullException(nameof(bestTrophies), "Property is required for class Player.");
+
+            if (bestVersusTrophies == null)
+                throw new ArgumentNullException(nameof(bestVersusTrophies), "Property is required for class Player.");
+
+            if (builderBaseTrophies == null)
+                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class Player.");
+
+            if (clanCapitalContributions == null)
+                throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is required for class Player.");
+
+            if (defenseWins == null)
+                throw new ArgumentNullException(nameof(defenseWins), "Property is required for class Player.");
 
             if (donations == null)
                 throw new ArgumentNullException(nameof(donations), "Property is required for class Player.");
@@ -769,20 +754,35 @@ namespace CocApi.Rest.Models
             if (donationsReceived == null)
                 throw new ArgumentNullException(nameof(donationsReceived), "Property is required for class Player.");
 
-            if (builderBaseTrophies == null)
-                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class Player.");
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class Player.");
 
-            if (bestVersusTrophies == null)
-                throw new ArgumentNullException(nameof(bestVersusTrophies), "Property is required for class Player.");
+            if (heroes == null)
+                throw new ArgumentNullException(nameof(heroes), "Property is required for class Player.");
+
+            if (labels == null)
+                throw new ArgumentNullException(nameof(labels), "Property is required for class Player.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Player.");
+
+            if (spells == null)
+                throw new ArgumentNullException(nameof(spells), "Property is required for class Player.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class Player.");
+
+            if (townHallLevel == null)
+                throw new ArgumentNullException(nameof(townHallLevel), "Property is required for class Player.");
+
+            if (troops == null)
+                throw new ArgumentNullException(nameof(troops), "Property is required for class Player.");
+
+            if (trophies == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is required for class Player.");
 
             if (warStars == null)
                 throw new ArgumentNullException(nameof(warStars), "Property is required for class Player.");
-
-            if (achievements == null)
-                throw new ArgumentNullException(nameof(achievements), "Property is required for class Player.");
-
-            if (clanCapitalContributions == null)
-                throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is required for class Player.");
 
             return new Player(achievements, attackWins.Value, bestTrophies.Value, bestVersusTrophies.Value, builderBaseTrophies.Value, clanCapitalContributions.Value, defenseWins.Value, donations.Value, donationsReceived.Value, expLevel.Value, heroes, labels, name, spells, tag, townHallLevel.Value, troops, trophies.Value, warStars.Value, builderBaseLeague, builderHallLevel, clan, league, legendStatistics, playerHouse, role, townHallWeaponLevel, versusBattleWinCount, warPreference);
         }
@@ -824,10 +824,12 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("warStars", player.WarStars);
             writer.WritePropertyName("builderBaseLeague");
             JsonSerializer.Serialize(writer, player.BuilderBaseLeague, jsonSerializerOptions);
+
             if (player.BuilderHallLevel != null)
                 writer.WriteNumber("builderHallLevel", player.BuilderHallLevel.Value);
             else
                 writer.WriteNull("builderHallLevel");
+
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, player.Clan, jsonSerializerOptions);
             writer.WritePropertyName("league");
@@ -836,28 +838,38 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, player.LegendStatistics, jsonSerializerOptions);
             writer.WritePropertyName("playerHouse");
             JsonSerializer.Serialize(writer, player.PlayerHouse, jsonSerializerOptions);
+
             if (player.Role == null)
                 writer.WriteNull("role");
-            var roleRawValue = RoleConverter.ToJsonValue(player.Role.Value);
-            if (roleRawValue != null)
-                writer.WriteString("role", roleRawValue);
             else
-                writer.WriteNull("role");
+            {
+                var roleRawValue = RoleConverter.ToJsonValue(player.Role.Value);
+                if (roleRawValue != null)
+                    writer.WriteString("role", roleRawValue);
+                else
+                    writer.WriteNull("role");
+            }
+
             if (player.TownHallWeaponLevel != null)
                 writer.WriteNumber("townHallWeaponLevel", player.TownHallWeaponLevel.Value);
             else
                 writer.WriteNull("townHallWeaponLevel");
+
             if (player.VersusBattleWinCount != null)
                 writer.WriteNumber("versusBattleWinCount", player.VersusBattleWinCount.Value);
             else
                 writer.WriteNull("versusBattleWinCount");
+
             if (player.WarPreference == null)
                 writer.WriteNull("warPreference");
-            var warPreferenceRawValue = WarPreferenceConverter.ToJsonValue(player.WarPreference.Value);
-            if (warPreferenceRawValue != null)
-                writer.WriteString("warPreference", warPreferenceRawValue);
             else
-                writer.WriteNull("warPreference");
+            {
+                var warPreferenceRawValue = WarPreferenceConverter.ToJsonValue(player.WarPreference.Value);
+                if (warPreferenceRawValue != null)
+                    writer.WriteString("warPreference", warPreferenceRawValue);
+                else
+                    writer.WriteNull("warPreference");
+            }
 
             writer.WriteEndObject();
         }

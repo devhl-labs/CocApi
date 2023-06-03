@@ -191,14 +191,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerRankingClan.");
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class PlayerRankingClan.");
 
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class PlayerRankingClan.");
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class PlayerRankingClan.");
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerRankingClan.");
 
             return new PlayerRankingClan(badgeUrls, name, tag);
         }

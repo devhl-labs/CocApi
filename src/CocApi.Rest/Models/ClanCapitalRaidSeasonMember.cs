@@ -247,23 +247,23 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonMember.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (attackLimit == null)
+                throw new ArgumentNullException(nameof(attackLimit), "Property is required for class ClanCapitalRaidSeasonMember.");
 
             if (attacks == null)
                 throw new ArgumentNullException(nameof(attacks), "Property is required for class ClanCapitalRaidSeasonMember.");
-
-            if (attackLimit == null)
-                throw new ArgumentNullException(nameof(attackLimit), "Property is required for class ClanCapitalRaidSeasonMember.");
 
             if (bonusAttackLimit == null)
                 throw new ArgumentNullException(nameof(bonusAttackLimit), "Property is required for class ClanCapitalRaidSeasonMember.");
 
             if (capitalResourcesLooted == null)
                 throw new ArgumentNullException(nameof(capitalResourcesLooted), "Property is required for class ClanCapitalRaidSeasonMember.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonMember.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonMember.");
 
             return new ClanCapitalRaidSeasonMember(attackLimit.Value, attacks.Value, bonusAttackLimit.Value, capitalResourcesLooted.Value, name, tag);
         }

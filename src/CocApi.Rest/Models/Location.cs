@@ -235,11 +235,11 @@ namespace CocApi.Rest.Models
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class Location.");
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Location.");
-
             if (isCountry == null)
                 throw new ArgumentNullException(nameof(isCountry), "Property is required for class Location.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Location.");
 
             return new Location(id.Value, isCountry.Value, name, countryCode, localizedName);
         }

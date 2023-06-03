@@ -171,11 +171,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (startTime == null)
-                throw new ArgumentNullException(nameof(startTime), "Property is required for class GoldPassSeason.");
-
             if (endTime == null)
                 throw new ArgumentNullException(nameof(endTime), "Property is required for class GoldPassSeason.");
+
+            if (startTime == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is required for class GoldPassSeason.");
 
             return new GoldPassSeason(endTime, startTime);
         }

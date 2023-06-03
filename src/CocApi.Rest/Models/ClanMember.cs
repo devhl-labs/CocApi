@@ -392,23 +392,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (league == null)
-                throw new ArgumentNullException(nameof(league), "Property is required for class ClanMember.");
-
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanMember.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanMember.");
-
-            if (expLevel == null)
-                throw new ArgumentNullException(nameof(expLevel), "Property is required for class ClanMember.");
+            if (builderBaseTrophies == null)
+                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class ClanMember.");
 
             if (clanRank == null)
                 throw new ArgumentNullException(nameof(clanRank), "Property is required for class ClanMember.");
-
-            if (previousClanRank == null)
-                throw new ArgumentNullException(nameof(previousClanRank), "Property is required for class ClanMember.");
 
             if (donations == null)
                 throw new ArgumentNullException(nameof(donations), "Property is required for class ClanMember.");
@@ -416,11 +404,23 @@ namespace CocApi.Rest.Models
             if (donationsReceived == null)
                 throw new ArgumentNullException(nameof(donationsReceived), "Property is required for class ClanMember.");
 
+            if (expLevel == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is required for class ClanMember.");
+
+            if (league == null)
+                throw new ArgumentNullException(nameof(league), "Property is required for class ClanMember.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanMember.");
+
+            if (previousClanRank == null)
+                throw new ArgumentNullException(nameof(previousClanRank), "Property is required for class ClanMember.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanMember.");
+
             if (trophies == null)
                 throw new ArgumentNullException(nameof(trophies), "Property is required for class ClanMember.");
-
-            if (builderBaseTrophies == null)
-                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class ClanMember.");
 
             return new ClanMember(builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, builderBaseLeague, playerHouse, role);
         }
@@ -451,13 +451,17 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clanMember.BuilderBaseLeague, jsonSerializerOptions);
             writer.WritePropertyName("playerHouse");
             JsonSerializer.Serialize(writer, clanMember.PlayerHouse, jsonSerializerOptions);
+
             if (clanMember.Role == null)
                 writer.WriteNull("role");
-            var roleRawValue = RoleConverter.ToJsonValue(clanMember.Role.Value);
-            if (roleRawValue != null)
-                writer.WriteString("role", roleRawValue);
             else
-                writer.WriteNull("role");
+            {
+                var roleRawValue = RoleConverter.ToJsonValue(clanMember.Role.Value);
+                if (roleRawValue != null)
+                    writer.WriteString("role", roleRawValue);
+                else
+                    writer.WriteNull("role");
+            }
 
             writer.WriteEndObject();
         }

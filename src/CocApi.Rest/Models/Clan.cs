@@ -613,62 +613,62 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (warLeague == null)
-                throw new ArgumentNullException(nameof(warLeague), "Property is required for class Clan.");
-
-            if (memberList == null)
-                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
-
-            if (requiredTrophies == null)
-                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class Clan.");
-
-            if (requiredBuilderBaseTrophies == null)
-                throw new ArgumentNullException(nameof(requiredBuilderBaseTrophies), "Property is required for class Clan.");
-
-            if (clanBuilderBasePoints == null)
-                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class Clan.");
-
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class Clan.");
-
-            if (isWarLogPublic == null)
-                throw new ArgumentNullException(nameof(isWarLogPublic), "Property is required for class Clan.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class Clan.");
-
-            if (warWinStreak == null)
-                throw new ArgumentNullException(nameof(warWinStreak), "Property is required for class Clan.");
-
-            if (warWins == null)
-                throw new ArgumentNullException(nameof(warWins), "Property is required for class Clan.");
-
-            if (clanPoints == null)
-                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class Clan.");
-
-            if (labels == null)
-                throw new ArgumentNullException(nameof(labels), "Property is required for class Clan.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Clan.");
-
-            if (memberList == null)
-                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
-
-            if (description == null)
-                throw new ArgumentNullException(nameof(description), "Property is required for class Clan.");
-
-            if (clanCapital == null)
-                throw new ArgumentNullException(nameof(clanCapital), "Property is required for class Clan.");
-
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class Clan.");
 
             if (capitalLeague == null)
                 throw new ArgumentNullException(nameof(capitalLeague), "Property is required for class Clan.");
 
+            if (clanBuilderBasePoints == null)
+                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class Clan.");
+
+            if (clanCapital == null)
+                throw new ArgumentNullException(nameof(clanCapital), "Property is required for class Clan.");
+
+            if (clanLevel == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class Clan.");
+
+            if (clanPoints == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class Clan.");
+
+            if (description == null)
+                throw new ArgumentNullException(nameof(description), "Property is required for class Clan.");
+
             if (isFamilyFriendly == null)
                 throw new ArgumentNullException(nameof(isFamilyFriendly), "Property is required for class Clan.");
+
+            if (isWarLogPublic == null)
+                throw new ArgumentNullException(nameof(isWarLogPublic), "Property is required for class Clan.");
+
+            if (labels == null)
+                throw new ArgumentNullException(nameof(labels), "Property is required for class Clan.");
+
+            if (memberList == null)
+                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
+
+            if (memberList == null)
+                throw new ArgumentNullException(nameof(memberList), "Property is required for class Clan.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Clan.");
+
+            if (requiredBuilderBaseTrophies == null)
+                throw new ArgumentNullException(nameof(requiredBuilderBaseTrophies), "Property is required for class Clan.");
+
+            if (requiredTrophies == null)
+                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class Clan.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class Clan.");
+
+            if (warLeague == null)
+                throw new ArgumentNullException(nameof(warLeague), "Property is required for class Clan.");
+
+            if (warWinStreak == null)
+                throw new ArgumentNullException(nameof(warWinStreak), "Property is required for class Clan.");
+
+            if (warWins == null)
+                throw new ArgumentNullException(nameof(warWins), "Property is required for class Clan.");
 
             return new Clan(badgeUrls, capitalLeague, clanBuilderBasePoints.Value, clanCapital, clanLevel.Value, clanPoints.Value, description, isFamilyFriendly.Value, isWarLogPublic.Value, labels, memberList, name, requiredBuilderBaseTrophies.Value, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
@@ -712,24 +712,34 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clan.ChatLanguage, jsonSerializerOptions);
             writer.WritePropertyName("location");
             JsonSerializer.Serialize(writer, clan.Location, jsonSerializerOptions);
+
             if (clan.Type == null)
                 writer.WriteNull("type");
-            var typeRawValue = RecruitingTypeConverter.ToJsonValue(clan.Type.Value);
-            if (typeRawValue != null)
-                writer.WriteString("type", typeRawValue);
             else
-                writer.WriteNull("type");
+            {
+                var recruitingTypeRawValue = RecruitingTypeConverter.ToJsonValue(clan.Type.Value);
+                if (recruitingTypeRawValue != null)
+                    writer.WriteString("type", recruitingTypeRawValue);
+                else
+                    writer.WriteNull("type");
+            }
+
             if (clan.WarFrequency == null)
                 writer.WriteNull("warFrequency");
-            var warFrequencyRawValue = WarFrequencyConverter.ToJsonValue(clan.WarFrequency.Value);
-            if (warFrequencyRawValue != null)
-                writer.WriteString("warFrequency", warFrequencyRawValue);
             else
-                writer.WriteNull("warFrequency");
+            {
+                var warFrequencyRawValue = WarFrequencyConverter.ToJsonValue(clan.WarFrequency.Value);
+                if (warFrequencyRawValue != null)
+                    writer.WriteString("warFrequency", warFrequencyRawValue);
+                else
+                    writer.WriteNull("warFrequency");
+            }
+
             if (clan.WarLosses != null)
                 writer.WriteNumber("warLosses", clan.WarLosses.Value);
             else
                 writer.WriteNull("warLosses");
+
             if (clan.WarTies != null)
                 writer.WriteNumber("warTies", clan.WarTies.Value);
             else

@@ -231,20 +231,20 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarLeagueClan.");
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanWarLeagueClan.");
 
             if (clanLevel == null)
                 throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanWarLeagueClan.");
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarLeagueClan.");
-
             if (members == null)
                 throw new ArgumentNullException(nameof(members), "Property is required for class ClanWarLeagueClan.");
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanWarLeagueClan.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarLeagueClan.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarLeagueClan.");
 
             return new ClanWarLeagueClan(badgeUrls, clanLevel.Value, members, name, tag);
         }

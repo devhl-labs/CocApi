@@ -466,26 +466,17 @@ namespace CocApi.Rest.Models
             if (attackLog == null)
                 throw new ArgumentNullException(nameof(attackLog), "Property is required for class ClanCapitalRaidSeason.");
 
-            if (defenseLog == null)
-                throw new ArgumentNullException(nameof(defenseLog), "Property is required for class ClanCapitalRaidSeason.");
-
-            if (state == null)
-                throw new ArgumentNullException(nameof(state), "Property is required for class ClanCapitalRaidSeason.");
-
-            if (startTime == null)
-                throw new ArgumentNullException(nameof(startTime), "Property is required for class ClanCapitalRaidSeason.");
-
-            if (endTime == null)
-                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanCapitalRaidSeason.");
-
             if (capitalTotalLoot == null)
                 throw new ArgumentNullException(nameof(capitalTotalLoot), "Property is required for class ClanCapitalRaidSeason.");
 
-            if (raidsCompleted == null)
-                throw new ArgumentNullException(nameof(raidsCompleted), "Property is required for class ClanCapitalRaidSeason.");
+            if (defenseLog == null)
+                throw new ArgumentNullException(nameof(defenseLog), "Property is required for class ClanCapitalRaidSeason.");
 
-            if (totalAttacks == null)
-                throw new ArgumentNullException(nameof(totalAttacks), "Property is required for class ClanCapitalRaidSeason.");
+            if (defensiveReward == null)
+                throw new ArgumentNullException(nameof(defensiveReward), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanCapitalRaidSeason.");
 
             if (enemyDistrictsDestroyed == null)
                 throw new ArgumentNullException(nameof(enemyDistrictsDestroyed), "Property is required for class ClanCapitalRaidSeason.");
@@ -493,8 +484,17 @@ namespace CocApi.Rest.Models
             if (offensiveReward == null)
                 throw new ArgumentNullException(nameof(offensiveReward), "Property is required for class ClanCapitalRaidSeason.");
 
-            if (defensiveReward == null)
-                throw new ArgumentNullException(nameof(defensiveReward), "Property is required for class ClanCapitalRaidSeason.");
+            if (raidsCompleted == null)
+                throw new ArgumentNullException(nameof(raidsCompleted), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (startTime == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (state == null)
+                throw new ArgumentNullException(nameof(state), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (totalAttacks == null)
+                throw new ArgumentNullException(nameof(totalAttacks), "Property is required for class ClanCapitalRaidSeason.");
 
             return new ClanCapitalRaidSeason(attackLog, capitalTotalLoot.Value, defenseLog, defensiveReward.Value, endTime.Value, enemyDistrictsDestroyed.Value, offensiveReward.Value, raidsCompleted.Value, startTime.Value, state.Value, totalAttacks.Value, members);
         }
@@ -521,11 +521,13 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("offensiveReward", clanCapitalRaidSeason.OffensiveReward);
             writer.WriteNumber("raidsCompleted", clanCapitalRaidSeason.RaidsCompleted);
             writer.WriteString("startTime", clanCapitalRaidSeason.StartTime.ToString(StartTimeFormat));
+
             var stateRawValue = ClanCapitalRaidSeason.StateEnumToJsonValue(clanCapitalRaidSeason.State);
             if (stateRawValue != null)
                 writer.WriteString("state", stateRawValue);
             else
                 writer.WriteNull("state");
+
             writer.WriteNumber("totalAttacks", clanCapitalRaidSeason.TotalAttacks);
             writer.WritePropertyName("members");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeason.Members, jsonSerializerOptions);

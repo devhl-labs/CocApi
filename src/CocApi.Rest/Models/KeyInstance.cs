@@ -138,11 +138,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (status == null)
-                throw new ArgumentNullException(nameof(status), "Property is required for class KeyInstance.");
-
             if (sessionExpiresInSeconds == null)
                 throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class KeyInstance.");
+
+            if (status == null)
+                throw new ArgumentNullException(nameof(status), "Property is required for class KeyInstance.");
 
             return new KeyInstance(sessionExpiresInSeconds.Value, status, key);
         }

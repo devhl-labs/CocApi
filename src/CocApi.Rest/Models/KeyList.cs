@@ -138,14 +138,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (status == null)
-                throw new ArgumentNullException(nameof(status), "Property is required for class KeyList.");
+            if (keys == null)
+                throw new ArgumentNullException(nameof(keys), "Property is required for class KeyList.");
 
             if (sessionExpiresInSeconds == null)
                 throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class KeyList.");
 
-            if (keys == null)
-                throw new ArgumentNullException(nameof(keys), "Property is required for class KeyList.");
+            if (status == null)
+                throw new ArgumentNullException(nameof(status), "Property is required for class KeyList.");
 
             return new KeyList(keys, sessionExpiresInSeconds.Value, status);
         }

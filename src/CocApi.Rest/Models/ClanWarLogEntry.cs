@@ -259,20 +259,20 @@ namespace CocApi.Rest.Models
                 }
             }
 
+            if (attacksPerMember == null)
+                throw new ArgumentNullException(nameof(attacksPerMember), "Property is required for class ClanWarLogEntry.");
+
             if (clan == null)
                 throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWarLogEntry.");
 
-            if (teamSize == null)
-                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWarLogEntry.");
-
-            if (attacksPerMember == null)
-                throw new ArgumentNullException(nameof(attacksPerMember), "Property is required for class ClanWarLogEntry.");
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWarLogEntry.");
 
             if (opponent == null)
                 throw new ArgumentNullException(nameof(opponent), "Property is required for class ClanWarLogEntry.");
 
-            if (endTime == null)
-                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWarLogEntry.");
+            if (teamSize == null)
+                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWarLogEntry.");
 
             return new ClanWarLogEntry(attacksPerMember.Value, clan, endTime.Value, opponent, teamSize.Value, result);
         }
@@ -295,13 +295,17 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("opponent");
             JsonSerializer.Serialize(writer, clanWarLogEntry.Opponent, jsonSerializerOptions);
             writer.WriteNumber("teamSize", clanWarLogEntry.TeamSize);
+
             if (clanWarLogEntry.Result == null)
                 writer.WriteNull("result");
-            var resultRawValue = ResultConverter.ToJsonValue(clanWarLogEntry.Result.Value);
-            if (resultRawValue != null)
-                writer.WriteString("result", resultRawValue);
             else
-                writer.WriteNull("result");
+            {
+                var resultRawValue = ResultConverter.ToJsonValue(clanWarLogEntry.Result.Value);
+                if (resultRawValue != null)
+                    writer.WriteString("result", resultRawValue);
+                else
+                    writer.WriteNull("result");
+            }
 
             writer.WriteEndObject();
         }

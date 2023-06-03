@@ -191,14 +191,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Label.");
+            if (iconUrls == null)
+                throw new ArgumentNullException(nameof(iconUrls), "Property is required for class Label.");
 
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class Label.");
 
-            if (iconUrls == null)
-                throw new ArgumentNullException(nameof(iconUrls), "Property is required for class Label.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Label.");
 
             return new Label(iconUrls, id.Value, name);
         }

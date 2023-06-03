@@ -139,11 +139,11 @@ namespace CocApi.Rest.Models
             if (cidrRanges == null)
                 throw new ArgumentNullException(nameof(cidrRanges), "Property is required for class CreateTokenRequest.");
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class CreateTokenRequest.");
-
             if (description == null)
                 throw new ArgumentNullException(nameof(description), "Property is required for class CreateTokenRequest.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class CreateTokenRequest.");
 
             return new CreateTokenRequest(cidrRanges, description, name);
         }

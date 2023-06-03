@@ -219,10 +219,12 @@ namespace CocApi.Rest.Models
             writer.WriteStartObject();
 
             writer.WriteNumber("trophies", legendLeagueTournamentSeasonResult.Trophies);
+
             if (legendLeagueTournamentSeasonResult.Id != null)
                 writer.WriteString("id", legendLeagueTournamentSeasonResult.Id.Value.ToString(IdFormat));
             else
                 writer.WriteNull("id");
+
             if (legendLeagueTournamentSeasonResult.Rank != null)
                 writer.WriteNumber("rank", legendLeagueTournamentSeasonResult.Rank.Value);
             else

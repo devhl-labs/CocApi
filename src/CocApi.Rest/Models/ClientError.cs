@@ -210,17 +210,17 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (reason == null)
-                throw new ArgumentNullException(nameof(reason), "Property is required for class ClientError.");
+            if (detail == null)
+                throw new ArgumentNullException(nameof(detail), "Property is required for class ClientError.");
 
             if (message == null)
                 throw new ArgumentNullException(nameof(message), "Property is required for class ClientError.");
 
+            if (reason == null)
+                throw new ArgumentNullException(nameof(reason), "Property is required for class ClientError.");
+
             if (type == null)
                 throw new ArgumentNullException(nameof(type), "Property is required for class ClientError.");
-
-            if (detail == null)
-                throw new ArgumentNullException(nameof(detail), "Property is required for class ClientError.");
 
             return new ClientError(detail, message, reason, type);
         }

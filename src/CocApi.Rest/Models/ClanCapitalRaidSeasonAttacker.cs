@@ -171,11 +171,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonAttacker.");
-
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonAttacker.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonAttacker.");
 
             return new ClanCapitalRaidSeasonAttacker(name, tag);
         }

@@ -210,8 +210,8 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerClan.");
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class PlayerClan.");
 
             if (clanLevel == null)
                 throw new ArgumentNullException(nameof(clanLevel), "Property is required for class PlayerClan.");
@@ -219,8 +219,8 @@ namespace CocApi.Rest.Models
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class PlayerClan.");
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class PlayerClan.");
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerClan.");
 
             return new PlayerClan(badgeUrls, clanLevel.Value, name, tag);
         }

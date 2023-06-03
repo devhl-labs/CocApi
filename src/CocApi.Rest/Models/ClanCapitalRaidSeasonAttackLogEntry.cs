@@ -231,20 +231,20 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (defender == null)
-                throw new ArgumentNullException(nameof(defender), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
-
             if (attackCount == null)
                 throw new ArgumentNullException(nameof(attackCount), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+            if (defender == null)
+                throw new ArgumentNullException(nameof(defender), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
 
             if (districtCount == null)
                 throw new ArgumentNullException(nameof(districtCount), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
 
-            if (districtsDestroyed == null)
-                throw new ArgumentNullException(nameof(districtsDestroyed), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
-
             if (districts == null)
                 throw new ArgumentNullException(nameof(districts), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
+
+            if (districtsDestroyed == null)
+                throw new ArgumentNullException(nameof(districtsDestroyed), "Property is required for class ClanCapitalRaidSeasonAttackLogEntry.");
 
             return new ClanCapitalRaidSeasonAttackLogEntry(attackCount.Value, defender, districtCount.Value, districts, districtsDestroyed.Value);
         }

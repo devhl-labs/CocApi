@@ -350,29 +350,29 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (serverExpiration == null)
-                serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);
+            if (attacksPerMember == null)
+                attacksPerMember = 1; // cwl war
 
             if (clan == null)
                 throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWar.");
 
-            if (teamSize == null)
-                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWar.");
-
-            if (attacksPerMember == null)
-                attacksPerMember = 1; // cwl war
+            if (endTime == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWar.");
 
             if (opponent == null)
                 throw new ArgumentNullException(nameof(opponent), "Property is required for class ClanWar.");
 
+            if (preparationStartTime == null)
+                throw new ArgumentNullException(nameof(preparationStartTime), "Property is required for class ClanWar.");
+
+            if (serverExpiration == null)
+                serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);
+
             if (startTime == null)
                 throw new ArgumentNullException(nameof(startTime), "Property is required for class ClanWar.");
 
-            if (endTime == null)
-                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWar.");
-
-            if (preparationStartTime == null)
-                throw new ArgumentNullException(nameof(preparationStartTime), "Property is required for class ClanWar.");
+            if (teamSize == null)
+                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWar.");
 
             return new ClanWar(attacksPerMember.Value, clan, endTime.Value, opponent, preparationStartTime.Value, serverExpiration.Value, startTime.Value, teamSize.Value, state, warTag);
         }
@@ -399,13 +399,18 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clanWar.ServerExpiration, jsonSerializerOptions);
             writer.WriteString("startTime", clanWar.StartTime.ToString(StartTimeFormat));
             writer.WriteNumber("teamSize", clanWar.TeamSize);
+
             if (clanWar.State == null)
                 writer.WriteNull("state");
-            var stateRawValue = WarStateConverter.ToJsonValue(clanWar.State.Value);
-            if (stateRawValue != null)
-                writer.WriteString("state", stateRawValue);
             else
-                writer.WriteNull("state");
+            {
+                var warStateRawValue = WarStateConverter.ToJsonValue(clanWar.State.Value);
+                if (warStateRawValue != null)
+                    writer.WriteString("state", warStateRawValue);
+                else
+                    writer.WriteNull("state");
+            }
+
             writer.WriteString("warTag", clanWar.WarTag);
 
             writer.WriteEndObject();

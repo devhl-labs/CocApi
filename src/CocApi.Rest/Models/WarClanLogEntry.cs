@@ -293,8 +293,8 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (destructionPercentage == null)
-                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClanLogEntry.");
+            if (attacks == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClanLogEntry.");
 
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClanLogEntry.");
@@ -302,8 +302,8 @@ namespace CocApi.Rest.Models
             if (clanLevel == null)
                 throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClanLogEntry.");
 
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClanLogEntry.");
+            if (destructionPercentage == null)
+                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClanLogEntry.");
 
             if (stars == null)
                 throw new ArgumentNullException(nameof(stars), "Property is required for class WarClanLogEntry.");
@@ -328,10 +328,12 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("clanLevel", warClanLogEntry.ClanLevel);
             writer.WriteNumber("destructionPercentage", warClanLogEntry.DestructionPercentage);
             writer.WriteNumber("stars", warClanLogEntry.Stars);
+
             if (warClanLogEntry.ExpEarned != null)
                 writer.WriteNumber("expEarned", warClanLogEntry.ExpEarned.Value);
             else
                 writer.WriteNull("expEarned");
+
             writer.WriteString("name", warClanLogEntry.Name);
             writer.WriteString("tag", warClanLogEntry.Tag);
 

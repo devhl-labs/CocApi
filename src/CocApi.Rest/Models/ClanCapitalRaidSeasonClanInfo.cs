@@ -210,17 +210,17 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
 
             if (level == null)
                 throw new ArgumentNullException(nameof(level), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonClanInfo.");
 
             return new ClanCapitalRaidSeasonClanInfo(badgeUrls, level.Value, name, tag);
         }

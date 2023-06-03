@@ -267,20 +267,20 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarMember.");
+            if (mapPosition == null)
+                throw new ArgumentNullException(nameof(mapPosition), "Property is required for class ClanWarMember.");
 
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarMember.");
 
-            if (mapPosition == null)
-                throw new ArgumentNullException(nameof(mapPosition), "Property is required for class ClanWarMember.");
+            if (opponentAttacks == null)
+                throw new ArgumentNullException(nameof(opponentAttacks), "Property is required for class ClanWarMember.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarMember.");
 
             if (townhallLevel == null)
                 throw new ArgumentNullException(nameof(townhallLevel), "Property is required for class ClanWarMember.");
-
-            if (opponentAttacks == null)
-                throw new ArgumentNullException(nameof(opponentAttacks), "Property is required for class ClanWarMember.");
 
             return new ClanWarMember(mapPosition.Value, name, opponentAttacks.Value, tag, townhallLevel.Value, attacks, bestOpponentAttack);
         }

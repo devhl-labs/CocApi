@@ -191,14 +191,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class League.");
+            if (iconUrls == null)
+                throw new ArgumentNullException(nameof(iconUrls), "Property is required for class League.");
 
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class League.");
 
-            if (iconUrls == null)
-                throw new ArgumentNullException(nameof(iconUrls), "Property is required for class League.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class League.");
 
             return new League(iconUrls, id.Value, name);
         }

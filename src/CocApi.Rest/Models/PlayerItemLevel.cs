@@ -236,11 +236,11 @@ namespace CocApi.Rest.Models
             if (level == null)
                 throw new ArgumentNullException(nameof(level), "Property is required for class PlayerItemLevel.");
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerItemLevel.");
-
             if (maxLevel == null)
                 throw new ArgumentNullException(nameof(maxLevel), "Property is required for class PlayerItemLevel.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerItemLevel.");
 
             if (village == null)
                 throw new ArgumentNullException(nameof(village), "Property is required for class PlayerItemLevel.");
@@ -262,11 +262,13 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("level", playerItemLevel.Level);
             writer.WriteNumber("maxLevel", playerItemLevel.MaxLevel);
             writer.WriteString("name", playerItemLevel.Name);
-            var villageRawValue = VillageTypeConverter.ToJsonValue(playerItemLevel.Village);
-            if (villageRawValue != null)
-                writer.WriteString("village", villageRawValue);
+            var villageTypeRawValue = VillageTypeConverter.ToJsonValue(playerItemLevel.Village);
+
+            if (villageTypeRawValue != null)
+                writer.WriteString("village", villageTypeRawValue);
             else
                 writer.WriteNull("village");
+
             if (playerItemLevel.SuperTroopIsActive != null)
                 writer.WriteBoolean("superTroopIsActive", playerItemLevel.SuperTroopIsActive.Value);
             else

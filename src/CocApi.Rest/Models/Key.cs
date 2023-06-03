@@ -234,29 +234,29 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class Key.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Key.");
-
-            if (varKey == null)
-                throw new ArgumentNullException(nameof(varKey), "Property is required for class Key.");
-
-            if (developerId == null)
-                throw new ArgumentNullException(nameof(developerId), "Property is required for class Key.");
-
-            if (tier == null)
-                throw new ArgumentNullException(nameof(tier), "Property is required for class Key.");
+            if (cidrRanges == null)
+                throw new ArgumentNullException(nameof(cidrRanges), "Property is required for class Key.");
 
             if (description == null)
                 throw new ArgumentNullException(nameof(description), "Property is required for class Key.");
 
+            if (developerId == null)
+                throw new ArgumentNullException(nameof(developerId), "Property is required for class Key.");
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class Key.");
+
+            if (varKey == null)
+                throw new ArgumentNullException(nameof(varKey), "Property is required for class Key.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Key.");
+
             if (scopes == null)
                 throw new ArgumentNullException(nameof(scopes), "Property is required for class Key.");
 
-            if (cidrRanges == null)
-                throw new ArgumentNullException(nameof(cidrRanges), "Property is required for class Key.");
+            if (tier == null)
+                throw new ArgumentNullException(nameof(tier), "Property is required for class Key.");
 
             return new Key(cidrRanges, description, developerId, id, varKey, name, scopes, tier, origins, validUntil);
         }
@@ -283,6 +283,7 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, key.Scopes, jsonSerializerOptions);
             writer.WriteString("tier", key.Tier);
             writer.WriteString("origins", key.Origins);
+
             if (key.ValidUntil != null)
                 writer.WriteString("validUntil", key.ValidUntil.Value.ToString(ValidUntilFormat));
             else

@@ -171,11 +171,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class WarLeague.");
-
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class WarLeague.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class WarLeague.");
 
             return new WarLeague(id.Value, name);
         }

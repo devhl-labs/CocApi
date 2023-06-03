@@ -293,23 +293,23 @@ namespace CocApi.Rest.Models
             if (builderBaseLeague == null)
                 throw new ArgumentNullException(nameof(builderBaseLeague), "Property is required for class PlayerBuilderBaseRanking.");
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerBuilderBaseRanking.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerBuilderBaseRanking.");
+            if (builderBaseTrophies == null)
+                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class PlayerBuilderBaseRanking.");
 
             if (expLevel == null)
                 throw new ArgumentNullException(nameof(expLevel), "Property is required for class PlayerBuilderBaseRanking.");
 
-            if (rank == null)
-                throw new ArgumentNullException(nameof(rank), "Property is required for class PlayerBuilderBaseRanking.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerBuilderBaseRanking.");
 
             if (previousRank == null)
                 throw new ArgumentNullException(nameof(previousRank), "Property is required for class PlayerBuilderBaseRanking.");
 
-            if (builderBaseTrophies == null)
-                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class PlayerBuilderBaseRanking.");
+            if (rank == null)
+                throw new ArgumentNullException(nameof(rank), "Property is required for class PlayerBuilderBaseRanking.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerBuilderBaseRanking.");
 
             return new PlayerBuilderBaseRanking(builderBaseLeague, builderBaseTrophies.Value, expLevel.Value, name, previousRank.Value, rank.Value, tag, clan);
         }

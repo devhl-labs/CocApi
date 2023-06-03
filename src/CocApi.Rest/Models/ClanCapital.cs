@@ -196,6 +196,7 @@ namespace CocApi.Rest.Models
                 writer.WriteNumber("capitalHallLevel", clanCapital.CapitalHallLevel.Value);
             else
                 writer.WriteNull("capitalHallLevel");
+
             writer.WritePropertyName("districts");
             JsonSerializer.Serialize(writer, clanCapital.Districts, jsonSerializerOptions);
 

@@ -223,14 +223,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (season == null)
-                throw new ArgumentNullException(nameof(season), "Property is required for class ClanWarLeagueGroup.");
-
             if (clans == null)
                 throw new ArgumentNullException(nameof(clans), "Property is required for class ClanWarLeagueGroup.");
 
             if (rounds == null)
                 throw new ArgumentNullException(nameof(rounds), "Property is required for class ClanWarLeagueGroup.");
+
+            if (season == null)
+                throw new ArgumentNullException(nameof(season), "Property is required for class ClanWarLeagueGroup.");
 
             return new ClanWarLeagueGroup(clans, rounds, season.Value, state);
         }
@@ -251,13 +251,17 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("rounds");
             JsonSerializer.Serialize(writer, clanWarLeagueGroup.Rounds, jsonSerializerOptions);
             writer.WriteString("season", clanWarLeagueGroup.Season.ToString(SeasonFormat));
+
             if (clanWarLeagueGroup.State == null)
                 writer.WriteNull("state");
-            var stateRawValue = GroupStateConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
-            if (stateRawValue != null)
-                writer.WriteString("state", stateRawValue);
             else
-                writer.WriteNull("state");
+            {
+                var groupStateRawValue = GroupStateConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
+                if (groupStateRawValue != null)
+                    writer.WriteString("state", groupStateRawValue);
+                else
+                    writer.WriteNull("state");
+            }
 
             writer.WriteEndObject();
         }

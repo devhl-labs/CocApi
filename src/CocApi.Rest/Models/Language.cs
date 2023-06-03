@@ -190,14 +190,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Language.");
-
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class Language.");
 
             if (languageCode == null)
                 throw new ArgumentNullException(nameof(languageCode), "Property is required for class Language.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class Language.");
 
             return new Language(id.Value, languageCode, name);
         }

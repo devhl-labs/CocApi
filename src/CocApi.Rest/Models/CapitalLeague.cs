@@ -171,11 +171,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class CapitalLeague.");
-
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class CapitalLeague.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class CapitalLeague.");
 
             return new CapitalLeague(id.Value, name);
         }

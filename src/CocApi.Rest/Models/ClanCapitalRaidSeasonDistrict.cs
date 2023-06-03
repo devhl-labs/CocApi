@@ -289,26 +289,26 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanCapitalRaidSeasonDistrict.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonDistrict.");
-
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+            if (attackCount == null)
+                throw new ArgumentNullException(nameof(attackCount), "Property is required for class ClanCapitalRaidSeasonDistrict.");
 
             if (destructionPercent == null)
                 throw new ArgumentNullException(nameof(destructionPercent), "Property is required for class ClanCapitalRaidSeasonDistrict.");
 
-            if (attackCount == null)
-                throw new ArgumentNullException(nameof(attackCount), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+            if (districtHallLevel == null)
+                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (id == null)
+                throw new ArgumentNullException(nameof(id), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonDistrict.");
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanCapitalRaidSeasonDistrict.");
 
             if (totalLooted == null)
                 throw new ArgumentNullException(nameof(totalLooted), "Property is required for class ClanCapitalRaidSeasonDistrict.");
-
-            if (districtHallLevel == null)
-                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanCapitalRaidSeasonDistrict.");
 
             return new ClanCapitalRaidSeasonDistrict(attackCount.Value, destructionPercent.Value, districtHallLevel.Value, id.Value, name, stars.Value, totalLooted.Value, attacks);
         }

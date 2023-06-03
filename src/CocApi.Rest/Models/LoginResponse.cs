@@ -123,11 +123,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (temporaryAPIToken == null)
-                throw new ArgumentNullException(nameof(temporaryAPIToken), "Property is required for class LoginResponse.");
-
             if (sessionExpiresInSeconds == null)
                 throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class LoginResponse.");
+
+            if (temporaryAPIToken == null)
+                throw new ArgumentNullException(nameof(temporaryAPIToken), "Property is required for class LoginResponse.");
 
             return new LoginResponse(sessionExpiresInSeconds.Value, temporaryAPIToken);
         }

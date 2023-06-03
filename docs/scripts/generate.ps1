@@ -141,14 +141,8 @@ $tokenRateLimit = @"
 "@
 
 $warClanNullChecks = @"
-            if (destructionPercentage == null)
-                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
-
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
+            if (attacks == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
 
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClan.");
@@ -156,11 +150,8 @@ $warClanNullChecks = @"
             if (clanLevel == null)
                 throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClan.");
 
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
-
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
+            if (destructionPercentage == null)
+                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
 
             if (expEarned == null)
                 throw new ArgumentNullException(nameof(expEarned), "Property is required for class WarClan.");
@@ -168,37 +159,46 @@ $warClanNullChecks = @"
             if (members == null)
                 throw new ArgumentNullException(nameof(members), "Property is required for class WarClan.");
 
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
+
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
+
 
 "@
 
 
 $warClanNullChecksReplacement = @"
-            if (destructionPercentage == null)
-                throw new ArgumentNullException("destructionPercentage is a required property for WarClan and cannot be null.");
-
-            //if (tag == null)
-                //    throw new ArgumentNullException("tag is a required property for WarClan and cannot be null.");
-
-            //if (name == null)
-                //    throw new ArgumentNullException("name is a required property for WarClan and cannot be null.");
+            if (attacks == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
 
             if (badgeUrls == null)
-                throw new ArgumentNullException("badgeUrls is a required property for WarClan and cannot be null.");
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClan.");
 
             if (clanLevel == null)
-                throw new ArgumentNullException("clanLevel is a required property for WarClan and cannot be null.");
+                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClan.");
 
-            if (attacks == null)
-                throw new ArgumentNullException("attacks is a required property for WarClan and cannot be null.");
+            if (destructionPercentage == null)
+                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
+
+            // if (expEarned == null)
+            //     throw new ArgumentNullException(nameof(expEarned), "Property is required for class WarClan.");
+
+            // if (members == null)
+            //     throw new ArgumentNullException(nameof(members), "Property is required for class WarClan.");
+
+            // if (name == null)
+            //     throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
 
             if (stars == null)
-                throw new ArgumentNullException("stars is a required property for WarClan and cannot be null.");
+                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
 
-            //if (expEarned == null)
-            //    throw new ArgumentNullException("expEarned is a required property for WarClan and cannot be null.");
-
-            //if (members == null)
-            //    throw new ArgumentNullException("members is a required property for WarClan and cannot be null.");
+            // if (tag == null)
+            //     throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
 
 
 "@

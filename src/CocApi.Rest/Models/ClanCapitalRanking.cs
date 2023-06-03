@@ -308,17 +308,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (clanCapitalPoints == null)
-                throw new ArgumentNullException(nameof(clanCapitalPoints), "Property is required for class ClanCapitalRanking.");
-
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRanking.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRanking.");
-
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanCapitalRanking.");
+
+            if (clanCapitalPoints == null)
+                throw new ArgumentNullException(nameof(clanCapitalPoints), "Property is required for class ClanCapitalRanking.");
 
             if (clanLevel == null)
                 throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanCapitalRanking.");
@@ -326,11 +320,17 @@ namespace CocApi.Rest.Models
             if (members == null)
                 throw new ArgumentNullException(nameof(members), "Property is required for class ClanCapitalRanking.");
 
-            if (rank == null)
-                throw new ArgumentNullException(nameof(rank), "Property is required for class ClanCapitalRanking.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRanking.");
 
             if (previousRank == null)
                 throw new ArgumentNullException(nameof(previousRank), "Property is required for class ClanCapitalRanking.");
+
+            if (rank == null)
+                throw new ArgumentNullException(nameof(rank), "Property is required for class ClanCapitalRanking.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRanking.");
 
             return new ClanCapitalRanking(badgeUrls, clanCapitalPoints.Value, clanLevel.Value, members.Value, name, previousRank.Value, rank.Value, tag, location);
         }

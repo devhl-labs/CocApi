@@ -190,14 +190,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanDistrictData.");
+            if (districtHallLevel == null)
+                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanDistrictData.");
 
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "Property is required for class ClanDistrictData.");
 
-            if (districtHallLevel == null)
-                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanDistrictData.");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanDistrictData.");
 
             return new ClanDistrictData(districtHallLevel.Value, id.Value, name);
         }

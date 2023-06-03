@@ -190,14 +190,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (small == null)
-                throw new ArgumentNullException(nameof(small), "Property is required for class BadgeUrls.");
+            if (large == null)
+                throw new ArgumentNullException(nameof(large), "Property is required for class BadgeUrls.");
 
             if (medium == null)
                 throw new ArgumentNullException(nameof(medium), "Property is required for class BadgeUrls.");
 
-            if (large == null)
-                throw new ArgumentNullException(nameof(large), "Property is required for class BadgeUrls.");
+            if (small == null)
+                throw new ArgumentNullException(nameof(small), "Property is required for class BadgeUrls.");
 
             return new BadgeUrls(large, medium, small);
         }

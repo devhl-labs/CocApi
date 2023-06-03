@@ -270,20 +270,20 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class PlayerAchievementProgress.");
-
-            if (value == null)
-                throw new ArgumentNullException(nameof(value), "Property is required for class PlayerAchievementProgress.");
+            if (info == null)
+                throw new ArgumentNullException(nameof(info), "Property is required for class PlayerAchievementProgress.");
 
             if (name == null)
                 throw new ArgumentNullException(nameof(name), "Property is required for class PlayerAchievementProgress.");
 
+            if (stars == null)
+                throw new ArgumentNullException(nameof(stars), "Property is required for class PlayerAchievementProgress.");
+
             if (target == null)
                 throw new ArgumentNullException(nameof(target), "Property is required for class PlayerAchievementProgress.");
 
-            if (info == null)
-                throw new ArgumentNullException(nameof(info), "Property is required for class PlayerAchievementProgress.");
+            if (value == null)
+                throw new ArgumentNullException(nameof(value), "Property is required for class PlayerAchievementProgress.");
 
             if (village == null)
                 throw new ArgumentNullException(nameof(village), "Property is required for class PlayerAchievementProgress.");
@@ -307,11 +307,13 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("stars", playerAchievementProgress.Stars);
             writer.WriteNumber("target", playerAchievementProgress.Target);
             writer.WriteNumber("value", playerAchievementProgress.Value);
-            var villageRawValue = VillageTypeConverter.ToJsonValue(playerAchievementProgress.Village);
-            if (villageRawValue != null)
-                writer.WriteString("village", villageRawValue);
+            var villageTypeRawValue = VillageTypeConverter.ToJsonValue(playerAchievementProgress.Village);
+
+            if (villageTypeRawValue != null)
+                writer.WriteString("village", villageTypeRawValue);
             else
                 writer.WriteNull("village");
+
             writer.WriteString("completionInfo", playerAchievementProgress.CompletionInfo);
 
             writer.WriteEndObject();

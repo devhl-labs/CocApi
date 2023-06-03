@@ -518,44 +518,44 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (warLeague == null)
-                throw new ArgumentNullException(nameof(warLeague), "Property is required for class ClanListEntry.");
-
-            if (requiredTrophies == null)
-                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class ClanListEntry.");
+            if (badgeUrls == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanListEntry.");
 
             if (clanBuilderBasePoints == null)
                 throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class ClanListEntry.");
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanListEntry.");
+            if (clanLevel == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanListEntry.");
+
+            if (clanPoints == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanListEntry.");
 
             if (isWarLogPublic == null)
                 throw new ArgumentNullException(nameof(isWarLogPublic), "Property is required for class ClanListEntry.");
 
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanListEntry.");
+            if (labels == null)
+                throw new ArgumentNullException(nameof(labels), "Property is required for class ClanListEntry.");
+
+            if (members == null)
+                throw new ArgumentNullException(nameof(members), "Property is required for class ClanListEntry.");
+
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanListEntry.");
+
+            if (requiredTrophies == null)
+                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class ClanListEntry.");
+
+            if (tag == null)
+                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanListEntry.");
+
+            if (warLeague == null)
+                throw new ArgumentNullException(nameof(warLeague), "Property is required for class ClanListEntry.");
 
             if (warWinStreak == null)
                 throw new ArgumentNullException(nameof(warWinStreak), "Property is required for class ClanListEntry.");
 
             if (warWins == null)
                 throw new ArgumentNullException(nameof(warWins), "Property is required for class ClanListEntry.");
-
-            if (clanPoints == null)
-                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanListEntry.");
-
-            if (labels == null)
-                throw new ArgumentNullException(nameof(labels), "Property is required for class ClanListEntry.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanListEntry.");
-
-            if (members == null)
-                throw new ArgumentNullException(nameof(members), "Property is required for class ClanListEntry.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanListEntry.");
 
             return new ClanListEntry(badgeUrls, clanBuilderBasePoints.Value, clanLevel.Value, clanPoints.Value, isWarLogPublic.Value, labels, members.Value, name, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
@@ -591,24 +591,34 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clanListEntry.ChatLanguage, jsonSerializerOptions);
             writer.WritePropertyName("location");
             JsonSerializer.Serialize(writer, clanListEntry.Location, jsonSerializerOptions);
+
             if (clanListEntry.Type == null)
                 writer.WriteNull("type");
-            var typeRawValue = RecruitingTypeConverter.ToJsonValue(clanListEntry.Type.Value);
-            if (typeRawValue != null)
-                writer.WriteString("type", typeRawValue);
             else
-                writer.WriteNull("type");
+            {
+                var recruitingTypeRawValue = RecruitingTypeConverter.ToJsonValue(clanListEntry.Type.Value);
+                if (recruitingTypeRawValue != null)
+                    writer.WriteString("type", recruitingTypeRawValue);
+                else
+                    writer.WriteNull("type");
+            }
+
             if (clanListEntry.WarFrequency == null)
                 writer.WriteNull("warFrequency");
-            var warFrequencyRawValue = WarFrequencyConverter.ToJsonValue(clanListEntry.WarFrequency.Value);
-            if (warFrequencyRawValue != null)
-                writer.WriteString("warFrequency", warFrequencyRawValue);
             else
-                writer.WriteNull("warFrequency");
+            {
+                var warFrequencyRawValue = WarFrequencyConverter.ToJsonValue(clanListEntry.WarFrequency.Value);
+                if (warFrequencyRawValue != null)
+                    writer.WriteString("warFrequency", warFrequencyRawValue);
+                else
+                    writer.WriteNull("warFrequency");
+            }
+
             if (clanListEntry.WarLosses != null)
                 writer.WriteNumber("warLosses", clanListEntry.WarLosses.Value);
             else
                 writer.WriteNull("warLosses");
+
             if (clanListEntry.WarTies != null)
                 writer.WriteNumber("warTies", clanListEntry.WarTies.Value);
             else

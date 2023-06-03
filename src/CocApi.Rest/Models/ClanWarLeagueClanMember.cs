@@ -190,14 +190,14 @@ namespace CocApi.Rest.Models
                 }
             }
 
+            if (name == null)
+                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarLeagueClanMember.");
+
             if (tag == null)
                 throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarLeagueClanMember.");
 
             if (townHallLevel == null)
                 throw new ArgumentNullException(nameof(townHallLevel), "Property is required for class ClanWarLeagueClanMember.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarLeagueClanMember.");
 
             return new ClanWarLeagueClanMember(name, tag, townHallLevel.Value);
         }
