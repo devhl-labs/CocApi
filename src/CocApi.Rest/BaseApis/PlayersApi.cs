@@ -206,8 +206,9 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
                     ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -217,8 +218,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -344,8 +345,9 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}/verifytoken";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));                    httpRequestMessageLocalVar.Content = (body as object) is System.IO.Stream stream
+                    httpRequestMessageLocalVar.Content = (body as object) is System.IO.Stream stream
                         ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(body, _jsonSerializerOptions));
 
@@ -360,7 +362,7 @@ namespace CocApi.Rest.BaseApis
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] contentTypes = new string[] {
-                        "application/json" 
+                        "application/json"
                     };
 
                     string? contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
@@ -368,8 +370,8 @@ namespace CocApi.Rest.BaseApis
                     if (contentTypeLocalVar != null)
                         httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);

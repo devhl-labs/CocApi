@@ -404,9 +404,9 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("state");
             else
             {
-                var warStateRawValue = WarStateConverter.ToJsonValue(clanWar.State.Value);
-                if (warStateRawValue != null)
-                    writer.WriteString("state", warStateRawValue);
+                var stateRawValue = WarStateConverter.ToJsonValue(clanWar.State.Value);
+                if (stateRawValue != null)
+                    writer.WriteString("state", stateRawValue);
                 else
                     writer.WriteNull("state");
             }

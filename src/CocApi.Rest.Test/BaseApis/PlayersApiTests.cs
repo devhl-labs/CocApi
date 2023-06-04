@@ -50,14 +50,13 @@ namespace CocApi.Rest.Test.BaseApis
             _instance = _host.Services.GetRequiredService<IBaseApis.IPlayersApi>();
         }
 
-
         /// <summary>
         /// Test GetPlayer
         /// </summary>
         [Fact (Skip = "not implemented")]
         public async Task GetPlayerAsyncTest()
         {
-            string playerTag = default;
+            string playerTag = default!;
             var response = await _instance.FetchPlayerAsync(playerTag);
             var model = response.AsModel();
             Assert.IsType<Player>(model);
@@ -69,8 +68,8 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task VerifyTokenAsyncTest()
         {
-            VerifyTokenRequest body = default;
-            string playerTag = default;
+            VerifyTokenRequest body = default!;
+            string playerTag = default!;
             var response = await _instance.VerifyTokenAsync(body, playerTag);
             var model = response.AsModel();
             Assert.IsType<VerifyTokenResponse>(model);

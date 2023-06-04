@@ -50,14 +50,13 @@ namespace CocApi.Rest.Test.BaseApis
             _instance = _host.Services.GetRequiredService<IBaseApis.IDeveloperApi>();
         }
 
-
         /// <summary>
         /// Test Create
         /// </summary>
         [Fact (Skip = "not implemented")]
         public async Task CreateAsyncTest()
         {
-            CreateTokenRequest createTokenRequest = default;
+            CreateTokenRequest createTokenRequest = default!;
             var response = await _instance.CreateAsync(createTokenRequest);
             var model = response.AsModel();
             Assert.IsType<KeyInstance>(model);
@@ -80,7 +79,7 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task LoginAsyncTest()
         {
-            LoginCredentials loginCredentials = default;
+            LoginCredentials loginCredentials = default!;
             var response = await _instance.LoginAsync(loginCredentials);
             var model = response.AsModel();
             Assert.IsType<LoginResponse>(model);
@@ -92,7 +91,7 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task RevokeAsyncTest()
         {
-            Key key = default;
+            Key key = default!;
             var response = await _instance.RevokeAsync(key);
             var model = response.AsModel();
             Assert.IsType<KeyInstance>(model);

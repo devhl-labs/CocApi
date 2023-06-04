@@ -262,10 +262,10 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("level", playerItemLevel.Level);
             writer.WriteNumber("maxLevel", playerItemLevel.MaxLevel);
             writer.WriteString("name", playerItemLevel.Name);
-            var villageTypeRawValue = VillageTypeConverter.ToJsonValue(playerItemLevel.Village);
+            var villageRawValue = VillageTypeConverter.ToJsonValue(playerItemLevel.Village);
 
-            if (villageTypeRawValue != null)
-                writer.WriteString("village", villageTypeRawValue);
+            if (villageRawValue != null)
+                writer.WriteString("village", villageRawValue);
             else
                 writer.WriteNull("village");
 

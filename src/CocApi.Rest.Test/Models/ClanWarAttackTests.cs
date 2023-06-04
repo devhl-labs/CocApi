@@ -79,14 +79,6 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'DestructionPercentage'
         }
         /// <summary>
-        /// Test the property 'Duration'
-        /// </summary>
-        [Fact]
-        public void DurationTest()
-        {
-            // TODO unit test for the property 'Duration'
-        }
-        /// <summary>
         /// Test the property 'Order'
         /// </summary>
         [Fact]
@@ -101,6 +93,14 @@ namespace CocApi.Rest.Test.Model
         public void StarsTest()
         {
             // TODO unit test for the property 'Stars'
+        }
+        /// <summary>
+        /// Test the property 'Duration'
+        /// </summary>
+        [Fact]
+        public void DurationTest()
+        {
+            // TODO unit test for the property 'Duration'
         }
 
     }

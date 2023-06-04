@@ -307,10 +307,10 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("stars", playerAchievementProgress.Stars);
             writer.WriteNumber("target", playerAchievementProgress.Target);
             writer.WriteNumber("value", playerAchievementProgress.Value);
-            var villageTypeRawValue = VillageTypeConverter.ToJsonValue(playerAchievementProgress.Village);
+            var villageRawValue = VillageTypeConverter.ToJsonValue(playerAchievementProgress.Village);
 
-            if (villageTypeRawValue != null)
-                writer.WriteString("village", villageTypeRawValue);
+            if (villageRawValue != null)
+                writer.WriteString("village", villageRawValue);
             else
                 writer.WriteNull("village");
 

@@ -50,17 +50,16 @@ namespace CocApi.Rest.Test.BaseApis
             _instance = _host.Services.GetRequiredService<IBaseApis.ILocationsApi>();
         }
 
-
         /// <summary>
         /// Test GetClanBuilderBaseRanking
         /// </summary>
         [Fact (Skip = "not implemented")]
         public async Task GetClanBuilderBaseRankingAsyncTest()
         {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string locationId = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchClanBuilderBaseRankingAsync(locationId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanBuilderBaseRankingList>(model);
@@ -72,10 +71,10 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanCapitalRankingAsyncTest()
         {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string locationId = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchClanCapitalRankingAsync(locationId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanCapitalRankingObject>(model);
@@ -87,10 +86,10 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanRankingAsyncTest()
         {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string locationId = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchClanRankingAsync(locationId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanRankingList>(model);
@@ -102,7 +101,7 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetLocationAsyncTest()
         {
-            string locationId = default;
+            string locationId = default!;
             var response = await _instance.FetchLocationAsync(locationId);
             var model = response.AsModel();
             Assert.IsType<Location>(model);
@@ -114,9 +113,9 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetLocationsAsyncTest()
         {
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchLocationsAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<LocationList>(model);
@@ -128,10 +127,10 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetPlayerBuilderBaseRankingAsyncTest()
         {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string locationId = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchPlayerBuilderBaseRankingAsync(locationId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<PlayerBuilderBaseRankingList>(model);
@@ -143,10 +142,10 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetPlayerRankingAsyncTest()
         {
-            string locationId = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string locationId = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchPlayerRankingAsync(locationId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<PlayerRankingList>(model);

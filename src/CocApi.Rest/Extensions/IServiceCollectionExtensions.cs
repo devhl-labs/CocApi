@@ -36,7 +36,7 @@ namespace CocApi.Rest.Extensions
             where TLocationsApi : class, IBaseApis.ILocationsApi
             where TPlayersApi : class, IBaseApis.IPlayersApi
         {
-            HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(services);
+            HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new(services);
             options(config);
             AddCocApi(services, config);
         }

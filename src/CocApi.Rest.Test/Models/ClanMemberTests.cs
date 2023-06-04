@@ -55,14 +55,6 @@ namespace CocApi.Rest.Test.Model
 
 
         /// <summary>
-        /// Test the property 'BuilderBaseLeague'
-        /// </summary>
-        [Fact]
-        public void BuilderBaseLeagueTest()
-        {
-            // TODO unit test for the property 'BuilderBaseLeague'
-        }
-        /// <summary>
         /// Test the property 'BuilderBaseTrophies'
         /// </summary>
         [Fact]
@@ -143,12 +135,12 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'Trophies'
         }
         /// <summary>
-        /// Test the property 'VersusTrophies'
+        /// Test the property 'BuilderBaseLeague'
         /// </summary>
         [Fact]
-        public void VersusTrophiesTest()
+        public void BuilderBaseLeagueTest()
         {
-            // TODO unit test for the property 'VersusTrophies'
+            // TODO unit test for the property 'BuilderBaseLeague'
         }
         /// <summary>
         /// Test the property 'PlayerHouse'

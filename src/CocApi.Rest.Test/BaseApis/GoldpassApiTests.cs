@@ -50,7 +50,6 @@ namespace CocApi.Rest.Test.BaseApis
             _instance = _host.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
         }
 
-
         /// <summary>
         /// Test GetCurrentGoldPassSeason
         /// </summary>

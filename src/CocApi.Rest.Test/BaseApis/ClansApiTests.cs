@@ -50,17 +50,16 @@ namespace CocApi.Rest.Test.BaseApis
             _instance = _host.Services.GetRequiredService<IBaseApis.IClansApi>();
         }
 
-
         /// <summary>
         /// Test GetCapitalRaidSeasons
         /// </summary>
         [Fact (Skip = "not implemented")]
         public async Task GetCapitalRaidSeasonsAsyncTest()
         {
-            string clanTag = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string clanTag = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchCapitalRaidSeasonsAsync(clanTag, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanCapitalRaidSeasons>(model);
@@ -72,7 +71,7 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanAsyncTest()
         {
-            string clanTag = default;
+            string clanTag = default!;
             var response = await _instance.FetchClanAsync(clanTag);
             var model = response.AsModel();
             Assert.IsType<Clan>(model);
@@ -84,10 +83,10 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanMembersAsyncTest()
         {
-            string clanTag = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string clanTag = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchClanMembersAsync(clanTag, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<List<ClanMember>>(model);
@@ -99,8 +98,8 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanWarLeagueGroupAsyncTest()
         {
-            string clanTag = default;
-            bool? realtime = default;
+            string clanTag = default!;
+            bool? realtime = default!;
             var response = await _instance.FetchClanWarLeagueGroupAsync(clanTag, realtime);
             var model = response.AsModel();
             Assert.IsType<ClanWarLeagueGroup>(model);
@@ -112,8 +111,8 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanWarLeagueWarAsyncTest()
         {
-            string warTag = default;
-            bool? realtime = default;
+            string warTag = default!;
+            bool? realtime = default!;
             var response = await _instance.FetchClanWarLeagueWarAsync(warTag, realtime);
             var model = response.AsModel();
             Assert.IsType<ClanWar>(model);
@@ -125,10 +124,10 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetClanWarLogAsyncTest()
         {
-            string clanTag = default;
-            int? limit = default;
-            string? after = default;
-            string? before = default;
+            string clanTag = default!;
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
             var response = await _instance.FetchClanWarLogAsync(clanTag, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanWarLog>(model);
@@ -140,8 +139,8 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task GetCurrentWarAsyncTest()
         {
-            string clanTag = default;
-            bool? realtime = default;
+            string clanTag = default!;
+            bool? realtime = default!;
             var response = await _instance.FetchCurrentWarAsync(clanTag, realtime);
             var model = response.AsModel();
             Assert.IsType<ClanWar>(model);
@@ -153,17 +152,17 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact (Skip = "not implemented")]
         public async Task SearchClansAsyncTest()
         {
-            int? locationId = default;
-            int? minMembers = default;
-            int? maxMembers = default;
-            int? minClanPoints = default;
-            int? minClanLevel = default;
-            int? limit = default;
-            string? name = default;
-            string? warFrequency = default;
-            string? after = default;
-            string? before = default;
-            string? labelIds = default;
+            int? locationId = default!;
+            int? minMembers = default!;
+            int? maxMembers = default!;
+            int? minClanPoints = default!;
+            int? minClanLevel = default!;
+            int? limit = default!;
+            string? name = default!;
+            string? warFrequency = default!;
+            string? after = default!;
+            string? before = default!;
+            string? labelIds = default!;
             var response = await _instance.SearchClansAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
             var model = response.AsModel();
             Assert.IsType<ClanList>(model);

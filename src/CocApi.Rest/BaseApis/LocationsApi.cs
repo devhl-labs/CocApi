@@ -365,8 +365,10 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans-builder-base";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -388,8 +390,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -519,8 +521,10 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/capitals";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -542,8 +546,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -673,8 +677,10 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/clans";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -696,8 +702,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -815,8 +821,9 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
 
                     ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
 
@@ -826,8 +833,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -936,6 +943,7 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations";
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -957,8 +965,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -1088,8 +1096,10 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players-builder-base";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -1111,8 +1121,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -1242,8 +1252,10 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/locations/{locationId}/rankings/players";
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));
 
-                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BlocationId%7D", Uri.EscapeDataString(locationId.ToString()));                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+                    System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -1265,8 +1277,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);

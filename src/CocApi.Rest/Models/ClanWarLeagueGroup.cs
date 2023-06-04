@@ -256,9 +256,9 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("state");
             else
             {
-                var groupStateRawValue = GroupStateConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
-                if (groupStateRawValue != null)
-                    writer.WriteString("state", groupStateRawValue);
+                var stateRawValue = GroupStateConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
+                if (stateRawValue != null)
+                    writer.WriteString("state", stateRawValue);
                 else
                     writer.WriteNull("state");
             }

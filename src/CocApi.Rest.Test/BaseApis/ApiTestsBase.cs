@@ -52,9 +52,9 @@ namespace CocApi.Rest.Test.BaseApis
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
             .ConfigureCocApi((context, services, options) =>
             {
-                ApiKeyToken apiKeyToken = new ApiKeyToken(context.Configuration["<token>"], timeout: TimeSpan.FromSeconds(1));
+                string apiKeyTokenValue = context.Configuration["<token>"] ?? throw new Exception("Token not found.");
+                ApiKeyToken apiKeyToken = new(apiKeyTokenValue, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken);
-                
             });
     }
 }

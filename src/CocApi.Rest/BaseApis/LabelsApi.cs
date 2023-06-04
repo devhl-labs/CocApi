@@ -203,6 +203,7 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/labels/clans";
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -224,8 +225,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
@@ -334,6 +335,7 @@ namespace CocApi.Rest.BaseApis
                     uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/labels/players";
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
+
                     if (limit != null)
                         parseQueryStringLocalVar["limit"] = limit.ToString();
 
@@ -355,8 +357,8 @@ namespace CocApi.Rest.BaseApis
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
-                    string[] acceptLocalVars = new string[] { 
-                        "application/json" 
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
                     };
 
                     string? acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);

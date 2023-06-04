@@ -596,9 +596,9 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("type");
             else
             {
-                var recruitingTypeRawValue = RecruitingTypeConverter.ToJsonValue(clanListEntry.Type.Value);
-                if (recruitingTypeRawValue != null)
-                    writer.WriteString("type", recruitingTypeRawValue);
+                var typeRawValue = RecruitingTypeConverter.ToJsonValue(clanListEntry.Type.Value);
+                if (typeRawValue != null)
+                    writer.WriteString("type", typeRawValue);
                 else
                     writer.WriteNull("type");
             }

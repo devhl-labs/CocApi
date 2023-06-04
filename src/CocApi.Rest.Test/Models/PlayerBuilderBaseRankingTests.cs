@@ -111,14 +111,6 @@ namespace CocApi.Rest.Test.Model
             // TODO unit test for the property 'Tag'
         }
         /// <summary>
-        /// Test the property 'VersusTrophies'
-        /// </summary>
-        [Fact]
-        public void VersusTrophiesTest()
-        {
-            // TODO unit test for the property 'VersusTrophies'
-        }
-        /// <summary>
         /// Test the property 'Clan'
         /// </summary>
         [Fact]
