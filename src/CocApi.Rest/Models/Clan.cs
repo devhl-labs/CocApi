@@ -41,7 +41,6 @@ namespace CocApi.Rest.Models
         /// <param name="isFamilyFriendly">isFamilyFriendly</param>
         /// <param name="isWarLogPublic">isWarLogPublic</param>
         /// <param name="labels">labels</param>
-        /// <param name="memberList">memberList</param>
         /// <param name="members">members</param>
         /// <param name="name">name</param>
         /// <param name="requiredBuilderBaseTrophies">requiredBuilderBaseTrophies</param>

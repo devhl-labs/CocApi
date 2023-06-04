@@ -277,6 +277,7 @@ foreach ($file in $allCodeFiles)
     }
 
     if ($file.name -eq "Clan.cs"){
+        $content = $content.Replace("/// <param name=`"memberList`">memberList</param>`r`n        ", "")
         $content = $content.Replace("MemberList = memberList;`r`n            ", "")
         $content = $content.Replace("List<ClanMember> memberList, int members", "List<ClanMember> members")
         $content = $content.Replace($membersProperty, "")
