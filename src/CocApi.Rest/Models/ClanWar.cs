@@ -187,11 +187,6 @@ namespace CocApi.Rest.Models
                     PreparationStartTime.Equals(input.PreparationStartTime))
                 ) && 
                 (
-                    ServerExpiration == input.ServerExpiration ||
-                    (ServerExpiration != null &&
-                    ServerExpiration.Equals(input.ServerExpiration))
-                ) && 
-                (
                     StartTime == input.StartTime ||
                     (StartTime != null &&
                     StartTime.Equals(input.StartTime))
@@ -225,7 +220,6 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + EndTime.GetHashCode();
                 hashCode = (hashCode * 59) + Opponent.GetHashCode();
                 hashCode = (hashCode * 59) + PreparationStartTime.GetHashCode();
-                hashCode = (hashCode * 59) + ServerExpiration.GetHashCode();
                 hashCode = (hashCode * 59) + StartTime.GetHashCode();
                 hashCode = (hashCode * 59) + TeamSize.GetHashCode();
 
