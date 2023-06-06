@@ -328,15 +328,6 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        /// <summary>
-        /// Logs the api response
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
-        {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
         partial void FormatGetBuilderBaseLeague(ref string leagueId);
 
         /// <summary>
@@ -361,21 +352,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId)
+        private void AfterFetchBuilderBaseLeagueDefaultImplementation(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchBuilderBaseLeague(apiResponseLocalVar, leagueId);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        partial void AfterFetchBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        protected virtual void OnErrorFetchBuilderBaseLeague(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchBuilderBaseLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchBuilderBaseLeague(exception, pathFormat, path, leagueId);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        partial void OnErrorFetchBuilderBaseLeague(Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get Builder Base league information Get Builder Base league information
@@ -445,13 +455,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<BuilderBaseLeague> apiResponseLocalVar = new ApiResponse<BuilderBaseLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<BuilderBaseLeague> apiResponseLocalVar = new ApiResponse<BuilderBaseLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchBuilderBaseLeague(apiResponseLocalVar, leagueId);
+                        AfterFetchBuilderBaseLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -463,7 +471,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchBuilderBaseLeague(e, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                OnErrorFetchBuilderBaseLeagueDefaultImplementation(e, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -477,12 +485,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchBuilderBaseLeaguesDefaultImplementation(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchBuilderBaseLeagues(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -490,10 +509,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchBuilderBaseLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchBuilderBaseLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchBuilderBaseLeagues(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchBuilderBaseLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List Builder Base leagues List Builder Base leagues
@@ -577,13 +608,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/builderbaseleagues", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar = new ApiResponse<BuilderBaseLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar = new ApiResponse<BuilderBaseLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchBuilderBaseLeagues(apiResponseLocalVar, limit, after, before);
+                        AfterFetchBuilderBaseLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -595,7 +624,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchBuilderBaseLeagues(e, "/builderbaseleagues", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchBuilderBaseLeaguesDefaultImplementation(e, "/builderbaseleagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -624,21 +653,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchCapitalLeague(ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId)
+        private void AfterFetchCapitalLeagueDefaultImplementation(ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchCapitalLeague(apiResponseLocalVar, leagueId);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        partial void AfterFetchCapitalLeague(ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        protected virtual void OnErrorFetchCapitalLeague(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchCapitalLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchCapitalLeague(exception, pathFormat, path, leagueId);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        partial void OnErrorFetchCapitalLeague(Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get capital league information Get capital league information
@@ -708,13 +756,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<CapitalLeague> apiResponseLocalVar = new ApiResponse<CapitalLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<CapitalLeague> apiResponseLocalVar = new ApiResponse<CapitalLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchCapitalLeague(apiResponseLocalVar, leagueId);
+                        AfterFetchCapitalLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -726,7 +772,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCapitalLeague(e, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                OnErrorFetchCapitalLeagueDefaultImplementation(e, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -740,12 +786,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchCapitalLeagues(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchCapitalLeaguesDefaultImplementation(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchCapitalLeagues(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchCapitalLeagues(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -753,10 +810,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchCapitalLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchCapitalLeagues(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List capital leagues List capital leagues
@@ -840,13 +909,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/capitalleagues", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<CapitalLeagueObject> apiResponseLocalVar = new ApiResponse<CapitalLeagueObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<CapitalLeagueObject> apiResponseLocalVar = new ApiResponse<CapitalLeagueObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchCapitalLeagues(apiResponseLocalVar, limit, after, before);
+                        AfterFetchCapitalLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -858,7 +925,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCapitalLeagues(e, "/capitalleagues", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchCapitalLeaguesDefaultImplementation(e, "/capitalleagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -887,21 +954,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchLeague(ApiResponse<League> apiResponseLocalVar, string leagueId)
+        private void AfterFetchLeagueDefaultImplementation(ApiResponse<League> apiResponseLocalVar, string leagueId)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchLeague(apiResponseLocalVar, leagueId);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        partial void AfterFetchLeague(ApiResponse<League> apiResponseLocalVar, string leagueId);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        protected virtual void OnErrorFetchLeague(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchLeague(exception, pathFormat, path, leagueId);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        partial void OnErrorFetchLeague(Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get league information Get league information
@@ -971,13 +1057,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<League> apiResponseLocalVar = new ApiResponse<League>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<League> apiResponseLocalVar = new ApiResponse<League>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchLeague(apiResponseLocalVar, leagueId);
+                        AfterFetchLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -989,7 +1073,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeague(e, "/leagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                OnErrorFetchLeagueDefaultImplementation(e, "/leagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -1026,12 +1110,25 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLeagueSeasonRankings(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, int? limit, string? after, string? before)
+        private void AfterFetchLeagueSeasonRankingsDefaultImplementation(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchLeagueSeasonRankings(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        /// <param name="seasonId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchLeagueSeasonRankings(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1041,10 +1138,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before)
+        private void OnErrorFetchLeagueSeasonRankingsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchLeagueSeasonRankings(exception, pathFormat, path, leagueId, seasonId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        /// <param name="seasonId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get league season rankings Get league season rankings. Note that league season information is available only for Legend League. 
@@ -1136,13 +1247,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}/seasons/{seasonId}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchLeagueSeasonRankings(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
+                        AfterFetchLeagueSeasonRankingsDefaultImplementation(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1154,7 +1263,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagueSeasonRankings(e, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path, leagueId, seasonId, limit, after, before);
+                OnErrorFetchLeagueSeasonRankingsDefaultImplementation(e, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path, leagueId, seasonId, limit, after, before);
                 throw;
             }
         }
@@ -1186,12 +1295,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLeagueSeasons(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, int? limit, string? after, string? before)
+        private void AfterFetchLeagueSeasonsDefaultImplementation(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchLeagueSeasons(apiResponseLocalVar, leagueId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchLeagueSeasons(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1200,10 +1321,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLeagueSeasons(Exception exception, string pathFormat, string path, string leagueId, int? limit, string? after, string? before)
+        private void OnErrorFetchLeagueSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchLeagueSeasons(exception, pathFormat, path, leagueId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchLeagueSeasons(Exception exception, string pathFormat, string path, string leagueId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get league seasons Get league seasons. Note that league season information is available only for Legend League. 
@@ -1292,13 +1426,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LeagueSeasonList> apiResponseLocalVar = new ApiResponse<LeagueSeasonList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<LeagueSeasonList> apiResponseLocalVar = new ApiResponse<LeagueSeasonList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}/seasons", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchLeagueSeasons(apiResponseLocalVar, leagueId, limit, after, before);
+                        AfterFetchLeagueSeasonsDefaultImplementation(apiResponseLocalVar, leagueId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1310,7 +1442,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagueSeasons(e, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path, leagueId, limit, after, before);
+                OnErrorFetchLeagueSeasonsDefaultImplementation(e, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path, leagueId, limit, after, before);
                 throw;
             }
         }
@@ -1324,12 +1456,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLeagues(ApiResponse<LeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchLeaguesDefaultImplementation(ApiResponse<LeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchLeagues(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchLeagues(ApiResponse<LeagueList> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1337,10 +1480,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchLeagues(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List leagues List leagues
@@ -1424,13 +1579,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/leagues", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LeagueList> apiResponseLocalVar = new ApiResponse<LeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<LeagueList> apiResponseLocalVar = new ApiResponse<LeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchLeagues(apiResponseLocalVar, limit, after, before);
+                        AfterFetchLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1442,7 +1595,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLeagues(e, "/leagues", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchLeaguesDefaultImplementation(e, "/leagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -1471,21 +1624,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        protected virtual void AfterFetchWarLeague(ApiResponse<WarLeague> apiResponseLocalVar, string leagueId)
+        private void AfterFetchWarLeagueDefaultImplementation(ApiResponse<WarLeague> apiResponseLocalVar, string leagueId)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchWarLeague(apiResponseLocalVar, leagueId);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="leagueId"></param>
+        partial void AfterFetchWarLeague(ApiResponse<WarLeague> apiResponseLocalVar, string leagueId);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        protected virtual void OnErrorFetchWarLeague(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchWarLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchWarLeague(exception, pathFormat, path, leagueId);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="leagueId"></param>
+        partial void OnErrorFetchWarLeague(Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get war league information Get war league information
@@ -1555,13 +1727,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/warleagues/{leagueId}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<WarLeague> apiResponseLocalVar = new ApiResponse<WarLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<WarLeague> apiResponseLocalVar = new ApiResponse<WarLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchWarLeague(apiResponseLocalVar, leagueId);
+                        AfterFetchWarLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1573,7 +1743,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchWarLeague(e, "/warleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                OnErrorFetchWarLeagueDefaultImplementation(e, "/warleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
                 throw;
             }
         }
@@ -1587,12 +1757,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchWarLeagues(ApiResponse<WarLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchWarLeaguesDefaultImplementation(ApiResponse<WarLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchWarLeagues(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchWarLeagues(ApiResponse<WarLeagueList> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1600,10 +1781,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchWarLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchWarLeagues(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List war leagues List war leagues
@@ -1687,13 +1880,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/warleagues", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<WarLeagueList> apiResponseLocalVar = new ApiResponse<WarLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<WarLeagueList> apiResponseLocalVar = new ApiResponse<WarLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchWarLeagues(apiResponseLocalVar, limit, after, before);
+                        AfterFetchWarLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1705,7 +1896,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchWarLeagues(e, "/warleagues", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchWarLeaguesDefaultImplementation(e, "/warleagues", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }

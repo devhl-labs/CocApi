@@ -90,32 +90,40 @@ namespace CocApi.Rest.BaseApis
         }
 
         /// <summary>
-        /// Logs the api response
+        /// Processes the server response
         /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
+        /// <param name="apiResponseLocalVar"></param>
+        private void AfterFetchCurrentGoldPassSeasonDefaultImplementation(ApiResponse<GoldPassSeason> apiResponseLocalVar)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchCurrentGoldPassSeason(apiResponseLocalVar);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
-        protected virtual void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason> apiResponseLocalVar)
-        {
-        }
+        partial void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason> apiResponseLocalVar);
 
         /// <summary>
-        /// Processes the server response
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
-        protected virtual void OnErrorFetchCurrentGoldPassSeason(Exception exception, string pathFormat, string path)
+        private void OnErrorFetchCurrentGoldPassSeasonDefaultImplementation(Exception exception, string pathFormat, string path)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchCurrentGoldPassSeason(exception, pathFormat, path);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        partial void OnErrorFetchCurrentGoldPassSeason(Exception exception, string pathFormat, string path);
 
         /// <summary>
         /// Get information about the current gold pass season. Get information about the current gold pass season.
@@ -178,13 +186,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/goldpass/seasons/current", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<GoldPassSeason> apiResponseLocalVar = new ApiResponse<GoldPassSeason>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<GoldPassSeason> apiResponseLocalVar = new ApiResponse<GoldPassSeason>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/goldpass/seasons/current", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchCurrentGoldPassSeason(apiResponseLocalVar);
+                        AfterFetchCurrentGoldPassSeasonDefaultImplementation(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -196,7 +202,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentGoldPassSeason(e, "/goldpass/seasons/current", uriBuilderLocalVar.Path);
+                OnErrorFetchCurrentGoldPassSeasonDefaultImplementation(e, "/goldpass/seasons/current", uriBuilderLocalVar.Path);
                 throw;
             }
         }

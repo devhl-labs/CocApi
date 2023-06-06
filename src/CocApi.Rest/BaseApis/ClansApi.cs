@@ -296,15 +296,6 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        /// <summary>
-        /// Logs the api response
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
-        {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
         partial void FormatGetCapitalRaidSeasons(ref string clanTag, ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
@@ -332,12 +323,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        private void AfterFetchCapitalRaidSeasonsDefaultImplementation(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchCapitalRaidSeasons(apiResponseLocalVar, clanTag, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -346,10 +349,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchCapitalRaidSeasons(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
+        private void OnErrorFetchCapitalRaidSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchCapitalRaidSeasons(exception, pathFormat, path, clanTag, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchCapitalRaidSeasons(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before);
 
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons Retrieve clan&#39;s capital raid seasons
@@ -438,13 +454,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar = new ApiResponse<ClanCapitalRaidSeasons>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar = new ApiResponse<ClanCapitalRaidSeasons>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}/capitalraidseasons", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchCapitalRaidSeasons(apiResponseLocalVar, clanTag, limit, after, before);
+                        AfterFetchCapitalRaidSeasonsDefaultImplementation(apiResponseLocalVar, clanTag, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -456,7 +470,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCapitalRaidSeasons(e, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path, clanTag, limit, after, before);
+                OnErrorFetchCapitalRaidSeasonsDefaultImplementation(e, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -485,21 +499,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        protected virtual void AfterFetchClan(ApiResponse<Clan> apiResponseLocalVar, string clanTag)
+        private void AfterFetchClanDefaultImplementation(ApiResponse<Clan> apiResponseLocalVar, string clanTag)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClan(apiResponseLocalVar, clanTag);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="clanTag"></param>
+        partial void AfterFetchClan(ApiResponse<Clan> apiResponseLocalVar, string clanTag);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
-        protected virtual void OnErrorFetchClan(Exception exception, string pathFormat, string path, string clanTag)
+        private void OnErrorFetchClanDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClan(exception, pathFormat, path, clanTag);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="clanTag"></param>
+        partial void OnErrorFetchClan(Exception exception, string pathFormat, string path, string clanTag);
 
         /// <summary>
         /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
@@ -569,13 +602,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<Clan> apiResponseLocalVar = new ApiResponse<Clan>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<Clan> apiResponseLocalVar = new ApiResponse<Clan>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClan(apiResponseLocalVar, clanTag);
+                        AfterFetchClanDefaultImplementation(apiResponseLocalVar, clanTag);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -587,7 +618,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClan(e, "/clans/{clanTag}", uriBuilderLocalVar.Path, clanTag);
+                OnErrorFetchClanDefaultImplementation(e, "/clans/{clanTag}", uriBuilderLocalVar.Path, clanTag);
                 throw;
             }
         }
@@ -619,12 +650,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanMembers(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        private void AfterFetchClanMembersDefaultImplementation(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanMembers(apiResponseLocalVar, clanTag, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanMembers(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -633,10 +676,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
+        private void OnErrorFetchClanMembersDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanMembers(exception, pathFormat, path, clanTag, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before);
 
         /// <summary>
         /// List clan members List clan members.
@@ -725,13 +781,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/members", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<List<ClanMember>> apiResponseLocalVar = new ApiResponse<List<ClanMember>>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<List<ClanMember>> apiResponseLocalVar = new ApiResponse<List<ClanMember>>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}/members", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanMembers(apiResponseLocalVar, clanTag, limit, after, before);
+                        AfterFetchClanMembersDefaultImplementation(apiResponseLocalVar, clanTag, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -743,7 +797,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanMembers(e, "/clans/{clanTag}/members", uriBuilderLocalVar.Path, clanTag, limit, after, before);
+                OnErrorFetchClanMembersDefaultImplementation(e, "/clans/{clanTag}/members", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -773,22 +827,43 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, bool? realtime)
+        private void AfterFetchClanWarLeagueGroupDefaultImplementation(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, bool? realtime)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag, realtime);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="realtime"></param>
+        partial void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, bool? realtime);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
+        private void OnErrorFetchClanWarLeagueGroupDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanWarLeagueGroup(exception, pathFormat, path, clanTag, realtime);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="realtime"></param>
+        partial void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, bool? realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
@@ -867,13 +942,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar = new ApiResponse<ClanWarLeagueGroup>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}/currentwar/leaguegroup", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag, realtime);
+                        AfterFetchClanWarLeagueGroupDefaultImplementation(apiResponseLocalVar, clanTag, realtime);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -885,7 +958,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueGroup(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag, realtime);
+                OnErrorFetchClanWarLeagueGroupDefaultImplementation(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag, realtime);
                 throw;
             }
         }
@@ -915,22 +988,43 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, bool? realtime)
+        private void AfterFetchClanWarLeagueWarDefaultImplementation(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, bool? realtime)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="warTag"></param>
+        /// <param name="realtime"></param>
+        partial void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, bool? realtime);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, bool? realtime)
+        private void OnErrorFetchClanWarLeagueWarDefaultImplementation(Exception exception, string pathFormat, string path, string warTag, bool? realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanWarLeagueWar(exception, pathFormat, path, warTag, realtime);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="warTag"></param>
+        /// <param name="realtime"></param>
+        partial void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, bool? realtime);
 
         /// <summary>
         /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
@@ -1009,13 +1103,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clanwarleagues/wars/{warTag}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
+                        AfterFetchClanWarLeagueWarDefaultImplementation(apiResponseLocalVar, warTag, realtime);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1027,7 +1119,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLeagueWar(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag, realtime);
+                OnErrorFetchClanWarLeagueWarDefaultImplementation(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag, realtime);
                 throw;
             }
         }
@@ -1059,12 +1151,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanWarLog(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        private void AfterFetchClanWarLogDefaultImplementation(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanWarLog(apiResponseLocalVar, clanTag, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanWarLog(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1073,10 +1177,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
+        private void OnErrorFetchClanWarLogDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanWarLog(exception, pathFormat, path, clanTag, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
@@ -1165,13 +1282,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanWarLog> apiResponseLocalVar = new ApiResponse<ClanWarLog>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanWarLog> apiResponseLocalVar = new ApiResponse<ClanWarLog>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}/warlog", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanWarLog(apiResponseLocalVar, clanTag, limit, after, before);
+                        AfterFetchClanWarLogDefaultImplementation(apiResponseLocalVar, clanTag, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1183,7 +1298,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanWarLog(e, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path, clanTag, limit, after, before);
+                OnErrorFetchClanWarLogDefaultImplementation(e, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path, clanTag, limit, after, before);
                 throw;
             }
         }
@@ -1213,22 +1328,43 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void AfterFetchCurrentWar(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, bool? realtime)
+        private void AfterFetchCurrentWarDefaultImplementation(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, bool? realtime)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchCurrentWar(apiResponseLocalVar, clanTag, realtime);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="realtime"></param>
+        partial void AfterFetchCurrentWar(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, bool? realtime);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        protected virtual void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
+        private void OnErrorFetchCurrentWarDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchCurrentWar(exception, pathFormat, path, clanTag, realtime);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="clanTag"></param>
+        /// <param name="realtime"></param>
+        partial void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, bool? realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
@@ -1307,13 +1443,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}/currentwar", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchCurrentWar(apiResponseLocalVar, clanTag, realtime);
+                        AfterFetchCurrentWarDefaultImplementation(apiResponseLocalVar, clanTag, realtime);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1325,7 +1459,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchCurrentWar(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag, realtime);
+                OnErrorFetchCurrentWarDefaultImplementation(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag, realtime);
                 throw;
             }
         }
@@ -1347,12 +1481,31 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        protected virtual void AfterSearchClans(ApiResponse<ClanList> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        private void AfterSearchClansDefaultImplementation(ApiResponse<ClanList> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterSearchClans(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="minMembers"></param>
+        /// <param name="maxMembers"></param>
+        /// <param name="minClanPoints"></param>
+        /// <param name="minClanLevel"></param>
+        /// <param name="limit"></param>
+        /// <param name="name"></param>
+        /// <param name="warFrequency"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <param name="labelIds"></param>
+        partial void AfterSearchClans(ApiResponse<ClanList> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1368,10 +1521,30 @@ namespace CocApi.Rest.BaseApis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        protected virtual void OnErrorSearchClans(Exception exception, string pathFormat, string path, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        private void OnErrorSearchClansDefaultImplementation(Exception exception, string pathFormat, string path, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorSearchClans(exception, pathFormat, path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="minMembers"></param>
+        /// <param name="maxMembers"></param>
+        /// <param name="minClanPoints"></param>
+        /// <param name="minClanLevel"></param>
+        /// <param name="limit"></param>
+        /// <param name="name"></param>
+        /// <param name="warFrequency"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <param name="labelIds"></param>
+        partial void OnErrorSearchClans(Exception exception, string pathFormat, string path, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds);
 
         /// <summary>
         /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
@@ -1495,13 +1668,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/clans", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanList> apiResponseLocalVar = new ApiResponse<ClanList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanList> apiResponseLocalVar = new ApiResponse<ClanList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterSearchClans(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                        AfterSearchClansDefaultImplementation(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1513,7 +1684,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorSearchClans(e, "/clans", uriBuilderLocalVar.Path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                OnErrorSearchClansDefaultImplementation(e, "/clans", uriBuilderLocalVar.Path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
                 throw;
             }
         }

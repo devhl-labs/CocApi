@@ -122,15 +122,6 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        /// <summary>
-        /// Logs the api response
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
-        {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
         partial void FormatGetClanLabels(ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
@@ -140,12 +131,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanLabels(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchClanLabelsDefaultImplementation(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanLabels(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanLabels(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -153,10 +155,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchClanLabelsDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanLabels(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List clan labels List clan labels
@@ -240,13 +254,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/labels/clans", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LabelsObject> apiResponseLocalVar = new ApiResponse<LabelsObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<LabelsObject> apiResponseLocalVar = new ApiResponse<LabelsObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/labels/clans", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanLabels(apiResponseLocalVar, limit, after, before);
+                        AfterFetchClanLabelsDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -258,7 +270,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanLabels(e, "/labels/clans", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchClanLabelsDefaultImplementation(e, "/labels/clans", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -272,12 +284,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchPlayerLabels(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchPlayerLabelsDefaultImplementation(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchPlayerLabels(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchPlayerLabels(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -285,10 +308,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchPlayerLabelsDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchPlayerLabels(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List player labels List player labels
@@ -372,13 +407,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/labels/players", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LabelsObject> apiResponseLocalVar = new ApiResponse<LabelsObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<LabelsObject> apiResponseLocalVar = new ApiResponse<LabelsObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/labels/players", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchPlayerLabels(apiResponseLocalVar, limit, after, before);
+                        AfterFetchPlayerLabelsDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -390,7 +423,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerLabels(e, "/labels/players", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchPlayerLabelsDefaultImplementation(e, "/labels/players", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }

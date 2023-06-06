@@ -116,15 +116,6 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        /// <summary>
-        /// Logs the api response
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
-        {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
         partial void FormatGetPlayer(ref string playerTag);
 
         /// <summary>
@@ -149,21 +140,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="playerTag"></param>
-        protected virtual void AfterFetchPlayer(ApiResponse<Player> apiResponseLocalVar, string playerTag)
+        private void AfterFetchPlayerDefaultImplementation(ApiResponse<Player> apiResponseLocalVar, string playerTag)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchPlayer(apiResponseLocalVar, playerTag);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="playerTag"></param>
+        partial void AfterFetchPlayer(ApiResponse<Player> apiResponseLocalVar, string playerTag);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="playerTag"></param>
-        protected virtual void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag)
+        private void OnErrorFetchPlayerDefaultImplementation(Exception exception, string pathFormat, string path, string playerTag)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchPlayer(exception, pathFormat, path, playerTag);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="playerTag"></param>
+        partial void OnErrorFetchPlayer(Exception exception, string pathFormat, string path, string playerTag);
 
         /// <summary>
         /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
@@ -233,13 +243,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/players/{playerTag}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<Player> apiResponseLocalVar = new ApiResponse<Player>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<Player> apiResponseLocalVar = new ApiResponse<Player>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/players/{playerTag}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchPlayer(apiResponseLocalVar, playerTag);
+                        AfterFetchPlayerDefaultImplementation(apiResponseLocalVar, playerTag);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -251,7 +259,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayer(e, "/players/{playerTag}", uriBuilderLocalVar.Path, playerTag);
+                OnErrorFetchPlayerDefaultImplementation(e, "/players/{playerTag}", uriBuilderLocalVar.Path, playerTag);
                 throw;
             }
         }
@@ -285,22 +293,43 @@ namespace CocApi.Rest.BaseApis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        protected virtual void AfterVerifyToken(ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
+        private void AfterVerifyTokenDefaultImplementation(ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterVerifyToken(apiResponseLocalVar, body, playerTag);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="body"></param>
+        /// <param name="playerTag"></param>
+        partial void AfterVerifyToken(ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        protected virtual void OnErrorVerifyToken(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
+        private void OnErrorVerifyTokenDefaultImplementation(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorVerifyToken(exception, pathFormat, path, body, playerTag);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="body"></param>
+        /// <param name="playerTag"></param>
+        partial void OnErrorVerifyToken(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag);
 
         /// <summary>
         /// Verify player API token that can be found from the game settings. Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
@@ -385,13 +414,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/players/{playerTag}/verifytoken", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<VerifyTokenResponse> apiResponseLocalVar = new ApiResponse<VerifyTokenResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<VerifyTokenResponse> apiResponseLocalVar = new ApiResponse<VerifyTokenResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/players/{playerTag}/verifytoken", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterVerifyToken(apiResponseLocalVar, body, playerTag);
+                        AfterVerifyTokenDefaultImplementation(apiResponseLocalVar, body, playerTag);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -403,7 +430,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorVerifyToken(e, "/players/{playerTag}/verifytoken", uriBuilderLocalVar.Path, body, playerTag);
+                OnErrorVerifyTokenDefaultImplementation(e, "/players/{playerTag}/verifytoken", uriBuilderLocalVar.Path, body, playerTag);
                 throw;
             }
         }

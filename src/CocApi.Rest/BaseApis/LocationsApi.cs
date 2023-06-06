@@ -263,15 +263,6 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        /// <summary>
-        /// Logs the api response
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
-        {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
         partial void FormatGetClanBuilderBaseRanking(ref string locationId, ref int? limit, ref string? after, ref string? before);
 
         /// <summary>
@@ -299,12 +290,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanBuilderBaseRanking(ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        private void AfterFetchClanBuilderBaseRankingDefaultImplementation(ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanBuilderBaseRanking(apiResponseLocalVar, locationId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanBuilderBaseRanking(ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -313,10 +316,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        private void OnErrorFetchClanBuilderBaseRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanBuilderBaseRanking(exception, pathFormat, path, locationId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchClanBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
@@ -405,13 +421,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/clans-builder-base", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<ClanBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<ClanBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/clans-builder-base", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanBuilderBaseRanking(apiResponseLocalVar, locationId, limit, after, before);
+                        AfterFetchClanBuilderBaseRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -423,7 +437,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanBuilderBaseRanking(e, "/locations/{locationId}/rankings/clans-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                OnErrorFetchClanBuilderBaseRankingDefaultImplementation(e, "/locations/{locationId}/rankings/clans-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -455,12 +469,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanCapitalRanking(ApiResponse<ClanCapitalRankingObject> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        private void AfterFetchClanCapitalRankingDefaultImplementation(ApiResponse<ClanCapitalRankingObject> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanCapitalRanking(apiResponseLocalVar, locationId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanCapitalRanking(ApiResponse<ClanCapitalRankingObject> apiResponseLocalVar, string locationId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -469,10 +495,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanCapitalRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        private void OnErrorFetchClanCapitalRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanCapitalRanking(exception, pathFormat, path, locationId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchClanCapitalRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get capital rankings for a specific location Get capital rankings for a specific location
@@ -561,13 +600,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/capitals", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanCapitalRankingObject> apiResponseLocalVar = new ApiResponse<ClanCapitalRankingObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanCapitalRankingObject> apiResponseLocalVar = new ApiResponse<ClanCapitalRankingObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/capitals", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanCapitalRanking(apiResponseLocalVar, locationId, limit, after, before);
+                        AfterFetchClanCapitalRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -579,7 +616,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanCapitalRanking(e, "/locations/{locationId}/rankings/capitals", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                OnErrorFetchClanCapitalRankingDefaultImplementation(e, "/locations/{locationId}/rankings/capitals", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -611,12 +648,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchClanRanking(ApiResponse<ClanRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        private void AfterFetchClanRankingDefaultImplementation(ApiResponse<ClanRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchClanRanking(apiResponseLocalVar, locationId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanRanking(ApiResponse<ClanRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -625,10 +674,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchClanRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        private void OnErrorFetchClanRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchClanRanking(exception, pathFormat, path, locationId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchClanRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get clan rankings for a specific location Get clan rankings for a specific location
@@ -717,13 +779,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/clans", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<ClanRankingList> apiResponseLocalVar = new ApiResponse<ClanRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<ClanRankingList> apiResponseLocalVar = new ApiResponse<ClanRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/clans", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchClanRanking(apiResponseLocalVar, locationId, limit, after, before);
+                        AfterFetchClanRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -735,7 +795,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchClanRanking(e, "/locations/{locationId}/rankings/clans", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                OnErrorFetchClanRankingDefaultImplementation(e, "/locations/{locationId}/rankings/clans", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -764,21 +824,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="locationId"></param>
-        protected virtual void AfterFetchLocation(ApiResponse<Location> apiResponseLocalVar, string locationId)
+        private void AfterFetchLocationDefaultImplementation(ApiResponse<Location> apiResponseLocalVar, string locationId)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchLocation(apiResponseLocalVar, locationId);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        partial void AfterFetchLocation(ApiResponse<Location> apiResponseLocalVar, string locationId);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="locationId"></param>
-        protected virtual void OnErrorFetchLocation(Exception exception, string pathFormat, string path, string locationId)
+        private void OnErrorFetchLocationDefaultImplementation(Exception exception, string pathFormat, string path, string locationId)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchLocation(exception, pathFormat, path, locationId);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        partial void OnErrorFetchLocation(Exception exception, string pathFormat, string path, string locationId);
 
         /// <summary>
         /// Get location information Get information about specific location
@@ -848,13 +927,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<Location> apiResponseLocalVar = new ApiResponse<Location>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<Location> apiResponseLocalVar = new ApiResponse<Location>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchLocation(apiResponseLocalVar, locationId);
+                        AfterFetchLocationDefaultImplementation(apiResponseLocalVar, locationId);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -866,7 +943,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLocation(e, "/locations/{locationId}", uriBuilderLocalVar.Path, locationId);
+                OnErrorFetchLocationDefaultImplementation(e, "/locations/{locationId}", uriBuilderLocalVar.Path, locationId);
                 throw;
             }
         }
@@ -880,12 +957,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchLocations(ApiResponse<LocationList> apiResponseLocalVar, int? limit, string? after, string? before)
+        private void AfterFetchLocationsDefaultImplementation(ApiResponse<LocationList> apiResponseLocalVar, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchLocations(apiResponseLocalVar, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchLocations(ApiResponse<LocationList> apiResponseLocalVar, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -893,10 +981,22 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchLocations(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchLocationsDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchLocations(exception, pathFormat, path, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchLocations(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
 
         /// <summary>
         /// List locations List locations
@@ -980,13 +1080,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LocationList> apiResponseLocalVar = new ApiResponse<LocationList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<LocationList> apiResponseLocalVar = new ApiResponse<LocationList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchLocations(apiResponseLocalVar, limit, after, before);
+                        AfterFetchLocationsDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -998,7 +1096,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchLocations(e, "/locations", uriBuilderLocalVar.Path, limit, after, before);
+                OnErrorFetchLocationsDefaultImplementation(e, "/locations", uriBuilderLocalVar.Path, limit, after, before);
                 throw;
             }
         }
@@ -1030,12 +1128,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchPlayerBuilderBaseRanking(ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        private void AfterFetchPlayerBuilderBaseRankingDefaultImplementation(ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchPlayerBuilderBaseRanking(apiResponseLocalVar, locationId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchPlayerBuilderBaseRanking(ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1044,10 +1154,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        private void OnErrorFetchPlayerBuilderBaseRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchPlayerBuilderBaseRanking(exception, pathFormat, path, locationId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchPlayerBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get player versus rankings for a specific location Get player versus rankings for a specific location
@@ -1136,13 +1259,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/players-builder-base", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<PlayerBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<PlayerBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<PlayerBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/players-builder-base", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchPlayerBuilderBaseRanking(apiResponseLocalVar, locationId, limit, after, before);
+                        AfterFetchPlayerBuilderBaseRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1154,7 +1275,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerBuilderBaseRanking(e, "/locations/{locationId}/rankings/players-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                OnErrorFetchPlayerBuilderBaseRankingDefaultImplementation(e, "/locations/{locationId}/rankings/players-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }
@@ -1186,12 +1307,24 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void AfterFetchPlayerRanking(ApiResponse<PlayerRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
+        private void AfterFetchPlayerRankingDefaultImplementation(ApiResponse<PlayerRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterFetchPlayerRanking(apiResponseLocalVar, locationId, limit, after, before);
         }
 
         /// <summary>
         /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchPlayerRanking(ApiResponse<PlayerRankingList> apiResponseLocalVar, string locationId, int? limit, string? after, string? before);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
         /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
@@ -1200,10 +1333,23 @@ namespace CocApi.Rest.BaseApis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        protected virtual void OnErrorFetchPlayerRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
+        private void OnErrorFetchPlayerRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorFetchPlayerRanking(exception, pathFormat, path, locationId, limit, after, before);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="locationId"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void OnErrorFetchPlayerRanking(Exception exception, string pathFormat, string path, string locationId, int? limit, string? after, string? before);
 
         /// <summary>
         /// Get player rankings for a specific location Get player rankings for a specific location
@@ -1292,13 +1438,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/players", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterFetchPlayerRanking(apiResponseLocalVar, locationId, limit, after, before);
+                        AfterFetchPlayerRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1310,7 +1454,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorFetchPlayerRanking(e, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                OnErrorFetchPlayerRankingDefaultImplementation(e, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path, locationId, limit, after, before);
                 throw;
             }
         }

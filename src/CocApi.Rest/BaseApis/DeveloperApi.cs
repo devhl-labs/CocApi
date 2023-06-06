@@ -158,15 +158,6 @@ namespace CocApi.Rest.BaseApis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        /// <summary>
-        /// Logs the api response
-        /// </summary>
-        /// <param name="args"></param>
-        protected virtual void OnApiResponded(ApiResponseEventArgs args)
-        {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (args.ReceivedAt - args.RequestedAt).TotalSeconds, args.HttpStatus, args.Path);
-        }
-
         partial void FormatCreate(CreateTokenRequest createTokenRequest);
 
         /// <summary>
@@ -191,21 +182,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="createTokenRequest"></param>
-        protected virtual void AfterCreate(ApiResponse<KeyInstance> apiResponseLocalVar, CreateTokenRequest createTokenRequest)
+        private void AfterCreateDefaultImplementation(ApiResponse<KeyInstance> apiResponseLocalVar, CreateTokenRequest createTokenRequest)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterCreate(apiResponseLocalVar, createTokenRequest);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="createTokenRequest"></param>
+        partial void AfterCreate(ApiResponse<KeyInstance> apiResponseLocalVar, CreateTokenRequest createTokenRequest);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="createTokenRequest"></param>
-        protected virtual void OnErrorCreate(Exception exception, string pathFormat, string path, CreateTokenRequest createTokenRequest)
+        private void OnErrorCreateDefaultImplementation(Exception exception, string pathFormat, string path, CreateTokenRequest createTokenRequest)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorCreate(exception, pathFormat, path, createTokenRequest);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="createTokenRequest"></param>
+        partial void OnErrorCreate(Exception exception, string pathFormat, string path, CreateTokenRequest createTokenRequest);
 
         /// <summary>
         /// Create an api token. 
@@ -284,13 +294,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/apikey/create", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/apikey/create", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterCreate(apiResponseLocalVar, createTokenRequest);
+                        AfterCreateDefaultImplementation(apiResponseLocalVar, createTokenRequest);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -302,7 +310,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorCreate(e, "/apikey/create", uriBuilderLocalVar.Path, createTokenRequest);
+                OnErrorCreateDefaultImplementation(e, "/apikey/create", uriBuilderLocalVar.Path, createTokenRequest);
                 throw;
             }
         }
@@ -311,20 +319,37 @@ namespace CocApi.Rest.BaseApis
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
-        protected virtual void AfterKeys(ApiResponse<KeyList> apiResponseLocalVar)
+        private void AfterKeysDefaultImplementation(ApiResponse<KeyList> apiResponseLocalVar)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterKeys(apiResponseLocalVar);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        partial void AfterKeys(ApiResponse<KeyList> apiResponseLocalVar);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
-        protected virtual void OnErrorKeys(Exception exception, string pathFormat, string path)
+        private void OnErrorKeysDefaultImplementation(Exception exception, string pathFormat, string path)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorKeys(exception, pathFormat, path);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        partial void OnErrorKeys(Exception exception, string pathFormat, string path);
 
         /// <summary>
         /// List all tokens. 
@@ -384,13 +409,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/apikey/list", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<KeyList> apiResponseLocalVar = new ApiResponse<KeyList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<KeyList> apiResponseLocalVar = new ApiResponse<KeyList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/apikey/list", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterKeys(apiResponseLocalVar);
+                        AfterKeysDefaultImplementation(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -402,7 +425,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorKeys(e, "/apikey/list", uriBuilderLocalVar.Path);
+                OnErrorKeysDefaultImplementation(e, "/apikey/list", uriBuilderLocalVar.Path);
                 throw;
             }
         }
@@ -431,21 +454,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="loginCredentials"></param>
-        protected virtual void AfterLogin(ApiResponse<LoginResponse> apiResponseLocalVar, LoginCredentials loginCredentials)
+        private void AfterLoginDefaultImplementation(ApiResponse<LoginResponse> apiResponseLocalVar, LoginCredentials loginCredentials)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterLogin(apiResponseLocalVar, loginCredentials);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="loginCredentials"></param>
+        partial void AfterLogin(ApiResponse<LoginResponse> apiResponseLocalVar, LoginCredentials loginCredentials);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="loginCredentials"></param>
-        protected virtual void OnErrorLogin(Exception exception, string pathFormat, string path, LoginCredentials loginCredentials)
+        private void OnErrorLoginDefaultImplementation(Exception exception, string pathFormat, string path, LoginCredentials loginCredentials)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorLogin(exception, pathFormat, path, loginCredentials);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="loginCredentials"></param>
+        partial void OnErrorLogin(Exception exception, string pathFormat, string path, LoginCredentials loginCredentials);
 
         /// <summary>
         /// Login to the developer portal. 
@@ -519,13 +561,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/api/login", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LoginResponse> apiResponseLocalVar = new ApiResponse<LoginResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<LoginResponse> apiResponseLocalVar = new ApiResponse<LoginResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/login", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterLogin(apiResponseLocalVar, loginCredentials);
+                        AfterLoginDefaultImplementation(apiResponseLocalVar, loginCredentials);
 
                         return apiResponseLocalVar;
                     }
@@ -533,7 +573,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorLogin(e, "/api/login", uriBuilderLocalVar.Path, loginCredentials);
+                OnErrorLoginDefaultImplementation(e, "/api/login", uriBuilderLocalVar.Path, loginCredentials);
                 throw;
             }
         }
@@ -562,21 +602,40 @@ namespace CocApi.Rest.BaseApis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="key"></param>
-        protected virtual void AfterRevoke(ApiResponse<KeyInstance> apiResponseLocalVar, Key key)
+        private void AfterRevokeDefaultImplementation(ApiResponse<KeyInstance> apiResponseLocalVar, Key key)
         {
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+            AfterRevoke(apiResponseLocalVar, key);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="key"></param>
+        partial void AfterRevoke(ApiResponse<KeyInstance> apiResponseLocalVar, Key key);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="key"></param>
-        protected virtual void OnErrorRevoke(Exception exception, string pathFormat, string path, Key key)
+        private void OnErrorRevokeDefaultImplementation(Exception exception, string pathFormat, string path, Key key)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            OnErrorRevoke(exception, pathFormat, path, key);
         }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <param name="pathFormat"></param>
+        /// <param name="path"></param>
+        /// <param name="key"></param>
+        partial void OnErrorRevoke(Exception exception, string pathFormat, string path, Key key);
 
         /// <summary>
         /// Revoke an api token. 
@@ -655,13 +714,11 @@ namespace CocApi.Rest.BaseApis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        OnApiResponded(new ApiResponseEventArgs(requestedAtLocalVar, DateTime.UtcNow, httpResponseMessageLocalVar.StatusCode, "/apikey/revoke", uriBuilderLocalVar.Path));
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, _jsonSerializerOptions);
+                        ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/apikey/revoke", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterRevoke(apiResponseLocalVar, key);
+                        AfterRevokeDefaultImplementation(apiResponseLocalVar, key);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -673,7 +730,7 @@ namespace CocApi.Rest.BaseApis
             }
             catch(Exception e)
             {
-                OnErrorRevoke(e, "/apikey/revoke", uriBuilderLocalVar.Path, key);
+                OnErrorRevokeDefaultImplementation(e, "/apikey/revoke", uriBuilderLocalVar.Path, key);
                 throw;
             }
         }

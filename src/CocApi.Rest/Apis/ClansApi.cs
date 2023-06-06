@@ -35,36 +35,6 @@ namespace CocApi.Rest.Apis
             apiKeyProvider)
         {
         }
-
-        protected override void OnErrorFetchClan(Exception exception, string clanTag, string pathFormat, string path)
-        {
-            Logger.LogError(exception, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);
-        }
-
-        protected override void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
-        {
-            Logger.LogError(exception, "There was an error fetching the clan members for clanTag: {clanTag}", clanTag);
-        }
-
-        protected override void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
-        {
-            Logger.LogError(exception, "There was an error fetching the clan war league group for clanTag: {clanTag}", clanTag);
-        }
-
-        protected override void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, bool? realtime)
-        {
-            Logger.LogError(exception, "There was an error fetching the clan war league war for warTag: {warTag}", warTag);
-        }
-
-        protected override void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
-        {
-            Logger.LogError(exception, "There was an error fetching the clan war log for clanTag: {clanTag}", clanTag);
-        }
-
-        protected override void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
-        {
-            Logger.LogError(exception, "There was an error fetching the current war for clanTag: {clanTag}", clanTag);
-        }
     }
 }
 
