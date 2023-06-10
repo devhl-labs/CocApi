@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CocApi.Rest.Client;
 using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Hosting;
@@ -43,7 +44,6 @@ public class TestService : IHostedService
     private async Task AddTestItems()
     {
         await PlayersClient.AddOrUpdateAsync("#29GPU9CUJ"); //squirrel man
-
         await ClansClient.AddOrUpdateAsync("#8J82PV0C"); //fysb unbuckled
         await ClansClient.AddOrUpdateAsync("#22G0JJR8"); //fysb
         await ClansClient.AddOrUpdateAsync("#28RUGUYJU"); //devhls lab
@@ -57,22 +57,53 @@ public class TestService : IHostedService
 
     private async Task SanityCheck()
     {
-        var clan = await ClansApi.FetchClanAsync("#29Y8PRCJR");
-        var devhlsLab = await ClansApi.FetchClanAsync("#28RUGUYJU");
-        var playerGlobalRankings = await LocationsApi.FetchPlayerRankingAsync("global");
-        //var playerVersusGlobalRankings = await LocationsApi.FetchPlayerBuilderBaseRankingAsync("global"); // this endpoint is broken
-        var clanGlobalRankings = await LocationsApi.FetchClanRankingAsync("global");
-        var clanGlobalVersusRankings = await LocationsApi.FetchClanBuilderBaseRankingAsync("global");
-        var leagueList = await LeaguesApi.FetchWarLeaguesAsync();
-        var playerToken = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
-        var warLog = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
-        var clans = await ClansApi.SearchClansAsync(name: "fysb");
-        var clanCapitalRaidSeasons = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
-        var clanCapitalRanking = await LocationsApi.FetchClanCapitalRankingAsync("global");
-        var capitalLeagues = await LeaguesApi.FetchCapitalLeaguesAsync();
-        var capitalLeague = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
-        var builderBaseLeagues = await LeaguesApi.FetchBuilderBaseLeaguesAsync();
-        var builderBaseLeague = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeagues.AsModel()!.Items.First().Id.ToString());
+        ApiResponse<Clan> clanResponse = await ClansApi.FetchClanAsync("#29Y8PRCJR");
+        Clan? clan = clanResponse.AsModel();
+
+        ApiResponse<Clan> devhlsLabResponse = await ClansApi.FetchClanAsync("#28RUGUYJU");
+        Clan? devhlsLab = devhlsLabResponse.AsModel();
+
+        ApiResponse<PlayerRankingList> playerGlobalRankingsResponse = await LocationsApi.FetchPlayerRankingAsync("global");
+        PlayerRankingList? playerGlobalRankings = playerGlobalRankingsResponse.AsModel();
+
+        // ApiResponse<PlayerBuilderBaseRankingList> playerVersusGlobalRankingsResponse = await LocationsApi.FetchPlayerBuilderBaseRankingAsync("global"); // this endpoint is broken
+        //PlayerBuilderBaseRankingList playerVersusGlobalRankings = playerVersusGlobalRankingsResponse.AsModel();
+
+        ApiResponse<ClanRankingList> clanGlobalRankingsResponse = await LocationsApi.FetchClanRankingAsync("global");
+
+        ApiResponse<ClanBuilderBaseRankingList> clanGlobalVersusRankingsResponse = await LocationsApi.FetchClanBuilderBaseRankingAsync("global");
+        ClanBuilderBaseRankingList? clanGlobalVersusRanking = clanGlobalVersusRankingsResponse.AsModel();
+
+        ApiResponse<WarLeagueList> leagueListResponse = await LeaguesApi.FetchWarLeaguesAsync();
+        WarLeagueList? leagueList = leagueListResponse.AsModel();
+
+        ApiResponse<VerifyTokenResponse> playerTokenResponse = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
+        VerifyTokenResponse? playerToken = playerTokenResponse.AsModel();
+
+        ApiResponse<ClanWarLog> warLogResponse = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
+        ClanWarLog? warLog = warLogResponse.AsModel();
+
+        ApiResponse<ClanList> clansResponse = await ClansApi.SearchClansAsync(name: "fysb");
+        ClanList? clans = clansResponse.AsModel();
+
+        ApiResponse<ClanCapitalRaidSeasons> clanCapitalRaidSeasonsResponse = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
+        ClanCapitalRaidSeasons? clanCapitalRaidSeasons = clanCapitalRaidSeasonsResponse.AsModel();
+
+        ApiResponse<ClanCapitalRankingObject> clanCapitalRankingResponse = await LocationsApi.FetchClanCapitalRankingAsync("global");
+        ClanCapitalRankingObject? clanCapitalRanking = clanCapitalRankingResponse.AsModel();
+
+        ApiResponse<CapitalLeagueObject> capitalLeaguesResponse = await LeaguesApi.FetchCapitalLeaguesAsync();
+        CapitalLeagueObject? capitalLeagues = capitalLeaguesResponse.AsModel();
+
+        ApiResponse<CapitalLeague> capitalLeagueResponse = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
+        CapitalLeague? capitalLeague = capitalLeagueResponse.AsModel();
+
+        ApiResponse<BuilderBaseLeagueList> builderBaseLeaguesResponse = await LeaguesApi.FetchBuilderBaseLeaguesAsync();
+        BuilderBaseLeagueList? builderBaseLeagues = builderBaseLeaguesResponse.AsModel();
+
+        ApiResponse<BuilderBaseLeague> builderBaseLeagueResponse = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeaguesResponse.AsModel()!.Items.First().Id.ToString());
+        BuilderBaseLeague? builderBaseLeague = builderBaseLeagueResponse.AsModel();
+
         System.Console.WriteLine("Done sanity check.");
     }
 }
