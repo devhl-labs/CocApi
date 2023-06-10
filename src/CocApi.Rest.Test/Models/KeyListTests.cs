@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<KeyList>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Keys'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Keys'
         }
+
         /// <summary>
         /// Test the property 'SessionExpiresInSeconds'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'SessionExpiresInSeconds'
         }
+
         /// <summary>
         /// Test the property 'Status'
         /// </summary>
@@ -78,7 +79,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Status'
         }
-
     }
-
 }

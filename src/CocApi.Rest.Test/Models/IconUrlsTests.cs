@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<IconUrls>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Medium'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Medium'
         }
+
         /// <summary>
         /// Test the property 'Small'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Small'
         }
+
         /// <summary>
         /// Test the property 'Tiny'
         /// </summary>
@@ -78,7 +79,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tiny'
         }
-
     }
-
 }

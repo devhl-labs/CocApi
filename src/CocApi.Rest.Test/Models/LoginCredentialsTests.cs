@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<LoginCredentials>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Email'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Email'
         }
+
         /// <summary>
         /// Test the property 'Password'
         /// </summary>
@@ -70,7 +70,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Password'
         }
-
     }
-
 }

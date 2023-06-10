@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<LegendLeagueTournamentSeasonResult>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Trophies'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Trophies'
         }
+
         /// <summary>
         /// Test the property 'Id'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Id'
         }
+
         /// <summary>
         /// Test the property 'Rank'
         /// </summary>
@@ -78,7 +79,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Rank'
         }
-
     }
-
 }

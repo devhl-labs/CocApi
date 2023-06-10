@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<GoldPassSeason>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'EndTime'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'EndTime'
         }
+
         /// <summary>
         /// Test the property 'StartTime'
         /// </summary>
@@ -70,7 +70,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'StartTime'
         }
-
     }
-
 }

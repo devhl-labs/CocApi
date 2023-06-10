@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanWarLeagueClanMember>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Tag'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
+
         /// <summary>
         /// Test the property 'TownHallLevel'
         /// </summary>
@@ -78,7 +79,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TownHallLevel'
         }
-
     }
-
 }

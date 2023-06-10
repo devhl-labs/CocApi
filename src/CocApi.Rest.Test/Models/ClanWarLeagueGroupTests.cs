@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanWarLeagueGroup>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Clans'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Clans'
         }
+
         /// <summary>
         /// Test the property 'Rounds'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Rounds'
         }
+
         /// <summary>
         /// Test the property 'Season'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Season'
         }
+
         /// <summary>
         /// Test the property 'State'
         /// </summary>
@@ -86,7 +88,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'State'
         }
-
     }
-
 }

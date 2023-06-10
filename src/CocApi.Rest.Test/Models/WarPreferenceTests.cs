@@ -52,9 +52,5 @@ namespace CocApi.Rest.Test.Model
             // TODO uncomment below to test "IsType" WarPreference
             //Assert.IsType<WarPreference>(instance);
         }
-
-
-
     }
-
 }

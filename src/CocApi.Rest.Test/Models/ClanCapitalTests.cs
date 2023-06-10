@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanCapital>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'CapitalHallLevel'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CapitalHallLevel'
         }
+
         /// <summary>
         /// Test the property 'Districts'
         /// </summary>
@@ -70,7 +70,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Districts'
         }
-
     }
-
 }

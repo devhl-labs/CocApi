@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<KeyListStatus>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Code'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Code'
         }
+
         /// <summary>
         /// Test the property 'Message'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Message'
         }
+
         /// <summary>
         /// Test the property 'Detail'
         /// </summary>
@@ -78,7 +79,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Detail'
         }
-
     }
-
 }

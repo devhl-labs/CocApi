@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanWarAttack>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'AttackerTag'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttackerTag'
         }
+
         /// <summary>
         /// Test the property 'DefenderTag'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DefenderTag'
         }
+
         /// <summary>
         /// Test the property 'DestructionPercentage'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DestructionPercentage'
         }
+
         /// <summary>
         /// Test the property 'Order'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Order'
         }
+
         /// <summary>
         /// Test the property 'Stars'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Stars'
         }
+
         /// <summary>
         /// Test the property 'Duration'
         /// </summary>
@@ -102,7 +106,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Duration'
         }
-
     }
-
 }

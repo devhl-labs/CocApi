@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<PlayerLegendStatistics>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'CurrentSeason'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CurrentSeason'
         }
+
         /// <summary>
         /// Test the property 'LegendTrophies'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'LegendTrophies'
         }
+
         /// <summary>
         /// Test the property 'BestBuilderBaseSeason'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BestBuilderBaseSeason'
         }
+
         /// <summary>
         /// Test the property 'BestSeason'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BestSeason'
         }
+
         /// <summary>
         /// Test the property 'PreviousBuilderBaseSeason'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'PreviousBuilderBaseSeason'
         }
+
         /// <summary>
         /// Test the property 'PreviousSeason'
         /// </summary>
@@ -102,7 +106,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'PreviousSeason'
         }
-
     }
-
 }

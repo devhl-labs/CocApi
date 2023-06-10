@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<Key>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'CidrRanges'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CidrRanges'
         }
+
         /// <summary>
         /// Test the property 'Description'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Description'
         }
+
         /// <summary>
         /// Test the property 'DeveloperId'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DeveloperId'
         }
+
         /// <summary>
         /// Test the property 'Id'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Id'
         }
+
         /// <summary>
         /// Test the property 'VarKey'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'VarKey'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Scopes'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Scopes'
         }
+
         /// <summary>
         /// Test the property 'Tier'
         /// </summary>
@@ -118,6 +124,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tier'
         }
+
         /// <summary>
         /// Test the property 'Origins'
         /// </summary>
@@ -126,6 +133,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Origins'
         }
+
         /// <summary>
         /// Test the property 'ValidUntil'
         /// </summary>
@@ -134,7 +142,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ValidUntil'
         }
-
     }
-
 }

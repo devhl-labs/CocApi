@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<Clan>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'BadgeUrls'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BadgeUrls'
         }
+
         /// <summary>
         /// Test the property 'CapitalLeague'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CapitalLeague'
         }
+
         /// <summary>
         /// Test the property 'ClanBuilderBasePoints'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanBuilderBasePoints'
         }
+
         /// <summary>
         /// Test the property 'ClanCapital'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanCapital'
         }
+
         /// <summary>
         /// Test the property 'ClanLevel'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanLevel'
         }
+
         /// <summary>
         /// Test the property 'ClanPoints'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanPoints'
         }
+
         /// <summary>
         /// Test the property 'Description'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Description'
         }
+
         /// <summary>
         /// Test the property 'IsFamilyFriendly'
         /// </summary>
@@ -118,6 +124,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'IsFamilyFriendly'
         }
+
         /// <summary>
         /// Test the property 'IsWarLogPublic'
         /// </summary>
@@ -126,6 +133,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'IsWarLogPublic'
         }
+
         /// <summary>
         /// Test the property 'Labels'
         /// </summary>
@@ -134,6 +142,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Labels'
         }
+
         /// <summary>
         /// Test the property 'MemberList'
         /// </summary>
@@ -142,6 +151,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'MemberList'
         }
+
         /// <summary>
         /// Test the property 'Members'
         /// </summary>
@@ -150,6 +160,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Members'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -158,6 +169,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'RequiredBuilderBaseTrophies'
         /// </summary>
@@ -166,6 +178,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'RequiredBuilderBaseTrophies'
         }
+
         /// <summary>
         /// Test the property 'RequiredTrophies'
         /// </summary>
@@ -174,6 +187,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'RequiredTrophies'
         }
+
         /// <summary>
         /// Test the property 'Tag'
         /// </summary>
@@ -182,6 +196,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
+
         /// <summary>
         /// Test the property 'WarLeague'
         /// </summary>
@@ -190,6 +205,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarLeague'
         }
+
         /// <summary>
         /// Test the property 'WarWinStreak'
         /// </summary>
@@ -198,6 +214,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarWinStreak'
         }
+
         /// <summary>
         /// Test the property 'WarWins'
         /// </summary>
@@ -206,6 +223,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarWins'
         }
+
         /// <summary>
         /// Test the property 'ChatLanguage'
         /// </summary>
@@ -214,6 +232,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ChatLanguage'
         }
+
         /// <summary>
         /// Test the property 'Location'
         /// </summary>
@@ -222,6 +241,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Location'
         }
+
         /// <summary>
         /// Test the property 'Type'
         /// </summary>
@@ -230,6 +250,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Type'
         }
+
         /// <summary>
         /// Test the property 'WarFrequency'
         /// </summary>
@@ -238,6 +259,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarFrequency'
         }
+
         /// <summary>
         /// Test the property 'WarLosses'
         /// </summary>
@@ -246,6 +268,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarLosses'
         }
+
         /// <summary>
         /// Test the property 'WarTies'
         /// </summary>
@@ -254,7 +277,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarTies'
         }
-
     }
-
 }

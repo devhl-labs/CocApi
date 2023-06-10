@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<Location>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Id'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Id'
         }
+
         /// <summary>
         /// Test the property 'IsCountry'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'IsCountry'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'CountryCode'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CountryCode'
         }
+
         /// <summary>
         /// Test the property 'LocalizedName'
         /// </summary>
@@ -94,7 +97,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'LocalizedName'
         }
-
     }
-
 }

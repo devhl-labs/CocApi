@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanWar>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'AttacksPerMember'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttacksPerMember'
         }
+
         /// <summary>
         /// Test the property 'Clan'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Clan'
         }
+
         /// <summary>
         /// Test the property 'EndTime'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'EndTime'
         }
+
         /// <summary>
         /// Test the property 'Opponent'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Opponent'
         }
+
         /// <summary>
         /// Test the property 'PreparationStartTime'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'PreparationStartTime'
         }
+
         /// <summary>
         /// Test the property 'ServerExpiration'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ServerExpiration'
         }
+
         /// <summary>
         /// Test the property 'StartTime'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'StartTime'
         }
+
         /// <summary>
         /// Test the property 'TeamSize'
         /// </summary>
@@ -118,6 +124,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TeamSize'
         }
+
         /// <summary>
         /// Test the property 'State'
         /// </summary>
@@ -126,6 +133,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'State'
         }
+
         /// <summary>
         /// Test the property 'WarTag'
         /// </summary>
@@ -134,7 +142,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarTag'
         }
-
     }
-
 }

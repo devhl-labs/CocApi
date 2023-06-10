@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<WarClan>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Attacks'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Attacks'
         }
+
         /// <summary>
         /// Test the property 'BadgeUrls'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BadgeUrls'
         }
+
         /// <summary>
         /// Test the property 'ClanLevel'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanLevel'
         }
+
         /// <summary>
         /// Test the property 'DestructionPercentage'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DestructionPercentage'
         }
+
         /// <summary>
         /// Test the property 'ExpEarned'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ExpEarned'
         }
+
         /// <summary>
         /// Test the property 'Members'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Members'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Stars'
         /// </summary>
@@ -118,6 +124,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Stars'
         }
+
         /// <summary>
         /// Test the property 'Tag'
         /// </summary>
@@ -126,7 +133,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
-
     }
-
 }

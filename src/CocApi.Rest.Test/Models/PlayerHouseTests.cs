@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<PlayerHouse>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Elements'
         /// </summary>
@@ -62,7 +61,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Elements'
         }
-
     }
-
 }

@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanCapitalRaidSeasonMember>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'AttackLimit'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttackLimit'
         }
+
         /// <summary>
         /// Test the property 'Attacks'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Attacks'
         }
+
         /// <summary>
         /// Test the property 'BonusAttackLimit'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BonusAttackLimit'
         }
+
         /// <summary>
         /// Test the property 'CapitalResourcesLooted'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CapitalResourcesLooted'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Tag'
         /// </summary>
@@ -102,7 +106,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
-
     }
-
 }

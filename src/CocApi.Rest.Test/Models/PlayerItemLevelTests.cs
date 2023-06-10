@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<PlayerItemLevel>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Level'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Level'
         }
+
         /// <summary>
         /// Test the property 'MaxLevel'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'MaxLevel'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Village'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Village'
         }
+
         /// <summary>
         /// Test the property 'SuperTroopIsActive'
         /// </summary>
@@ -94,7 +97,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'SuperTroopIsActive'
         }
-
     }
-
 }

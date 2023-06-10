@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanWarLogEntry>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Clan'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Clan'
         }
+
         /// <summary>
         /// Test the property 'EndTime'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'EndTime'
         }
+
         /// <summary>
         /// Test the property 'Opponent'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Opponent'
         }
+
         /// <summary>
         /// Test the property 'TeamSize'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TeamSize'
         }
+
         /// <summary>
         /// Test the property 'AttacksPerMember'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttacksPerMember'
         }
+
         /// <summary>
         /// Test the property 'Result'
         /// </summary>
@@ -102,7 +106,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Result'
         }
-
     }
-
 }

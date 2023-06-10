@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanCapitalRaidSeasonAttackLogEntry>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'AttackCount'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttackCount'
         }
+
         /// <summary>
         /// Test the property 'Defender'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Defender'
         }
+
         /// <summary>
         /// Test the property 'DistrictCount'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DistrictCount'
         }
+
         /// <summary>
         /// Test the property 'Districts'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Districts'
         }
+
         /// <summary>
         /// Test the property 'DistrictsDestroyed'
         /// </summary>
@@ -94,7 +97,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DistrictsDestroyed'
         }
-
     }
-
 }

@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<Player>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Achievements'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Achievements'
         }
+
         /// <summary>
         /// Test the property 'AttackWins'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttackWins'
         }
+
         /// <summary>
         /// Test the property 'BestTrophies'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BestTrophies'
         }
+
         /// <summary>
         /// Test the property 'BestVersusTrophies'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BestVersusTrophies'
         }
+
         /// <summary>
         /// Test the property 'BuilderBaseTrophies'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BuilderBaseTrophies'
         }
+
         /// <summary>
         /// Test the property 'ClanCapitalContributions'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanCapitalContributions'
         }
+
         /// <summary>
         /// Test the property 'DefenseWins'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DefenseWins'
         }
+
         /// <summary>
         /// Test the property 'Donations'
         /// </summary>
@@ -118,6 +124,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Donations'
         }
+
         /// <summary>
         /// Test the property 'DonationsReceived'
         /// </summary>
@@ -126,6 +133,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DonationsReceived'
         }
+
         /// <summary>
         /// Test the property 'ExpLevel'
         /// </summary>
@@ -134,6 +142,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ExpLevel'
         }
+
         /// <summary>
         /// Test the property 'Heroes'
         /// </summary>
@@ -142,6 +151,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Heroes'
         }
+
         /// <summary>
         /// Test the property 'Labels'
         /// </summary>
@@ -150,6 +160,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Labels'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -158,6 +169,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Spells'
         /// </summary>
@@ -166,6 +178,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Spells'
         }
+
         /// <summary>
         /// Test the property 'Tag'
         /// </summary>
@@ -174,6 +187,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
+
         /// <summary>
         /// Test the property 'TownHallLevel'
         /// </summary>
@@ -182,6 +196,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TownHallLevel'
         }
+
         /// <summary>
         /// Test the property 'Troops'
         /// </summary>
@@ -190,6 +205,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Troops'
         }
+
         /// <summary>
         /// Test the property 'Trophies'
         /// </summary>
@@ -198,6 +214,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Trophies'
         }
+
         /// <summary>
         /// Test the property 'WarStars'
         /// </summary>
@@ -206,6 +223,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarStars'
         }
+
         /// <summary>
         /// Test the property 'BuilderBaseLeague'
         /// </summary>
@@ -214,6 +232,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BuilderBaseLeague'
         }
+
         /// <summary>
         /// Test the property 'BuilderHallLevel'
         /// </summary>
@@ -222,6 +241,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BuilderHallLevel'
         }
+
         /// <summary>
         /// Test the property 'Clan'
         /// </summary>
@@ -230,6 +250,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Clan'
         }
+
         /// <summary>
         /// Test the property 'League'
         /// </summary>
@@ -238,6 +259,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'League'
         }
+
         /// <summary>
         /// Test the property 'LegendStatistics'
         /// </summary>
@@ -246,6 +268,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'LegendStatistics'
         }
+
         /// <summary>
         /// Test the property 'PlayerHouse'
         /// </summary>
@@ -254,6 +277,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'PlayerHouse'
         }
+
         /// <summary>
         /// Test the property 'Role'
         /// </summary>
@@ -262,6 +286,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Role'
         }
+
         /// <summary>
         /// Test the property 'TownHallWeaponLevel'
         /// </summary>
@@ -270,6 +295,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TownHallWeaponLevel'
         }
+
         /// <summary>
         /// Test the property 'VersusBattleWinCount'
         /// </summary>
@@ -278,6 +304,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'VersusBattleWinCount'
         }
+
         /// <summary>
         /// Test the property 'WarPreference'
         /// </summary>
@@ -286,7 +313,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'WarPreference'
         }
-
     }
-
 }

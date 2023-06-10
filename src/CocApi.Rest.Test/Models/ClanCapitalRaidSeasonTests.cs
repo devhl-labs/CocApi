@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanCapitalRaidSeason>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'AttackLog'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttackLog'
         }
+
         /// <summary>
         /// Test the property 'CapitalTotalLoot'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CapitalTotalLoot'
         }
+
         /// <summary>
         /// Test the property 'DefenseLog'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DefenseLog'
         }
+
         /// <summary>
         /// Test the property 'DefensiveReward'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DefensiveReward'
         }
+
         /// <summary>
         /// Test the property 'EndTime'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'EndTime'
         }
+
         /// <summary>
         /// Test the property 'EnemyDistrictsDestroyed'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'EnemyDistrictsDestroyed'
         }
+
         /// <summary>
         /// Test the property 'OffensiveReward'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'OffensiveReward'
         }
+
         /// <summary>
         /// Test the property 'RaidsCompleted'
         /// </summary>
@@ -118,6 +124,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'RaidsCompleted'
         }
+
         /// <summary>
         /// Test the property 'StartTime'
         /// </summary>
@@ -126,6 +133,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'StartTime'
         }
+
         /// <summary>
         /// Test the property 'State'
         /// </summary>
@@ -134,6 +142,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'State'
         }
+
         /// <summary>
         /// Test the property 'TotalAttacks'
         /// </summary>
@@ -142,6 +151,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TotalAttacks'
         }
+
         /// <summary>
         /// Test the property 'Members'
         /// </summary>
@@ -150,7 +160,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Members'
         }
-
     }
-
 }

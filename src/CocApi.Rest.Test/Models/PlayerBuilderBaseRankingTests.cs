@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<PlayerBuilderBaseRanking>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'BuilderBaseLeague'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BuilderBaseLeague'
         }
+
         /// <summary>
         /// Test the property 'BuilderBaseTrophies'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'BuilderBaseTrophies'
         }
+
         /// <summary>
         /// Test the property 'ExpLevel'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ExpLevel'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'PreviousRank'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'PreviousRank'
         }
+
         /// <summary>
         /// Test the property 'Rank'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Rank'
         }
+
         /// <summary>
         /// Test the property 'Tag'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Tag'
         }
+
         /// <summary>
         /// Test the property 'Clan'
         /// </summary>
@@ -118,7 +124,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Clan'
         }
-
     }
-
 }

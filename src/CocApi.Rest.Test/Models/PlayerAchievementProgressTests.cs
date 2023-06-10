@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<PlayerAchievementProgress>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Info'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Info'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Stars'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Stars'
         }
+
         /// <summary>
         /// Test the property 'Target'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Target'
         }
+
         /// <summary>
         /// Test the property 'Value'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Value'
         }
+
         /// <summary>
         /// Test the property 'Village'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Village'
         }
+
         /// <summary>
         /// Test the property 'CompletionInfo'
         /// </summary>
@@ -110,7 +115,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'CompletionInfo'
         }
-
     }
-
 }

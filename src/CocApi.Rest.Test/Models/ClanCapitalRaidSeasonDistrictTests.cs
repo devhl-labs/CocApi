@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanCapitalRaidSeasonDistrict>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'AttackCount'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'AttackCount'
         }
+
         /// <summary>
         /// Test the property 'DestructionPercent'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DestructionPercent'
         }
+
         /// <summary>
         /// Test the property 'DistrictHallLevel'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'DistrictHallLevel'
         }
+
         /// <summary>
         /// Test the property 'Id'
         /// </summary>
@@ -86,6 +88,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Id'
         }
+
         /// <summary>
         /// Test the property 'Name'
         /// </summary>
@@ -94,6 +97,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Name'
         }
+
         /// <summary>
         /// Test the property 'Stars'
         /// </summary>
@@ -102,6 +106,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Stars'
         }
+
         /// <summary>
         /// Test the property 'TotalLooted'
         /// </summary>
@@ -110,6 +115,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'TotalLooted'
         }
+
         /// <summary>
         /// Test the property 'Attacks'
         /// </summary>
@@ -118,7 +124,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Attacks'
         }
-
     }
-
 }

@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClanBuilderBaseRanking>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'ClanBuilderBasePoints'
         /// </summary>
@@ -62,7 +61,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanBuilderBasePoints'
         }
-
     }
-
 }

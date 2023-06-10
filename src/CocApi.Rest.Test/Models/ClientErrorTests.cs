@@ -53,7 +53,6 @@ namespace CocApi.Rest.Test.Model
             //Assert.IsType<ClientError>(instance);
         }
 
-
         /// <summary>
         /// Test the property 'Detail'
         /// </summary>
@@ -62,6 +61,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Detail'
         }
+
         /// <summary>
         /// Test the property 'Message'
         /// </summary>
@@ -70,6 +70,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Message'
         }
+
         /// <summary>
         /// Test the property 'Reason'
         /// </summary>
@@ -78,6 +79,7 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Reason'
         }
+
         /// <summary>
         /// Test the property 'Type'
         /// </summary>
@@ -86,7 +88,5 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'Type'
         }
-
     }
-
 }
