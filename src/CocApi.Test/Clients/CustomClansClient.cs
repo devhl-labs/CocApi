@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CocApi.Cache;
 using CocApi.Cache.Services;
 using CocApi.Cache.Services.Options;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

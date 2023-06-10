@@ -11,7 +11,7 @@ using CocApi.Cache.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using CocApi.Cache.Services.Options;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 
 namespace CocApi.Cache;
 

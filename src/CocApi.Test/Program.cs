@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using CocApi.Rest.Client;
 using System.Collections.Generic;
 using System.Linq;
-using CocApi.Rest.Apis;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
 using CocApi.Cache.Services.Options;
@@ -51,7 +50,7 @@ class Program
             })
 
 
-            .ConfigureCocApi<CustomClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>((context, services, options) =>
+            .ConfigureCocApi((context, services, options) =>
             {
                 List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>();
 
