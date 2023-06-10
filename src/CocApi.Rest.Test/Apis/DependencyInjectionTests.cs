@@ -13,11 +13,11 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using CocApi.Rest.Client;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Extensions;
 using Xunit;
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
     ///  Tests the dependency injection.
@@ -74,25 +74,25 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact]
         public void ConfigureApiWithAClientTest()
         {
-            var clansApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.IClansApi>();
+            var clansApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
             
-            var developerApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.IDeveloperApi>();
+            var developerApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
             
-            var goldpassApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
+            var goldpassApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
             
-            var labelsApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.ILabelsApi>();
+            var labelsApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
             
-            var leaguesApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.ILeaguesApi>();
+            var leaguesApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
             
-            var locationsApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.ILocationsApi>();
+            var locationsApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
             
-            var playersApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IBaseApis.IPlayersApi>();
+            var playersApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IApis.IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }
 
@@ -102,25 +102,25 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact]
         public void ConfigureApiWithoutAClientTest()
         {
-            var clansApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.IClansApi>();
+            var clansApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
             
-            var developerApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.IDeveloperApi>();
+            var developerApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
             
-            var goldpassApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
+            var goldpassApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
             
-            var labelsApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.ILabelsApi>();
+            var labelsApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
             
-            var leaguesApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.ILeaguesApi>();
+            var leaguesApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
             
-            var locationsApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.ILocationsApi>();
+            var locationsApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
             
-            var playersApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IBaseApis.IPlayersApi>();
+            var playersApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IApis.IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }
 
@@ -130,25 +130,25 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact]
         public void AddApiWithAClientTest()
         {
-            var clansApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.IClansApi>();
+            var clansApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
             
-            var developerApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.IDeveloperApi>();
+            var developerApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
             
-            var goldpassApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
+            var goldpassApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
             
-            var labelsApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.ILabelsApi>();
+            var labelsApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
             
-            var leaguesApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.ILeaguesApi>();
+            var leaguesApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
             
-            var locationsApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.ILocationsApi>();
+            var locationsApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
             
-            var playersApi = _hostUsingAddWithAClient.Services.GetRequiredService<IBaseApis.IPlayersApi>();
+            var playersApi = _hostUsingAddWithAClient.Services.GetRequiredService<IApis.IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }
 
@@ -158,25 +158,25 @@ namespace CocApi.Rest.Test.BaseApis
         [Fact]
         public void AddApiWithoutAClientTest()
         {
-            var clansApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.IClansApi>();
+            var clansApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
             
-            var developerApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.IDeveloperApi>();
+            var developerApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
             
-            var goldpassApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
+            var goldpassApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
             
-            var labelsApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.ILabelsApi>();
+            var labelsApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
             
-            var leaguesApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.ILeaguesApi>();
+            var leaguesApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
             
-            var locationsApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.ILocationsApi>();
+            var locationsApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
             
-            var playersApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IBaseApis.IPlayersApi>();
+            var playersApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IApis.IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }
     }

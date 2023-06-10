@@ -35,7 +35,7 @@ using CocApi.Rest.Extensions;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
     ///  Base class for API tests

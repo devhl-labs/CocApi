@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 
 
@@ -36,18 +36,18 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
     ///  Class for testing GoldpassApi
     /// </summary>
     public sealed class GoldpassApiTests : ApiTestsBase
     {
-        private readonly IBaseApis.IGoldpassApi _instance;
+        private readonly IApis.IGoldpassApi _instance;
 
         public GoldpassApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
+            _instance = _host.Services.GetRequiredService<IApis.IGoldpassApi>();
         }
 
         /// <summary>

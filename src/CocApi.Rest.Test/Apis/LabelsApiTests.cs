@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 
 
@@ -36,18 +36,18 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
     ///  Class for testing LabelsApi
     /// </summary>
     public sealed class LabelsApiTests : ApiTestsBase
     {
-        private readonly IBaseApis.ILabelsApi _instance;
+        private readonly IApis.ILabelsApi _instance;
 
         public LabelsApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IBaseApis.ILabelsApi>();
+            _instance = _host.Services.GetRequiredService<IApis.ILabelsApi>();
         }
 
         /// <summary>
