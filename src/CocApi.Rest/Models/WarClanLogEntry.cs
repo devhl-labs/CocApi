@@ -31,22 +31,22 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="WarClanLogEntry" /> class.
         /// </summary>
-        /// <param name="attacks">attacks</param>
         /// <param name="badgeUrls">badgeUrls</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="destructionPercentage">destructionPercentage</param>
         /// <param name="stars">stars</param>
+        /// <param name="attacks">attacks</param>
         /// <param name="expEarned">expEarned</param>
         /// <param name="name">name</param>
         /// <param name="tag">tag</param>
         [JsonConstructor]
-        internal WarClanLogEntry(int attacks, BadgeUrls badgeUrls, int clanLevel, float destructionPercentage, int stars, int? expEarned = default, string? name = default, string? tag = default)
+        internal WarClanLogEntry(BadgeUrls badgeUrls, int clanLevel, float destructionPercentage, int stars, int? attacks = default, int? expEarned = default, string? name = default, string? tag = default)
         {
-            Attacks = attacks;
             BadgeUrls = badgeUrls;
             ClanLevel = clanLevel;
             DestructionPercentage = destructionPercentage;
             Stars = stars;
+            Attacks = attacks;
             ExpEarned = expEarned;
             Name = name;
             Tag = tag;
@@ -54,12 +54,6 @@ namespace CocApi.Rest.Models
         }
 
         partial void OnCreated();
-
-        /// <summary>
-        /// Gets or Sets Attacks
-        /// </summary>
-        [JsonPropertyName("attacks")]
-        public int Attacks { get; }
 
         /// <summary>
         /// Gets or Sets BadgeUrls
@@ -84,6 +78,12 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("stars")]
         public int Stars { get; }
+
+        /// <summary>
+        /// Gets or Sets Attacks
+        /// </summary>
+        [JsonPropertyName("attacks")]
+        public int? Attacks { get; }
 
         /// <summary>
         /// Gets or Sets ExpEarned
@@ -111,11 +111,11 @@ namespace CocApi.Rest.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class WarClanLogEntry {\n");
-            sb.Append("  Attacks: ").Append(Attacks).Append("\n");
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  DestructionPercentage: ").Append(DestructionPercentage).Append("\n");
             sb.Append("  Stars: ").Append(Stars).Append("\n");
+            sb.Append("  Attacks: ").Append(Attacks).Append("\n");
             sb.Append("  ExpEarned: ").Append(ExpEarned).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
@@ -145,10 +145,6 @@ namespace CocApi.Rest.Models
 
             return 
                 (
-                    Attacks == input.Attacks ||
-                    Attacks.Equals(input.Attacks)
-                ) && 
-                (
                     BadgeUrls == input.BadgeUrls ||
                     (BadgeUrls != null &&
                     BadgeUrls.Equals(input.BadgeUrls))
@@ -164,6 +160,11 @@ namespace CocApi.Rest.Models
                 (
                     Stars == input.Stars ||
                     Stars.Equals(input.Stars)
+                ) && 
+                (
+                    Attacks == input.Attacks ||
+                    (Attacks != null &&
+                    Attacks.Equals(input.Attacks))
                 ) && 
                 (
                     ExpEarned == input.ExpEarned ||
@@ -191,11 +192,13 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + Attacks.GetHashCode();
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + DestructionPercentage.GetHashCode();
                 hashCode = (hashCode * 59) + Stars.GetHashCode();
+
+                if (Attacks != null)
+                    hashCode = (hashCode * 59) + Attacks.GetHashCode();
 
                 if (ExpEarned != null)
                     hashCode = (hashCode * 59) + ExpEarned.GetHashCode();
@@ -233,11 +236,11 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? attacks = default;
             BadgeUrls? badgeUrls = default;
             int? clanLevel = default;
             float? destructionPercentage = default;
             int? stars = default;
+            int? attacks = default;
             int? expEarned = default;
             string? name = default;
             string? tag = default;
@@ -257,10 +260,6 @@ namespace CocApi.Rest.Models
 
                     switch (propertyName)
                     {
-                        case "attacks":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = utf8JsonReader.GetInt32();
-                            break;
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
@@ -276,6 +275,10 @@ namespace CocApi.Rest.Models
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 stars = utf8JsonReader.GetInt32();
+                            break;
+                        case "attacks":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                attacks = utf8JsonReader.GetInt32();
                             break;
                         case "expEarned":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -293,9 +296,6 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClanLogEntry.");
-
             if (badgeUrls == null)
                 throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClanLogEntry.");
 
@@ -308,7 +308,7 @@ namespace CocApi.Rest.Models
             if (stars == null)
                 throw new ArgumentNullException(nameof(stars), "Property is required for class WarClanLogEntry.");
 
-            return new WarClanLogEntry(attacks.Value, badgeUrls, clanLevel.Value, destructionPercentage.Value, stars.Value, expEarned, name, tag);
+            return new WarClanLogEntry(badgeUrls, clanLevel.Value, destructionPercentage.Value, stars.Value, attacks, expEarned, name, tag);
         }
 
         /// <summary>
@@ -322,12 +322,16 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            writer.WriteNumber("attacks", warClanLogEntry.Attacks);
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, warClanLogEntry.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", warClanLogEntry.ClanLevel);
             writer.WriteNumber("destructionPercentage", warClanLogEntry.DestructionPercentage);
             writer.WriteNumber("stars", warClanLogEntry.Stars);
+
+            if (warClanLogEntry.Attacks != null)
+                writer.WriteNumber("attacks", warClanLogEntry.Attacks.Value);
+            else
+                writer.WriteNull("attacks");
 
             if (warClanLogEntry.ExpEarned != null)
                 writer.WriteNumber("expEarned", warClanLogEntry.ExpEarned.Value);

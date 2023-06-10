@@ -32,12 +32,10 @@ namespace CocApi.Rest.Models
         /// Initializes a new instance of the <see cref="ClanBuilderBaseRanking" /> class.
         /// </summary>
         /// <param name="clanBuilderBasePoints">clanBuilderBasePoints</param>
-        /// <param name="clanPoints">clanPoints</param>
         [JsonConstructor]
-        internal ClanBuilderBaseRanking(int clanBuilderBasePoints, int clanPoints)
+        internal ClanBuilderBaseRanking(int clanBuilderBasePoints)
         {
             ClanBuilderBasePoints = clanBuilderBasePoints;
-            ClanPoints = clanPoints;
             OnCreated();
         }
 
@@ -50,12 +48,6 @@ namespace CocApi.Rest.Models
         public int ClanBuilderBasePoints { get; }
 
         /// <summary>
-        /// Gets or Sets ClanPoints
-        /// </summary>
-        [JsonPropertyName("clanPoints")]
-        public int ClanPoints { get; }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -64,7 +56,6 @@ namespace CocApi.Rest.Models
             StringBuilder sb = new StringBuilder();
             sb.Append("class ClanBuilderBaseRanking {\n");
             sb.Append("  ClanBuilderBasePoints: ").Append(ClanBuilderBasePoints).Append("\n");
-            sb.Append("  ClanPoints: ").Append(ClanPoints).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -93,10 +84,6 @@ namespace CocApi.Rest.Models
                 (
                     ClanBuilderBasePoints == input.ClanBuilderBasePoints ||
                     ClanBuilderBasePoints.Equals(input.ClanBuilderBasePoints)
-                ) && 
-                (
-                    ClanPoints == input.ClanPoints ||
-                    ClanPoints.Equals(input.ClanPoints)
                 );
         }
 
@@ -110,7 +97,6 @@ namespace CocApi.Rest.Models
             {
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + ClanBuilderBasePoints.GetHashCode();
-                hashCode = (hashCode * 59) + ClanPoints.GetHashCode();
 
                 return hashCode;
             }
@@ -140,7 +126,6 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
             int? clanBuilderBasePoints = default;
-            int? clanPoints = default;
 
             while (utf8JsonReader.Read())
             {
@@ -162,10 +147,6 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanBuilderBasePoints = utf8JsonReader.GetInt32();
                             break;
-                        case "clanPoints":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanPoints = utf8JsonReader.GetInt32();
-                            break;
                         default:
                             break;
                     }
@@ -175,10 +156,7 @@ namespace CocApi.Rest.Models
             if (clanBuilderBasePoints == null)
                 throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class ClanBuilderBaseRanking.");
 
-            if (clanPoints == null)
-                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanBuilderBaseRanking.");
-
-            return new ClanBuilderBaseRanking(clanBuilderBasePoints.Value, clanPoints.Value);
+            return new ClanBuilderBaseRanking(clanBuilderBasePoints.Value);
         }
 
         /// <summary>
@@ -193,7 +171,6 @@ namespace CocApi.Rest.Models
             writer.WriteStartObject();
 
             writer.WriteNumber("clanBuilderBasePoints", clanBuilderBaseRanking.ClanBuilderBasePoints);
-            writer.WriteNumber("clanPoints", clanBuilderBaseRanking.ClanPoints);
 
             writer.WriteEndObject();
         }
