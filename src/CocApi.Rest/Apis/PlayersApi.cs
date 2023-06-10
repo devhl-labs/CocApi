@@ -21,7 +21,7 @@ using System.Text.Json;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IBaseApis
+namespace CocApi.Rest.IApis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -79,12 +79,12 @@ namespace CocApi.Rest.IBaseApis
     }
 }
 
-namespace CocApi.Rest.BaseApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class PlayersApi : IBaseApis.IPlayersApi
+    public sealed partial class PlayersApi : IApis.IPlayersApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 

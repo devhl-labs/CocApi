@@ -14,7 +14,7 @@ namespace CocApi.Rest.Client
         /// </summary>
         /// <typeparam name="IResult"></typeparam>
         /// <returns></returns>
-        IResult Create<IResult>() where IResult : IBaseApis.IApi;
+        IResult Create<IResult>() where IResult : IApis.IApi;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ namespace CocApi.Rest.Client
         /// </summary>
         /// <typeparam name="IResult"></typeparam>
         /// <returns></returns>
-        public IResult Create<IResult>() where IResult : IBaseApis.IApi
+        public IResult Create<IResult>() where IResult : IApis.IApi
         {
             return Services.GetRequiredService<IResult>();
         }

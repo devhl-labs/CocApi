@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.LabelsApi
+# CocApi.Rest.Apis.LabelsApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
@@ -19,7 +19,7 @@ List clan labels
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -125,7 +125,7 @@ List player labels
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 

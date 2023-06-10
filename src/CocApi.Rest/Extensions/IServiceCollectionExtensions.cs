@@ -13,7 +13,6 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using CocApi.Rest.Client;
-using CocApi.Rest.BaseApis;
 
 namespace CocApi.Rest.Extensions
 {
@@ -27,40 +26,14 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
-        public static void AddCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IServiceCollection services, Action<HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
-            where TClansApi : class, IBaseApis.IClansApi
-            where TDeveloperApi : class, IBaseApis.IDeveloperApi
-            where TGoldpassApi : class, IBaseApis.IGoldpassApi
-            where TLabelsApi : class, IBaseApis.ILabelsApi
-            where TLeaguesApi : class, IBaseApis.ILeaguesApi
-            where TLocationsApi : class, IBaseApis.ILocationsApi
-            where TPlayersApi : class, IBaseApis.IPlayersApi
+        public static void AddCocApi(this IServiceCollection services, Action<HostConfiguration> options)
         {
-            HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new(services);
+            HostConfiguration config = new(services);
             options(config);
             AddCocApi(services, config);
         }
 
-        /// <summary>
-        /// Add the api to your host builder.
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="options"></param>
-        public static void AddCocApi(this IServiceCollection services, Action<HostConfiguration<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>> options)
-        {
-            HostConfiguration<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi> config = new HostConfiguration<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>(services);
-            options(config);
-            AddCocApi(services, config);
-        }
-
-        internal static void AddCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(IServiceCollection services, HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> host)
-            where TClansApi : class, IBaseApis.IClansApi
-            where TDeveloperApi : class, IBaseApis.IDeveloperApi
-            where TGoldpassApi : class, IBaseApis.IGoldpassApi
-            where TLabelsApi : class, IBaseApis.ILabelsApi
-            where TLeaguesApi : class, IBaseApis.ILeaguesApi
-            where TLocationsApi : class, IBaseApis.ILocationsApi
-            where TPlayersApi : class, IBaseApis.IPlayersApi
+        internal static void AddCocApi(IServiceCollection services, HostConfiguration host)
         {
             if (!host.HttpClientsAdded)
                 host.AddCocApiHttpClients();

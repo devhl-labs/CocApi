@@ -21,7 +21,7 @@ using System.Text.Json;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IBaseApis
+namespace CocApi.Rest.IApis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -85,12 +85,12 @@ namespace CocApi.Rest.IBaseApis
     }
 }
 
-namespace CocApi.Rest.BaseApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class LabelsApi : IBaseApis.ILabelsApi
+    public sealed partial class LabelsApi : IApis.ILabelsApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 

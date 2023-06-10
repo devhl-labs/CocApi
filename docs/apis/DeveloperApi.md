@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.DeveloperApi
+# CocApi.Rest.Apis.DeveloperApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
@@ -19,7 +19,7 @@ Create an api token.
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -119,7 +119,7 @@ List all tokens.
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -214,7 +214,7 @@ Login to the developer portal.
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -309,7 +309,7 @@ Revoke an api token.
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 

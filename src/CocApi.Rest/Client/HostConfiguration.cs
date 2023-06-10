@@ -16,6 +16,8 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
+using CocApi.Rest.Apis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.Client
@@ -23,14 +25,7 @@ namespace CocApi.Rest.Client
     /// <summary>
     /// Provides hosting configuration for CocApi.Rest
     /// </summary>
-    public class HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>
-        where TClansApi : class, IBaseApis.IClansApi
-        where TDeveloperApi : class, IBaseApis.IDeveloperApi
-        where TGoldpassApi : class, IBaseApis.IGoldpassApi
-        where TLabelsApi : class, IBaseApis.ILabelsApi
-        where TLeaguesApi : class, IBaseApis.ILeaguesApi
-        where TLocationsApi : class, IBaseApis.ILocationsApi
-        where TPlayersApi : class, IBaseApis.IPlayersApi
+    public class HostConfiguration
     {
         private readonly IServiceCollection _services;
         private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions();
@@ -140,13 +135,13 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new WarTypeNullableConverter());
             _services.AddSingleton(new JsonSerializerOptionsProvider(_jsonOptions));
             _services.AddSingleton<IApiFactory, ApiFactory>();
-            _services.AddTransient<TClansApi, TClansApi>();
-            _services.AddTransient<TDeveloperApi, TDeveloperApi>();
-            _services.AddTransient<TGoldpassApi, TGoldpassApi>();
-            _services.AddTransient<TLabelsApi, TLabelsApi>();
-            _services.AddTransient<TLeaguesApi, TLeaguesApi>();
-            _services.AddTransient<TLocationsApi, TLocationsApi>();
-            _services.AddTransient<TPlayersApi, TPlayersApi>();
+            _services.AddTransient<IClansApi, ClansApi>();
+            _services.AddTransient<IDeveloperApi, DeveloperApi>();
+            _services.AddTransient<IGoldpassApi, GoldpassApi>();
+            _services.AddTransient<ILabelsApi, LabelsApi>();
+            _services.AddTransient<ILeaguesApi, LeaguesApi>();
+            _services.AddTransient<ILocationsApi, LocationsApi>();
+            _services.AddTransient<IPlayersApi, PlayersApi>();
         }
 
         /// <summary>
@@ -155,7 +150,7 @@ namespace CocApi.Rest.Client
         /// <param name="client"></param>
         /// <param name="builder"></param>
         /// <returns></returns>
-        public HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> AddCocApiHttpClients
+        public HostConfiguration AddCocApiHttpClients
         (
             Action<HttpClient>? client = null, Action<IHttpClientBuilder>? builder = null)
         {
@@ -164,13 +159,13 @@ namespace CocApi.Rest.Client
 
             List<IHttpClientBuilder> builders = new List<IHttpClientBuilder>();
 
-            builders.Add(_services.AddHttpClient<IBaseApis.IClansApi, TClansApi>(client));
-            builders.Add(_services.AddHttpClient<IBaseApis.IDeveloperApi, TDeveloperApi>(client));
-            builders.Add(_services.AddHttpClient<IBaseApis.IGoldpassApi, TGoldpassApi>(client));
-            builders.Add(_services.AddHttpClient<IBaseApis.ILabelsApi, TLabelsApi>(client));
-            builders.Add(_services.AddHttpClient<IBaseApis.ILeaguesApi, TLeaguesApi>(client));
-            builders.Add(_services.AddHttpClient<IBaseApis.ILocationsApi, TLocationsApi>(client));
-            builders.Add(_services.AddHttpClient<IBaseApis.IPlayersApi, TPlayersApi>(client));
+            builders.Add(_services.AddHttpClient<IClansApi, ClansApi>(client));
+            builders.Add(_services.AddHttpClient<IDeveloperApi, DeveloperApi>(client));
+            builders.Add(_services.AddHttpClient<IGoldpassApi, GoldpassApi>(client));
+            builders.Add(_services.AddHttpClient<ILabelsApi, LabelsApi>(client));
+            builders.Add(_services.AddHttpClient<ILeaguesApi, LeaguesApi>(client));
+            builders.Add(_services.AddHttpClient<ILocationsApi, LocationsApi>(client));
+            builders.Add(_services.AddHttpClient<IPlayersApi, PlayersApi>(client));
             
             if (builder != null)
                 foreach (IHttpClientBuilder instance in builders)
@@ -186,7 +181,7 @@ namespace CocApi.Rest.Client
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> ConfigureJsonOptions(Action<JsonSerializerOptions> options)
+        public HostConfiguration ConfigureJsonOptions(Action<JsonSerializerOptions> options)
         {
             options(_jsonOptions);
 
@@ -199,7 +194,7 @@ namespace CocApi.Rest.Client
         /// <typeparam name="TTokenBase"></typeparam>
         /// <param name="token"></param>
         /// <returns></returns>
-        public HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> AddTokens<TTokenBase>(TTokenBase token) where TTokenBase : TokenBase
+        public HostConfiguration AddTokens<TTokenBase>(TTokenBase token) where TTokenBase : TokenBase
         {
             return AddTokens(new TTokenBase[]{ token });
         }
@@ -210,7 +205,7 @@ namespace CocApi.Rest.Client
         /// <typeparam name="TTokenBase"></typeparam>
         /// <param name="tokens"></param>
         /// <returns></returns>
-        public HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> AddTokens<TTokenBase>(IEnumerable<TTokenBase> tokens) where TTokenBase : TokenBase
+        public HostConfiguration AddTokens<TTokenBase>(IEnumerable<TTokenBase> tokens) where TTokenBase : TokenBase
         {
             TokenContainer<TTokenBase> container = new TokenContainer<TTokenBase>(tokens);
             _services.AddSingleton(services => container);
@@ -224,7 +219,7 @@ namespace CocApi.Rest.Client
         /// <typeparam name="TTokenProvider"></typeparam>
         /// <typeparam name="TTokenBase"></typeparam>
         /// <returns></returns>
-        public HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> UseProvider<TTokenProvider, TTokenBase>() 
+        public HostConfiguration UseProvider<TTokenProvider, TTokenBase>() 
             where TTokenProvider : TokenProvider<TTokenBase>
             where TTokenBase : TokenBase
         {

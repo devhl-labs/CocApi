@@ -1,11 +1,9 @@
 #pragma warning disable CA1822 // Mark members as static
 
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 using System;
 
-namespace CocApi.Rest.BaseApis
+namespace CocApi.Rest.Apis
 {
     public partial class ClansApi
     {

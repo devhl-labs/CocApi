@@ -21,7 +21,7 @@ using System.Text.Json;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IBaseApis
+namespace CocApi.Rest.IApis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -259,12 +259,12 @@ namespace CocApi.Rest.IBaseApis
     }
 }
 
-namespace CocApi.Rest.BaseApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class ClansApi : IBaseApis.IClansApi
+    public sealed partial class ClansApi : IApis.IClansApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
