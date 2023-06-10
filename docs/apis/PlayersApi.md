@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.PlayersApi
+# CocApi.Rest.Apis.PlayersApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
@@ -19,7 +19,7 @@ Get information about a single player by player tag. Player tags can be found ei
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -121,7 +121,7 @@ Verify player API token that can be found from the game settings. This API call 
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 

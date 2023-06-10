@@ -9,10 +9,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Microsoft.Extensions.Hosting;
-using CocApi.Rest.Client;
-using CocApi.Rest.Extensions;
+using System.Threading.Tasks;
+using Xunit;
+using Microsoft.Extensions.DependencyInjection;
+using CocApi.Rest.IApis;
+using CocApi.Rest.Models;
 
 
 /* *********************************************************************************
@@ -35,26 +36,46 @@ using CocApi.Rest.Extensions;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
-    ///  Base class for API tests
+    ///  Class for testing LabelsApi
     /// </summary>
-    public class ApiTestsBase
+    public sealed class LabelsApiTests : ApiTestsBase
     {
-        protected readonly IHost _host;
+        private readonly IApis.ILabelsApi _instance;
 
-        public ApiTestsBase(string[] args)
+        public LabelsApiTests(): base(Array.Empty<string>())
         {
-            _host = CreateHostBuilder(args).Build();
+            _instance = _host.Services.GetRequiredService<IApis.ILabelsApi>();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
-            .ConfigureCocApi((context, services, options) =>
-            {
-                string apiKeyTokenValue = context.Configuration["<token>"] ?? throw new Exception("Token not found.");
-                ApiKeyToken apiKeyToken = new(apiKeyTokenValue, timeout: TimeSpan.FromSeconds(1));
-                options.AddTokens(apiKeyToken);
-            });
+        /// <summary>
+        /// Test GetClanLabels
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetClanLabelsAsyncTest()
+        {
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
+            var response = await _instance.FetchClanLabelsAsync(limit, after, before);
+            var model = response.AsModel();
+            Assert.IsType<LabelsObject>(model);
+        }
+
+        /// <summary>
+        /// Test GetPlayerLabels
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetPlayerLabelsAsyncTest()
+        {
+            int? limit = default!;
+            string? after = default!;
+            string? before = default!;
+            var response = await _instance.FetchPlayerLabelsAsync(limit, after, before);
+            var model = response.AsModel();
+            Assert.IsType<LabelsObject>(model);
+        }
     }
 }

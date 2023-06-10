@@ -4,7 +4,7 @@ using System;
 
 #pragma warning disable CA1822 // Mark members as static
 
-namespace CocApi.Rest.BaseApis
+namespace CocApi.Rest.Apis
 {
     public partial class PlayersApi
     {

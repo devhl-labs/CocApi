@@ -13,7 +13,6 @@ using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CocApi.Rest.Client;
-using CocApi.Rest.BaseApis;
 
 namespace CocApi.Rest.Extensions
 {
@@ -27,18 +26,11 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="options"></param>
-        public static IHostBuilder ConfigureCocApi<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>> options)
-            where TClansApi : class, IBaseApis.IClansApi
-            where TDeveloperApi : class, IBaseApis.IDeveloperApi
-            where TGoldpassApi : class, IBaseApis.IGoldpassApi
-            where TLabelsApi : class, IBaseApis.ILabelsApi
-            where TLeaguesApi : class, IBaseApis.ILeaguesApi
-            where TLocationsApi : class, IBaseApis.ILocationsApi
-            where TPlayersApi : class, IBaseApis.IPlayersApi
+        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration> options)
         {
             builder.ConfigureServices((context, services) => 
             {
-                HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi> config = new HostConfiguration<TClansApi, TDeveloperApi, TGoldpassApi, TLabelsApi, TLeaguesApi, TLocationsApi, TPlayersApi>(services);
+                HostConfiguration config = new HostConfiguration(services);
 
                 options(context, services, config);
 
@@ -47,13 +39,5 @@ namespace CocApi.Rest.Extensions
 
             return builder;
         }
-
-        /// <summary>
-        /// Add the api to your host builder.
-        /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="options"></param>
-        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>> options)
-            => ConfigureCocApi<ClansApi, DeveloperApi, GoldpassApi, LabelsApi, LeaguesApi, LocationsApi, PlayersApi>(builder, options);
     }
 }

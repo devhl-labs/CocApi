@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.GoldpassApi
+# CocApi.Rest.Apis.GoldpassApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
@@ -18,7 +18,7 @@ Get information about the current gold pass season.
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 

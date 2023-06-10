@@ -1,4 +1,4 @@
-# CocApi.Rest.BaseApis.LocationsApi
+# CocApi.Rest.Apis.LocationsApi
 
 All URIs are relative to *https://api.clashofclans.com/v1*
 
@@ -24,7 +24,7 @@ Get clan versus rankings for a specific location
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -132,7 +132,7 @@ Get capital rankings for a specific location
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -240,7 +240,7 @@ Get clan rankings for a specific location
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -348,7 +348,7 @@ Get information about specific location
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -450,7 +450,7 @@ List locations
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -556,7 +556,7 @@ Get player versus rankings for a specific location
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 
@@ -664,7 +664,7 @@ Get player rankings for a specific location
 ```csharp
 using System.Collections.Generic;
 using System.Diagnostics;
-using CocApi.Rest.BaseApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 

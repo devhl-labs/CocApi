@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using System.Linq;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 
 namespace CocApi.Cache.Context;
 

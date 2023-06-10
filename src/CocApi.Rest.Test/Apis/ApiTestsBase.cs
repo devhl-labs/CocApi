@@ -9,11 +9,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Xunit;
-using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IBaseApis;
-using CocApi.Rest.Models;
+using System.Security.Cryptography;
+using Microsoft.Extensions.Hosting;
+using CocApi.Rest.Client;
+using CocApi.Rest.Extensions;
 
 
 /* *********************************************************************************
@@ -36,43 +35,26 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
-    ///  Class for testing PlayersApi
+    ///  Base class for API tests
     /// </summary>
-    public sealed class PlayersApiTests : ApiTestsBase
+    public class ApiTestsBase
     {
-        private readonly IBaseApis.IPlayersApi _instance;
+        protected readonly IHost _host;
 
-        public PlayersApiTests(): base(Array.Empty<string>())
+        public ApiTestsBase(string[] args)
         {
-            _instance = _host.Services.GetRequiredService<IBaseApis.IPlayersApi>();
+            _host = CreateHostBuilder(args).Build();
         }
 
-        /// <summary>
-        /// Test GetPlayer
-        /// </summary>
-        [Fact (Skip = "not implemented")]
-        public async Task GetPlayerAsyncTest()
-        {
-            string playerTag = default!;
-            var response = await _instance.FetchPlayerAsync(playerTag);
-            var model = response.AsModel();
-            Assert.IsType<Player>(model);
-        }
-
-        /// <summary>
-        /// Test VerifyToken
-        /// </summary>
-        [Fact (Skip = "not implemented")]
-        public async Task VerifyTokenAsyncTest()
-        {
-            VerifyTokenRequest body = default!;
-            string playerTag = default!;
-            var response = await _instance.VerifyTokenAsync(body, playerTag);
-            var model = response.AsModel();
-            Assert.IsType<VerifyTokenResponse>(model);
-        }
+        public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
+            .ConfigureCocApi((context, services, options) =>
+            {
+                string apiKeyTokenValue = context.Configuration["<token>"] ?? throw new Exception("Token not found.");
+                ApiKeyToken apiKeyToken = new(apiKeyTokenValue, timeout: TimeSpan.FromSeconds(1));
+                options.AddTokens(apiKeyToken);
+            });
     }
 }

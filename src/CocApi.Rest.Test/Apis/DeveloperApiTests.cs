@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 
 
@@ -36,29 +36,65 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
-    ///  Class for testing GoldpassApi
+    ///  Class for testing DeveloperApi
     /// </summary>
-    public sealed class GoldpassApiTests : ApiTestsBase
+    public sealed class DeveloperApiTests : ApiTestsBase
     {
-        private readonly IBaseApis.IGoldpassApi _instance;
+        private readonly IApis.IDeveloperApi _instance;
 
-        public GoldpassApiTests(): base(Array.Empty<string>())
+        public DeveloperApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IBaseApis.IGoldpassApi>();
+            _instance = _host.Services.GetRequiredService<IApis.IDeveloperApi>();
         }
 
         /// <summary>
-        /// Test GetCurrentGoldPassSeason
+        /// Test Create
         /// </summary>
         [Fact (Skip = "not implemented")]
-        public async Task GetCurrentGoldPassSeasonAsyncTest()
+        public async Task CreateAsyncTest()
         {
-            var response = await _instance.FetchCurrentGoldPassSeasonAsync();
+            CreateTokenRequest createTokenRequest = default!;
+            var response = await _instance.CreateAsync(createTokenRequest);
             var model = response.AsModel();
-            Assert.IsType<GoldPassSeason>(model);
+            Assert.IsType<KeyInstance>(model);
+        }
+
+        /// <summary>
+        /// Test Keys
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task KeysAsyncTest()
+        {
+            var response = await _instance.KeysAsync();
+            var model = response.AsModel();
+            Assert.IsType<KeyList>(model);
+        }
+
+        /// <summary>
+        /// Test Login
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task LoginAsyncTest()
+        {
+            LoginCredentials loginCredentials = default!;
+            var response = await _instance.LoginAsync(loginCredentials);
+            var model = response.AsModel();
+            Assert.IsType<LoginResponse>(model);
+        }
+
+        /// <summary>
+        /// Test Revoke
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task RevokeAsyncTest()
+        {
+            Key key = default!;
+            var response = await _instance.RevokeAsync(key);
+            var model = response.AsModel();
+            Assert.IsType<KeyInstance>(model);
         }
     }
 }

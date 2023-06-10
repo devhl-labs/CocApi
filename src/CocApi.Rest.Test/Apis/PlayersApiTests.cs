@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 
 
@@ -36,46 +36,43 @@ using CocApi.Rest.Models;
 */
 
 
-namespace CocApi.Rest.Test.BaseApis
+namespace CocApi.Rest.Test.Apis
 {
     /// <summary>
-    ///  Class for testing LabelsApi
+    ///  Class for testing PlayersApi
     /// </summary>
-    public sealed class LabelsApiTests : ApiTestsBase
+    public sealed class PlayersApiTests : ApiTestsBase
     {
-        private readonly IBaseApis.ILabelsApi _instance;
+        private readonly IApis.IPlayersApi _instance;
 
-        public LabelsApiTests(): base(Array.Empty<string>())
+        public PlayersApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IBaseApis.ILabelsApi>();
+            _instance = _host.Services.GetRequiredService<IApis.IPlayersApi>();
         }
 
         /// <summary>
-        /// Test GetClanLabels
+        /// Test GetPlayer
         /// </summary>
         [Fact (Skip = "not implemented")]
-        public async Task GetClanLabelsAsyncTest()
+        public async Task GetPlayerAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
-            var response = await _instance.FetchClanLabelsAsync(limit, after, before);
+            string playerTag = default!;
+            var response = await _instance.FetchPlayerAsync(playerTag);
             var model = response.AsModel();
-            Assert.IsType<LabelsObject>(model);
+            Assert.IsType<Player>(model);
         }
 
         /// <summary>
-        /// Test GetPlayerLabels
+        /// Test VerifyToken
         /// </summary>
         [Fact (Skip = "not implemented")]
-        public async Task GetPlayerLabelsAsyncTest()
+        public async Task VerifyTokenAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
-            var response = await _instance.FetchPlayerLabelsAsync(limit, after, before);
+            VerifyTokenRequest body = default!;
+            string playerTag = default!;
+            var response = await _instance.VerifyTokenAsync(body, playerTag);
             var model = response.AsModel();
-            Assert.IsType<LabelsObject>(model);
+            Assert.IsType<VerifyTokenResponse>(model);
         }
     }
 }

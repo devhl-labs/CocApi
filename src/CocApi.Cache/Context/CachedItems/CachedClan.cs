@@ -3,7 +3,7 @@ using CocApi.Rest.Models;
 using CocApi.Rest.Client;
 using System.Threading.Tasks;
 using System.Threading;
-using CocApi.Rest.IBaseApis;
+using CocApi.Rest.IApis;
 
 namespace CocApi.Cache.Context;
 
