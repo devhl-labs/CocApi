@@ -62,14 +62,6 @@ namespace CocApi.Rest.Test.Model
         {
             // TODO unit test for the property 'ClanBuilderBasePoints'
         }
-        /// <summary>
-        /// Test the property 'ClanPoints'
-        /// </summary>
-        [Fact]
-        public void ClanPointsTest()
-        {
-            // TODO unit test for the property 'ClanPoints'
-        }
 
     }
 

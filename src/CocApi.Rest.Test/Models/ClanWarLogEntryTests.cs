@@ -55,14 +55,6 @@ namespace CocApi.Rest.Test.Model
 
 
         /// <summary>
-        /// Test the property 'AttacksPerMember'
-        /// </summary>
-        [Fact]
-        public void AttacksPerMemberTest()
-        {
-            // TODO unit test for the property 'AttacksPerMember'
-        }
-        /// <summary>
         /// Test the property 'Clan'
         /// </summary>
         [Fact]
@@ -93,6 +85,14 @@ namespace CocApi.Rest.Test.Model
         public void TeamSizeTest()
         {
             // TODO unit test for the property 'TeamSize'
+        }
+        /// <summary>
+        /// Test the property 'AttacksPerMember'
+        /// </summary>
+        [Fact]
+        public void AttacksPerMemberTest()
+        {
+            // TODO unit test for the property 'AttacksPerMember'
         }
         /// <summary>
         /// Test the property 'Result'

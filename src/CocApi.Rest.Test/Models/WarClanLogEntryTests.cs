@@ -55,14 +55,6 @@ namespace CocApi.Rest.Test.Model
 
 
         /// <summary>
-        /// Test the property 'Attacks'
-        /// </summary>
-        [Fact]
-        public void AttacksTest()
-        {
-            // TODO unit test for the property 'Attacks'
-        }
-        /// <summary>
         /// Test the property 'BadgeUrls'
         /// </summary>
         [Fact]
@@ -93,6 +85,14 @@ namespace CocApi.Rest.Test.Model
         public void StarsTest()
         {
             // TODO unit test for the property 'Stars'
+        }
+        /// <summary>
+        /// Test the property 'Attacks'
+        /// </summary>
+        [Fact]
+        public void AttacksTest()
+        {
+            // TODO unit test for the property 'Attacks'
         }
         /// <summary>
         /// Test the property 'ExpEarned'
