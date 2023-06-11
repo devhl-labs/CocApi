@@ -173,7 +173,7 @@ public sealed class NewCwlWarService : ServiceBase
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
-        DateTime since = DateTime.UtcNow.AddMonths(-2).AddDays(-DateTime.UtcNow.Day - 1); // go back to begining of month two months ago
+        DateTime since = DateTime.UtcNow.AddDays(-45); // get all cwl wars from the previous iteration
 
         List<CachedWar> cachedWars = await dbContext.Wars
             .AsNoTracking()
