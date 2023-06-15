@@ -133,8 +133,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     EndTime == input.EndTime ||
-                    (EndTime != null &&
-                    EndTime.Equals(input.EndTime))
+                    EndTime.Equals(input.EndTime)
                 ) && 
                 (
                     Opponent == input.Opponent ||

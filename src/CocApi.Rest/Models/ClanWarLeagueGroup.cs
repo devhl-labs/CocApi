@@ -122,8 +122,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Season == input.Season ||
-                    (Season != null &&
-                    Season.Equals(input.Season))
+                    Season.Equals(input.Season)
                 ) && 
                 (
                     State == input.State ||

@@ -173,8 +173,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     EndTime == input.EndTime ||
-                    (EndTime != null &&
-                    EndTime.Equals(input.EndTime))
+                    EndTime.Equals(input.EndTime)
                 ) && 
                 (
                     Opponent == input.Opponent ||
@@ -183,13 +182,15 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     PreparationStartTime == input.PreparationStartTime ||
-                    (PreparationStartTime != null &&
-                    PreparationStartTime.Equals(input.PreparationStartTime))
+                    PreparationStartTime.Equals(input.PreparationStartTime)
+                ) && 
+                (
+                    ServerExpiration == input.ServerExpiration ||
+                    ServerExpiration.Equals(input.ServerExpiration)
                 ) && 
                 (
                     StartTime == input.StartTime ||
-                    (StartTime != null &&
-                    StartTime.Equals(input.StartTime))
+                    StartTime.Equals(input.StartTime)
                 ) && 
                 (
                     TeamSize == input.TeamSize ||

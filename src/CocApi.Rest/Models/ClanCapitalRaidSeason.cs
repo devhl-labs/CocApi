@@ -282,8 +282,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     EndTime == input.EndTime ||
-                    (EndTime != null &&
-                    EndTime.Equals(input.EndTime))
+                    EndTime.Equals(input.EndTime)
                 ) && 
                 (
                     EnemyDistrictsDestroyed == input.EnemyDistrictsDestroyed ||
@@ -299,8 +298,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     StartTime == input.StartTime ||
-                    (StartTime != null &&
-                    StartTime.Equals(input.StartTime))
+                    StartTime.Equals(input.StartTime)
                 ) && 
                 (
                     State == input.State ||
