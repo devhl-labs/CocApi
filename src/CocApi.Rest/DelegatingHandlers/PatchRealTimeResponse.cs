@@ -10,8 +10,6 @@ namespace CocApi.Rest.DelegatingHandlers
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("here!");
-
             string[] realTimeEligible = new string[] { "currentwar", "warTag" };
 
             if (realTimeEligible.Any(word => request.RequestUri?.ToString().Contains(word) == true))
