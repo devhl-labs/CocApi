@@ -1,4 +1,4 @@
-﻿using CocApi.Rest.Client;
+using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 
