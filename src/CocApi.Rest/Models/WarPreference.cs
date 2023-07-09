@@ -40,10 +40,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="WarPreference"/>
+    /// Converts <see cref="WarPreference"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class WarPreferenceConverter : JsonConverter<WarPreference>
+    public static class WarPreferenceValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="WarPreference"/>
@@ -93,7 +92,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarPreference"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class WarPreferenceJsonConverter : JsonConverter<WarPreference>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -107,7 +113,7 @@ namespace CocApi.Rest.Models
 
             WarPreference? result = rawValue == null
                 ? null
-                : WarPreferenceConverter.FromStringOrDefault(rawValue);
+                : WarPreferenceValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -130,7 +136,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="WarPreference"/>
     /// </summary>
-    public class WarPreferenceNullableConverter : JsonConverter<WarPreference?>
+    public class WarPreferenceNullableJsonConverter : JsonConverter<WarPreference?>
     {
         /// <summary>
         /// Returns a WarPreference from the Json object
@@ -145,7 +151,7 @@ namespace CocApi.Rest.Models
 
             WarPreference? result = rawValue == null
                 ? null
-                : WarPreferenceConverter.FromStringOrDefault(rawValue);
+                : WarPreferenceValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

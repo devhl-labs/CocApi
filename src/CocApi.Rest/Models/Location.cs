@@ -255,13 +255,24 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, location, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="Location" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="location"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, Location location, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("id", location.Id);
             writer.WriteBoolean("isCountry", location.IsCountry);
             writer.WriteString("name", location.Name);
             writer.WriteString("countryCode", location.CountryCode);
             writer.WriteString("localizedName", location.LocalizedName);
-
-            writer.WriteEndObject();
         }
     }
 }

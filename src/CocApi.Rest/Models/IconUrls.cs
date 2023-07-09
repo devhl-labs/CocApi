@@ -210,11 +210,22 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, iconUrls, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="IconUrls" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="iconUrls"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, IconUrls iconUrls, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteString("medium", iconUrls.Medium);
             writer.WriteString("small", iconUrls.Small);
             writer.WriteString("tiny", iconUrls.Tiny);
-
-            writer.WriteEndObject();
         }
     }
 }

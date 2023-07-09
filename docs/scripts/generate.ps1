@@ -64,7 +64,7 @@ Set-Content "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-
 $appendedPropertiesYaml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
 java -jar $generator generate `
-    -g csharp-netcore `
+    -g csharp `
     -i $appendedPropertiesYaml `
     -o $($output.Path) `
     --library generichost `

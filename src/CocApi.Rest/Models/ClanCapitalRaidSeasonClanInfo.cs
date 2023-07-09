@@ -236,13 +236,24 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanCapitalRaidSeasonClanInfo, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanCapitalRaidSeasonClanInfo" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanCapitalRaidSeasonClanInfo"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonClanInfo clanCapitalRaidSeasonClanInfo, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonClanInfo.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("level", clanCapitalRaidSeasonClanInfo.Level);
             writer.WriteString("name", clanCapitalRaidSeasonClanInfo.Name);
             writer.WriteString("tag", clanCapitalRaidSeasonClanInfo.Tag);
-
-            writer.WriteEndObject();
         }
     }
 }

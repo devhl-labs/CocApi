@@ -213,11 +213,22 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, language, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="Language" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="language"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, Language language, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("id", language.Id);
             writer.WriteString("languageCode", language.LanguageCode);
             writer.WriteString("name", language.Name);
-
-            writer.WriteEndObject();
         }
     }
 }

@@ -325,6 +325,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, playerBuilderBaseRanking, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="PlayerBuilderBaseRanking" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="playerBuilderBaseRanking"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, PlayerBuilderBaseRanking playerBuilderBaseRanking, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("builderBaseLeague");
             JsonSerializer.Serialize(writer, playerBuilderBaseRanking.BuilderBaseLeague, jsonSerializerOptions);
             writer.WriteNumber("builderBaseTrophies", playerBuilderBaseRanking.BuilderBaseTrophies);
@@ -335,8 +348,6 @@ namespace CocApi.Rest.Models
             writer.WriteString("tag", playerBuilderBaseRanking.Tag);
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, playerBuilderBaseRanking.Clan, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

@@ -236,13 +236,24 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clientError, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClientError" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clientError"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClientError clientError, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("detail");
             JsonSerializer.Serialize(writer, clientError.Detail, jsonSerializerOptions);
             writer.WriteString("message", clientError.Message);
             writer.WriteString("reason", clientError.Reason);
             writer.WriteString("type", clientError.Type);
-
-            writer.WriteEndObject();
         }
     }
 }

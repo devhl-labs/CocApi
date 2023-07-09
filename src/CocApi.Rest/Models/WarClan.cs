@@ -348,6 +348,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, warClan, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="WarClan" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="warClan"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, WarClan warClan, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("attacks", warClan.Attacks);
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, warClan.BadgeUrls, jsonSerializerOptions);
@@ -359,8 +372,6 @@ namespace CocApi.Rest.Models
             writer.WriteString("name", warClan.Name);
             writer.WriteNumber("stars", warClan.Stars);
             writer.WriteString("tag", warClan.Tag);
-
-            writer.WriteEndObject();
         }
     }
 }

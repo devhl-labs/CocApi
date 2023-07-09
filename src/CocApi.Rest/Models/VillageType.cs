@@ -40,10 +40,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="VillageType"/>
+    /// Converts <see cref="VillageType"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class VillageTypeConverter : JsonConverter<VillageType>
+    public static class VillageTypeValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="VillageType"/>
@@ -93,7 +92,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="VillageType"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class VillageTypeJsonConverter : JsonConverter<VillageType>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -107,7 +113,7 @@ namespace CocApi.Rest.Models
 
             VillageType? result = rawValue == null
                 ? null
-                : VillageTypeConverter.FromStringOrDefault(rawValue);
+                : VillageTypeValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -130,7 +136,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="VillageType"/>
     /// </summary>
-    public class VillageTypeNullableConverter : JsonConverter<VillageType?>
+    public class VillageTypeNullableJsonConverter : JsonConverter<VillageType?>
     {
         /// <summary>
         /// Returns a VillageType from the Json object
@@ -145,7 +151,7 @@ namespace CocApi.Rest.Models
 
             VillageType? result = rawValue == null
                 ? null
-                : VillageTypeConverter.FromStringOrDefault(rawValue);
+                : VillageTypeValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

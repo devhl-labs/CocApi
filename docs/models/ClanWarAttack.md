@@ -9,7 +9,7 @@ Name | Type | Description | Notes
 **DestructionPercentage** | **int** |  | [optional] [readonly] 
 **Order** | **int** |  | [optional] [readonly] 
 **Stars** | **int** |  | [optional] [readonly] 
-**Duration** | **int?** |  | [optional] [readonly] 
+**Duration** | **int** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

@@ -171,10 +171,21 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, warLeagueList, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="WarLeagueList" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="warLeagueList"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, WarLeagueList warLeagueList, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("items");
             JsonSerializer.Serialize(writer, warLeagueList.Items, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

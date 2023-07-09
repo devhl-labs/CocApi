@@ -195,7 +195,7 @@ public sealed class WarService : ServiceBase
             _unmonitoredClans.Add(tag);
 
             CachedClanWar cachedClanWar = await CachedClanWar
-                .FromCurrentWarResponseAsync(tag, Options.Value.RealTime, TimeToLiveProvider, clansApi, cancellationToken)
+                .FromCurrentWarResponseAsync(tag, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), TimeToLiveProvider, clansApi, cancellationToken)
                 .ConfigureAwait(false);
 
             cachedClanWar.Added = true;

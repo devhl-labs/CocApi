@@ -175,7 +175,7 @@ public class ClansClient : ClientBase<ClansClient>
             ?? cache.First();
     }
 
-    public async Task<ClanWarLeagueGroup> GetOrFetchLeagueGroupAsync(string tag, bool? realtime = null, CancellationToken cancellationToken = default)
+    public async Task<ClanWarLeagueGroup> GetOrFetchLeagueGroupAsync(string tag, Rest.Client.Option<bool> realtime = default, CancellationToken cancellationToken = default)
     {
         string formattedTag = Clash.FormatTag(tag);
 
@@ -187,7 +187,7 @@ public class ClansClient : ClientBase<ClansClient>
             ?? (await ClansApi.FetchClanWarLeagueGroupAsync(formattedTag, realtime, cancellationToken).ConfigureAwait(false)).AsModel()!;
     }
 
-    public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, bool? realtime = null, CancellationToken cancellationToken = default)
+    public async Task<ClanWarLeagueGroup?> GetOrFetchLeagueGroupOrDefaultAsync(string tag, Rest.Client.Option<bool> realtime = default, CancellationToken cancellationToken = default)
     {
         string formattedTag = Clash.FormatTag(tag);
 
@@ -231,7 +231,7 @@ public class ClansClient : ClientBase<ClansClient>
         return war;
     }
 
-    public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, bool? realtime = null, CancellationToken cancellationToken = default)
+    public async Task<List<ClanWar>> GetOrFetchLeagueWarsAsync(ClanWarLeagueGroup group, Rest.Client.Option<bool> realtime = default, CancellationToken cancellationToken = default)
     {
         List<ClanWar> result = new();
 

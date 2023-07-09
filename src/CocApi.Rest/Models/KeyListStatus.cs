@@ -156,11 +156,22 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, keyListStatus, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="KeyListStatus" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="keyListStatus"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, KeyListStatus keyListStatus, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("code", keyListStatus.Code);
             writer.WriteString("message", keyListStatus.Message);
             writer.WriteString("detail", keyListStatus.Detail);
-
-            writer.WriteEndObject();
         }
     }
 }

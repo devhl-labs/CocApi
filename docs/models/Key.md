@@ -13,7 +13,7 @@ Name | Type | Description | Notes
 **Scopes** | **List&lt;string&gt;** |  | [optional] 
 **Tier** | **string** |  | [optional] 
 **Origins** | **string** |  | [optional] 
-**ValidUntil** | **DateTime?** |  | [optional] 
+**ValidUntil** | **DateTime** |  | [optional] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

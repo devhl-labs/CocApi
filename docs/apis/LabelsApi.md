@@ -9,7 +9,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 
 <a id="getclanlabels"></a>
 # **GetClanLabels**
-> LabelsObject GetClanLabels (int? limit = null, string? after = null, string? before = null)
+> LabelsObject GetClanLabels (int limit = null, string after = null, string before = null)
 
 List clan labels
 
@@ -37,9 +37,9 @@ namespace Example
             // config.AddApiKeyPrefix("authorization", "Bearer");
 
             var apiInstance = new LabelsApi(config);
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -82,9 +82,9 @@ catch (ApiException e)
 
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -115,7 +115,7 @@ catch (ApiException e)
 
 <a id="getplayerlabels"></a>
 # **GetPlayerLabels**
-> LabelsObject GetPlayerLabels (int? limit = null, string? after = null, string? before = null)
+> LabelsObject GetPlayerLabels (int limit = null, string after = null, string before = null)
 
 List player labels
 
@@ -143,9 +143,9 @@ namespace Example
             // config.AddApiKeyPrefix("authorization", "Bearer");
 
             var apiInstance = new LabelsApi(config);
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -188,9 +188,9 @@ catch (ApiException e)
 
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 

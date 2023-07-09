@@ -18,6 +18,9 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using CocApi.Rest.Models;
+using System.Runtime.CompilerServices;
+
+[assembly: InternalsVisibleTo("CocApi.Rest.Test")]
 
 namespace CocApi.Rest.Client
 {
@@ -120,28 +123,28 @@ namespace CocApi.Rest.Client
             if (obj is ClanCapitalRaidSeason.StateEnum clanCapitalRaidSeasonStateEnum)
                 return ClanCapitalRaidSeason.StateEnumToJsonValue(clanCapitalRaidSeasonStateEnum);
             if (obj is GroupState groupState)
-                return GroupStateConverter.ToJsonValue(groupState);
+                return GroupStateValueConverter.ToJsonValue(groupState);
             if (obj is PlayerHouseElement.TypeEnum playerHouseElementTypeEnum)
                 return PlayerHouseElement.TypeEnumToJsonValue(playerHouseElementTypeEnum);
             if (obj is RecruitingType recruitingType)
-                return RecruitingTypeConverter.ToJsonValue(recruitingType);
+                return RecruitingTypeValueConverter.ToJsonValue(recruitingType);
             if (obj is Result result)
-                return ResultConverter.ToJsonValue(result);
+                return ResultValueConverter.ToJsonValue(result);
             if (obj is Role role)
-                return RoleConverter.ToJsonValue(role);
+                return RoleValueConverter.ToJsonValue(role);
             if (obj is VillageType villageType)
-                return VillageTypeConverter.ToJsonValue(villageType);
+                return VillageTypeValueConverter.ToJsonValue(villageType);
             if (obj is WarFrequency warFrequency)
-                return WarFrequencyConverter.ToJsonValue(warFrequency);
+                return WarFrequencyValueConverter.ToJsonValue(warFrequency);
             if (obj is WarPreference warPreference)
-                return WarPreferenceConverter.ToJsonValue(warPreference);
+                return WarPreferenceValueConverter.ToJsonValue(warPreference);
             if (obj is WarState warState)
-                return WarStateConverter.ToJsonValue(warState);
+                return WarStateValueConverter.ToJsonValue(warState);
             if (obj is WarType warType)
-                return WarTypeConverter.ToJsonValue(warType);
+                return WarTypeValueConverter.ToJsonValue(warType);
             if (obj is ICollection collection)
             {
-                List<string?> entries = new List<string?>();
+                List<string?> entries = new();
                 foreach (var entry in collection)
                     entries.Add(ParameterToString(entry));
                 return string.Join(",", entries);

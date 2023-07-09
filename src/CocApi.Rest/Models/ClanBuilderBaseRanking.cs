@@ -170,9 +170,20 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            writer.WriteNumber("clanBuilderBasePoints", clanBuilderBaseRanking.ClanBuilderBasePoints);
-
+            WriteProperties(ref writer, clanBuilderBaseRanking, jsonSerializerOptions);
             writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanBuilderBaseRanking" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanBuilderBaseRanking"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanBuilderBaseRanking clanBuilderBaseRanking, JsonSerializerOptions jsonSerializerOptions)
+        {
+            writer.WriteNumber("clanBuilderBasePoints", clanBuilderBaseRanking.ClanBuilderBasePoints);
         }
     }
 }

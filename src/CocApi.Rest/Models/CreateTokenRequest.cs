@@ -159,12 +159,23 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, createTokenRequest, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="CreateTokenRequest" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="createTokenRequest"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, CreateTokenRequest createTokenRequest, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("cidrRanges");
             JsonSerializer.Serialize(writer, createTokenRequest.CidrRanges, jsonSerializerOptions);
             writer.WriteString("description", createTokenRequest.Description);
             writer.WriteString("name", createTokenRequest.Name);
-
-            writer.WriteEndObject();
         }
     }
 }

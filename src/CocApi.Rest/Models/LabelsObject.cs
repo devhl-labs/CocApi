@@ -171,10 +171,21 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, labelsObject, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="LabelsObject" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="labelsObject"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, LabelsObject labelsObject, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("items");
             JsonSerializer.Serialize(writer, labelsObject.Items, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

@@ -83,7 +83,7 @@ public class TestService : IHostedService
         ApiResponse<ClanWarLog> warLogResponse = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         ClanWarLog? warLog = warLogResponse.AsModel();
 
-        ApiResponse<ClanList> clansResponse = await ClansApi.SearchClansAsync(name: "fysb");
+        ApiResponse<ClanList> clansResponse = await ClansApi.SearchClansAsync(name: new Option<string>("fysb"));
         ClanList? clans = clansResponse.AsModel();
 
         ApiResponse<ClanCapitalRaidSeasons> clanCapitalRaidSeasonsResponse = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");

@@ -65,10 +65,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="WarFrequency"/>
+    /// Converts <see cref="WarFrequency"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class WarFrequencyConverter : JsonConverter<WarFrequency>
+    public static class WarFrequencyValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="WarFrequency"/>
@@ -163,7 +162,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarFrequency"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class WarFrequencyJsonConverter : JsonConverter<WarFrequency>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -177,7 +183,7 @@ namespace CocApi.Rest.Models
 
             WarFrequency? result = rawValue == null
                 ? null
-                : WarFrequencyConverter.FromStringOrDefault(rawValue);
+                : WarFrequencyValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -200,7 +206,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="WarFrequency"/>
     /// </summary>
-    public class WarFrequencyNullableConverter : JsonConverter<WarFrequency?>
+    public class WarFrequencyNullableJsonConverter : JsonConverter<WarFrequency?>
     {
         /// <summary>
         /// Returns a WarFrequency from the Json object
@@ -215,7 +221,7 @@ namespace CocApi.Rest.Models
 
             WarFrequency? result = rawValue == null
                 ? null
-                : WarFrequencyConverter.FromStringOrDefault(rawValue);
+                : WarFrequencyValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

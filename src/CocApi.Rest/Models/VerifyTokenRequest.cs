@@ -126,9 +126,20 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            writer.WriteString("token", verifyTokenRequest.Token);
-
+            WriteProperties(ref writer, verifyTokenRequest, jsonSerializerOptions);
             writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="VerifyTokenRequest" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="verifyTokenRequest"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, VerifyTokenRequest verifyTokenRequest, JsonSerializerOptions jsonSerializerOptions)
+        {
+            writer.WriteString("token", verifyTokenRequest.Token);
         }
     }
 }

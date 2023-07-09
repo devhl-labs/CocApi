@@ -214,12 +214,23 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, playerRankingClan, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="PlayerRankingClan" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="playerRankingClan"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, PlayerRankingClan playerRankingClan, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, playerRankingClan.BadgeUrls, jsonSerializerOptions);
             writer.WriteString("name", playerRankingClan.Name);
             writer.WriteString("tag", playerRankingClan.Tag);
-
-            writer.WriteEndObject();
         }
     }
 }

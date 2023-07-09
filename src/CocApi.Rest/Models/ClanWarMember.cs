@@ -296,6 +296,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanWarMember, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanWarMember" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanWarMember"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarMember clanWarMember, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("mapPosition", clanWarMember.MapPosition);
             writer.WriteString("name", clanWarMember.Name);
             writer.WriteNumber("opponentAttacks", clanWarMember.OpponentAttacks);
@@ -305,8 +318,6 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clanWarMember.Attacks, jsonSerializerOptions);
             writer.WritePropertyName("bestOpponentAttack");
             JsonSerializer.Serialize(writer, clanWarMember.BestOpponentAttack, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

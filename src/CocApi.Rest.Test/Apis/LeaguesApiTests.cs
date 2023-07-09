@@ -68,9 +68,9 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task GetBuilderBaseLeaguesAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchBuilderBaseLeaguesAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<BuilderBaseLeagueList>(model);
@@ -94,9 +94,9 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task GetCapitalLeaguesAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchCapitalLeaguesAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<CapitalLeagueObject>(model);
@@ -122,9 +122,9 @@ namespace CocApi.Rest.Test.Apis
         {
             string leagueId = default!;
             string seasonId = default!;
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchLeagueSeasonRankingsAsync(leagueId, seasonId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<PlayerRankingList>(model);
@@ -137,9 +137,9 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetLeagueSeasonsAsyncTest()
         {
             string leagueId = default!;
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchLeagueSeasonsAsync(leagueId, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<LeagueSeasonList>(model);
@@ -151,9 +151,9 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task GetLeaguesAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchLeaguesAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<LeagueList>(model);
@@ -177,9 +177,9 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task GetWarLeaguesAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchWarLeaguesAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<WarLeagueList>(model);

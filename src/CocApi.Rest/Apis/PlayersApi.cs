@@ -125,14 +125,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetPlayer(string playerTag)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (playerTag == null)
                 throw new ArgumentNullException(nameof(playerTag));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -142,16 +136,19 @@ namespace CocApi.Rest.Apis
         /// <param name="playerTag"></param>
         private void AfterFetchPlayerDefaultImplementation(ApiResponse<Player> apiResponseLocalVar, string playerTag)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchPlayer(apiResponseLocalVar, playerTag);
+            bool suppressDefaultLog = false;
+            AfterFetchPlayer(ref suppressDefaultLog, apiResponseLocalVar, playerTag);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="playerTag"></param>
-        partial void AfterFetchPlayer(ApiResponse<Player> apiResponseLocalVar, string playerTag);
+        partial void AfterFetchPlayer(ref bool suppressDefaultLog, ApiResponse<Player> apiResponseLocalVar, string playerTag);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -274,17 +271,11 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateVerifyToken(VerifyTokenRequest body, string playerTag)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (body == null)
                 throw new ArgumentNullException(nameof(body));
 
             if (playerTag == null)
                 throw new ArgumentNullException(nameof(playerTag));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -295,17 +286,20 @@ namespace CocApi.Rest.Apis
         /// <param name="playerTag"></param>
         private void AfterVerifyTokenDefaultImplementation(ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterVerifyToken(apiResponseLocalVar, body, playerTag);
+            bool suppressDefaultLog = false;
+            AfterVerifyToken(ref suppressDefaultLog, apiResponseLocalVar, body, playerTag);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        partial void AfterVerifyToken(ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag);
+        partial void AfterVerifyToken(ref bool suppressDefaultLog, ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -396,7 +390,7 @@ namespace CocApi.Rest.Apis
 
                     string? contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
 
-                    if (contentTypeLocalVar != null)
+                    if (contentTypeLocalVar != null && httpRequestMessageLocalVar.Content != null)
                         httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
 
                     string[] acceptLocalVars = new string[] {

@@ -45,10 +45,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="Result"/>
+    /// Converts <see cref="Result"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class ResultConverter : JsonConverter<Result>
+    public static class ResultValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="Result"/>
@@ -107,7 +106,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="Result"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class ResultJsonConverter : JsonConverter<Result>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -121,7 +127,7 @@ namespace CocApi.Rest.Models
 
             Result? result = rawValue == null
                 ? null
-                : ResultConverter.FromStringOrDefault(rawValue);
+                : ResultValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -144,7 +150,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="Result"/>
     /// </summary>
-    public class ResultNullableConverter : JsonConverter<Result?>
+    public class ResultNullableJsonConverter : JsonConverter<Result?>
     {
         /// <summary>
         /// Returns a Result from the Json object
@@ -159,7 +165,7 @@ namespace CocApi.Rest.Models
 
             Result? result = rawValue == null
                 ? null
-                : ResultConverter.FromStringOrDefault(rawValue);
+                : ResultValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

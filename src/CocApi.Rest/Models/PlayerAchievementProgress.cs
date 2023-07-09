@@ -259,7 +259,7 @@ namespace CocApi.Rest.Models
                             string? villageRawValue = utf8JsonReader.GetString();
                             village = villageRawValue == null
                                 ? null
-                                : VillageTypeConverter.FromStringOrDefault(villageRawValue);
+                                : VillageTypeValueConverter.FromStringOrDefault(villageRawValue);
                             break;
                         case "completionInfo":
                             completionInfo = utf8JsonReader.GetString();
@@ -302,12 +302,25 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, playerAchievementProgress, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="PlayerAchievementProgress" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="playerAchievementProgress"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, PlayerAchievementProgress playerAchievementProgress, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteString("info", playerAchievementProgress.Info);
             writer.WriteString("name", playerAchievementProgress.Name);
             writer.WriteNumber("stars", playerAchievementProgress.Stars);
             writer.WriteNumber("target", playerAchievementProgress.Target);
             writer.WriteNumber("value", playerAchievementProgress.Value);
-            var villageRawValue = VillageTypeConverter.ToJsonValue(playerAchievementProgress.Village);
+            var villageRawValue = VillageTypeValueConverter.ToJsonValue(playerAchievementProgress.Village);
 
             if (villageRawValue != null)
                 writer.WriteString("village", villageRawValue);
@@ -315,8 +328,6 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("village");
 
             writer.WriteString("completionInfo", playerAchievementProgress.CompletionInfo);
-
-            writer.WriteEndObject();
         }
     }
 }

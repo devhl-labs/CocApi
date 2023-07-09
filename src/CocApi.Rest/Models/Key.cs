@@ -272,6 +272,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, key, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="Key" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="key"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, Key key, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("cidrRanges");
             JsonSerializer.Serialize(writer, key.CidrRanges, jsonSerializerOptions);
             writer.WriteString("description", key.Description);
@@ -288,8 +301,6 @@ namespace CocApi.Rest.Models
                 writer.WriteString("validUntil", key.ValidUntil.Value.ToString(ValidUntilFormat));
             else
                 writer.WriteNull("validUntil");
-
-            writer.WriteEndObject();
         }
     }
 }

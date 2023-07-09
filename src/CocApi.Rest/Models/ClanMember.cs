@@ -384,7 +384,7 @@ namespace CocApi.Rest.Models
                             string? roleRawValue = utf8JsonReader.GetString();
                             role = roleRawValue == null
                                 ? null
-                                : RoleConverter.FromStringOrDefault(roleRawValue);
+                                : RoleValueConverter.FromStringOrDefault(roleRawValue);
                             break;
                         default:
                             break;
@@ -436,6 +436,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanMember, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanMember" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanMember"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanMember clanMember, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("builderBaseTrophies", clanMember.BuilderBaseTrophies);
             writer.WriteNumber("clanRank", clanMember.ClanRank);
             writer.WriteNumber("donations", clanMember.Donations);
@@ -456,14 +469,12 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("role");
             else
             {
-                var roleRawValue = RoleConverter.ToJsonValue(clanMember.Role.Value);
+                var roleRawValue = RoleValueConverter.ToJsonValue(clanMember.Role.Value);
                 if (roleRawValue != null)
                     writer.WriteString("role", roleRawValue);
                 else
                     writer.WriteNull("role");
             }
-
-            writer.WriteEndObject();
         }
     }
 }

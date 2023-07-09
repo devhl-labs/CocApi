@@ -346,6 +346,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanCapitalRanking, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanCapitalRanking" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanCapitalRanking"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRanking clanCapitalRanking, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanCapitalRanking.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanCapitalPoints", clanCapitalRanking.ClanCapitalPoints);
@@ -357,8 +370,6 @@ namespace CocApi.Rest.Models
             writer.WriteString("tag", clanCapitalRanking.Tag);
             writer.WritePropertyName("location");
             JsonSerializer.Serialize(writer, clanCapitalRanking.Location, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

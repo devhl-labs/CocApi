@@ -92,8 +92,7 @@ namespace CocApi.Rest.Models
             return 
                 (
                     CapitalHallLevel == input.CapitalHallLevel ||
-                    (CapitalHallLevel != null &&
-                    CapitalHallLevel.Equals(input.CapitalHallLevel))
+                    CapitalHallLevel.Equals(input.CapitalHallLevel)
                 ) && 
                 (
                     Districts == input.Districts ||
@@ -192,6 +191,20 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanCapital, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanCapital" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanCapital"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapital clanCapital, JsonSerializerOptions jsonSerializerOptions)
+        {
+
             if (clanCapital.CapitalHallLevel != null)
                 writer.WriteNumber("capitalHallLevel", clanCapital.CapitalHallLevel.Value);
             else
@@ -199,8 +212,6 @@ namespace CocApi.Rest.Models
 
             writer.WritePropertyName("districts");
             JsonSerializer.Serialize(writer, clanCapital.Districts, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

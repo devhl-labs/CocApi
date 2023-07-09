@@ -56,9 +56,9 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task GetClanLabelsAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchClanLabelsAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<LabelsObject>(model);
@@ -70,9 +70,9 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task GetPlayerLabelsAsyncTest()
         {
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchPlayerLabelsAsync(limit, after, before);
             var model = response.AsModel();
             Assert.IsType<LabelsObject>(model);

@@ -213,11 +213,22 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanDistrictData, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanDistrictData" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanDistrictData"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanDistrictData clanDistrictData, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("districtHallLevel", clanDistrictData.DistrictHallLevel);
             writer.WriteNumber("id", clanDistrictData.Id);
             writer.WriteString("name", clanDistrictData.Name);
-
-            writer.WriteEndObject();
         }
     }
 }

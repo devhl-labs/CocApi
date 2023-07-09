@@ -105,13 +105,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Id == input.Id ||
-                    (Id != null &&
-                    Id.Equals(input.Id))
+                    Id.Equals(input.Id)
                 ) && 
                 (
                     Rank == input.Rank ||
-                    (Rank != null &&
-                    Rank.Equals(input.Rank))
+                    Rank.Equals(input.Rank)
                 );
         }
 
@@ -218,6 +216,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, legendLeagueTournamentSeasonResult, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="LegendLeagueTournamentSeasonResult" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="legendLeagueTournamentSeasonResult"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, LegendLeagueTournamentSeasonResult legendLeagueTournamentSeasonResult, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("trophies", legendLeagueTournamentSeasonResult.Trophies);
 
             if (legendLeagueTournamentSeasonResult.Id != null)
@@ -229,8 +240,6 @@ namespace CocApi.Rest.Models
                 writer.WriteNumber("rank", legendLeagueTournamentSeasonResult.Rank.Value);
             else
                 writer.WriteNull("rank");
-
-            writer.WriteEndObject();
         }
     }
 }

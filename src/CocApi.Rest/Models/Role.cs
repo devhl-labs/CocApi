@@ -50,10 +50,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="Role"/>
+    /// Converts <see cref="Role"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class RoleConverter : JsonConverter<Role>
+    public static class RoleValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="Role"/>
@@ -121,7 +120,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="Role"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class RoleJsonConverter : JsonConverter<Role>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -135,7 +141,7 @@ namespace CocApi.Rest.Models
 
             Role? result = rawValue == null
                 ? null
-                : RoleConverter.FromStringOrDefault(rawValue);
+                : RoleValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -158,7 +164,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="Role"/>
     /// </summary>
-    public class RoleNullableConverter : JsonConverter<Role?>
+    public class RoleNullableJsonConverter : JsonConverter<Role?>
     {
         /// <summary>
         /// Returns a Role from the Json object
@@ -173,7 +179,7 @@ namespace CocApi.Rest.Models
 
             Role? result = rawValue == null
                 ? null
-                : RoleConverter.FromStringOrDefault(rawValue);
+                : RoleValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

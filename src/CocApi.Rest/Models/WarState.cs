@@ -50,10 +50,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="WarState"/>
+    /// Converts <see cref="WarState"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class WarStateConverter : JsonConverter<WarState>
+    public static class WarStateValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="WarState"/>
@@ -121,7 +120,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="WarState"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class WarStateJsonConverter : JsonConverter<WarState>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -135,7 +141,7 @@ namespace CocApi.Rest.Models
 
             WarState? result = rawValue == null
                 ? null
-                : WarStateConverter.FromStringOrDefault(rawValue);
+                : WarStateValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -158,7 +164,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="WarState"/>
     /// </summary>
-    public class WarStateNullableConverter : JsonConverter<WarState?>
+    public class WarStateNullableJsonConverter : JsonConverter<WarState?>
     {
         /// <summary>
         /// Returns a WarState from the Json object
@@ -173,7 +179,7 @@ namespace CocApi.Rest.Models
 
             WarState? result = rawValue == null
                 ? null
-                : WarStateConverter.FromStringOrDefault(rawValue);
+                : WarStateValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

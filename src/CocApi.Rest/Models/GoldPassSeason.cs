@@ -191,10 +191,21 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, goldPassSeason, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="GoldPassSeason" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="goldPassSeason"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, GoldPassSeason goldPassSeason, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteString("endTime", goldPassSeason.EndTime);
             writer.WriteString("startTime", goldPassSeason.StartTime);
-
-            writer.WriteEndObject();
         }
     }
 }

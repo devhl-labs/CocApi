@@ -143,10 +143,21 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, loginResponse, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="LoginResponse" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="loginResponse"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, LoginResponse loginResponse, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("sessionExpiresInSeconds", loginResponse.SessionExpiresInSeconds);
             writer.WriteString("temporaryAPIToken", loginResponse.TemporaryAPIToken);
-
-            writer.WriteEndObject();
         }
     }
 }

@@ -150,8 +150,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Duration == input.Duration ||
-                    (Duration != null &&
-                    Duration.Equals(input.Duration))
+                    Duration.Equals(input.Duration)
                 );
         }
 
@@ -279,6 +278,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanWarAttack, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanWarAttack" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanWarAttack"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarAttack clanWarAttack, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteString("attackerTag", clanWarAttack.AttackerTag);
             writer.WriteString("defenderTag", clanWarAttack.DefenderTag);
             writer.WriteNumber("destructionPercentage", clanWarAttack.DestructionPercentage);
@@ -289,8 +301,6 @@ namespace CocApi.Rest.Models
                 writer.WriteNumber("duration", clanWarAttack.Duration.Value);
             else
                 writer.WriteNull("duration");
-
-            writer.WriteEndObject();
         }
     }
 }

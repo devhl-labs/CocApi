@@ -282,6 +282,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, playerLegendStatistics, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="PlayerLegendStatistics" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="playerLegendStatistics"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, PlayerLegendStatistics playerLegendStatistics, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("currentSeason");
             JsonSerializer.Serialize(writer, playerLegendStatistics.CurrentSeason, jsonSerializerOptions);
             writer.WriteNumber("legendTrophies", playerLegendStatistics.LegendTrophies);
@@ -293,8 +306,6 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, playerLegendStatistics.PreviousBuilderBaseSeason, jsonSerializerOptions);
             writer.WritePropertyName("previousSeason");
             JsonSerializer.Serialize(writer, playerLegendStatistics.PreviousSeason, jsonSerializerOptions);
-
-            writer.WriteEndObject();
         }
     }
 }

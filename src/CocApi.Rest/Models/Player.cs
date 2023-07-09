@@ -428,8 +428,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     BuilderHallLevel == input.BuilderHallLevel ||
-                    (BuilderHallLevel != null &&
-                    BuilderHallLevel.Equals(input.BuilderHallLevel))
+                    BuilderHallLevel.Equals(input.BuilderHallLevel)
                 ) && 
                 (
                     Clan == input.Clan ||
@@ -457,13 +456,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     TownHallWeaponLevel == input.TownHallWeaponLevel ||
-                    (TownHallWeaponLevel != null &&
-                    TownHallWeaponLevel.Equals(input.TownHallWeaponLevel))
+                    TownHallWeaponLevel.Equals(input.TownHallWeaponLevel)
                 ) && 
                 (
                     VersusBattleWinCount == input.VersusBattleWinCount ||
-                    (VersusBattleWinCount != null &&
-                    VersusBattleWinCount.Equals(input.VersusBattleWinCount))
+                    VersusBattleWinCount.Equals(input.VersusBattleWinCount)
                 ) && 
                 (
                     WarPreference == input.WarPreference ||
@@ -705,7 +702,7 @@ namespace CocApi.Rest.Models
                             string? roleRawValue = utf8JsonReader.GetString();
                             role = roleRawValue == null
                                 ? null
-                                : RoleConverter.FromStringOrDefault(roleRawValue);
+                                : RoleValueConverter.FromStringOrDefault(roleRawValue);
                             break;
                         case "townHallWeaponLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -719,7 +716,7 @@ namespace CocApi.Rest.Models
                             string? warPreferenceRawValue = utf8JsonReader.GetString();
                             warPreference = warPreferenceRawValue == null
                                 ? null
-                                : WarPreferenceConverter.FromStringOrDefault(warPreferenceRawValue);
+                                : WarPreferenceValueConverter.FromStringOrDefault(warPreferenceRawValue);
                             break;
                         default:
                             break;
@@ -798,6 +795,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, player, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="Player" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="player"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, Player player, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("achievements");
             JsonSerializer.Serialize(writer, player.Achievements, jsonSerializerOptions);
             writer.WriteNumber("attackWins", player.AttackWins);
@@ -843,7 +853,7 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("role");
             else
             {
-                var roleRawValue = RoleConverter.ToJsonValue(player.Role.Value);
+                var roleRawValue = RoleValueConverter.ToJsonValue(player.Role.Value);
                 if (roleRawValue != null)
                     writer.WriteString("role", roleRawValue);
                 else
@@ -864,14 +874,12 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("warPreference");
             else
             {
-                var warPreferenceRawValue = WarPreferenceConverter.ToJsonValue(player.WarPreference.Value);
+                var warPreferenceRawValue = WarPreferenceValueConverter.ToJsonValue(player.WarPreference.Value);
                 if (warPreferenceRawValue != null)
                     writer.WriteString("warPreference", warPreferenceRawValue);
                 else
                     writer.WriteNull("warPreference");
             }
-
-            writer.WriteEndObject();
         }
     }
 }

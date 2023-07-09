@@ -64,7 +64,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeagueList&gt;&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List Builder Base leagues
@@ -77,7 +77,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get capital league information
@@ -114,7 +114,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;CapitalLeagueObject&gt;&gt;</returns>
-        Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List capital leagues
@@ -127,7 +127,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;CapitalLeagueObject&gt;?&gt;</returns>
-        Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league information
@@ -166,7 +166,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;PlayerRankingList&gt;&gt;</returns>
-        Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league season rankings
@@ -181,7 +181,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;PlayerRankingList&gt;?&gt;</returns>
-        Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league seasons
@@ -196,7 +196,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LeagueSeasonList&gt;&gt;</returns>
-        Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league seasons
@@ -210,7 +210,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;LeagueSeasonList&gt;?&gt;</returns>
-        Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List leagues
@@ -224,7 +224,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LeagueList&gt;&gt;</returns>
-        Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LeagueList>> FetchLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List leagues
@@ -237,7 +237,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;LeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get war league information
@@ -274,7 +274,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;WarLeagueList&gt;&gt;</returns>
-        Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List war leagues
@@ -287,7 +287,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;WarLeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -337,14 +337,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetBuilderBaseLeague(string leagueId)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -354,16 +348,19 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void AfterFetchBuilderBaseLeagueDefaultImplementation(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchBuilderBaseLeague(apiResponseLocalVar, leagueId);
+            bool suppressDefaultLog = false;
+            AfterFetchBuilderBaseLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchBuilderBaseLeague(ref bool suppressDefaultLog, ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -476,19 +473,21 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetBuilderBaseLeagues(ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetBuilderBaseLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchBuilderBaseLeaguesDefaultImplementation(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        /// <returns></returns>
+        private void ValidateGetBuilderBaseLeagues(Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchBuilderBaseLeagues(apiResponseLocalVar, limit, after, before);
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -498,7 +497,23 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, int? limit, string? after, string? before);
+        private void AfterFetchBuilderBaseLeaguesDefaultImplementation(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        {
+            bool suppressDefaultLog = false;
+            AfterFetchBuilderBaseLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchBuilderBaseLeagues(ref bool suppressDefaultLog, ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -509,7 +524,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchBuilderBaseLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchBuilderBaseLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchBuilderBaseLeagues(exception, pathFormat, path, limit, after, before);
@@ -524,7 +539,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchBuilderBaseLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
+        partial void OnErrorFetchBuilderBaseLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List Builder Base leagues List Builder Base leagues
@@ -534,7 +549,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -555,12 +570,14 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateGetBuilderBaseLeagues(after, before);
+
                 FormatGetBuilderBaseLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -572,14 +589,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -638,14 +655,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetCapitalLeague(string leagueId)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -655,16 +666,19 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void AfterFetchCapitalLeagueDefaultImplementation(ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchCapitalLeague(apiResponseLocalVar, leagueId);
+            bool suppressDefaultLog = false;
+            AfterFetchCapitalLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchCapitalLeague(ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchCapitalLeague(ref bool suppressDefaultLog, ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -777,19 +791,21 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetCapitalLeagues(ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetCapitalLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchCapitalLeaguesDefaultImplementation(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, int? limit, string? after, string? before)
+        /// <returns></returns>
+        private void ValidateGetCapitalLeagues(Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchCapitalLeagues(apiResponseLocalVar, limit, after, before);
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -799,7 +815,23 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchCapitalLeagues(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, int? limit, string? after, string? before);
+        private void AfterFetchCapitalLeaguesDefaultImplementation(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        {
+            bool suppressDefaultLog = false;
+            AfterFetchCapitalLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchCapitalLeagues(ref bool suppressDefaultLog, ApiResponse<CapitalLeagueObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -810,7 +842,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchCapitalLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchCapitalLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchCapitalLeagues(exception, pathFormat, path, limit, after, before);
@@ -825,7 +857,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
+        partial void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List capital leagues List capital leagues
@@ -835,7 +867,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
-        public async Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -856,12 +888,14 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
-        public async Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateGetCapitalLeagues(after, before);
+
                 FormatGetCapitalLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -873,14 +907,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -939,14 +973,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetLeague(string leagueId)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -956,16 +984,19 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void AfterFetchLeagueDefaultImplementation(ApiResponse<League> apiResponseLocalVar, string leagueId)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchLeague(apiResponseLocalVar, leagueId);
+            bool suppressDefaultLog = false;
+            AfterFetchLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchLeague(ApiResponse<League> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchLeague(ref bool suppressDefaultLog, ApiResponse<League> apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1078,27 +1109,29 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetLeagueSeasonRankings(ref string leagueId, ref string seasonId, ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetLeagueSeasonRankings(ref string leagueId, ref string seasonId, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
         /// <returns></returns>
-        private void ValidateGetLeagueSeasonRankings(string leagueId, string seasonId)
+        private void ValidateGetLeagueSeasonRankings(string leagueId, string seasonId, Option<string> after, Option<string> before)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
             if (seasonId == null)
                 throw new ArgumentNullException(nameof(seasonId));
 
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -1110,22 +1143,25 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchLeagueSeasonRankingsDefaultImplementation(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, int? limit, string? after, string? before)
+        private void AfterFetchLeagueSeasonRankingsDefaultImplementation(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchLeagueSeasonRankings(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
+            bool suppressDefaultLog = false;
+            AfterFetchLeagueSeasonRankings(ref suppressDefaultLog, apiResponseLocalVar, leagueId, seasonId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchLeagueSeasonRankings(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, int? limit, string? after, string? before);
+        partial void AfterFetchLeagueSeasonRankings(ref bool suppressDefaultLog, ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1138,7 +1174,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchLeagueSeasonRankingsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before)
+        private void OnErrorFetchLeagueSeasonRankingsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchLeagueSeasonRankings(exception, pathFormat, path, leagueId, seasonId, limit, after, before);
@@ -1155,7 +1191,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, int? limit, string? after, string? before);
+        partial void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get league season rankings Get league season rankings. Note that league season information is available only for Legend League. 
@@ -1167,7 +1203,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
-        public async Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1190,13 +1226,13 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
-        public async Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                ValidateGetLeagueSeasonRankings(leagueId, seasonId);
+                ValidateGetLeagueSeasonRankings(leagueId, seasonId, after, before);
 
                 FormatGetLeagueSeasonRankings(ref leagueId, ref seasonId, ref limit, ref after, ref before);
 
@@ -1211,14 +1247,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1268,23 +1304,25 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetLeagueSeasons(ref string leagueId, ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetLeagueSeasons(ref string leagueId, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="leagueId"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
         /// <returns></returns>
-        private void ValidateGetLeagueSeasons(string leagueId)
+        private void ValidateGetLeagueSeasons(string leagueId, Option<string> after, Option<string> before)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
 
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -1295,21 +1333,24 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchLeagueSeasonsDefaultImplementation(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, int? limit, string? after, string? before)
+        private void AfterFetchLeagueSeasonsDefaultImplementation(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchLeagueSeasons(apiResponseLocalVar, leagueId, limit, after, before);
+            bool suppressDefaultLog = false;
+            AfterFetchLeagueSeasons(ref suppressDefaultLog, apiResponseLocalVar, leagueId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchLeagueSeasons(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, int? limit, string? after, string? before);
+        partial void AfterFetchLeagueSeasons(ref bool suppressDefaultLog, ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1321,7 +1362,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchLeagueSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, int? limit, string? after, string? before)
+        private void OnErrorFetchLeagueSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchLeagueSeasons(exception, pathFormat, path, leagueId, limit, after, before);
@@ -1337,7 +1378,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagueSeasons(Exception exception, string pathFormat, string path, string leagueId, int? limit, string? after, string? before);
+        partial void OnErrorFetchLeagueSeasons(Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get league seasons Get league seasons. Note that league season information is available only for Legend League. 
@@ -1348,7 +1389,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
-        public async Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1370,13 +1411,13 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
-        public async Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                ValidateGetLeagueSeasons(leagueId);
+                ValidateGetLeagueSeasons(leagueId, after, before);
 
                 FormatGetLeagueSeasons(ref leagueId, ref limit, ref after, ref before);
 
@@ -1390,14 +1431,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1447,19 +1488,21 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetLeagues(ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchLeaguesDefaultImplementation(ApiResponse<LeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        /// <returns></returns>
+        private void ValidateGetLeagues(Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchLeagues(apiResponseLocalVar, limit, after, before);
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -1469,7 +1512,23 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchLeagues(ApiResponse<LeagueList> apiResponseLocalVar, int? limit, string? after, string? before);
+        private void AfterFetchLeaguesDefaultImplementation(ApiResponse<LeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        {
+            bool suppressDefaultLog = false;
+            AfterFetchLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchLeagues(ref bool suppressDefaultLog, ApiResponse<LeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1480,7 +1539,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchLeagues(exception, pathFormat, path, limit, after, before);
@@ -1495,7 +1554,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
+        partial void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List leagues List leagues
@@ -1505,7 +1564,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
-        public async Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1526,12 +1585,14 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
-        public async Task<ApiResponse<LeagueList>> FetchLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LeagueList>> FetchLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateGetLeagues(after, before);
+
                 FormatGetLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -1543,14 +1604,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1609,14 +1670,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetWarLeague(string leagueId)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (leagueId == null)
                 throw new ArgumentNullException(nameof(leagueId));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1626,16 +1681,19 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void AfterFetchWarLeagueDefaultImplementation(ApiResponse<WarLeague> apiResponseLocalVar, string leagueId)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchWarLeague(apiResponseLocalVar, leagueId);
+            bool suppressDefaultLog = false;
+            AfterFetchWarLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchWarLeague(ApiResponse<WarLeague> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchWarLeague(ref bool suppressDefaultLog, ApiResponse<WarLeague> apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1748,19 +1806,21 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetWarLeagues(ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetWarLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchWarLeaguesDefaultImplementation(ApiResponse<WarLeagueList> apiResponseLocalVar, int? limit, string? after, string? before)
+        /// <returns></returns>
+        private void ValidateGetWarLeagues(Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchWarLeagues(apiResponseLocalVar, limit, after, before);
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -1770,7 +1830,23 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchWarLeagues(ApiResponse<WarLeagueList> apiResponseLocalVar, int? limit, string? after, string? before);
+        private void AfterFetchWarLeaguesDefaultImplementation(ApiResponse<WarLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        {
+            bool suppressDefaultLog = false;
+            AfterFetchWarLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchWarLeagues(ref bool suppressDefaultLog, ApiResponse<WarLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1781,7 +1857,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchWarLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchWarLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchWarLeagues(exception, pathFormat, path, limit, after, before);
@@ -1796,7 +1872,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
+        partial void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List war leagues List war leagues
@@ -1806,7 +1882,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
-        public async Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1827,12 +1903,14 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
-        public async Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateGetWarLeagues(after, before);
+
                 FormatGetWarLeagues(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -1844,14 +1922,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 

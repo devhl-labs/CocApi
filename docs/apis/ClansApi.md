@@ -15,7 +15,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 
 <a id="getcapitalraidseasons"></a>
 # **GetCapitalRaidSeasons**
-> ClanCapitalRaidSeasons GetCapitalRaidSeasons (string clanTag, int? limit = null, string? after = null, string? before = null)
+> ClanCapitalRaidSeasons GetCapitalRaidSeasons (string clanTag, int limit = null, string after = null, string before = null)
 
 Retrieve clan's capital raid seasons
 
@@ -44,9 +44,9 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -90,9 +90,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -225,7 +225,7 @@ catch (ApiException e)
 
 <a id="getclanmembers"></a>
 # **GetClanMembers**
-> List&lt;ClanMember&gt; GetClanMembers (string clanTag, int? limit = null, string? after = null, string? before = null)
+> List&lt;ClanMember&gt; GetClanMembers (string clanTag, int limit = null, string after = null, string before = null)
 
 List clan members
 
@@ -254,9 +254,9 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -300,9 +300,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -333,7 +333,7 @@ catch (ApiException e)
 
 <a id="getclanwarleaguegroup"></a>
 # **GetClanWarLeagueGroup**
-> ClanWarLeagueGroup GetClanWarLeagueGroup (string clanTag, bool? realtime = null)
+> ClanWarLeagueGroup GetClanWarLeagueGroup (string clanTag, bool realtime = null)
 
 Retrieve information about clan's current clan war league group
 
@@ -362,7 +362,7 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
-            var realtime = true;  // bool? | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
+            var realtime = true;  // bool | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
 
             try
             {
@@ -406,7 +406,7 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
-| **realtime** | **bool?** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
+| **realtime** | **bool** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
 
 ### Return type
 
@@ -437,7 +437,7 @@ catch (ApiException e)
 
 <a id="getclanwarleaguewar"></a>
 # **GetClanWarLeagueWar**
-> ClanWar GetClanWarLeagueWar (string warTag, bool? realtime = null)
+> ClanWar GetClanWarLeagueWar (string warTag, bool realtime = null)
 
 Retrieve information about individual clan war league war
 
@@ -466,7 +466,7 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var warTag = "warTag_example";  // string | Tag of the war.
-            var realtime = true;  // bool? | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
+            var realtime = true;  // bool | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
 
             try
             {
@@ -510,7 +510,7 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **warTag** | **string** | Tag of the war. |  |
-| **realtime** | **bool?** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
+| **realtime** | **bool** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
 
 ### Return type
 
@@ -541,7 +541,7 @@ catch (ApiException e)
 
 <a id="getclanwarlog"></a>
 # **GetClanWarLog**
-> ClanWarLog GetClanWarLog (string clanTag, int? limit = null, string? after = null, string? before = null)
+> ClanWarLog GetClanWarLog (string clanTag, int limit = null, string after = null, string before = null)
 
 Retrieve clan's clan war log
 
@@ -570,9 +570,9 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -616,9 +616,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -649,7 +649,7 @@ catch (ApiException e)
 
 <a id="getcurrentwar"></a>
 # **GetCurrentWar**
-> ClanWar GetCurrentWar (string clanTag, bool? realtime = null)
+> ClanWar GetCurrentWar (string clanTag, bool realtime = null)
 
 Retrieve information about clan's current clan war
 
@@ -678,7 +678,7 @@ namespace Example
 
             var apiInstance = new ClansApi(config);
             var clanTag = "clanTag_example";  // string | Tag of the clan.
-            var realtime = true;  // bool? | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
+            var realtime = true;  // bool | Used to bypass cache. Only SuperCell approved users may use this option. (optional) 
 
             try
             {
@@ -722,7 +722,7 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **clanTag** | **string** | Tag of the clan. |  |
-| **realtime** | **bool?** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
+| **realtime** | **bool** | Used to bypass cache. Only SuperCell approved users may use this option. | [optional]  |
 
 ### Return type
 
@@ -753,7 +753,7 @@ catch (ApiException e)
 
 <a id="searchclans"></a>
 # **SearchClans**
-> ClanList SearchClans (int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null)
+> ClanList SearchClans (int locationId = null, int minMembers = null, int maxMembers = null, int minClanPoints = null, int minClanLevel = null, int limit = null, string name = null, string warFrequency = null, string after = null, string before = null, string labelIds = null)
 
 Search clans
 
@@ -781,17 +781,17 @@ namespace Example
             // config.AddApiKeyPrefix("authorization", "Bearer");
 
             var apiInstance = new ClansApi(config);
-            var locationId = 56;  // int? | Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional) 
-            var minMembers = 56;  // int? | Filter by minimum number of clan members (optional) 
-            var maxMembers = 56;  // int? | Filter by maximum number of clan members (optional) 
-            var minClanPoints = 56;  // int? | Filter by minimum amount of clan points. (optional) 
-            var minClanLevel = 56;  // int? | Filter by minimum clan level. (optional) 
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var name = "name_example";  // string? | Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional) 
-            var warFrequency = "warFrequency_example";  // string? | Filter by clan war frequency (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var labelIds = "labelIds_example";  // string? | Comma separatered list of label IDs to use for filtering results. (optional) 
+            var locationId = 56;  // int | Filter by clan location identifier. For list of available locations, refer to getLocations operation.  (optional) 
+            var minMembers = 56;  // int | Filter by minimum number of clan members (optional) 
+            var maxMembers = 56;  // int | Filter by maximum number of clan members (optional) 
+            var minClanPoints = 56;  // int | Filter by minimum amount of clan points. (optional) 
+            var minClanLevel = 56;  // int | Filter by minimum clan level. (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var name = "name_example";  // string | Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  (optional) 
+            var warFrequency = "warFrequency_example";  // string | Filter by clan war frequency (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var labelIds = "labelIds_example";  // string | Comma separatered list of label IDs to use for filtering results. (optional) 
 
             try
             {
@@ -834,17 +834,17 @@ catch (ApiException e)
 
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
-| **locationId** | **int?** | Filter by clan location identifier. For list of available locations, refer to getLocations operation.  | [optional]  |
-| **minMembers** | **int?** | Filter by minimum number of clan members | [optional]  |
-| **maxMembers** | **int?** | Filter by maximum number of clan members | [optional]  |
-| **minClanPoints** | **int?** | Filter by minimum amount of clan points. | [optional]  |
-| **minClanLevel** | **int?** | Filter by minimum clan level. | [optional]  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **name** | **string?** | Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  | [optional]  |
-| **warFrequency** | **string?** | Filter by clan war frequency | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **labelIds** | **string?** | Comma separatered list of label IDs to use for filtering results. | [optional]  |
+| **locationId** | **int** | Filter by clan location identifier. For list of available locations, refer to getLocations operation.  | [optional]  |
+| **minMembers** | **int** | Filter by minimum number of clan members | [optional]  |
+| **maxMembers** | **int** | Filter by maximum number of clan members | [optional]  |
+| **minClanPoints** | **int** | Filter by minimum amount of clan points. | [optional]  |
+| **minClanLevel** | **int** | Filter by minimum clan level. | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **name** | **string** | Search clans by name. If name is used as part of search query, it needs to be at least three characters long. Name search parameter is interpreted as wild card search, so it may appear anywhere in the clan name.  | [optional]  |
+| **warFrequency** | **string** | Filter by clan war frequency | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **labelIds** | **string** | Comma separatered list of label IDs to use for filtering results. | [optional]  |
 
 ### Return type
 

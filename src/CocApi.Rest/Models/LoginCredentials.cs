@@ -142,10 +142,21 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, loginCredentials, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="LoginCredentials" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="loginCredentials"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, LoginCredentials loginCredentials, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteString("email", loginCredentials.Email);
             writer.WriteString("password", loginCredentials.Password);
-
-            writer.WriteEndObject();
         }
     }
 }

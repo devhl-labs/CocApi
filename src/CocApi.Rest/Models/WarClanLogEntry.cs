@@ -163,13 +163,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     Attacks == input.Attacks ||
-                    (Attacks != null &&
-                    Attacks.Equals(input.Attacks))
+                    Attacks.Equals(input.Attacks)
                 ) && 
                 (
                     ExpEarned == input.ExpEarned ||
-                    (ExpEarned != null &&
-                    ExpEarned.Equals(input.ExpEarned))
+                    ExpEarned.Equals(input.ExpEarned)
                 ) && 
                 (
                     Name == input.Name ||
@@ -322,6 +320,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, warClanLogEntry, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="WarClanLogEntry" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="warClanLogEntry"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, WarClanLogEntry warClanLogEntry, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, warClanLogEntry.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", warClanLogEntry.ClanLevel);
@@ -340,8 +351,6 @@ namespace CocApi.Rest.Models
 
             writer.WriteString("name", warClanLogEntry.Name);
             writer.WriteString("tag", warClanLogEntry.Tag);
-
-            writer.WriteEndObject();
         }
     }
 }

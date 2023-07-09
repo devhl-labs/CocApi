@@ -41,7 +41,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LabelsObject&gt;&gt;</returns>
-        Task<ApiResponse<LabelsObject>> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LabelsObject>> FetchClanLabelsAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List clan labels
@@ -54,7 +54,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;LabelsObject&gt;?&gt;</returns>
-        Task<ApiResponse<LabelsObject>?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LabelsObject>?> FetchClanLabelsOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List player labels
@@ -68,7 +68,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;LabelsObject&gt;&gt;</returns>
-        Task<ApiResponse<LabelsObject>> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LabelsObject>> FetchPlayerLabelsAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List player labels
@@ -81,7 +81,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;LabelsObject&gt;?&gt;</returns>
-        Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -122,19 +122,21 @@ namespace CocApi.Rest.Apis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        partial void FormatGetClanLabels(ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetClanLabels(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchClanLabelsDefaultImplementation(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before)
+        /// <returns></returns>
+        private void ValidateGetClanLabels(Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchClanLabels(apiResponseLocalVar, limit, after, before);
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -144,7 +146,23 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchClanLabels(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before);
+        private void AfterFetchClanLabelsDefaultImplementation(ApiResponse<LabelsObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        {
+            bool suppressDefaultLog = false;
+            AfterFetchClanLabels(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchClanLabels(ref bool suppressDefaultLog, ApiResponse<LabelsObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -155,7 +173,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchClanLabelsDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchClanLabelsDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchClanLabels(exception, pathFormat, path, limit, after, before);
@@ -170,7 +188,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
+        partial void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List clan labels List clan labels
@@ -180,7 +198,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
-        public async Task<ApiResponse<LabelsObject>?> FetchClanLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LabelsObject>?> FetchClanLabelsOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -201,12 +219,14 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
-        public async Task<ApiResponse<LabelsObject>> FetchClanLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LabelsObject>> FetchClanLabelsAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateGetClanLabels(after, before);
+
                 FormatGetClanLabels(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -218,14 +238,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -275,19 +295,21 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetPlayerLabels(ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetPlayerLabels(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchPlayerLabelsDefaultImplementation(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before)
+        /// <returns></returns>
+        private void ValidateGetPlayerLabels(Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchPlayerLabels(apiResponseLocalVar, limit, after, before);
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -297,7 +319,23 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchPlayerLabels(ApiResponse<LabelsObject> apiResponseLocalVar, int? limit, string? after, string? before);
+        private void AfterFetchPlayerLabelsDefaultImplementation(ApiResponse<LabelsObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        {
+            bool suppressDefaultLog = false;
+            AfterFetchPlayerLabels(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="limit"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        partial void AfterFetchPlayerLabels(ref bool suppressDefaultLog, ApiResponse<LabelsObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -308,7 +346,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchPlayerLabelsDefaultImplementation(Exception exception, string pathFormat, string path, int? limit, string? after, string? before)
+        private void OnErrorFetchPlayerLabelsDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchPlayerLabels(exception, pathFormat, path, limit, after, before);
@@ -323,7 +361,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, int? limit, string? after, string? before);
+        partial void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List player labels List player labels
@@ -333,7 +371,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
-        public async Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -354,12 +392,14 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LabelsObject"/></returns>
-        public async Task<ApiResponse<LabelsObject>> FetchPlayerLabelsAsync(int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<LabelsObject>> FetchPlayerLabelsAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateGetPlayerLabels(after, before);
+
                 FormatGetPlayerLabels(ref limit, ref after, ref before);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -371,14 +411,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 

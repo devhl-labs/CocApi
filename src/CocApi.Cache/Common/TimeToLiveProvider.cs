@@ -52,24 +52,25 @@ public class TimeToLiveProvider
         }
     }
 
-    protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception) where T : class
-    {
-        if (typeof(T) == typeof(ClanWarLeagueGroup))
-        {
-            if (Clash.IsCwlEnabled)
-                return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(20));
-            else
-                return new ValueTask<TimeSpan>(
-                    new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
-                        .AddMonths(1)
-                        .Subtract(DateTime.UtcNow));
-        }
+    private ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLive() => Clash.IsCwlEnabled
+        ? new ValueTask<TimeSpan>(TimeSpan.FromMinutes(20))
+        : new ValueTask<TimeSpan>(
+            new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
+                .AddMonths(1)
+                .Subtract(DateTime.UtcNow));
 
-        return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
-    }
+    protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception) where T : class =>
+        typeof(T) == typeof(ClanWarLeagueGroup)
+            ? ClanWarLeagueGroupTimeToLive()
+            : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(2));
 
     protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
     {
+        if (!apiResponse.IsSuccessStatusCode)
+            return typeof(T) == typeof(ClanWarLeagueGroup)
+                ? ClanWarLeagueGroupTimeToLive()
+                :new ValueTask<TimeSpan>(TimeSpan.FromSeconds(2));
+
         if (apiResponse is ApiResponse<Clan>)
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 

@@ -136,8 +136,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     SuperTroopIsActive == input.SuperTroopIsActive ||
-                    (SuperTroopIsActive != null &&
-                    SuperTroopIsActive.Equals(input.SuperTroopIsActive))
+                    SuperTroopIsActive.Equals(input.SuperTroopIsActive)
                 );
         }
 
@@ -221,7 +220,7 @@ namespace CocApi.Rest.Models
                             string? villageRawValue = utf8JsonReader.GetString();
                             village = villageRawValue == null
                                 ? null
-                                : VillageTypeConverter.FromStringOrDefault(villageRawValue);
+                                : VillageTypeValueConverter.FromStringOrDefault(villageRawValue);
                             break;
                         case "superTroopIsActive":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -259,10 +258,23 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, playerItemLevel, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="PlayerItemLevel" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="playerItemLevel"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, PlayerItemLevel playerItemLevel, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("level", playerItemLevel.Level);
             writer.WriteNumber("maxLevel", playerItemLevel.MaxLevel);
             writer.WriteString("name", playerItemLevel.Name);
-            var villageRawValue = VillageTypeConverter.ToJsonValue(playerItemLevel.Village);
+            var villageRawValue = VillageTypeValueConverter.ToJsonValue(playerItemLevel.Village);
 
             if (villageRawValue != null)
                 writer.WriteString("village", villageRawValue);
@@ -273,8 +285,6 @@ namespace CocApi.Rest.Models
                 writer.WriteBoolean("superTroopIsActive", playerItemLevel.SuperTroopIsActive.Value);
             else
                 writer.WriteNull("superTroopIsActive");
-
-            writer.WriteEndObject();
         }
     }
 }

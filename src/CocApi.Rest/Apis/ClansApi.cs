@@ -42,7 +42,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanCapitalRaidSeasons&gt;&gt;</returns>
-        Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons
@@ -56,7 +56,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanCapitalRaidSeasons&gt;?&gt;</returns>
-        Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get clan information
@@ -94,7 +94,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;List&lt;ClanMember&gt;&gt;&gt;</returns>
-        Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List clan members
@@ -108,7 +108,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;List&lt;ClanMember&gt;&gt;?&gt;</returns>
-        Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -121,7 +121,7 @@ namespace CocApi.Rest.IApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLeagueGroup&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group
@@ -133,7 +133,7 @@ namespace CocApi.Rest.IApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWarLeagueGroup&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -146,7 +146,7 @@ namespace CocApi.Rest.IApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about individual clan war league war
@@ -158,7 +158,7 @@ namespace CocApi.Rest.IApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWar&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log
@@ -173,7 +173,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWarLog&gt;&gt;</returns>
-        Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log
@@ -187,7 +187,7 @@ namespace CocApi.Rest.IApis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWarLog&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -200,7 +200,7 @@ namespace CocApi.Rest.IApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanWar&gt;&gt;</returns>
-        Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war
@@ -212,7 +212,7 @@ namespace CocApi.Rest.IApis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanWar&gt;?&gt;</returns>
-        Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Search clans
@@ -234,7 +234,7 @@ namespace CocApi.Rest.IApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&lt;ClanList&gt;&gt;</returns>
-        Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanList>> SearchClansAsync(Option<int> locationId = default, Option<int> minMembers = default, Option<int> maxMembers = default, Option<int> minClanPoints = default, Option<int> minClanLevel = default, Option<int> limit = default, Option<string> name = default, Option<string> warFrequency = default, Option<string> after = default, Option<string> before = default, Option<string> labelIds = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Search clans
@@ -255,7 +255,7 @@ namespace CocApi.Rest.IApis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task&lt;ApiResponse&gt;ClanList&gt;?&gt;</returns>
-        Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default);
+        Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(Option<int> locationId = default, Option<int> minMembers = default, Option<int> maxMembers = default, Option<int> minClanPoints = default, Option<int> minClanLevel = default, Option<int> limit = default, Option<string> name = default, Option<string> warFrequency = default, Option<string> after = default, Option<string> before = default, Option<string> labelIds = default, System.Threading.CancellationToken cancellationToken = default);
     }
 }
 
@@ -296,23 +296,25 @@ namespace CocApi.Rest.Apis
             ApiKeyProvider = apiKeyProvider;
         }
 
-        partial void FormatGetCapitalRaidSeasons(ref string clanTag, ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetCapitalRaidSeasons(ref string clanTag, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
         /// <returns></returns>
-        private void ValidateGetCapitalRaidSeasons(string clanTag)
+        private void ValidateGetCapitalRaidSeasons(string clanTag, Option<string> after, Option<string> before)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -323,21 +325,24 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchCapitalRaidSeasonsDefaultImplementation(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        private void AfterFetchCapitalRaidSeasonsDefaultImplementation(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchCapitalRaidSeasons(apiResponseLocalVar, clanTag, limit, after, before);
+            bool suppressDefaultLog = false;
+            AfterFetchCapitalRaidSeasons(ref suppressDefaultLog, apiResponseLocalVar, clanTag, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before);
+        partial void AfterFetchCapitalRaidSeasons(ref bool suppressDefaultLog, ApiResponse<ClanCapitalRaidSeasons> apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -349,7 +354,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchCapitalRaidSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
+        private void OnErrorFetchCapitalRaidSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchCapitalRaidSeasons(exception, pathFormat, path, clanTag, limit, after, before);
@@ -365,7 +370,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchCapitalRaidSeasons(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before);
+        partial void OnErrorFetchCapitalRaidSeasons(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons Retrieve clan&#39;s capital raid seasons
@@ -376,7 +381,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRaidSeasons"/></returns>
-        public async Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanCapitalRaidSeasons>?> FetchCapitalRaidSeasonsOrDefaultAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -398,13 +403,13 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanCapitalRaidSeasons"/></returns>
-        public async Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanCapitalRaidSeasons>> FetchCapitalRaidSeasonsAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                ValidateGetCapitalRaidSeasons(clanTag);
+                ValidateGetCapitalRaidSeasons(clanTag, after, before);
 
                 FormatGetCapitalRaidSeasons(ref clanTag, ref limit, ref after, ref before);
 
@@ -418,14 +423,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -484,14 +489,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetClan(string clanTag)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -501,16 +500,19 @@ namespace CocApi.Rest.Apis
         /// <param name="clanTag"></param>
         private void AfterFetchClanDefaultImplementation(ApiResponse<Clan> apiResponseLocalVar, string clanTag)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchClan(apiResponseLocalVar, clanTag);
+            bool suppressDefaultLog = false;
+            AfterFetchClan(ref suppressDefaultLog, apiResponseLocalVar, clanTag);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
-        partial void AfterFetchClan(ApiResponse<Clan> apiResponseLocalVar, string clanTag);
+        partial void AfterFetchClan(ref bool suppressDefaultLog, ApiResponse<Clan> apiResponseLocalVar, string clanTag);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -623,23 +625,25 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetClanMembers(ref string clanTag, ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetClanMembers(ref string clanTag, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
         /// <returns></returns>
-        private void ValidateGetClanMembers(string clanTag)
+        private void ValidateGetClanMembers(string clanTag, Option<string> after, Option<string> before)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -650,21 +654,24 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchClanMembersDefaultImplementation(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        private void AfterFetchClanMembersDefaultImplementation(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchClanMembers(apiResponseLocalVar, clanTag, limit, after, before);
+            bool suppressDefaultLog = false;
+            AfterFetchClanMembers(ref suppressDefaultLog, apiResponseLocalVar, clanTag, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchClanMembers(ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before);
+        partial void AfterFetchClanMembers(ref bool suppressDefaultLog, ApiResponse<List<ClanMember>> apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -676,7 +683,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchClanMembersDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
+        private void OnErrorFetchClanMembersDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchClanMembers(exception, pathFormat, path, clanTag, limit, after, before);
@@ -692,7 +699,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before);
+        partial void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List clan members List clan members.
@@ -703,7 +710,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List{TValue}"/></returns>
-        public async Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<List<ClanMember>>?> FetchClanMembersOrDefaultAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -725,13 +732,13 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="List{TValue}"/></returns>
-        public async Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<List<ClanMember>>> FetchClanMembersAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                ValidateGetClanMembers(clanTag);
+                ValidateGetClanMembers(clanTag, after, before);
 
                 FormatGetClanMembers(ref clanTag, ref limit, ref after, ref before);
 
@@ -745,14 +752,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -802,7 +809,7 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetClanWarLeagueGroup(ref string clanTag, ref bool? realtime);
+        partial void FormatGetClanWarLeagueGroup(ref string clanTag, ref Option<bool> realtime);
 
         /// <summary>
         /// Validates the request parameters
@@ -811,14 +818,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetClanWarLeagueGroup(string clanTag)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -827,19 +828,22 @@ namespace CocApi.Rest.Apis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        private void AfterFetchClanWarLeagueGroupDefaultImplementation(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, bool? realtime)
+        private void AfterFetchClanWarLeagueGroupDefaultImplementation(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, Option<bool> realtime)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchClanWarLeagueGroup(apiResponseLocalVar, clanTag, realtime);
+            bool suppressDefaultLog = false;
+            AfterFetchClanWarLeagueGroup(ref suppressDefaultLog, apiResponseLocalVar, clanTag, realtime);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void AfterFetchClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, bool? realtime);
+        partial void AfterFetchClanWarLeagueGroup(ref bool suppressDefaultLog, ApiResponse<ClanWarLeagueGroup> apiResponseLocalVar, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -849,7 +853,7 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        private void OnErrorFetchClanWarLeagueGroupDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
+        private void OnErrorFetchClanWarLeagueGroupDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchClanWarLeagueGroup(exception, pathFormat, path, clanTag, realtime);
@@ -863,7 +867,7 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, bool? realtime);
+        partial void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
@@ -872,7 +876,7 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
-        public async Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWarLeagueGroup>?> FetchClanWarLeagueGroupOrDefaultAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -892,7 +896,7 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLeagueGroup"/></returns>
-        public async Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWarLeagueGroup>> FetchClanWarLeagueGroupAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -912,8 +916,8 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (realtime != null)
-                        parseQueryStringLocalVar["realtime"] = realtime.ToString();
+                    if (realtime.IsSet)
+                        parseQueryStringLocalVar["realtime"] = realtime.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -963,7 +967,7 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetClanWarLeagueWar(ref string warTag, ref bool? realtime);
+        partial void FormatGetClanWarLeagueWar(ref string warTag, ref Option<bool> realtime);
 
         /// <summary>
         /// Validates the request parameters
@@ -972,14 +976,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetClanWarLeagueWar(string warTag)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (warTag == null)
                 throw new ArgumentNullException(nameof(warTag));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -988,19 +986,22 @@ namespace CocApi.Rest.Apis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        private void AfterFetchClanWarLeagueWarDefaultImplementation(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, bool? realtime)
+        private void AfterFetchClanWarLeagueWarDefaultImplementation(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, Option<bool> realtime)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchClanWarLeagueWar(apiResponseLocalVar, warTag, realtime);
+            bool suppressDefaultLog = false;
+            AfterFetchClanWarLeagueWar(ref suppressDefaultLog, apiResponseLocalVar, warTag, realtime);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        partial void AfterFetchClanWarLeagueWar(ApiResponse<ClanWar> apiResponseLocalVar, string warTag, bool? realtime);
+        partial void AfterFetchClanWarLeagueWar(ref bool suppressDefaultLog, ApiResponse<ClanWar> apiResponseLocalVar, string warTag, Option<bool> realtime);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1010,7 +1011,7 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        private void OnErrorFetchClanWarLeagueWarDefaultImplementation(Exception exception, string pathFormat, string path, string warTag, bool? realtime)
+        private void OnErrorFetchClanWarLeagueWarDefaultImplementation(Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchClanWarLeagueWar(exception, pathFormat, path, warTag, realtime);
@@ -1024,7 +1025,7 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, bool? realtime);
+        partial void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
@@ -1033,7 +1034,7 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWar>?> FetchClanWarLeagueWarOrDefaultAsync(string warTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1053,7 +1054,7 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWar>> FetchClanWarLeagueWarAsync(string warTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1073,8 +1074,8 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (realtime != null)
-                        parseQueryStringLocalVar["realtime"] = realtime.ToString();
+                    if (realtime.IsSet)
+                        parseQueryStringLocalVar["realtime"] = realtime.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1124,23 +1125,25 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetClanWarLog(ref string clanTag, ref int? limit, ref string? after, ref string? before);
+        partial void FormatGetClanWarLog(ref string clanTag, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
 
         /// <summary>
         /// Validates the request parameters
         /// </summary>
         /// <param name="clanTag"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
         /// <returns></returns>
-        private void ValidateGetClanWarLog(string clanTag)
+        private void ValidateGetClanWarLog(string clanTag, Option<string> after, Option<string> before)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
 
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
         }
 
         /// <summary>
@@ -1151,21 +1154,24 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchClanWarLogDefaultImplementation(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before)
+        private void AfterFetchClanWarLogDefaultImplementation(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchClanWarLog(apiResponseLocalVar, clanTag, limit, after, before);
+            bool suppressDefaultLog = false;
+            AfterFetchClanWarLog(ref suppressDefaultLog, apiResponseLocalVar, clanTag, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchClanWarLog(ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, int? limit, string? after, string? before);
+        partial void AfterFetchClanWarLog(ref bool suppressDefaultLog, ApiResponse<ClanWarLog> apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1177,7 +1183,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchClanWarLogDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before)
+        private void OnErrorFetchClanWarLogDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchClanWarLog(exception, pathFormat, path, clanTag, limit, after, before);
@@ -1193,7 +1199,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, int? limit, string? after, string? before);
+        partial void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
@@ -1204,7 +1210,7 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
-        public async Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWarLog>?> FetchClanWarLogOrDefaultAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1226,13 +1232,13 @@ namespace CocApi.Rest.Apis
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWarLog"/></returns>
-        public async Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, int? limit = null, string? after = null, string? before = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWarLog>> FetchClanWarLogAsync(string clanTag, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                ValidateGetClanWarLog(clanTag);
+                ValidateGetClanWarLog(clanTag, after, before);
 
                 FormatGetClanWarLog(ref clanTag, ref limit, ref after, ref before);
 
@@ -1246,14 +1252,14 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1303,7 +1309,7 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatGetCurrentWar(ref string clanTag, ref bool? realtime);
+        partial void FormatGetCurrentWar(ref string clanTag, ref Option<bool> realtime);
 
         /// <summary>
         /// Validates the request parameters
@@ -1312,14 +1318,8 @@ namespace CocApi.Rest.Apis
         /// <returns></returns>
         private void ValidateGetCurrentWar(string clanTag)
         {
-            #pragma warning disable CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning disable CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
-
             if (clanTag == null)
                 throw new ArgumentNullException(nameof(clanTag));
-
-            #pragma warning restore CS0472 // The result of the expression is always the same since a value of this type is never equal to 'null'
-            #pragma warning restore CS8073 // The result of the expression is always the same since a value of this type is never equal to 'null'
         }
 
         /// <summary>
@@ -1328,19 +1328,22 @@ namespace CocApi.Rest.Apis
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        private void AfterFetchCurrentWarDefaultImplementation(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, bool? realtime)
+        private void AfterFetchCurrentWarDefaultImplementation(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, Option<bool> realtime)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchCurrentWar(apiResponseLocalVar, clanTag, realtime);
+            bool suppressDefaultLog = false;
+            AfterFetchCurrentWar(ref suppressDefaultLog, apiResponseLocalVar, clanTag, realtime);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void AfterFetchCurrentWar(ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, bool? realtime);
+        partial void AfterFetchCurrentWar(ref bool suppressDefaultLog, ApiResponse<ClanWar> apiResponseLocalVar, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1350,7 +1353,7 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        private void OnErrorFetchCurrentWarDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, bool? realtime)
+        private void OnErrorFetchCurrentWarDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorFetchCurrentWar(exception, pathFormat, path, clanTag, realtime);
@@ -1364,7 +1367,7 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, bool? realtime);
+        partial void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
@@ -1373,7 +1376,7 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWar>?> FetchCurrentWarOrDefaultAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1393,7 +1396,7 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime">Used to bypass cache. Only SuperCell approved users may use this option. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanWar"/></returns>
-        public async Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, bool? realtime = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanWar>> FetchCurrentWarAsync(string clanTag, Option<bool> realtime = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1413,8 +1416,8 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (realtime != null)
-                        parseQueryStringLocalVar["realtime"] = realtime.ToString();
+                    if (realtime.IsSet)
+                        parseQueryStringLocalVar["realtime"] = realtime.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1464,27 +1467,33 @@ namespace CocApi.Rest.Apis
             }
         }
 
-        partial void FormatSearchClans(ref int? locationId, ref int? minMembers, ref int? maxMembers, ref int? minClanPoints, ref int? minClanLevel, ref int? limit, ref string? name, ref string? warFrequency, ref string? after, ref string? before, ref string? labelIds);
+        partial void FormatSearchClans(ref Option<int> locationId, ref Option<int> minMembers, ref Option<int> maxMembers, ref Option<int> minClanPoints, ref Option<int> minClanLevel, ref Option<int> limit, ref Option<string> name, ref Option<string> warFrequency, ref Option<string> after, ref Option<string> before, ref Option<string> labelIds);
 
         /// <summary>
-        /// Processes the server response
+        /// Validates the request parameters
         /// </summary>
-        /// <param name="apiResponseLocalVar"></param>
-        /// <param name="locationId"></param>
-        /// <param name="minMembers"></param>
-        /// <param name="maxMembers"></param>
-        /// <param name="minClanPoints"></param>
-        /// <param name="minClanLevel"></param>
-        /// <param name="limit"></param>
         /// <param name="name"></param>
         /// <param name="warFrequency"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        private void AfterSearchClansDefaultImplementation(ApiResponse<ClanList> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        /// <returns></returns>
+        private void ValidateSearchClans(Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterSearchClans(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name));
+
+            if (warFrequency.IsSet && warFrequency.Value == null)
+                throw new ArgumentNullException(nameof(warFrequency));
+
+            if (after.IsSet && after.Value == null)
+                throw new ArgumentNullException(nameof(after));
+
+            if (before.IsSet && before.Value == null)
+                throw new ArgumentNullException(nameof(before));
+
+            if (labelIds.IsSet && labelIds.Value == null)
+                throw new ArgumentNullException(nameof(labelIds));
         }
 
         /// <summary>
@@ -1502,7 +1511,31 @@ namespace CocApi.Rest.Apis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        partial void AfterSearchClans(ApiResponse<ClanList> apiResponseLocalVar, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds);
+        private void AfterSearchClansDefaultImplementation(ApiResponse<ClanList> apiResponseLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
+        {
+            bool suppressDefaultLog = false;
+            AfterSearchClans(ref suppressDefaultLog, apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="locationId"></param>
+        /// <param name="minMembers"></param>
+        /// <param name="maxMembers"></param>
+        /// <param name="minClanPoints"></param>
+        /// <param name="minClanLevel"></param>
+        /// <param name="limit"></param>
+        /// <param name="name"></param>
+        /// <param name="warFrequency"></param>
+        /// <param name="after"></param>
+        /// <param name="before"></param>
+        /// <param name="labelIds"></param>
+        partial void AfterSearchClans(ref bool suppressDefaultLog, ApiResponse<ClanList> apiResponseLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1521,7 +1554,7 @@ namespace CocApi.Rest.Apis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        private void OnErrorSearchClansDefaultImplementation(Exception exception, string pathFormat, string path, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds)
+        private void OnErrorSearchClansDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
         {
             Logger.LogError(exception, "An error occurred while sending the request to the server.");
             OnErrorSearchClans(exception, pathFormat, path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
@@ -1544,7 +1577,7 @@ namespace CocApi.Rest.Apis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        partial void OnErrorSearchClans(Exception exception, string pathFormat, string path, int? locationId, int? minMembers, int? maxMembers, int? minClanPoints, int? minClanLevel, int? limit, string? name, string? warFrequency, string? after, string? before, string? labelIds);
+        partial void OnErrorSearchClans(Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds);
 
         /// <summary>
         /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
@@ -1562,7 +1595,7 @@ namespace CocApi.Rest.Apis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
-        public async Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(Option<int> locationId = default, Option<int> minMembers = default, Option<int> maxMembers = default, Option<int> minClanPoints = default, Option<int> minClanLevel = default, Option<int> limit = default, Option<string> name = default, Option<string> warFrequency = default, Option<string> after = default, Option<string> before = default, Option<string> labelIds = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1591,12 +1624,14 @@ namespace CocApi.Rest.Apis
         /// <param name="labelIds">Comma separatered list of label IDs to use for filtering results. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="ClanList"/></returns>
-        public async Task<ApiResponse<ClanList>> SearchClansAsync(int? locationId = null, int? minMembers = null, int? maxMembers = null, int? minClanPoints = null, int? minClanLevel = null, int? limit = null, string? name = null, string? warFrequency = null, string? after = null, string? before = null, string? labelIds = null, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<ApiResponse<ClanList>> SearchClansAsync(Option<int> locationId = default, Option<int> minMembers = default, Option<int> maxMembers = default, Option<int> minClanPoints = default, Option<int> minClanLevel = default, Option<int> limit = default, Option<string> name = default, Option<string> warFrequency = default, Option<string> after = default, Option<string> before = default, Option<string> labelIds = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
+                ValidateSearchClans(name, warFrequency, after, before, labelIds);
+
                 FormatSearchClans(ref locationId, ref minMembers, ref maxMembers, ref minClanPoints, ref minClanLevel, ref limit, ref name, ref warFrequency, ref after, ref before, ref labelIds);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
@@ -1608,38 +1643,38 @@ namespace CocApi.Rest.Apis
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
-                    if (locationId != null)
-                        parseQueryStringLocalVar["locationId"] = locationId.ToString();
+                    if (locationId.IsSet)
+                        parseQueryStringLocalVar["locationId"] = locationId.Value.ToString();
 
-                    if (minMembers != null)
-                        parseQueryStringLocalVar["minMembers"] = minMembers.ToString();
+                    if (minMembers.IsSet)
+                        parseQueryStringLocalVar["minMembers"] = minMembers.Value.ToString();
 
-                    if (maxMembers != null)
-                        parseQueryStringLocalVar["maxMembers"] = maxMembers.ToString();
+                    if (maxMembers.IsSet)
+                        parseQueryStringLocalVar["maxMembers"] = maxMembers.Value.ToString();
 
-                    if (minClanPoints != null)
-                        parseQueryStringLocalVar["minClanPoints"] = minClanPoints.ToString();
+                    if (minClanPoints.IsSet)
+                        parseQueryStringLocalVar["minClanPoints"] = minClanPoints.Value.ToString();
 
-                    if (minClanLevel != null)
-                        parseQueryStringLocalVar["minClanLevel"] = minClanLevel.ToString();
+                    if (minClanLevel.IsSet)
+                        parseQueryStringLocalVar["minClanLevel"] = minClanLevel.Value.ToString();
 
-                    if (limit != null)
-                        parseQueryStringLocalVar["limit"] = limit.ToString();
+                    if (limit.IsSet)
+                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
 
-                    if (name != null)
-                        parseQueryStringLocalVar["name"] = name.ToString();
+                    if (name.IsSet)
+                        parseQueryStringLocalVar["name"] = name.Value.ToString();
 
-                    if (warFrequency != null)
-                        parseQueryStringLocalVar["warFrequency"] = warFrequency.ToString();
+                    if (warFrequency.IsSet)
+                        parseQueryStringLocalVar["warFrequency"] = warFrequency.Value.ToString();
 
-                    if (after != null)
-                        parseQueryStringLocalVar["after"] = after.ToString();
+                    if (after.IsSet)
+                        parseQueryStringLocalVar["after"] = after.Value.ToString();
 
-                    if (before != null)
-                        parseQueryStringLocalVar["before"] = before.ToString();
+                    if (before.IsSet)
+                        parseQueryStringLocalVar["before"] = before.Value.ToString();
 
-                    if (labelIds != null)
-                        parseQueryStringLocalVar["labelIds"] = labelIds.ToString();
+                    if (labelIds.IsSet)
+                        parseQueryStringLocalVar["labelIds"] = labelIds.Value.ToString();
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 

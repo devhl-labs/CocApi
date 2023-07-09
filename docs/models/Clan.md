@@ -27,8 +27,8 @@ Name | Type | Description | Notes
 **Location** | [**Location**](Location.md) |  | [optional] [readonly] 
 **Type** | **RecruitingType** |  | [optional] [readonly] 
 **WarFrequency** | **WarFrequency** |  | [optional] [readonly] 
-**WarLosses** | **int?** |  | [optional] [readonly] 
-**WarTies** | **int?** |  | [optional] [readonly] 
+**WarLosses** | **int** |  | [optional] [readonly] 
+**WarTies** | **int** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

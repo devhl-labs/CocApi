@@ -95,15 +95,18 @@ namespace CocApi.Rest.Apis
         /// <param name="apiResponseLocalVar"></param>
         private void AfterFetchCurrentGoldPassSeasonDefaultImplementation(ApiResponse<GoldPassSeason> apiResponseLocalVar)
         {
-            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
-            AfterFetchCurrentGoldPassSeason(apiResponseLocalVar);
+            bool suppressDefaultLog = false;
+            AfterFetchCurrentGoldPassSeason(ref suppressDefaultLog, apiResponseLocalVar);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
         /// Processes the server response
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
-        partial void AfterFetchCurrentGoldPassSeason(ApiResponse<GoldPassSeason> apiResponseLocalVar);
+        partial void AfterFetchCurrentGoldPassSeason(ref bool suppressDefaultLog, ApiResponse<GoldPassSeason> apiResponseLocalVar);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response

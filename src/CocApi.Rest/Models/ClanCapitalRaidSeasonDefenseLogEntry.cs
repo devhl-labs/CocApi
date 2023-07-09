@@ -260,6 +260,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanCapitalRaidSeasonDefenseLogEntry, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanCapitalRaidSeasonDefenseLogEntry" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanCapitalRaidSeasonDefenseLogEntry"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonDefenseLogEntry clanCapitalRaidSeasonDefenseLogEntry, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("attackCount", clanCapitalRaidSeasonDefenseLogEntry.AttackCount);
             writer.WritePropertyName("attacker");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDefenseLogEntry.Attacker, jsonSerializerOptions);
@@ -267,8 +280,6 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("districts");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDefenseLogEntry.Districts, jsonSerializerOptions);
             writer.WriteNumber("districtsDestroyed", clanCapitalRaidSeasonDefenseLogEntry.DistrictsDestroyed);
-
-            writer.WriteEndObject();
         }
     }
 }

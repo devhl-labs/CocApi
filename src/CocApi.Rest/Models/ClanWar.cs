@@ -334,7 +334,7 @@ namespace CocApi.Rest.Models
                             string? stateRawValue = utf8JsonReader.GetString();
                             state = stateRawValue == null
                                 ? null
-                                : WarStateConverter.FromStringOrDefault(stateRawValue);
+                                : WarStateValueConverter.FromStringOrDefault(stateRawValue);
                             break;
                         case "warTag":
                             warTag = utf8JsonReader.GetString();
@@ -383,6 +383,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanWar, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanWar" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanWar"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanWar clanWar, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("attacksPerMember", clanWar.AttacksPerMember);
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, clanWar.Clan, jsonSerializerOptions);
@@ -399,7 +412,7 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("state");
             else
             {
-                var stateRawValue = WarStateConverter.ToJsonValue(clanWar.State.Value);
+                var stateRawValue = WarStateValueConverter.ToJsonValue(clanWar.State.Value);
                 if (stateRawValue != null)
                     writer.WriteString("state", stateRawValue);
                 else
@@ -407,8 +420,6 @@ namespace CocApi.Rest.Models
             }
 
             writer.WriteString("warTag", clanWar.WarTag);
-
-            writer.WriteEndObject();
         }
     }
 }

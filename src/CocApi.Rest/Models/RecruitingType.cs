@@ -45,10 +45,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="RecruitingType"/>
+    /// Converts <see cref="RecruitingType"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class RecruitingTypeConverter : JsonConverter<RecruitingType>
+    public static class RecruitingTypeValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="RecruitingType"/>
@@ -107,7 +106,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="RecruitingType"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class RecruitingTypeJsonConverter : JsonConverter<RecruitingType>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -121,7 +127,7 @@ namespace CocApi.Rest.Models
 
             RecruitingType? result = rawValue == null
                 ? null
-                : RecruitingTypeConverter.FromStringOrDefault(rawValue);
+                : RecruitingTypeValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -144,7 +150,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="RecruitingType"/>
     /// </summary>
-    public class RecruitingTypeNullableConverter : JsonConverter<RecruitingType?>
+    public class RecruitingTypeNullableJsonConverter : JsonConverter<RecruitingType?>
     {
         /// <summary>
         /// Returns a RecruitingType from the Json object
@@ -159,7 +165,7 @@ namespace CocApi.Rest.Models
 
             RecruitingType? result = rawValue == null
                 ? null
-                : RecruitingTypeConverter.FromStringOrDefault(rawValue);
+                : RecruitingTypeValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;

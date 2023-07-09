@@ -119,7 +119,6 @@ namespace YourProject
 - [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting/) - 5.0.0 or later
 - [Microsoft.Extensions.Http](https://www.nuget.org/packages/Microsoft.Extensions.Http/) - 5.0.0 or later
 - [Microsoft.Extensions.Http.Polly](https://www.nuget.org/packages/Microsoft.Extensions.Http.Polly/) - 5.0.1 or later
-- [Polly](https://www.nuget.org/packages/Polly/) - 7.2.3 or later
 
 <a id="documentation-for-authorization"></a>
 ## Documentation for Authorization
@@ -143,7 +142,7 @@ Authentication schemes defined for the API:
 
 ## Build
 - SDK version: 2.6.1
-- Build date: 2023-06-11T19:15:50.336795-04:00[America/New_York]
+- Build date: 2023-07-09T14:45:28.408130300-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
 ## Api Information

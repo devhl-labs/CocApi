@@ -14,7 +14,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 
 <a id="getclanbuilderbaseranking"></a>
 # **GetClanBuilderBaseRanking**
-> ClanBuilderBaseRankingList GetClanBuilderBaseRanking (string locationId, int? limit = null, string? after = null, string? before = null)
+> ClanBuilderBaseRankingList GetClanBuilderBaseRanking (string locationId, int limit = null, string after = null, string before = null)
 
 Get clan versus rankings for a specific location
 
@@ -43,9 +43,9 @@ namespace Example
 
             var apiInstance = new LocationsApi(config);
             var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -89,9 +89,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **locationId** | **string** | Identifier of the location to retrieve. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -122,7 +122,7 @@ catch (ApiException e)
 
 <a id="getclancapitalranking"></a>
 # **GetClanCapitalRanking**
-> ClanCapitalRankingObject GetClanCapitalRanking (string locationId, int? limit = null, string? after = null, string? before = null)
+> ClanCapitalRankingObject GetClanCapitalRanking (string locationId, int limit = null, string after = null, string before = null)
 
 Get capital rankings for a specific location
 
@@ -151,9 +151,9 @@ namespace Example
 
             var apiInstance = new LocationsApi(config);
             var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -197,9 +197,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **locationId** | **string** | Identifier of the location to retrieve. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -230,7 +230,7 @@ catch (ApiException e)
 
 <a id="getclanranking"></a>
 # **GetClanRanking**
-> ClanRankingList GetClanRanking (string locationId, int? limit = null, string? after = null, string? before = null)
+> ClanRankingList GetClanRanking (string locationId, int limit = null, string after = null, string before = null)
 
 Get clan rankings for a specific location
 
@@ -259,9 +259,9 @@ namespace Example
 
             var apiInstance = new LocationsApi(config);
             var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -305,9 +305,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **locationId** | **string** | Identifier of the location to retrieve. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -440,7 +440,7 @@ catch (ApiException e)
 
 <a id="getlocations"></a>
 # **GetLocations**
-> LocationList GetLocations (int? limit = null, string? after = null, string? before = null)
+> LocationList GetLocations (int limit = null, string after = null, string before = null)
 
 List locations
 
@@ -468,9 +468,9 @@ namespace Example
             // config.AddApiKeyPrefix("authorization", "Bearer");
 
             var apiInstance = new LocationsApi(config);
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -513,9 +513,9 @@ catch (ApiException e)
 
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -546,7 +546,7 @@ catch (ApiException e)
 
 <a id="getplayerbuilderbaseranking"></a>
 # **GetPlayerBuilderBaseRanking**
-> PlayerBuilderBaseRankingList GetPlayerBuilderBaseRanking (string locationId, int? limit = null, string? after = null, string? before = null)
+> PlayerBuilderBaseRankingList GetPlayerBuilderBaseRanking (string locationId, int limit = null, string after = null, string before = null)
 
 Get player versus rankings for a specific location
 
@@ -575,9 +575,9 @@ namespace Example
 
             var apiInstance = new LocationsApi(config);
             var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -621,9 +621,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **locationId** | **string** | Identifier of the location to retrieve. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 
@@ -654,7 +654,7 @@ catch (ApiException e)
 
 <a id="getplayerranking"></a>
 # **GetPlayerRanking**
-> PlayerRankingList GetPlayerRanking (string locationId, int? limit = null, string? after = null, string? before = null)
+> PlayerRankingList GetPlayerRanking (string locationId, int limit = null, string after = null, string before = null)
 
 Get player rankings for a specific location
 
@@ -683,9 +683,9 @@ namespace Example
 
             var apiInstance = new LocationsApi(config);
             var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int? | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string? | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string? | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
+            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
+            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
 
             try
             {
@@ -729,9 +729,9 @@ catch (ApiException e)
 | Name | Type | Description | Notes |
 |------|------|-------------|-------|
 | **locationId** | **string** | Identifier of the location to retrieve. |  |
-| **limit** | **int?** | Limit the number of items returned in the response. | [optional]  |
-| **after** | **string?** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
-| **before** | **string?** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
 
 ### Return type
 

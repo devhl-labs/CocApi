@@ -315,6 +315,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, playerHouseElement, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="PlayerHouseElement" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="playerHouseElement"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, PlayerHouseElement playerHouseElement, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteNumber("id", playerHouseElement.Id);
 
             var typeRawValue = PlayerHouseElement.TypeEnumToJsonValue(playerHouseElement.Type);
@@ -322,8 +335,6 @@ namespace CocApi.Rest.Models
                 writer.WriteString("type", typeRawValue);
             else
                 writer.WriteNull("type");
-
-            writer.WriteEndObject();
         }
     }
 }

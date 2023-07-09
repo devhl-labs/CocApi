@@ -1,3 +1,4 @@
+using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 using System;
@@ -27,5 +28,19 @@ namespace CocApi.Rest.Apis
         {
             playerTag = Clash.FormatTag(playerTag);
         }
+
+        partial void AfterFetchPlayer(ref bool suppressDefaultLog, ApiResponse<Player> apiResponseLocalVar, string playerTag)
+        {
+            suppressDefaultLog = true;
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
+        }
+
+        partial void AfterVerifyToken(ref bool suppressDefaultLog, ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
+        {
+            suppressDefaultLog = true;
+            Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
+        }
     }
 }
+
+#pragma warning restore CA1822 // Mark members as static

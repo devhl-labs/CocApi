@@ -321,13 +321,11 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     WarLosses == input.WarLosses ||
-                    (WarLosses != null &&
-                    WarLosses.Equals(input.WarLosses))
+                    WarLosses.Equals(input.WarLosses)
                 ) && 
                 (
                     WarTies == input.WarTies ||
-                    (WarTies != null &&
-                    WarTies.Equals(input.WarTies))
+                    WarTies.Equals(input.WarTies)
                 );
         }
 
@@ -496,13 +494,13 @@ namespace CocApi.Rest.Models
                             string? typeRawValue = utf8JsonReader.GetString();
                             type = typeRawValue == null
                                 ? null
-                                : RecruitingTypeConverter.FromStringOrDefault(typeRawValue);
+                                : RecruitingTypeValueConverter.FromStringOrDefault(typeRawValue);
                             break;
                         case "warFrequency":
                             string? warFrequencyRawValue = utf8JsonReader.GetString();
                             warFrequency = warFrequencyRawValue == null
                                 ? null
-                                : WarFrequencyConverter.FromStringOrDefault(warFrequencyRawValue);
+                                : WarFrequencyValueConverter.FromStringOrDefault(warFrequencyRawValue);
                             break;
                         case "warLosses":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -571,6 +569,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanListEntry, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanListEntry" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanListEntry"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanListEntry clanListEntry, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanListEntry.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanBuilderBasePoints", clanListEntry.ClanBuilderBasePoints);
@@ -596,7 +607,7 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("type");
             else
             {
-                var typeRawValue = RecruitingTypeConverter.ToJsonValue(clanListEntry.Type.Value);
+                var typeRawValue = RecruitingTypeValueConverter.ToJsonValue(clanListEntry.Type.Value);
                 if (typeRawValue != null)
                     writer.WriteString("type", typeRawValue);
                 else
@@ -607,7 +618,7 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("warFrequency");
             else
             {
-                var warFrequencyRawValue = WarFrequencyConverter.ToJsonValue(clanListEntry.WarFrequency.Value);
+                var warFrequencyRawValue = WarFrequencyValueConverter.ToJsonValue(clanListEntry.WarFrequency.Value);
                 if (warFrequencyRawValue != null)
                     writer.WriteString("warFrequency", warFrequencyRawValue);
                 else
@@ -623,8 +634,6 @@ namespace CocApi.Rest.Models
                 writer.WriteNumber("warTies", clanListEntry.WarTies.Value);
             else
                 writer.WriteNull("warTies");
-
-            writer.WriteEndObject();
         }
     }
 }

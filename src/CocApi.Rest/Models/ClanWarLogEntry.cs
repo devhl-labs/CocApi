@@ -146,8 +146,7 @@ namespace CocApi.Rest.Models
                 ) && 
                 (
                     AttacksPerMember == input.AttacksPerMember ||
-                    (AttacksPerMember != null &&
-                    AttacksPerMember.Equals(input.AttacksPerMember))
+                    AttacksPerMember.Equals(input.AttacksPerMember)
                 ) && 
                 (
                     Result == input.Result ||
@@ -253,7 +252,7 @@ namespace CocApi.Rest.Models
                             string? resultRawValue = utf8JsonReader.GetString();
                             result = resultRawValue == null
                                 ? null
-                                : ResultConverter.FromStringOrDefault(resultRawValue);
+                                : ResultValueConverter.FromStringOrDefault(resultRawValue);
                             break;
                         default:
                             break;
@@ -287,6 +286,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanWarLogEntry, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanWarLogEntry" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanWarLogEntry"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLogEntry clanWarLogEntry, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, clanWarLogEntry.Clan, jsonSerializerOptions);
             writer.WriteString("endTime", clanWarLogEntry.EndTime.ToString(EndTimeFormat));
@@ -303,14 +315,12 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("result");
             else
             {
-                var resultRawValue = ResultConverter.ToJsonValue(clanWarLogEntry.Result.Value);
+                var resultRawValue = ResultValueConverter.ToJsonValue(clanWarLogEntry.Result.Value);
                 if (resultRawValue != null)
                     writer.WriteString("result", resultRawValue);
                 else
                     writer.WriteNull("result");
             }
-
-            writer.WriteEndObject();
         }
     }
 }

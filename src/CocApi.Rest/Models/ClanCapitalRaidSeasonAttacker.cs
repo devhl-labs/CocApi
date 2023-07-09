@@ -191,10 +191,21 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanCapitalRaidSeasonAttacker, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanCapitalRaidSeasonAttacker" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanCapitalRaidSeasonAttacker"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonAttacker clanCapitalRaidSeasonAttacker, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WriteString("name", clanCapitalRaidSeasonAttacker.Name);
             writer.WriteString("tag", clanCapitalRaidSeasonAttacker.Tag);
-
-            writer.WriteEndObject();
         }
     }
 }

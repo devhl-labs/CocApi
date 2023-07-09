@@ -24,14 +24,14 @@ Name | Type | Description | Notes
 **Trophies** | **int** |  | [optional] [readonly] 
 **WarStars** | **int** |  | [optional] [readonly] 
 **BuilderBaseLeague** | [**BuilderBaseLeague**](BuilderBaseLeague.md) |  | [optional] [readonly] 
-**BuilderHallLevel** | **int?** |  | [optional] [readonly] 
+**BuilderHallLevel** | **int** |  | [optional] [readonly] 
 **Clan** | [**PlayerClan**](PlayerClan.md) |  | [optional] [readonly] 
 **League** | [**League**](League.md) |  | [optional] [readonly] 
 **LegendStatistics** | [**PlayerLegendStatistics**](PlayerLegendStatistics.md) |  | [optional] [readonly] 
 **PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 
 **Role** | **Role** |  | [optional] [readonly] 
-**TownHallWeaponLevel** | **int?** |  | [optional] [readonly] 
-**VersusBattleWinCount** | **int?** |  | [optional] [readonly] 
+**TownHallWeaponLevel** | **int** |  | [optional] [readonly] 
+**VersusBattleWinCount** | **int** |  | [optional] [readonly] 
 **WarPreference** | **WarPreference** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)

@@ -57,9 +57,9 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetCapitalRaidSeasonsAsyncTest()
         {
             string clanTag = default!;
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchCapitalRaidSeasonsAsync(clanTag, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanCapitalRaidSeasons>(model);
@@ -84,9 +84,9 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetClanMembersAsyncTest()
         {
             string clanTag = default!;
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchClanMembersAsync(clanTag, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<List<ClanMember>>(model);
@@ -99,7 +99,7 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetClanWarLeagueGroupAsyncTest()
         {
             string clanTag = default!;
-            bool? realtime = default!;
+            Client.Option<bool> realtime = default!;
             var response = await _instance.FetchClanWarLeagueGroupAsync(clanTag, realtime);
             var model = response.AsModel();
             Assert.IsType<ClanWarLeagueGroup>(model);
@@ -112,7 +112,7 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetClanWarLeagueWarAsyncTest()
         {
             string warTag = default!;
-            bool? realtime = default!;
+            Client.Option<bool> realtime = default!;
             var response = await _instance.FetchClanWarLeagueWarAsync(warTag, realtime);
             var model = response.AsModel();
             Assert.IsType<ClanWar>(model);
@@ -125,9 +125,9 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetClanWarLogAsyncTest()
         {
             string clanTag = default!;
-            int? limit = default!;
-            string? after = default!;
-            string? before = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
             var response = await _instance.FetchClanWarLogAsync(clanTag, limit, after, before);
             var model = response.AsModel();
             Assert.IsType<ClanWarLog>(model);
@@ -140,7 +140,7 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetCurrentWarAsyncTest()
         {
             string clanTag = default!;
-            bool? realtime = default!;
+            Client.Option<bool> realtime = default!;
             var response = await _instance.FetchCurrentWarAsync(clanTag, realtime);
             var model = response.AsModel();
             Assert.IsType<ClanWar>(model);
@@ -152,17 +152,17 @@ namespace CocApi.Rest.Test.Apis
         [Fact (Skip = "not implemented")]
         public async Task SearchClansAsyncTest()
         {
-            int? locationId = default!;
-            int? minMembers = default!;
-            int? maxMembers = default!;
-            int? minClanPoints = default!;
-            int? minClanLevel = default!;
-            int? limit = default!;
-            string? name = default!;
-            string? warFrequency = default!;
-            string? after = default!;
-            string? before = default!;
-            string? labelIds = default!;
+            Client.Option<int> locationId = default!;
+            Client.Option<int> minMembers = default!;
+            Client.Option<int> maxMembers = default!;
+            Client.Option<int> minClanPoints = default!;
+            Client.Option<int> minClanLevel = default!;
+            Client.Option<int> limit = default!;
+            Client.Option<string> name = default!;
+            Client.Option<string> warFrequency = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
+            Client.Option<string> labelIds = default!;
             var response = await _instance.SearchClansAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
             var model = response.AsModel();
             Assert.IsType<ClanList>(model);

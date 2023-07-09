@@ -169,9 +169,20 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            writer.WriteString("id", leagueSeason.Id);
-
+            WriteProperties(ref writer, leagueSeason, jsonSerializerOptions);
             writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="LeagueSeason" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="leagueSeason"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, LeagueSeason leagueSeason, JsonSerializerOptions jsonSerializerOptions)
+        {
+            writer.WriteString("id", leagueSeason.Id);
         }
     }
 }

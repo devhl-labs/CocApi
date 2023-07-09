@@ -214,7 +214,7 @@ namespace CocApi.Rest.Models
                             string? stateRawValue = utf8JsonReader.GetString();
                             state = stateRawValue == null
                                 ? null
-                                : GroupStateConverter.FromStringOrDefault(stateRawValue);
+                                : GroupStateValueConverter.FromStringOrDefault(stateRawValue);
                             break;
                         default:
                             break;
@@ -245,6 +245,19 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
+            WriteProperties(ref writer, clanWarLeagueGroup, jsonSerializerOptions);
+            writer.WriteEndObject();
+        }
+
+        /// <summary>
+        /// Serializes the properties of <see cref="ClanWarLeagueGroup" />
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="clanWarLeagueGroup"></param>
+        /// <param name="jsonSerializerOptions"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueGroup clanWarLeagueGroup, JsonSerializerOptions jsonSerializerOptions)
+        {
             writer.WritePropertyName("clans");
             JsonSerializer.Serialize(writer, clanWarLeagueGroup.Clans, jsonSerializerOptions);
             writer.WritePropertyName("rounds");
@@ -255,14 +268,12 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("state");
             else
             {
-                var stateRawValue = GroupStateConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
+                var stateRawValue = GroupStateValueConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
                 if (stateRawValue != null)
                     writer.WriteString("state", stateRawValue);
                 else
                     writer.WriteNull("state");
             }
-
-            writer.WriteEndObject();
         }
     }
 }

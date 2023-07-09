@@ -137,7 +137,10 @@ public sealed class NewCwlWarService : ServiceBase
 
             foreach (KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> season in seasons)
                 foreach (var warTags in season.Value)
-                    processRequests.Add(ProcessRequest(clansApi, Options.Value.RealTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
+                {
+                    Option<bool> realTime = Options.Value.RealTime != null ? new Option<bool>(Options.Value.RealTime.Value) : default;
+                    processRequests.Add(ProcessRequest(clansApi, realTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
+                }
 
             try
             {
@@ -210,7 +213,7 @@ public sealed class NewCwlWarService : ServiceBase
 
     private async Task ProcessRequest(
         IClansApi clansApi,
-        bool? realtime,
+        Option<bool> realtime,
         ConcurrentDictionary<string, byte?> announcedWars,
         KeyValuePair<string, Rest.Models.ClanWarLeagueGroup> kvp,
         List<CachedClan> cachedClans,

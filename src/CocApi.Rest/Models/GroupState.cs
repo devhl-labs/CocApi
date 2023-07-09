@@ -45,10 +45,9 @@ namespace CocApi.Rest.Models
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="GroupState"/>
+    /// Converts <see cref="GroupState"/> to and from the JSON value
     /// </summary>
-    /// <exception cref="NotImplementedException"></exception>
-    public class GroupStateConverter : JsonConverter<GroupState>
+    public static class GroupStateValueConverter
     {
         /// <summary>
         /// Parses a given value to <see cref="GroupState"/>
@@ -107,7 +106,14 @@ namespace CocApi.Rest.Models
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
+    }
 
+    /// <summary>
+    /// A Json converter for type <see cref="GroupState"/>
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    public class GroupStateJsonConverter : JsonConverter<GroupState>
+    {
         /// <summary>
         /// Returns a  from the Json object
         /// </summary>
@@ -121,7 +127,7 @@ namespace CocApi.Rest.Models
 
             GroupState? result = rawValue == null
                 ? null
-                : GroupStateConverter.FromStringOrDefault(rawValue);
+                : GroupStateValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -144,7 +150,7 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="GroupState"/>
     /// </summary>
-    public class GroupStateNullableConverter : JsonConverter<GroupState?>
+    public class GroupStateNullableJsonConverter : JsonConverter<GroupState?>
     {
         /// <summary>
         /// Returns a GroupState from the Json object
@@ -159,7 +165,7 @@ namespace CocApi.Rest.Models
 
             GroupState? result = rawValue == null
                 ? null
-                : GroupStateConverter.FromStringOrDefault(rawValue);
+                : GroupStateValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
