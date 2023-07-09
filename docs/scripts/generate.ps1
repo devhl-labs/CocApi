@@ -211,6 +211,15 @@ $clanServerExpirtationEquals = @"
 "@
 
 
+$serverExpirationEquals = @"
+                (
+                    ServerExpiration == input.ServerExpiration ||
+                    ServerExpiration.Equals(input.ServerExpiration)
+                ) && 
+
+"@
+
+
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
 $apiDocPath = Resolve-Path -Path "$output\docs\apis"
@@ -359,6 +368,7 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
         $content = $content.Replace($clanServerExpirtationEquals, "")
         $content = $content.Replace("hashCode = (hashCode * 59) + ServerExpiration.GetHashCode();`r`n                ", "")
+        $content = $content.Replace($serverExpirationEquals, "")
 
         # this can be removed in the next update, just to ensure we can deserialize the old json data which wont have the serverExpiration value
         $content = $content.Replace("throw new ArgumentNullException(nameof(serverExpiration), `"Property is required for class ClanWar.`");", "serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);")

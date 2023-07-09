@@ -185,10 +185,6 @@ namespace CocApi.Rest.Models
                     PreparationStartTime.Equals(input.PreparationStartTime)
                 ) && 
                 (
-                    ServerExpiration == input.ServerExpiration ||
-                    ServerExpiration.Equals(input.ServerExpiration)
-                ) && 
-                (
                     StartTime == input.StartTime ||
                     StartTime.Equals(input.StartTime)
                 ) && 
