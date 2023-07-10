@@ -135,12 +135,19 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new WarTypeNullableJsonConverter());
             _services.AddSingleton(new JsonSerializerOptionsProvider(_jsonOptions));
             _services.AddSingleton<IApiFactory, ApiFactory>();
+            _services.AddSingleton<ClansApiEvents>();
             _services.AddTransient<IClansApi, ClansApi>();
+            _services.AddSingleton<DeveloperApiEvents>();
             _services.AddTransient<IDeveloperApi, DeveloperApi>();
+            _services.AddSingleton<GoldpassApiEvents>();
             _services.AddTransient<IGoldpassApi, GoldpassApi>();
+            _services.AddSingleton<LabelsApiEvents>();
             _services.AddTransient<ILabelsApi, LabelsApi>();
+            _services.AddSingleton<LeaguesApiEvents>();
             _services.AddTransient<ILeaguesApi, LeaguesApi>();
+            _services.AddSingleton<LocationsApiEvents>();
             _services.AddTransient<ILocationsApi, LocationsApi>();
+            _services.AddSingleton<PlayersApiEvents>();
             _services.AddTransient<IPlayersApi, PlayersApi>();
         }
 

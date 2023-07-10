@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface IClansApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        ClansApiEvents Events { get; }
+
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons
         /// </summary>
@@ -263,6 +269,93 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class ClansApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanCapitalRaidSeasons>>? OnFetchCapitalRaidSeasons;
+
+        internal void ExecuteOnGetCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons> apiResponse)
+        {
+            OnFetchCapitalRaidSeasons?.Invoke(this, new ApiResponseEventArgs<ClanCapitalRaidSeasons>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<Clan>>? OnFetchClan;
+
+        internal void ExecuteOnGetClan(ApiResponse<Clan> apiResponse)
+        {
+            OnFetchClan?.Invoke(this, new ApiResponseEventArgs<Clan>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<List<ClanMember>>>? OnFetchClanMembers;
+
+        internal void ExecuteOnGetClanMembers(ApiResponse<List<ClanMember>> apiResponse)
+        {
+            OnFetchClanMembers?.Invoke(this, new ApiResponseEventArgs<List<ClanMember>>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanWarLeagueGroup>>? OnFetchClanWarLeagueGroup;
+
+        internal void ExecuteOnGetClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponse)
+        {
+            OnFetchClanWarLeagueGroup?.Invoke(this, new ApiResponseEventArgs<ClanWarLeagueGroup>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanWar>>? OnFetchClanWarLeagueWar;
+
+        internal void ExecuteOnGetClanWarLeagueWar(ApiResponse<ClanWar> apiResponse)
+        {
+            OnFetchClanWarLeagueWar?.Invoke(this, new ApiResponseEventArgs<ClanWar>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanWarLog>>? OnFetchClanWarLog;
+
+        internal void ExecuteOnGetClanWarLog(ApiResponse<ClanWarLog> apiResponse)
+        {
+            OnFetchClanWarLog?.Invoke(this, new ApiResponseEventArgs<ClanWarLog>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanWar>>? OnFetchCurrentWar;
+
+        internal void ExecuteOnGetCurrentWar(ApiResponse<ClanWar> apiResponse)
+        {
+            OnFetchCurrentWar?.Invoke(this, new ApiResponseEventArgs<ClanWar>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanList>>? OnSearchClans;
+
+        internal void ExecuteOnSearchClans(ApiResponse<ClanList> apiResponse)
+        {
+            OnSearchClans?.Invoke(this, new ApiResponseEventArgs<ClanList>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class ClansApi : IApis.IClansApi
     {
@@ -279,6 +372,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public ClansApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -287,12 +385,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="ClansApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public ClansApi(ILogger<ClansApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public ClansApi(ILogger<ClansApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, ClansApiEvents clansApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = clansApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -465,6 +564,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchCapitalRaidSeasonsDefaultImplementation(apiResponseLocalVar, clanTag, limit, after, before);
 
+                        Events.ExecuteOnGetCapitalRaidSeasons(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -609,6 +710,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<Clan> apiResponseLocalVar = new ApiResponse<Clan>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchClanDefaultImplementation(apiResponseLocalVar, clanTag);
+
+                        Events.ExecuteOnGetClan(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -794,6 +897,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchClanMembersDefaultImplementation(apiResponseLocalVar, clanTag, limit, after, before);
 
+                        Events.ExecuteOnGetClanMembers(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -952,6 +1057,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchClanWarLeagueGroupDefaultImplementation(apiResponseLocalVar, clanTag, realtime);
 
+                        Events.ExecuteOnGetClanWarLeagueGroup(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1109,6 +1216,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clanwarleagues/wars/{warTag}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchClanWarLeagueWarDefaultImplementation(apiResponseLocalVar, warTag, realtime);
+
+                        Events.ExecuteOnGetClanWarLeagueWar(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1294,6 +1403,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchClanWarLogDefaultImplementation(apiResponseLocalVar, clanTag, limit, after, before);
 
+                        Events.ExecuteOnGetClanWarLog(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1451,6 +1562,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<ClanWar> apiResponseLocalVar = new ApiResponse<ClanWar>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans/{clanTag}/currentwar", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchCurrentWarDefaultImplementation(apiResponseLocalVar, clanTag, realtime);
+
+                        Events.ExecuteOnGetCurrentWar(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1708,6 +1821,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<ClanList> apiResponseLocalVar = new ApiResponse<ClanList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/clans", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterSearchClansDefaultImplementation(apiResponseLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+
+                        Events.ExecuteOnSearchClans(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)

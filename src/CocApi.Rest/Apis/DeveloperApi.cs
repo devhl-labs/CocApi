@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface IDeveloperApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        DeveloperApiEvents Events { get; }
+
         /// <summary>
         /// Create an api token.
         /// </summary>
@@ -125,6 +131,53 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class DeveloperApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<KeyInstance>>? OnCreate;
+
+        internal void ExecuteOnCreate(ApiResponse<KeyInstance> apiResponse)
+        {
+            OnCreate?.Invoke(this, new ApiResponseEventArgs<KeyInstance>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<KeyList>>? OnKeys;
+
+        internal void ExecuteOnKeys(ApiResponse<KeyList> apiResponse)
+        {
+            OnKeys?.Invoke(this, new ApiResponseEventArgs<KeyList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<LoginResponse>>? OnLogin;
+
+        internal void ExecuteOnLogin(ApiResponse<LoginResponse> apiResponse)
+        {
+            OnLogin?.Invoke(this, new ApiResponseEventArgs<LoginResponse>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<KeyInstance>>? OnRevoke;
+
+        internal void ExecuteOnRevoke(ApiResponse<KeyInstance> apiResponse)
+        {
+            OnRevoke?.Invoke(this, new ApiResponseEventArgs<KeyInstance>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class DeveloperApi : IApis.IDeveloperApi
     {
@@ -141,6 +194,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public DeveloperApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -149,12 +207,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="DeveloperApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public DeveloperApi(ILogger<DeveloperApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public DeveloperApi(ILogger<DeveloperApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, DeveloperApiEvents developerApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = developerApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -297,6 +356,8 @@ namespace CocApi.Rest.Apis
 
                         AfterCreateDefaultImplementation(apiResponseLocalVar, createTokenRequest);
 
+                        Events.ExecuteOnCreate(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -414,6 +475,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<KeyList> apiResponseLocalVar = new ApiResponse<KeyList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/apikey/list", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterKeysDefaultImplementation(apiResponseLocalVar);
+
+                        Events.ExecuteOnKeys(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -564,6 +627,8 @@ namespace CocApi.Rest.Apis
 
                         AfterLoginDefaultImplementation(apiResponseLocalVar, loginCredentials);
 
+                        Events.ExecuteOnLogin(apiResponseLocalVar);
+
                         return apiResponseLocalVar;
                     }
                 }
@@ -713,6 +778,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<KeyInstance> apiResponseLocalVar = new ApiResponse<KeyInstance>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/apikey/revoke", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterRevokeDefaultImplementation(apiResponseLocalVar, key);
+
+                        Events.ExecuteOnRevoke(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)

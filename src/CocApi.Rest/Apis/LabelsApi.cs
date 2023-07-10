@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface ILabelsApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        LabelsApiEvents Events { get; }
+
         /// <summary>
         /// List clan labels
         /// </summary>
@@ -89,6 +95,33 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class LabelsApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<LabelsObject>>? OnFetchClanLabels;
+
+        internal void ExecuteOnGetClanLabels(ApiResponse<LabelsObject> apiResponse)
+        {
+            OnFetchClanLabels?.Invoke(this, new ApiResponseEventArgs<LabelsObject>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<LabelsObject>>? OnFetchPlayerLabels;
+
+        internal void ExecuteOnGetPlayerLabels(ApiResponse<LabelsObject> apiResponse)
+        {
+            OnFetchPlayerLabels?.Invoke(this, new ApiResponseEventArgs<LabelsObject>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class LabelsApi : IApis.ILabelsApi
     {
@@ -105,6 +138,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public LabelsApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -113,12 +151,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="LabelsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LabelsApi(ILogger<LabelsApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public LabelsApi(ILogger<LabelsApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, LabelsApiEvents labelsApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = labelsApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -279,6 +318,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<LabelsObject> apiResponseLocalVar = new ApiResponse<LabelsObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/labels/clans", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchClanLabelsDefaultImplementation(apiResponseLocalVar, limit, after, before);
+
+                        Events.ExecuteOnGetClanLabels(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -452,6 +493,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<LabelsObject> apiResponseLocalVar = new ApiResponse<LabelsObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/labels/players", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchPlayerLabelsDefaultImplementation(apiResponseLocalVar, limit, after, before);
+
+                        Events.ExecuteOnGetPlayerLabels(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)

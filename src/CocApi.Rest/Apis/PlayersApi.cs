@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface IPlayersApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        PlayersApiEvents Events { get; }
+
         /// <summary>
         /// Get player information
         /// </summary>
@@ -83,6 +89,33 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class PlayersApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<Player>>? OnFetchPlayer;
+
+        internal void ExecuteOnGetPlayer(ApiResponse<Player> apiResponse)
+        {
+            OnFetchPlayer?.Invoke(this, new ApiResponseEventArgs<Player>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<VerifyTokenResponse>>? OnVerifyToken;
+
+        internal void ExecuteOnVerifyToken(ApiResponse<VerifyTokenResponse> apiResponse)
+        {
+            OnVerifyToken?.Invoke(this, new ApiResponseEventArgs<VerifyTokenResponse>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class PlayersApi : IApis.IPlayersApi
     {
@@ -99,6 +132,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public PlayersApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -107,12 +145,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="PlayersApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public PlayersApi(ILogger<PlayersApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public PlayersApi(ILogger<PlayersApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, PlayersApiEvents playersApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = playersApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -245,6 +284,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<Player> apiResponseLocalVar = new ApiResponse<Player>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/players/{playerTag}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchPlayerDefaultImplementation(apiResponseLocalVar, playerTag);
+
+                        Events.ExecuteOnGetPlayer(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -413,6 +454,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<VerifyTokenResponse> apiResponseLocalVar = new ApiResponse<VerifyTokenResponse>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/players/{playerTag}/verifytoken", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterVerifyTokenDefaultImplementation(apiResponseLocalVar, body, playerTag);
+
+                        Events.ExecuteOnVerifyToken(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)

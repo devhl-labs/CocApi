@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface ILeaguesApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        LeaguesApiEvents Events { get; }
+
         /// <summary>
         /// Get Builder Base league information
         /// </summary>
@@ -295,6 +301,113 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class LeaguesApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<BuilderBaseLeague>>? OnFetchBuilderBaseLeague;
+
+        internal void ExecuteOnGetBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponse)
+        {
+            OnFetchBuilderBaseLeague?.Invoke(this, new ApiResponseEventArgs<BuilderBaseLeague>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<BuilderBaseLeagueList>>? OnFetchBuilderBaseLeagues;
+
+        internal void ExecuteOnGetBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponse)
+        {
+            OnFetchBuilderBaseLeagues?.Invoke(this, new ApiResponseEventArgs<BuilderBaseLeagueList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<CapitalLeague>>? OnFetchCapitalLeague;
+
+        internal void ExecuteOnGetCapitalLeague(ApiResponse<CapitalLeague> apiResponse)
+        {
+            OnFetchCapitalLeague?.Invoke(this, new ApiResponseEventArgs<CapitalLeague>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<CapitalLeagueObject>>? OnFetchCapitalLeagues;
+
+        internal void ExecuteOnGetCapitalLeagues(ApiResponse<CapitalLeagueObject> apiResponse)
+        {
+            OnFetchCapitalLeagues?.Invoke(this, new ApiResponseEventArgs<CapitalLeagueObject>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<League>>? OnFetchLeague;
+
+        internal void ExecuteOnGetLeague(ApiResponse<League> apiResponse)
+        {
+            OnFetchLeague?.Invoke(this, new ApiResponseEventArgs<League>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<PlayerRankingList>>? OnFetchLeagueSeasonRankings;
+
+        internal void ExecuteOnGetLeagueSeasonRankings(ApiResponse<PlayerRankingList> apiResponse)
+        {
+            OnFetchLeagueSeasonRankings?.Invoke(this, new ApiResponseEventArgs<PlayerRankingList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<LeagueSeasonList>>? OnFetchLeagueSeasons;
+
+        internal void ExecuteOnGetLeagueSeasons(ApiResponse<LeagueSeasonList> apiResponse)
+        {
+            OnFetchLeagueSeasons?.Invoke(this, new ApiResponseEventArgs<LeagueSeasonList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<LeagueList>>? OnFetchLeagues;
+
+        internal void ExecuteOnGetLeagues(ApiResponse<LeagueList> apiResponse)
+        {
+            OnFetchLeagues?.Invoke(this, new ApiResponseEventArgs<LeagueList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<WarLeague>>? OnFetchWarLeague;
+
+        internal void ExecuteOnGetWarLeague(ApiResponse<WarLeague> apiResponse)
+        {
+            OnFetchWarLeague?.Invoke(this, new ApiResponseEventArgs<WarLeague>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<WarLeagueList>>? OnFetchWarLeagues;
+
+        internal void ExecuteOnGetWarLeagues(ApiResponse<WarLeagueList> apiResponse)
+        {
+            OnFetchWarLeagues?.Invoke(this, new ApiResponseEventArgs<WarLeagueList>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class LeaguesApi : IApis.ILeaguesApi
     {
@@ -311,6 +424,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public LeaguesApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -319,12 +437,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="LeaguesApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LeaguesApi(ILogger<LeaguesApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public LeaguesApi(ILogger<LeaguesApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, LeaguesApiEvents leaguesApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = leaguesApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -457,6 +576,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<BuilderBaseLeague> apiResponseLocalVar = new ApiResponse<BuilderBaseLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchBuilderBaseLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
+
+                        Events.ExecuteOnGetBuilderBaseLeague(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -631,6 +752,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchBuilderBaseLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
+                        Events.ExecuteOnGetBuilderBaseLeagues(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -775,6 +898,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<CapitalLeague> apiResponseLocalVar = new ApiResponse<CapitalLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchCapitalLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
+
+                        Events.ExecuteOnGetCapitalLeague(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -949,6 +1074,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchCapitalLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
+                        Events.ExecuteOnGetCapitalLeagues(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1093,6 +1220,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<League> apiResponseLocalVar = new ApiResponse<League>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
+
+                        Events.ExecuteOnGetLeague(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1289,6 +1418,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchLeagueSeasonRankingsDefaultImplementation(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
 
+                        Events.ExecuteOnGetLeagueSeasonRankings(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1473,6 +1604,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchLeagueSeasonsDefaultImplementation(apiResponseLocalVar, leagueId, limit, after, before);
 
+                        Events.ExecuteOnGetLeagueSeasons(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1646,6 +1779,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
+                        Events.ExecuteOnGetLeagues(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1790,6 +1925,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<WarLeague> apiResponseLocalVar = new ApiResponse<WarLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchWarLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
+
+                        Events.ExecuteOnGetWarLeague(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1963,6 +2100,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<WarLeagueList> apiResponseLocalVar = new ApiResponse<WarLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchWarLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
+
+                        Events.ExecuteOnGetWarLeagues(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)

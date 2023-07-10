@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface IGoldpassApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        GoldpassApiEvents Events { get; }
+
         /// <summary>
         /// Get information about the current gold pass season.
         /// </summary>
@@ -56,6 +62,23 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class GoldpassApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<GoldPassSeason>>? OnFetchCurrentGoldPassSeason;
+
+        internal void ExecuteOnGetCurrentGoldPassSeason(ApiResponse<GoldPassSeason> apiResponse)
+        {
+            OnFetchCurrentGoldPassSeason?.Invoke(this, new ApiResponseEventArgs<GoldPassSeason>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class GoldpassApi : IApis.IGoldpassApi
     {
@@ -72,6 +95,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public GoldpassApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -80,12 +108,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="GoldpassApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public GoldpassApi(ILogger<GoldpassApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public GoldpassApi(ILogger<GoldpassApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, GoldpassApiEvents goldpassApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = goldpassApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -194,6 +223,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<GoldPassSeason> apiResponseLocalVar = new ApiResponse<GoldPassSeason>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/goldpass/seasons/current", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchCurrentGoldPassSeasonDefaultImplementation(apiResponseLocalVar);
+
+                        Events.ExecuteOnGetCurrentGoldPassSeason(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)

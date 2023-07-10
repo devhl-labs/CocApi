@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.IApis
@@ -29,6 +30,11 @@ namespace CocApi.Rest.IApis
     /// </summary>
     public interface ILocationsApi : IApi
     {
+        /// <summary>
+        /// The class containing the events
+        /// </summary>
+        LocationsApiEvents Events { get; }
+
         /// <summary>
         /// Get clan versus rankings for a specific location
         /// </summary>
@@ -230,6 +236,83 @@ namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
+    /// This class is registered as transient.
+    /// </summary>
+    public class LocationsApiEvents
+    {
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanBuilderBaseRankingList>>? OnFetchClanBuilderBaseRanking;
+
+        internal void ExecuteOnGetClanBuilderBaseRanking(ApiResponse<ClanBuilderBaseRankingList> apiResponse)
+        {
+            OnFetchClanBuilderBaseRanking?.Invoke(this, new ApiResponseEventArgs<ClanBuilderBaseRankingList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanCapitalRankingObject>>? OnFetchClanCapitalRanking;
+
+        internal void ExecuteOnGetClanCapitalRanking(ApiResponse<ClanCapitalRankingObject> apiResponse)
+        {
+            OnFetchClanCapitalRanking?.Invoke(this, new ApiResponseEventArgs<ClanCapitalRankingObject>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<ClanRankingList>>? OnFetchClanRanking;
+
+        internal void ExecuteOnGetClanRanking(ApiResponse<ClanRankingList> apiResponse)
+        {
+            OnFetchClanRanking?.Invoke(this, new ApiResponseEventArgs<ClanRankingList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<Location>>? OnFetchLocation;
+
+        internal void ExecuteOnGetLocation(ApiResponse<Location> apiResponse)
+        {
+            OnFetchLocation?.Invoke(this, new ApiResponseEventArgs<Location>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<LocationList>>? OnFetchLocations;
+
+        internal void ExecuteOnGetLocations(ApiResponse<LocationList> apiResponse)
+        {
+            OnFetchLocations?.Invoke(this, new ApiResponseEventArgs<LocationList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<PlayerBuilderBaseRankingList>>? OnFetchPlayerBuilderBaseRanking;
+
+        internal void ExecuteOnGetPlayerBuilderBaseRanking(ApiResponse<PlayerBuilderBaseRankingList> apiResponse)
+        {
+            OnFetchPlayerBuilderBaseRanking?.Invoke(this, new ApiResponseEventArgs<PlayerBuilderBaseRankingList>(apiResponse));
+        }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs<PlayerRankingList>>? OnFetchPlayerRanking;
+
+        internal void ExecuteOnGetPlayerRanking(ApiResponse<PlayerRankingList> apiResponse)
+        {
+            OnFetchPlayerRanking?.Invoke(this, new ApiResponseEventArgs<PlayerRankingList>(apiResponse));
+        }
+    }
+
+    /// <summary>
+    /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
     public sealed partial class LocationsApi : IApis.ILocationsApi
     {
@@ -246,6 +329,11 @@ namespace CocApi.Rest.Apis
         public HttpClient HttpClient { get; }
 
         /// <summary>
+        /// The class containing the events
+        /// </summary>
+        public LocationsApiEvents Events { get; }
+
+        /// <summary>
         /// A token provider of type <see cref="ApiKeyProvider"/>
         /// </summary>
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
@@ -254,12 +342,13 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="LocationsApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LocationsApi(ILogger<LocationsApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider,
+        public LocationsApi(ILogger<LocationsApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, LocationsApiEvents locationsApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             Logger = logger;
             HttpClient = httpClient;
+            Events = locationsApiEvents;
             ApiKeyProvider = apiKeyProvider;
         }
 
@@ -431,6 +520,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<ClanBuilderBaseRankingList> apiResponseLocalVar = new ApiResponse<ClanBuilderBaseRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/clans-builder-base", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchClanBuilderBaseRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
+
+                        Events.ExecuteOnGetClanBuilderBaseRanking(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -616,6 +707,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchClanCapitalRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
+                        Events.ExecuteOnGetClanCapitalRanking(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -800,6 +893,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchClanRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
+                        Events.ExecuteOnGetClanRanking(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -944,6 +1039,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<Location> apiResponseLocalVar = new ApiResponse<Location>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLocationDefaultImplementation(apiResponseLocalVar, locationId);
+
+                        Events.ExecuteOnGetLocation(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1117,6 +1214,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<LocationList> apiResponseLocalVar = new ApiResponse<LocationList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLocationsDefaultImplementation(apiResponseLocalVar, limit, after, before);
+
+                        Events.ExecuteOnGetLocations(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
@@ -1302,6 +1401,8 @@ namespace CocApi.Rest.Apis
 
                         AfterFetchPlayerBuilderBaseRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
 
+                        Events.ExecuteOnGetPlayerBuilderBaseRanking(apiResponseLocalVar);
+
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
                                 tokenBaseLocalVar.BeginRateLimit();
@@ -1485,6 +1586,8 @@ namespace CocApi.Rest.Apis
                         ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/locations/{locationId}/rankings/players", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchPlayerRankingDefaultImplementation(apiResponseLocalVar, locationId, limit, after, before);
+
+                        Events.ExecuteOnGetPlayerRanking(apiResponseLocalVar);
 
                         if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
                             foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
