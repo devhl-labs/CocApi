@@ -1,5 +1,5 @@
-$packageVersion = "2.7.1"
-$releaseNote = "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
+$packageVersion = "2.8.0"
+$releaseNote = "Removed IApi namespace. Added an event for errors."
 
 $properties = @(
     'packageName=CocApi.Rest',

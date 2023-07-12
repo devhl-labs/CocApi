@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.7.1',
+    'packageVersion=2.8.0',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -37,7 +37,7 @@ java -jar "<path>/openapi-generator/modules/openapi-generator-cli/target/openapi
     --git-host "github.com" `
     --git-repo-id "CocApi" `
     --git-user-id "devhl-labs" `
-    --release-note "Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml."
+    --release-note "Removed IApi namespace. Added an event for errors."
     # -t templates
 ```
 
@@ -141,8 +141,8 @@ Authentication schemes defined for the API:
 
 
 ## Build
-- SDK version: 2.7.1
-- Build date: 2023-07-11T20:29:47.973693900-04:00[America/New_York]
+- SDK version: 2.8.0
+- Build date: 2023-07-11T20:30:55.139707100-04:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
 ## Api Information
@@ -190,8 +190,8 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.7.1
-- releaseNote: Moved rest methods to CocApi.Rest. Now using automation to generate rest methods from openapi yaml.
+- packageVersion: 2.8.0
+- releaseNote: Removed IApi namespace. Added an event for errors.
 - returnICollection: false
 - sortParamsByRequiredFlag: 
 - sourceFolder: src
