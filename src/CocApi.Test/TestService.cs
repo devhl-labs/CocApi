@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Rest.Client;
-using CocApi.Rest.IApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Hosting;
 

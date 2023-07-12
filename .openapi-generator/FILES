@@ -108,6 +108,7 @@ src/CocApi.Rest/Client/ClientUtils.cs
 src/CocApi.Rest/Client/CookieContainer.cs
 src/CocApi.Rest/Client/DateTimeJsonConverter.cs
 src/CocApi.Rest/Client/DateTimeNullableJsonConverter.cs
+src/CocApi.Rest/Client/ExceptionEventArgs.cs
 src/CocApi.Rest/Client/HostConfiguration.cs
 src/CocApi.Rest/Client/JsonSerializerOptionsProvider.cs
 src/CocApi.Rest/Client/Option.cs

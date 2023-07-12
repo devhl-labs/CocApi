@@ -1,6 +1,6 @@
 using System.Net.Http;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Any Api client

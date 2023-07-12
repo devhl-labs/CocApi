@@ -22,7 +22,7 @@ using CocApi.Rest.Client;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -125,10 +125,7 @@ namespace CocApi.Rest.IApis
         /// <returns>Task&lt;ApiResponse&gt;KeyInstance&gt;?&gt;</returns>
         Task<ApiResponse<KeyInstance>?> RevokeOrDefaultAsync(Key key, System.Threading.CancellationToken cancellationToken = default);
     }
-}
 
-namespace CocApi.Rest.Apis
-{
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// This class is registered as transient.
@@ -140,9 +137,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<KeyInstance>>? OnCreate;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorCreate;
+
         internal void ExecuteOnCreate(ApiResponse<KeyInstance> apiResponse)
         {
             OnCreate?.Invoke(this, new ApiResponseEventArgs<KeyInstance>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorCreate(Exception exception)
+        {
+            OnErrorCreate?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -150,9 +157,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<KeyList>>? OnKeys;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorKeys;
+
         internal void ExecuteOnKeys(ApiResponse<KeyList> apiResponse)
         {
             OnKeys?.Invoke(this, new ApiResponseEventArgs<KeyList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorKeys(Exception exception)
+        {
+            OnErrorKeys?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -160,9 +177,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<LoginResponse>>? OnLogin;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorLogin;
+
         internal void ExecuteOnLogin(ApiResponse<LoginResponse> apiResponse)
         {
             OnLogin?.Invoke(this, new ApiResponseEventArgs<LoginResponse>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorLogin(Exception exception)
+        {
+            OnErrorLogin?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -170,16 +197,26 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<KeyInstance>>? OnRevoke;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorRevoke;
+
         internal void ExecuteOnRevoke(ApiResponse<KeyInstance> apiResponse)
         {
             OnRevoke?.Invoke(this, new ApiResponseEventArgs<KeyInstance>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorRevoke(Exception exception)
+        {
+            OnErrorRevoke?.Invoke(this, new ExceptionEventArgs(exception));
         }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public sealed partial class DeveloperApi : IApis.IDeveloperApi
+    public sealed partial class DeveloperApi : IDeveloperApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
@@ -260,18 +297,21 @@ namespace CocApi.Rest.Apis
         /// <param name="createTokenRequest"></param>
         private void OnErrorCreateDefaultImplementation(Exception exception, string pathFormat, string path, CreateTokenRequest createTokenRequest)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorCreate(exception, pathFormat, path, createTokenRequest);
+            bool suppressDefaultLog = false;
+            OnErrorCreate(ref suppressDefaultLog, exception, pathFormat, path, createTokenRequest);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="createTokenRequest"></param>
-        partial void OnErrorCreate(Exception exception, string pathFormat, string path, CreateTokenRequest createTokenRequest);
+        partial void OnErrorCreate(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, CreateTokenRequest createTokenRequest);
 
         /// <summary>
         /// Create an api token. 
@@ -369,6 +409,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorCreateDefaultImplementation(e, "/apikey/create", uriBuilderLocalVar.Path, createTokenRequest);
+                Events.ExecuteOnErrorCreate(e);
                 throw;
             }
         }
@@ -400,17 +441,20 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         private void OnErrorKeysDefaultImplementation(Exception exception, string pathFormat, string path)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorKeys(exception, pathFormat, path);
+            bool suppressDefaultLog = false;
+            OnErrorKeys(ref suppressDefaultLog, exception, pathFormat, path);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
-        partial void OnErrorKeys(Exception exception, string pathFormat, string path);
+        partial void OnErrorKeys(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path);
 
         /// <summary>
         /// List all tokens. 
@@ -489,6 +533,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorKeysDefaultImplementation(e, "/apikey/list", uriBuilderLocalVar.Path);
+                Events.ExecuteOnErrorKeys(e);
                 throw;
             }
         }
@@ -536,18 +581,21 @@ namespace CocApi.Rest.Apis
         /// <param name="loginCredentials"></param>
         private void OnErrorLoginDefaultImplementation(Exception exception, string pathFormat, string path, LoginCredentials loginCredentials)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorLogin(exception, pathFormat, path, loginCredentials);
+            bool suppressDefaultLog = false;
+            OnErrorLogin(ref suppressDefaultLog, exception, pathFormat, path, loginCredentials);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="loginCredentials"></param>
-        partial void OnErrorLogin(Exception exception, string pathFormat, string path, LoginCredentials loginCredentials);
+        partial void OnErrorLogin(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, LoginCredentials loginCredentials);
 
         /// <summary>
         /// Login to the developer portal. 
@@ -636,6 +684,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorLoginDefaultImplementation(e, "/api/login", uriBuilderLocalVar.Path, loginCredentials);
+                Events.ExecuteOnErrorLogin(e);
                 throw;
             }
         }
@@ -683,18 +732,21 @@ namespace CocApi.Rest.Apis
         /// <param name="key"></param>
         private void OnErrorRevokeDefaultImplementation(Exception exception, string pathFormat, string path, Key key)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorRevoke(exception, pathFormat, path, key);
+            bool suppressDefaultLog = false;
+            OnErrorRevoke(ref suppressDefaultLog, exception, pathFormat, path, key);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="key"></param>
-        partial void OnErrorRevoke(Exception exception, string pathFormat, string path, Key key);
+        partial void OnErrorRevoke(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Key key);
 
         /// <summary>
         /// Revoke an api token. 
@@ -792,6 +844,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorRevokeDefaultImplementation(e, "/apikey/revoke", uriBuilderLocalVar.Path, key);
+                Events.ExecuteOnErrorRevoke(e);
                 throw;
             }
         }

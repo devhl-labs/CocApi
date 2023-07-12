@@ -17,7 +17,6 @@ using System.Text.Json.Serialization;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using CocApi.Rest.Apis;
-using CocApi.Rest.IApis;
 using CocApi.Rest.Models;
 
 namespace CocApi.Rest.Client

@@ -22,7 +22,7 @@ using CocApi.Rest.Client;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -295,10 +295,7 @@ namespace CocApi.Rest.IApis
         /// <returns>Task&lt;ApiResponse&gt;WarLeagueList&gt;?&gt;</returns>
         Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
     }
-}
 
-namespace CocApi.Rest.Apis
-{
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// This class is registered as transient.
@@ -310,9 +307,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<BuilderBaseLeague>>? OnFetchBuilderBaseLeague;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchBuilderBaseLeague;
+
         internal void ExecuteOnGetBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponse)
         {
             OnFetchBuilderBaseLeague?.Invoke(this, new ApiResponseEventArgs<BuilderBaseLeague>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetBuilderBaseLeague(Exception exception)
+        {
+            OnErrorFetchBuilderBaseLeague?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -320,9 +327,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<BuilderBaseLeagueList>>? OnFetchBuilderBaseLeagues;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchBuilderBaseLeagues;
+
         internal void ExecuteOnGetBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponse)
         {
             OnFetchBuilderBaseLeagues?.Invoke(this, new ApiResponseEventArgs<BuilderBaseLeagueList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetBuilderBaseLeagues(Exception exception)
+        {
+            OnErrorFetchBuilderBaseLeagues?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -330,9 +347,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<CapitalLeague>>? OnFetchCapitalLeague;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchCapitalLeague;
+
         internal void ExecuteOnGetCapitalLeague(ApiResponse<CapitalLeague> apiResponse)
         {
             OnFetchCapitalLeague?.Invoke(this, new ApiResponseEventArgs<CapitalLeague>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetCapitalLeague(Exception exception)
+        {
+            OnErrorFetchCapitalLeague?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -340,9 +367,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<CapitalLeagueObject>>? OnFetchCapitalLeagues;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchCapitalLeagues;
+
         internal void ExecuteOnGetCapitalLeagues(ApiResponse<CapitalLeagueObject> apiResponse)
         {
             OnFetchCapitalLeagues?.Invoke(this, new ApiResponseEventArgs<CapitalLeagueObject>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetCapitalLeagues(Exception exception)
+        {
+            OnErrorFetchCapitalLeagues?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -350,9 +387,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<League>>? OnFetchLeague;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeague;
+
         internal void ExecuteOnGetLeague(ApiResponse<League> apiResponse)
         {
             OnFetchLeague?.Invoke(this, new ApiResponseEventArgs<League>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetLeague(Exception exception)
+        {
+            OnErrorFetchLeague?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -360,9 +407,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<PlayerRankingList>>? OnFetchLeagueSeasonRankings;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeagueSeasonRankings;
+
         internal void ExecuteOnGetLeagueSeasonRankings(ApiResponse<PlayerRankingList> apiResponse)
         {
             OnFetchLeagueSeasonRankings?.Invoke(this, new ApiResponseEventArgs<PlayerRankingList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetLeagueSeasonRankings(Exception exception)
+        {
+            OnErrorFetchLeagueSeasonRankings?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -370,9 +427,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<LeagueSeasonList>>? OnFetchLeagueSeasons;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeagueSeasons;
+
         internal void ExecuteOnGetLeagueSeasons(ApiResponse<LeagueSeasonList> apiResponse)
         {
             OnFetchLeagueSeasons?.Invoke(this, new ApiResponseEventArgs<LeagueSeasonList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetLeagueSeasons(Exception exception)
+        {
+            OnErrorFetchLeagueSeasons?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -380,9 +447,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<LeagueList>>? OnFetchLeagues;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeagues;
+
         internal void ExecuteOnGetLeagues(ApiResponse<LeagueList> apiResponse)
         {
             OnFetchLeagues?.Invoke(this, new ApiResponseEventArgs<LeagueList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetLeagues(Exception exception)
+        {
+            OnErrorFetchLeagues?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -390,9 +467,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<WarLeague>>? OnFetchWarLeague;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchWarLeague;
+
         internal void ExecuteOnGetWarLeague(ApiResponse<WarLeague> apiResponse)
         {
             OnFetchWarLeague?.Invoke(this, new ApiResponseEventArgs<WarLeague>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetWarLeague(Exception exception)
+        {
+            OnErrorFetchWarLeague?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -400,16 +487,26 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<WarLeagueList>>? OnFetchWarLeagues;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchWarLeagues;
+
         internal void ExecuteOnGetWarLeagues(ApiResponse<WarLeagueList> apiResponse)
         {
             OnFetchWarLeagues?.Invoke(this, new ApiResponseEventArgs<WarLeagueList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetWarLeagues(Exception exception)
+        {
+            OnErrorFetchWarLeagues?.Invoke(this, new ExceptionEventArgs(exception));
         }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public sealed partial class LeaguesApi : IApis.ILeaguesApi
+    public sealed partial class LeaguesApi : ILeaguesApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
@@ -490,18 +587,21 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void OnErrorFetchBuilderBaseLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchBuilderBaseLeague(exception, pathFormat, path, leagueId);
+            bool suppressDefaultLog = false;
+            OnErrorFetchBuilderBaseLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchBuilderBaseLeague(Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchBuilderBaseLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get Builder Base league information Get Builder Base league information
@@ -590,6 +690,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchBuilderBaseLeagueDefaultImplementation(e, "/builderbaseleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                Events.ExecuteOnErrorGetBuilderBaseLeague(e);
                 throw;
             }
         }
@@ -647,20 +748,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchBuilderBaseLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchBuilderBaseLeagues(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchBuilderBaseLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchBuilderBaseLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchBuilderBaseLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List Builder Base leagues List Builder Base leagues
@@ -765,6 +869,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchBuilderBaseLeaguesDefaultImplementation(e, "/builderbaseleagues", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetBuilderBaseLeagues(e);
                 throw;
             }
         }
@@ -812,18 +917,21 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void OnErrorFetchCapitalLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchCapitalLeague(exception, pathFormat, path, leagueId);
+            bool suppressDefaultLog = false;
+            OnErrorFetchCapitalLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchCapitalLeague(Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchCapitalLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get capital league information Get capital league information
@@ -912,6 +1020,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchCapitalLeagueDefaultImplementation(e, "/capitalleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                Events.ExecuteOnErrorGetCapitalLeague(e);
                 throw;
             }
         }
@@ -969,20 +1078,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchCapitalLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchCapitalLeagues(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchCapitalLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchCapitalLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchCapitalLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List capital leagues List capital leagues
@@ -1087,6 +1199,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchCapitalLeaguesDefaultImplementation(e, "/capitalleagues", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetCapitalLeagues(e);
                 throw;
             }
         }
@@ -1134,18 +1247,21 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void OnErrorFetchLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchLeague(exception, pathFormat, path, leagueId);
+            bool suppressDefaultLog = false;
+            OnErrorFetchLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchLeague(Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get league information Get league information
@@ -1234,6 +1350,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchLeagueDefaultImplementation(e, "/leagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                Events.ExecuteOnErrorGetLeague(e);
                 throw;
             }
         }
@@ -1305,13 +1422,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchLeagueSeasonRankingsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchLeagueSeasonRankings(exception, pathFormat, path, leagueId, seasonId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchLeagueSeasonRankings(ref suppressDefaultLog, exception, pathFormat, path, leagueId, seasonId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -1320,7 +1440,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagueSeasonRankings(Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLeagueSeasonRankings(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get league season rankings Get league season rankings. Note that league season information is available only for Legend League. 
@@ -1431,6 +1551,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchLeagueSeasonRankingsDefaultImplementation(e, "/leagues/{leagueId}/seasons/{seasonId}", uriBuilderLocalVar.Path, leagueId, seasonId, limit, after, before);
+                Events.ExecuteOnErrorGetLeagueSeasonRankings(e);
                 throw;
             }
         }
@@ -1495,13 +1616,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchLeagueSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchLeagueSeasons(exception, pathFormat, path, leagueId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchLeagueSeasons(ref suppressDefaultLog, exception, pathFormat, path, leagueId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -1509,7 +1633,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagueSeasons(Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLeagueSeasons(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get league seasons Get league seasons. Note that league season information is available only for Legend League. 
@@ -1617,6 +1741,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchLeagueSeasonsDefaultImplementation(e, "/leagues/{leagueId}/seasons", uriBuilderLocalVar.Path, leagueId, limit, after, before);
+                Events.ExecuteOnErrorGetLeagueSeasons(e);
                 throw;
             }
         }
@@ -1674,20 +1799,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchLeagues(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List leagues List leagues
@@ -1792,6 +1920,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchLeaguesDefaultImplementation(e, "/leagues", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetLeagues(e);
                 throw;
             }
         }
@@ -1839,18 +1968,21 @@ namespace CocApi.Rest.Apis
         /// <param name="leagueId"></param>
         private void OnErrorFetchWarLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchWarLeague(exception, pathFormat, path, leagueId);
+            bool suppressDefaultLog = false;
+            OnErrorFetchWarLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchWarLeague(Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchWarLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
 
         /// <summary>
         /// Get war league information Get war league information
@@ -1939,6 +2071,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchWarLeagueDefaultImplementation(e, "/warleagues/{leagueId}", uriBuilderLocalVar.Path, leagueId);
+                Events.ExecuteOnErrorGetWarLeague(e);
                 throw;
             }
         }
@@ -1996,20 +2129,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchWarLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchWarLeagues(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchWarLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchWarLeagues(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchWarLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List war leagues List war leagues
@@ -2114,6 +2250,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchWarLeaguesDefaultImplementation(e, "/warleagues", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetWarLeagues(e);
                 throw;
             }
         }

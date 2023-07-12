@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Microsoft.Extensions.DependencyInjection;
-using CocApi.Rest.IApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
 
@@ -43,11 +43,11 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public sealed class ClansApiTests : ApiTestsBase
     {
-        private readonly IApis.IClansApi _instance;
+        private readonly IClansApi _instance;
 
         public ClansApiTests(): base(Array.Empty<string>())
         {
-            _instance = _host.Services.GetRequiredService<IApis.IClansApi>();
+            _instance = _host.Services.GetRequiredService<IClansApi>();
         }
 
         /// <summary>

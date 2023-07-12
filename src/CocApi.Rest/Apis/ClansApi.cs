@@ -22,7 +22,7 @@ using CocApi.Rest.Client;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -263,10 +263,7 @@ namespace CocApi.Rest.IApis
         /// <returns>Task&lt;ApiResponse&gt;ClanList&gt;?&gt;</returns>
         Task<ApiResponse<ClanList>?> SearchClansOrDefaultAsync(Option<int> locationId = default, Option<int> minMembers = default, Option<int> maxMembers = default, Option<int> minClanPoints = default, Option<int> minClanLevel = default, Option<int> limit = default, Option<string> name = default, Option<string> warFrequency = default, Option<string> after = default, Option<string> before = default, Option<string> labelIds = default, System.Threading.CancellationToken cancellationToken = default);
     }
-}
 
-namespace CocApi.Rest.Apis
-{
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// This class is registered as transient.
@@ -278,9 +275,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanCapitalRaidSeasons>>? OnFetchCapitalRaidSeasons;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchCapitalRaidSeasons;
+
         internal void ExecuteOnGetCapitalRaidSeasons(ApiResponse<ClanCapitalRaidSeasons> apiResponse)
         {
             OnFetchCapitalRaidSeasons?.Invoke(this, new ApiResponseEventArgs<ClanCapitalRaidSeasons>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetCapitalRaidSeasons(Exception exception)
+        {
+            OnErrorFetchCapitalRaidSeasons?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -288,9 +295,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<Clan>>? OnFetchClan;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClan;
+
         internal void ExecuteOnGetClan(ApiResponse<Clan> apiResponse)
         {
             OnFetchClan?.Invoke(this, new ApiResponseEventArgs<Clan>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClan(Exception exception)
+        {
+            OnErrorFetchClan?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -298,9 +315,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<List<ClanMember>>>? OnFetchClanMembers;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanMembers;
+
         internal void ExecuteOnGetClanMembers(ApiResponse<List<ClanMember>> apiResponse)
         {
             OnFetchClanMembers?.Invoke(this, new ApiResponseEventArgs<List<ClanMember>>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanMembers(Exception exception)
+        {
+            OnErrorFetchClanMembers?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -308,9 +335,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanWarLeagueGroup>>? OnFetchClanWarLeagueGroup;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanWarLeagueGroup;
+
         internal void ExecuteOnGetClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponse)
         {
             OnFetchClanWarLeagueGroup?.Invoke(this, new ApiResponseEventArgs<ClanWarLeagueGroup>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanWarLeagueGroup(Exception exception)
+        {
+            OnErrorFetchClanWarLeagueGroup?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -318,9 +355,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanWar>>? OnFetchClanWarLeagueWar;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanWarLeagueWar;
+
         internal void ExecuteOnGetClanWarLeagueWar(ApiResponse<ClanWar> apiResponse)
         {
             OnFetchClanWarLeagueWar?.Invoke(this, new ApiResponseEventArgs<ClanWar>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanWarLeagueWar(Exception exception)
+        {
+            OnErrorFetchClanWarLeagueWar?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -328,9 +375,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanWarLog>>? OnFetchClanWarLog;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanWarLog;
+
         internal void ExecuteOnGetClanWarLog(ApiResponse<ClanWarLog> apiResponse)
         {
             OnFetchClanWarLog?.Invoke(this, new ApiResponseEventArgs<ClanWarLog>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanWarLog(Exception exception)
+        {
+            OnErrorFetchClanWarLog?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -338,9 +395,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanWar>>? OnFetchCurrentWar;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchCurrentWar;
+
         internal void ExecuteOnGetCurrentWar(ApiResponse<ClanWar> apiResponse)
         {
             OnFetchCurrentWar?.Invoke(this, new ApiResponseEventArgs<ClanWar>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetCurrentWar(Exception exception)
+        {
+            OnErrorFetchCurrentWar?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -348,16 +415,26 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanList>>? OnSearchClans;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorSearchClans;
+
         internal void ExecuteOnSearchClans(ApiResponse<ClanList> apiResponse)
         {
             OnSearchClans?.Invoke(this, new ApiResponseEventArgs<ClanList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorSearchClans(Exception exception)
+        {
+            OnErrorSearchClans?.Invoke(this, new ExceptionEventArgs(exception));
         }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public sealed partial class ClansApi : IApis.IClansApi
+    public sealed partial class ClansApi : IClansApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
@@ -455,13 +532,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchCapitalRaidSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchCapitalRaidSeasons(exception, pathFormat, path, clanTag, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchCapitalRaidSeasons(ref suppressDefaultLog, exception, pathFormat, path, clanTag, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -469,7 +549,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchCapitalRaidSeasons(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchCapitalRaidSeasons(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons Retrieve clan&#39;s capital raid seasons
@@ -577,6 +657,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchCapitalRaidSeasonsDefaultImplementation(e, "/clans/{clanTag}/capitalraidseasons", uriBuilderLocalVar.Path, clanTag, limit, after, before);
+                Events.ExecuteOnErrorGetCapitalRaidSeasons(e);
                 throw;
             }
         }
@@ -624,18 +705,21 @@ namespace CocApi.Rest.Apis
         /// <param name="clanTag"></param>
         private void OnErrorFetchClanDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClan(exception, pathFormat, path, clanTag);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClan(ref suppressDefaultLog, exception, pathFormat, path, clanTag);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
-        partial void OnErrorFetchClan(Exception exception, string pathFormat, string path, string clanTag);
+        partial void OnErrorFetchClan(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag);
 
         /// <summary>
         /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
@@ -724,6 +808,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanDefaultImplementation(e, "/clans/{clanTag}", uriBuilderLocalVar.Path, clanTag);
+                Events.ExecuteOnErrorGetClan(e);
                 throw;
             }
         }
@@ -788,13 +873,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchClanMembersDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanMembers(exception, pathFormat, path, clanTag, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanMembers(ref suppressDefaultLog, exception, pathFormat, path, clanTag, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -802,7 +890,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanMembers(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanMembers(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List clan members List clan members.
@@ -910,6 +998,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanMembersDefaultImplementation(e, "/clans/{clanTag}/members", uriBuilderLocalVar.Path, clanTag, limit, after, before);
+                Events.ExecuteOnErrorGetClanMembers(e);
                 throw;
             }
         }
@@ -960,19 +1049,22 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime"></param>
         private void OnErrorFetchClanWarLeagueGroupDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanWarLeagueGroup(exception, pathFormat, path, clanTag, realtime);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanWarLeagueGroup(ref suppressDefaultLog, exception, pathFormat, path, clanTag, realtime);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchClanWarLeagueGroup(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
+        partial void OnErrorFetchClanWarLeagueGroup(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
@@ -1070,6 +1162,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanWarLeagueGroupDefaultImplementation(e, "/clans/{clanTag}/currentwar/leaguegroup", uriBuilderLocalVar.Path, clanTag, realtime);
+                Events.ExecuteOnErrorGetClanWarLeagueGroup(e);
                 throw;
             }
         }
@@ -1120,19 +1213,22 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime"></param>
         private void OnErrorFetchClanWarLeagueWarDefaultImplementation(Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanWarLeagueWar(exception, pathFormat, path, warTag, realtime);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanWarLeagueWar(ref suppressDefaultLog, exception, pathFormat, path, warTag, realtime);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchClanWarLeagueWar(Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime);
+        partial void OnErrorFetchClanWarLeagueWar(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
@@ -1230,6 +1326,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanWarLeagueWarDefaultImplementation(e, "/clanwarleagues/wars/{warTag}", uriBuilderLocalVar.Path, warTag, realtime);
+                Events.ExecuteOnErrorGetClanWarLeagueWar(e);
                 throw;
             }
         }
@@ -1294,13 +1391,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchClanWarLogDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanWarLog(exception, pathFormat, path, clanTag, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanWarLog(ref suppressDefaultLog, exception, pathFormat, path, clanTag, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -1308,7 +1408,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanWarLog(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanWarLog(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
@@ -1416,6 +1516,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanWarLogDefaultImplementation(e, "/clans/{clanTag}/warlog", uriBuilderLocalVar.Path, clanTag, limit, after, before);
+                Events.ExecuteOnErrorGetClanWarLog(e);
                 throw;
             }
         }
@@ -1466,19 +1567,22 @@ namespace CocApi.Rest.Apis
         /// <param name="realtime"></param>
         private void OnErrorFetchCurrentWarDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchCurrentWar(exception, pathFormat, path, clanTag, realtime);
+            bool suppressDefaultLog = false;
+            OnErrorFetchCurrentWar(ref suppressDefaultLog, exception, pathFormat, path, clanTag, realtime);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchCurrentWar(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
+        partial void OnErrorFetchCurrentWar(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
@@ -1576,6 +1680,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchCurrentWarDefaultImplementation(e, "/clans/{clanTag}/currentwar", uriBuilderLocalVar.Path, clanTag, realtime);
+                Events.ExecuteOnErrorGetCurrentWar(e);
                 throw;
             }
         }
@@ -1669,13 +1774,16 @@ namespace CocApi.Rest.Apis
         /// <param name="labelIds"></param>
         private void OnErrorSearchClansDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorSearchClans(exception, pathFormat, path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+            bool suppressDefaultLog = false;
+            OnErrorSearchClans(ref suppressDefaultLog, exception, pathFormat, path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -1690,7 +1798,7 @@ namespace CocApi.Rest.Apis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        partial void OnErrorSearchClans(Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds);
+        partial void OnErrorSearchClans(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds);
 
         /// <summary>
         /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
@@ -1835,6 +1943,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorSearchClansDefaultImplementation(e, "/clans", uriBuilderLocalVar.Path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+                Events.ExecuteOnErrorSearchClans(e);
                 throw;
             }
         }

@@ -22,7 +22,7 @@ using CocApi.Rest.Client;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -89,10 +89,7 @@ namespace CocApi.Rest.IApis
         /// <returns>Task&lt;ApiResponse&gt;LabelsObject&gt;?&gt;</returns>
         Task<ApiResponse<LabelsObject>?> FetchPlayerLabelsOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
     }
-}
 
-namespace CocApi.Rest.Apis
-{
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// This class is registered as transient.
@@ -104,9 +101,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<LabelsObject>>? OnFetchClanLabels;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanLabels;
+
         internal void ExecuteOnGetClanLabels(ApiResponse<LabelsObject> apiResponse)
         {
             OnFetchClanLabels?.Invoke(this, new ApiResponseEventArgs<LabelsObject>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanLabels(Exception exception)
+        {
+            OnErrorFetchClanLabels?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -114,16 +121,26 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<LabelsObject>>? OnFetchPlayerLabels;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchPlayerLabels;
+
         internal void ExecuteOnGetPlayerLabels(ApiResponse<LabelsObject> apiResponse)
         {
             OnFetchPlayerLabels?.Invoke(this, new ApiResponseEventArgs<LabelsObject>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetPlayerLabels(Exception exception)
+        {
+            OnErrorFetchPlayerLabels?.Invoke(this, new ExceptionEventArgs(exception));
         }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public sealed partial class LabelsApi : IApis.ILabelsApi
+    public sealed partial class LabelsApi : ILabelsApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
@@ -214,20 +231,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchClanLabelsDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanLabels(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanLabels(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanLabels(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanLabels(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List clan labels List clan labels
@@ -332,6 +352,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanLabelsDefaultImplementation(e, "/labels/clans", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetClanLabels(e);
                 throw;
             }
         }
@@ -389,20 +410,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchPlayerLabelsDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchPlayerLabels(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchPlayerLabels(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchPlayerLabels(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchPlayerLabels(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List player labels List player labels
@@ -507,6 +531,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchPlayerLabelsDefaultImplementation(e, "/labels/players", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetPlayerLabels(e);
                 throw;
             }
         }

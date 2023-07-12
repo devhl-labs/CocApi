@@ -22,7 +22,7 @@ using CocApi.Rest.Client;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -230,10 +230,7 @@ namespace CocApi.Rest.IApis
         /// <returns>Task&lt;ApiResponse&gt;PlayerRankingList&gt;?&gt;</returns>
         Task<ApiResponse<PlayerRankingList>?> FetchPlayerRankingOrDefaultAsync(string locationId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
     }
-}
 
-namespace CocApi.Rest.Apis
-{
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// This class is registered as transient.
@@ -245,9 +242,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanBuilderBaseRankingList>>? OnFetchClanBuilderBaseRanking;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanBuilderBaseRanking;
+
         internal void ExecuteOnGetClanBuilderBaseRanking(ApiResponse<ClanBuilderBaseRankingList> apiResponse)
         {
             OnFetchClanBuilderBaseRanking?.Invoke(this, new ApiResponseEventArgs<ClanBuilderBaseRankingList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanBuilderBaseRanking(Exception exception)
+        {
+            OnErrorFetchClanBuilderBaseRanking?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -255,9 +262,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanCapitalRankingObject>>? OnFetchClanCapitalRanking;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanCapitalRanking;
+
         internal void ExecuteOnGetClanCapitalRanking(ApiResponse<ClanCapitalRankingObject> apiResponse)
         {
             OnFetchClanCapitalRanking?.Invoke(this, new ApiResponseEventArgs<ClanCapitalRankingObject>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanCapitalRanking(Exception exception)
+        {
+            OnErrorFetchClanCapitalRanking?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -265,9 +282,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<ClanRankingList>>? OnFetchClanRanking;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchClanRanking;
+
         internal void ExecuteOnGetClanRanking(ApiResponse<ClanRankingList> apiResponse)
         {
             OnFetchClanRanking?.Invoke(this, new ApiResponseEventArgs<ClanRankingList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetClanRanking(Exception exception)
+        {
+            OnErrorFetchClanRanking?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -275,9 +302,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<Location>>? OnFetchLocation;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchLocation;
+
         internal void ExecuteOnGetLocation(ApiResponse<Location> apiResponse)
         {
             OnFetchLocation?.Invoke(this, new ApiResponseEventArgs<Location>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetLocation(Exception exception)
+        {
+            OnErrorFetchLocation?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -285,9 +322,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<LocationList>>? OnFetchLocations;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchLocations;
+
         internal void ExecuteOnGetLocations(ApiResponse<LocationList> apiResponse)
         {
             OnFetchLocations?.Invoke(this, new ApiResponseEventArgs<LocationList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetLocations(Exception exception)
+        {
+            OnErrorFetchLocations?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -295,9 +342,19 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<PlayerBuilderBaseRankingList>>? OnFetchPlayerBuilderBaseRanking;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchPlayerBuilderBaseRanking;
+
         internal void ExecuteOnGetPlayerBuilderBaseRanking(ApiResponse<PlayerBuilderBaseRankingList> apiResponse)
         {
             OnFetchPlayerBuilderBaseRanking?.Invoke(this, new ApiResponseEventArgs<PlayerBuilderBaseRankingList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetPlayerBuilderBaseRanking(Exception exception)
+        {
+            OnErrorFetchPlayerBuilderBaseRanking?.Invoke(this, new ExceptionEventArgs(exception));
         }
 
         /// <summary>
@@ -305,16 +362,26 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<PlayerRankingList>>? OnFetchPlayerRanking;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchPlayerRanking;
+
         internal void ExecuteOnGetPlayerRanking(ApiResponse<PlayerRankingList> apiResponse)
         {
             OnFetchPlayerRanking?.Invoke(this, new ApiResponseEventArgs<PlayerRankingList>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetPlayerRanking(Exception exception)
+        {
+            OnErrorFetchPlayerRanking?.Invoke(this, new ExceptionEventArgs(exception));
         }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public sealed partial class LocationsApi : IApis.ILocationsApi
+    public sealed partial class LocationsApi : ILocationsApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
@@ -412,13 +479,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchClanBuilderBaseRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanBuilderBaseRanking(exception, pathFormat, path, locationId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanBuilderBaseRanking(ref suppressDefaultLog, exception, pathFormat, path, locationId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -426,7 +496,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanBuilderBaseRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
@@ -534,6 +604,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanBuilderBaseRankingDefaultImplementation(e, "/locations/{locationId}/rankings/clans-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                Events.ExecuteOnErrorGetClanBuilderBaseRanking(e);
                 throw;
             }
         }
@@ -598,13 +669,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchClanCapitalRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanCapitalRanking(exception, pathFormat, path, locationId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanCapitalRanking(ref suppressDefaultLog, exception, pathFormat, path, locationId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -612,7 +686,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanCapitalRanking(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanCapitalRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get capital rankings for a specific location Get capital rankings for a specific location
@@ -720,6 +794,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanCapitalRankingDefaultImplementation(e, "/locations/{locationId}/rankings/capitals", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                Events.ExecuteOnErrorGetClanCapitalRanking(e);
                 throw;
             }
         }
@@ -784,13 +859,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchClanRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchClanRanking(exception, pathFormat, path, locationId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchClanRanking(ref suppressDefaultLog, exception, pathFormat, path, locationId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -798,7 +876,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanRanking(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get clan rankings for a specific location Get clan rankings for a specific location
@@ -906,6 +984,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchClanRankingDefaultImplementation(e, "/locations/{locationId}/rankings/clans", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                Events.ExecuteOnErrorGetClanRanking(e);
                 throw;
             }
         }
@@ -953,18 +1032,21 @@ namespace CocApi.Rest.Apis
         /// <param name="locationId"></param>
         private void OnErrorFetchLocationDefaultImplementation(Exception exception, string pathFormat, string path, string locationId)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchLocation(exception, pathFormat, path, locationId);
+            bool suppressDefaultLog = false;
+            OnErrorFetchLocation(ref suppressDefaultLog, exception, pathFormat, path, locationId);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="locationId"></param>
-        partial void OnErrorFetchLocation(Exception exception, string pathFormat, string path, string locationId);
+        partial void OnErrorFetchLocation(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId);
 
         /// <summary>
         /// Get location information Get information about specific location
@@ -1053,6 +1135,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchLocationDefaultImplementation(e, "/locations/{locationId}", uriBuilderLocalVar.Path, locationId);
+                Events.ExecuteOnErrorGetLocation(e);
                 throw;
             }
         }
@@ -1110,20 +1193,23 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchLocationsDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchLocations(exception, pathFormat, path, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchLocations(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLocations(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLocations(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List locations List locations
@@ -1228,6 +1314,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchLocationsDefaultImplementation(e, "/locations", uriBuilderLocalVar.Path, limit, after, before);
+                Events.ExecuteOnErrorGetLocations(e);
                 throw;
             }
         }
@@ -1292,13 +1379,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchPlayerBuilderBaseRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchPlayerBuilderBaseRanking(exception, pathFormat, path, locationId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchPlayerBuilderBaseRanking(ref suppressDefaultLog, exception, pathFormat, path, locationId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -1306,7 +1396,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchPlayerBuilderBaseRanking(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchPlayerBuilderBaseRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get player versus rankings for a specific location Get player versus rankings for a specific location
@@ -1414,6 +1504,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchPlayerBuilderBaseRankingDefaultImplementation(e, "/locations/{locationId}/rankings/players-builder-base", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                Events.ExecuteOnErrorGetPlayerBuilderBaseRanking(e);
                 throw;
             }
         }
@@ -1478,13 +1569,16 @@ namespace CocApi.Rest.Apis
         /// <param name="before"></param>
         private void OnErrorFetchPlayerRankingDefaultImplementation(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchPlayerRanking(exception, pathFormat, path, locationId, limit, after, before);
+            bool suppressDefaultLog = false;
+            OnErrorFetchPlayerRanking(ref suppressDefaultLog, exception, pathFormat, path, locationId, limit, after, before);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
@@ -1492,7 +1586,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchPlayerRanking(Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchPlayerRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get player rankings for a specific location Get player rankings for a specific location
@@ -1600,6 +1694,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchPlayerRankingDefaultImplementation(e, "/locations/{locationId}/rankings/players", uriBuilderLocalVar.Path, locationId, limit, after, before);
+                Events.ExecuteOnErrorGetPlayerRanking(e);
                 throw;
             }
         }

@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CocApi.Rest.IApis;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;

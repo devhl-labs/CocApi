@@ -60,10 +60,10 @@ public static class IServiceCollectionExtensions
         where TPlayersClient : PlayersClient
         where TTimeToLiveProvider : TimeToLiveProvider
     {
-        if (!services.Any(x => x.ServiceType == typeof(Rest.IApis.IClansApi)))
+        if (!services.Any(x => x.ServiceType == typeof(Rest.Apis.IClansApi)))
             throw new InvalidOperationException("ClansApi was not found in the service collection. Add it using AddCocApi");
 
-        if (!services.Any(x => x.ServiceType == typeof(Rest.IApis.IPlayersApi)))
+        if (!services.Any(x => x.ServiceType == typeof(Rest.Apis.IPlayersApi)))
             throw new InvalidOperationException("PlayersApi was not found in the service collection. Add it using AddCocApi");
 
         Library.AddStaticJsonOptions(services);

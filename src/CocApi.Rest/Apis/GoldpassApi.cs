@@ -22,7 +22,7 @@ using CocApi.Rest.Client;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 
-namespace CocApi.Rest.IApis
+namespace CocApi.Rest.Apis
 {
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
@@ -56,10 +56,7 @@ namespace CocApi.Rest.IApis
         /// <returns>Task&lt;ApiResponse&gt;GoldPassSeason&gt;?&gt;</returns>
         Task<ApiResponse<GoldPassSeason>?> FetchCurrentGoldPassSeasonOrDefaultAsync(System.Threading.CancellationToken cancellationToken = default);
     }
-}
 
-namespace CocApi.Rest.Apis
-{
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// This class is registered as transient.
@@ -71,16 +68,26 @@ namespace CocApi.Rest.Apis
         /// </summary>
         public event EventHandler<ApiResponseEventArgs<GoldPassSeason>>? OnFetchCurrentGoldPassSeason;
 
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs>? OnErrorFetchCurrentGoldPassSeason;
+
         internal void ExecuteOnGetCurrentGoldPassSeason(ApiResponse<GoldPassSeason> apiResponse)
         {
             OnFetchCurrentGoldPassSeason?.Invoke(this, new ApiResponseEventArgs<GoldPassSeason>(apiResponse));
+        }
+
+        internal void ExecuteOnErrorGetCurrentGoldPassSeason(Exception exception)
+        {
+            OnErrorFetchCurrentGoldPassSeason?.Invoke(this, new ExceptionEventArgs(exception));
         }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public sealed partial class GoldpassApi : IApis.IGoldpassApi
+    public sealed partial class GoldpassApi : IGoldpassApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
 
@@ -145,17 +152,20 @@ namespace CocApi.Rest.Apis
         /// <param name="path"></param>
         private void OnErrorFetchCurrentGoldPassSeasonDefaultImplementation(Exception exception, string pathFormat, string path)
         {
-            Logger.LogError(exception, "An error occurred while sending the request to the server.");
-            OnErrorFetchCurrentGoldPassSeason(exception, pathFormat, path);
+            bool suppressDefaultLog = false;
+            OnErrorFetchCurrentGoldPassSeason(ref suppressDefaultLog, exception, pathFormat, path);
+            if (!suppressDefaultLog)
+                Logger.LogError(exception, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
+        /// <param name="suppressDefaultLog"></param>
         /// <param name="exception"></param>
         /// <param name="pathFormat"></param>
         /// <param name="path"></param>
-        partial void OnErrorFetchCurrentGoldPassSeason(Exception exception, string pathFormat, string path);
+        partial void OnErrorFetchCurrentGoldPassSeason(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path);
 
         /// <summary>
         /// Get information about the current gold pass season. Get information about the current gold pass season.
@@ -237,6 +247,7 @@ namespace CocApi.Rest.Apis
             catch(Exception e)
             {
                 OnErrorFetchCurrentGoldPassSeasonDefaultImplementation(e, "/goldpass/seasons/current", uriBuilderLocalVar.Path);
+                Events.ExecuteOnErrorGetCurrentGoldPassSeason(e);
                 throw;
             }
         }
