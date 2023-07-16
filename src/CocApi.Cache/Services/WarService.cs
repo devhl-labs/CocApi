@@ -117,7 +117,7 @@ public sealed class WarService : ServiceBase
                 tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }

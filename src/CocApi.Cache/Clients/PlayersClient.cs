@@ -82,8 +82,8 @@ public class PlayersClient : ClientBase<PlayersClient>
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
-        while (!Synchronizer.UpdatingVillage.TryAdd(formattedTag, null))            
-            await Task.Delay(250);            
+        while (!Synchronizer.UpdatingVillage.TryAdd(formattedTag, null))
+            await Task.Delay(250);
 
         try
         {

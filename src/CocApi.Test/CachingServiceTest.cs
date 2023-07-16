@@ -24,12 +24,12 @@ public class CachingServiceTest : BackgroundService
 
         Logger.LogInformation("pausing downloading");
 
-        await CachingService.StopAsync();
+        await CachingService.StopAsync(stoppingToken);
 
         await Task.Delay(TimeSpan.FromMinutes(2), stoppingToken);
 
         Logger.LogInformation("resuming downloading");
 
-        await CachingService.StartAsync();
+        await CachingService.StartAsync(stoppingToken);
     }
 }

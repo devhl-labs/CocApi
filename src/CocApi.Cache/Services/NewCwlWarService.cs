@@ -144,9 +144,9 @@ public sealed class NewCwlWarService : ServiceBase
 
             try
             {
-                await Task.WhenAll(processRequests).ConfigureAwait(false);
+                await Task.WhenAll(processRequests).WaitAsync(cancellationToken).ConfigureAwait(false);
 
-                await Task.WhenAll(announceNewWarTasks).ConfigureAwait(false);
+                await Task.WhenAll(announceNewWarTasks).WaitAsync(cancellationToken).ConfigureAwait(false);
             }
             catch (Exception e)
             {

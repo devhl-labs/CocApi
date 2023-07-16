@@ -95,7 +95,7 @@ public sealed class MemberService : ServiceBase
             foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.Members.Any(m => m.Tag == p.Tag)))
                 player.ClanTag = null;
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }

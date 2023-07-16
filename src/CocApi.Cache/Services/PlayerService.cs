@@ -86,7 +86,7 @@ public sealed class PlayerService : ServiceBase
                     tasks.Add(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken));
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }

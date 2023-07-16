@@ -89,7 +89,7 @@ public sealed class ClanService : ServiceBase
                 tasks.Add(TryUpdateAsync(cachedClan, cancellationToken));
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
@@ -126,7 +126,7 @@ public sealed class ClanService : ServiceBase
             if (options.DownloadGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
                 tasks.Add(MonitorGroupAsync(clansApi, realTime, cachedClan, cancellationToken));
 
-            await Task.WhenAll(tasks).ConfigureAwait(false);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
         }
         catch (Exception)
         {

@@ -94,7 +94,7 @@ public sealed class CwlWarService : ServiceBase
                 tasks.Add(SendWarAnnouncementsAsync(cachedWar, cancellationToken));
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }

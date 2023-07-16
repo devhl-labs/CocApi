@@ -101,7 +101,7 @@ public sealed class ActiveWarService : ServiceBase
                 tasks.Add(MonitorClanWarAsync(cachedClan, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken));
             }
 
-            await Task.WhenAll(tasks);
+            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }

@@ -25,23 +25,23 @@ public sealed class CachingService
         };
     }
 
-    public async Task StopAsync(CancellationToken? cancellationToken = null)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
         var tasks = new Task[_perpetualServices.Length];
 
         for (int i = 0; i < _perpetualServices.Length; i++)
-            tasks[i] = _perpetualServices[i].StopAsync(cancellationToken.GetValueOrDefault());
+            tasks[i] = _perpetualServices[i].StopAsync(cancellationToken);
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
     }
 
-    public async Task StartAsync(CancellationToken? cancellationToken = null)
+    public async Task StartAsync(CancellationToken cancellationToken)
     {
         var tasks = new Task[_perpetualServices.Length];
 
         for (int i = 0; i < _perpetualServices.Length; i++)
-            tasks[i] = _perpetualServices[i].StartAsync(cancellationToken.GetValueOrDefault());
+            tasks[i] = _perpetualServices[i].StartAsync(cancellationToken);
 
-        await Task.WhenAll(tasks);
+        await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
     }
 }
