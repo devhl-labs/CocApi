@@ -1,4 +1,4 @@
-$packageVersion = "2.8.0"
+$packageVersion = "2.8.1"
 $releaseNote = "Removed IApi namespace. Added an event for errors."
 
 $properties = @(
