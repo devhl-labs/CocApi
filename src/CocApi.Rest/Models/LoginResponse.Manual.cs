@@ -1,31 +1,28 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace CocApi.Rest.Models
 {
     public partial class LoginResponse
     {
-        public string IpAddress()
+        internal class IpAddressLimit
         {
-            string part = TemporaryAPIToken.Split(".")[1];
-            string decoded = Encoding.UTF8.GetString(Convert.FromBase64String(part));
-            var o = System.Text.Json.JsonSerializer.Deserialize<TokenDetails>(decoded)!;
-            var result = o.Limits[1].Cidrs[0].Split("/")[0];
-            return result;
+            [JsonPropertyName("cidrs")]
+            public string[] Cidrs { get; set; } = Array.Empty<string>();
+
+            [JsonPropertyName("type")]
+            public string Type { get; set; } = string.Empty;
         }
-    }
 
-    internal class TokenLimits
-    {
-        [JsonPropertyName("cidrs")]
-        public List<string> Cidrs { get; set; } = new();
-    }
-
-    internal class TokenDetails
-    {
-        [JsonPropertyName("limits")]
-        public List<TokenLimits> Limits { get; set; } = new();
+        public string[] IpAddresses()
+        {
+            JwtSecurityTokenHandler handler = new();
+            JwtSecurityToken jwtSecurityToken = handler.ReadJwtToken(TemporaryAPIToken);
+            System.Security.Claims.Claim limits = jwtSecurityToken.Claims.First(c => c.Value.Contains("cidrs"));
+            IpAddressLimit? ipAddressLimit = System.Text.Json.JsonSerializer.Deserialize<IpAddressLimit>(limits.Value);
+            return ipAddressLimit == null ? throw new Exception("Could not deserialize the response.") : ipAddressLimit.Cidrs;
+        }
     }
 }

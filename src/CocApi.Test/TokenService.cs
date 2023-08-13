@@ -44,7 +44,7 @@ public class TokenService : IHostedService
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         // login and save the cookie to the CookieContainer
-        var login = await DeveloperApi.LoginAsync(Options.Value);
+        var login = await DeveloperApi.LoginAsync(Options.Value, cancellationToken);
         var rawValue = login.Headers.GetValues("set-cookie").Single();
         var encodedValue = System.Web.HttpUtility.UrlEncode(rawValue, Encoding.UTF8);
         var domain = new System.Uri("https://developer.clashofclans.com/api");
@@ -52,14 +52,16 @@ public class TokenService : IHostedService
         CookieContainer.Value.Add(domain, cookie);
 
         // Create a testing token
-        var token = new CreateTokenRequest(new List<string> { login.AsModel()!.IpAddress() }, "test description", "test name");
-        var createResponse = await DeveloperApi.CreateAsync(token);
+        string ipAddressWithMask = login.AsModel()!.IpAddresses()[0];
+        string ipAddress = ipAddressWithMask[..ipAddressWithMask.IndexOf("/")];
+        var token = new CreateTokenRequest(new List<string> { ipAddress }, "test description", "test name");
+        var createResponse = await DeveloperApi.CreateAsync(token, cancellationToken);
 
         // delete that testing token
-        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.AsModel()!.Key!);
+        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.AsModel()!.Key!, cancellationToken);
 
         // query all keys
-        var keys = await DeveloperApi.KeysAsync();
+        var keys = await DeveloperApi.KeysAsync(cancellationToken);
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
