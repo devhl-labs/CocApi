@@ -36,7 +36,12 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Enum BuilderBase for value: builderBase
         /// </summary>
-        BuilderBase = 2
+        BuilderBase = 2,
+
+        /// <summary>
+        /// Enum ClanCapital for value: clanCapital
+        /// </summary>
+        ClanCapital = 3
     }
 
     /// <summary>
@@ -57,6 +62,9 @@ namespace CocApi.Rest.Models
             if (value == "builderBase")
                 return VillageType.BuilderBase;
 
+            if (value == "clanCapital")
+                return VillageType.ClanCapital;
+
             throw new NotImplementedException($"Could not convert value to type VillageType: '{value}'");
         }
 
@@ -72,6 +80,9 @@ namespace CocApi.Rest.Models
 
             if (value == "builderBase")
                 return VillageType.BuilderBase;
+
+            if (value == "clanCapital")
+                return VillageType.ClanCapital;
 
             return null;
         }
@@ -89,6 +100,9 @@ namespace CocApi.Rest.Models
 
             if (value == VillageType.BuilderBase)
                 return "builderBase";
+
+            if (value == VillageType.ClanCapital)
+                return "clanCapital";
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
