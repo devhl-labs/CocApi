@@ -61,16 +61,16 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarState FromString(string value)
         {
-            if (value == "notInWar")
+            if (value.Equals("notInWar"))
                 return WarState.NotInWar;
 
-            if (value == "preparation")
+            if (value.Equals("preparation"))
                 return WarState.Preparation;
 
-            if (value == "inWar")
+            if (value.Equals("inWar"))
                 return WarState.InWar;
 
-            if (value == "warEnded")
+            if (value.Equals("warEnded"))
                 return WarState.WarEnded;
 
             throw new NotImplementedException($"Could not convert value to type WarState: '{value}'");
@@ -83,16 +83,16 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarState? FromStringOrDefault(string value)
         {
-            if (value == "notInWar")
+            if (value.Equals("notInWar"))
                 return WarState.NotInWar;
 
-            if (value == "preparation")
+            if (value.Equals("preparation"))
                 return WarState.Preparation;
 
-            if (value == "inWar")
+            if (value.Equals("inWar"))
                 return WarState.InWar;
 
-            if (value == "warEnded")
+            if (value.Equals("warEnded"))
                 return WarState.WarEnded;
 
             return null;

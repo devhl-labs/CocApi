@@ -61,16 +61,16 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static Role FromString(string value)
         {
-            if (value == "member")
+            if (value.Equals("member"))
                 return Role.Member;
 
-            if (value == "admin")
+            if (value.Equals("admin"))
                 return Role.Elder;
 
-            if (value == "coLeader")
+            if (value.Equals("coLeader"))
                 return Role.CoLeader;
 
-            if (value == "leader")
+            if (value.Equals("leader"))
                 return Role.Leader;
 
             throw new NotImplementedException($"Could not convert value to type Role: '{value}'");
@@ -83,16 +83,16 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static Role? FromStringOrDefault(string value)
         {
-            if (value == "member")
+            if (value.Equals("member"))
                 return Role.Member;
 
-            if (value == "admin")
+            if (value.Equals("admin"))
                 return Role.Elder;
 
-            if (value == "coLeader")
+            if (value.Equals("coLeader"))
                 return Role.CoLeader;
 
-            if (value == "leader")
+            if (value.Equals("leader"))
                 return Role.Leader;
 
             return null;

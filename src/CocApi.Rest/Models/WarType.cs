@@ -61,16 +61,16 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarType FromString(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return WarType.Unknown;
 
-            if (value == "random")
+            if (value.Equals("random"))
                 return WarType.Random;
 
-            if (value == "friendly")
+            if (value.Equals("friendly"))
                 return WarType.Friendly;
 
-            if (value == "sccwl")
+            if (value.Equals("sccwl"))
                 return WarType.SCCWL;
 
             throw new NotImplementedException($"Could not convert value to type WarType: '{value}'");
@@ -83,16 +83,16 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarType? FromStringOrDefault(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return WarType.Unknown;
 
-            if (value == "random")
+            if (value.Equals("random"))
                 return WarType.Random;
 
-            if (value == "friendly")
+            if (value.Equals("friendly"))
                 return WarType.Friendly;
 
-            if (value == "sccwl")
+            if (value.Equals("sccwl"))
                 return WarType.SCCWL;
 
             return null;

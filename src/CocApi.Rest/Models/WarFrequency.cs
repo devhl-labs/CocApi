@@ -76,25 +76,25 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarFrequency FromString(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return WarFrequency.Unknown;
 
-            if (value == "never")
+            if (value.Equals("never"))
                 return WarFrequency.Never;
 
-            if (value == "lessThanOncePerWeek")
+            if (value.Equals("lessThanOncePerWeek"))
                 return WarFrequency.LessThanOncePerWeek;
 
-            if (value == "oncePerWeek")
+            if (value.Equals("oncePerWeek"))
                 return WarFrequency.OncePerWeek;
 
-            if (value == "moreThanOncePerWeek")
+            if (value.Equals("moreThanOncePerWeek"))
                 return WarFrequency.MoreThanOncePerWeek;
 
-            if (value == "always")
+            if (value.Equals("always"))
                 return WarFrequency.Always;
 
-            if (value == "any")
+            if (value.Equals("any"))
                 return WarFrequency.Any;
 
             throw new NotImplementedException($"Could not convert value to type WarFrequency: '{value}'");
@@ -107,25 +107,25 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarFrequency? FromStringOrDefault(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return WarFrequency.Unknown;
 
-            if (value == "never")
+            if (value.Equals("never"))
                 return WarFrequency.Never;
 
-            if (value == "lessThanOncePerWeek")
+            if (value.Equals("lessThanOncePerWeek"))
                 return WarFrequency.LessThanOncePerWeek;
 
-            if (value == "oncePerWeek")
+            if (value.Equals("oncePerWeek"))
                 return WarFrequency.OncePerWeek;
 
-            if (value == "moreThanOncePerWeek")
+            if (value.Equals("moreThanOncePerWeek"))
                 return WarFrequency.MoreThanOncePerWeek;
 
-            if (value == "always")
+            if (value.Equals("always"))
                 return WarFrequency.Always;
 
-            if (value == "any")
+            if (value.Equals("any"))
                 return WarFrequency.Any;
 
             return null;

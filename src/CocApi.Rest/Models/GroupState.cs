@@ -56,13 +56,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static GroupState FromString(string value)
         {
-            if (value == "preparation")
+            if (value.Equals("preparation"))
                 return GroupState.Preparation;
 
-            if (value == "inWar")
+            if (value.Equals("inWar"))
                 return GroupState.InWar;
 
-            if (value == "ended")
+            if (value.Equals("ended"))
                 return GroupState.Ended;
 
             throw new NotImplementedException($"Could not convert value to type GroupState: '{value}'");
@@ -75,13 +75,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static GroupState? FromStringOrDefault(string value)
         {
-            if (value == "preparation")
+            if (value.Equals("preparation"))
                 return GroupState.Preparation;
 
-            if (value == "inWar")
+            if (value.Equals("inWar"))
                 return GroupState.InWar;
 
-            if (value == "ended")
+            if (value.Equals("ended"))
                 return GroupState.Ended;
 
             return null;

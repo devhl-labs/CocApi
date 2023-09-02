@@ -56,13 +56,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static Result FromString(string value)
         {
-            if (value == "lose")
+            if (value.Equals("lose"))
                 return Result.Lose;
 
-            if (value == "tie")
+            if (value.Equals("tie"))
                 return Result.Tie;
 
-            if (value == "win")
+            if (value.Equals("win"))
                 return Result.Win;
 
             throw new NotImplementedException($"Could not convert value to type Result: '{value}'");
@@ -75,13 +75,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static Result? FromStringOrDefault(string value)
         {
-            if (value == "lose")
+            if (value.Equals("lose"))
                 return Result.Lose;
 
-            if (value == "tie")
+            if (value.Equals("tie"))
                 return Result.Tie;
 
-            if (value == "win")
+            if (value.Equals("win"))
                 return Result.Win;
 
             return null;

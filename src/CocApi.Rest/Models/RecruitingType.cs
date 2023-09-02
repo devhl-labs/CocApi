@@ -56,13 +56,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static RecruitingType FromString(string value)
         {
-            if (value == "inviteOnly")
+            if (value.Equals("inviteOnly"))
                 return RecruitingType.InviteOnly;
 
-            if (value == "closed")
+            if (value.Equals("closed"))
                 return RecruitingType.Closed;
 
-            if (value == "open")
+            if (value.Equals("open"))
                 return RecruitingType.Open;
 
             throw new NotImplementedException($"Could not convert value to type RecruitingType: '{value}'");
@@ -75,13 +75,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static RecruitingType? FromStringOrDefault(string value)
         {
-            if (value == "inviteOnly")
+            if (value.Equals("inviteOnly"))
                 return RecruitingType.InviteOnly;
 
-            if (value == "closed")
+            if (value.Equals("closed"))
                 return RecruitingType.Closed;
 
-            if (value == "open")
+            if (value.Equals("open"))
                 return RecruitingType.Open;
 
             return null;

@@ -51,10 +51,10 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarPreference FromString(string value)
         {
-            if (value == "out")
+            if (value.Equals("out"))
                 return WarPreference.Out;
 
-            if (value == "in")
+            if (value.Equals("in"))
                 return WarPreference.In;
 
             throw new NotImplementedException($"Could not convert value to type WarPreference: '{value}'");
@@ -67,10 +67,10 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static WarPreference? FromStringOrDefault(string value)
         {
-            if (value == "out")
+            if (value.Equals("out"))
                 return WarPreference.Out;
 
-            if (value == "in")
+            if (value.Equals("in"))
                 return WarPreference.In;
 
             return null;

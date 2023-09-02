@@ -56,13 +56,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static VillageType FromString(string value)
         {
-            if (value == "home")
+            if (value.Equals("home"))
                 return VillageType.Home;
 
-            if (value == "builderBase")
+            if (value.Equals("builderBase"))
                 return VillageType.BuilderBase;
 
-            if (value == "clanCapital")
+            if (value.Equals("clanCapital"))
                 return VillageType.ClanCapital;
 
             throw new NotImplementedException($"Could not convert value to type VillageType: '{value}'");
@@ -75,13 +75,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static VillageType? FromStringOrDefault(string value)
         {
-            if (value == "home")
+            if (value.Equals("home"))
                 return VillageType.Home;
 
-            if (value == "builderBase")
+            if (value.Equals("builderBase"))
                 return VillageType.BuilderBase;
 
-            if (value == "clanCapital")
+            if (value.Equals("clanCapital"))
                 return VillageType.ClanCapital;
 
             return null;

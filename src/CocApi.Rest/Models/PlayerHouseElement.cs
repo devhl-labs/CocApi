@@ -87,22 +87,22 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public static TypeEnum TypeEnumFromString(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return TypeEnum.Unknown;
 
-            if (value == "ground")
+            if (value.Equals("ground"))
                 return TypeEnum.Ground;
 
-            if (value == "roof")
+            if (value.Equals("roof"))
                 return TypeEnum.Roof;
 
-            if (value == "foot")
+            if (value.Equals("foot"))
                 return TypeEnum.Foot;
 
-            if (value == "decoration")
+            if (value.Equals("decoration"))
                 return TypeEnum.Decoration;
 
-            if (value == "walls")
+            if (value.Equals("walls"))
                 return TypeEnum.Walls;
 
             throw new NotImplementedException($"Could not convert value to type TypeEnum: '{value}'");
@@ -115,22 +115,22 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static TypeEnum? TypeEnumFromStringOrDefault(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return TypeEnum.Unknown;
 
-            if (value == "ground")
+            if (value.Equals("ground"))
                 return TypeEnum.Ground;
 
-            if (value == "roof")
+            if (value.Equals("roof"))
                 return TypeEnum.Roof;
 
-            if (value == "foot")
+            if (value.Equals("foot"))
                 return TypeEnum.Foot;
 
-            if (value == "decoration")
+            if (value.Equals("decoration"))
                 return TypeEnum.Decoration;
 
-            if (value == "walls")
+            if (value.Equals("walls"))
                 return TypeEnum.Walls;
 
             return null;

@@ -92,13 +92,13 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public static StateEnum StateEnumFromString(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return StateEnum.Unknown;
 
-            if (value == "ongoing")
+            if (value.Equals("ongoing"))
                 return StateEnum.Ongoing;
 
-            if (value == "ended")
+            if (value.Equals("ended"))
                 return StateEnum.Ended;
 
             throw new NotImplementedException($"Could not convert value to type StateEnum: '{value}'");
@@ -111,13 +111,13 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public static StateEnum? StateEnumFromStringOrDefault(string value)
         {
-            if (value == "unknown")
+            if (value.Equals("unknown"))
                 return StateEnum.Unknown;
 
-            if (value == "ongoing")
+            if (value.Equals("ongoing"))
                 return StateEnum.Ongoing;
 
-            if (value == "ended")
+            if (value.Equals("ended"))
                 return StateEnum.Ended;
 
             return null;
