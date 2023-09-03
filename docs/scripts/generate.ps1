@@ -2,27 +2,27 @@ $packageVersion = "2.8.2"
 $releaseNote = "Removed IApi namespace. Added an event for errors."
 
 $properties = @(
-    'packageName=CocApi.Rest',
-    'packageTitle=CocApi.Rest',
-    'apiName=CocApi',
-    'validatable=false',
-    'hideGenerationTimestamp=false',
-    "packageVersion=$packageVersion",
-    'packageAuthors=devhl',
-    'packageCompany=devhl',
-    'packageDescription=A wrapper for the Clash of Clans API',
+    'packageName=CocApi.Rest'
+    'packageTitle=CocApi.Rest'
+    'apiName=CocApi'
+    'validatable=false'
+    'hideGenerationTimestamp=false'
+    "packageVersion=$packageVersion"
+    'packageAuthors=devhl'
+    'packageCompany=devhl'
+    'packageDescription=A wrapper for the Clash of Clans API'
     'packageTags=ClashOfClans SuperCell devhl'
-    'modelPackage=Models',
-    'apiPackage=Apis',
-    'packageGuid=71B5E000-88E9-432B-BAEB-BB622EA7DC33',
-    "dateTimeFormat=yyyyMMdd'T'HHmmss.fff'Z'",
+    'modelPackage=Models'
+    'apiPackage=Apis'
+    'packageGuid=71B5E000-88E9-432B-BAEB-BB622EA7DC33'
+    "dateTimeFormat=yyyyMMdd'T'HHmmss.fff'Z'"
     "dateFormat=yyyy'-'MM"
 ) -join ","
 
 $global = @(
-    'apiDocs=true',
-    'modelDocs=true',
-    'apiTests=true',
+    'apiDocs=true'
+    'modelDocs=true'
+    'apiTests=true'
     'modelTests=true'
 ) -join ","
 

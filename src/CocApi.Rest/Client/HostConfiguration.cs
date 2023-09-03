@@ -132,7 +132,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new WarStateNullableJsonConverter());
             _jsonOptions.Converters.Add(new WarTypeJsonConverter());
             _jsonOptions.Converters.Add(new WarTypeNullableJsonConverter());
-            _services.AddSingleton(new JsonSerializerOptionsProvider(_jsonOptions));
+            JsonSerializerOptionsProvider jsonSerializerOptionsProvider = new(_jsonOptions);
+            _services.AddSingleton(jsonSerializerOptionsProvider);
             _services.AddSingleton<IApiFactory, ApiFactory>();
             _services.AddSingleton<ClansApiEvents>();
             _services.AddTransient<IClansApi, ClansApi>();

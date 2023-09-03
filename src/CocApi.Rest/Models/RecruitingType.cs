@@ -184,5 +184,4 @@ namespace CocApi.Rest.Models
             writer.WriteStringValue(recruitingType?.ToString() ?? "null");
         }
     }
-
 }

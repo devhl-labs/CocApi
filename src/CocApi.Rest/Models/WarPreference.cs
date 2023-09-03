@@ -170,5 +170,4 @@ namespace CocApi.Rest.Models
             writer.WriteStringValue(warPreference?.ToString() ?? "null");
         }
     }
-
 }

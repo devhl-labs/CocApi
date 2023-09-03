@@ -240,5 +240,4 @@ namespace CocApi.Rest.Models
             writer.WriteStringValue(warFrequency?.ToString() ?? "null");
         }
     }
-
 }

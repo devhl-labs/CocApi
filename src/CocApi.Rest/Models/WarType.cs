@@ -198,5 +198,4 @@ namespace CocApi.Rest.Models
             writer.WriteStringValue(warType?.ToString() ?? "null");
         }
     }
-
 }
