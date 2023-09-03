@@ -31,33 +31,21 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientError" /> class.
         /// </summary>
+        /// <param name="reason">reason</param>
         /// <param name="detail">detail</param>
         /// <param name="message">message</param>
-        /// <param name="reason">reason</param>
         /// <param name="type">type</param>
         [JsonConstructor]
-        internal ClientError(Object detail, string message, string reason, string type)
+        internal ClientError(string reason, Object? detail = default, string? message = default, string? type = default)
         {
+            Reason = reason;
             Detail = detail;
             Message = message;
-            Reason = reason;
             Type = type;
             OnCreated();
         }
 
         partial void OnCreated();
-
-        /// <summary>
-        /// Gets or Sets Detail
-        /// </summary>
-        [JsonPropertyName("detail")]
-        public Object Detail { get; }
-
-        /// <summary>
-        /// Gets or Sets Message
-        /// </summary>
-        [JsonPropertyName("message")]
-        public string Message { get; }
 
         /// <summary>
         /// Gets or Sets Reason
@@ -66,10 +54,22 @@ namespace CocApi.Rest.Models
         public string Reason { get; }
 
         /// <summary>
+        /// Gets or Sets Detail
+        /// </summary>
+        [JsonPropertyName("detail")]
+        public Object? Detail { get; }
+
+        /// <summary>
+        /// Gets or Sets Message
+        /// </summary>
+        [JsonPropertyName("message")]
+        public string? Message { get; }
+
+        /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get; }
+        public string? Type { get; }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -79,9 +79,9 @@ namespace CocApi.Rest.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class ClientError {\n");
+            sb.Append("  Reason: ").Append(Reason).Append("\n");
             sb.Append("  Detail: ").Append(Detail).Append("\n");
             sb.Append("  Message: ").Append(Message).Append("\n");
-            sb.Append("  Reason: ").Append(Reason).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -109,6 +109,11 @@ namespace CocApi.Rest.Models
 
             return 
                 (
+                    Reason == input.Reason ||
+                    (Reason != null &&
+                    Reason.Equals(input.Reason))
+                ) && 
+                (
                     Detail == input.Detail ||
                     (Detail != null &&
                     Detail.Equals(input.Detail))
@@ -117,11 +122,6 @@ namespace CocApi.Rest.Models
                     Message == input.Message ||
                     (Message != null &&
                     Message.Equals(input.Message))
-                ) && 
-                (
-                    Reason == input.Reason ||
-                    (Reason != null &&
-                    Reason.Equals(input.Reason))
                 ) && 
                 (
                     Type == input.Type ||
@@ -139,10 +139,16 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + Detail.GetHashCode();
-                hashCode = (hashCode * 59) + Message.GetHashCode();
                 hashCode = (hashCode * 59) + Reason.GetHashCode();
-                hashCode = (hashCode * 59) + Type.GetHashCode();
+
+                if (Detail != null)
+                    hashCode = (hashCode * 59) + Detail.GetHashCode();
+
+                if (Message != null)
+                    hashCode = (hashCode * 59) + Message.GetHashCode();
+
+                if (Type != null)
+                    hashCode = (hashCode * 59) + Type.GetHashCode();
 
                 return hashCode;
             }
@@ -171,9 +177,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
+            string? reason = default;
             Object? detail = default;
             string? message = default;
-            string? reason = default;
             string? type = default;
 
             while (utf8JsonReader.Read())
@@ -191,15 +197,15 @@ namespace CocApi.Rest.Models
 
                     switch (localVarJsonPropertyName)
                     {
+                        case "reason":
+                            reason = utf8JsonReader.GetString();
+                            break;
                         case "detail":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 detail = JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions);
                             break;
                         case "message":
                             message = utf8JsonReader.GetString();
-                            break;
-                        case "reason":
-                            reason = utf8JsonReader.GetString();
                             break;
                         case "type":
                             type = utf8JsonReader.GetString();
@@ -210,19 +216,10 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (detail == null)
-                throw new ArgumentNullException(nameof(detail), "Property is required for class ClientError.");
-
-            if (message == null)
-                throw new ArgumentNullException(nameof(message), "Property is required for class ClientError.");
-
             if (reason == null)
                 throw new ArgumentNullException(nameof(reason), "Property is required for class ClientError.");
 
-            if (type == null)
-                throw new ArgumentNullException(nameof(type), "Property is required for class ClientError.");
-
-            return new ClientError(detail, message, reason, type);
+            return new ClientError(reason, detail, message, type);
         }
 
         /// <summary>
@@ -249,10 +246,10 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClientError clientError, JsonSerializerOptions jsonSerializerOptions)
         {
+            writer.WriteString("reason", clientError.Reason);
             writer.WritePropertyName("detail");
             JsonSerializer.Serialize(writer, clientError.Detail, jsonSerializerOptions);
             writer.WriteString("message", clientError.Message);
-            writer.WriteString("reason", clientError.Reason);
             writer.WriteString("type", clientError.Type);
         }
     }
