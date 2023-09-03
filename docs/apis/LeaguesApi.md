@@ -315,12 +315,12 @@ catch (ApiException e)
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **400** |  |  -  |
-| **403** |  |  -  |
-| **404** |  |  -  |
-| **429** |  |  -  |
-| **500** |  |  -  |
-| **503** |  |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
 | **200** | Successful response |  -  |
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
@@ -421,12 +421,12 @@ catch (ApiException e)
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **400** |  |  -  |
-| **403** |  |  -  |
-| **404** |  |  -  |
-| **429** |  |  -  |
-| **500** |  |  -  |
-| **503** |  |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
 | **200** | Successful response |  -  |
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
