@@ -1,5 +1,5 @@
-$packageVersion = "2.8.2"
-$releaseNote = "Removed IApi namespace. Added an event for errors."
+$packageVersion = "2.9.0"
+$releaseNote = "Upgraded OpenApi to handle all responses."
 
 $properties = @(
     'packageName=CocApi.Rest'

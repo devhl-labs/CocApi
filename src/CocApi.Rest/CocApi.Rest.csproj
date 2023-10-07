@@ -12,11 +12,11 @@
     <Description>A wrapper for the Clash of Clans API</Description>
     <Copyright>No Copyright</Copyright>
     <RootNamespace>CocApi.Rest</RootNamespace>
-    <Version>2.8.2</Version>
+    <Version>2.9.0</Version>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.Rest.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/devhl-labs/CocApi.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Removed IApi namespace. Added an event for errors.</PackageReleaseNotes>
+    <PackageReleaseNotes>Upgraded OpenApi to handle all responses.</PackageReleaseNotes>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
     <Nullable>enable</Nullable>
   </PropertyGroup>
