@@ -58,7 +58,7 @@ namespace CocApi.Rest.Test.Apis
         {
             string leagueId = default!;
             var response = await _instance.FetchBuilderBaseLeagueAsync(leagueId);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<BuilderBaseLeague>(model);
         }
 
@@ -72,7 +72,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchBuilderBaseLeaguesAsync(limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<BuilderBaseLeagueList>(model);
         }
 
@@ -84,7 +84,7 @@ namespace CocApi.Rest.Test.Apis
         {
             string leagueId = default!;
             var response = await _instance.FetchCapitalLeagueAsync(leagueId);
-            var model = response.AsModel();
+            var model = response.BadRequest();
             Assert.IsType<CapitalLeague>(model);
         }
 
@@ -98,7 +98,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchCapitalLeaguesAsync(limit, after, before);
-            var model = response.AsModel();
+            var model = response.BadRequest();
             Assert.IsType<CapitalLeagueObject>(model);
         }
 
@@ -110,7 +110,7 @@ namespace CocApi.Rest.Test.Apis
         {
             string leagueId = default!;
             var response = await _instance.FetchLeagueAsync(leagueId);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<League>(model);
         }
 
@@ -126,7 +126,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchLeagueSeasonRankingsAsync(leagueId, seasonId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<PlayerRankingList>(model);
         }
 
@@ -141,7 +141,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchLeagueSeasonsAsync(leagueId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<LeagueSeasonList>(model);
         }
 
@@ -155,7 +155,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchLeaguesAsync(limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<LeagueList>(model);
         }
 
@@ -167,7 +167,7 @@ namespace CocApi.Rest.Test.Apis
         {
             string leagueId = default!;
             var response = await _instance.FetchWarLeagueAsync(leagueId);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<WarLeague>(model);
         }
 
@@ -181,7 +181,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchWarLeaguesAsync(limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<WarLeagueList>(model);
         }
     }

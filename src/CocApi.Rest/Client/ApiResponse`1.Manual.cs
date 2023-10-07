@@ -6,7 +6,14 @@ using System.Net.Http;
 
 namespace CocApi.Rest.Client
 {
-    public partial class ApiResponse<T>
+    public partial interface IApiResponse
+    {
+        DateTime Downloaded { get; }
+
+        DateTime ServerExpiration { get; }
+    }
+
+    public partial class ApiResponse
     {
         public DateTime Downloaded
         {
@@ -37,23 +44,24 @@ namespace CocApi.Rest.Client
 
         partial void OnCreated(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage)
         {
-            if (ResponseType == typeof(ClanWar))
+            string? url = httpRequestMessage.RequestUri?.LocalPath;
+
+            if (this is IOk<ClanWar>)
             {
-                string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ServerExpiration, _jsonSerializerOptions);
-                RawContent = RawContent[..^1];
-                RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
+               string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ServerExpiration, _jsonSerializerOptions);
+               RawContent = RawContent[..^1];
+               RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
 
-                string? url = httpRequestMessage.RequestUri?.LocalPath;
-                if (url?.Contains("clanwarleagues/wars/") == true)
-                {
-                    string[] parts = url.Split("/");
-                    RawContent = $"{RawContent}, \"warTag\": \"{parts.Last()}\"";
+               if (url?.Contains("clanwarleagues/wars/") == true)
+               {
+                   string[] parts = url.Split("/");
+                   RawContent = $"{RawContent}, \"warTag\": \"{parts.Last()}\"";
 
-                    if (!RawContent.Contains("attacksPerMember"))
-                        RawContent = $"{RawContent}, \"attacksPerMember\": 1";
-                }
+                   if (!RawContent.Contains("attacksPerMember"))
+                       RawContent = $"{RawContent}, \"attacksPerMember\": 1";
+               }
 
-                RawContent = $"{RawContent}}}";
+               RawContent = $"{RawContent}}}";
             }
         }
     }

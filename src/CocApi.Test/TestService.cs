@@ -57,52 +57,52 @@ public class TestService : IHostedService
 
     private async Task SanityCheck()
     {
-        ApiResponse<Clan> clanResponse = await ClansApi.FetchClanAsync("#29Y8PRCJR");
-        Clan? clan = clanResponse.AsModel();
+        IOk<Clan?> clanResponse = await ClansApi.FetchClanAsync("#29Y8PRCJR");
+        Clan? clan = clanResponse.Ok();
 
-        ApiResponse<Clan> devhlsLabResponse = await ClansApi.FetchClanAsync("#28RUGUYJU");
-        Clan? devhlsLab = devhlsLabResponse.AsModel();
+        IOk<Clan?> devhlsLabResponse = await ClansApi.FetchClanAsync("#28RUGUYJU");
+        Clan? devhlsLab = devhlsLabResponse.Ok();
 
-        ApiResponse<PlayerRankingList> playerGlobalRankingsResponse = await LocationsApi.FetchPlayerRankingAsync("global");
-        PlayerRankingList? playerGlobalRankings = playerGlobalRankingsResponse.AsModel();
+        IOk<PlayerRankingList> playerGlobalRankingsResponse = await LocationsApi.FetchPlayerRankingAsync("global");
+        PlayerRankingList? playerGlobalRankings = playerGlobalRankingsResponse.Ok();
 
         // ApiResponse<PlayerBuilderBaseRankingList> playerVersusGlobalRankingsResponse = await LocationsApi.FetchPlayerBuilderBaseRankingAsync("global"); // this endpoint is broken
         //PlayerBuilderBaseRankingList playerVersusGlobalRankings = playerVersusGlobalRankingsResponse.AsModel();
 
-        ApiResponse<ClanRankingList> clanGlobalRankingsResponse = await LocationsApi.FetchClanRankingAsync("global");
+        IOk<ClanRankingList?> clanGlobalRankingsResponse = await LocationsApi.FetchClanRankingAsync("global");
 
-        ApiResponse<ClanBuilderBaseRankingList> clanGlobalVersusRankingsResponse = await LocationsApi.FetchClanBuilderBaseRankingAsync("global");
-        ClanBuilderBaseRankingList? clanGlobalVersusRanking = clanGlobalVersusRankingsResponse.AsModel();
+        IOk<ClanBuilderBaseRankingList?> clanGlobalVersusRankingsResponse = await LocationsApi.FetchClanBuilderBaseRankingAsync("global");
+        ClanBuilderBaseRankingList? clanGlobalVersusRanking = clanGlobalVersusRankingsResponse.Ok();
 
-        ApiResponse<WarLeagueList> leagueListResponse = await LeaguesApi.FetchWarLeaguesAsync();
-        WarLeagueList? leagueList = leagueListResponse.AsModel();
+        IOk<WarLeagueList?> leagueListResponse = await LeaguesApi.FetchWarLeaguesAsync();
+        WarLeagueList? leagueList = leagueListResponse.Ok();
 
-        ApiResponse<VerifyTokenResponse> playerTokenResponse = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
-        VerifyTokenResponse? playerToken = playerTokenResponse.AsModel();
+        IOk<VerifyTokenResponse?> playerTokenResponse = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
+        VerifyTokenResponse? playerToken = playerTokenResponse.Ok();
 
-        ApiResponse<ClanWarLog> warLogResponse = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
-        ClanWarLog? warLog = warLogResponse.AsModel();
+        IOk<ClanWarLog?> warLogResponse = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
+        ClanWarLog? warLog = warLogResponse.Ok();
 
-        ApiResponse<ClanList> clansResponse = await ClansApi.SearchClansAsync(name: new Option<string>("fysb"));
-        ClanList? clans = clansResponse.AsModel();
+        IOk<ClanList?> clansResponse = await ClansApi.SearchClansAsync(name: new Option<string>("fysb"));
+        ClanList? clans = clansResponse.Ok();
 
-        ApiResponse<ClanCapitalRaidSeasons> clanCapitalRaidSeasonsResponse = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
-        ClanCapitalRaidSeasons? clanCapitalRaidSeasons = clanCapitalRaidSeasonsResponse.AsModel();
+        IOk<ClanCapitalRaidSeasons?> clanCapitalRaidSeasonsResponse = await ClansApi.FetchCapitalRaidSeasonsAsync("#22G0JJR8");
+        ClanCapitalRaidSeasons? clanCapitalRaidSeasons = clanCapitalRaidSeasonsResponse.Ok();
 
-        ApiResponse<ClanCapitalRankingObject> clanCapitalRankingResponse = await LocationsApi.FetchClanCapitalRankingAsync("global");
-        ClanCapitalRankingObject? clanCapitalRanking = clanCapitalRankingResponse.AsModel();
+        IOk<ClanCapitalRankingObject?> clanCapitalRankingResponse = await LocationsApi.FetchClanCapitalRankingAsync("global");
+        ClanCapitalRankingObject? clanCapitalRanking = clanCapitalRankingResponse.Ok();
 
-        ApiResponse<CapitalLeagueObject> capitalLeaguesResponse = await LeaguesApi.FetchCapitalLeaguesAsync();
-        CapitalLeagueObject? capitalLeagues = capitalLeaguesResponse.AsModel();
+        IOk<CapitalLeagueObject?> capitalLeaguesResponse = await LeaguesApi.FetchCapitalLeaguesAsync();
+        CapitalLeagueObject? capitalLeagues = capitalLeaguesResponse.Ok();
 
-        ApiResponse<CapitalLeague> capitalLeagueResponse = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
-        CapitalLeague? capitalLeague = capitalLeagueResponse.AsModel();
+        IOk<CapitalLeague?> capitalLeagueResponse = await LeaguesApi.FetchCapitalLeagueAsync("85000018");
+        CapitalLeague? capitalLeague = capitalLeagueResponse.Ok();
 
-        ApiResponse<BuilderBaseLeagueList> builderBaseLeaguesResponse = await LeaguesApi.FetchBuilderBaseLeaguesAsync();
-        BuilderBaseLeagueList? builderBaseLeagues = builderBaseLeaguesResponse.AsModel();
+        IOk<BuilderBaseLeagueList?> builderBaseLeaguesResponse = await LeaguesApi.FetchBuilderBaseLeaguesAsync();
+        BuilderBaseLeagueList? builderBaseLeagues = builderBaseLeaguesResponse.Ok();
 
-        ApiResponse<BuilderBaseLeague> builderBaseLeagueResponse = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeaguesResponse.AsModel()!.Items.First().Id.ToString());
-        BuilderBaseLeague? builderBaseLeague = builderBaseLeagueResponse.AsModel();
+        IOk<BuilderBaseLeague?> builderBaseLeagueResponse = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeaguesResponse.Ok()!.Items.First().Id.ToString());
+        BuilderBaseLeague? builderBaseLeague = builderBaseLeagueResponse.Ok();
 
         System.Console.WriteLine("Done sanity check.");
     }

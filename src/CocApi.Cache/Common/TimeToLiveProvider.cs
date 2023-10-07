@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ public class TimeToLiveProvider
         Logger = logger;
     }
 
-    internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(ApiResponse<T> apiResponse) where T : class
+    internal async ValueTask<TimeSpan> TimeToLiveOrDefaultAsync<T>(IOk<T> apiResponse) where T : class
     {
         try
         {
@@ -64,24 +65,24 @@ public class TimeToLiveProvider
             ? ClanWarLeagueGroupTimeToLive()
             : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(2));
 
-    protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
+    protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(IOk<T> apiResponse) where T : class
     {
         if (!apiResponse.IsSuccessStatusCode)
             return typeof(T) == typeof(ClanWarLeagueGroup)
                 ? ClanWarLeagueGroupTimeToLive()
                 :new ValueTask<TimeSpan>(TimeSpan.FromSeconds(2));
 
-        if (apiResponse is ApiResponse<Clan>)
+        if (typeof(T) == typeof(Clan))
             return new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
-        if (apiResponse is ApiResponse<ClanWarLog>)
+        if (typeof(T) == typeof(ClanWarLog))
             return apiResponse.StatusCode == HttpStatusCode.Forbidden
                 ? new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2))
                 : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
-        if (apiResponse is ApiResponse<ClanWarLeagueGroup> group)
+        if (apiResponse is IOk<ClanWarLeagueGroup> group)
         {
-            ClanWarLeagueGroup? model = group.AsModel();
+            ClanWarLeagueGroup? model = group.Ok();
 
             if (!Clash.IsCwlEnabled ||
                 (model?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == model.Season.Month) ||
@@ -92,9 +93,9 @@ public class TimeToLiveProvider
                         .Subtract(DateTime.UtcNow));
         }
 
-        if (apiResponse is ApiResponse<ClanWar> war)
+        if (apiResponse is IOk<ClanWar> war)
         {
-            ClanWar? model = war.AsModel();
+            ClanWar? model = war.Ok();
 
             if (war.StatusCode == HttpStatusCode.Forbidden)
                 return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2));

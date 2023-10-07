@@ -13,7 +13,7 @@ public class CachedPlayer : CachedItem<Player>
     {
         try
         {
-            ApiResponse<Player> apiResponse = await playersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);
+            IFetchPlayerApiResponse apiResponse = await playersApi.FetchPlayerAsync(tag, cancellationToken).ConfigureAwait(false);
 
             return new CachedPlayer(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
@@ -41,11 +41,11 @@ public class CachedPlayer : CachedItem<Player>
         //return HasUpdated(stored.Data, fetched.Data);
     }
 
-    private CachedPlayer(string tag, ApiResponse<Player> response, TimeSpan localExpiration) : base (response, localExpiration)
+    private CachedPlayer(string tag, IFetchPlayerApiResponse response, TimeSpan localExpiration) : base (response, localExpiration)
     {
         Tag = tag;
 
-        ClanTag = response.AsModel()?.Clan?.Tag;
+        ClanTag = response.Ok()?.Clan?.Tag;
     }
 
     private CachedPlayer(string tag, TimeSpan localExpiration) : base (localExpiration)

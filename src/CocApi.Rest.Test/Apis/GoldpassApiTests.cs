@@ -57,7 +57,7 @@ namespace CocApi.Rest.Test.Apis
         public async Task GetCurrentGoldPassSeasonAsyncTest()
         {
             var response = await _instance.FetchCurrentGoldPassSeasonAsync();
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<GoldPassSeason>(model);
         }
     }

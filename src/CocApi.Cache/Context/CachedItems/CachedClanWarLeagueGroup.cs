@@ -13,7 +13,7 @@ public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
         try
         {
-            ApiResponse<ClanWarLeagueGroup> apiResponse = await clansApi.FetchClanWarLeagueGroupAsync(tag, realtime, cancellationToken).ConfigureAwait(false);
+            IFetchClanWarLeagueGroupApiResponse apiResponse = await clansApi.FetchClanWarLeagueGroupAsync(tag, realtime, cancellationToken).ConfigureAwait(false);
 
             return new CachedClanWarLeagueGroup(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
@@ -46,11 +46,11 @@ public class CachedClanWarLeagueGroup : CachedItem<ClanWarLeagueGroup>
     {
     }
 
-    private CachedClanWarLeagueGroup(ApiResponse<ClanWarLeagueGroup> apiResponse, TimeSpan localExpiration)
+    private CachedClanWarLeagueGroup(IFetchClanWarLeagueGroupApiResponse apiResponse, TimeSpan localExpiration)
     {
         UpdateFrom(apiResponse, localExpiration);
 
-        ClanWarLeagueGroup? model = apiResponse.AsModel();
+        ClanWarLeagueGroup? model = apiResponse.Ok();
 
         Season = model?.Season;
 

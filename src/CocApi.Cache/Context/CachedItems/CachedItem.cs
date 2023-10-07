@@ -67,11 +67,11 @@ public class CachedItem<T> where T : class
 
     }
 
-    public CachedItem(ApiResponse<T> apiResponse, TimeSpan localExpiration) => UpdateFrom(apiResponse, localExpiration);
+    public CachedItem(IOk<T> apiResponse, TimeSpan localExpiration) => UpdateFrom(apiResponse, localExpiration);
 
     public CachedItem(TimeSpan localExpiration) => UpdateFrom(localExpiration);
 
-    protected void UpdateFrom(ApiResponse<T> apiResponse, TimeSpan localExpiration)
+    protected void UpdateFrom(IOk<T> apiResponse, TimeSpan localExpiration)
     {
         StatusCode = apiResponse.StatusCode;
         DownloadedAt = apiResponse.Downloaded;
@@ -84,7 +84,7 @@ public class CachedItem<T> where T : class
         if (apiResponse.IsSuccessStatusCode)
         {
             RawContent = apiResponse.RawContent;
-            Content = apiResponse.AsModel();
+            Content = apiResponse.Ok();
         }
     }
 

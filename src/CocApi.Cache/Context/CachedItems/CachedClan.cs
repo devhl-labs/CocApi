@@ -13,7 +13,7 @@ public class CachedClan : CachedItem<Clan>
     {
         try
         {
-            ApiResponse<Clan> apiResponse = await clansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
+            IOk<Clan?> apiResponse = await clansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false);
 
             return new CachedClan(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
@@ -36,11 +36,11 @@ public class CachedClan : CachedItem<Clan>
         return !fetched.Content.Equals(stored.Content);
     }
 
-    private CachedClan(string tag, ApiResponse<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
+    private CachedClan(string tag, IOk<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)
     {
         Tag = tag;
 
-        if (response.TryToModel(out Clan? model))
+        if (response.TryOk(out Clan? model))
             IsWarLogPublic = model.IsWarLogPublic;
     }
 

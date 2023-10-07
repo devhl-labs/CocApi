@@ -13,10 +13,10 @@ public class CustomTimeToLiveProvider : TimeToLiveProvider
     {
     }
 
-    protected override ValueTask<TimeSpan> TimeToLiveAsync<T>(ApiResponse<T> apiResponse) where T : class
+    protected override ValueTask<TimeSpan> TimeToLiveAsync<T>(IOk<T> apiResponse) where T : class
     {
         // in this example if we downloaded a clan, we will keep it for one minutes past the server expiration
-        return apiResponse is ApiResponse<Clan>
+        return apiResponse is IOk<Clan>
             ? ValueTask.FromResult(apiResponse.ServerExpiration.AddMinutes(1) - DateTime.UtcNow)
             : base.TimeToLiveAsync(apiResponse);
     }

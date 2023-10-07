@@ -1,7 +1,7 @@
-            // Modify this logic with the AsModel.mustache template
-            if ((ResponseType == typeof(Models.ClanWar) || ResponseType == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                return default;
+// Modify this logic with the AsModel.mustache template
+if ((typeof({{{dataType}}}) == typeof(Models.ClanWar) || typeof({{{dataType}}}) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+    return default;
 
-            return IsSuccessStatusCode
-                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, _jsonSerializerOptions)
-                : default;
+return IsSuccessStatusCode
+    ? System.Text.Json.JsonSerializer.Deserialize<{{{dataType}}}>(RawContent, _jsonSerializerOptions)
+    : default;

@@ -19,8 +19,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
-using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CocApi.Rest.Apis
 {
@@ -44,8 +44,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeague&gt;&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeagueApiResponse"/>&gt;</returns>
+        Task<IFetchBuilderBaseLeagueApiResponse> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get Builder Base league information
@@ -55,8 +55,8 @@ namespace CocApi.Rest.Apis
         /// </remarks>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeague&gt;?&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeagueApiResponse"/>?&gt;</returns>
+        Task<IFetchBuilderBaseLeagueApiResponse?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List Builder Base leagues
@@ -69,8 +69,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;BuilderBaseLeagueList&gt;&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeaguesApiResponse"/>&gt;</returns>
+        Task<IFetchBuilderBaseLeaguesApiResponse> FetchBuilderBaseLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List Builder Base leagues
@@ -82,8 +82,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;BuilderBaseLeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeaguesApiResponse"/>?&gt;</returns>
+        Task<IFetchBuilderBaseLeaguesApiResponse?> FetchBuilderBaseLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get capital league information
@@ -94,8 +94,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;CapitalLeague&gt;&gt;</returns>
-        Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeagueApiResponse"/>&gt;</returns>
+        Task<IFetchCapitalLeagueApiResponse> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get capital league information
@@ -105,8 +105,8 @@ namespace CocApi.Rest.Apis
         /// </remarks>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;CapitalLeague&gt;?&gt;</returns>
-        Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeagueApiResponse"/>?&gt;</returns>
+        Task<IFetchCapitalLeagueApiResponse?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List capital leagues
@@ -119,8 +119,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;CapitalLeagueObject&gt;&gt;</returns>
-        Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeaguesApiResponse"/>&gt;</returns>
+        Task<IFetchCapitalLeaguesApiResponse> FetchCapitalLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List capital leagues
@@ -132,8 +132,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;CapitalLeagueObject&gt;?&gt;</returns>
-        Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeaguesApiResponse"/>?&gt;</returns>
+        Task<IFetchCapitalLeaguesApiResponse?> FetchCapitalLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league information
@@ -144,8 +144,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;League&gt;&gt;</returns>
-        Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueApiResponse"/>&gt;</returns>
+        Task<IFetchLeagueApiResponse> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league information
@@ -155,8 +155,8 @@ namespace CocApi.Rest.Apis
         /// </remarks>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;League&gt;?&gt;</returns>
-        Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueApiResponse"/>?&gt;</returns>
+        Task<IFetchLeagueApiResponse?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league season rankings
@@ -171,8 +171,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;PlayerRankingList&gt;&gt;</returns>
-        Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonRankingsApiResponse"/>&gt;</returns>
+        Task<IFetchLeagueSeasonRankingsApiResponse> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league season rankings
@@ -186,8 +186,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;PlayerRankingList&gt;?&gt;</returns>
-        Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonRankingsApiResponse"/>?&gt;</returns>
+        Task<IFetchLeagueSeasonRankingsApiResponse?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league seasons
@@ -201,8 +201,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;LeagueSeasonList&gt;&gt;</returns>
-        Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonsApiResponse"/>&gt;</returns>
+        Task<IFetchLeagueSeasonsApiResponse> FetchLeagueSeasonsAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get league seasons
@@ -215,8 +215,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;LeagueSeasonList&gt;?&gt;</returns>
-        Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonsApiResponse"/>?&gt;</returns>
+        Task<IFetchLeagueSeasonsApiResponse?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List leagues
@@ -229,8 +229,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;LeagueList&gt;&gt;</returns>
-        Task<ApiResponse<LeagueList>> FetchLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeaguesApiResponse"/>&gt;</returns>
+        Task<IFetchLeaguesApiResponse> FetchLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List leagues
@@ -242,8 +242,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;LeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeaguesApiResponse"/>?&gt;</returns>
+        Task<IFetchLeaguesApiResponse?> FetchLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get war league information
@@ -254,8 +254,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;WarLeague&gt;&gt;</returns>
-        Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeagueApiResponse"/>&gt;</returns>
+        Task<IFetchWarLeagueApiResponse> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get war league information
@@ -265,8 +265,8 @@ namespace CocApi.Rest.Apis
         /// </remarks>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;WarLeague&gt;?&gt;</returns>
-        Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeagueApiResponse"/>?&gt;</returns>
+        Task<IFetchWarLeagueApiResponse?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List war leagues
@@ -279,8 +279,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&lt;WarLeagueList&gt;&gt;</returns>
-        Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeaguesApiResponse"/>&gt;</returns>
+        Task<IFetchWarLeaguesApiResponse> FetchWarLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// List war leagues
@@ -292,29 +292,508 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns>Task&lt;ApiResponse&gt;WarLeagueList&gt;?&gt;</returns>
-        Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeaguesApiResponse"/>?&gt;</returns>
+        Task<IFetchWarLeaguesApiResponse?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchBuilderBaseLeagueApiResponse"/>
+    /// </summary>
+    public interface IFetchBuilderBaseLeagueApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.BuilderBaseLeague?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchBuilderBaseLeaguesApiResponse"/>
+    /// </summary>
+    public interface IFetchBuilderBaseLeaguesApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.BuilderBaseLeagueList?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchCapitalLeagueApiResponse"/>
+    /// </summary>
+    public interface IFetchCapitalLeagueApiResponse : CocApi.Rest.Client.IApiResponse, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>, IOk<CocApi.Rest.Models.CapitalLeague?>
+    {
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchCapitalLeaguesApiResponse"/>
+    /// </summary>
+    public interface IFetchCapitalLeaguesApiResponse : CocApi.Rest.Client.IApiResponse, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>, IOk<CocApi.Rest.Models.CapitalLeagueObject?>
+    {
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchLeagueApiResponse"/>
+    /// </summary>
+    public interface IFetchLeagueApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.League?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchLeagueSeasonRankingsApiResponse"/>
+    /// </summary>
+    public interface IFetchLeagueSeasonRankingsApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.PlayerRankingList?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchLeagueSeasonsApiResponse"/>
+    /// </summary>
+    public interface IFetchLeagueSeasonsApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.LeagueSeasonList?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchLeaguesApiResponse"/>
+    /// </summary>
+    public interface IFetchLeaguesApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.LeagueList?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchWarLeagueApiResponse"/>
+    /// </summary>
+    public interface IFetchWarLeagueApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.WarLeague?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IFetchWarLeaguesApiResponse"/>
+    /// </summary>
+    public interface IFetchWarLeaguesApiResponse : CocApi.Rest.Client.IApiResponse, IOk<CocApi.Rest.Models.WarLeagueList?>, IBadRequest<CocApi.Rest.Models.ClientError?>, IForbidden<CocApi.Rest.Models.ClientError?>, INotFound<CocApi.Rest.Models.ClientError?>, ITooManyRequests<CocApi.Rest.Models.ClientError?>, IInternalServerError<CocApi.Rest.Models.ClientError?>, IServiceUnavailable<CocApi.Rest.Models.ClientError?>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+
+        /// <summary>
+        /// Returns true if the response is 400 BadRequest
+        /// </summary>
+        /// <returns></returns>
+        bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 403 Forbidden
+        /// </summary>
+        /// <returns></returns>
+        bool IsForbidden { get; }
+
+        /// <summary>
+        /// Returns true if the response is 404 NotFound
+        /// </summary>
+        /// <returns></returns>
+        bool IsNotFound { get; }
+
+        /// <summary>
+        /// Returns true if the response is 429 TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        bool IsTooManyRequests { get; }
+
+        /// <summary>
+        /// Returns true if the response is 500 InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        bool IsInternalServerError { get; }
+
+        /// <summary>
+        /// Returns true if the response is 503 ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        bool IsServiceUnavailable { get; }
     }
 
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
-    /// This class is registered as transient.
     /// </summary>
     public class LeaguesApiEvents
     {
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<BuilderBaseLeague>>? OnFetchBuilderBaseLeague;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchBuilderBaseLeague;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchBuilderBaseLeague;
 
-        internal void ExecuteOnGetBuilderBaseLeague(ApiResponse<BuilderBaseLeague> apiResponse)
+        internal void ExecuteOnGetBuilderBaseLeague(LeaguesApi.GetBuilderBaseLeagueApiResponse apiResponse)
         {
-            OnFetchBuilderBaseLeague?.Invoke(this, new ApiResponseEventArgs<BuilderBaseLeague>(apiResponse));
+            OnFetchBuilderBaseLeague?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetBuilderBaseLeague(Exception exception)
@@ -325,16 +804,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<BuilderBaseLeagueList>>? OnFetchBuilderBaseLeagues;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchBuilderBaseLeagues;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchBuilderBaseLeagues;
 
-        internal void ExecuteOnGetBuilderBaseLeagues(ApiResponse<BuilderBaseLeagueList> apiResponse)
+        internal void ExecuteOnGetBuilderBaseLeagues(LeaguesApi.GetBuilderBaseLeaguesApiResponse apiResponse)
         {
-            OnFetchBuilderBaseLeagues?.Invoke(this, new ApiResponseEventArgs<BuilderBaseLeagueList>(apiResponse));
+            OnFetchBuilderBaseLeagues?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetBuilderBaseLeagues(Exception exception)
@@ -345,16 +824,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<CapitalLeague>>? OnFetchCapitalLeague;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchCapitalLeague;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchCapitalLeague;
 
-        internal void ExecuteOnGetCapitalLeague(ApiResponse<CapitalLeague> apiResponse)
+        internal void ExecuteOnGetCapitalLeague(LeaguesApi.GetCapitalLeagueApiResponse apiResponse)
         {
-            OnFetchCapitalLeague?.Invoke(this, new ApiResponseEventArgs<CapitalLeague>(apiResponse));
+            OnFetchCapitalLeague?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetCapitalLeague(Exception exception)
@@ -365,16 +844,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<CapitalLeagueObject>>? OnFetchCapitalLeagues;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchCapitalLeagues;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchCapitalLeagues;
 
-        internal void ExecuteOnGetCapitalLeagues(ApiResponse<CapitalLeagueObject> apiResponse)
+        internal void ExecuteOnGetCapitalLeagues(LeaguesApi.GetCapitalLeaguesApiResponse apiResponse)
         {
-            OnFetchCapitalLeagues?.Invoke(this, new ApiResponseEventArgs<CapitalLeagueObject>(apiResponse));
+            OnFetchCapitalLeagues?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetCapitalLeagues(Exception exception)
@@ -385,16 +864,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<League>>? OnFetchLeague;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchLeague;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeague;
 
-        internal void ExecuteOnGetLeague(ApiResponse<League> apiResponse)
+        internal void ExecuteOnGetLeague(LeaguesApi.GetLeagueApiResponse apiResponse)
         {
-            OnFetchLeague?.Invoke(this, new ApiResponseEventArgs<League>(apiResponse));
+            OnFetchLeague?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetLeague(Exception exception)
@@ -405,16 +884,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<PlayerRankingList>>? OnFetchLeagueSeasonRankings;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchLeagueSeasonRankings;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeagueSeasonRankings;
 
-        internal void ExecuteOnGetLeagueSeasonRankings(ApiResponse<PlayerRankingList> apiResponse)
+        internal void ExecuteOnGetLeagueSeasonRankings(LeaguesApi.GetLeagueSeasonRankingsApiResponse apiResponse)
         {
-            OnFetchLeagueSeasonRankings?.Invoke(this, new ApiResponseEventArgs<PlayerRankingList>(apiResponse));
+            OnFetchLeagueSeasonRankings?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetLeagueSeasonRankings(Exception exception)
@@ -425,16 +904,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<LeagueSeasonList>>? OnFetchLeagueSeasons;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchLeagueSeasons;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeagueSeasons;
 
-        internal void ExecuteOnGetLeagueSeasons(ApiResponse<LeagueSeasonList> apiResponse)
+        internal void ExecuteOnGetLeagueSeasons(LeaguesApi.GetLeagueSeasonsApiResponse apiResponse)
         {
-            OnFetchLeagueSeasons?.Invoke(this, new ApiResponseEventArgs<LeagueSeasonList>(apiResponse));
+            OnFetchLeagueSeasons?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetLeagueSeasons(Exception exception)
@@ -445,16 +924,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<LeagueList>>? OnFetchLeagues;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchLeagues;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchLeagues;
 
-        internal void ExecuteOnGetLeagues(ApiResponse<LeagueList> apiResponse)
+        internal void ExecuteOnGetLeagues(LeaguesApi.GetLeaguesApiResponse apiResponse)
         {
-            OnFetchLeagues?.Invoke(this, new ApiResponseEventArgs<LeagueList>(apiResponse));
+            OnFetchLeagues?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetLeagues(Exception exception)
@@ -465,16 +944,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<WarLeague>>? OnFetchWarLeague;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchWarLeague;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchWarLeague;
 
-        internal void ExecuteOnGetWarLeague(ApiResponse<WarLeague> apiResponse)
+        internal void ExecuteOnGetWarLeague(LeaguesApi.GetWarLeagueApiResponse apiResponse)
         {
-            OnFetchWarLeague?.Invoke(this, new ApiResponseEventArgs<WarLeague>(apiResponse));
+            OnFetchWarLeague?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetWarLeague(Exception exception)
@@ -485,16 +964,16 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// The event raised after the server response
         /// </summary>
-        public event EventHandler<ApiResponseEventArgs<WarLeagueList>>? OnFetchWarLeagues;
+        public event EventHandler<ApiResponseEventArgs>? OnFetchWarLeagues;
 
         /// <summary>
         /// The event raised after an error querying the server
         /// </summary>
         public event EventHandler<ExceptionEventArgs>? OnErrorFetchWarLeagues;
 
-        internal void ExecuteOnGetWarLeagues(ApiResponse<WarLeagueList> apiResponse)
+        internal void ExecuteOnGetWarLeagues(LeaguesApi.GetWarLeaguesApiResponse apiResponse)
         {
-            OnFetchWarLeagues?.Invoke(this, new ApiResponseEventArgs<WarLeagueList>(apiResponse));
+            OnFetchWarLeagues?.Invoke(this, new ApiResponseEventArgs(apiResponse));
         }
 
         internal void ExecuteOnErrorGetWarLeagues(Exception exception)
@@ -509,6 +988,11 @@ namespace CocApi.Rest.Apis
     public sealed partial class LeaguesApi : ILeaguesApi
     {
         private JsonSerializerOptions _jsonSerializerOptions;
+
+        /// <summary>
+        /// The logger factory
+        /// </summary>
+        public ILoggerFactory LoggerFactory { get; }
 
         /// <summary>
         /// The logger
@@ -534,11 +1018,12 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="LeaguesApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public LeaguesApi(ILogger<LeaguesApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, LeaguesApiEvents leaguesApiEvents,
+        public LeaguesApi(ILogger<LeaguesApi> logger, ILoggerFactory loggerFactory, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, LeaguesApiEvents leaguesApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
-            Logger = logger;
+            LoggerFactory = loggerFactory;
+            Logger = LoggerFactory.CreateLogger<LeaguesApi>();
             HttpClient = httpClient;
             Events = leaguesApiEvents;
             ApiKeyProvider = apiKeyProvider;
@@ -562,7 +1047,7 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void AfterFetchBuilderBaseLeagueDefaultImplementation(ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId)
+        private void AfterFetchBuilderBaseLeagueDefaultImplementation(IFetchBuilderBaseLeagueApiResponse apiResponseLocalVar, string leagueId)
         {
             bool suppressDefaultLog = false;
             AfterFetchBuilderBaseLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
@@ -576,7 +1061,7 @@ namespace CocApi.Rest.Apis
         /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchBuilderBaseLeague(ref bool suppressDefaultLog, ApiResponse<BuilderBaseLeague> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchBuilderBaseLeague(ref bool suppressDefaultLog, IFetchBuilderBaseLeagueApiResponse apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -608,8 +1093,8 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeague"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeague>?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchBuilderBaseLeagueApiResponse?> FetchBuilderBaseLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -627,8 +1112,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeague"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeague>> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchBuilderBaseLeagueApiResponse> FetchBuilderBaseLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -673,7 +1158,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<BuilderBaseLeague> apiResponseLocalVar = new ApiResponse<BuilderBaseLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetBuilderBaseLeagueApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetBuilderBaseLeagueApiResponse>();
+
+                        GetBuilderBaseLeagueApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchBuilderBaseLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
@@ -693,6 +1180,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetBuilderBaseLeague(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetBuilderBaseLeagueApiResponse"/>
+        /// </summary>
+        public partial class GetBuilderBaseLeagueApiResponse : CocApi.Rest.Client.ApiResponse, IFetchBuilderBaseLeagueApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetBuilderBaseLeagueApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetBuilderBaseLeagueApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetBuilderBaseLeagueApiResponse(ILogger<GetBuilderBaseLeagueApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.BuilderBaseLeague? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(BuilderBaseLeague) == typeof(Models.ClanWar) || typeof(BuilderBaseLeague) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<BuilderBaseLeague>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.BuilderBaseLeague? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
         partial void FormatGetBuilderBaseLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
@@ -719,7 +1532,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchBuilderBaseLeaguesDefaultImplementation(ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        private void AfterFetchBuilderBaseLeaguesDefaultImplementation(IFetchBuilderBaseLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
             bool suppressDefaultLog = false;
             AfterFetchBuilderBaseLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
@@ -735,7 +1548,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchBuilderBaseLeagues(ref bool suppressDefaultLog, ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
+        partial void AfterFetchBuilderBaseLeagues(ref bool suppressDefaultLog, IFetchBuilderBaseLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -773,8 +1586,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeagueList>?> FetchBuilderBaseLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchBuilderBaseLeaguesApiResponse?> FetchBuilderBaseLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -794,8 +1607,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="BuilderBaseLeagueList"/></returns>
-        public async Task<ApiResponse<BuilderBaseLeagueList>> FetchBuilderBaseLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchBuilderBaseLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchBuilderBaseLeaguesApiResponse> FetchBuilderBaseLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -852,7 +1665,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<BuilderBaseLeagueList> apiResponseLocalVar = new ApiResponse<BuilderBaseLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetBuilderBaseLeaguesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetBuilderBaseLeaguesApiResponse>();
+
+                        GetBuilderBaseLeaguesApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/builderbaseleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchBuilderBaseLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
@@ -874,6 +1689,332 @@ namespace CocApi.Rest.Apis
             }
         }
 
+        /// <summary>
+        /// The <see cref="GetBuilderBaseLeaguesApiResponse"/>
+        /// </summary>
+        public partial class GetBuilderBaseLeaguesApiResponse : CocApi.Rest.Client.ApiResponse, IFetchBuilderBaseLeaguesApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetBuilderBaseLeaguesApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetBuilderBaseLeaguesApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetBuilderBaseLeaguesApiResponse(ILogger<GetBuilderBaseLeaguesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.BuilderBaseLeagueList? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(BuilderBaseLeagueList) == typeof(Models.ClanWar) || typeof(BuilderBaseLeagueList) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<BuilderBaseLeagueList>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.BuilderBaseLeagueList? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
+        }
+
         partial void FormatGetCapitalLeague(ref string leagueId);
 
         /// <summary>
@@ -892,7 +2033,7 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void AfterFetchCapitalLeagueDefaultImplementation(ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId)
+        private void AfterFetchCapitalLeagueDefaultImplementation(IFetchCapitalLeagueApiResponse apiResponseLocalVar, string leagueId)
         {
             bool suppressDefaultLog = false;
             AfterFetchCapitalLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
@@ -906,7 +2047,7 @@ namespace CocApi.Rest.Apis
         /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchCapitalLeague(ref bool suppressDefaultLog, ApiResponse<CapitalLeague> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchCapitalLeague(ref bool suppressDefaultLog, IFetchCapitalLeagueApiResponse apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -938,8 +2079,8 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
-        public async Task<ApiResponse<CapitalLeague>?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchCapitalLeagueApiResponse?> FetchCapitalLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -957,8 +2098,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeague"/></returns>
-        public async Task<ApiResponse<CapitalLeague>> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchCapitalLeagueApiResponse> FetchCapitalLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1003,7 +2144,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<CapitalLeague> apiResponseLocalVar = new ApiResponse<CapitalLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetCapitalLeagueApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetCapitalLeagueApiResponse>();
+
+                        GetCapitalLeagueApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchCapitalLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
@@ -1023,6 +2166,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetCapitalLeague(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetCapitalLeagueApiResponse"/>
+        /// </summary>
+        public partial class GetCapitalLeagueApiResponse : CocApi.Rest.Client.ApiResponse, IFetchCapitalLeagueApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetCapitalLeagueApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetCapitalLeagueApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetCapitalLeagueApiResponse(ILogger<GetCapitalLeagueApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.CapitalLeague? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(CapitalLeague) == typeof(Models.ClanWar) || typeof(CapitalLeague) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<CapitalLeague>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.CapitalLeague? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
         partial void FormatGetCapitalLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
@@ -1049,7 +2518,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchCapitalLeaguesDefaultImplementation(ApiResponse<CapitalLeagueObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        private void AfterFetchCapitalLeaguesDefaultImplementation(IFetchCapitalLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
             bool suppressDefaultLog = false;
             AfterFetchCapitalLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
@@ -1065,7 +2534,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchCapitalLeagues(ref bool suppressDefaultLog, ApiResponse<CapitalLeagueObject> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
+        partial void AfterFetchCapitalLeagues(ref bool suppressDefaultLog, IFetchCapitalLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1103,8 +2572,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
-        public async Task<ApiResponse<CapitalLeagueObject>?> FetchCapitalLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchCapitalLeaguesApiResponse?> FetchCapitalLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1124,8 +2593,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="CapitalLeagueObject"/></returns>
-        public async Task<ApiResponse<CapitalLeagueObject>> FetchCapitalLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchCapitalLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchCapitalLeaguesApiResponse> FetchCapitalLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1182,7 +2651,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<CapitalLeagueObject> apiResponseLocalVar = new ApiResponse<CapitalLeagueObject>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetCapitalLeaguesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetCapitalLeaguesApiResponse>();
+
+                        GetCapitalLeaguesApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/capitalleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchCapitalLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
@@ -1204,6 +2675,332 @@ namespace CocApi.Rest.Apis
             }
         }
 
+        /// <summary>
+        /// The <see cref="GetCapitalLeaguesApiResponse"/>
+        /// </summary>
+        public partial class GetCapitalLeaguesApiResponse : CocApi.Rest.Client.ApiResponse, IFetchCapitalLeaguesApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetCapitalLeaguesApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetCapitalLeaguesApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetCapitalLeaguesApiResponse(ILogger<GetCapitalLeaguesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.CapitalLeagueObject? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(CapitalLeagueObject) == typeof(Models.ClanWar) || typeof(CapitalLeagueObject) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<CapitalLeagueObject>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.CapitalLeagueObject? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
+        }
+
         partial void FormatGetLeague(ref string leagueId);
 
         /// <summary>
@@ -1222,7 +3019,7 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void AfterFetchLeagueDefaultImplementation(ApiResponse<League> apiResponseLocalVar, string leagueId)
+        private void AfterFetchLeagueDefaultImplementation(IFetchLeagueApiResponse apiResponseLocalVar, string leagueId)
         {
             bool suppressDefaultLog = false;
             AfterFetchLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
@@ -1236,7 +3033,7 @@ namespace CocApi.Rest.Apis
         /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchLeague(ref bool suppressDefaultLog, ApiResponse<League> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchLeague(ref bool suppressDefaultLog, IFetchLeagueApiResponse apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1268,8 +3065,8 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
-        public async Task<ApiResponse<League>?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeagueApiResponse?> FetchLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1287,8 +3084,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="League"/></returns>
-        public async Task<ApiResponse<League>> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeagueApiResponse> FetchLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1333,7 +3130,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<League> apiResponseLocalVar = new ApiResponse<League>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetLeagueApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetLeagueApiResponse>();
+
+                        GetLeagueApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
@@ -1353,6 +3152,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetLeague(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetLeagueApiResponse"/>
+        /// </summary>
+        public partial class GetLeagueApiResponse : CocApi.Rest.Client.ApiResponse, IFetchLeagueApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetLeagueApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetLeagueApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetLeagueApiResponse(ILogger<GetLeagueApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.League? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(League) == typeof(Models.ClanWar) || typeof(League) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<League>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.League? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
         partial void FormatGetLeagueSeasonRankings(ref string leagueId, ref string seasonId, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
@@ -1389,7 +3514,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchLeagueSeasonRankingsDefaultImplementation(ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
+        private void AfterFetchLeagueSeasonRankingsDefaultImplementation(IFetchLeagueSeasonRankingsApiResponse apiResponseLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
         {
             bool suppressDefaultLog = false;
             AfterFetchLeagueSeasonRankings(ref suppressDefaultLog, apiResponseLocalVar, leagueId, seasonId, limit, after, before);
@@ -1407,7 +3532,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchLeagueSeasonRankings(ref bool suppressDefaultLog, ApiResponse<PlayerRankingList> apiResponseLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void AfterFetchLeagueSeasonRankings(ref bool suppressDefaultLog, IFetchLeagueSeasonRankingsApiResponse apiResponseLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1451,8 +3576,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
-        public async Task<ApiResponse<PlayerRankingList>?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonRankingsApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeagueSeasonRankingsApiResponse?> FetchLeagueSeasonRankingsOrDefaultAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1474,8 +3599,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="PlayerRankingList"/></returns>
-        public async Task<ApiResponse<PlayerRankingList>> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonRankingsApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeagueSeasonRankingsApiResponse> FetchLeagueSeasonRankingsAsync(string leagueId, string seasonId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1534,7 +3659,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<PlayerRankingList> apiResponseLocalVar = new ApiResponse<PlayerRankingList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}/seasons/{seasonId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetLeagueSeasonRankingsApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetLeagueSeasonRankingsApiResponse>();
+
+                        GetLeagueSeasonRankingsApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}/seasons/{seasonId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLeagueSeasonRankingsDefaultImplementation(apiResponseLocalVar, leagueId, seasonId, limit, after, before);
 
@@ -1554,6 +3681,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetLeagueSeasonRankings(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetLeagueSeasonRankingsApiResponse"/>
+        /// </summary>
+        public partial class GetLeagueSeasonRankingsApiResponse : CocApi.Rest.Client.ApiResponse, IFetchLeagueSeasonRankingsApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetLeagueSeasonRankingsApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetLeagueSeasonRankingsApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetLeagueSeasonRankingsApiResponse(ILogger<GetLeagueSeasonRankingsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.PlayerRankingList? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(PlayerRankingList) == typeof(Models.ClanWar) || typeof(PlayerRankingList) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<PlayerRankingList>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.PlayerRankingList? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
         partial void FormatGetLeagueSeasons(ref string leagueId, ref Option<int> limit, ref Option<string> after, ref Option<string> before);
@@ -1585,7 +4038,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchLeagueSeasonsDefaultImplementation(ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
+        private void AfterFetchLeagueSeasonsDefaultImplementation(IFetchLeagueSeasonsApiResponse apiResponseLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
         {
             bool suppressDefaultLog = false;
             AfterFetchLeagueSeasons(ref suppressDefaultLog, apiResponseLocalVar, leagueId, limit, after, before);
@@ -1602,7 +4055,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchLeagueSeasons(ref bool suppressDefaultLog, ApiResponse<LeagueSeasonList> apiResponseLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void AfterFetchLeagueSeasons(ref bool suppressDefaultLog, IFetchLeagueSeasonsApiResponse apiResponseLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1643,8 +4096,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
-        public async Task<ApiResponse<LeagueSeasonList>?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonsApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeagueSeasonsApiResponse?> FetchLeagueSeasonsOrDefaultAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1665,8 +4118,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueSeasonList"/></returns>
-        public async Task<ApiResponse<LeagueSeasonList>> FetchLeagueSeasonsAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeagueSeasonsApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeagueSeasonsApiResponse> FetchLeagueSeasonsAsync(string leagueId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1724,7 +4177,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LeagueSeasonList> apiResponseLocalVar = new ApiResponse<LeagueSeasonList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}/seasons", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetLeagueSeasonsApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetLeagueSeasonsApiResponse>();
+
+                        GetLeagueSeasonsApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues/{leagueId}/seasons", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLeagueSeasonsDefaultImplementation(apiResponseLocalVar, leagueId, limit, after, before);
 
@@ -1744,6 +4199,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetLeagueSeasons(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetLeagueSeasonsApiResponse"/>
+        /// </summary>
+        public partial class GetLeagueSeasonsApiResponse : CocApi.Rest.Client.ApiResponse, IFetchLeagueSeasonsApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetLeagueSeasonsApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetLeagueSeasonsApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetLeagueSeasonsApiResponse(ILogger<GetLeagueSeasonsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.LeagueSeasonList? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(LeagueSeasonList) == typeof(Models.ClanWar) || typeof(LeagueSeasonList) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<LeagueSeasonList>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.LeagueSeasonList? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
         partial void FormatGetLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
@@ -1770,7 +4551,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchLeaguesDefaultImplementation(ApiResponse<LeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        private void AfterFetchLeaguesDefaultImplementation(IFetchLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
             bool suppressDefaultLog = false;
             AfterFetchLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
@@ -1786,7 +4567,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchLeagues(ref bool suppressDefaultLog, ApiResponse<LeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
+        partial void AfterFetchLeagues(ref bool suppressDefaultLog, IFetchLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1824,8 +4605,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
-        public async Task<ApiResponse<LeagueList>?> FetchLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeaguesApiResponse?> FetchLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -1845,8 +4626,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="LeagueList"/></returns>
-        public async Task<ApiResponse<LeagueList>> FetchLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchLeaguesApiResponse> FetchLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -1903,7 +4684,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<LeagueList> apiResponseLocalVar = new ApiResponse<LeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetLeaguesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetLeaguesApiResponse>();
+
+                        GetLeaguesApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/leagues", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
@@ -1925,6 +4708,332 @@ namespace CocApi.Rest.Apis
             }
         }
 
+        /// <summary>
+        /// The <see cref="GetLeaguesApiResponse"/>
+        /// </summary>
+        public partial class GetLeaguesApiResponse : CocApi.Rest.Client.ApiResponse, IFetchLeaguesApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetLeaguesApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetLeaguesApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetLeaguesApiResponse(ILogger<GetLeaguesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.LeagueList? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(LeagueList) == typeof(Models.ClanWar) || typeof(LeagueList) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<LeagueList>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.LeagueList? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
+        }
+
         partial void FormatGetWarLeague(ref string leagueId);
 
         /// <summary>
@@ -1943,7 +5052,7 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void AfterFetchWarLeagueDefaultImplementation(ApiResponse<WarLeague> apiResponseLocalVar, string leagueId)
+        private void AfterFetchWarLeagueDefaultImplementation(IFetchWarLeagueApiResponse apiResponseLocalVar, string leagueId)
         {
             bool suppressDefaultLog = false;
             AfterFetchWarLeague(ref suppressDefaultLog, apiResponseLocalVar, leagueId);
@@ -1957,7 +5066,7 @@ namespace CocApi.Rest.Apis
         /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void AfterFetchWarLeague(ref bool suppressDefaultLog, ApiResponse<WarLeague> apiResponseLocalVar, string leagueId);
+        partial void AfterFetchWarLeague(ref bool suppressDefaultLog, IFetchWarLeagueApiResponse apiResponseLocalVar, string leagueId);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -1989,8 +5098,8 @@ namespace CocApi.Rest.Apis
         /// </summary>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
-        public async Task<ApiResponse<WarLeague>?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchWarLeagueApiResponse?> FetchWarLeagueOrDefaultAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -2008,8 +5117,8 @@ namespace CocApi.Rest.Apis
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="leagueId">Identifier of the league.</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeague"/></returns>
-        public async Task<ApiResponse<WarLeague>> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeagueApiResponse"/>&gt;</returns>
+        public async Task<IFetchWarLeagueApiResponse> FetchWarLeagueAsync(string leagueId, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -2054,7 +5163,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<WarLeague> apiResponseLocalVar = new ApiResponse<WarLeague>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetWarLeagueApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetWarLeagueApiResponse>();
+
+                        GetWarLeagueApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues/{leagueId}", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchWarLeagueDefaultImplementation(apiResponseLocalVar, leagueId);
 
@@ -2074,6 +5185,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetWarLeague(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetWarLeagueApiResponse"/>
+        /// </summary>
+        public partial class GetWarLeagueApiResponse : CocApi.Rest.Client.ApiResponse, IFetchWarLeagueApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetWarLeagueApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetWarLeagueApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetWarLeagueApiResponse(ILogger<GetWarLeagueApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.WarLeague? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(WarLeague) == typeof(Models.ClanWar) || typeof(WarLeague) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<WarLeague>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.WarLeague? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
         partial void FormatGetWarLeagues(ref Option<int> limit, ref Option<string> after, ref Option<string> before);
@@ -2100,7 +5537,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void AfterFetchWarLeaguesDefaultImplementation(ApiResponse<WarLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
+        private void AfterFetchWarLeaguesDefaultImplementation(IFetchWarLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
             bool suppressDefaultLog = false;
             AfterFetchWarLeagues(ref suppressDefaultLog, apiResponseLocalVar, limit, after, before);
@@ -2116,7 +5553,7 @@ namespace CocApi.Rest.Apis
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void AfterFetchWarLeagues(ref bool suppressDefaultLog, ApiResponse<WarLeagueList> apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
+        partial void AfterFetchWarLeagues(ref bool suppressDefaultLog, IFetchWarLeaguesApiResponse apiResponseLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
@@ -2154,8 +5591,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
-        public async Task<ApiResponse<WarLeagueList>?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchWarLeaguesApiResponse?> FetchWarLeaguesOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
@@ -2175,8 +5612,8 @@ namespace CocApi.Rest.Apis
         /// <param name="after">Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="before">Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
-        /// <returns><see cref="Task"/>&lt;<see cref="ApiResponse{T}"/>&gt; where T : <see cref="WarLeagueList"/></returns>
-        public async Task<ApiResponse<WarLeagueList>> FetchWarLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
+        /// <returns><see cref="Task"/>&lt;<see cref="IFetchWarLeaguesApiResponse"/>&gt;</returns>
+        public async Task<IFetchWarLeaguesApiResponse> FetchWarLeaguesAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -2233,7 +5670,9 @@ namespace CocApi.Rest.Apis
                     {
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
 
-                        ApiResponse<WarLeagueList> apiResponseLocalVar = new ApiResponse<WarLeagueList>(httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues", requestedAtLocalVar, _jsonSerializerOptions);
+                        ILogger<GetWarLeaguesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetWarLeaguesApiResponse>();
+
+                        GetWarLeaguesApiResponse apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/warleagues", requestedAtLocalVar, _jsonSerializerOptions);
 
                         AfterFetchWarLeaguesDefaultImplementation(apiResponseLocalVar, limit, after, before);
 
@@ -2253,6 +5692,332 @@ namespace CocApi.Rest.Apis
                 Events.ExecuteOnErrorGetWarLeagues(e);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// The <see cref="GetWarLeaguesApiResponse"/>
+        /// </summary>
+        public partial class GetWarLeaguesApiResponse : CocApi.Rest.Client.ApiResponse, IFetchWarLeaguesApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<GetWarLeaguesApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="GetWarLeaguesApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetWarLeaguesApiResponse(ILogger<GetWarLeaguesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.WarLeagueList? Ok()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(WarLeagueList) == typeof(Models.ClanWar) || typeof(WarLeagueList) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<WarLeagueList>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk([NotNullWhen(true)]out CocApi.Rest.Models.WarLeagueList? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public bool IsBadRequest => 400 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 400 BadRequest
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? BadRequest()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 400 BadRequest and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryBadRequest([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = BadRequest();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)400);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public bool IsForbidden => 403 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 403 Forbidden
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? Forbidden()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 403 Forbidden and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryForbidden([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Forbidden();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)403);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public bool IsNotFound => 404 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 404 NotFound
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? NotFound()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 404 NotFound and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryNotFound([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = NotFound();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)404);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public bool IsTooManyRequests => 429 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 429 TooManyRequests
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? TooManyRequests()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryTooManyRequests([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = TooManyRequests();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)429);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public bool IsInternalServerError => 500 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 500 InternalServerError
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? InternalServerError()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryInternalServerError([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = InternalServerError();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)500);
+                }
+
+                return result != null;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public bool IsServiceUnavailable => 503 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 503 ServiceUnavailable
+            /// </summary>
+            /// <returns></returns>
+            public CocApi.Rest.Models.ClientError? ServiceUnavailable()
+            {
+                // Modify this logic with the AsModel.mustache template
+                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
+                    return default;
+
+                return IsSuccessStatusCode
+                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryServiceUnavailable([NotNullWhen(true)]out CocApi.Rest.Models.ClientError? result)
+            {
+                result = null;
+
+                try
+                {
+                    result = ServiceUnavailable();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)503);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
     }
 }

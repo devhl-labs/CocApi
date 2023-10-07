@@ -11,7 +11,6 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
@@ -20,15 +19,15 @@ namespace CocApi.Rest.Client
     /// <summary>
     /// Provides a non-generic contract for the ApiResponse wrapper.
     /// </summary>
-    public interface IApiResponse
+    public partial interface IApiResponse
     {
         /// <summary>
-        /// The type that represents the server's response.
+        /// The IsSuccessStatusCode from the api response
         /// </summary>
-        Type ResponseType { get; }
+        bool IsSuccessStatusCode { get; }
 
         /// <summary>
-        /// Gets or sets the status code (HTTP status code)
+        /// Gets the status code (HTTP status code)
         /// </summary>
         /// <value>The status code.</value>
         HttpStatusCode StatusCode { get; }
@@ -44,9 +43,24 @@ namespace CocApi.Rest.Client
         DateTime DownloadedAt { get; }
 
         /// <summary>
+        /// The headers contained in the api response
+        /// </summary>
+        System.Net.Http.Headers.HttpResponseHeaders Headers { get; }
+
+        /// <summary>
         /// The path used when making the request.
         /// </summary>
         string Path { get; }
+
+        /// <summary>
+        /// The reason phrase contained in the api response
+        /// </summary>
+        string? ReasonPhrase { get; }
+
+        /// <summary>
+        /// The DateTime when the request was sent.
+        /// </summary>
+        DateTime RequestedAt { get; }
 
         /// <summary>
         /// The Uri used when making the request.
@@ -57,26 +71,18 @@ namespace CocApi.Rest.Client
     /// <summary>
     /// API Response
     /// </summary>
-    public partial class ApiResponse<T> : IApiResponse
+    public partial class ApiResponse : IApiResponse
     {
         /// <summary>
-        /// Gets or sets the status code (HTTP status code)
+        /// Gets the status code (HTTP status code)
         /// </summary>
         /// <value>The status code.</value>
         public HttpStatusCode StatusCode { get; }
 
         /// <summary>
-        /// The type that represents the server's response.
-        /// </summary>
-        public Type ResponseType
-        {
-            get { return typeof(T); }
-        }
-
-        /// <summary>
         /// The raw data
         /// </summary>
-        public string RawContent { get; private set; }
+        public string RawContent { get; protected set; }
 
         /// <summary>
         /// The IsSuccessStatusCode from the api response
@@ -114,9 +120,9 @@ namespace CocApi.Rest.Client
         public Uri? RequestUri { get; }
 
         /// <summary>
-        /// The JsonSerialzierOptions
+        /// The <see cref="System.Text.Json.JsonSerializerOptions"/>
         /// </summary>
-        private System.Text.Json.JsonSerializerOptions _jsonSerializerOptions;
+        protected System.Text.Json.JsonSerializerOptions _jsonSerializerOptions;
 
         /// <summary>
         /// Construct the response using an HttpResponseMessage
@@ -142,36 +148,145 @@ namespace CocApi.Rest.Client
         }
 
         partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+    }
+
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface IBadRequest<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is BadRequest
+        /// </summary>
+        /// <returns></returns>
+        TType BadRequest();
 
         /// <summary>
-        /// Deserializes the server's response
+        /// Returns true if the response is BadRequest and the deserialized response is not null
         /// </summary>
-        public T? AsModel()
-        {
-            // Modify this logic with the AsModel.mustache template
-            if ((ResponseType == typeof(Models.ClanWar) || ResponseType == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                return default;
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryBadRequest([NotNullWhen(true)]out TType? result);
+    }
 
-            return IsSuccessStatusCode
-                ? System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, _jsonSerializerOptions)
-                : default;
-        }
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface ITooManyRequests<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is TooManyRequests
+        /// </summary>
+        /// <returns></returns>
+        TType TooManyRequests();
 
         /// <summary>
-        /// Returns true when the model can be deserialized
+        /// Returns true if the response is TooManyRequests and the deserialized response is not null
         /// </summary>
-        public bool TryToModel([NotNullWhen(true)] out T? model)
-        {
-            try
-            {
-                model = AsModel();
-                return model != null;
-            }
-            catch
-            {
-                model = default(T);
-                return false;
-            }
-        }
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryTooManyRequests([NotNullWhen(true)]out TType? result);
+    }
+
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface IForbidden<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is Forbidden
+        /// </summary>
+        /// <returns></returns>
+        TType Forbidden();
+
+        /// <summary>
+        /// Returns true if the response is Forbidden and the deserialized response is not null
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryForbidden([NotNullWhen(true)]out TType? result);
+    }
+
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface IServiceUnavailable<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is ServiceUnavailable
+        /// </summary>
+        /// <returns></returns>
+        TType ServiceUnavailable();
+
+        /// <summary>
+        /// Returns true if the response is ServiceUnavailable and the deserialized response is not null
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryServiceUnavailable([NotNullWhen(true)]out TType? result);
+    }
+
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface IOk<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is Ok
+        /// </summary>
+        /// <returns></returns>
+        TType Ok();
+
+        /// <summary>
+        /// Returns true if the response is Ok and the deserialized response is not null
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryOk([NotNullWhen(true)]out TType? result);
+    }
+
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface IInternalServerError<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is InternalServerError
+        /// </summary>
+        /// <returns></returns>
+        TType InternalServerError();
+
+        /// <summary>
+        /// Returns true if the response is InternalServerError and the deserialized response is not null
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryInternalServerError([NotNullWhen(true)]out TType? result);
+    }
+
+    /// <summary>
+    /// An interface for responses of type 
+    /// </summary>
+    /// <typeparam name="TType"></typeparam>
+    public interface INotFound<TType> : IApiResponse
+    {
+        /// <summary>
+        /// Deserializes the response if the response is NotFound
+        /// </summary>
+        /// <returns></returns>
+        TType NotFound();
+
+        /// <summary>
+        /// Returns true if the response is NotFound and the deserialized response is not null
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        bool TryNotFound([NotNullWhen(true)]out TType? result);
     }
 }

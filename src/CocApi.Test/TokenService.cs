@@ -52,13 +52,13 @@ public class TokenService : IHostedService
         CookieContainer.Value.Add(domain, cookie);
 
         // Create a testing token
-        string ipAddressWithMask = login.AsModel()!.IpAddresses()[0];
+        string ipAddressWithMask = login.Ok()!.IpAddresses()[0];
         string ipAddress = ipAddressWithMask[..ipAddressWithMask.IndexOf("/")];
         var token = new CreateTokenRequest(new List<string> { ipAddress }, "test description", "test name");
         var createResponse = await DeveloperApi.CreateAsync(token, cancellationToken);
 
         // delete that testing token
-        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.AsModel()!.Key!, cancellationToken);
+        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.Ok()!.Key!, cancellationToken);
 
         // query all keys
         var keys = await DeveloperApi.KeysAsync(cancellationToken);

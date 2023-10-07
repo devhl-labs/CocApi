@@ -14,7 +14,7 @@ public class CachedClanWar : CachedItem<ClanWar>
     {
         try
         {
-            ApiResponse<ClanWar> apiResponse = await clansApi.FetchCurrentWarAsync(tag, realtime, cancellationToken);
+            IOk<ClanWar?> apiResponse = await clansApi.FetchCurrentWarAsync(tag, realtime, cancellationToken);
 
             return new CachedClanWar(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
@@ -53,11 +53,11 @@ public class CachedClanWar : CachedItem<ClanWar>
 
     public int CachedClanId { get; internal set; }
 
-    private CachedClanWar(string tag, ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration)
+    private CachedClanWar(string tag, IOk<ClanWar> apiResponse, TimeSpan localExpiration)
     {
         base.UpdateFrom(apiResponse, localExpiration);
 
-        if (apiResponse.TryToModel(out ClanWar? model) && model.State != Rest.Models.WarState.NotInWar)
+        if (apiResponse.TryOk(out ClanWar? model) && model.State != Rest.Models.WarState.NotInWar)
         {
             EnemyTag = model.Clans.Keys.FirstOrDefault(k => k != tag);
 

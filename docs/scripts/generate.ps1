@@ -274,6 +274,7 @@ foreach ($file in $allCodeFiles)
         $content=$content.Replace(" OnGet", " OnFetch")
         $content=$content.Replace(" AfterGet", " AfterFetch")
         $content=$content.Replace(" OnErrorGet", " OnErrorFetch")
+        $content=$content.Replace("IGet", "IFetch")
     }
 
     if ($file.name.EndsWith("ApiTests.cs")){

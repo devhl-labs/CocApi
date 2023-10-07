@@ -13,9 +13,9 @@ internal class SeenCwlWar
 
     public string WarTag { get; }
     
-    public ApiResponse<Rest.Models.ClanWar>? ApiResponse { get; set; }
+    public IOk<Rest.Models.ClanWar>? ApiResponse { get; set; }
 
-    public SeenCwlWar(DateTime season, string clanTag, string opponentTag, string warTag, ApiResponse<Rest.Models.ClanWar>? apiResponse)
+    public SeenCwlWar(DateTime season, string clanTag, string opponentTag, string warTag, IOk<Rest.Models.ClanWar>? apiResponse)
     {
         ApiResponse = apiResponse;
         Season = season;

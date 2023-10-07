@@ -17,11 +17,11 @@ public class CachedWar : CachedItem<ClanWar>
     {
         try
         {
-            ApiResponse<ClanWar> apiResponse = await clansApi.FetchClanWarLeagueWarAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
+            IFetchClanWarLeagueWarApiResponse apiResponse = await clansApi.FetchClanWarLeagueWarAsync(warTag, realtime, cancellationToken).ConfigureAwait(false);
 
             TimeSpan timeToLive = await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false);
 
-            if (!apiResponse.IsSuccessStatusCode || !apiResponse.TryToModel(out ClanWar? model) || model.State == Rest.Models.WarState.NotInWar)
+            if (!apiResponse.IsSuccessStatusCode || !apiResponse.TryOk(out ClanWar? model) || model.State == Rest.Models.WarState.NotInWar)
                 return new CachedWar(warTag, timeToLive);
 
             CachedWar result = new(apiResponse, timeToLive, warTag, season)
@@ -150,11 +150,11 @@ public class CachedWar : CachedItem<ClanWar>
         UpdateFrom(cachedClanWar);
     }
 
-    internal CachedWar(ApiResponse<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
+    internal CachedWar(IOk<ClanWar> apiResponse, TimeSpan localExpiration, string warTag, DateTime season)
     {
         base.UpdateFrom(apiResponse, localExpiration);
 
-        ClanWar model = apiResponse.AsModel();
+        ClanWar model = apiResponse.Ok();
 
         ClanTag = model.Clans.First().Value.Tag;
 

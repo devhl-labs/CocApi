@@ -13,7 +13,7 @@ public class CachedClanWarLog : CachedItem<ClanWarLog>
     {
         try
         {
-            ApiResponse<ClanWarLog> apiResponse = await clansApi.FetchClanWarLogAsync(tag, cancellationToken: cancellationToken);
+            IFetchClanWarLogApiResponse apiResponse = await clansApi.FetchClanWarLogAsync(tag, cancellationToken: cancellationToken);
 
             return new CachedClanWarLog(apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }
@@ -41,7 +41,7 @@ public class CachedClanWarLog : CachedItem<ClanWarLog>
 
     }
 
-    private CachedClanWarLog(ApiResponse<ClanWarLog> apiResponse, TimeSpan localExpiration)
+    private CachedClanWarLog(IFetchClanWarLogApiResponse apiResponse, TimeSpan localExpiration)
     {
         UpdateFrom(apiResponse, localExpiration);
     }

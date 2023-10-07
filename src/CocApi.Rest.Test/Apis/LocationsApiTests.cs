@@ -61,7 +61,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchClanBuilderBaseRankingAsync(locationId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<ClanBuilderBaseRankingList>(model);
         }
 
@@ -76,7 +76,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchClanCapitalRankingAsync(locationId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.BadRequest();
             Assert.IsType<ClanCapitalRankingObject>(model);
         }
 
@@ -91,7 +91,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchClanRankingAsync(locationId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<ClanRankingList>(model);
         }
 
@@ -103,7 +103,7 @@ namespace CocApi.Rest.Test.Apis
         {
             string locationId = default!;
             var response = await _instance.FetchLocationAsync(locationId);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<Location>(model);
         }
 
@@ -117,7 +117,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchLocationsAsync(limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<LocationList>(model);
         }
 
@@ -132,7 +132,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchPlayerBuilderBaseRankingAsync(locationId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<PlayerBuilderBaseRankingList>(model);
         }
 
@@ -147,7 +147,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> after = default!;
             Client.Option<string> before = default!;
             var response = await _instance.FetchPlayerRankingAsync(locationId, limit, after, before);
-            var model = response.AsModel();
+            var model = response.Ok();
             Assert.IsType<PlayerRankingList>(model);
         }
     }

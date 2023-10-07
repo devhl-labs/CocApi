@@ -31,13 +31,13 @@ public partial class PlayersApi
         playerTag = Clash.FormatTag(playerTag);
     }
 
-    partial void AfterFetchPlayer(ref bool suppressDefaultLog, ApiResponse<Player> apiResponseLocalVar, string playerTag)
+    partial void AfterFetchPlayer(ref bool suppressDefaultLog, IFetchPlayerApiResponse apiResponseLocalVar, string playerTag)
     {
         suppressDefaultLog = true;
         Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
     }
 
-    partial void AfterVerifyToken(ref bool suppressDefaultLog, ApiResponse<VerifyTokenResponse> apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
+    partial void AfterVerifyToken(ref bool suppressDefaultLog, IVerifyTokenApiResponse apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
     {
         suppressDefaultLog = true;
         Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
