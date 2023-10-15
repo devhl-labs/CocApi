@@ -1003,11 +1003,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -1482,11 +1480,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2000,11 +1996,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2492,11 +2486,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2984,11 +2976,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -3502,11 +3492,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -3994,11 +3982,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -4585,11 +4571,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
+                    ApiKeyToken apiKeyTokenLocalVar;
+                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
-
                     apiKeyTokenLocalVar.UseInHeader(httpRequestMessageLocalVar, "authorization");
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;

@@ -144,6 +144,7 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public static string TypeEnumToJsonValue(TypeEnum value)
         {
+
             if (value == TypeEnum.Unknown)
                 return "unknown";
 
