@@ -1,5 +1,5 @@
-$packageVersion = "2.9.0"
-$releaseNote = "Upgraded OpenApi to handle all responses."
+$packageVersion = "2.9.1"
+$releaseNote = "Upgraded OpenApi"
 
 $properties = @(
     'packageName=CocApi.Rest'
