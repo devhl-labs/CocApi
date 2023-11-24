@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -35,33 +36,54 @@ namespace CocApi.Rest.Models
         /// <param name="small">small</param>
         /// <param name="tiny">tiny</param>
         [JsonConstructor]
-        internal IconUrls(string? medium = default, string? small = default, string? tiny = default)
+        internal IconUrls(Option<string?> medium = default, Option<string?> small = default, Option<string?> tiny = default)
         {
-            Medium = medium;
-            Small = small;
-            Tiny = tiny;
+            MediumOption = medium;
+            SmallOption = small;
+            TinyOption = tiny;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of Medium
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> MediumOption { get; }
+
+        /// <summary>
         /// Gets or Sets Medium
         /// </summary>
         [JsonPropertyName("medium")]
-        public string? Medium { get; }
+        public string? Medium { get { return this. MediumOption; } }
+
+        /// <summary>
+        /// Used to track the state of Small
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> SmallOption { get; }
 
         /// <summary>
         /// Gets or Sets Small
         /// </summary>
         [JsonPropertyName("small")]
-        public string? Small { get; }
+        public string? Small { get { return this. SmallOption; } }
+
+        /// <summary>
+        /// Used to track the state of Tiny
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> TinyOption { get; }
 
         /// <summary>
         /// Gets or Sets Tiny
         /// </summary>
         [JsonPropertyName("tiny")]
-        public string? Tiny { get; }
+        public string? Tiny { get { return this. TinyOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -125,7 +147,6 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-
                 if (Medium != null)
                     hashCode = (hashCode * 59) + Medium.GetHashCode();
 
@@ -134,6 +155,7 @@ namespace CocApi.Rest.Models
 
                 if (Tiny != null)
                     hashCode = (hashCode * 59) + Tiny.GetHashCode();
+
 
                 return hashCode;
             }
@@ -162,9 +184,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? medium = default;
-            string? small = default;
-            string? tiny = default;
+            Option<string?> medium = default;
+            Option<string?> small = default;
+            Option<string?> tiny = default;
 
             while (utf8JsonReader.Read())
             {
@@ -182,19 +204,28 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "medium":
-                            medium = utf8JsonReader.GetString();
+                            medium = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "small":
-                            small = utf8JsonReader.GetString();
+                            small = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tiny":
-                            tiny = utf8JsonReader.GetString();
+                            tiny = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
                     }
                 }
             }
+
+            if (medium.IsSet && medium.Value == null)
+                throw new ArgumentNullException(nameof(medium), "Property is not nullable for class IconUrls.");
+
+            if (small.IsSet && small.Value == null)
+                throw new ArgumentNullException(nameof(small), "Property is not nullable for class IconUrls.");
+
+            if (tiny.IsSet && tiny.Value == null)
+                throw new ArgumentNullException(nameof(tiny), "Property is not nullable for class IconUrls.");
 
             return new IconUrls(medium, small, tiny);
         }
@@ -223,9 +254,23 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, IconUrls iconUrls, JsonSerializerOptions jsonSerializerOptions)
         {
-            writer.WriteString("medium", iconUrls.Medium);
-            writer.WriteString("small", iconUrls.Small);
-            writer.WriteString("tiny", iconUrls.Tiny);
+            if (iconUrls.MediumOption.IsSet && iconUrls.Medium == null)
+                throw new ArgumentNullException(nameof(iconUrls.Medium), "Property is required for class IconUrls.");
+
+            if (iconUrls.SmallOption.IsSet && iconUrls.Small == null)
+                throw new ArgumentNullException(nameof(iconUrls.Small), "Property is required for class IconUrls.");
+
+            if (iconUrls.TinyOption.IsSet && iconUrls.Tiny == null)
+                throw new ArgumentNullException(nameof(iconUrls.Tiny), "Property is required for class IconUrls.");
+
+            if (iconUrls.MediumOption.IsSet)
+                writer.WriteString("medium", iconUrls.Medium);
+
+            if (iconUrls.SmallOption.IsSet)
+                writer.WriteString("small", iconUrls.Small);
+
+            if (iconUrls.TinyOption.IsSet)
+                writer.WriteString("tiny", iconUrls.Tiny);
         }
     }
 }

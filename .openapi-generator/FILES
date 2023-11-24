@@ -48,6 +48,7 @@ docs/models/GroupState.md
 docs/models/IconUrls.md
 docs/models/Key.md
 docs/models/KeyInstance.md
+docs/models/KeyInstanceStatus.md
 docs/models/KeyList.md
 docs/models/KeyListStatus.md
 docs/models/Label.md
@@ -162,6 +163,7 @@ src/CocApi.Rest/Models/GroupState.cs
 src/CocApi.Rest/Models/IconUrls.cs
 src/CocApi.Rest/Models/Key.cs
 src/CocApi.Rest/Models/KeyInstance.cs
+src/CocApi.Rest/Models/KeyInstanceStatus.cs
 src/CocApi.Rest/Models/KeyList.cs
 src/CocApi.Rest/Models/KeyListStatus.cs
 src/CocApi.Rest/Models/Label.cs

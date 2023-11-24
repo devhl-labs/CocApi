@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -125,7 +126,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? clanBuilderBasePoints = default;
+            Option<int?> clanBuilderBasePoints = default;
 
             while (utf8JsonReader.Read())
             {
@@ -145,7 +146,7 @@ namespace CocApi.Rest.Models
                         case "clanBuilderBasePoints":
                         case "clanVersusPoints": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanBuilderBasePoints = utf8JsonReader.GetInt32();
+                                clanBuilderBasePoints = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -153,10 +154,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (clanBuilderBasePoints == null)
-                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class ClanBuilderBaseRanking.");
+            if (!clanBuilderBasePoints.IsSet)
+                throw new ArgumentException("Property is required for class ClanBuilderBaseRanking.", nameof(clanBuilderBasePoints));
 
-            return new ClanBuilderBaseRanking(clanBuilderBasePoints.Value);
+            if (clanBuilderBasePoints.IsSet && clanBuilderBasePoints.Value == null)
+                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is not nullable for class ClanBuilderBaseRanking.");
+
+            return new ClanBuilderBaseRanking(clanBuilderBasePoints.Value!.Value!);
         }
 
         /// <summary>

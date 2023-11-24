@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -92,8 +93,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? sessionExpiresInSeconds = default;
-            string? temporaryAPIToken = default;
+            Option<int?> sessionExpiresInSeconds = default;
+            Option<string?> temporaryAPIToken = default;
 
             while (utf8JsonReader.Read())
             {
@@ -112,10 +113,10 @@ namespace CocApi.Rest.Models
                     {
                         case "sessionExpiresInSeconds":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sessionExpiresInSeconds = utf8JsonReader.GetInt32();
+                                sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "temporaryAPIToken":
-                            temporaryAPIToken = utf8JsonReader.GetString();
+                            temporaryAPIToken = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -123,13 +124,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (sessionExpiresInSeconds == null)
-                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class LoginResponse.");
+            if (!sessionExpiresInSeconds.IsSet)
+                throw new ArgumentException("Property is required for class LoginResponse.", nameof(sessionExpiresInSeconds));
 
-            if (temporaryAPIToken == null)
-                throw new ArgumentNullException(nameof(temporaryAPIToken), "Property is required for class LoginResponse.");
+            if (!temporaryAPIToken.IsSet)
+                throw new ArgumentException("Property is required for class LoginResponse.", nameof(temporaryAPIToken));
 
-            return new LoginResponse(sessionExpiresInSeconds.Value, temporaryAPIToken);
+            if (sessionExpiresInSeconds.IsSet && sessionExpiresInSeconds.Value == null)
+                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is not nullable for class LoginResponse.");
+
+            if (temporaryAPIToken.IsSet && temporaryAPIToken.Value == null)
+                throw new ArgumentNullException(nameof(temporaryAPIToken), "Property is not nullable for class LoginResponse.");
+
+            return new LoginResponse(sessionExpiresInSeconds.Value!.Value!, temporaryAPIToken.Value!);
         }
 
         /// <summary>
@@ -156,7 +163,11 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, LoginResponse loginResponse, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (loginResponse.TemporaryAPIToken == null)
+                throw new ArgumentNullException(nameof(loginResponse.TemporaryAPIToken), "Property is required for class LoginResponse.");
+
             writer.WriteNumber("sessionExpiresInSeconds", loginResponse.SessionExpiresInSeconds);
+
             writer.WriteString("temporaryAPIToken", loginResponse.TemporaryAPIToken);
         }
     }

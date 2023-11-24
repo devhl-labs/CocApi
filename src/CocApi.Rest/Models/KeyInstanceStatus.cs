@@ -25,38 +25,39 @@ using CocApi.Rest.Client;
 namespace CocApi.Rest.Models
 {
     /// <summary>
-    /// KeyListStatus
+    /// KeyInstanceStatus
     /// </summary>
-    public partial class KeyListStatus
+    public partial class KeyInstanceStatus
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyListStatus" /> class.
+        /// Initializes a new instance of the <see cref="KeyInstanceStatus" /> class.
         /// </summary>
         /// <param name="code">code</param>
-        /// <param name="message">message</param>
         /// <param name="detail">detail</param>
+        /// <param name="message">message</param>
         [JsonConstructor]
-        public KeyListStatus(int code, string message, Option<string?> detail = default)
+        public KeyInstanceStatus(Option<int?> code = default, Option<string?> detail = default, Option<string?> message = default)
         {
-            Code = code;
-            Message = message;
+            CodeOption = code;
             DetailOption = detail;
+            MessageOption = message;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of Code
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> CodeOption { get; private set; }
+
+        /// <summary>
         /// Gets or Sets Code
         /// </summary>
         [JsonPropertyName("code")]
-        public int Code { get; set; }
-
-        /// <summary>
-        /// Gets or Sets Message
-        /// </summary>
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
+        public int? Code { get { return this. CodeOption; } set { this.CodeOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of Detail
@@ -72,35 +73,48 @@ namespace CocApi.Rest.Models
         public string? Detail { get { return this. DetailOption; } set { this.DetailOption = new(value); } }
 
         /// <summary>
+        /// Used to track the state of Message
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> MessageOption { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets Message
+        /// </summary>
+        [JsonPropertyName("message")]
+        public string? Message { get { return this. MessageOption; } set { this.MessageOption = new(value); } }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("class KeyListStatus {\n");
+            sb.Append("class KeyInstanceStatus {\n");
             sb.Append("  Code: ").Append(Code).Append("\n");
-            sb.Append("  Message: ").Append(Message).Append("\n");
             sb.Append("  Detail: ").Append(Detail).Append("\n");
+            sb.Append("  Message: ").Append(Message).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="KeyListStatus" />
+    /// A Json converter for type <see cref="KeyInstanceStatus" />
     /// </summary>
-    public class KeyListStatusJsonConverter : JsonConverter<KeyListStatus>
+    public class KeyInstanceStatusJsonConverter : JsonConverter<KeyInstanceStatus>
     {
         /// <summary>
-        /// Deserializes json to <see cref="KeyListStatus" />
+        /// Deserializes json to <see cref="KeyInstanceStatus" />
         /// </summary>
         /// <param name="utf8JsonReader"></param>
         /// <param name="typeToConvert"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <returns></returns>
         /// <exception cref="JsonException"></exception>
-        public override KeyListStatus Read(ref Utf8JsonReader utf8JsonReader, Type typeToConvert, JsonSerializerOptions jsonSerializerOptions)
+        public override KeyInstanceStatus Read(ref Utf8JsonReader utf8JsonReader, Type typeToConvert, JsonSerializerOptions jsonSerializerOptions)
         {
             int currentDepth = utf8JsonReader.CurrentDepth;
 
@@ -110,8 +124,8 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
             Option<int?> code = default;
-            Option<string?> message = default;
             Option<string?> detail = default;
+            Option<string?> message = default;
 
             while (utf8JsonReader.Read())
             {
@@ -132,11 +146,11 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 code = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
+                        case "detail":
+                            detail = new Option<string?>(utf8JsonReader.GetString());
+                            break;
                         case "message":
                             message = new Option<string?>(utf8JsonReader.GetString()!);
-                            break;
-                        case "detail":
-                            detail = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -144,60 +158,53 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (!code.IsSet)
-                throw new ArgumentException("Property is required for class KeyListStatus.", nameof(code));
-
-            if (!message.IsSet)
-                throw new ArgumentException("Property is required for class KeyListStatus.", nameof(message));
-
             if (code.IsSet && code.Value == null)
-                throw new ArgumentNullException(nameof(code), "Property is not nullable for class KeyListStatus.");
+                throw new ArgumentNullException(nameof(code), "Property is not nullable for class KeyInstanceStatus.");
 
             if (message.IsSet && message.Value == null)
-                throw new ArgumentNullException(nameof(message), "Property is not nullable for class KeyListStatus.");
+                throw new ArgumentNullException(nameof(message), "Property is not nullable for class KeyInstanceStatus.");
 
-            if (detail.IsSet && detail.Value == null)
-                throw new ArgumentNullException(nameof(detail), "Property is not nullable for class KeyListStatus.");
-
-            return new KeyListStatus(code.Value!.Value!, message.Value!, detail);
+            return new KeyInstanceStatus(code, detail, message);
         }
 
         /// <summary>
-        /// Serializes a <see cref="KeyListStatus" />
+        /// Serializes a <see cref="KeyInstanceStatus" />
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="keyListStatus"></param>
+        /// <param name="keyInstanceStatus"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public override void Write(Utf8JsonWriter writer, KeyListStatus keyListStatus, JsonSerializerOptions jsonSerializerOptions)
+        public override void Write(Utf8JsonWriter writer, KeyInstanceStatus keyInstanceStatus, JsonSerializerOptions jsonSerializerOptions)
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, keyListStatus, jsonSerializerOptions);
+            WriteProperties(ref writer, keyInstanceStatus, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
         /// <summary>
-        /// Serializes the properties of <see cref="KeyListStatus" />
+        /// Serializes the properties of <see cref="KeyInstanceStatus" />
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="keyListStatus"></param>
+        /// <param name="keyInstanceStatus"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, KeyListStatus keyListStatus, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(ref Utf8JsonWriter writer, KeyInstanceStatus keyInstanceStatus, JsonSerializerOptions jsonSerializerOptions)
         {
-            if (keyListStatus.Message == null)
-                throw new ArgumentNullException(nameof(keyListStatus.Message), "Property is required for class KeyListStatus.");
+            if (keyInstanceStatus.MessageOption.IsSet && keyInstanceStatus.Message == null)
+                throw new ArgumentNullException(nameof(keyInstanceStatus.Message), "Property is required for class KeyInstanceStatus.");
 
-            if (keyListStatus.DetailOption.IsSet && keyListStatus.Detail == null)
-                throw new ArgumentNullException(nameof(keyListStatus.Detail), "Property is required for class KeyListStatus.");
+            if (keyInstanceStatus.CodeOption.IsSet)
+                writer.WriteNumber("code", keyInstanceStatus.CodeOption.Value!.Value);
 
-            writer.WriteNumber("code", keyListStatus.Code);
+            if (keyInstanceStatus.DetailOption.IsSet)
+                if (keyInstanceStatus.DetailOption.Value != null)
+                    writer.WriteString("detail", keyInstanceStatus.Detail);
+                else
+                    writer.WriteNull("detail");
 
-            writer.WriteString("message", keyListStatus.Message);
-
-            if (keyListStatus.DetailOption.IsSet)
-                writer.WriteString("detail", keyListStatus.Detail);
+            if (keyInstanceStatus.MessageOption.IsSet)
+                writer.WriteString("message", keyInstanceStatus.Message);
         }
     }
 }

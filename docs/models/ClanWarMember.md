@@ -4,11 +4,11 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**MapPosition** | **int** |  | [optional] [readonly] 
-**Name** | **string** |  | [optional] [readonly] 
-**OpponentAttacks** | **int** |  | [optional] [readonly] 
-**Tag** | **string** |  | [optional] [readonly] 
-**TownhallLevel** | **int** |  | [optional] [readonly] 
+**MapPosition** | **int** |  | [readonly] 
+**Name** | **string** |  | [readonly] 
+**OpponentAttacks** | **int** |  | [readonly] 
+**Tag** | **string** |  | [readonly] 
+**TownhallLevel** | **int** |  | [readonly] 
 **Attacks** | [**List&lt;ClanWarAttack&gt;**](ClanWarAttack.md) |  | [optional] [readonly] 
 **BestOpponentAttack** | [**ClanWarAttack**](ClanWarAttack.md) |  | [optional] [readonly] 
 

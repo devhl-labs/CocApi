@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -127,7 +128,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<League>? items = default;
+            Option<List<League>?> items = default;
 
             while (utf8JsonReader.Read())
             {
@@ -146,7 +147,7 @@ namespace CocApi.Rest.Models
                     {
                         case "items":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = JsonSerializer.Deserialize<List<League>>(ref utf8JsonReader, jsonSerializerOptions);
+                                items = new Option<List<League>?>(JsonSerializer.Deserialize<List<League>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -154,10 +155,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (items == null)
-                throw new ArgumentNullException(nameof(items), "Property is required for class LeagueList.");
+            if (!items.IsSet)
+                throw new ArgumentException("Property is required for class LeagueList.", nameof(items));
 
-            return new LeagueList(items);
+            if (items.IsSet && items.Value == null)
+                throw new ArgumentNullException(nameof(items), "Property is not nullable for class LeagueList.");
+
+            return new LeagueList(items.Value!);
         }
 
         /// <summary>
@@ -184,6 +188,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, LeagueList leagueList, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (leagueList.Items == null)
+                throw new ArgumentNullException(nameof(leagueList.Items), "Property is required for class LeagueList.");
+
             writer.WritePropertyName("items");
             JsonSerializer.Serialize(writer, leagueList.Items, jsonSerializerOptions);
         }

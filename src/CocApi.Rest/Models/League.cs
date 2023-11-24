@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -155,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            IconUrls? iconUrls = default;
-            int? id = default;
-            string? name = default;
+            Option<IconUrls?> iconUrls = default;
+            Option<int?> id = default;
+            Option<string?> name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -176,14 +177,14 @@ namespace CocApi.Rest.Models
                     {
                         case "iconUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                iconUrls = JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                iconUrls = new Option<IconUrls?>(JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -191,16 +192,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (iconUrls == null)
-                throw new ArgumentNullException(nameof(iconUrls), "Property is required for class League.");
+            if (!iconUrls.IsSet)
+                throw new ArgumentException("Property is required for class League.", nameof(iconUrls));
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class League.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class League.", nameof(id));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class League.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class League.", nameof(name));
 
-            return new League(iconUrls, id.Value, name);
+            if (iconUrls.IsSet && iconUrls.Value == null)
+                throw new ArgumentNullException(nameof(iconUrls), "Property is not nullable for class League.");
+
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class League.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class League.");
+
+            return new League(iconUrls.Value!, id.Value!.Value!, name.Value!);
         }
 
         /// <summary>
@@ -227,9 +237,16 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, League league, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (league.IconUrls == null)
+                throw new ArgumentNullException(nameof(league.IconUrls), "Property is required for class League.");
+
+            if (league.Name == null)
+                throw new ArgumentNullException(nameof(league.Name), "Property is required for class League.");
+
             writer.WritePropertyName("iconUrls");
             JsonSerializer.Serialize(writer, league.IconUrls, jsonSerializerOptions);
             writer.WriteNumber("id", league.Id);
+
             writer.WriteString("name", league.Name);
         }
     }

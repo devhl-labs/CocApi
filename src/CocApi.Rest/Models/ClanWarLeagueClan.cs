@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -186,11 +187,11 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls? badgeUrls = default;
-            int? clanLevel = default;
-            List<ClanWarLeagueClanMember>? members = default;
-            string? name = default;
-            string? tag = default;
+            Option<BadgeUrls?> badgeUrls = default;
+            Option<int?> clanLevel = default;
+            Option<List<ClanWarLeagueClanMember>?> members = default;
+            Option<string?> name = default;
+            Option<string?> tag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -209,21 +210,21 @@ namespace CocApi.Rest.Models
                     {
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = utf8JsonReader.GetInt32();
+                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = JsonSerializer.Deserialize<List<ClanWarLeagueClanMember>>(ref utf8JsonReader, jsonSerializerOptions);
+                                members = new Option<List<ClanWarLeagueClanMember>?>(JsonSerializer.Deserialize<List<ClanWarLeagueClanMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -231,22 +232,37 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanWarLeagueClan.");
+            if (!badgeUrls.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClan.", nameof(badgeUrls));
 
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanWarLeagueClan.");
+            if (!clanLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClan.", nameof(clanLevel));
 
-            if (members == null)
-                throw new ArgumentNullException(nameof(members), "Property is required for class ClanWarLeagueClan.");
+            if (!members.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClan.", nameof(members));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarLeagueClan.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClan.", nameof(name));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarLeagueClan.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClan.", nameof(tag));
 
-            return new ClanWarLeagueClan(badgeUrls, clanLevel.Value, members, name, tag);
+            if (badgeUrls.IsSet && badgeUrls.Value == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is not nullable for class ClanWarLeagueClan.");
+
+            if (clanLevel.IsSet && clanLevel.Value == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is not nullable for class ClanWarLeagueClan.");
+
+            if (members.IsSet && members.Value == null)
+                throw new ArgumentNullException(nameof(members), "Property is not nullable for class ClanWarLeagueClan.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanWarLeagueClan.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanWarLeagueClan.");
+
+            return new ClanWarLeagueClan(badgeUrls.Value!, clanLevel.Value!.Value!, members.Value!, name.Value!, tag.Value!);
         }
 
         /// <summary>
@@ -273,12 +289,26 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueClan clanWarLeagueClan, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarLeagueClan.BadgeUrls == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueClan.BadgeUrls), "Property is required for class ClanWarLeagueClan.");
+
+            if (clanWarLeagueClan.Members == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueClan.Members), "Property is required for class ClanWarLeagueClan.");
+
+            if (clanWarLeagueClan.Name == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueClan.Name), "Property is required for class ClanWarLeagueClan.");
+
+            if (clanWarLeagueClan.Tag == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueClan.Tag), "Property is required for class ClanWarLeagueClan.");
+
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanWarLeagueClan.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", clanWarLeagueClan.ClanLevel);
+
             writer.WritePropertyName("members");
             JsonSerializer.Serialize(writer, clanWarLeagueClan.Members, jsonSerializerOptions);
             writer.WriteString("name", clanWarLeagueClan.Name);
+
             writer.WriteString("tag", clanWarLeagueClan.Tag);
         }
     }

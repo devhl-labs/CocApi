@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -154,9 +155,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            ClanCapitalRaidSeasonAttacker? attacker = default;
-            int? destructionPercent = default;
-            int? stars = default;
+            Option<ClanCapitalRaidSeasonAttacker?> attacker = default;
+            Option<int?> destructionPercent = default;
+            Option<int?> stars = default;
 
             while (utf8JsonReader.Read())
             {
@@ -175,15 +176,15 @@ namespace CocApi.Rest.Models
                     {
                         case "attacker":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions);
+                                attacker = new Option<ClanCapitalRaidSeasonAttacker?>(JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "destructionPercent":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                destructionPercent = utf8JsonReader.GetInt32();
+                                destructionPercent = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = utf8JsonReader.GetInt32();
+                                stars = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -191,16 +192,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attacker == null)
-                throw new ArgumentNullException(nameof(attacker), "Property is required for class ClanCapitalRaidSeasonAttack.");
+            if (!attacker.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonAttack.", nameof(attacker));
 
-            if (destructionPercent == null)
-                throw new ArgumentNullException(nameof(destructionPercent), "Property is required for class ClanCapitalRaidSeasonAttack.");
+            if (!destructionPercent.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonAttack.", nameof(destructionPercent));
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanCapitalRaidSeasonAttack.");
+            if (!stars.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonAttack.", nameof(stars));
 
-            return new ClanCapitalRaidSeasonAttack(attacker, destructionPercent.Value, stars.Value);
+            if (attacker.IsSet && attacker.Value == null)
+                throw new ArgumentNullException(nameof(attacker), "Property is not nullable for class ClanCapitalRaidSeasonAttack.");
+
+            if (destructionPercent.IsSet && destructionPercent.Value == null)
+                throw new ArgumentNullException(nameof(destructionPercent), "Property is not nullable for class ClanCapitalRaidSeasonAttack.");
+
+            if (stars.IsSet && stars.Value == null)
+                throw new ArgumentNullException(nameof(stars), "Property is not nullable for class ClanCapitalRaidSeasonAttack.");
+
+            return new ClanCapitalRaidSeasonAttack(attacker.Value!, destructionPercent.Value!.Value!, stars.Value!.Value!);
         }
 
         /// <summary>
@@ -227,9 +237,13 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonAttack clanCapitalRaidSeasonAttack, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanCapitalRaidSeasonAttack.Attacker == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonAttack.Attacker), "Property is required for class ClanCapitalRaidSeasonAttack.");
+
             writer.WritePropertyName("attacker");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonAttack.Attacker, jsonSerializerOptions);
             writer.WriteNumber("destructionPercent", clanCapitalRaidSeasonAttack.DestructionPercent);
+
             writer.WriteNumber("stars", clanCapitalRaidSeasonAttack.Stars);
         }
     }

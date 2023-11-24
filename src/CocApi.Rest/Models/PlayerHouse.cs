@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -127,7 +128,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<PlayerHouseElement>? elements = default;
+            Option<List<PlayerHouseElement>?> elements = default;
 
             while (utf8JsonReader.Read())
             {
@@ -146,7 +147,7 @@ namespace CocApi.Rest.Models
                     {
                         case "elements":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                elements = JsonSerializer.Deserialize<List<PlayerHouseElement>>(ref utf8JsonReader, jsonSerializerOptions);
+                                elements = new Option<List<PlayerHouseElement>?>(JsonSerializer.Deserialize<List<PlayerHouseElement>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -154,10 +155,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (elements == null)
-                throw new ArgumentNullException(nameof(elements), "Property is required for class PlayerHouse.");
+            if (!elements.IsSet)
+                throw new ArgumentException("Property is required for class PlayerHouse.", nameof(elements));
 
-            return new PlayerHouse(elements);
+            if (elements.IsSet && elements.Value == null)
+                throw new ArgumentNullException(nameof(elements), "Property is not nullable for class PlayerHouse.");
+
+            return new PlayerHouse(elements.Value!);
         }
 
         /// <summary>
@@ -184,6 +188,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, PlayerHouse playerHouse, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (playerHouse.Elements == null)
+                throw new ArgumentNullException(nameof(playerHouse.Elements), "Property is required for class PlayerHouse.");
+
             writer.WritePropertyName("elements");
             JsonSerializer.Serialize(writer, playerHouse.Elements, jsonSerializerOptions);
         }

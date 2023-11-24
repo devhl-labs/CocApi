@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -140,8 +141,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? id = default;
-            string? name = default;
+            Option<int?> id = default;
+            Option<string?> name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -160,10 +161,10 @@ namespace CocApi.Rest.Models
                     {
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -171,13 +172,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class BuilderBaseLeague.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class BuilderBaseLeague.", nameof(id));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class BuilderBaseLeague.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class BuilderBaseLeague.", nameof(name));
 
-            return new BuilderBaseLeague(id.Value, name);
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class BuilderBaseLeague.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class BuilderBaseLeague.");
+
+            return new BuilderBaseLeague(id.Value!.Value!, name.Value!);
         }
 
         /// <summary>
@@ -204,7 +211,11 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, BuilderBaseLeague builderBaseLeague, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (builderBaseLeague.Name == null)
+                throw new ArgumentNullException(nameof(builderBaseLeague.Name), "Property is required for class BuilderBaseLeague.");
+
             writer.WriteNumber("id", builderBaseLeague.Id);
+
             writer.WriteString("name", builderBaseLeague.Name);
         }
     }

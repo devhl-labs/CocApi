@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -101,9 +102,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<Key>? keys = default;
-            int? sessionExpiresInSeconds = default;
-            KeyListStatus? status = default;
+            Option<List<Key>?> keys = default;
+            Option<int?> sessionExpiresInSeconds = default;
+            Option<KeyListStatus?> status = default;
 
             while (utf8JsonReader.Read())
             {
@@ -122,15 +123,15 @@ namespace CocApi.Rest.Models
                     {
                         case "keys":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                keys = JsonSerializer.Deserialize<List<Key>>(ref utf8JsonReader, jsonSerializerOptions);
+                                keys = new Option<List<Key>?>(JsonSerializer.Deserialize<List<Key>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "sessionExpiresInSeconds":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sessionExpiresInSeconds = utf8JsonReader.GetInt32();
+                                sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "status":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                status = JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions);
+                                status = new Option<KeyListStatus?>(JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -138,16 +139,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (keys == null)
-                throw new ArgumentNullException(nameof(keys), "Property is required for class KeyList.");
+            if (!keys.IsSet)
+                throw new ArgumentException("Property is required for class KeyList.", nameof(keys));
 
-            if (sessionExpiresInSeconds == null)
-                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class KeyList.");
+            if (!sessionExpiresInSeconds.IsSet)
+                throw new ArgumentException("Property is required for class KeyList.", nameof(sessionExpiresInSeconds));
 
-            if (status == null)
-                throw new ArgumentNullException(nameof(status), "Property is required for class KeyList.");
+            if (!status.IsSet)
+                throw new ArgumentException("Property is required for class KeyList.", nameof(status));
 
-            return new KeyList(keys, sessionExpiresInSeconds.Value, status);
+            if (keys.IsSet && keys.Value == null)
+                throw new ArgumentNullException(nameof(keys), "Property is not nullable for class KeyList.");
+
+            if (sessionExpiresInSeconds.IsSet && sessionExpiresInSeconds.Value == null)
+                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is not nullable for class KeyList.");
+
+            if (status.IsSet && status.Value == null)
+                throw new ArgumentNullException(nameof(status), "Property is not nullable for class KeyList.");
+
+            return new KeyList(keys.Value!, sessionExpiresInSeconds.Value!.Value!, status.Value!);
         }
 
         /// <summary>
@@ -174,9 +184,16 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, KeyList keyList, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (keyList.Keys == null)
+                throw new ArgumentNullException(nameof(keyList.Keys), "Property is required for class KeyList.");
+
+            if (keyList.Status == null)
+                throw new ArgumentNullException(nameof(keyList.Status), "Property is required for class KeyList.");
+
             writer.WritePropertyName("keys");
             JsonSerializer.Serialize(writer, keyList.Keys, jsonSerializerOptions);
             writer.WriteNumber("sessionExpiresInSeconds", keyList.SessionExpiresInSeconds);
+
             writer.WritePropertyName("status");
             JsonSerializer.Serialize(writer, keyList.Status, jsonSerializerOptions);
         }

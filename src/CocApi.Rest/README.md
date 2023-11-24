@@ -6,7 +6,7 @@
 ```ps1
 $properties = @(
     'apiName=CocApi',
-    'targetFramework=net7.0',
+    'targetFramework=net8.0',
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
@@ -142,7 +142,7 @@ Authentication schemes defined for the API:
 
 ## Build
 - SDK version: 2.9.1
-- Build date: 2023-10-15T16:22:48.951825900-04:00[America/New_York]
+- Build date: 2023-11-23T19:06:34.488130100-05:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
 ## Api Information
@@ -195,7 +195,7 @@ Authentication schemes defined for the API:
 - returnICollection: false
 - sortParamsByRequiredFlag: 
 - sourceFolder: src
-- targetFramework: net7.0
+- targetFramework: net8.0
 - useCollection: false
 - useDateTimeOffset: false
 - useOneOfDiscriminatorLookup: false

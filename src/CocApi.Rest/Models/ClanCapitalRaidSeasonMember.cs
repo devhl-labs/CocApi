@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -197,12 +198,12 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? attackLimit = default;
-            int? attacks = default;
-            int? bonusAttackLimit = default;
-            int? capitalResourcesLooted = default;
-            string? name = default;
-            string? tag = default;
+            Option<int?> attackLimit = default;
+            Option<int?> attacks = default;
+            Option<int?> bonusAttackLimit = default;
+            Option<int?> capitalResourcesLooted = default;
+            Option<string?> name = default;
+            Option<string?> tag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -221,25 +222,25 @@ namespace CocApi.Rest.Models
                     {
                         case "attackLimit":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackLimit = utf8JsonReader.GetInt32();
+                                attackLimit = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "attacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = utf8JsonReader.GetInt32();
+                                attacks = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "bonusAttackLimit":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bonusAttackLimit = utf8JsonReader.GetInt32();
+                                bonusAttackLimit = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "capitalResourcesLooted":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                capitalResourcesLooted = utf8JsonReader.GetInt32();
+                                capitalResourcesLooted = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -247,25 +248,43 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attackLimit == null)
-                throw new ArgumentNullException(nameof(attackLimit), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (!attackLimit.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonMember.", nameof(attackLimit));
 
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (!attacks.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonMember.", nameof(attacks));
 
-            if (bonusAttackLimit == null)
-                throw new ArgumentNullException(nameof(bonusAttackLimit), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (!bonusAttackLimit.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonMember.", nameof(bonusAttackLimit));
 
-            if (capitalResourcesLooted == null)
-                throw new ArgumentNullException(nameof(capitalResourcesLooted), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (!capitalResourcesLooted.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonMember.", nameof(capitalResourcesLooted));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonMember.", nameof(name));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonMember.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonMember.", nameof(tag));
 
-            return new ClanCapitalRaidSeasonMember(attackLimit.Value, attacks.Value, bonusAttackLimit.Value, capitalResourcesLooted.Value, name, tag);
+            if (attackLimit.IsSet && attackLimit.Value == null)
+                throw new ArgumentNullException(nameof(attackLimit), "Property is not nullable for class ClanCapitalRaidSeasonMember.");
+
+            if (attacks.IsSet && attacks.Value == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is not nullable for class ClanCapitalRaidSeasonMember.");
+
+            if (bonusAttackLimit.IsSet && bonusAttackLimit.Value == null)
+                throw new ArgumentNullException(nameof(bonusAttackLimit), "Property is not nullable for class ClanCapitalRaidSeasonMember.");
+
+            if (capitalResourcesLooted.IsSet && capitalResourcesLooted.Value == null)
+                throw new ArgumentNullException(nameof(capitalResourcesLooted), "Property is not nullable for class ClanCapitalRaidSeasonMember.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanCapitalRaidSeasonMember.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanCapitalRaidSeasonMember.");
+
+            return new ClanCapitalRaidSeasonMember(attackLimit.Value!.Value!, attacks.Value!.Value!, bonusAttackLimit.Value!.Value!, capitalResourcesLooted.Value!.Value!, name.Value!, tag.Value!);
         }
 
         /// <summary>
@@ -292,11 +311,22 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonMember clanCapitalRaidSeasonMember, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanCapitalRaidSeasonMember.Name == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonMember.Name), "Property is required for class ClanCapitalRaidSeasonMember.");
+
+            if (clanCapitalRaidSeasonMember.Tag == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonMember.Tag), "Property is required for class ClanCapitalRaidSeasonMember.");
+
             writer.WriteNumber("attackLimit", clanCapitalRaidSeasonMember.AttackLimit);
+
             writer.WriteNumber("attacks", clanCapitalRaidSeasonMember.Attacks);
+
             writer.WriteNumber("bonusAttackLimit", clanCapitalRaidSeasonMember.BonusAttackLimit);
+
             writer.WriteNumber("capitalResourcesLooted", clanCapitalRaidSeasonMember.CapitalResourcesLooted);
+
             writer.WriteString("name", clanCapitalRaidSeasonMember.Name);
+
             writer.WriteString("tag", clanCapitalRaidSeasonMember.Tag);
         }
     }

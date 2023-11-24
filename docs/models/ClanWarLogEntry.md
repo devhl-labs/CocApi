@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Clan** | [**WarClanLogEntry**](WarClanLogEntry.md) |  | [optional] [readonly] 
-**EndTime** | **DateTime** |  | [optional] [readonly] 
-**Opponent** | [**WarClanLogEntry**](WarClanLogEntry.md) |  | [optional] [readonly] 
-**TeamSize** | **int** |  | [optional] [readonly] 
+**Clan** | [**WarClanLogEntry**](WarClanLogEntry.md) |  | [readonly] 
+**EndTime** | **DateTime** |  | [readonly] 
+**Opponent** | [**WarClanLogEntry**](WarClanLogEntry.md) |  | [readonly] 
+**TeamSize** | **int** |  | [readonly] 
 **AttacksPerMember** | **int** |  | [optional] [readonly] 
 **Result** | **Result** |  | [optional] [readonly] 
 

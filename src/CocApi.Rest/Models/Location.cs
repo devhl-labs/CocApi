@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -37,13 +38,13 @@ namespace CocApi.Rest.Models
         /// <param name="countryCode">countryCode</param>
         /// <param name="localizedName">localizedName</param>
         [JsonConstructor]
-        internal Location(int id, bool isCountry, string name, string? countryCode = default, string? localizedName = default)
+        internal Location(int id, bool isCountry, string name, Option<string?> countryCode = default, Option<string?> localizedName = default)
         {
             Id = id;
             IsCountry = isCountry;
             Name = name;
-            CountryCode = countryCode;
-            LocalizedName = localizedName;
+            CountryCodeOption = countryCode;
+            LocalizedNameOption = localizedName;
             OnCreated();
         }
 
@@ -68,16 +69,30 @@ namespace CocApi.Rest.Models
         public string Name { get; }
 
         /// <summary>
+        /// Used to track the state of CountryCode
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> CountryCodeOption { get; }
+
+        /// <summary>
         /// Gets or Sets CountryCode
         /// </summary>
         [JsonPropertyName("countryCode")]
-        public string? CountryCode { get; }
+        public string? CountryCode { get { return this. CountryCodeOption; } }
+
+        /// <summary>
+        /// Used to track the state of LocalizedName
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> LocalizedNameOption { get; }
 
         /// <summary>
         /// Gets or Sets LocalizedName
         /// </summary>
         [JsonPropertyName("localizedName")]
-        public string? LocalizedName { get; }
+        public string? LocalizedName { get { return this. LocalizedNameOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -154,12 +169,12 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Id.GetHashCode();
                 hashCode = (hashCode * 59) + IsCountry.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
-
                 if (CountryCode != null)
                     hashCode = (hashCode * 59) + CountryCode.GetHashCode();
 
                 if (LocalizedName != null)
                     hashCode = (hashCode * 59) + LocalizedName.GetHashCode();
+
 
                 return hashCode;
             }
@@ -188,11 +203,11 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? id = default;
-            bool? isCountry = default;
-            string? name = default;
-            string? countryCode = default;
-            string? localizedName = default;
+            Option<int?> id = default;
+            Option<bool?> isCountry = default;
+            Option<string?> name = default;
+            Option<string?> countryCode = default;
+            Option<string?> localizedName = default;
 
             while (utf8JsonReader.Read())
             {
@@ -211,20 +226,20 @@ namespace CocApi.Rest.Models
                     {
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "isCountry":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                isCountry = utf8JsonReader.GetBoolean();
+                                isCountry = new Option<bool?>(utf8JsonReader.GetBoolean());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "countryCode":
-                            countryCode = utf8JsonReader.GetString();
+                            countryCode = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "localizedName":
-                            localizedName = utf8JsonReader.GetString();
+                            localizedName = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -232,16 +247,31 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class Location.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class Location.", nameof(id));
 
-            if (isCountry == null)
-                throw new ArgumentNullException(nameof(isCountry), "Property is required for class Location.");
+            if (!isCountry.IsSet)
+                throw new ArgumentException("Property is required for class Location.", nameof(isCountry));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Location.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class Location.", nameof(name));
 
-            return new Location(id.Value, isCountry.Value, name, countryCode, localizedName);
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class Location.");
+
+            if (isCountry.IsSet && isCountry.Value == null)
+                throw new ArgumentNullException(nameof(isCountry), "Property is not nullable for class Location.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class Location.");
+
+            if (countryCode.IsSet && countryCode.Value == null)
+                throw new ArgumentNullException(nameof(countryCode), "Property is not nullable for class Location.");
+
+            if (localizedName.IsSet && localizedName.Value == null)
+                throw new ArgumentNullException(nameof(localizedName), "Property is not nullable for class Location.");
+
+            return new Location(id.Value!.Value!, isCountry.Value!.Value!, name.Value!, countryCode, localizedName);
         }
 
         /// <summary>
@@ -268,11 +298,26 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, Location location, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (location.Name == null)
+                throw new ArgumentNullException(nameof(location.Name), "Property is required for class Location.");
+
+            if (location.CountryCodeOption.IsSet && location.CountryCode == null)
+                throw new ArgumentNullException(nameof(location.CountryCode), "Property is required for class Location.");
+
+            if (location.LocalizedNameOption.IsSet && location.LocalizedName == null)
+                throw new ArgumentNullException(nameof(location.LocalizedName), "Property is required for class Location.");
+
             writer.WriteNumber("id", location.Id);
+
             writer.WriteBoolean("isCountry", location.IsCountry);
+
             writer.WriteString("name", location.Name);
-            writer.WriteString("countryCode", location.CountryCode);
-            writer.WriteString("localizedName", location.LocalizedName);
+
+            if (location.CountryCodeOption.IsSet)
+                writer.WriteString("countryCode", location.CountryCode);
+
+            if (location.LocalizedNameOption.IsSet)
+                writer.WriteString("localizedName", location.LocalizedName);
         }
     }
 }

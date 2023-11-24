@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -41,7 +42,7 @@ namespace CocApi.Rest.Models
         /// <param name="tag">tag</param>
         /// <param name="location">location</param>
         [JsonConstructor]
-        internal ClanRanking(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int members, string name, int previousRank, int rank, string tag, Location? location = default)
+        internal ClanRanking(BadgeUrls badgeUrls, int clanLevel, int clanPoints, int members, string name, int previousRank, int rank, string tag, Option<Location?> location = default)
         {
             BadgeUrls = badgeUrls;
             ClanLevel = clanLevel;
@@ -51,7 +52,7 @@ namespace CocApi.Rest.Models
             PreviousRank = previousRank;
             Rank = rank;
             Tag = tag;
-            Location = location;
+            LocationOption = location;
             OnCreated();
         }
 
@@ -106,10 +107,17 @@ namespace CocApi.Rest.Models
         public string Tag { get; }
 
         /// <summary>
+        /// Used to track the state of Location
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Location?> LocationOption { get; }
+
+        /// <summary>
         /// Gets or Sets Location
         /// </summary>
         [JsonPropertyName("location")]
-        public Location? Location { get; }
+        public Location? Location { get { return this. LocationOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -212,9 +220,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + PreviousRank.GetHashCode();
                 hashCode = (hashCode * 59) + Rank.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
-
                 if (Location != null)
                     hashCode = (hashCode * 59) + Location.GetHashCode();
+
 
                 return hashCode;
             }
@@ -243,15 +251,15 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls? badgeUrls = default;
-            int? clanLevel = default;
-            int? clanPoints = default;
-            int? members = default;
-            string? name = default;
-            int? previousRank = default;
-            int? rank = default;
-            string? tag = default;
-            Location? location = default;
+            Option<BadgeUrls?> badgeUrls = default;
+            Option<int?> clanLevel = default;
+            Option<int?> clanPoints = default;
+            Option<int?> members = default;
+            Option<string?> name = default;
+            Option<int?> previousRank = default;
+            Option<int?> rank = default;
+            Option<string?> tag = default;
+            Option<Location?> location = default;
 
             while (utf8JsonReader.Read())
             {
@@ -270,37 +278,37 @@ namespace CocApi.Rest.Models
                     {
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = utf8JsonReader.GetInt32();
+                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "clanPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanPoints = utf8JsonReader.GetInt32();
+                                clanPoints = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = utf8JsonReader.GetInt32();
+                                members = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "previousRank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                previousRank = utf8JsonReader.GetInt32();
+                                previousRank = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rank = utf8JsonReader.GetInt32();
+                                rank = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "location":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                location = JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions);
+                                location = new Option<Location?>(JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -308,31 +316,58 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanRanking.");
+            if (!badgeUrls.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(badgeUrls));
 
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanRanking.");
+            if (!clanLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(clanLevel));
 
-            if (clanPoints == null)
-                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanRanking.");
+            if (!clanPoints.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(clanPoints));
 
-            if (members == null)
-                throw new ArgumentNullException(nameof(members), "Property is required for class ClanRanking.");
+            if (!members.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(members));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanRanking.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(name));
 
-            if (previousRank == null)
-                throw new ArgumentNullException(nameof(previousRank), "Property is required for class ClanRanking.");
+            if (!previousRank.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(previousRank));
 
-            if (rank == null)
-                throw new ArgumentNullException(nameof(rank), "Property is required for class ClanRanking.");
+            if (!rank.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(rank));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanRanking.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanRanking.", nameof(tag));
 
-            return new ClanRanking(badgeUrls, clanLevel.Value, clanPoints.Value, members.Value, name, previousRank.Value, rank.Value, tag, location);
+            if (badgeUrls.IsSet && badgeUrls.Value == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is not nullable for class ClanRanking.");
+
+            if (clanLevel.IsSet && clanLevel.Value == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is not nullable for class ClanRanking.");
+
+            if (clanPoints.IsSet && clanPoints.Value == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is not nullable for class ClanRanking.");
+
+            if (members.IsSet && members.Value == null)
+                throw new ArgumentNullException(nameof(members), "Property is not nullable for class ClanRanking.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanRanking.");
+
+            if (previousRank.IsSet && previousRank.Value == null)
+                throw new ArgumentNullException(nameof(previousRank), "Property is not nullable for class ClanRanking.");
+
+            if (rank.IsSet && rank.Value == null)
+                throw new ArgumentNullException(nameof(rank), "Property is not nullable for class ClanRanking.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanRanking.");
+
+            if (location.IsSet && location.Value == null)
+                throw new ArgumentNullException(nameof(location), "Property is not nullable for class ClanRanking.");
+
+            return new ClanRanking(badgeUrls.Value!, clanLevel.Value!.Value!, clanPoints.Value!.Value!, members.Value!.Value!, name.Value!, previousRank.Value!.Value!, rank.Value!.Value!, tag.Value!, location);
         }
 
         /// <summary>
@@ -359,17 +394,39 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanRanking clanRanking, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanRanking.BadgeUrls == null)
+                throw new ArgumentNullException(nameof(clanRanking.BadgeUrls), "Property is required for class ClanRanking.");
+
+            if (clanRanking.Name == null)
+                throw new ArgumentNullException(nameof(clanRanking.Name), "Property is required for class ClanRanking.");
+
+            if (clanRanking.Tag == null)
+                throw new ArgumentNullException(nameof(clanRanking.Tag), "Property is required for class ClanRanking.");
+
+            if (clanRanking.LocationOption.IsSet && clanRanking.Location == null)
+                throw new ArgumentNullException(nameof(clanRanking.Location), "Property is required for class ClanRanking.");
+
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanRanking.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", clanRanking.ClanLevel);
+
             writer.WriteNumber("clanPoints", clanRanking.ClanPoints);
+
             writer.WriteNumber("members", clanRanking.Members);
+
             writer.WriteString("name", clanRanking.Name);
+
             writer.WriteNumber("previousRank", clanRanking.PreviousRank);
+
             writer.WriteNumber("rank", clanRanking.Rank);
+
             writer.WriteString("tag", clanRanking.Tag);
-            writer.WritePropertyName("location");
-            JsonSerializer.Serialize(writer, clanRanking.Location, jsonSerializerOptions);
+
+            if (clanRanking.LocationOption.IsSet)
+            {
+                writer.WritePropertyName("location");
+                JsonSerializer.Serialize(writer, clanRanking.Location, jsonSerializerOptions);
+            }
         }
     }
 }

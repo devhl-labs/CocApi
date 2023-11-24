@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -35,11 +36,11 @@ namespace CocApi.Rest.Models
         /// <param name="id">id</param>
         /// <param name="rank">rank</param>
         [JsonConstructor]
-        internal LegendLeagueTournamentSeasonResult(int trophies, DateTime? id = default, int? rank = default)
+        internal LegendLeagueTournamentSeasonResult(int trophies, Option<DateTime?> id = default, Option<int?> rank = default)
         {
             Trophies = trophies;
-            Id = id;
-            Rank = rank;
+            IdOption = id;
+            RankOption = rank;
             OnCreated();
         }
 
@@ -52,16 +53,30 @@ namespace CocApi.Rest.Models
         public int Trophies { get; }
 
         /// <summary>
+        /// Used to track the state of Id
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<DateTime?> IdOption { get; }
+
+        /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonPropertyName("id")]
-        public DateTime? Id { get; }
+        public DateTime? Id { get { return this. IdOption; } }
+
+        /// <summary>
+        /// Used to track the state of Rank
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> RankOption { get; }
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [JsonPropertyName("rank")]
-        public int? Rank { get; }
+        public int? Rank { get { return this. RankOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -123,12 +138,12 @@ namespace CocApi.Rest.Models
             {
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
-
                 if (Id != null)
                     hashCode = (hashCode * 59) + Id.GetHashCode();
 
                 if (Rank != null)
                     hashCode = (hashCode * 59) + Rank.GetHashCode();
+
 
                 return hashCode;
             }
@@ -162,9 +177,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? trophies = default;
-            DateTime? id = default;
-            int? rank = default;
+            Option<int?> trophies = default;
+            Option<DateTime?> id = default;
+            Option<int?> rank = default;
 
             while (utf8JsonReader.Read())
             {
@@ -183,15 +198,15 @@ namespace CocApi.Rest.Models
                     {
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = utf8JsonReader.GetInt32();
+                                trophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = JsonSerializer.Deserialize<DateTime?>(ref utf8JsonReader, jsonSerializerOptions);
+                                id = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "rank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rank = utf8JsonReader.GetInt32();
+                                rank = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -199,10 +214,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (trophies == null)
-                throw new ArgumentNullException(nameof(trophies), "Property is required for class LegendLeagueTournamentSeasonResult.");
+            if (!trophies.IsSet)
+                throw new ArgumentException("Property is required for class LegendLeagueTournamentSeasonResult.", nameof(trophies));
 
-            return new LegendLeagueTournamentSeasonResult(trophies.Value, id, rank);
+            if (trophies.IsSet && trophies.Value == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is not nullable for class LegendLeagueTournamentSeasonResult.");
+
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class LegendLeagueTournamentSeasonResult.");
+
+            if (rank.IsSet && rank.Value == null)
+                throw new ArgumentNullException(nameof(rank), "Property is not nullable for class LegendLeagueTournamentSeasonResult.");
+
+            return new LegendLeagueTournamentSeasonResult(trophies.Value!.Value!, id, rank);
         }
 
         /// <summary>
@@ -231,15 +255,11 @@ namespace CocApi.Rest.Models
         {
             writer.WriteNumber("trophies", legendLeagueTournamentSeasonResult.Trophies);
 
-            if (legendLeagueTournamentSeasonResult.Id != null)
-                writer.WriteString("id", legendLeagueTournamentSeasonResult.Id.Value.ToString(IdFormat));
-            else
-                writer.WriteNull("id");
+            if (legendLeagueTournamentSeasonResult.IdOption.IsSet)
+                writer.WriteString("id", legendLeagueTournamentSeasonResult.IdOption.Value!.Value.ToString(IdFormat));
 
-            if (legendLeagueTournamentSeasonResult.Rank != null)
-                writer.WriteNumber("rank", legendLeagueTournamentSeasonResult.Rank.Value);
-            else
-                writer.WriteNull("rank");
+            if (legendLeagueTournamentSeasonResult.RankOption.IsSet)
+                writer.WriteNumber("rank", legendLeagueTournamentSeasonResult.RankOption.Value!.Value);
         }
     }
 }

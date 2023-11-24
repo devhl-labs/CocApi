@@ -4,8 +4,8 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**CurrentSeason** | [**LegendLeagueTournamentSeasonResult**](LegendLeagueTournamentSeasonResult.md) |  | [optional] [readonly] 
-**LegendTrophies** | **int** |  | [optional] [readonly] 
+**CurrentSeason** | [**LegendLeagueTournamentSeasonResult**](LegendLeagueTournamentSeasonResult.md) |  | [readonly] 
+**LegendTrophies** | **int** |  | [readonly] 
 **BestBuilderBaseSeason** | [**LegendLeagueTournamentSeasonResult**](LegendLeagueTournamentSeasonResult.md) |  | [optional] [readonly] 
 **BestSeason** | [**LegendLeagueTournamentSeasonResult**](LegendLeagueTournamentSeasonResult.md) |  | [optional] [readonly] 
 **PreviousBuilderBaseSeason** | [**LegendLeagueTournamentSeasonResult**](LegendLeagueTournamentSeasonResult.md) |  | [optional] [readonly] 

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -141,8 +142,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? endTime = default;
-            string? startTime = default;
+            Option<string?> endTime = default;
+            Option<string?> startTime = default;
 
             while (utf8JsonReader.Read())
             {
@@ -160,10 +161,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "endTime":
-                            endTime = utf8JsonReader.GetString();
+                            endTime = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "startTime":
-                            startTime = utf8JsonReader.GetString();
+                            startTime = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -171,13 +172,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (endTime == null)
-                throw new ArgumentNullException(nameof(endTime), "Property is required for class GoldPassSeason.");
+            if (!endTime.IsSet)
+                throw new ArgumentException("Property is required for class GoldPassSeason.", nameof(endTime));
 
-            if (startTime == null)
-                throw new ArgumentNullException(nameof(startTime), "Property is required for class GoldPassSeason.");
+            if (!startTime.IsSet)
+                throw new ArgumentException("Property is required for class GoldPassSeason.", nameof(startTime));
 
-            return new GoldPassSeason(endTime, startTime);
+            if (endTime.IsSet && endTime.Value == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is not nullable for class GoldPassSeason.");
+
+            if (startTime.IsSet && startTime.Value == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is not nullable for class GoldPassSeason.");
+
+            return new GoldPassSeason(endTime.Value!, startTime.Value!);
         }
 
         /// <summary>
@@ -204,7 +211,14 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, GoldPassSeason goldPassSeason, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (goldPassSeason.EndTime == null)
+                throw new ArgumentNullException(nameof(goldPassSeason.EndTime), "Property is required for class GoldPassSeason.");
+
+            if (goldPassSeason.StartTime == null)
+                throw new ArgumentNullException(nameof(goldPassSeason.StartTime), "Property is required for class GoldPassSeason.");
+
             writer.WriteString("endTime", goldPassSeason.EndTime);
+
             writer.WriteString("startTime", goldPassSeason.StartTime);
         }
     }

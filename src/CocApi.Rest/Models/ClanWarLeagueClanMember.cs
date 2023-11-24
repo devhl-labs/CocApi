@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -155,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? name = default;
-            string? tag = default;
-            int? townHallLevel = default;
+            Option<string?> name = default;
+            Option<string?> tag = default;
+            Option<int?> townHallLevel = default;
 
             while (utf8JsonReader.Read())
             {
@@ -175,14 +176,14 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "townHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallLevel = utf8JsonReader.GetInt32();
+                                townHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -190,16 +191,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarLeagueClanMember.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClanMember.", nameof(name));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarLeagueClanMember.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClanMember.", nameof(tag));
 
-            if (townHallLevel == null)
-                throw new ArgumentNullException(nameof(townHallLevel), "Property is required for class ClanWarLeagueClanMember.");
+            if (!townHallLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueClanMember.", nameof(townHallLevel));
 
-            return new ClanWarLeagueClanMember(name, tag, townHallLevel.Value);
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanWarLeagueClanMember.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanWarLeagueClanMember.");
+
+            if (townHallLevel.IsSet && townHallLevel.Value == null)
+                throw new ArgumentNullException(nameof(townHallLevel), "Property is not nullable for class ClanWarLeagueClanMember.");
+
+            return new ClanWarLeagueClanMember(name.Value!, tag.Value!, townHallLevel.Value!.Value!);
         }
 
         /// <summary>
@@ -226,8 +236,16 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueClanMember clanWarLeagueClanMember, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarLeagueClanMember.Name == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueClanMember.Name), "Property is required for class ClanWarLeagueClanMember.");
+
+            if (clanWarLeagueClanMember.Tag == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueClanMember.Tag), "Property is required for class ClanWarLeagueClanMember.");
+
             writer.WriteString("name", clanWarLeagueClanMember.Name);
+
             writer.WriteString("tag", clanWarLeagueClanMember.Tag);
+
             writer.WriteNumber("townHallLevel", clanWarLeagueClanMember.TownHallLevel);
         }
     }

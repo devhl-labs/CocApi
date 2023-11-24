@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | **int** |  | [optional] [readonly] 
-**IsCountry** | **bool** |  | [optional] [readonly] 
-**Name** | **string** |  | [optional] [readonly] 
+**Id** | **int** |  | [readonly] 
+**IsCountry** | **bool** |  | [readonly] 
+**Name** | **string** |  | [readonly] 
 **CountryCode** | **string** |  | [optional] [readonly] 
 **LocalizedName** | **string** |  | [optional] [readonly] 
 

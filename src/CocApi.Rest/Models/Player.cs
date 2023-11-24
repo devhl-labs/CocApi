@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -61,7 +62,7 @@ namespace CocApi.Rest.Models
         /// <param name="versusBattleWinCount">versusBattleWinCount</param>
         /// <param name="warPreference">warPreference</param>
         [JsonConstructor]
-        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderBaseTrophies, int clanCapitalContributions, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int warStars, BuilderBaseLeague? builderBaseLeague = default, int? builderHallLevel = default, PlayerClan? clan = default, League? league = default, PlayerLegendStatistics? legendStatistics = default, PlayerHouse? playerHouse = default, Role? role = default, int? townHallWeaponLevel = default, int? versusBattleWinCount = default, WarPreference? warPreference = default)
+        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int bestVersusTrophies, int builderBaseTrophies, int clanCapitalContributions, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int warStars, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<int?> builderHallLevel = default, Option<PlayerClan?> clan = default, Option<League?> league = default, Option<PlayerLegendStatistics?> legendStatistics = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallWeaponLevel = default, Option<int?> versusBattleWinCount = default, Option<WarPreference?> warPreference = default)
         {
             Achievements = achievements;
             AttackWins = attackWins;
@@ -82,32 +83,46 @@ namespace CocApi.Rest.Models
             Troops = troops;
             Trophies = trophies;
             WarStars = warStars;
-            BuilderBaseLeague = builderBaseLeague;
-            BuilderHallLevel = builderHallLevel;
-            Clan = clan;
-            League = league;
-            LegendStatistics = legendStatistics;
-            PlayerHouse = playerHouse;
-            Role = role;
-            TownHallWeaponLevel = townHallWeaponLevel;
-            VersusBattleWinCount = versusBattleWinCount;
-            WarPreference = warPreference;
+            BuilderBaseLeagueOption = builderBaseLeague;
+            BuilderHallLevelOption = builderHallLevel;
+            ClanOption = clan;
+            LeagueOption = league;
+            LegendStatisticsOption = legendStatistics;
+            PlayerHouseOption = playerHouse;
+            RoleOption = role;
+            TownHallWeaponLevelOption = townHallWeaponLevel;
+            VersusBattleWinCountOption = versusBattleWinCount;
+            WarPreferenceOption = warPreference;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of Role
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Role?> RoleOption { get; }
+
+        /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [JsonPropertyName("role")]
-        public Role? Role { get; }
+        public Role? Role { get { return this.RoleOption; } }
+
+        /// <summary>
+        /// Used to track the state of WarPreference
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<WarPreference?> WarPreferenceOption { get; }
 
         /// <summary>
         /// Gets or Sets WarPreference
         /// </summary>
         [JsonPropertyName("warPreference")]
-        public WarPreference? WarPreference { get; }
+        public WarPreference? WarPreference { get { return this.WarPreferenceOption; } }
 
         /// <summary>
         /// Gets or Sets Achievements
@@ -224,52 +239,108 @@ namespace CocApi.Rest.Models
         public int WarStars { get; }
 
         /// <summary>
+        /// Used to track the state of BuilderBaseLeague
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<BuilderBaseLeague?> BuilderBaseLeagueOption { get; }
+
+        /// <summary>
         /// Gets or Sets BuilderBaseLeague
         /// </summary>
         [JsonPropertyName("builderBaseLeague")]
-        public BuilderBaseLeague? BuilderBaseLeague { get; }
+        public BuilderBaseLeague? BuilderBaseLeague { get { return this. BuilderBaseLeagueOption; } }
+
+        /// <summary>
+        /// Used to track the state of BuilderHallLevel
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> BuilderHallLevelOption { get; }
 
         /// <summary>
         /// Gets or Sets BuilderHallLevel
         /// </summary>
         [JsonPropertyName("builderHallLevel")]
-        public int? BuilderHallLevel { get; }
+        public int? BuilderHallLevel { get { return this. BuilderHallLevelOption; } }
+
+        /// <summary>
+        /// Used to track the state of Clan
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<PlayerClan?> ClanOption { get; }
 
         /// <summary>
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public PlayerClan? Clan { get; }
+        public PlayerClan? Clan { get { return this. ClanOption; } }
+
+        /// <summary>
+        /// Used to track the state of League
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<League?> LeagueOption { get; }
 
         /// <summary>
         /// Gets or Sets League
         /// </summary>
         [JsonPropertyName("league")]
-        public League? League { get; }
+        public League? League { get { return this. LeagueOption; } }
+
+        /// <summary>
+        /// Used to track the state of LegendStatistics
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<PlayerLegendStatistics?> LegendStatisticsOption { get; }
 
         /// <summary>
         /// Gets or Sets LegendStatistics
         /// </summary>
         [JsonPropertyName("legendStatistics")]
-        public PlayerLegendStatistics? LegendStatistics { get; }
+        public PlayerLegendStatistics? LegendStatistics { get { return this. LegendStatisticsOption; } }
+
+        /// <summary>
+        /// Used to track the state of PlayerHouse
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<PlayerHouse?> PlayerHouseOption { get; }
 
         /// <summary>
         /// Gets or Sets PlayerHouse
         /// </summary>
         [JsonPropertyName("playerHouse")]
-        public PlayerHouse? PlayerHouse { get; }
+        public PlayerHouse? PlayerHouse { get { return this. PlayerHouseOption; } }
+
+        /// <summary>
+        /// Used to track the state of TownHallWeaponLevel
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> TownHallWeaponLevelOption { get; }
 
         /// <summary>
         /// Gets or Sets TownHallWeaponLevel
         /// </summary>
         [JsonPropertyName("townHallWeaponLevel")]
-        public int? TownHallWeaponLevel { get; }
+        public int? TownHallWeaponLevel { get { return this. TownHallWeaponLevelOption; } }
+
+        /// <summary>
+        /// Used to track the state of VersusBattleWinCount
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> VersusBattleWinCountOption { get; }
 
         /// <summary>
         /// Gets or Sets VersusBattleWinCount
         /// </summary>
         [JsonPropertyName("versusBattleWinCount")]
-        public int? VersusBattleWinCount { get; }
+        public int? VersusBattleWinCount { get { return this. VersusBattleWinCountOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -496,7 +567,6 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Troops.GetHashCode();
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
                 hashCode = (hashCode * 59) + WarStars.GetHashCode();
-
                 if (BuilderBaseLeague != null)
                     hashCode = (hashCode * 59) + BuilderBaseLeague.GetHashCode();
 
@@ -527,6 +597,7 @@ namespace CocApi.Rest.Models
                 if (WarPreference != null)
                     hashCode = (hashCode * 59) + WarPreference.GetHashCode();
 
+
                 return hashCode;
             }
         }
@@ -554,35 +625,35 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<PlayerAchievementProgress>? achievements = default;
-            int? attackWins = default;
-            int? bestTrophies = default;
-            int? bestVersusTrophies = default;
-            int? builderBaseTrophies = default;
-            int? clanCapitalContributions = default;
-            int? defenseWins = default;
-            int? donations = default;
-            int? donationsReceived = default;
-            int? expLevel = default;
-            List<PlayerItemLevel>? heroes = default;
-            List<Label>? labels = default;
-            string? name = default;
-            List<PlayerItemLevel>? spells = default;
-            string? tag = default;
-            int? townHallLevel = default;
-            List<PlayerItemLevel>? troops = default;
-            int? trophies = default;
-            int? warStars = default;
-            BuilderBaseLeague? builderBaseLeague = default;
-            int? builderHallLevel = default;
-            PlayerClan? clan = default;
-            League? league = default;
-            PlayerLegendStatistics? legendStatistics = default;
-            PlayerHouse? playerHouse = default;
-            Role? role = default;
-            int? townHallWeaponLevel = default;
-            int? versusBattleWinCount = default;
-            WarPreference? warPreference = default;
+            Option<List<PlayerAchievementProgress>?> achievements = default;
+            Option<int?> attackWins = default;
+            Option<int?> bestTrophies = default;
+            Option<int?> bestVersusTrophies = default;
+            Option<int?> builderBaseTrophies = default;
+            Option<int?> clanCapitalContributions = default;
+            Option<int?> defenseWins = default;
+            Option<int?> donations = default;
+            Option<int?> donationsReceived = default;
+            Option<int?> expLevel = default;
+            Option<List<PlayerItemLevel>?> heroes = default;
+            Option<List<Label>?> labels = default;
+            Option<string?> name = default;
+            Option<List<PlayerItemLevel>?> spells = default;
+            Option<string?> tag = default;
+            Option<int?> townHallLevel = default;
+            Option<List<PlayerItemLevel>?> troops = default;
+            Option<int?> trophies = default;
+            Option<int?> warStars = default;
+            Option<BuilderBaseLeague?> builderBaseLeague = default;
+            Option<int?> builderHallLevel = default;
+            Option<PlayerClan?> clan = default;
+            Option<League?> league = default;
+            Option<PlayerLegendStatistics?> legendStatistics = default;
+            Option<PlayerHouse?> playerHouse = default;
+            Option<Role?> role = default;
+            Option<int?> townHallWeaponLevel = default;
+            Option<int?> versusBattleWinCount = default;
+            Option<WarPreference?> warPreference = default;
 
             while (utf8JsonReader.Read())
             {
@@ -601,122 +672,120 @@ namespace CocApi.Rest.Models
                     {
                         case "achievements":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                achievements = JsonSerializer.Deserialize<List<PlayerAchievementProgress>>(ref utf8JsonReader, jsonSerializerOptions);
+                                achievements = new Option<List<PlayerAchievementProgress>?>(JsonSerializer.Deserialize<List<PlayerAchievementProgress>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "attackWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackWins = utf8JsonReader.GetInt32();
+                                attackWins = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "bestTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestTrophies = utf8JsonReader.GetInt32();
+                                bestTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "bestVersusTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestVersusTrophies = utf8JsonReader.GetInt32();
+                                bestVersusTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "builderBaseTrophies":
                         case "versusTrophies": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseTrophies = utf8JsonReader.GetInt32();
+                                builderBaseTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "clanCapitalContributions":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanCapitalContributions = utf8JsonReader.GetInt32();
+                                clanCapitalContributions = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "defenseWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defenseWins = utf8JsonReader.GetInt32();
+                                defenseWins = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "donations":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                donations = utf8JsonReader.GetInt32();
+                                donations = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "donationsReceived":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                donationsReceived = utf8JsonReader.GetInt32();
+                                donationsReceived = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "expLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expLevel = utf8JsonReader.GetInt32();
+                                expLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "heroes":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                heroes = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
+                                heroes = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "labels":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                labels = JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions);
+                                labels = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "spells":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                spells = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
+                                spells = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "townHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallLevel = utf8JsonReader.GetInt32();
+                                townHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "troops":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                troops = JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions);
+                                troops = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = utf8JsonReader.GetInt32();
+                                trophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "warStars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warStars = utf8JsonReader.GetInt32();
+                                warStars = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "builderBaseLeague":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseLeague = JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions);
+                                builderBaseLeague = new Option<BuilderBaseLeague?>(JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "builderHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderHallLevel = utf8JsonReader.GetInt32();
+                                builderHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clan = JsonSerializer.Deserialize<PlayerClan>(ref utf8JsonReader, jsonSerializerOptions);
+                                clan = new Option<PlayerClan?>(JsonSerializer.Deserialize<PlayerClan>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "league":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                league = JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions);
+                                league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "legendStatistics":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                legendStatistics = JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions);
+                                legendStatistics = new Option<PlayerLegendStatistics?>(JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "playerHouse":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
+                                playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "role":
                             string? roleRawValue = utf8JsonReader.GetString();
-                            role = roleRawValue == null
-                                ? null
-                                : RoleValueConverter.FromStringOrDefault(roleRawValue);
+                            if (roleRawValue != null)
+                                role = new Option<Role?>(RoleValueConverter.FromStringOrDefault(roleRawValue));
                             break;
                         case "townHallWeaponLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallWeaponLevel = utf8JsonReader.GetInt32();
+                                townHallWeaponLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "versusBattleWinCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                versusBattleWinCount = utf8JsonReader.GetInt32();
+                                versusBattleWinCount = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "warPreference":
                             string? warPreferenceRawValue = utf8JsonReader.GetString();
-                            warPreference = warPreferenceRawValue == null
-                                ? null
-                                : WarPreferenceValueConverter.FromStringOrDefault(warPreferenceRawValue);
+                            if (warPreferenceRawValue != null)
+                                warPreference = new Option<WarPreference?>(WarPreferenceValueConverter.FromStringOrDefault(warPreferenceRawValue));
                             break;
                         default:
                             break;
@@ -724,64 +793,151 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (achievements == null)
-                throw new ArgumentNullException(nameof(achievements), "Property is required for class Player.");
+            if (!achievements.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(achievements));
 
-            if (attackWins == null)
-                throw new ArgumentNullException(nameof(attackWins), "Property is required for class Player.");
+            if (!attackWins.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(attackWins));
 
-            if (bestTrophies == null)
-                throw new ArgumentNullException(nameof(bestTrophies), "Property is required for class Player.");
+            if (!bestTrophies.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(bestTrophies));
 
-            if (bestVersusTrophies == null)
-                throw new ArgumentNullException(nameof(bestVersusTrophies), "Property is required for class Player.");
+            if (!bestVersusTrophies.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(bestVersusTrophies));
 
-            if (builderBaseTrophies == null)
-                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class Player.");
+            if (!builderBaseTrophies.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(builderBaseTrophies));
 
-            if (clanCapitalContributions == null)
-                throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is required for class Player.");
+            if (!clanCapitalContributions.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(clanCapitalContributions));
 
-            if (defenseWins == null)
-                throw new ArgumentNullException(nameof(defenseWins), "Property is required for class Player.");
+            if (!defenseWins.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(defenseWins));
 
-            if (donations == null)
-                throw new ArgumentNullException(nameof(donations), "Property is required for class Player.");
+            if (!donations.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(donations));
 
-            if (donationsReceived == null)
-                throw new ArgumentNullException(nameof(donationsReceived), "Property is required for class Player.");
+            if (!donationsReceived.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(donationsReceived));
 
-            if (expLevel == null)
-                throw new ArgumentNullException(nameof(expLevel), "Property is required for class Player.");
+            if (!expLevel.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(expLevel));
 
-            if (heroes == null)
-                throw new ArgumentNullException(nameof(heroes), "Property is required for class Player.");
+            if (!heroes.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(heroes));
 
-            if (labels == null)
-                throw new ArgumentNullException(nameof(labels), "Property is required for class Player.");
+            if (!labels.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(labels));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Player.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(name));
 
-            if (spells == null)
-                throw new ArgumentNullException(nameof(spells), "Property is required for class Player.");
+            if (!spells.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(spells));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class Player.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(tag));
 
-            if (townHallLevel == null)
-                throw new ArgumentNullException(nameof(townHallLevel), "Property is required for class Player.");
+            if (!townHallLevel.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(townHallLevel));
 
-            if (troops == null)
-                throw new ArgumentNullException(nameof(troops), "Property is required for class Player.");
+            if (!troops.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(troops));
 
-            if (trophies == null)
-                throw new ArgumentNullException(nameof(trophies), "Property is required for class Player.");
+            if (!trophies.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(trophies));
 
-            if (warStars == null)
-                throw new ArgumentNullException(nameof(warStars), "Property is required for class Player.");
+            if (!warStars.IsSet)
+                throw new ArgumentException("Property is required for class Player.", nameof(warStars));
 
-            return new Player(achievements, attackWins.Value, bestTrophies.Value, bestVersusTrophies.Value, builderBaseTrophies.Value, clanCapitalContributions.Value, defenseWins.Value, donations.Value, donationsReceived.Value, expLevel.Value, heroes, labels, name, spells, tag, townHallLevel.Value, troops, trophies.Value, warStars.Value, builderBaseLeague, builderHallLevel, clan, league, legendStatistics, playerHouse, role, townHallWeaponLevel, versusBattleWinCount, warPreference);
+            if (achievements.IsSet && achievements.Value == null)
+                throw new ArgumentNullException(nameof(achievements), "Property is not nullable for class Player.");
+
+            if (attackWins.IsSet && attackWins.Value == null)
+                throw new ArgumentNullException(nameof(attackWins), "Property is not nullable for class Player.");
+
+            if (bestTrophies.IsSet && bestTrophies.Value == null)
+                throw new ArgumentNullException(nameof(bestTrophies), "Property is not nullable for class Player.");
+
+            if (bestVersusTrophies.IsSet && bestVersusTrophies.Value == null)
+                throw new ArgumentNullException(nameof(bestVersusTrophies), "Property is not nullable for class Player.");
+
+            if (builderBaseTrophies.IsSet && builderBaseTrophies.Value == null)
+                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is not nullable for class Player.");
+
+            if (clanCapitalContributions.IsSet && clanCapitalContributions.Value == null)
+                throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is not nullable for class Player.");
+
+            if (defenseWins.IsSet && defenseWins.Value == null)
+                throw new ArgumentNullException(nameof(defenseWins), "Property is not nullable for class Player.");
+
+            if (donations.IsSet && donations.Value == null)
+                throw new ArgumentNullException(nameof(donations), "Property is not nullable for class Player.");
+
+            if (donationsReceived.IsSet && donationsReceived.Value == null)
+                throw new ArgumentNullException(nameof(donationsReceived), "Property is not nullable for class Player.");
+
+            if (expLevel.IsSet && expLevel.Value == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is not nullable for class Player.");
+
+            if (heroes.IsSet && heroes.Value == null)
+                throw new ArgumentNullException(nameof(heroes), "Property is not nullable for class Player.");
+
+            if (labels.IsSet && labels.Value == null)
+                throw new ArgumentNullException(nameof(labels), "Property is not nullable for class Player.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class Player.");
+
+            if (spells.IsSet && spells.Value == null)
+                throw new ArgumentNullException(nameof(spells), "Property is not nullable for class Player.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class Player.");
+
+            if (townHallLevel.IsSet && townHallLevel.Value == null)
+                throw new ArgumentNullException(nameof(townHallLevel), "Property is not nullable for class Player.");
+
+            if (troops.IsSet && troops.Value == null)
+                throw new ArgumentNullException(nameof(troops), "Property is not nullable for class Player.");
+
+            if (trophies.IsSet && trophies.Value == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is not nullable for class Player.");
+
+            if (warStars.IsSet && warStars.Value == null)
+                throw new ArgumentNullException(nameof(warStars), "Property is not nullable for class Player.");
+
+            if (builderBaseLeague.IsSet && builderBaseLeague.Value == null)
+                throw new ArgumentNullException(nameof(builderBaseLeague), "Property is not nullable for class Player.");
+
+            if (builderHallLevel.IsSet && builderHallLevel.Value == null)
+                throw new ArgumentNullException(nameof(builderHallLevel), "Property is not nullable for class Player.");
+
+            if (clan.IsSet && clan.Value == null)
+                throw new ArgumentNullException(nameof(clan), "Property is not nullable for class Player.");
+
+            if (league.IsSet && league.Value == null)
+                throw new ArgumentNullException(nameof(league), "Property is not nullable for class Player.");
+
+            if (legendStatistics.IsSet && legendStatistics.Value == null)
+                throw new ArgumentNullException(nameof(legendStatistics), "Property is not nullable for class Player.");
+
+            if (playerHouse.IsSet && playerHouse.Value == null)
+                throw new ArgumentNullException(nameof(playerHouse), "Property is not nullable for class Player.");
+
+            if (role.IsSet && role.Value == null)
+                throw new ArgumentNullException(nameof(role), "Property is not nullable for class Player.");
+
+            if (townHallWeaponLevel.IsSet && townHallWeaponLevel.Value == null)
+                throw new ArgumentNullException(nameof(townHallWeaponLevel), "Property is not nullable for class Player.");
+
+            if (versusBattleWinCount.IsSet && versusBattleWinCount.Value == null)
+                throw new ArgumentNullException(nameof(versusBattleWinCount), "Property is not nullable for class Player.");
+
+            if (warPreference.IsSet && warPreference.Value == null)
+                throw new ArgumentNullException(nameof(warPreference), "Property is not nullable for class Player.");
+
+            return new Player(achievements.Value!, attackWins.Value!.Value!, bestTrophies.Value!.Value!, bestVersusTrophies.Value!.Value!, builderBaseTrophies.Value!.Value!, clanCapitalContributions.Value!.Value!, defenseWins.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, heroes.Value!, labels.Value!, name.Value!, spells.Value!, tag.Value!, townHallLevel.Value!.Value!, troops.Value!, trophies.Value!.Value!, warStars.Value!.Value!, builderBaseLeague, builderHallLevel, clan, league, legendStatistics, playerHouse, role, townHallWeaponLevel, versusBattleWinCount, warPreference);
         }
 
         /// <summary>
@@ -808,77 +964,123 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, Player player, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (player.Achievements == null)
+                throw new ArgumentNullException(nameof(player.Achievements), "Property is required for class Player.");
+
+            if (player.Heroes == null)
+                throw new ArgumentNullException(nameof(player.Heroes), "Property is required for class Player.");
+
+            if (player.Labels == null)
+                throw new ArgumentNullException(nameof(player.Labels), "Property is required for class Player.");
+
+            if (player.Name == null)
+                throw new ArgumentNullException(nameof(player.Name), "Property is required for class Player.");
+
+            if (player.Spells == null)
+                throw new ArgumentNullException(nameof(player.Spells), "Property is required for class Player.");
+
+            if (player.Tag == null)
+                throw new ArgumentNullException(nameof(player.Tag), "Property is required for class Player.");
+
+            if (player.Troops == null)
+                throw new ArgumentNullException(nameof(player.Troops), "Property is required for class Player.");
+
+            if (player.BuilderBaseLeagueOption.IsSet && player.BuilderBaseLeague == null)
+                throw new ArgumentNullException(nameof(player.BuilderBaseLeague), "Property is required for class Player.");
+
+            if (player.ClanOption.IsSet && player.Clan == null)
+                throw new ArgumentNullException(nameof(player.Clan), "Property is required for class Player.");
+
+            if (player.LeagueOption.IsSet && player.League == null)
+                throw new ArgumentNullException(nameof(player.League), "Property is required for class Player.");
+
+            if (player.LegendStatisticsOption.IsSet && player.LegendStatistics == null)
+                throw new ArgumentNullException(nameof(player.LegendStatistics), "Property is required for class Player.");
+
+            if (player.PlayerHouseOption.IsSet && player.PlayerHouse == null)
+                throw new ArgumentNullException(nameof(player.PlayerHouse), "Property is required for class Player.");
+
             writer.WritePropertyName("achievements");
             JsonSerializer.Serialize(writer, player.Achievements, jsonSerializerOptions);
             writer.WriteNumber("attackWins", player.AttackWins);
+
             writer.WriteNumber("bestTrophies", player.BestTrophies);
+
             writer.WriteNumber("bestVersusTrophies", player.BestVersusTrophies);
+
             writer.WriteNumber("builderBaseTrophies", player.BuilderBaseTrophies);
+
             writer.WriteNumber("clanCapitalContributions", player.ClanCapitalContributions);
+
             writer.WriteNumber("defenseWins", player.DefenseWins);
+
             writer.WriteNumber("donations", player.Donations);
+
             writer.WriteNumber("donationsReceived", player.DonationsReceived);
+
             writer.WriteNumber("expLevel", player.ExpLevel);
+
             writer.WritePropertyName("heroes");
             JsonSerializer.Serialize(writer, player.Heroes, jsonSerializerOptions);
             writer.WritePropertyName("labels");
             JsonSerializer.Serialize(writer, player.Labels, jsonSerializerOptions);
             writer.WriteString("name", player.Name);
+
             writer.WritePropertyName("spells");
             JsonSerializer.Serialize(writer, player.Spells, jsonSerializerOptions);
             writer.WriteString("tag", player.Tag);
+
             writer.WriteNumber("townHallLevel", player.TownHallLevel);
+
             writer.WritePropertyName("troops");
             JsonSerializer.Serialize(writer, player.Troops, jsonSerializerOptions);
             writer.WriteNumber("trophies", player.Trophies);
+
             writer.WriteNumber("warStars", player.WarStars);
-            writer.WritePropertyName("builderBaseLeague");
-            JsonSerializer.Serialize(writer, player.BuilderBaseLeague, jsonSerializerOptions);
 
-            if (player.BuilderHallLevel != null)
-                writer.WriteNumber("builderHallLevel", player.BuilderHallLevel.Value);
-            else
-                writer.WriteNull("builderHallLevel");
-
-            writer.WritePropertyName("clan");
-            JsonSerializer.Serialize(writer, player.Clan, jsonSerializerOptions);
-            writer.WritePropertyName("league");
-            JsonSerializer.Serialize(writer, player.League, jsonSerializerOptions);
-            writer.WritePropertyName("legendStatistics");
-            JsonSerializer.Serialize(writer, player.LegendStatistics, jsonSerializerOptions);
-            writer.WritePropertyName("playerHouse");
-            JsonSerializer.Serialize(writer, player.PlayerHouse, jsonSerializerOptions);
-
-            if (player.Role == null)
-                writer.WriteNull("role");
-            else
+            if (player.BuilderBaseLeagueOption.IsSet)
             {
-                var roleRawValue = RoleValueConverter.ToJsonValue(player.Role.Value);
-                if (roleRawValue != null)
-                    writer.WriteString("role", roleRawValue);
-                else
-                    writer.WriteNull("role");
+                writer.WritePropertyName("builderBaseLeague");
+                JsonSerializer.Serialize(writer, player.BuilderBaseLeague, jsonSerializerOptions);
             }
+            if (player.BuilderHallLevelOption.IsSet)
+                writer.WriteNumber("builderHallLevel", player.BuilderHallLevelOption.Value!.Value);
 
-            if (player.TownHallWeaponLevel != null)
-                writer.WriteNumber("townHallWeaponLevel", player.TownHallWeaponLevel.Value);
-            else
-                writer.WriteNull("townHallWeaponLevel");
-
-            if (player.VersusBattleWinCount != null)
-                writer.WriteNumber("versusBattleWinCount", player.VersusBattleWinCount.Value);
-            else
-                writer.WriteNull("versusBattleWinCount");
-
-            if (player.WarPreference == null)
-                writer.WriteNull("warPreference");
-            else
+            if (player.ClanOption.IsSet)
             {
-                var warPreferenceRawValue = WarPreferenceValueConverter.ToJsonValue(player.WarPreference.Value);
-                if (warPreferenceRawValue != null)
-                    writer.WriteString("warPreference", warPreferenceRawValue);
-                else
-                    writer.WriteNull("warPreference");
+                writer.WritePropertyName("clan");
+                JsonSerializer.Serialize(writer, player.Clan, jsonSerializerOptions);
+            }
+            if (player.LeagueOption.IsSet)
+            {
+                writer.WritePropertyName("league");
+                JsonSerializer.Serialize(writer, player.League, jsonSerializerOptions);
+            }
+            if (player.LegendStatisticsOption.IsSet)
+            {
+                writer.WritePropertyName("legendStatistics");
+                JsonSerializer.Serialize(writer, player.LegendStatistics, jsonSerializerOptions);
+            }
+            if (player.PlayerHouseOption.IsSet)
+            {
+                writer.WritePropertyName("playerHouse");
+                JsonSerializer.Serialize(writer, player.PlayerHouse, jsonSerializerOptions);
+            }
+            if (player.RoleOption.IsSet)
+            {
+                var roleRawValue = RoleValueConverter.ToJsonValue(player.Role!.Value);
+                writer.WriteString("role", roleRawValue);
+            }
+            if (player.TownHallWeaponLevelOption.IsSet)
+                writer.WriteNumber("townHallWeaponLevel", player.TownHallWeaponLevelOption.Value!.Value);
+
+            if (player.VersusBattleWinCountOption.IsSet)
+                writer.WriteNumber("versusBattleWinCount", player.VersusBattleWinCountOption.Value!.Value);
+
+            if (player.WarPreferenceOption.IsSet)
+            {
+                var warPreferenceRawValue = WarPreferenceValueConverter.ToJsonValue(player.WarPreference!.Value);
+                writer.WriteString("warPreference", warPreferenceRawValue);
             }
         }
     }

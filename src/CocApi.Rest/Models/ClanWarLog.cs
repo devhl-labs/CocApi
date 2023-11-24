@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -127,7 +128,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<ClanWarLogEntry>? items = default;
+            Option<List<ClanWarLogEntry>?> items = default;
 
             while (utf8JsonReader.Read())
             {
@@ -146,7 +147,7 @@ namespace CocApi.Rest.Models
                     {
                         case "items":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = JsonSerializer.Deserialize<List<ClanWarLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
+                                items = new Option<List<ClanWarLogEntry>?>(JsonSerializer.Deserialize<List<ClanWarLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -154,10 +155,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (items == null)
-                throw new ArgumentNullException(nameof(items), "Property is required for class ClanWarLog.");
+            if (!items.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLog.", nameof(items));
 
-            return new ClanWarLog(items);
+            if (items.IsSet && items.Value == null)
+                throw new ArgumentNullException(nameof(items), "Property is not nullable for class ClanWarLog.");
+
+            return new ClanWarLog(items.Value!);
         }
 
         /// <summary>
@@ -184,6 +188,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLog clanWarLog, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarLog.Items == null)
+                throw new ArgumentNullException(nameof(clanWarLog.Items), "Property is required for class ClanWarLog.");
+
             writer.WritePropertyName("items");
             JsonSerializer.Serialize(writer, clanWarLog.Items, jsonSerializerOptions);
         }

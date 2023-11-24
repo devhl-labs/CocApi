@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -92,8 +93,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? email = default;
-            string? password = default;
+            Option<string?> email = default;
+            Option<string?> password = default;
 
             while (utf8JsonReader.Read())
             {
@@ -111,10 +112,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "email":
-                            email = utf8JsonReader.GetString();
+                            email = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "password":
-                            password = utf8JsonReader.GetString();
+                            password = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -122,13 +123,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (email == null)
-                throw new ArgumentNullException(nameof(email), "Property is required for class LoginCredentials.");
+            if (!email.IsSet)
+                throw new ArgumentException("Property is required for class LoginCredentials.", nameof(email));
 
-            if (password == null)
-                throw new ArgumentNullException(nameof(password), "Property is required for class LoginCredentials.");
+            if (!password.IsSet)
+                throw new ArgumentException("Property is required for class LoginCredentials.", nameof(password));
 
-            return new LoginCredentials(email, password);
+            if (email.IsSet && email.Value == null)
+                throw new ArgumentNullException(nameof(email), "Property is not nullable for class LoginCredentials.");
+
+            if (password.IsSet && password.Value == null)
+                throw new ArgumentNullException(nameof(password), "Property is not nullable for class LoginCredentials.");
+
+            return new LoginCredentials(email.Value!, password.Value!);
         }
 
         /// <summary>
@@ -155,7 +162,14 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, LoginCredentials loginCredentials, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (loginCredentials.Email == null)
+                throw new ArgumentNullException(nameof(loginCredentials.Email), "Property is required for class LoginCredentials.");
+
+            if (loginCredentials.Password == null)
+                throw new ArgumentNullException(nameof(loginCredentials.Password), "Property is required for class LoginCredentials.");
+
             writer.WriteString("email", loginCredentials.Email);
+
             writer.WriteString("password", loginCredentials.Password);
         }
     }

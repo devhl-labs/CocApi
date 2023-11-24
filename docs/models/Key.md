@@ -4,14 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**CidrRanges** | **List&lt;string&gt;** |  | [optional] 
-**Description** | **string** |  | [optional] 
-**DeveloperId** | **string** |  | [optional] 
-**Id** | **string** |  | [optional] 
-**VarKey** | **string** |  | [optional] 
-**Name** | **string** |  | [optional] 
-**Scopes** | **List&lt;string&gt;** |  | [optional] 
-**Tier** | **string** |  | [optional] 
+**CidrRanges** | **List&lt;string&gt;** |  | 
+**Description** | **string** |  | 
+**DeveloperId** | **string** |  | 
+**Id** | **string** |  | 
+**VarKey** | **string** |  | 
+**Name** | **string** |  | 
+**Scopes** | **List&lt;string&gt;** |  | 
+**Tier** | **string** |  | 
 **Origins** | **string** |  | [optional] 
 **ValidUntil** | **DateTime** |  | [optional] 
 

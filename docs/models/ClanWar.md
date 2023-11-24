@@ -4,14 +4,14 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**AttacksPerMember** | **int** |  | [optional] [readonly] 
-**Clan** | [**WarClan**](WarClan.md) |  | [optional] [readonly] 
-**EndTime** | **DateTime** |  | [optional] [readonly] 
-**Opponent** | [**WarClan**](WarClan.md) |  | [optional] [readonly] 
-**PreparationStartTime** | **DateTime** |  | [optional] [readonly] 
-**ServerExpiration** | **DateTime** |  | [optional] [readonly] 
-**StartTime** | **DateTime** |  | [optional] [readonly] 
-**TeamSize** | **int** |  | [optional] [readonly] 
+**AttacksPerMember** | **int** |  | [readonly] 
+**Clan** | [**WarClan**](WarClan.md) |  | [readonly] 
+**EndTime** | **DateTime** |  | [readonly] 
+**Opponent** | [**WarClan**](WarClan.md) |  | [readonly] 
+**PreparationStartTime** | **DateTime** |  | [readonly] 
+**ServerExpiration** | **DateTime** |  | [readonly] 
+**StartTime** | **DateTime** |  | [readonly] 
+**TeamSize** | **int** |  | [readonly] 
 **State** | **WarState** |  | [optional] [readonly] 
 **WarTag** | **string** |  | [optional] [readonly] 
 

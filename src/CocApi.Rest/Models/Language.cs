@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -155,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? id = default;
-            string? languageCode = default;
-            string? name = default;
+            Option<int?> id = default;
+            Option<string?> languageCode = default;
+            Option<string?> name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -176,13 +177,13 @@ namespace CocApi.Rest.Models
                     {
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "languageCode":
-                            languageCode = utf8JsonReader.GetString();
+                            languageCode = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -190,16 +191,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class Language.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class Language.", nameof(id));
 
-            if (languageCode == null)
-                throw new ArgumentNullException(nameof(languageCode), "Property is required for class Language.");
+            if (!languageCode.IsSet)
+                throw new ArgumentException("Property is required for class Language.", nameof(languageCode));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Language.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class Language.", nameof(name));
 
-            return new Language(id.Value, languageCode, name);
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class Language.");
+
+            if (languageCode.IsSet && languageCode.Value == null)
+                throw new ArgumentNullException(nameof(languageCode), "Property is not nullable for class Language.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class Language.");
+
+            return new Language(id.Value!.Value!, languageCode.Value!, name.Value!);
         }
 
         /// <summary>
@@ -226,8 +236,16 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, Language language, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (language.LanguageCode == null)
+                throw new ArgumentNullException(nameof(language.LanguageCode), "Property is required for class Language.");
+
+            if (language.Name == null)
+                throw new ArgumentNullException(nameof(language.Name), "Property is required for class Language.");
+
             writer.WriteNumber("id", language.Id);
+
             writer.WriteString("languageCode", language.LanguageCode);
+
             writer.WriteString("name", language.Name);
         }
     }

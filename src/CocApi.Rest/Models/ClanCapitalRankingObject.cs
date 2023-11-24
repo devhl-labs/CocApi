@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -127,7 +128,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<ClanCapitalRanking>? items = default;
+            Option<List<ClanCapitalRanking>?> items = default;
 
             while (utf8JsonReader.Read())
             {
@@ -146,7 +147,7 @@ namespace CocApi.Rest.Models
                     {
                         case "items":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = JsonSerializer.Deserialize<List<ClanCapitalRanking>>(ref utf8JsonReader, jsonSerializerOptions);
+                                items = new Option<List<ClanCapitalRanking>?>(JsonSerializer.Deserialize<List<ClanCapitalRanking>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -154,10 +155,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (items == null)
-                throw new ArgumentNullException(nameof(items), "Property is required for class ClanCapitalRankingObject.");
+            if (!items.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRankingObject.", nameof(items));
 
-            return new ClanCapitalRankingObject(items);
+            if (items.IsSet && items.Value == null)
+                throw new ArgumentNullException(nameof(items), "Property is not nullable for class ClanCapitalRankingObject.");
+
+            return new ClanCapitalRankingObject(items.Value!);
         }
 
         /// <summary>
@@ -184,6 +188,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRankingObject clanCapitalRankingObject, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanCapitalRankingObject.Items == null)
+                throw new ArgumentNullException(nameof(clanCapitalRankingObject.Items), "Property is required for class ClanCapitalRankingObject.");
+
             writer.WritePropertyName("items");
             JsonSerializer.Serialize(writer, clanCapitalRankingObject.Items, jsonSerializerOptions);
         }

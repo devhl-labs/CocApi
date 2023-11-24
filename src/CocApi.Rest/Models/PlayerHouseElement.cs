@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -144,7 +145,6 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public static string TypeEnumToJsonValue(TypeEnum value)
         {
-
             if (value == TypeEnum.Unknown)
                 return "unknown";
 
@@ -262,8 +262,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? id = default;
-            PlayerHouseElement.TypeEnum? type = default;
+            Option<int?> id = default;
+            Option<PlayerHouseElement.TypeEnum?> type = default;
 
             while (utf8JsonReader.Read())
             {
@@ -282,13 +282,12 @@ namespace CocApi.Rest.Models
                     {
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "type":
                             string? typeRawValue = utf8JsonReader.GetString();
-                            type = typeRawValue == null
-                                ? null
-                                : PlayerHouseElement.TypeEnumFromStringOrDefault(typeRawValue);
+                            if (typeRawValue != null)
+                                type = new Option<PlayerHouseElement.TypeEnum?>(PlayerHouseElement.TypeEnumFromStringOrDefault(typeRawValue));
                             break;
                         default:
                             break;
@@ -296,13 +295,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class PlayerHouseElement.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class PlayerHouseElement.", nameof(id));
 
-            if (type == null)
-                throw new ArgumentNullException(nameof(type), "Property is required for class PlayerHouseElement.");
+            if (!type.IsSet)
+                throw new ArgumentException("Property is required for class PlayerHouseElement.", nameof(type));
 
-            return new PlayerHouseElement(id.Value, type.Value);
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class PlayerHouseElement.");
+
+            if (type.IsSet && type.Value == null)
+                throw new ArgumentNullException(nameof(type), "Property is not nullable for class PlayerHouseElement.");
+
+            return new PlayerHouseElement(id.Value!.Value!, type.Value!.Value!);
         }
 
         /// <summary>

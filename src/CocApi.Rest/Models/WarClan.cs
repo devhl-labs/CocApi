@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -242,15 +243,15 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? attacks = default;
-            BadgeUrls? badgeUrls = default;
-            int? clanLevel = default;
-            float? destructionPercentage = default;
-            int? expEarned = default;
-            List<ClanWarMember>? members = default;
-            string? name = default;
-            int? stars = default;
-            string? tag = default;
+            Option<int?> attacks = default;
+            Option<BadgeUrls?> badgeUrls = default;
+            Option<int?> clanLevel = default;
+            Option<float?> destructionPercentage = default;
+            Option<int?> expEarned = default;
+            Option<List<ClanWarMember>?> members = default;
+            Option<string?> name = default;
+            Option<int?> stars = default;
+            Option<string?> tag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -269,37 +270,37 @@ namespace CocApi.Rest.Models
                     {
                         case "attacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = utf8JsonReader.GetInt32();
+                                attacks = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = utf8JsonReader.GetInt32();
+                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "destructionPercentage":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                destructionPercentage = (float)utf8JsonReader.GetDouble();
+                                destructionPercentage = new Option<float?>((float)utf8JsonReader.GetDouble());
                             break;
                         case "expEarned":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expEarned = utf8JsonReader.GetInt32();
+                                expEarned = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = JsonSerializer.Deserialize<List<ClanWarMember>>(ref utf8JsonReader, jsonSerializerOptions);
+                                members = new Option<List<ClanWarMember>?>(JsonSerializer.Deserialize<List<ClanWarMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = utf8JsonReader.GetInt32();
+                                stars = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -307,34 +308,61 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
+            if (!attacks.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(attacks));
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClan.");
+            if (!badgeUrls.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(badgeUrls));
 
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClan.");
+            if (!clanLevel.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(clanLevel));
 
-            if (destructionPercentage == null)
-                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
+            if (!destructionPercentage.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(destructionPercentage));
 
-            // if (expEarned == null)
-            //     throw new ArgumentNullException(nameof(expEarned), "Property is required for class WarClan.");
+            if (!expEarned.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(expEarned));
 
-            // if (members == null)
-            //     throw new ArgumentNullException(nameof(members), "Property is required for class WarClan.");
+            if (!members.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(members));
 
-            // if (name == null)
-            //     throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(name));
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
+            if (!stars.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(stars));
 
-            // if (tag == null)
-            //     throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class WarClan.", nameof(tag));
 
-            return new WarClan(attacks.Value, badgeUrls, clanLevel.Value, destructionPercentage.Value, expEarned.GetValueOrDefault(), members, name, stars.Value, tag);
+            if (attacks.IsSet && attacks.Value == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is not nullable for class WarClan.");
+
+            if (badgeUrls.IsSet && badgeUrls.Value == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is not nullable for class WarClan.");
+
+            if (clanLevel.IsSet && clanLevel.Value == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is not nullable for class WarClan.");
+
+            if (destructionPercentage.IsSet && destructionPercentage.Value == null)
+                throw new ArgumentNullException(nameof(destructionPercentage), "Property is not nullable for class WarClan.");
+
+            if (expEarned.IsSet && expEarned.Value == null)
+                throw new ArgumentNullException(nameof(expEarned), "Property is not nullable for class WarClan.");
+
+            if (members.IsSet && members.Value == null)
+                throw new ArgumentNullException(nameof(members), "Property is not nullable for class WarClan.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class WarClan.");
+
+            if (stars.IsSet && stars.Value == null)
+                throw new ArgumentNullException(nameof(stars), "Property is not nullable for class WarClan.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class WarClan.");
+
+            return new WarClan(attacks.Value!.Value!, badgeUrls.Value!, clanLevel.Value!.Value!, destructionPercentage.Value!.Value!, expEarned.Value!.Value!, members.Value!, name.Value!, stars.Value!.Value!, tag.Value!);
         }
 
         /// <summary>
@@ -361,16 +389,34 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, WarClan warClan, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (warClan.BadgeUrls == null)
+                throw new ArgumentNullException(nameof(warClan.BadgeUrls), "Property is required for class WarClan.");
+
+            if (warClan.Members == null)
+                throw new ArgumentNullException(nameof(warClan.Members), "Property is required for class WarClan.");
+
+            if (warClan.Name == null)
+                throw new ArgumentNullException(nameof(warClan.Name), "Property is required for class WarClan.");
+
+            if (warClan.Tag == null)
+                throw new ArgumentNullException(nameof(warClan.Tag), "Property is required for class WarClan.");
+
             writer.WriteNumber("attacks", warClan.Attacks);
+
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, warClan.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanLevel", warClan.ClanLevel);
+
             writer.WriteNumber("destructionPercentage", warClan.DestructionPercentage);
+
             writer.WriteNumber("expEarned", warClan.ExpEarned);
+
             writer.WritePropertyName("members");
             JsonSerializer.Serialize(writer, warClan.Members, jsonSerializerOptions);
             writer.WriteString("name", warClan.Name);
+
             writer.WriteNumber("stars", warClan.Stars);
+
             writer.WriteString("tag", warClan.Tag);
         }
     }

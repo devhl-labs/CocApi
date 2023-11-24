@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -154,9 +155,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? districtHallLevel = default;
-            int? id = default;
-            string? name = default;
+            Option<int?> districtHallLevel = default;
+            Option<int?> id = default;
+            Option<string?> name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -175,14 +176,14 @@ namespace CocApi.Rest.Models
                     {
                         case "districtHallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                districtHallLevel = utf8JsonReader.GetInt32();
+                                districtHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -190,16 +191,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (districtHallLevel == null)
-                throw new ArgumentNullException(nameof(districtHallLevel), "Property is required for class ClanDistrictData.");
+            if (!districtHallLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanDistrictData.", nameof(districtHallLevel));
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class ClanDistrictData.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class ClanDistrictData.", nameof(id));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanDistrictData.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanDistrictData.", nameof(name));
 
-            return new ClanDistrictData(districtHallLevel.Value, id.Value, name);
+            if (districtHallLevel.IsSet && districtHallLevel.Value == null)
+                throw new ArgumentNullException(nameof(districtHallLevel), "Property is not nullable for class ClanDistrictData.");
+
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class ClanDistrictData.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanDistrictData.");
+
+            return new ClanDistrictData(districtHallLevel.Value!.Value!, id.Value!.Value!, name.Value!);
         }
 
         /// <summary>
@@ -226,8 +236,13 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanDistrictData clanDistrictData, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanDistrictData.Name == null)
+                throw new ArgumentNullException(nameof(clanDistrictData.Name), "Property is required for class ClanDistrictData.");
+
             writer.WriteNumber("districtHallLevel", clanDistrictData.DistrictHallLevel);
+
             writer.WriteNumber("id", clanDistrictData.Id);
+
             writer.WriteString("name", clanDistrictData.Name);
         }
     }

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -156,9 +157,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? large = default;
-            string? medium = default;
-            string? small = default;
+            Option<string?> large = default;
+            Option<string?> medium = default;
+            Option<string?> small = default;
 
             while (utf8JsonReader.Read())
             {
@@ -176,13 +177,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "large":
-                            large = utf8JsonReader.GetString();
+                            large = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "medium":
-                            medium = utf8JsonReader.GetString();
+                            medium = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "small":
-                            small = utf8JsonReader.GetString();
+                            small = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -190,16 +191,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (large == null)
-                throw new ArgumentNullException(nameof(large), "Property is required for class BadgeUrls.");
+            if (!large.IsSet)
+                throw new ArgumentException("Property is required for class BadgeUrls.", nameof(large));
 
-            if (medium == null)
-                throw new ArgumentNullException(nameof(medium), "Property is required for class BadgeUrls.");
+            if (!medium.IsSet)
+                throw new ArgumentException("Property is required for class BadgeUrls.", nameof(medium));
 
-            if (small == null)
-                throw new ArgumentNullException(nameof(small), "Property is required for class BadgeUrls.");
+            if (!small.IsSet)
+                throw new ArgumentException("Property is required for class BadgeUrls.", nameof(small));
 
-            return new BadgeUrls(large, medium, small);
+            if (large.IsSet && large.Value == null)
+                throw new ArgumentNullException(nameof(large), "Property is not nullable for class BadgeUrls.");
+
+            if (medium.IsSet && medium.Value == null)
+                throw new ArgumentNullException(nameof(medium), "Property is not nullable for class BadgeUrls.");
+
+            if (small.IsSet && small.Value == null)
+                throw new ArgumentNullException(nameof(small), "Property is not nullable for class BadgeUrls.");
+
+            return new BadgeUrls(large.Value!, medium.Value!, small.Value!);
         }
 
         /// <summary>
@@ -226,8 +236,19 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, BadgeUrls badgeUrls, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (badgeUrls.Large == null)
+                throw new ArgumentNullException(nameof(badgeUrls.Large), "Property is required for class BadgeUrls.");
+
+            if (badgeUrls.Medium == null)
+                throw new ArgumentNullException(nameof(badgeUrls.Medium), "Property is required for class BadgeUrls.");
+
+            if (badgeUrls.Small == null)
+                throw new ArgumentNullException(nameof(badgeUrls.Small), "Property is required for class BadgeUrls.");
+
             writer.WriteString("large", badgeUrls.Large);
+
             writer.WriteString("medium", badgeUrls.Medium);
+
             writer.WriteString("small", badgeUrls.Small);
         }
     }

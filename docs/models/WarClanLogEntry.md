@@ -4,10 +4,10 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [optional] [readonly] 
-**ClanLevel** | **int** |  | [optional] [readonly] 
-**DestructionPercentage** | **float** |  | [optional] [readonly] 
-**Stars** | **int** |  | [optional] [readonly] 
+**BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [readonly] 
+**ClanLevel** | **int** |  | [readonly] 
+**DestructionPercentage** | **float** |  | [readonly] 
+**Stars** | **int** |  | [readonly] 
 **Attacks** | **int** |  | [optional] [readonly] 
 **ExpEarned** | **int** |  | [optional] [readonly] 
 **Name** | **string** |  | [optional] [readonly] 

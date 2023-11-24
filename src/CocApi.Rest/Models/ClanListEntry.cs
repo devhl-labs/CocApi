@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -51,7 +52,7 @@ namespace CocApi.Rest.Models
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal ClanListEntry(BadgeUrls badgeUrls, int clanBuilderBasePoints, int clanLevel, int clanPoints, bool isWarLogPublic, List<Label> labels, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Language? chatLanguage = default, Location? location = default, RecruitingType? type = default, WarFrequency? warFrequency = default, int? warLosses = default, int? warTies = default)
+        internal ClanListEntry(BadgeUrls badgeUrls, int clanBuilderBasePoints, int clanLevel, int clanPoints, bool isWarLogPublic, List<Label> labels, int members, string name, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Option<Language?> chatLanguage = default, Option<Location?> location = default, Option<RecruitingType?> type = default, Option<WarFrequency?> warFrequency = default, Option<int?> warLosses = default, Option<int?> warTies = default)
         {
             BadgeUrls = badgeUrls;
             ClanBuilderBasePoints = clanBuilderBasePoints;
@@ -66,28 +67,42 @@ namespace CocApi.Rest.Models
             WarLeague = warLeague;
             WarWinStreak = warWinStreak;
             WarWins = warWins;
-            ChatLanguage = chatLanguage;
-            Location = location;
-            Type = type;
-            WarFrequency = warFrequency;
-            WarLosses = warLosses;
-            WarTies = warTies;
+            ChatLanguageOption = chatLanguage;
+            LocationOption = location;
+            TypeOption = type;
+            WarFrequencyOption = warFrequency;
+            WarLossesOption = warLosses;
+            WarTiesOption = warTies;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of Type
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<RecruitingType?> TypeOption { get; }
+
+        /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public RecruitingType? Type { get; }
+        public RecruitingType? Type { get { return this.TypeOption; } }
+
+        /// <summary>
+        /// Used to track the state of WarFrequency
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<WarFrequency?> WarFrequencyOption { get; }
 
         /// <summary>
         /// Gets or Sets WarFrequency
         /// </summary>
         [JsonPropertyName("warFrequency")]
-        public WarFrequency? WarFrequency { get; }
+        public WarFrequency? WarFrequency { get { return this.WarFrequencyOption; } }
 
         /// <summary>
         /// Gets or Sets BadgeUrls
@@ -168,28 +183,56 @@ namespace CocApi.Rest.Models
         public int WarWins { get; }
 
         /// <summary>
+        /// Used to track the state of ChatLanguage
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Language?> ChatLanguageOption { get; }
+
+        /// <summary>
         /// Gets or Sets ChatLanguage
         /// </summary>
         [JsonPropertyName("chatLanguage")]
-        public Language? ChatLanguage { get; }
+        public Language? ChatLanguage { get { return this. ChatLanguageOption; } }
+
+        /// <summary>
+        /// Used to track the state of Location
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Location?> LocationOption { get; }
 
         /// <summary>
         /// Gets or Sets Location
         /// </summary>
         [JsonPropertyName("location")]
-        public Location? Location { get; }
+        public Location? Location { get { return this. LocationOption; } }
+
+        /// <summary>
+        /// Used to track the state of WarLosses
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> WarLossesOption { get; }
 
         /// <summary>
         /// Gets or Sets WarLosses
         /// </summary>
         [JsonPropertyName("warLosses")]
-        public int? WarLosses { get; }
+        public int? WarLosses { get { return this. WarLossesOption; } }
+
+        /// <summary>
+        /// Used to track the state of WarTies
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> WarTiesOption { get; }
 
         /// <summary>
         /// Gets or Sets WarTies
         /// </summary>
         [JsonPropertyName("warTies")]
-        public int? WarTies { get; }
+        public int? WarTies { get { return this. WarTiesOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -351,7 +394,6 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + WarLeague.GetHashCode();
                 hashCode = (hashCode * 59) + WarWinStreak.GetHashCode();
                 hashCode = (hashCode * 59) + WarWins.GetHashCode();
-
                 if (ChatLanguage != null)
                     hashCode = (hashCode * 59) + ChatLanguage.GetHashCode();
 
@@ -369,6 +411,7 @@ namespace CocApi.Rest.Models
 
                 if (WarTies != null)
                     hashCode = (hashCode * 59) + WarTies.GetHashCode();
+
 
                 return hashCode;
             }
@@ -397,25 +440,25 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls? badgeUrls = default;
-            int? clanBuilderBasePoints = default;
-            int? clanLevel = default;
-            int? clanPoints = default;
-            bool? isWarLogPublic = default;
-            List<Label>? labels = default;
-            int? members = default;
-            string? name = default;
-            int? requiredTrophies = default;
-            string? tag = default;
-            WarLeague? warLeague = default;
-            int? warWinStreak = default;
-            int? warWins = default;
-            Language? chatLanguage = default;
-            Location? location = default;
-            RecruitingType? type = default;
-            WarFrequency? warFrequency = default;
-            int? warLosses = default;
-            int? warTies = default;
+            Option<BadgeUrls?> badgeUrls = default;
+            Option<int?> clanBuilderBasePoints = default;
+            Option<int?> clanLevel = default;
+            Option<int?> clanPoints = default;
+            Option<bool?> isWarLogPublic = default;
+            Option<List<Label>?> labels = default;
+            Option<int?> members = default;
+            Option<string?> name = default;
+            Option<int?> requiredTrophies = default;
+            Option<string?> tag = default;
+            Option<WarLeague?> warLeague = default;
+            Option<int?> warWinStreak = default;
+            Option<int?> warWins = default;
+            Option<Language?> chatLanguage = default;
+            Option<Location?> location = default;
+            Option<RecruitingType?> type = default;
+            Option<WarFrequency?> warFrequency = default;
+            Option<int?> warLosses = default;
+            Option<int?> warTies = default;
 
             while (utf8JsonReader.Read())
             {
@@ -434,81 +477,79 @@ namespace CocApi.Rest.Models
                     {
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanBuilderBasePoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanBuilderBasePoints = utf8JsonReader.GetInt32();
+                                clanBuilderBasePoints = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "clanLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = utf8JsonReader.GetInt32();
+                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "clanPoints":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanPoints = utf8JsonReader.GetInt32();
+                                clanPoints = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "isWarLogPublic":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                isWarLogPublic = utf8JsonReader.GetBoolean();
+                                isWarLogPublic = new Option<bool?>(utf8JsonReader.GetBoolean());
                             break;
                         case "labels":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                labels = JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions);
+                                labels = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = utf8JsonReader.GetInt32();
+                                members = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "requiredTrophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                requiredTrophies = utf8JsonReader.GetInt32();
+                                requiredTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "warLeague":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warLeague = JsonSerializer.Deserialize<WarLeague>(ref utf8JsonReader, jsonSerializerOptions);
+                                warLeague = new Option<WarLeague?>(JsonSerializer.Deserialize<WarLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "warWinStreak":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warWinStreak = utf8JsonReader.GetInt32();
+                                warWinStreak = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "warWins":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warWins = utf8JsonReader.GetInt32();
+                                warWins = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "chatLanguage":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                chatLanguage = JsonSerializer.Deserialize<Language>(ref utf8JsonReader, jsonSerializerOptions);
+                                chatLanguage = new Option<Language?>(JsonSerializer.Deserialize<Language>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "location":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                location = JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions);
+                                location = new Option<Location?>(JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "type":
                             string? typeRawValue = utf8JsonReader.GetString();
-                            type = typeRawValue == null
-                                ? null
-                                : RecruitingTypeValueConverter.FromStringOrDefault(typeRawValue);
+                            if (typeRawValue != null)
+                                type = new Option<RecruitingType?>(RecruitingTypeValueConverter.FromStringOrDefault(typeRawValue));
                             break;
                         case "warFrequency":
                             string? warFrequencyRawValue = utf8JsonReader.GetString();
-                            warFrequency = warFrequencyRawValue == null
-                                ? null
-                                : WarFrequencyValueConverter.FromStringOrDefault(warFrequencyRawValue);
+                            if (warFrequencyRawValue != null)
+                                warFrequency = new Option<WarFrequency?>(WarFrequencyValueConverter.FromStringOrDefault(warFrequencyRawValue));
                             break;
                         case "warLosses":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warLosses = utf8JsonReader.GetInt32();
+                                warLosses = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "warTies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warTies = utf8JsonReader.GetInt32();
+                                warTies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -516,46 +557,103 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class ClanListEntry.");
+            if (!badgeUrls.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(badgeUrls));
 
-            if (clanBuilderBasePoints == null)
-                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is required for class ClanListEntry.");
+            if (!clanBuilderBasePoints.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(clanBuilderBasePoints));
 
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class ClanListEntry.");
+            if (!clanLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(clanLevel));
 
-            if (clanPoints == null)
-                throw new ArgumentNullException(nameof(clanPoints), "Property is required for class ClanListEntry.");
+            if (!clanPoints.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(clanPoints));
 
-            if (isWarLogPublic == null)
-                throw new ArgumentNullException(nameof(isWarLogPublic), "Property is required for class ClanListEntry.");
+            if (!isWarLogPublic.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(isWarLogPublic));
 
-            if (labels == null)
-                throw new ArgumentNullException(nameof(labels), "Property is required for class ClanListEntry.");
+            if (!labels.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(labels));
 
-            if (members == null)
-                throw new ArgumentNullException(nameof(members), "Property is required for class ClanListEntry.");
+            if (!members.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(members));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanListEntry.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(name));
 
-            if (requiredTrophies == null)
-                throw new ArgumentNullException(nameof(requiredTrophies), "Property is required for class ClanListEntry.");
+            if (!requiredTrophies.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(requiredTrophies));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanListEntry.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(tag));
 
-            if (warLeague == null)
-                throw new ArgumentNullException(nameof(warLeague), "Property is required for class ClanListEntry.");
+            if (!warLeague.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(warLeague));
 
-            if (warWinStreak == null)
-                throw new ArgumentNullException(nameof(warWinStreak), "Property is required for class ClanListEntry.");
+            if (!warWinStreak.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(warWinStreak));
 
-            if (warWins == null)
-                throw new ArgumentNullException(nameof(warWins), "Property is required for class ClanListEntry.");
+            if (!warWins.IsSet)
+                throw new ArgumentException("Property is required for class ClanListEntry.", nameof(warWins));
 
-            return new ClanListEntry(badgeUrls, clanBuilderBasePoints.Value, clanLevel.Value, clanPoints.Value, isWarLogPublic.Value, labels, members.Value, name, requiredTrophies.Value, tag, warLeague, warWinStreak.Value, warWins.Value, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            if (badgeUrls.IsSet && badgeUrls.Value == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is not nullable for class ClanListEntry.");
+
+            if (clanBuilderBasePoints.IsSet && clanBuilderBasePoints.Value == null)
+                throw new ArgumentNullException(nameof(clanBuilderBasePoints), "Property is not nullable for class ClanListEntry.");
+
+            if (clanLevel.IsSet && clanLevel.Value == null)
+                throw new ArgumentNullException(nameof(clanLevel), "Property is not nullable for class ClanListEntry.");
+
+            if (clanPoints.IsSet && clanPoints.Value == null)
+                throw new ArgumentNullException(nameof(clanPoints), "Property is not nullable for class ClanListEntry.");
+
+            if (isWarLogPublic.IsSet && isWarLogPublic.Value == null)
+                throw new ArgumentNullException(nameof(isWarLogPublic), "Property is not nullable for class ClanListEntry.");
+
+            if (labels.IsSet && labels.Value == null)
+                throw new ArgumentNullException(nameof(labels), "Property is not nullable for class ClanListEntry.");
+
+            if (members.IsSet && members.Value == null)
+                throw new ArgumentNullException(nameof(members), "Property is not nullable for class ClanListEntry.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanListEntry.");
+
+            if (requiredTrophies.IsSet && requiredTrophies.Value == null)
+                throw new ArgumentNullException(nameof(requiredTrophies), "Property is not nullable for class ClanListEntry.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanListEntry.");
+
+            if (warLeague.IsSet && warLeague.Value == null)
+                throw new ArgumentNullException(nameof(warLeague), "Property is not nullable for class ClanListEntry.");
+
+            if (warWinStreak.IsSet && warWinStreak.Value == null)
+                throw new ArgumentNullException(nameof(warWinStreak), "Property is not nullable for class ClanListEntry.");
+
+            if (warWins.IsSet && warWins.Value == null)
+                throw new ArgumentNullException(nameof(warWins), "Property is not nullable for class ClanListEntry.");
+
+            if (chatLanguage.IsSet && chatLanguage.Value == null)
+                throw new ArgumentNullException(nameof(chatLanguage), "Property is not nullable for class ClanListEntry.");
+
+            if (location.IsSet && location.Value == null)
+                throw new ArgumentNullException(nameof(location), "Property is not nullable for class ClanListEntry.");
+
+            if (type.IsSet && type.Value == null)
+                throw new ArgumentNullException(nameof(type), "Property is not nullable for class ClanListEntry.");
+
+            if (warFrequency.IsSet && warFrequency.Value == null)
+                throw new ArgumentNullException(nameof(warFrequency), "Property is not nullable for class ClanListEntry.");
+
+            if (warLosses.IsSet && warLosses.Value == null)
+                throw new ArgumentNullException(nameof(warLosses), "Property is not nullable for class ClanListEntry.");
+
+            if (warTies.IsSet && warTies.Value == null)
+                throw new ArgumentNullException(nameof(warTies), "Property is not nullable for class ClanListEntry.");
+
+            return new ClanListEntry(badgeUrls.Value!, clanBuilderBasePoints.Value!.Value!, clanLevel.Value!.Value!, clanPoints.Value!.Value!, isWarLogPublic.Value!.Value!, labels.Value!, members.Value!.Value!, name.Value!, requiredTrophies.Value!.Value!, tag.Value!, warLeague.Value!, warWinStreak.Value!.Value!, warWins.Value!.Value!, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>
@@ -582,58 +680,78 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanListEntry clanListEntry, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanListEntry.BadgeUrls == null)
+                throw new ArgumentNullException(nameof(clanListEntry.BadgeUrls), "Property is required for class ClanListEntry.");
+
+            if (clanListEntry.Labels == null)
+                throw new ArgumentNullException(nameof(clanListEntry.Labels), "Property is required for class ClanListEntry.");
+
+            if (clanListEntry.Name == null)
+                throw new ArgumentNullException(nameof(clanListEntry.Name), "Property is required for class ClanListEntry.");
+
+            if (clanListEntry.Tag == null)
+                throw new ArgumentNullException(nameof(clanListEntry.Tag), "Property is required for class ClanListEntry.");
+
+            if (clanListEntry.WarLeague == null)
+                throw new ArgumentNullException(nameof(clanListEntry.WarLeague), "Property is required for class ClanListEntry.");
+
+            if (clanListEntry.ChatLanguageOption.IsSet && clanListEntry.ChatLanguage == null)
+                throw new ArgumentNullException(nameof(clanListEntry.ChatLanguage), "Property is required for class ClanListEntry.");
+
+            if (clanListEntry.LocationOption.IsSet && clanListEntry.Location == null)
+                throw new ArgumentNullException(nameof(clanListEntry.Location), "Property is required for class ClanListEntry.");
+
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clanListEntry.BadgeUrls, jsonSerializerOptions);
             writer.WriteNumber("clanBuilderBasePoints", clanListEntry.ClanBuilderBasePoints);
+
             writer.WriteNumber("clanLevel", clanListEntry.ClanLevel);
+
             writer.WriteNumber("clanPoints", clanListEntry.ClanPoints);
+
             writer.WriteBoolean("isWarLogPublic", clanListEntry.IsWarLogPublic);
+
             writer.WritePropertyName("labels");
             JsonSerializer.Serialize(writer, clanListEntry.Labels, jsonSerializerOptions);
             writer.WriteNumber("members", clanListEntry.Members);
+
             writer.WriteString("name", clanListEntry.Name);
+
             writer.WriteNumber("requiredTrophies", clanListEntry.RequiredTrophies);
+
             writer.WriteString("tag", clanListEntry.Tag);
+
             writer.WritePropertyName("warLeague");
             JsonSerializer.Serialize(writer, clanListEntry.WarLeague, jsonSerializerOptions);
             writer.WriteNumber("warWinStreak", clanListEntry.WarWinStreak);
+
             writer.WriteNumber("warWins", clanListEntry.WarWins);
-            writer.WritePropertyName("chatLanguage");
-            JsonSerializer.Serialize(writer, clanListEntry.ChatLanguage, jsonSerializerOptions);
-            writer.WritePropertyName("location");
-            JsonSerializer.Serialize(writer, clanListEntry.Location, jsonSerializerOptions);
 
-            if (clanListEntry.Type == null)
-                writer.WriteNull("type");
-            else
+            if (clanListEntry.ChatLanguageOption.IsSet)
             {
-                var typeRawValue = RecruitingTypeValueConverter.ToJsonValue(clanListEntry.Type.Value);
-                if (typeRawValue != null)
-                    writer.WriteString("type", typeRawValue);
-                else
-                    writer.WriteNull("type");
+                writer.WritePropertyName("chatLanguage");
+                JsonSerializer.Serialize(writer, clanListEntry.ChatLanguage, jsonSerializerOptions);
             }
-
-            if (clanListEntry.WarFrequency == null)
-                writer.WriteNull("warFrequency");
-            else
+            if (clanListEntry.LocationOption.IsSet)
             {
-                var warFrequencyRawValue = WarFrequencyValueConverter.ToJsonValue(clanListEntry.WarFrequency.Value);
-                if (warFrequencyRawValue != null)
-                    writer.WriteString("warFrequency", warFrequencyRawValue);
-                else
-                    writer.WriteNull("warFrequency");
+                writer.WritePropertyName("location");
+                JsonSerializer.Serialize(writer, clanListEntry.Location, jsonSerializerOptions);
             }
+            if (clanListEntry.TypeOption.IsSet)
+            {
+                var typeRawValue = RecruitingTypeValueConverter.ToJsonValue(clanListEntry.Type!.Value);
+                writer.WriteString("type", typeRawValue);
+            }
+            if (clanListEntry.WarFrequencyOption.IsSet)
+            {
+                var warFrequencyRawValue = WarFrequencyValueConverter.ToJsonValue(clanListEntry.WarFrequency!.Value);
+                writer.WriteString("warFrequency", warFrequencyRawValue);
+            }
+            if (clanListEntry.WarLossesOption.IsSet)
+                writer.WriteNumber("warLosses", clanListEntry.WarLossesOption.Value!.Value);
 
-            if (clanListEntry.WarLosses != null)
-                writer.WriteNumber("warLosses", clanListEntry.WarLosses.Value);
-            else
-                writer.WriteNull("warLosses");
-
-            if (clanListEntry.WarTies != null)
-                writer.WriteNumber("warTies", clanListEntry.WarTies.Value);
-            else
-                writer.WriteNull("warTies");
+            if (clanListEntry.WarTiesOption.IsSet)
+                writer.WriteNumber("warTies", clanListEntry.WarTiesOption.Value!.Value);
         }
     }
 }

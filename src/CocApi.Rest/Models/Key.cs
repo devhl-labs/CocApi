@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -42,7 +43,7 @@ namespace CocApi.Rest.Models
         /// <param name="origins">origins</param>
         /// <param name="validUntil">validUntil</param>
         [JsonConstructor]
-        public Key(List<string> cidrRanges, string description, string developerId, string id, string varKey, string name, List<string> scopes, string tier, string? origins = default, DateTime? validUntil = default)
+        public Key(List<string> cidrRanges, string description, string developerId, string id, string varKey, string name, List<string> scopes, string tier, Option<string?> origins = default, Option<DateTime?> validUntil = default)
         {
             CidrRanges = cidrRanges;
             Description = description;
@@ -52,8 +53,8 @@ namespace CocApi.Rest.Models
             Name = name;
             Scopes = scopes;
             Tier = tier;
-            Origins = origins;
-            ValidUntil = validUntil;
+            OriginsOption = origins;
+            ValidUntilOption = validUntil;
             OnCreated();
         }
 
@@ -108,16 +109,30 @@ namespace CocApi.Rest.Models
         public string Tier { get; set; }
 
         /// <summary>
+        /// Used to track the state of Origins
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> OriginsOption { get; private set; }
+
+        /// <summary>
         /// Gets or Sets Origins
         /// </summary>
         [JsonPropertyName("origins")]
-        public string? Origins { get; set; }
+        public string? Origins { get { return this. OriginsOption; } set { this.OriginsOption = new(value); } }
+
+        /// <summary>
+        /// Used to track the state of ValidUntil
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<DateTime?> ValidUntilOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ValidUntil
         /// </summary>
         [JsonPropertyName("validUntil")]
-        public DateTime? ValidUntil { get; set; }
+        public DateTime? ValidUntil { get { return this. ValidUntilOption; } set { this.ValidUntilOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -169,16 +184,16 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<string>? cidrRanges = default;
-            string? description = default;
-            string? developerId = default;
-            string? id = default;
-            string? varKey = default;
-            string? name = default;
-            List<string>? scopes = default;
-            string? tier = default;
-            string? origins = default;
-            DateTime? validUntil = default;
+            Option<List<string>?> cidrRanges = default;
+            Option<string?> description = default;
+            Option<string?> developerId = default;
+            Option<string?> id = default;
+            Option<string?> varKey = default;
+            Option<string?> name = default;
+            Option<List<string>?> scopes = default;
+            Option<string?> tier = default;
+            Option<string?> origins = default;
+            Option<DateTime?> validUntil = default;
 
             while (utf8JsonReader.Read())
             {
@@ -197,36 +212,36 @@ namespace CocApi.Rest.Models
                     {
                         case "cidrRanges":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                cidrRanges = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                                cidrRanges = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "description":
-                            description = utf8JsonReader.GetString();
+                            description = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "developerId":
-                            developerId = utf8JsonReader.GetString();
+                            developerId = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "id":
-                            id = utf8JsonReader.GetString();
+                            id = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "key":
-                            varKey = utf8JsonReader.GetString();
+                            varKey = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "scopes":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                scopes = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                                scopes = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "tier":
-                            tier = utf8JsonReader.GetString();
+                            tier = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "origins":
-                            origins = utf8JsonReader.GetString();
+                            origins = new Option<string?>(utf8JsonReader.GetString());
                             break;
                         case "validUntil":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                validUntil = JsonSerializer.Deserialize<DateTime?>(ref utf8JsonReader, jsonSerializerOptions);
+                                validUntil = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;
@@ -234,31 +249,58 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (cidrRanges == null)
-                throw new ArgumentNullException(nameof(cidrRanges), "Property is required for class Key.");
+            if (!cidrRanges.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(cidrRanges));
 
-            if (description == null)
-                throw new ArgumentNullException(nameof(description), "Property is required for class Key.");
+            if (!description.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(description));
 
-            if (developerId == null)
-                throw new ArgumentNullException(nameof(developerId), "Property is required for class Key.");
+            if (!developerId.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(developerId));
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class Key.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(id));
 
-            if (varKey == null)
-                throw new ArgumentNullException(nameof(varKey), "Property is required for class Key.");
+            if (!varKey.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(varKey));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Key.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(name));
 
-            if (scopes == null)
-                throw new ArgumentNullException(nameof(scopes), "Property is required for class Key.");
+            if (!scopes.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(scopes));
 
-            if (tier == null)
-                throw new ArgumentNullException(nameof(tier), "Property is required for class Key.");
+            if (!tier.IsSet)
+                throw new ArgumentException("Property is required for class Key.", nameof(tier));
 
-            return new Key(cidrRanges, description, developerId, id, varKey, name, scopes, tier, origins, validUntil);
+            if (cidrRanges.IsSet && cidrRanges.Value == null)
+                throw new ArgumentNullException(nameof(cidrRanges), "Property is not nullable for class Key.");
+
+            if (description.IsSet && description.Value == null)
+                throw new ArgumentNullException(nameof(description), "Property is not nullable for class Key.");
+
+            if (developerId.IsSet && developerId.Value == null)
+                throw new ArgumentNullException(nameof(developerId), "Property is not nullable for class Key.");
+
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class Key.");
+
+            if (varKey.IsSet && varKey.Value == null)
+                throw new ArgumentNullException(nameof(varKey), "Property is not nullable for class Key.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class Key.");
+
+            if (scopes.IsSet && scopes.Value == null)
+                throw new ArgumentNullException(nameof(scopes), "Property is not nullable for class Key.");
+
+            if (tier.IsSet && tier.Value == null)
+                throw new ArgumentNullException(nameof(tier), "Property is not nullable for class Key.");
+
+            if (validUntil.IsSet && validUntil.Value == null)
+                throw new ArgumentNullException(nameof(validUntil), "Property is not nullable for class Key.");
+
+            return new Key(cidrRanges.Value!, description.Value!, developerId.Value!, id.Value!, varKey.Value!, name.Value!, scopes.Value!, tier.Value!, origins, validUntil);
         }
 
         /// <summary>
@@ -285,22 +327,54 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, Key key, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (key.CidrRanges == null)
+                throw new ArgumentNullException(nameof(key.CidrRanges), "Property is required for class Key.");
+
+            if (key.Description == null)
+                throw new ArgumentNullException(nameof(key.Description), "Property is required for class Key.");
+
+            if (key.DeveloperId == null)
+                throw new ArgumentNullException(nameof(key.DeveloperId), "Property is required for class Key.");
+
+            if (key.Id == null)
+                throw new ArgumentNullException(nameof(key.Id), "Property is required for class Key.");
+
+            if (key.VarKey == null)
+                throw new ArgumentNullException(nameof(key.VarKey), "Property is required for class Key.");
+
+            if (key.Name == null)
+                throw new ArgumentNullException(nameof(key.Name), "Property is required for class Key.");
+
+            if (key.Scopes == null)
+                throw new ArgumentNullException(nameof(key.Scopes), "Property is required for class Key.");
+
+            if (key.Tier == null)
+                throw new ArgumentNullException(nameof(key.Tier), "Property is required for class Key.");
+
             writer.WritePropertyName("cidrRanges");
             JsonSerializer.Serialize(writer, key.CidrRanges, jsonSerializerOptions);
             writer.WriteString("description", key.Description);
+
             writer.WriteString("developerId", key.DeveloperId);
+
             writer.WriteString("id", key.Id);
+
             writer.WriteString("key", key.VarKey);
+
             writer.WriteString("name", key.Name);
+
             writer.WritePropertyName("scopes");
             JsonSerializer.Serialize(writer, key.Scopes, jsonSerializerOptions);
             writer.WriteString("tier", key.Tier);
-            writer.WriteString("origins", key.Origins);
 
-            if (key.ValidUntil != null)
-                writer.WriteString("validUntil", key.ValidUntil.Value.ToString(ValidUntilFormat));
-            else
-                writer.WriteNull("validUntil");
+            if (key.OriginsOption.IsSet)
+                if (key.OriginsOption.Value != null)
+                    writer.WriteString("origins", key.Origins);
+                else
+                    writer.WriteNull("origins");
+
+            if (key.ValidUntilOption.IsSet)
+                writer.WriteString("validUntil", key.ValidUntilOption.Value!.Value.ToString(ValidUntilFormat));
         }
     }
 }

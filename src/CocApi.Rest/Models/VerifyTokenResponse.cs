@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -156,9 +157,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? status = default;
-            string? tag = default;
-            string? token = default;
+            Option<string?> status = default;
+            Option<string?> tag = default;
+            Option<string?> token = default;
 
             while (utf8JsonReader.Read())
             {
@@ -176,13 +177,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "status":
-                            status = utf8JsonReader.GetString();
+                            status = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "token":
-                            token = utf8JsonReader.GetString();
+                            token = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -190,16 +191,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (status == null)
-                throw new ArgumentNullException(nameof(status), "Property is required for class VerifyTokenResponse.");
+            if (!status.IsSet)
+                throw new ArgumentException("Property is required for class VerifyTokenResponse.", nameof(status));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class VerifyTokenResponse.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class VerifyTokenResponse.", nameof(tag));
 
-            if (token == null)
-                throw new ArgumentNullException(nameof(token), "Property is required for class VerifyTokenResponse.");
+            if (!token.IsSet)
+                throw new ArgumentException("Property is required for class VerifyTokenResponse.", nameof(token));
 
-            return new VerifyTokenResponse(status, tag, token);
+            if (status.IsSet && status.Value == null)
+                throw new ArgumentNullException(nameof(status), "Property is not nullable for class VerifyTokenResponse.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class VerifyTokenResponse.");
+
+            if (token.IsSet && token.Value == null)
+                throw new ArgumentNullException(nameof(token), "Property is not nullable for class VerifyTokenResponse.");
+
+            return new VerifyTokenResponse(status.Value!, tag.Value!, token.Value!);
         }
 
         /// <summary>
@@ -226,8 +236,19 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, VerifyTokenResponse verifyTokenResponse, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (verifyTokenResponse.Status == null)
+                throw new ArgumentNullException(nameof(verifyTokenResponse.Status), "Property is required for class VerifyTokenResponse.");
+
+            if (verifyTokenResponse.Tag == null)
+                throw new ArgumentNullException(nameof(verifyTokenResponse.Tag), "Property is required for class VerifyTokenResponse.");
+
+            if (verifyTokenResponse.Token == null)
+                throw new ArgumentNullException(nameof(verifyTokenResponse.Token), "Property is required for class VerifyTokenResponse.");
+
             writer.WriteString("status", verifyTokenResponse.Status);
+
             writer.WriteString("tag", verifyTokenResponse.Tag);
+
             writer.WriteString("token", verifyTokenResponse.Token);
         }
     }

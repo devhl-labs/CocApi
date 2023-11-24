@@ -4,15 +4,15 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Attacks** | **int** |  | [optional] [readonly] 
-**BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [optional] [readonly] 
-**ClanLevel** | **int** |  | [optional] [readonly] 
-**DestructionPercentage** | **float** |  | [optional] [readonly] 
-**ExpEarned** | **int** |  | [optional] [readonly] 
-**Members** | [**List&lt;ClanWarMember&gt;**](ClanWarMember.md) |  | [optional] [readonly] 
-**Name** | **string** |  | [optional] [readonly] 
-**Stars** | **int** |  | [optional] [readonly] 
-**Tag** | **string** |  | [optional] [readonly] 
+**Attacks** | **int** |  | [readonly] 
+**BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [readonly] 
+**ClanLevel** | **int** |  | [readonly] 
+**DestructionPercentage** | **float** |  | [readonly] 
+**ExpEarned** | **int** |  | [readonly] 
+**Members** | [**List&lt;ClanWarMember&gt;**](ClanWarMember.md) |  | [readonly] 
+**Name** | **string** |  | [readonly] 
+**Stars** | **int** |  | [readonly] 
+**Tag** | **string** |  | [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

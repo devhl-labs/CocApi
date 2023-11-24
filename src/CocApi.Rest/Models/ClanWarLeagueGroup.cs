@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -36,22 +37,29 @@ namespace CocApi.Rest.Models
         /// <param name="season">season</param>
         /// <param name="state">state</param>
         [JsonConstructor]
-        internal ClanWarLeagueGroup(List<ClanWarLeagueClan> clans, List<ClanWarLeagueRound> rounds, DateTime season, GroupState? state = default)
+        internal ClanWarLeagueGroup(List<ClanWarLeagueClan> clans, List<ClanWarLeagueRound> rounds, DateTime season, Option<GroupState?> state = default)
         {
             Clans = clans;
             Rounds = rounds;
             Season = season;
-            State = state;
+            StateOption = state;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of State
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<GroupState?> StateOption { get; }
+
+        /// <summary>
         /// Gets or Sets State
         /// </summary>
         [JsonPropertyName("state")]
-        public GroupState? State { get; }
+        public GroupState? State { get { return this.StateOption; } }
 
         /// <summary>
         /// Gets or Sets Clans
@@ -142,9 +150,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Clans.GetHashCode();
                 hashCode = (hashCode * 59) + Rounds.GetHashCode();
                 hashCode = (hashCode * 59) + Season.GetHashCode();
-
                 if (State != null)
                     hashCode = (hashCode * 59) + State.GetHashCode();
+
 
                 return hashCode;
             }
@@ -178,10 +186,10 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<ClanWarLeagueClan>? clans = default;
-            List<ClanWarLeagueRound>? rounds = default;
-            DateTime? season = default;
-            GroupState? state = default;
+            Option<List<ClanWarLeagueClan>?> clans = default;
+            Option<List<ClanWarLeagueRound>?> rounds = default;
+            Option<DateTime?> season = default;
+            Option<GroupState?> state = default;
 
             while (utf8JsonReader.Read())
             {
@@ -200,21 +208,20 @@ namespace CocApi.Rest.Models
                     {
                         case "clans":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clans = JsonSerializer.Deserialize<List<ClanWarLeagueClan>>(ref utf8JsonReader, jsonSerializerOptions);
+                                clans = new Option<List<ClanWarLeagueClan>?>(JsonSerializer.Deserialize<List<ClanWarLeagueClan>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "rounds":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rounds = JsonSerializer.Deserialize<List<ClanWarLeagueRound>>(ref utf8JsonReader, jsonSerializerOptions);
+                                rounds = new Option<List<ClanWarLeagueRound>?>(JsonSerializer.Deserialize<List<ClanWarLeagueRound>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "season":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                season = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                                season = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
-                            state = stateRawValue == null
-                                ? null
-                                : GroupStateValueConverter.FromStringOrDefault(stateRawValue);
+                            if (stateRawValue != null)
+                                state = new Option<GroupState?>(GroupStateValueConverter.FromStringOrDefault(stateRawValue));
                             break;
                         default:
                             break;
@@ -222,16 +229,28 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (clans == null)
-                throw new ArgumentNullException(nameof(clans), "Property is required for class ClanWarLeagueGroup.");
+            if (!clans.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueGroup.", nameof(clans));
 
-            if (rounds == null)
-                throw new ArgumentNullException(nameof(rounds), "Property is required for class ClanWarLeagueGroup.");
+            if (!rounds.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueGroup.", nameof(rounds));
 
-            if (season == null)
-                throw new ArgumentNullException(nameof(season), "Property is required for class ClanWarLeagueGroup.");
+            if (!season.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueGroup.", nameof(season));
 
-            return new ClanWarLeagueGroup(clans, rounds, season.Value, state);
+            if (clans.IsSet && clans.Value == null)
+                throw new ArgumentNullException(nameof(clans), "Property is not nullable for class ClanWarLeagueGroup.");
+
+            if (rounds.IsSet && rounds.Value == null)
+                throw new ArgumentNullException(nameof(rounds), "Property is not nullable for class ClanWarLeagueGroup.");
+
+            if (season.IsSet && season.Value == null)
+                throw new ArgumentNullException(nameof(season), "Property is not nullable for class ClanWarLeagueGroup.");
+
+            if (state.IsSet && state.Value == null)
+                throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanWarLeagueGroup.");
+
+            return new ClanWarLeagueGroup(clans.Value!, rounds.Value!, season.Value!.Value!, state);
         }
 
         /// <summary>
@@ -258,21 +277,22 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueGroup clanWarLeagueGroup, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarLeagueGroup.Clans == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueGroup.Clans), "Property is required for class ClanWarLeagueGroup.");
+
+            if (clanWarLeagueGroup.Rounds == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueGroup.Rounds), "Property is required for class ClanWarLeagueGroup.");
+
             writer.WritePropertyName("clans");
             JsonSerializer.Serialize(writer, clanWarLeagueGroup.Clans, jsonSerializerOptions);
             writer.WritePropertyName("rounds");
             JsonSerializer.Serialize(writer, clanWarLeagueGroup.Rounds, jsonSerializerOptions);
             writer.WriteString("season", clanWarLeagueGroup.Season.ToString(SeasonFormat));
 
-            if (clanWarLeagueGroup.State == null)
-                writer.WriteNull("state");
-            else
+            if (clanWarLeagueGroup.StateOption.IsSet)
             {
-                var stateRawValue = GroupStateValueConverter.ToJsonValue(clanWarLeagueGroup.State.Value);
-                if (stateRawValue != null)
-                    writer.WriteString("state", stateRawValue);
-                else
-                    writer.WriteNull("state");
+                var stateRawValue = GroupStateValueConverter.ToJsonValue(clanWarLeagueGroup.State!.Value);
+                writer.WriteString("state", stateRawValue);
             }
         }
     }

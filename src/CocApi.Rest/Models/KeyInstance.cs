@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -35,11 +36,11 @@ namespace CocApi.Rest.Models
         /// <param name="status">status</param>
         /// <param name="key">key</param>
         [JsonConstructor]
-        public KeyInstance(int sessionExpiresInSeconds, KeyListStatus status, Key? key = default)
+        public KeyInstance(int sessionExpiresInSeconds, KeyInstanceStatus status, Option<Key?> key = default)
         {
             SessionExpiresInSeconds = sessionExpiresInSeconds;
             Status = status;
-            Key = key;
+            KeyOption = key;
             OnCreated();
         }
 
@@ -55,13 +56,20 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Status
         /// </summary>
         [JsonPropertyName("status")]
-        public KeyListStatus Status { get; set; }
+        public KeyInstanceStatus Status { get; set; }
+
+        /// <summary>
+        /// Used to track the state of Key
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Key?> KeyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Key
         /// </summary>
         [JsonPropertyName("key")]
-        public Key? Key { get; set; }
+        public Key? Key { get { return this. KeyOption; } set { this.KeyOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -101,9 +109,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? sessionExpiresInSeconds = default;
-            KeyListStatus? status = default;
-            Key? key = default;
+            Option<int?> sessionExpiresInSeconds = default;
+            Option<KeyInstanceStatus?> status = default;
+            Option<Key?> key = default;
 
             while (utf8JsonReader.Read())
             {
@@ -122,15 +130,15 @@ namespace CocApi.Rest.Models
                     {
                         case "sessionExpiresInSeconds":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sessionExpiresInSeconds = utf8JsonReader.GetInt32();
+                                sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "status":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                status = JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions);
+                                status = new Option<KeyInstanceStatus?>(JsonSerializer.Deserialize<KeyInstanceStatus>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "key":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                key = JsonSerializer.Deserialize<Key>(ref utf8JsonReader, jsonSerializerOptions);
+                                key = new Option<Key?>(JsonSerializer.Deserialize<Key>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -138,13 +146,22 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (sessionExpiresInSeconds == null)
-                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is required for class KeyInstance.");
+            if (!sessionExpiresInSeconds.IsSet)
+                throw new ArgumentException("Property is required for class KeyInstance.", nameof(sessionExpiresInSeconds));
 
-            if (status == null)
-                throw new ArgumentNullException(nameof(status), "Property is required for class KeyInstance.");
+            if (!status.IsSet)
+                throw new ArgumentException("Property is required for class KeyInstance.", nameof(status));
 
-            return new KeyInstance(sessionExpiresInSeconds.Value, status, key);
+            if (sessionExpiresInSeconds.IsSet && sessionExpiresInSeconds.Value == null)
+                throw new ArgumentNullException(nameof(sessionExpiresInSeconds), "Property is not nullable for class KeyInstance.");
+
+            if (status.IsSet && status.Value == null)
+                throw new ArgumentNullException(nameof(status), "Property is not nullable for class KeyInstance.");
+
+            if (key.IsSet && key.Value == null)
+                throw new ArgumentNullException(nameof(key), "Property is not nullable for class KeyInstance.");
+
+            return new KeyInstance(sessionExpiresInSeconds.Value!.Value!, status.Value!, key);
         }
 
         /// <summary>
@@ -171,11 +188,21 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, KeyInstance keyInstance, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (keyInstance.Status == null)
+                throw new ArgumentNullException(nameof(keyInstance.Status), "Property is required for class KeyInstance.");
+
+            if (keyInstance.KeyOption.IsSet && keyInstance.Key == null)
+                throw new ArgumentNullException(nameof(keyInstance.Key), "Property is required for class KeyInstance.");
+
             writer.WriteNumber("sessionExpiresInSeconds", keyInstance.SessionExpiresInSeconds);
+
             writer.WritePropertyName("status");
             JsonSerializer.Serialize(writer, keyInstance.Status, jsonSerializerOptions);
-            writer.WritePropertyName("key");
-            JsonSerializer.Serialize(writer, keyInstance.Key, jsonSerializerOptions);
+            if (keyInstance.KeyOption.IsSet)
+            {
+                writer.WritePropertyName("key");
+                JsonSerializer.Serialize(writer, keyInstance.Key, jsonSerializerOptions);
+            }
         }
     }
 }

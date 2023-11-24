@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -141,8 +142,8 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? name = default;
-            string? tag = default;
+            Option<string?> name = default;
+            Option<string?> tag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -160,10 +161,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -171,13 +172,19 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanCapitalRaidSeasonAttacker.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonAttacker.", nameof(name));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanCapitalRaidSeasonAttacker.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonAttacker.", nameof(tag));
 
-            return new ClanCapitalRaidSeasonAttacker(name, tag);
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanCapitalRaidSeasonAttacker.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanCapitalRaidSeasonAttacker.");
+
+            return new ClanCapitalRaidSeasonAttacker(name.Value!, tag.Value!);
         }
 
         /// <summary>
@@ -204,7 +211,14 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonAttacker clanCapitalRaidSeasonAttacker, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanCapitalRaidSeasonAttacker.Name == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonAttacker.Name), "Property is required for class ClanCapitalRaidSeasonAttacker.");
+
+            if (clanCapitalRaidSeasonAttacker.Tag == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonAttacker.Tag), "Property is required for class ClanCapitalRaidSeasonAttacker.");
+
             writer.WriteString("name", clanCapitalRaidSeasonAttacker.Name);
+
             writer.WriteString("tag", clanCapitalRaidSeasonAttacker.Tag);
         }
     }

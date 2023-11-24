@@ -4,9 +4,9 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Keys** | [**List&lt;Key&gt;**](Key.md) |  | [optional] 
-**SessionExpiresInSeconds** | **int** |  | [optional] 
-**Status** | [**KeyListStatus**](KeyListStatus.md) |  | [optional] 
+**Keys** | [**List&lt;Key&gt;**](Key.md) |  | 
+**SessionExpiresInSeconds** | **int** |  | 
+**Status** | [**KeyListStatus**](KeyListStatus.md) |  | 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -44,7 +45,7 @@ namespace CocApi.Rest.Models
         /// <param name="totalAttacks">totalAttacks</param>
         /// <param name="members">members</param>
         [JsonConstructor]
-        internal ClanCapitalRaidSeason(List<ClanCapitalRaidSeasonAttackLogEntry> attackLog, int capitalTotalLoot, List<ClanCapitalRaidSeasonDefenseLogEntry> defenseLog, int defensiveReward, DateTime endTime, int enemyDistrictsDestroyed, int offensiveReward, int raidsCompleted, DateTime startTime, StateEnum state, int totalAttacks, List<ClanCapitalRaidSeasonMember>? members = default)
+        internal ClanCapitalRaidSeason(List<ClanCapitalRaidSeasonAttackLogEntry> attackLog, int capitalTotalLoot, List<ClanCapitalRaidSeasonDefenseLogEntry> defenseLog, int defensiveReward, DateTime endTime, int enemyDistrictsDestroyed, int offensiveReward, int raidsCompleted, DateTime startTime, StateEnum state, int totalAttacks, Option<List<ClanCapitalRaidSeasonMember>?> members = default)
         {
             AttackLog = attackLog;
             CapitalTotalLoot = capitalTotalLoot;
@@ -57,7 +58,7 @@ namespace CocApi.Rest.Models
             StartTime = startTime;
             State = state;
             TotalAttacks = totalAttacks;
-            Members = members;
+            MembersOption = members;
             OnCreated();
         }
 
@@ -131,7 +132,6 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public static string StateEnumToJsonValue(StateEnum value)
         {
-
             if (value == StateEnum.Unknown)
                 return "unknown";
 
@@ -211,10 +211,17 @@ namespace CocApi.Rest.Models
         public int TotalAttacks { get; }
 
         /// <summary>
+        /// Used to track the state of Members
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<List<ClanCapitalRaidSeasonMember>?> MembersOption { get; }
+
+        /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [JsonPropertyName("members")]
-        public List<ClanCapitalRaidSeasonMember>? Members { get; }
+        public List<ClanCapitalRaidSeasonMember>? Members { get { return this. MembersOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -337,9 +344,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + StartTime.GetHashCode();
                 hashCode = (hashCode * 59) + State.GetHashCode();
                 hashCode = (hashCode * 59) + TotalAttacks.GetHashCode();
-
                 if (Members != null)
                     hashCode = (hashCode * 59) + Members.GetHashCode();
+
 
                 return hashCode;
             }
@@ -378,18 +385,18 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<ClanCapitalRaidSeasonAttackLogEntry>? attackLog = default;
-            int? capitalTotalLoot = default;
-            List<ClanCapitalRaidSeasonDefenseLogEntry>? defenseLog = default;
-            int? defensiveReward = default;
-            DateTime? endTime = default;
-            int? enemyDistrictsDestroyed = default;
-            int? offensiveReward = default;
-            int? raidsCompleted = default;
-            DateTime? startTime = default;
-            ClanCapitalRaidSeason.StateEnum? state = default;
-            int? totalAttacks = default;
-            List<ClanCapitalRaidSeasonMember>? members = default;
+            Option<List<ClanCapitalRaidSeasonAttackLogEntry>?> attackLog = default;
+            Option<int?> capitalTotalLoot = default;
+            Option<List<ClanCapitalRaidSeasonDefenseLogEntry>?> defenseLog = default;
+            Option<int?> defensiveReward = default;
+            Option<DateTime?> endTime = default;
+            Option<int?> enemyDistrictsDestroyed = default;
+            Option<int?> offensiveReward = default;
+            Option<int?> raidsCompleted = default;
+            Option<DateTime?> startTime = default;
+            Option<ClanCapitalRaidSeason.StateEnum?> state = default;
+            Option<int?> totalAttacks = default;
+            Option<List<ClanCapitalRaidSeasonMember>?> members = default;
 
             while (utf8JsonReader.Read())
             {
@@ -408,53 +415,52 @@ namespace CocApi.Rest.Models
                     {
                         case "attackLog":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackLog = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttackLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
+                                attackLog = new Option<List<ClanCapitalRaidSeasonAttackLogEntry>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttackLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "capitalTotalLoot":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                capitalTotalLoot = utf8JsonReader.GetInt32();
+                                capitalTotalLoot = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "defenseLog":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defenseLog = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDefenseLogEntry>>(ref utf8JsonReader, jsonSerializerOptions);
+                                defenseLog = new Option<List<ClanCapitalRaidSeasonDefenseLogEntry>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDefenseLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "defensiveReward":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defensiveReward = utf8JsonReader.GetInt32();
+                                defensiveReward = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "endTime":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                                endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "enemyDistrictsDestroyed":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                enemyDistrictsDestroyed = utf8JsonReader.GetInt32();
+                                enemyDistrictsDestroyed = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "offensiveReward":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                offensiveReward = utf8JsonReader.GetInt32();
+                                offensiveReward = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "raidsCompleted":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                raidsCompleted = utf8JsonReader.GetInt32();
+                                raidsCompleted = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "startTime":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                startTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                                startTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
-                            state = stateRawValue == null
-                                ? null
-                                : ClanCapitalRaidSeason.StateEnumFromStringOrDefault(stateRawValue);
+                            if (stateRawValue != null)
+                                state = new Option<ClanCapitalRaidSeason.StateEnum?>(ClanCapitalRaidSeason.StateEnumFromStringOrDefault(stateRawValue));
                             break;
                         case "totalAttacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                totalAttacks = utf8JsonReader.GetInt32();
+                                totalAttacks = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonMember>>(ref utf8JsonReader, jsonSerializerOptions);
+                                members = new Option<List<ClanCapitalRaidSeasonMember>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -462,40 +468,76 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attackLog == null)
-                throw new ArgumentNullException(nameof(attackLog), "Property is required for class ClanCapitalRaidSeason.");
+            if (!attackLog.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(attackLog));
 
-            if (capitalTotalLoot == null)
-                throw new ArgumentNullException(nameof(capitalTotalLoot), "Property is required for class ClanCapitalRaidSeason.");
+            if (!capitalTotalLoot.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(capitalTotalLoot));
 
-            if (defenseLog == null)
-                throw new ArgumentNullException(nameof(defenseLog), "Property is required for class ClanCapitalRaidSeason.");
+            if (!defenseLog.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(defenseLog));
 
-            if (defensiveReward == null)
-                throw new ArgumentNullException(nameof(defensiveReward), "Property is required for class ClanCapitalRaidSeason.");
+            if (!defensiveReward.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(defensiveReward));
 
-            if (endTime == null)
-                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanCapitalRaidSeason.");
+            if (!endTime.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(endTime));
 
-            if (enemyDistrictsDestroyed == null)
-                throw new ArgumentNullException(nameof(enemyDistrictsDestroyed), "Property is required for class ClanCapitalRaidSeason.");
+            if (!enemyDistrictsDestroyed.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(enemyDistrictsDestroyed));
 
-            if (offensiveReward == null)
-                throw new ArgumentNullException(nameof(offensiveReward), "Property is required for class ClanCapitalRaidSeason.");
+            if (!offensiveReward.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(offensiveReward));
 
-            if (raidsCompleted == null)
-                throw new ArgumentNullException(nameof(raidsCompleted), "Property is required for class ClanCapitalRaidSeason.");
+            if (!raidsCompleted.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(raidsCompleted));
 
-            if (startTime == null)
-                throw new ArgumentNullException(nameof(startTime), "Property is required for class ClanCapitalRaidSeason.");
+            if (!startTime.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(startTime));
 
-            if (state == null)
-                throw new ArgumentNullException(nameof(state), "Property is required for class ClanCapitalRaidSeason.");
+            if (!state.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(state));
 
-            if (totalAttacks == null)
-                throw new ArgumentNullException(nameof(totalAttacks), "Property is required for class ClanCapitalRaidSeason.");
+            if (!totalAttacks.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeason.", nameof(totalAttacks));
 
-            return new ClanCapitalRaidSeason(attackLog, capitalTotalLoot.Value, defenseLog, defensiveReward.Value, endTime.Value, enemyDistrictsDestroyed.Value, offensiveReward.Value, raidsCompleted.Value, startTime.Value, state.Value, totalAttacks.Value, members);
+            if (attackLog.IsSet && attackLog.Value == null)
+                throw new ArgumentNullException(nameof(attackLog), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (capitalTotalLoot.IsSet && capitalTotalLoot.Value == null)
+                throw new ArgumentNullException(nameof(capitalTotalLoot), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (defenseLog.IsSet && defenseLog.Value == null)
+                throw new ArgumentNullException(nameof(defenseLog), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (defensiveReward.IsSet && defensiveReward.Value == null)
+                throw new ArgumentNullException(nameof(defensiveReward), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (endTime.IsSet && endTime.Value == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (enemyDistrictsDestroyed.IsSet && enemyDistrictsDestroyed.Value == null)
+                throw new ArgumentNullException(nameof(enemyDistrictsDestroyed), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (offensiveReward.IsSet && offensiveReward.Value == null)
+                throw new ArgumentNullException(nameof(offensiveReward), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (raidsCompleted.IsSet && raidsCompleted.Value == null)
+                throw new ArgumentNullException(nameof(raidsCompleted), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (startTime.IsSet && startTime.Value == null)
+                throw new ArgumentNullException(nameof(startTime), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (state.IsSet && state.Value == null)
+                throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (totalAttacks.IsSet && totalAttacks.Value == null)
+                throw new ArgumentNullException(nameof(totalAttacks), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            if (members.IsSet && members.Value == null)
+                throw new ArgumentNullException(nameof(members), "Property is not nullable for class ClanCapitalRaidSeason.");
+
+            return new ClanCapitalRaidSeason(attackLog.Value!, capitalTotalLoot.Value!.Value!, defenseLog.Value!, defensiveReward.Value!.Value!, endTime.Value!.Value!, enemyDistrictsDestroyed.Value!.Value!, offensiveReward.Value!.Value!, raidsCompleted.Value!.Value!, startTime.Value!.Value!, state.Value!.Value!, totalAttacks.Value!.Value!, members);
         }
 
         /// <summary>
@@ -522,16 +564,31 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeason clanCapitalRaidSeason, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanCapitalRaidSeason.AttackLog == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeason.AttackLog), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (clanCapitalRaidSeason.DefenseLog == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeason.DefenseLog), "Property is required for class ClanCapitalRaidSeason.");
+
+            if (clanCapitalRaidSeason.MembersOption.IsSet && clanCapitalRaidSeason.Members == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeason.Members), "Property is required for class ClanCapitalRaidSeason.");
+
             writer.WritePropertyName("attackLog");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeason.AttackLog, jsonSerializerOptions);
             writer.WriteNumber("capitalTotalLoot", clanCapitalRaidSeason.CapitalTotalLoot);
+
             writer.WritePropertyName("defenseLog");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeason.DefenseLog, jsonSerializerOptions);
             writer.WriteNumber("defensiveReward", clanCapitalRaidSeason.DefensiveReward);
+
             writer.WriteString("endTime", clanCapitalRaidSeason.EndTime.ToString(EndTimeFormat));
+
             writer.WriteNumber("enemyDistrictsDestroyed", clanCapitalRaidSeason.EnemyDistrictsDestroyed);
+
             writer.WriteNumber("offensiveReward", clanCapitalRaidSeason.OffensiveReward);
+
             writer.WriteNumber("raidsCompleted", clanCapitalRaidSeason.RaidsCompleted);
+
             writer.WriteString("startTime", clanCapitalRaidSeason.StartTime.ToString(StartTimeFormat));
 
             var stateRawValue = ClanCapitalRaidSeason.StateEnumToJsonValue(clanCapitalRaidSeason.State);
@@ -541,8 +598,12 @@ namespace CocApi.Rest.Models
                 writer.WriteNull("state");
 
             writer.WriteNumber("totalAttacks", clanCapitalRaidSeason.TotalAttacks);
-            writer.WritePropertyName("members");
-            JsonSerializer.Serialize(writer, clanCapitalRaidSeason.Members, jsonSerializerOptions);
+
+            if (clanCapitalRaidSeason.MembersOption.IsSet)
+            {
+                writer.WritePropertyName("members");
+                JsonSerializer.Serialize(writer, clanCapitalRaidSeason.Members, jsonSerializerOptions);
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -183,9 +184,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Target.GetHashCode();
                 hashCode = (hashCode * 59) + Value.GetHashCode();
                 hashCode = (hashCode * 59) + Village.GetHashCode();
-
                 if (CompletionInfo != null)
                     hashCode = (hashCode * 59) + CompletionInfo.GetHashCode();
+
 
                 return hashCode;
             }
@@ -214,13 +215,13 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? info = default;
-            string? name = default;
-            int? stars = default;
-            int? target = default;
-            int? value = default;
-            VillageType? village = default;
-            string? completionInfo = default;
+            Option<string?> info = default;
+            Option<string?> name = default;
+            Option<int?> stars = default;
+            Option<int?> target = default;
+            Option<int?> value = default;
+            Option<VillageType?> village = default;
+            Option<string?> completionInfo = default;
 
             while (utf8JsonReader.Read())
             {
@@ -238,31 +239,30 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "info":
-                            info = utf8JsonReader.GetString();
+                            info = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = utf8JsonReader.GetInt32();
+                                stars = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "target":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                target = utf8JsonReader.GetInt32();
+                                target = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "value":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                value = utf8JsonReader.GetInt32();
+                                value = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "village":
                             string? villageRawValue = utf8JsonReader.GetString();
-                            village = villageRawValue == null
-                                ? null
-                                : VillageTypeValueConverter.FromStringOrDefault(villageRawValue);
+                            if (villageRawValue != null)
+                                village = new Option<VillageType?>(VillageTypeValueConverter.FromStringOrDefault(villageRawValue));
                             break;
                         case "completionInfo":
-                            completionInfo = utf8JsonReader.GetString();
+                            completionInfo = new Option<string?>(utf8JsonReader.GetString());
                             break;
                         default:
                             break;
@@ -270,25 +270,46 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (info == null)
-                throw new ArgumentNullException(nameof(info), "Property is required for class PlayerAchievementProgress.");
+            if (!info.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(info));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerAchievementProgress.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(name));
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class PlayerAchievementProgress.");
+            if (!stars.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(stars));
 
-            if (target == null)
-                throw new ArgumentNullException(nameof(target), "Property is required for class PlayerAchievementProgress.");
+            if (!target.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(target));
 
-            if (value == null)
-                throw new ArgumentNullException(nameof(value), "Property is required for class PlayerAchievementProgress.");
+            if (!value.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(value));
 
-            if (village == null)
-                throw new ArgumentNullException(nameof(village), "Property is required for class PlayerAchievementProgress.");
+            if (!village.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(village));
 
-            return new PlayerAchievementProgress(info, name, stars.Value, target.Value, value.Value, village.Value, completionInfo);
+            if (!completionInfo.IsSet)
+                throw new ArgumentException("Property is required for class PlayerAchievementProgress.", nameof(completionInfo));
+
+            if (info.IsSet && info.Value == null)
+                throw new ArgumentNullException(nameof(info), "Property is not nullable for class PlayerAchievementProgress.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class PlayerAchievementProgress.");
+
+            if (stars.IsSet && stars.Value == null)
+                throw new ArgumentNullException(nameof(stars), "Property is not nullable for class PlayerAchievementProgress.");
+
+            if (target.IsSet && target.Value == null)
+                throw new ArgumentNullException(nameof(target), "Property is not nullable for class PlayerAchievementProgress.");
+
+            if (value.IsSet && value.Value == null)
+                throw new ArgumentNullException(nameof(value), "Property is not nullable for class PlayerAchievementProgress.");
+
+            if (village.IsSet && village.Value == null)
+                throw new ArgumentNullException(nameof(village), "Property is not nullable for class PlayerAchievementProgress.");
+
+            return new PlayerAchievementProgress(info.Value!, name.Value!, stars.Value!.Value!, target.Value!.Value!, value.Value!.Value!, village.Value!.Value!, completionInfo.Value!);
         }
 
         /// <summary>
@@ -315,19 +336,29 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, PlayerAchievementProgress playerAchievementProgress, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (playerAchievementProgress.Info == null)
+                throw new ArgumentNullException(nameof(playerAchievementProgress.Info), "Property is required for class PlayerAchievementProgress.");
+
+            if (playerAchievementProgress.Name == null)
+                throw new ArgumentNullException(nameof(playerAchievementProgress.Name), "Property is required for class PlayerAchievementProgress.");
+
             writer.WriteString("info", playerAchievementProgress.Info);
+
             writer.WriteString("name", playerAchievementProgress.Name);
+
             writer.WriteNumber("stars", playerAchievementProgress.Stars);
+
             writer.WriteNumber("target", playerAchievementProgress.Target);
+
             writer.WriteNumber("value", playerAchievementProgress.Value);
+
             var villageRawValue = VillageTypeValueConverter.ToJsonValue(playerAchievementProgress.Village);
+            writer.WriteString("village", villageRawValue);
 
-            if (villageRawValue != null)
-                writer.WriteString("village", villageRawValue);
+            if (playerAchievementProgress.CompletionInfo != null)
+                writer.WriteString("completionInfo", playerAchievementProgress.CompletionInfo);
             else
-                writer.WriteNull("village");
-
-            writer.WriteString("completionInfo", playerAchievementProgress.CompletionInfo);
+                writer.WriteNull("completionInfo");
         }
     }
 }

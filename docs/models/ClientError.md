@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Reason** | **string** |  | [optional] [readonly] 
+**Reason** | **string** |  | [readonly] 
 **Detail** | **Object** |  | [optional] [readonly] 
 **Message** | **string** |  | [optional] [readonly] 
 **Type** | **string** |  | [optional] [readonly] 

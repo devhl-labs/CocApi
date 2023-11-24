@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -126,7 +127,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? id = default;
+            Option<string?> id = default;
 
             while (utf8JsonReader.Read())
             {
@@ -144,7 +145,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "id":
-                            id = utf8JsonReader.GetString();
+                            id = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -152,10 +153,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class LeagueSeason.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class LeagueSeason.", nameof(id));
 
-            return new LeagueSeason(id);
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class LeagueSeason.");
+
+            return new LeagueSeason(id.Value!);
         }
 
         /// <summary>
@@ -182,6 +186,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, LeagueSeason leagueSeason, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (leagueSeason.Id == null)
+                throw new ArgumentNullException(nameof(leagueSeason.Id), "Property is required for class LeagueSeason.");
+
             writer.WriteString("id", leagueSeason.Id);
         }
     }

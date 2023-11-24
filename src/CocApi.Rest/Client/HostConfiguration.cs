@@ -84,6 +84,7 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new IconUrlsJsonConverter());
             _jsonOptions.Converters.Add(new KeyJsonConverter());
             _jsonOptions.Converters.Add(new KeyInstanceJsonConverter());
+            _jsonOptions.Converters.Add(new KeyInstanceStatusJsonConverter());
             _jsonOptions.Converters.Add(new KeyListJsonConverter());
             _jsonOptions.Converters.Add(new KeyListStatusJsonConverter());
             _jsonOptions.Converters.Add(new LabelJsonConverter());

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -45,7 +46,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
         [JsonConstructor]
-        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, BuilderBaseLeague? builderBaseLeague = default, PlayerHouse? playerHouse = default, Role? role = default)
+        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default)
         {
             BuilderBaseTrophies = builderBaseTrophies;
             ClanRank = clanRank;
@@ -57,19 +58,26 @@ namespace CocApi.Rest.Models
             PreviousClanRank = previousClanRank;
             Tag = tag;
             Trophies = trophies;
-            BuilderBaseLeague = builderBaseLeague;
-            PlayerHouse = playerHouse;
-            Role = role;
+            BuilderBaseLeagueOption = builderBaseLeague;
+            PlayerHouseOption = playerHouse;
+            RoleOption = role;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of Role
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Role?> RoleOption { get; }
+
+        /// <summary>
         /// Gets or Sets Role
         /// </summary>
         [JsonPropertyName("role")]
-        public Role? Role { get; }
+        public Role? Role { get { return this.RoleOption; } }
 
         /// <summary>
         /// Gets or Sets BuilderBaseTrophies
@@ -132,16 +140,30 @@ namespace CocApi.Rest.Models
         public int Trophies { get; }
 
         /// <summary>
+        /// Used to track the state of BuilderBaseLeague
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<BuilderBaseLeague?> BuilderBaseLeagueOption { get; }
+
+        /// <summary>
         /// Gets or Sets BuilderBaseLeague
         /// </summary>
         [JsonPropertyName("builderBaseLeague")]
-        public BuilderBaseLeague? BuilderBaseLeague { get; }
+        public BuilderBaseLeague? BuilderBaseLeague { get { return this. BuilderBaseLeagueOption; } }
+
+        /// <summary>
+        /// Used to track the state of PlayerHouse
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<PlayerHouse?> PlayerHouseOption { get; }
 
         /// <summary>
         /// Gets or Sets PlayerHouse
         /// </summary>
         [JsonPropertyName("playerHouse")]
-        public PlayerHouse? PlayerHouse { get; }
+        public PlayerHouse? PlayerHouse { get { return this. PlayerHouseOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -267,7 +289,6 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + PreviousClanRank.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
-
                 if (BuilderBaseLeague != null)
                     hashCode = (hashCode * 59) + BuilderBaseLeague.GetHashCode();
 
@@ -276,6 +297,7 @@ namespace CocApi.Rest.Models
 
                 if (Role != null)
                     hashCode = (hashCode * 59) + Role.GetHashCode();
+
 
                 return hashCode;
             }
@@ -304,19 +326,19 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? builderBaseTrophies = default;
-            int? clanRank = default;
-            int? donations = default;
-            int? donationsReceived = default;
-            int? expLevel = default;
-            League? league = default;
-            string? name = default;
-            int? previousClanRank = default;
-            string? tag = default;
-            int? trophies = default;
-            BuilderBaseLeague? builderBaseLeague = default;
-            PlayerHouse? playerHouse = default;
-            Role? role = default;
+            Option<int?> builderBaseTrophies = default;
+            Option<int?> clanRank = default;
+            Option<int?> donations = default;
+            Option<int?> donationsReceived = default;
+            Option<int?> expLevel = default;
+            Option<League?> league = default;
+            Option<string?> name = default;
+            Option<int?> previousClanRank = default;
+            Option<string?> tag = default;
+            Option<int?> trophies = default;
+            Option<BuilderBaseLeague?> builderBaseLeague = default;
+            Option<PlayerHouse?> playerHouse = default;
+            Option<Role?> role = default;
 
             while (utf8JsonReader.Read())
             {
@@ -336,55 +358,54 @@ namespace CocApi.Rest.Models
                         case "builderBaseTrophies":
                         case "versusTrophies": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseTrophies = utf8JsonReader.GetInt32();
+                                builderBaseTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "clanRank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanRank = utf8JsonReader.GetInt32();
+                                clanRank = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "donations":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                donations = utf8JsonReader.GetInt32();
+                                donations = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "donationsReceived":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                donationsReceived = utf8JsonReader.GetInt32();
+                                donationsReceived = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "expLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expLevel = utf8JsonReader.GetInt32();
+                                expLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "league":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                league = JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions);
+                                league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "previousClanRank":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                previousClanRank = utf8JsonReader.GetInt32();
+                                previousClanRank = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = utf8JsonReader.GetInt32();
+                                trophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "builderBaseLeague":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseLeague = JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions);
+                                builderBaseLeague = new Option<BuilderBaseLeague?>(JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "playerHouse":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                playerHouse = JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions);
+                                playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "role":
                             string? roleRawValue = utf8JsonReader.GetString();
-                            role = roleRawValue == null
-                                ? null
-                                : RoleValueConverter.FromStringOrDefault(roleRawValue);
+                            if (roleRawValue != null)
+                                role = new Option<Role?>(RoleValueConverter.FromStringOrDefault(roleRawValue));
                             break;
                         default:
                             break;
@@ -392,37 +413,76 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (builderBaseTrophies == null)
-                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is required for class ClanMember.");
+            if (!builderBaseTrophies.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(builderBaseTrophies));
 
-            if (clanRank == null)
-                throw new ArgumentNullException(nameof(clanRank), "Property is required for class ClanMember.");
+            if (!clanRank.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(clanRank));
 
-            if (donations == null)
-                throw new ArgumentNullException(nameof(donations), "Property is required for class ClanMember.");
+            if (!donations.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(donations));
 
-            if (donationsReceived == null)
-                throw new ArgumentNullException(nameof(donationsReceived), "Property is required for class ClanMember.");
+            if (!donationsReceived.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(donationsReceived));
 
-            if (expLevel == null)
-                throw new ArgumentNullException(nameof(expLevel), "Property is required for class ClanMember.");
+            if (!expLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(expLevel));
 
-            if (league == null)
-                throw new ArgumentNullException(nameof(league), "Property is required for class ClanMember.");
+            if (!league.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(league));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanMember.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(name));
 
-            if (previousClanRank == null)
-                throw new ArgumentNullException(nameof(previousClanRank), "Property is required for class ClanMember.");
+            if (!previousClanRank.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(previousClanRank));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanMember.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(tag));
 
-            if (trophies == null)
-                throw new ArgumentNullException(nameof(trophies), "Property is required for class ClanMember.");
+            if (!trophies.IsSet)
+                throw new ArgumentException("Property is required for class ClanMember.", nameof(trophies));
 
-            return new ClanMember(builderBaseTrophies.Value, clanRank.Value, donations.Value, donationsReceived.Value, expLevel.Value, league, name, previousClanRank.Value, tag, trophies.Value, builderBaseLeague, playerHouse, role);
+            if (builderBaseTrophies.IsSet && builderBaseTrophies.Value == null)
+                throw new ArgumentNullException(nameof(builderBaseTrophies), "Property is not nullable for class ClanMember.");
+
+            if (clanRank.IsSet && clanRank.Value == null)
+                throw new ArgumentNullException(nameof(clanRank), "Property is not nullable for class ClanMember.");
+
+            if (donations.IsSet && donations.Value == null)
+                throw new ArgumentNullException(nameof(donations), "Property is not nullable for class ClanMember.");
+
+            if (donationsReceived.IsSet && donationsReceived.Value == null)
+                throw new ArgumentNullException(nameof(donationsReceived), "Property is not nullable for class ClanMember.");
+
+            if (expLevel.IsSet && expLevel.Value == null)
+                throw new ArgumentNullException(nameof(expLevel), "Property is not nullable for class ClanMember.");
+
+            if (league.IsSet && league.Value == null)
+                throw new ArgumentNullException(nameof(league), "Property is not nullable for class ClanMember.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanMember.");
+
+            if (previousClanRank.IsSet && previousClanRank.Value == null)
+                throw new ArgumentNullException(nameof(previousClanRank), "Property is not nullable for class ClanMember.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanMember.");
+
+            if (trophies.IsSet && trophies.Value == null)
+                throw new ArgumentNullException(nameof(trophies), "Property is not nullable for class ClanMember.");
+
+            if (builderBaseLeague.IsSet && builderBaseLeague.Value == null)
+                throw new ArgumentNullException(nameof(builderBaseLeague), "Property is not nullable for class ClanMember.");
+
+            if (playerHouse.IsSet && playerHouse.Value == null)
+                throw new ArgumentNullException(nameof(playerHouse), "Property is not nullable for class ClanMember.");
+
+            if (role.IsSet && role.Value == null)
+                throw new ArgumentNullException(nameof(role), "Property is not nullable for class ClanMember.");
+
+            return new ClanMember(builderBaseTrophies.Value!.Value!, clanRank.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousClanRank.Value!.Value!, tag.Value!, trophies.Value!.Value!, builderBaseLeague, playerHouse, role);
         }
 
         /// <summary>
@@ -449,31 +509,55 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanMember clanMember, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanMember.League == null)
+                throw new ArgumentNullException(nameof(clanMember.League), "Property is required for class ClanMember.");
+
+            if (clanMember.Name == null)
+                throw new ArgumentNullException(nameof(clanMember.Name), "Property is required for class ClanMember.");
+
+            if (clanMember.Tag == null)
+                throw new ArgumentNullException(nameof(clanMember.Tag), "Property is required for class ClanMember.");
+
+            if (clanMember.BuilderBaseLeagueOption.IsSet && clanMember.BuilderBaseLeague == null)
+                throw new ArgumentNullException(nameof(clanMember.BuilderBaseLeague), "Property is required for class ClanMember.");
+
+            if (clanMember.PlayerHouseOption.IsSet && clanMember.PlayerHouse == null)
+                throw new ArgumentNullException(nameof(clanMember.PlayerHouse), "Property is required for class ClanMember.");
+
             writer.WriteNumber("builderBaseTrophies", clanMember.BuilderBaseTrophies);
+
             writer.WriteNumber("clanRank", clanMember.ClanRank);
+
             writer.WriteNumber("donations", clanMember.Donations);
+
             writer.WriteNumber("donationsReceived", clanMember.DonationsReceived);
+
             writer.WriteNumber("expLevel", clanMember.ExpLevel);
+
             writer.WritePropertyName("league");
             JsonSerializer.Serialize(writer, clanMember.League, jsonSerializerOptions);
             writer.WriteString("name", clanMember.Name);
-            writer.WriteNumber("previousClanRank", clanMember.PreviousClanRank);
-            writer.WriteString("tag", clanMember.Tag);
-            writer.WriteNumber("trophies", clanMember.Trophies);
-            writer.WritePropertyName("builderBaseLeague");
-            JsonSerializer.Serialize(writer, clanMember.BuilderBaseLeague, jsonSerializerOptions);
-            writer.WritePropertyName("playerHouse");
-            JsonSerializer.Serialize(writer, clanMember.PlayerHouse, jsonSerializerOptions);
 
-            if (clanMember.Role == null)
-                writer.WriteNull("role");
-            else
+            writer.WriteNumber("previousClanRank", clanMember.PreviousClanRank);
+
+            writer.WriteString("tag", clanMember.Tag);
+
+            writer.WriteNumber("trophies", clanMember.Trophies);
+
+            if (clanMember.BuilderBaseLeagueOption.IsSet)
             {
-                var roleRawValue = RoleValueConverter.ToJsonValue(clanMember.Role.Value);
-                if (roleRawValue != null)
-                    writer.WriteString("role", roleRawValue);
-                else
-                    writer.WriteNull("role");
+                writer.WritePropertyName("builderBaseLeague");
+                JsonSerializer.Serialize(writer, clanMember.BuilderBaseLeague, jsonSerializerOptions);
+            }
+            if (clanMember.PlayerHouseOption.IsSet)
+            {
+                writer.WritePropertyName("playerHouse");
+                JsonSerializer.Serialize(writer, clanMember.PlayerHouse, jsonSerializerOptions);
+            }
+            if (clanMember.RoleOption.IsSet)
+            {
+                var roleRawValue = RoleValueConverter.ToJsonValue(clanMember.Role!.Value);
+                writer.WriteString("role", roleRawValue);
             }
         }
     }

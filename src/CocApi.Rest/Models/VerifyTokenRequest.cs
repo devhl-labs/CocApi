@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -83,7 +84,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? token = default;
+            Option<string?> token = default;
 
             while (utf8JsonReader.Read())
             {
@@ -101,7 +102,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "token":
-                            token = utf8JsonReader.GetString();
+                            token = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -109,10 +110,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (token == null)
-                throw new ArgumentNullException(nameof(token), "Property is required for class VerifyTokenRequest.");
+            if (!token.IsSet)
+                throw new ArgumentException("Property is required for class VerifyTokenRequest.", nameof(token));
 
-            return new VerifyTokenRequest(token);
+            if (token.IsSet && token.Value == null)
+                throw new ArgumentNullException(nameof(token), "Property is not nullable for class VerifyTokenRequest.");
+
+            return new VerifyTokenRequest(token.Value!);
         }
 
         /// <summary>
@@ -139,6 +143,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, VerifyTokenRequest verifyTokenRequest, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (verifyTokenRequest.Token == null)
+                throw new ArgumentNullException(nameof(verifyTokenRequest.Token), "Property is required for class VerifyTokenRequest.");
+
             writer.WriteString("token", verifyTokenRequest.Token);
         }
     }

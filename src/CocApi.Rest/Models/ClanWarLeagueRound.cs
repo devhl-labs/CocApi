@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -127,7 +128,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<string>? warTags = default;
+            Option<List<string>?> warTags = default;
 
             while (utf8JsonReader.Read())
             {
@@ -146,7 +147,7 @@ namespace CocApi.Rest.Models
                     {
                         case "warTags":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warTags = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                                warTags = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -154,10 +155,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (warTags == null)
-                throw new ArgumentNullException(nameof(warTags), "Property is required for class ClanWarLeagueRound.");
+            if (!warTags.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLeagueRound.", nameof(warTags));
 
-            return new ClanWarLeagueRound(warTags);
+            if (warTags.IsSet && warTags.Value == null)
+                throw new ArgumentNullException(nameof(warTags), "Property is not nullable for class ClanWarLeagueRound.");
+
+            return new ClanWarLeagueRound(warTags.Value!);
         }
 
         /// <summary>
@@ -184,6 +188,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueRound clanWarLeagueRound, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarLeagueRound.WarTags == null)
+                throw new ArgumentNullException(nameof(clanWarLeagueRound.WarTags), "Property is required for class ClanWarLeagueRound.");
+
             writer.WritePropertyName("warTags");
             JsonSerializer.Serialize(writer, clanWarLeagueRound.WarTags, jsonSerializerOptions);
         }

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -127,7 +128,7 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<Label>? items = default;
+            Option<List<Label>?> items = default;
 
             while (utf8JsonReader.Read())
             {
@@ -146,7 +147,7 @@ namespace CocApi.Rest.Models
                     {
                         case "items":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions);
+                                items = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -154,10 +155,13 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (items == null)
-                throw new ArgumentNullException(nameof(items), "Property is required for class LabelsObject.");
+            if (!items.IsSet)
+                throw new ArgumentException("Property is required for class LabelsObject.", nameof(items));
 
-            return new LabelsObject(items);
+            if (items.IsSet && items.Value == null)
+                throw new ArgumentNullException(nameof(items), "Property is not nullable for class LabelsObject.");
+
+            return new LabelsObject(items.Value!);
         }
 
         /// <summary>
@@ -184,6 +188,9 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, LabelsObject labelsObject, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (labelsObject.Items == null)
+                throw new ArgumentNullException(nameof(labelsObject.Items), "Property is required for class LabelsObject.");
+
             writer.WritePropertyName("items");
             JsonSerializer.Serialize(writer, labelsObject.Items, jsonSerializerOptions);
         }

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -37,13 +38,13 @@ namespace CocApi.Rest.Models
         /// <param name="village">village</param>
         /// <param name="superTroopIsActive">superTroopIsActive</param>
         [JsonConstructor]
-        internal PlayerItemLevel(int level, int maxLevel, string name, VillageType village, bool? superTroopIsActive = default)
+        internal PlayerItemLevel(int level, int maxLevel, string name, VillageType village, Option<bool?> superTroopIsActive = default)
         {
             Level = level;
             MaxLevel = maxLevel;
             Name = name;
             Village = village;
-            SuperTroopIsActive = superTroopIsActive;
+            SuperTroopIsActiveOption = superTroopIsActive;
             OnCreated();
         }
 
@@ -74,10 +75,17 @@ namespace CocApi.Rest.Models
         public string Name { get; }
 
         /// <summary>
+        /// Used to track the state of SuperTroopIsActive
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<bool?> SuperTroopIsActiveOption { get; }
+
+        /// <summary>
         /// Gets or Sets SuperTroopIsActive
         /// </summary>
         [JsonPropertyName("superTroopIsActive")]
-        public bool? SuperTroopIsActive { get; }
+        public bool? SuperTroopIsActive { get { return this. SuperTroopIsActiveOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -153,9 +161,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + MaxLevel.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
                 hashCode = (hashCode * 59) + Village.GetHashCode();
-
                 if (SuperTroopIsActive != null)
                     hashCode = (hashCode * 59) + SuperTroopIsActive.GetHashCode();
+
 
                 return hashCode;
             }
@@ -184,11 +192,11 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? level = default;
-            int? maxLevel = default;
-            string? name = default;
-            VillageType? village = default;
-            bool? superTroopIsActive = default;
+            Option<int?> level = default;
+            Option<int?> maxLevel = default;
+            Option<string?> name = default;
+            Option<VillageType?> village = default;
+            Option<bool?> superTroopIsActive = default;
 
             while (utf8JsonReader.Read())
             {
@@ -207,24 +215,23 @@ namespace CocApi.Rest.Models
                     {
                         case "level":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                level = utf8JsonReader.GetInt32();
+                                level = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "maxLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                maxLevel = utf8JsonReader.GetInt32();
+                                maxLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "village":
                             string? villageRawValue = utf8JsonReader.GetString();
-                            village = villageRawValue == null
-                                ? null
-                                : VillageTypeValueConverter.FromStringOrDefault(villageRawValue);
+                            if (villageRawValue != null)
+                                village = new Option<VillageType?>(VillageTypeValueConverter.FromStringOrDefault(villageRawValue));
                             break;
                         case "superTroopIsActive":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                superTroopIsActive = utf8JsonReader.GetBoolean();
+                                superTroopIsActive = new Option<bool?>(utf8JsonReader.GetBoolean());
                             break;
                         default:
                             break;
@@ -232,19 +239,34 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (level == null)
-                throw new ArgumentNullException(nameof(level), "Property is required for class PlayerItemLevel.");
+            if (!level.IsSet)
+                throw new ArgumentException("Property is required for class PlayerItemLevel.", nameof(level));
 
-            if (maxLevel == null)
-                throw new ArgumentNullException(nameof(maxLevel), "Property is required for class PlayerItemLevel.");
+            if (!maxLevel.IsSet)
+                throw new ArgumentException("Property is required for class PlayerItemLevel.", nameof(maxLevel));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerItemLevel.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class PlayerItemLevel.", nameof(name));
 
-            if (village == null)
-                throw new ArgumentNullException(nameof(village), "Property is required for class PlayerItemLevel.");
+            if (!village.IsSet)
+                throw new ArgumentException("Property is required for class PlayerItemLevel.", nameof(village));
 
-            return new PlayerItemLevel(level.Value, maxLevel.Value, name, village.Value, superTroopIsActive);
+            if (level.IsSet && level.Value == null)
+                throw new ArgumentNullException(nameof(level), "Property is not nullable for class PlayerItemLevel.");
+
+            if (maxLevel.IsSet && maxLevel.Value == null)
+                throw new ArgumentNullException(nameof(maxLevel), "Property is not nullable for class PlayerItemLevel.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class PlayerItemLevel.");
+
+            if (village.IsSet && village.Value == null)
+                throw new ArgumentNullException(nameof(village), "Property is not nullable for class PlayerItemLevel.");
+
+            if (superTroopIsActive.IsSet && superTroopIsActive.Value == null)
+                throw new ArgumentNullException(nameof(superTroopIsActive), "Property is not nullable for class PlayerItemLevel.");
+
+            return new PlayerItemLevel(level.Value!.Value!, maxLevel.Value!.Value!, name.Value!, village.Value!.Value!, superTroopIsActive);
         }
 
         /// <summary>
@@ -271,20 +293,20 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, PlayerItemLevel playerItemLevel, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (playerItemLevel.Name == null)
+                throw new ArgumentNullException(nameof(playerItemLevel.Name), "Property is required for class PlayerItemLevel.");
+
             writer.WriteNumber("level", playerItemLevel.Level);
+
             writer.WriteNumber("maxLevel", playerItemLevel.MaxLevel);
+
             writer.WriteString("name", playerItemLevel.Name);
+
             var villageRawValue = VillageTypeValueConverter.ToJsonValue(playerItemLevel.Village);
+            writer.WriteString("village", villageRawValue);
 
-            if (villageRawValue != null)
-                writer.WriteString("village", villageRawValue);
-            else
-                writer.WriteNull("village");
-
-            if (playerItemLevel.SuperTroopIsActive != null)
-                writer.WriteBoolean("superTroopIsActive", playerItemLevel.SuperTroopIsActive.Value);
-            else
-                writer.WriteNull("superTroopIsActive");
+            if (playerItemLevel.SuperTroopIsActiveOption.IsSet)
+                writer.WriteBoolean("superTroopIsActive", playerItemLevel.SuperTroopIsActiveOption.Value!.Value);
         }
     }
 }

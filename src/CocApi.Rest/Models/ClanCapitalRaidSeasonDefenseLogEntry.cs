@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -184,11 +185,11 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? attackCount = default;
-            ClanCapitalRaidSeasonClanInfo? attacker = default;
-            int? districtCount = default;
-            List<ClanCapitalRaidSeasonDistrict>? districts = default;
-            int? districtsDestroyed = default;
+            Option<int?> attackCount = default;
+            Option<ClanCapitalRaidSeasonClanInfo?> attacker = default;
+            Option<int?> districtCount = default;
+            Option<List<ClanCapitalRaidSeasonDistrict>?> districts = default;
+            Option<int?> districtsDestroyed = default;
 
             while (utf8JsonReader.Read())
             {
@@ -207,23 +208,23 @@ namespace CocApi.Rest.Models
                     {
                         case "attackCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackCount = utf8JsonReader.GetInt32();
+                                attackCount = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "attacker":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacker = JsonSerializer.Deserialize<ClanCapitalRaidSeasonClanInfo>(ref utf8JsonReader, jsonSerializerOptions);
+                                attacker = new Option<ClanCapitalRaidSeasonClanInfo?>(JsonSerializer.Deserialize<ClanCapitalRaidSeasonClanInfo>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "districtCount":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                districtCount = utf8JsonReader.GetInt32();
+                                districtCount = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "districts":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                districts = JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDistrict>>(ref utf8JsonReader, jsonSerializerOptions);
+                                districts = new Option<List<ClanCapitalRaidSeasonDistrict>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDistrict>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "districtsDestroyed":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                districtsDestroyed = utf8JsonReader.GetInt32();
+                                districtsDestroyed = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -231,22 +232,37 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attackCount == null)
-                throw new ArgumentNullException(nameof(attackCount), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+            if (!attackCount.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.", nameof(attackCount));
 
-            if (attacker == null)
-                throw new ArgumentNullException(nameof(attacker), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+            if (!attacker.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.", nameof(attacker));
 
-            if (districtCount == null)
-                throw new ArgumentNullException(nameof(districtCount), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+            if (!districtCount.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.", nameof(districtCount));
 
-            if (districts == null)
-                throw new ArgumentNullException(nameof(districts), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+            if (!districts.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.", nameof(districts));
 
-            if (districtsDestroyed == null)
-                throw new ArgumentNullException(nameof(districtsDestroyed), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+            if (!districtsDestroyed.IsSet)
+                throw new ArgumentException("Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.", nameof(districtsDestroyed));
 
-            return new ClanCapitalRaidSeasonDefenseLogEntry(attackCount.Value, attacker, districtCount.Value, districts, districtsDestroyed.Value);
+            if (attackCount.IsSet && attackCount.Value == null)
+                throw new ArgumentNullException(nameof(attackCount), "Property is not nullable for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
+            if (attacker.IsSet && attacker.Value == null)
+                throw new ArgumentNullException(nameof(attacker), "Property is not nullable for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
+            if (districtCount.IsSet && districtCount.Value == null)
+                throw new ArgumentNullException(nameof(districtCount), "Property is not nullable for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
+            if (districts.IsSet && districts.Value == null)
+                throw new ArgumentNullException(nameof(districts), "Property is not nullable for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
+            if (districtsDestroyed.IsSet && districtsDestroyed.Value == null)
+                throw new ArgumentNullException(nameof(districtsDestroyed), "Property is not nullable for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
+            return new ClanCapitalRaidSeasonDefenseLogEntry(attackCount.Value!.Value!, attacker.Value!, districtCount.Value!.Value!, districts.Value!, districtsDestroyed.Value!.Value!);
         }
 
         /// <summary>
@@ -273,10 +289,18 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonDefenseLogEntry clanCapitalRaidSeasonDefenseLogEntry, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanCapitalRaidSeasonDefenseLogEntry.Attacker == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonDefenseLogEntry.Attacker), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
+            if (clanCapitalRaidSeasonDefenseLogEntry.Districts == null)
+                throw new ArgumentNullException(nameof(clanCapitalRaidSeasonDefenseLogEntry.Districts), "Property is required for class ClanCapitalRaidSeasonDefenseLogEntry.");
+
             writer.WriteNumber("attackCount", clanCapitalRaidSeasonDefenseLogEntry.AttackCount);
+
             writer.WritePropertyName("attacker");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDefenseLogEntry.Attacker, jsonSerializerOptions);
             writer.WriteNumber("districtCount", clanCapitalRaidSeasonDefenseLogEntry.DistrictCount);
+
             writer.WritePropertyName("districts");
             JsonSerializer.Serialize(writer, clanCapitalRaidSeasonDefenseLogEntry.Districts, jsonSerializerOptions);
             writer.WriteNumber("districtsDestroyed", clanCapitalRaidSeasonDefenseLogEntry.DistrictsDestroyed);

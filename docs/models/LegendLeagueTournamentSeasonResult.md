@@ -4,7 +4,7 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Trophies** | **int** |  | [optional] [readonly] 
+**Trophies** | **int** |  | [readonly] 
 **Id** | **DateTime** |  | [optional] [readonly] 
 **Rank** | **int** |  | [optional] [readonly] 
 

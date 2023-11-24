@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -36,12 +37,12 @@ namespace CocApi.Rest.Models
         /// <param name="message">message</param>
         /// <param name="type">type</param>
         [JsonConstructor]
-        internal ClientError(string reason, Object? detail = default, string? message = default, string? type = default)
+        internal ClientError(string reason, Option<Object?> detail = default, Option<string?> message = default, Option<string?> type = default)
         {
             Reason = reason;
-            Detail = detail;
-            Message = message;
-            Type = type;
+            DetailOption = detail;
+            MessageOption = message;
+            TypeOption = type;
             OnCreated();
         }
 
@@ -54,22 +55,43 @@ namespace CocApi.Rest.Models
         public string Reason { get; }
 
         /// <summary>
+        /// Used to track the state of Detail
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Object?> DetailOption { get; }
+
+        /// <summary>
         /// Gets or Sets Detail
         /// </summary>
         [JsonPropertyName("detail")]
-        public Object? Detail { get; }
+        public Object? Detail { get { return this. DetailOption; } }
+
+        /// <summary>
+        /// Used to track the state of Message
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> MessageOption { get; }
 
         /// <summary>
         /// Gets or Sets Message
         /// </summary>
         [JsonPropertyName("message")]
-        public string? Message { get; }
+        public string? Message { get { return this. MessageOption; } }
+
+        /// <summary>
+        /// Used to track the state of Type
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> TypeOption { get; }
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public string? Type { get; }
+        public string? Type { get { return this. TypeOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -140,7 +162,6 @@ namespace CocApi.Rest.Models
             {
                 int hashCode = 41;
                 hashCode = (hashCode * 59) + Reason.GetHashCode();
-
                 if (Detail != null)
                     hashCode = (hashCode * 59) + Detail.GetHashCode();
 
@@ -149,6 +170,7 @@ namespace CocApi.Rest.Models
 
                 if (Type != null)
                     hashCode = (hashCode * 59) + Type.GetHashCode();
+
 
                 return hashCode;
             }
@@ -177,10 +199,10 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? reason = default;
-            Object? detail = default;
-            string? message = default;
-            string? type = default;
+            Option<string?> reason = default;
+            Option<Object?> detail = default;
+            Option<string?> message = default;
+            Option<string?> type = default;
 
             while (utf8JsonReader.Read())
             {
@@ -198,17 +220,17 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "reason":
-                            reason = utf8JsonReader.GetString();
+                            reason = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "detail":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                detail = JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions);
+                                detail = new Option<Object?>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "message":
-                            message = utf8JsonReader.GetString();
+                            message = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "type":
-                            type = utf8JsonReader.GetString();
+                            type = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -216,10 +238,22 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (reason == null)
-                throw new ArgumentNullException(nameof(reason), "Property is required for class ClientError.");
+            if (!reason.IsSet)
+                throw new ArgumentException("Property is required for class ClientError.", nameof(reason));
 
-            return new ClientError(reason, detail, message, type);
+            if (reason.IsSet && reason.Value == null)
+                throw new ArgumentNullException(nameof(reason), "Property is not nullable for class ClientError.");
+
+            if (detail.IsSet && detail.Value == null)
+                throw new ArgumentNullException(nameof(detail), "Property is not nullable for class ClientError.");
+
+            if (message.IsSet && message.Value == null)
+                throw new ArgumentNullException(nameof(message), "Property is not nullable for class ClientError.");
+
+            if (type.IsSet && type.Value == null)
+                throw new ArgumentNullException(nameof(type), "Property is not nullable for class ClientError.");
+
+            return new ClientError(reason.Value!, detail, message, type);
         }
 
         /// <summary>
@@ -246,11 +280,30 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClientError clientError, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clientError.Reason == null)
+                throw new ArgumentNullException(nameof(clientError.Reason), "Property is required for class ClientError.");
+
+            if (clientError.DetailOption.IsSet && clientError.Detail == null)
+                throw new ArgumentNullException(nameof(clientError.Detail), "Property is required for class ClientError.");
+
+            if (clientError.MessageOption.IsSet && clientError.Message == null)
+                throw new ArgumentNullException(nameof(clientError.Message), "Property is required for class ClientError.");
+
+            if (clientError.TypeOption.IsSet && clientError.Type == null)
+                throw new ArgumentNullException(nameof(clientError.Type), "Property is required for class ClientError.");
+
             writer.WriteString("reason", clientError.Reason);
-            writer.WritePropertyName("detail");
-            JsonSerializer.Serialize(writer, clientError.Detail, jsonSerializerOptions);
-            writer.WriteString("message", clientError.Message);
-            writer.WriteString("type", clientError.Type);
+
+            if (clientError.DetailOption.IsSet)
+            {
+                writer.WritePropertyName("detail");
+                JsonSerializer.Serialize(writer, clientError.Detail, jsonSerializerOptions);
+            }
+            if (clientError.MessageOption.IsSet)
+                writer.WriteString("message", clientError.Message);
+
+            if (clientError.TypeOption.IsSet)
+                writer.WriteString("type", clientError.Type);
         }
     }
 }

@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -156,9 +157,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            BadgeUrls? badgeUrls = default;
-            string? name = default;
-            string? tag = default;
+            Option<BadgeUrls?> badgeUrls = default;
+            Option<string?> name = default;
+            Option<string?> tag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -177,13 +178,13 @@ namespace CocApi.Rest.Models
                     {
                         case "badgeUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -191,16 +192,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class PlayerRankingClan.");
+            if (!badgeUrls.IsSet)
+                throw new ArgumentException("Property is required for class PlayerRankingClan.", nameof(badgeUrls));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class PlayerRankingClan.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class PlayerRankingClan.", nameof(name));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class PlayerRankingClan.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class PlayerRankingClan.", nameof(tag));
 
-            return new PlayerRankingClan(badgeUrls, name, tag);
+            if (badgeUrls.IsSet && badgeUrls.Value == null)
+                throw new ArgumentNullException(nameof(badgeUrls), "Property is not nullable for class PlayerRankingClan.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class PlayerRankingClan.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class PlayerRankingClan.");
+
+            return new PlayerRankingClan(badgeUrls.Value!, name.Value!, tag.Value!);
         }
 
         /// <summary>
@@ -227,9 +237,19 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, PlayerRankingClan playerRankingClan, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (playerRankingClan.BadgeUrls == null)
+                throw new ArgumentNullException(nameof(playerRankingClan.BadgeUrls), "Property is required for class PlayerRankingClan.");
+
+            if (playerRankingClan.Name == null)
+                throw new ArgumentNullException(nameof(playerRankingClan.Name), "Property is required for class PlayerRankingClan.");
+
+            if (playerRankingClan.Tag == null)
+                throw new ArgumentNullException(nameof(playerRankingClan.Tag), "Property is required for class PlayerRankingClan.");
+
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, playerRankingClan.BadgeUrls, jsonSerializerOptions);
             writer.WriteString("name", playerRankingClan.Name);
+
             writer.WriteString("tag", playerRankingClan.Tag);
         }
     }

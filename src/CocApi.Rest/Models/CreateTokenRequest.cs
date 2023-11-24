@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -101,9 +102,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            List<string>? cidrRanges = default;
-            string? description = default;
-            string? name = default;
+            Option<List<string>?> cidrRanges = default;
+            Option<string?> description = default;
+            Option<string?> name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -122,13 +123,13 @@ namespace CocApi.Rest.Models
                     {
                         case "cidrRanges":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                cidrRanges = JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions);
+                                cidrRanges = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "description":
-                            description = utf8JsonReader.GetString();
+                            description = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -136,16 +137,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (cidrRanges == null)
-                throw new ArgumentNullException(nameof(cidrRanges), "Property is required for class CreateTokenRequest.");
+            if (!cidrRanges.IsSet)
+                throw new ArgumentException("Property is required for class CreateTokenRequest.", nameof(cidrRanges));
 
-            if (description == null)
-                throw new ArgumentNullException(nameof(description), "Property is required for class CreateTokenRequest.");
+            if (!description.IsSet)
+                throw new ArgumentException("Property is required for class CreateTokenRequest.", nameof(description));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class CreateTokenRequest.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class CreateTokenRequest.", nameof(name));
 
-            return new CreateTokenRequest(cidrRanges, description, name);
+            if (cidrRanges.IsSet && cidrRanges.Value == null)
+                throw new ArgumentNullException(nameof(cidrRanges), "Property is not nullable for class CreateTokenRequest.");
+
+            if (description.IsSet && description.Value == null)
+                throw new ArgumentNullException(nameof(description), "Property is not nullable for class CreateTokenRequest.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class CreateTokenRequest.");
+
+            return new CreateTokenRequest(cidrRanges.Value!, description.Value!, name.Value!);
         }
 
         /// <summary>
@@ -172,9 +182,19 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, CreateTokenRequest createTokenRequest, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (createTokenRequest.CidrRanges == null)
+                throw new ArgumentNullException(nameof(createTokenRequest.CidrRanges), "Property is required for class CreateTokenRequest.");
+
+            if (createTokenRequest.Description == null)
+                throw new ArgumentNullException(nameof(createTokenRequest.Description), "Property is required for class CreateTokenRequest.");
+
+            if (createTokenRequest.Name == null)
+                throw new ArgumentNullException(nameof(createTokenRequest.Name), "Property is required for class CreateTokenRequest.");
+
             writer.WritePropertyName("cidrRanges");
             JsonSerializer.Serialize(writer, createTokenRequest.CidrRanges, jsonSerializerOptions);
             writer.WriteString("description", createTokenRequest.Description);
+
             writer.WriteString("name", createTokenRequest.Name);
         }
     }

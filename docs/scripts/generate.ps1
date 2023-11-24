@@ -17,6 +17,7 @@ $properties = @(
     'packageGuid=71B5E000-88E9-432B-BAEB-BB622EA7DC33'
     "dateTimeFormat=yyyyMMdd'T'HHmmss.fff'Z'"
     "dateFormat=yyyy'-'MM"
+    "equatable=true"
 ) -join ","
 
 $global = @(
@@ -46,6 +47,18 @@ $clanWarPropertiesReplacement = @"
             readOnly: true
 "@
 
+$clanWarRequiredProperies = @"
+required:
+      - attacksPerMember
+"@
+
+$clanWarRequiredProperiesReplacement = @"
+required:
+      - serverExpiration
+      - attacksPerMember
+"@
+
+
 $generator = Resolve-Path -Path "$PSScriptRoot\..\..\..\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar"
 $yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0.yml"
 $output = Resolve-Path -Path "$PSScriptRoot\..\.."
@@ -53,6 +66,7 @@ $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
 
 $rawYml = $(Get-Content -Path $yml) -join "`r`n"
 $rawYml = $rawYml.Replace($clanWarProperties, $clanWarPropertiesReplacement)
+$rawYml = $rawYml.Replace($clanWarRequiredProperies, $clanWarRequiredProperiesReplacement)
 
 # TODO: mark attacksPerMember as nullable
 # but make it NOT be nullable in the appended-properties yaml, because we ensure that the property is there
@@ -219,6 +233,17 @@ $serverExpirationEquals = @"
 
 "@
 
+$membersNullCheck = @"
+            if (clan.MemberList == null)
+                throw new ArgumentNullException(nameof(clan.MemberList), "Property is required for class Clan.");
+
+"@
+
+$membersNullCheckReplacement = @"
+            if (clan.Members == null)
+                throw new ArgumentNullException(nameof(clan.Members), "Property is required for class Clan.");
+
+"@
 
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
@@ -304,7 +329,7 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("sb.Append(`"  MemberList: `").Append(MemberList).Append(`"\n`");`r`n            ", '')
         $content = $content.Replace($membersConverter, "")
         $content = $content.Replace("int members = default;`r`n            ", '')
-        $content = $content.Replace("memberList, members.Value,", "memberList,")
+        $content = $content.Replace("memberList.Value!, members.Value!.Value!,", "memberList,")
 
         $content = $content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
         $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);`r`n            ", "")
@@ -313,6 +338,8 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("ArgumentNullException(nameof(members)", "ArgumentNullException(nameof(memberList)")
         $content = $content.Replace("case `"clanBuilderBasePoints`":", "case `"clanBuilderBasePoints`":`r`n                        case `"clanVersusPoints`": // legacy property")
         $content = $content.Replace("case `"requiredBuilderBaseTrophies`":", "case `"requiredBuilderBaseTrophies`":`r`n                        case `"requiredVersusTrophies`": // legacy property")
+        $content = $content.Replace($membersNullCheck, $membersNullCheckReplacement)
+        $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);", "writer.WriteNumber(`"members`", clan.Members.Count);")
     }
 
     if ($file.name -eq "ClanMember.cs"){

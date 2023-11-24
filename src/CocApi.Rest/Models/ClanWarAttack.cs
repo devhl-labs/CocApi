@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -38,14 +39,14 @@ namespace CocApi.Rest.Models
         /// <param name="stars">stars</param>
         /// <param name="duration">duration</param>
         [JsonConstructor]
-        internal ClanWarAttack(string attackerTag, string defenderTag, int destructionPercentage, int order, int stars, int? duration = default)
+        internal ClanWarAttack(string attackerTag, string defenderTag, int destructionPercentage, int order, int stars, Option<int?> duration = default)
         {
             AttackerTag = attackerTag;
             DefenderTag = defenderTag;
             DestructionPercentage = destructionPercentage;
             Order = order;
             Stars = stars;
-            Duration = duration;
+            DurationOption = duration;
             OnCreated();
         }
 
@@ -82,10 +83,17 @@ namespace CocApi.Rest.Models
         public int Stars { get; }
 
         /// <summary>
+        /// Used to track the state of Duration
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> DurationOption { get; }
+
+        /// <summary>
         /// Gets or Sets Duration
         /// </summary>
         [JsonPropertyName("duration")]
-        public int? Duration { get; }
+        public int? Duration { get { return this. DurationOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -168,9 +176,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + DestructionPercentage.GetHashCode();
                 hashCode = (hashCode * 59) + Order.GetHashCode();
                 hashCode = (hashCode * 59) + Stars.GetHashCode();
-
                 if (Duration != null)
                     hashCode = (hashCode * 59) + Duration.GetHashCode();
+
 
                 return hashCode;
             }
@@ -199,12 +207,12 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            string? attackerTag = default;
-            string? defenderTag = default;
-            int? destructionPercentage = default;
-            int? order = default;
-            int? stars = default;
-            int? duration = default;
+            Option<string?> attackerTag = default;
+            Option<string?> defenderTag = default;
+            Option<int?> destructionPercentage = default;
+            Option<int?> order = default;
+            Option<int?> stars = default;
+            Option<int?> duration = default;
 
             while (utf8JsonReader.Read())
             {
@@ -222,26 +230,26 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "attackerTag":
-                            attackerTag = utf8JsonReader.GetString();
+                            attackerTag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "defenderTag":
-                            defenderTag = utf8JsonReader.GetString();
+                            defenderTag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "destructionPercentage":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                destructionPercentage = utf8JsonReader.GetInt32();
+                                destructionPercentage = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "order":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                order = utf8JsonReader.GetInt32();
+                                order = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "stars":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = utf8JsonReader.GetInt32();
+                                stars = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "duration":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                duration = utf8JsonReader.GetInt32();
+                                duration = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -249,22 +257,40 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (attackerTag == null)
-                throw new ArgumentNullException(nameof(attackerTag), "Property is required for class ClanWarAttack.");
+            if (!attackerTag.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarAttack.", nameof(attackerTag));
 
-            if (defenderTag == null)
-                throw new ArgumentNullException(nameof(defenderTag), "Property is required for class ClanWarAttack.");
+            if (!defenderTag.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarAttack.", nameof(defenderTag));
 
-            if (destructionPercentage == null)
-                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class ClanWarAttack.");
+            if (!destructionPercentage.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarAttack.", nameof(destructionPercentage));
 
-            if (order == null)
-                throw new ArgumentNullException(nameof(order), "Property is required for class ClanWarAttack.");
+            if (!order.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarAttack.", nameof(order));
 
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class ClanWarAttack.");
+            if (!stars.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarAttack.", nameof(stars));
 
-            return new ClanWarAttack(attackerTag, defenderTag, destructionPercentage.Value, order.Value, stars.Value, duration);
+            if (attackerTag.IsSet && attackerTag.Value == null)
+                throw new ArgumentNullException(nameof(attackerTag), "Property is not nullable for class ClanWarAttack.");
+
+            if (defenderTag.IsSet && defenderTag.Value == null)
+                throw new ArgumentNullException(nameof(defenderTag), "Property is not nullable for class ClanWarAttack.");
+
+            if (destructionPercentage.IsSet && destructionPercentage.Value == null)
+                throw new ArgumentNullException(nameof(destructionPercentage), "Property is not nullable for class ClanWarAttack.");
+
+            if (order.IsSet && order.Value == null)
+                throw new ArgumentNullException(nameof(order), "Property is not nullable for class ClanWarAttack.");
+
+            if (stars.IsSet && stars.Value == null)
+                throw new ArgumentNullException(nameof(stars), "Property is not nullable for class ClanWarAttack.");
+
+            if (duration.IsSet && duration.Value == null)
+                throw new ArgumentNullException(nameof(duration), "Property is not nullable for class ClanWarAttack.");
+
+            return new ClanWarAttack(attackerTag.Value!, defenderTag.Value!, destructionPercentage.Value!.Value!, order.Value!.Value!, stars.Value!.Value!, duration);
         }
 
         /// <summary>
@@ -291,16 +317,24 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarAttack clanWarAttack, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarAttack.AttackerTag == null)
+                throw new ArgumentNullException(nameof(clanWarAttack.AttackerTag), "Property is required for class ClanWarAttack.");
+
+            if (clanWarAttack.DefenderTag == null)
+                throw new ArgumentNullException(nameof(clanWarAttack.DefenderTag), "Property is required for class ClanWarAttack.");
+
             writer.WriteString("attackerTag", clanWarAttack.AttackerTag);
+
             writer.WriteString("defenderTag", clanWarAttack.DefenderTag);
+
             writer.WriteNumber("destructionPercentage", clanWarAttack.DestructionPercentage);
+
             writer.WriteNumber("order", clanWarAttack.Order);
+
             writer.WriteNumber("stars", clanWarAttack.Stars);
 
-            if (clanWarAttack.Duration != null)
-                writer.WriteNumber("duration", clanWarAttack.Duration.Value);
-            else
-                writer.WriteNull("duration");
+            if (clanWarAttack.DurationOption.IsSet)
+                writer.WriteNumber("duration", clanWarAttack.DurationOption.Value!.Value);
         }
     }
 }

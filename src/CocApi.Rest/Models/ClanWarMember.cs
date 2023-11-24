@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -39,15 +40,15 @@ namespace CocApi.Rest.Models
         /// <param name="attacks">attacks</param>
         /// <param name="bestOpponentAttack">bestOpponentAttack</param>
         [JsonConstructor]
-        internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, List<ClanWarAttack>? attacks = default, ClanWarAttack? bestOpponentAttack = default)
+        internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, Option<List<ClanWarAttack>?> attacks = default, Option<ClanWarAttack?> bestOpponentAttack = default)
         {
             RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#OnCreated
             Name = name;
             OpponentAttacks = opponentAttacks;
             Tag = tag;
             TownhallLevel = townhallLevel;
-            Attacks = attacks;
-            BestOpponentAttack = bestOpponentAttack;
+            AttacksOption = attacks;
+            BestOpponentAttackOption = bestOpponentAttack;
             OnCreated();
         }
 
@@ -78,16 +79,30 @@ namespace CocApi.Rest.Models
         public int TownhallLevel { get; }
 
         /// <summary>
+        /// Used to track the state of Attacks
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<List<ClanWarAttack>?> AttacksOption { get; }
+
+        /// <summary>
         /// Gets or Sets Attacks
         /// </summary>
         [JsonPropertyName("attacks")]
-        public List<ClanWarAttack>? Attacks { get; }
+        public List<ClanWarAttack>? Attacks { get { return this. AttacksOption; } }
+
+        /// <summary>
+        /// Used to track the state of BestOpponentAttack
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<ClanWarAttack?> BestOpponentAttackOption { get; }
 
         /// <summary>
         /// Gets or Sets BestOpponentAttack
         /// </summary>
         [JsonPropertyName("bestOpponentAttack")]
-        public ClanWarAttack? BestOpponentAttack { get; }
+        public ClanWarAttack? BestOpponentAttack { get { return this. BestOpponentAttackOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -178,12 +193,12 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + OpponentAttacks.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
                 hashCode = (hashCode * 59) + TownhallLevel.GetHashCode();
-
                 if (Attacks != null)
                     hashCode = (hashCode * 59) + Attacks.GetHashCode();
 
                 if (BestOpponentAttack != null)
                     hashCode = (hashCode * 59) + BestOpponentAttack.GetHashCode();
+
 
                 return hashCode;
             }
@@ -212,13 +227,13 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            int? mapPosition = default;
-            string? name = default;
-            int? opponentAttacks = default;
-            string? tag = default;
-            int? townhallLevel = default;
-            List<ClanWarAttack>? attacks = default;
-            ClanWarAttack? bestOpponentAttack = default;
+            Option<int?> mapPosition = default;
+            Option<string?> name = default;
+            Option<int?> opponentAttacks = default;
+            Option<string?> tag = default;
+            Option<int?> townhallLevel = default;
+            Option<List<ClanWarAttack>?> attacks = default;
+            Option<ClanWarAttack?> bestOpponentAttack = default;
 
             while (utf8JsonReader.Read())
             {
@@ -237,29 +252,29 @@ namespace CocApi.Rest.Models
                     {
                         case "mapPosition":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapPosition = utf8JsonReader.GetInt32();
+                                mapPosition = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "opponentAttacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                opponentAttacks = utf8JsonReader.GetInt32();
+                                opponentAttacks = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "tag":
-                            tag = utf8JsonReader.GetString();
+                            tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "townhallLevel":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townhallLevel = utf8JsonReader.GetInt32();
+                                townhallLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "attacks":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = JsonSerializer.Deserialize<List<ClanWarAttack>>(ref utf8JsonReader, jsonSerializerOptions);
+                                attacks = new Option<List<ClanWarAttack>?>(JsonSerializer.Deserialize<List<ClanWarAttack>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "bestOpponentAttack":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestOpponentAttack = JsonSerializer.Deserialize<ClanWarAttack>(ref utf8JsonReader, jsonSerializerOptions);
+                                bestOpponentAttack = new Option<ClanWarAttack?>(JsonSerializer.Deserialize<ClanWarAttack>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -267,22 +282,43 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (mapPosition == null)
-                throw new ArgumentNullException(nameof(mapPosition), "Property is required for class ClanWarMember.");
+            if (!mapPosition.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarMember.", nameof(mapPosition));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class ClanWarMember.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarMember.", nameof(name));
 
-            if (opponentAttacks == null)
-                throw new ArgumentNullException(nameof(opponentAttacks), "Property is required for class ClanWarMember.");
+            if (!opponentAttacks.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarMember.", nameof(opponentAttacks));
 
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class ClanWarMember.");
+            if (!tag.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarMember.", nameof(tag));
 
-            if (townhallLevel == null)
-                throw new ArgumentNullException(nameof(townhallLevel), "Property is required for class ClanWarMember.");
+            if (!townhallLevel.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarMember.", nameof(townhallLevel));
 
-            return new ClanWarMember(mapPosition.Value, name, opponentAttacks.Value, tag, townhallLevel.Value, attacks, bestOpponentAttack);
+            if (mapPosition.IsSet && mapPosition.Value == null)
+                throw new ArgumentNullException(nameof(mapPosition), "Property is not nullable for class ClanWarMember.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class ClanWarMember.");
+
+            if (opponentAttacks.IsSet && opponentAttacks.Value == null)
+                throw new ArgumentNullException(nameof(opponentAttacks), "Property is not nullable for class ClanWarMember.");
+
+            if (tag.IsSet && tag.Value == null)
+                throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanWarMember.");
+
+            if (townhallLevel.IsSet && townhallLevel.Value == null)
+                throw new ArgumentNullException(nameof(townhallLevel), "Property is not nullable for class ClanWarMember.");
+
+            if (attacks.IsSet && attacks.Value == null)
+                throw new ArgumentNullException(nameof(attacks), "Property is not nullable for class ClanWarMember.");
+
+            if (bestOpponentAttack.IsSet && bestOpponentAttack.Value == null)
+                throw new ArgumentNullException(nameof(bestOpponentAttack), "Property is not nullable for class ClanWarMember.");
+
+            return new ClanWarMember(mapPosition.Value!.Value!, name.Value!, opponentAttacks.Value!.Value!, tag.Value!, townhallLevel.Value!.Value!, attacks, bestOpponentAttack);
         }
 
         /// <summary>
@@ -309,15 +345,38 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarMember clanWarMember, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarMember.Name == null)
+                throw new ArgumentNullException(nameof(clanWarMember.Name), "Property is required for class ClanWarMember.");
+
+            if (clanWarMember.Tag == null)
+                throw new ArgumentNullException(nameof(clanWarMember.Tag), "Property is required for class ClanWarMember.");
+
+            if (clanWarMember.AttacksOption.IsSet && clanWarMember.Attacks == null)
+                throw new ArgumentNullException(nameof(clanWarMember.Attacks), "Property is required for class ClanWarMember.");
+
+            if (clanWarMember.BestOpponentAttackOption.IsSet && clanWarMember.BestOpponentAttack == null)
+                throw new ArgumentNullException(nameof(clanWarMember.BestOpponentAttack), "Property is required for class ClanWarMember.");
+
             writer.WriteNumber("mapPosition", clanWarMember.MapPosition);
+
             writer.WriteString("name", clanWarMember.Name);
+
             writer.WriteNumber("opponentAttacks", clanWarMember.OpponentAttacks);
+
             writer.WriteString("tag", clanWarMember.Tag);
+
             writer.WriteNumber("townhallLevel", clanWarMember.TownhallLevel);
-            writer.WritePropertyName("attacks");
-            JsonSerializer.Serialize(writer, clanWarMember.Attacks, jsonSerializerOptions);
-            writer.WritePropertyName("bestOpponentAttack");
-            JsonSerializer.Serialize(writer, clanWarMember.BestOpponentAttack, jsonSerializerOptions);
+
+            if (clanWarMember.AttacksOption.IsSet)
+            {
+                writer.WritePropertyName("attacks");
+                JsonSerializer.Serialize(writer, clanWarMember.Attacks, jsonSerializerOptions);
+            }
+            if (clanWarMember.BestOpponentAttackOption.IsSet)
+            {
+                writer.WritePropertyName("bestOpponentAttack");
+                JsonSerializer.Serialize(writer, clanWarMember.BestOpponentAttack, jsonSerializerOptions);
+            }
         }
     }
 }

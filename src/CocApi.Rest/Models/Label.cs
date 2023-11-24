@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -155,9 +156,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            IconUrls? iconUrls = default;
-            int? id = default;
-            string? name = default;
+            Option<IconUrls?> iconUrls = default;
+            Option<int?> id = default;
+            Option<string?> name = default;
 
             while (utf8JsonReader.Read())
             {
@@ -176,14 +177,14 @@ namespace CocApi.Rest.Models
                     {
                         case "iconUrls":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                iconUrls = JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions);
+                                iconUrls = new Option<IconUrls?>(JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "id":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = utf8JsonReader.GetInt32();
+                                id = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "name":
-                            name = utf8JsonReader.GetString();
+                            name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         default:
                             break;
@@ -191,16 +192,25 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (iconUrls == null)
-                throw new ArgumentNullException(nameof(iconUrls), "Property is required for class Label.");
+            if (!iconUrls.IsSet)
+                throw new ArgumentException("Property is required for class Label.", nameof(iconUrls));
 
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Property is required for class Label.");
+            if (!id.IsSet)
+                throw new ArgumentException("Property is required for class Label.", nameof(id));
 
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class Label.");
+            if (!name.IsSet)
+                throw new ArgumentException("Property is required for class Label.", nameof(name));
 
-            return new Label(iconUrls, id.Value, name);
+            if (iconUrls.IsSet && iconUrls.Value == null)
+                throw new ArgumentNullException(nameof(iconUrls), "Property is not nullable for class Label.");
+
+            if (id.IsSet && id.Value == null)
+                throw new ArgumentNullException(nameof(id), "Property is not nullable for class Label.");
+
+            if (name.IsSet && name.Value == null)
+                throw new ArgumentNullException(nameof(name), "Property is not nullable for class Label.");
+
+            return new Label(iconUrls.Value!, id.Value!.Value!, name.Value!);
         }
 
         /// <summary>
@@ -227,9 +237,16 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, Label label, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (label.IconUrls == null)
+                throw new ArgumentNullException(nameof(label.IconUrls), "Property is required for class Label.");
+
+            if (label.Name == null)
+                throw new ArgumentNullException(nameof(label.Name), "Property is required for class Label.");
+
             writer.WritePropertyName("iconUrls");
             JsonSerializer.Serialize(writer, label.IconUrls, jsonSerializerOptions);
             writer.WriteNumber("id", label.Id);
+
             writer.WriteString("name", label.Name);
         }
     }

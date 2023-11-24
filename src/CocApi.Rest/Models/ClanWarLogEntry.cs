@@ -20,6 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using CocApi.Rest.Client;
 
 namespace CocApi.Rest.Models
 {
@@ -38,24 +39,31 @@ namespace CocApi.Rest.Models
         /// <param name="attacksPerMember">attacksPerMember</param>
         /// <param name="result">result</param>
         [JsonConstructor]
-        internal ClanWarLogEntry(WarClanLogEntry clan, DateTime endTime, WarClanLogEntry opponent, int teamSize, int? attacksPerMember = default, Result? result = default)
+        internal ClanWarLogEntry(WarClanLogEntry clan, DateTime endTime, WarClanLogEntry opponent, int teamSize, Option<int?> attacksPerMember = default, Option<Result?> result = default)
         {
             Clan = clan;
             EndTime = endTime;
             Opponent = opponent;
             TeamSize = teamSize;
-            AttacksPerMember = attacksPerMember;
-            Result = result;
+            AttacksPerMemberOption = attacksPerMember;
+            ResultOption = result;
             OnCreated();
         }
 
         partial void OnCreated();
 
         /// <summary>
+        /// Used to track the state of Result
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<Result?> ResultOption { get; }
+
+        /// <summary>
         /// Gets or Sets Result
         /// </summary>
         [JsonPropertyName("result")]
-        public Result? Result { get; }
+        public Result? Result { get { return this.ResultOption; } }
 
         /// <summary>
         /// Gets or Sets Clan
@@ -82,10 +90,17 @@ namespace CocApi.Rest.Models
         public int TeamSize { get; }
 
         /// <summary>
+        /// Used to track the state of AttacksPerMember
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> AttacksPerMemberOption { get; }
+
+        /// <summary>
         /// Gets or Sets AttacksPerMember
         /// </summary>
         [JsonPropertyName("attacksPerMember")]
-        public int? AttacksPerMember { get; }
+        public int? AttacksPerMember { get { return this. AttacksPerMemberOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -167,12 +182,12 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + EndTime.GetHashCode();
                 hashCode = (hashCode * 59) + Opponent.GetHashCode();
                 hashCode = (hashCode * 59) + TeamSize.GetHashCode();
-
                 if (AttacksPerMember != null)
                     hashCode = (hashCode * 59) + AttacksPerMember.GetHashCode();
 
                 if (Result != null)
                     hashCode = (hashCode * 59) + Result.GetHashCode();
+
 
                 return hashCode;
             }
@@ -206,12 +221,12 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            WarClanLogEntry? clan = default;
-            DateTime? endTime = default;
-            WarClanLogEntry? opponent = default;
-            int? teamSize = default;
-            int? attacksPerMember = default;
-            Result? result = default;
+            Option<WarClanLogEntry?> clan = default;
+            Option<DateTime?> endTime = default;
+            Option<WarClanLogEntry?> opponent = default;
+            Option<int?> teamSize = default;
+            Option<int?> attacksPerMember = default;
+            Option<Result?> result = default;
 
             while (utf8JsonReader.Read())
             {
@@ -230,29 +245,28 @@ namespace CocApi.Rest.Models
                     {
                         case "clan":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clan = JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions);
+                                clan = new Option<WarClanLogEntry?>(JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "endTime":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                endTime = JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions);
+                                endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "opponent":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                opponent = JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions);
+                                opponent = new Option<WarClanLogEntry?>(JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "teamSize":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                teamSize = utf8JsonReader.GetInt32();
+                                teamSize = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "attacksPerMember":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacksPerMember = utf8JsonReader.GetInt32();
+                                attacksPerMember = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         case "result":
                             string? resultRawValue = utf8JsonReader.GetString();
-                            result = resultRawValue == null
-                                ? null
-                                : ResultValueConverter.FromStringOrDefault(resultRawValue);
+                            if (resultRawValue != null)
+                                result = new Option<Result?>(ResultValueConverter.FromStringOrDefault(resultRawValue));
                             break;
                         default:
                             break;
@@ -260,19 +274,37 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (clan == null)
-                throw new ArgumentNullException(nameof(clan), "Property is required for class ClanWarLogEntry.");
+            if (!clan.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLogEntry.", nameof(clan));
 
-            if (endTime == null)
-                throw new ArgumentNullException(nameof(endTime), "Property is required for class ClanWarLogEntry.");
+            if (!endTime.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLogEntry.", nameof(endTime));
 
-            if (opponent == null)
-                throw new ArgumentNullException(nameof(opponent), "Property is required for class ClanWarLogEntry.");
+            if (!opponent.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLogEntry.", nameof(opponent));
 
-            if (teamSize == null)
-                throw new ArgumentNullException(nameof(teamSize), "Property is required for class ClanWarLogEntry.");
+            if (!teamSize.IsSet)
+                throw new ArgumentException("Property is required for class ClanWarLogEntry.", nameof(teamSize));
 
-            return new ClanWarLogEntry(clan, endTime.Value, opponent, teamSize.Value, attacksPerMember, result);
+            if (clan.IsSet && clan.Value == null)
+                throw new ArgumentNullException(nameof(clan), "Property is not nullable for class ClanWarLogEntry.");
+
+            if (endTime.IsSet && endTime.Value == null)
+                throw new ArgumentNullException(nameof(endTime), "Property is not nullable for class ClanWarLogEntry.");
+
+            if (opponent.IsSet && opponent.Value == null)
+                throw new ArgumentNullException(nameof(opponent), "Property is not nullable for class ClanWarLogEntry.");
+
+            if (teamSize.IsSet && teamSize.Value == null)
+                throw new ArgumentNullException(nameof(teamSize), "Property is not nullable for class ClanWarLogEntry.");
+
+            if (attacksPerMember.IsSet && attacksPerMember.Value == null)
+                throw new ArgumentNullException(nameof(attacksPerMember), "Property is not nullable for class ClanWarLogEntry.");
+
+            if (result.IsSet && result.Value == null)
+                throw new ArgumentNullException(nameof(result), "Property is not nullable for class ClanWarLogEntry.");
+
+            return new ClanWarLogEntry(clan.Value!, endTime.Value!.Value!, opponent.Value!, teamSize.Value!.Value!, attacksPerMember, result);
         }
 
         /// <summary>
@@ -299,27 +331,27 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLogEntry clanWarLogEntry, JsonSerializerOptions jsonSerializerOptions)
         {
+            if (clanWarLogEntry.Clan == null)
+                throw new ArgumentNullException(nameof(clanWarLogEntry.Clan), "Property is required for class ClanWarLogEntry.");
+
+            if (clanWarLogEntry.Opponent == null)
+                throw new ArgumentNullException(nameof(clanWarLogEntry.Opponent), "Property is required for class ClanWarLogEntry.");
+
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, clanWarLogEntry.Clan, jsonSerializerOptions);
             writer.WriteString("endTime", clanWarLogEntry.EndTime.ToString(EndTimeFormat));
+
             writer.WritePropertyName("opponent");
             JsonSerializer.Serialize(writer, clanWarLogEntry.Opponent, jsonSerializerOptions);
             writer.WriteNumber("teamSize", clanWarLogEntry.TeamSize);
 
-            if (clanWarLogEntry.AttacksPerMember != null)
-                writer.WriteNumber("attacksPerMember", clanWarLogEntry.AttacksPerMember.Value);
-            else
-                writer.WriteNull("attacksPerMember");
+            if (clanWarLogEntry.AttacksPerMemberOption.IsSet)
+                writer.WriteNumber("attacksPerMember", clanWarLogEntry.AttacksPerMemberOption.Value!.Value);
 
-            if (clanWarLogEntry.Result == null)
-                writer.WriteNull("result");
-            else
+            if (clanWarLogEntry.ResultOption.IsSet)
             {
-                var resultRawValue = ResultValueConverter.ToJsonValue(clanWarLogEntry.Result.Value);
-                if (resultRawValue != null)
-                    writer.WriteString("result", resultRawValue);
-                else
-                    writer.WriteNull("result");
+                var resultRawValue = ResultValueConverter.ToJsonValue(clanWarLogEntry.Result!.Value);
+                writer.WriteString("result", resultRawValue);
             }
         }
     }
