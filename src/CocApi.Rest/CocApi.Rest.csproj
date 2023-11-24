@@ -12,7 +12,7 @@
     <Description>A wrapper for the Clash of Clans API</Description>
     <Copyright>No Copyright</Copyright>
     <RootNamespace>CocApi.Rest</RootNamespace>
-    <Version>2.10.0</Version>
+    <Version>2.10.1</Version>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.Rest.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/devhl-labs/CocApi.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
