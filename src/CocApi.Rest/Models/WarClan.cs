@@ -36,23 +36,23 @@ namespace CocApi.Rest.Models
         /// <param name="badgeUrls">badgeUrls</param>
         /// <param name="clanLevel">clanLevel</param>
         /// <param name="destructionPercentage">destructionPercentage</param>
-        /// <param name="expEarned">expEarned</param>
         /// <param name="members">members</param>
         /// <param name="name">name</param>
         /// <param name="stars">stars</param>
         /// <param name="tag">tag</param>
+        /// <param name="expEarned">expEarned</param>
         [JsonConstructor]
-        internal WarClan(int attacks, BadgeUrls badgeUrls, int clanLevel, float destructionPercentage, int expEarned, List<ClanWarMember> members, string name, int stars, string tag)
+        internal WarClan(int attacks, BadgeUrls badgeUrls, int clanLevel, float destructionPercentage, List<ClanWarMember> members, string name, int stars, string tag, Option<int?> expEarned = default)
         {
             Attacks = attacks;
             BadgeUrls = badgeUrls;
             ClanLevel = clanLevel;
             DestructionPercentage = destructionPercentage;
-            ExpEarned = expEarned;
             Members = members;
             Name = name;
             Stars = stars;
             Tag = tag;
+            ExpEarnedOption = expEarned;
             OnCreated();
         }
 
@@ -83,12 +83,6 @@ namespace CocApi.Rest.Models
         public float DestructionPercentage { get; }
 
         /// <summary>
-        /// Gets or Sets ExpEarned
-        /// </summary>
-        [JsonPropertyName("expEarned")]
-        public int ExpEarned { get; }
-
-        /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [JsonPropertyName("members")]
@@ -113,6 +107,19 @@ namespace CocApi.Rest.Models
         public string Tag { get; }
 
         /// <summary>
+        /// Used to track the state of ExpEarned
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> ExpEarnedOption { get; }
+
+        /// <summary>
+        /// Gets or Sets ExpEarned
+        /// </summary>
+        [JsonPropertyName("expEarned")]
+        public int? ExpEarned { get { return this. ExpEarnedOption; } }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -124,11 +131,11 @@ namespace CocApi.Rest.Models
             sb.Append("  BadgeUrls: ").Append(BadgeUrls).Append("\n");
             sb.Append("  ClanLevel: ").Append(ClanLevel).Append("\n");
             sb.Append("  DestructionPercentage: ").Append(DestructionPercentage).Append("\n");
-            sb.Append("  ExpEarned: ").Append(ExpEarned).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Stars: ").Append(Stars).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
+            sb.Append("  ExpEarned: ").Append(ExpEarned).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -172,10 +179,6 @@ namespace CocApi.Rest.Models
                     DestructionPercentage.Equals(input.DestructionPercentage)
                 ) && 
                 (
-                    ExpEarned == input.ExpEarned ||
-                    ExpEarned.Equals(input.ExpEarned)
-                ) && 
-                (
                     Members == input.Members ||
                     Members != null &&
                     input.Members != null &&
@@ -194,6 +197,10 @@ namespace CocApi.Rest.Models
                     Tag == input.Tag ||
                     (Tag != null &&
                     Tag.Equals(input.Tag))
+                ) && 
+                (
+                    ExpEarned == input.ExpEarned ||
+                    ExpEarned.Equals(input.ExpEarned)
                 );
         }
 
@@ -210,11 +217,13 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + BadgeUrls.GetHashCode();
                 hashCode = (hashCode * 59) + ClanLevel.GetHashCode();
                 hashCode = (hashCode * 59) + DestructionPercentage.GetHashCode();
-                hashCode = (hashCode * 59) + ExpEarned.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
                 hashCode = (hashCode * 59) + Stars.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
+                if (ExpEarned != null)
+                    hashCode = (hashCode * 59) + ExpEarned.GetHashCode();
+
 
                 return hashCode;
             }
@@ -247,11 +256,11 @@ namespace CocApi.Rest.Models
             Option<BadgeUrls?> badgeUrls = default;
             Option<int?> clanLevel = default;
             Option<float?> destructionPercentage = default;
-            Option<int?> expEarned = default;
             Option<List<ClanWarMember>?> members = default;
             Option<string?> name = default;
             Option<int?> stars = default;
             Option<string?> tag = default;
+            Option<int?> expEarned = default;
 
             while (utf8JsonReader.Read())
             {
@@ -284,10 +293,6 @@ namespace CocApi.Rest.Models
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 destructionPercentage = new Option<float?>((float)utf8JsonReader.GetDouble());
                             break;
-                        case "expEarned":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expEarned = new Option<int?>(utf8JsonReader.GetInt32());
-                            break;
                         case "members":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 members = new Option<List<ClanWarMember>?>(JsonSerializer.Deserialize<List<ClanWarMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
@@ -301,6 +306,10 @@ namespace CocApi.Rest.Models
                             break;
                         case "tag":
                             tag = new Option<string?>(utf8JsonReader.GetString()!);
+                            break;
+                        case "expEarned":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                expEarned = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -319,9 +328,6 @@ namespace CocApi.Rest.Models
 
             if (!destructionPercentage.IsSet)
                 throw new ArgumentException("Property is required for class WarClan.", nameof(destructionPercentage));
-
-            if (!expEarned.IsSet)
-                throw new ArgumentException("Property is required for class WarClan.", nameof(expEarned));
 
             if (!members.IsSet)
                 throw new ArgumentException("Property is required for class WarClan.", nameof(members));
@@ -347,9 +353,6 @@ namespace CocApi.Rest.Models
             if (destructionPercentage.IsSet && destructionPercentage.Value == null)
                 throw new ArgumentNullException(nameof(destructionPercentage), "Property is not nullable for class WarClan.");
 
-            if (expEarned.IsSet && expEarned.Value == null)
-                throw new ArgumentNullException(nameof(expEarned), "Property is not nullable for class WarClan.");
-
             if (members.IsSet && members.Value == null)
                 throw new ArgumentNullException(nameof(members), "Property is not nullable for class WarClan.");
 
@@ -362,7 +365,10 @@ namespace CocApi.Rest.Models
             if (tag.IsSet && tag.Value == null)
                 throw new ArgumentNullException(nameof(tag), "Property is not nullable for class WarClan.");
 
-            return new WarClan(attacks.Value!.Value!, badgeUrls.Value!, clanLevel.Value!.Value!, destructionPercentage.Value!.Value!, expEarned.Value!.Value!, members.Value!, name.Value!, stars.Value!.Value!, tag.Value!);
+            if (expEarned.IsSet && expEarned.Value == null)
+                throw new ArgumentNullException(nameof(expEarned), "Property is not nullable for class WarClan.");
+
+            return new WarClan(attacks.Value!.Value!, badgeUrls.Value!, clanLevel.Value!.Value!, destructionPercentage.Value!.Value!, members.Value!, name.Value!, stars.Value!.Value!, tag.Value!, expEarned);
         }
 
         /// <summary>
@@ -409,8 +415,6 @@ namespace CocApi.Rest.Models
 
             writer.WriteNumber("destructionPercentage", warClan.DestructionPercentage);
 
-            writer.WriteNumber("expEarned", warClan.ExpEarned);
-
             writer.WritePropertyName("members");
             JsonSerializer.Serialize(writer, warClan.Members, jsonSerializerOptions);
             writer.WriteString("name", warClan.Name);
@@ -418,6 +422,9 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("stars", warClan.Stars);
 
             writer.WriteString("tag", warClan.Tag);
+
+            if (warClan.ExpEarnedOption.IsSet)
+                writer.WriteNumber("expEarned", warClan.ExpEarnedOption.Value!.Value);
         }
     }
 }

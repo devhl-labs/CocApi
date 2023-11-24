@@ -8,11 +8,11 @@ Name | Type | Description | Notes
 **BadgeUrls** | [**BadgeUrls**](BadgeUrls.md) |  | [readonly] 
 **ClanLevel** | **int** |  | [readonly] 
 **DestructionPercentage** | **float** |  | [readonly] 
-**ExpEarned** | **int** |  | [readonly] 
 **Members** | [**List&lt;ClanWarMember&gt;**](ClanWarMember.md) |  | [readonly] 
 **Name** | **string** |  | [readonly] 
 **Stars** | **int** |  | [readonly] 
 **Tag** | **string** |  | [readonly] 
+**ExpEarned** | **int** |  | [optional] [readonly] 
 
 [[Back to Model list]](../../README.md#documentation-for-models) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to README]](../../README.md)
 
