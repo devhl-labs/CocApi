@@ -592,11 +592,7 @@ namespace CocApi.Rest.Models
             writer.WriteString("startTime", clanCapitalRaidSeason.StartTime.ToString(StartTimeFormat));
 
             var stateRawValue = ClanCapitalRaidSeason.StateEnumToJsonValue(clanCapitalRaidSeason.State);
-            if (stateRawValue != null)
-                writer.WriteString("state", stateRawValue);
-            else
-                writer.WriteNull("state");
-
+            writer.WriteString("state", stateRawValue);
             writer.WriteNumber("totalAttacks", clanCapitalRaidSeason.TotalAttacks);
 
             if (clanCapitalRaidSeason.MembersOption.IsSet)

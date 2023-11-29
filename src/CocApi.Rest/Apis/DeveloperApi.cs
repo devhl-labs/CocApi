@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -437,11 +438,17 @@ namespace CocApi.Rest.Apis
         public TokenProvider<ApiKeyToken> ApiKeyProvider { get; }
 
         /// <summary>
+        /// The token cookie container
+        /// </summary>
+        public CocApi.Rest.Client.CookieContainer CookieContainer { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DeveloperApi"/> class.
         /// </summary>
         /// <returns></returns>
         public DeveloperApi(ILogger<DeveloperApi> logger, ILoggerFactory loggerFactory, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, DeveloperApiEvents developerApiEvents,
-            TokenProvider<ApiKeyToken> apiKeyProvider)
+            TokenProvider<ApiKeyToken> apiKeyProvider,
+            CocApi.Rest.Client.CookieContainer cookieContainer)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
             LoggerFactory = loggerFactory;
@@ -449,6 +456,7 @@ namespace CocApi.Rest.Apis
             HttpClient = httpClient;
             Events = developerApiEvents;
             ApiKeyProvider = apiKeyProvider;
+            CookieContainer = cookieContainer;
         }
 
         partial void FormatCreate(CreateTokenRequest createTokenRequest);
@@ -557,9 +565,6 @@ namespace CocApi.Rest.Apis
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(createTokenRequest, _jsonSerializerOptions));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-                    ApiKeyToken apiKeyTokenLocalVar;
-                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] contentTypes = new string[] {
@@ -1017,9 +1022,6 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-                    ApiKeyToken apiKeyTokenLocalVar;
-                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] acceptLocalVars = new string[] {
@@ -1530,6 +1532,33 @@ namespace CocApi.Rest.Apis
 
                         Events.ExecuteOnLogin(apiResponseLocalVar);
 
+                        if (httpResponseMessageLocalVar.StatusCode == (HttpStatusCode) 200 && httpResponseMessageLocalVar.Headers.TryGetValues("Set-Cookie", out var cookieHeadersLocalVar))
+                        {
+                            foreach(string cookieHeader in cookieHeadersLocalVar)
+                            {
+                                IList<Microsoft.Net.Http.Headers.SetCookieHeaderValue> setCookieHeaderValuesLocalVar = Microsoft.Net.Http.Headers.SetCookieHeaderValue.ParseList(cookieHeadersLocalVar.ToArray());
+
+                                foreach(Microsoft.Net.Http.Headers.SetCookieHeaderValue setCookieHeaderValueLocalVar in setCookieHeaderValuesLocalVar)
+                                {
+                                    Cookie cookieLocalVar = new Cookie(setCookieHeaderValueLocalVar.Name.ToString(), setCookieHeaderValueLocalVar.Value.ToString())
+                                    {
+                                        HttpOnly = setCookieHeaderValueLocalVar.HttpOnly
+                                    };
+
+                                    if (setCookieHeaderValueLocalVar.Expires.HasValue)
+                                        cookieLocalVar.Expires = setCookieHeaderValueLocalVar.Expires.Value.UtcDateTime;
+
+                                    if (setCookieHeaderValueLocalVar.Path.HasValue)
+                                        cookieLocalVar.Path = setCookieHeaderValueLocalVar.Path.Value;
+
+                                    if (setCookieHeaderValueLocalVar.Domain.HasValue)
+                                        cookieLocalVar.Domain = setCookieHeaderValueLocalVar.Domain.Value;
+
+                                    CookieContainer.Value.Add(new Uri($"{uriBuilderLocalVar.Scheme}://{uriBuilderLocalVar.Host}"), cookieLocalVar);
+                                }
+                            }
+                        }
+
                         return apiResponseLocalVar;
                     }
                 }
@@ -1974,9 +2003,6 @@ namespace CocApi.Rest.Apis
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(key, _jsonSerializerOptions));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-                    ApiKeyToken apiKeyTokenLocalVar;
-                    apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-                    tokenBaseLocalVars.Add(apiKeyTokenLocalVar);
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
 
                     string[] contentTypes = new string[] {

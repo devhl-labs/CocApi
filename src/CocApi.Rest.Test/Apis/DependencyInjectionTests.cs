@@ -24,45 +24,53 @@ namespace CocApi.Rest.Test.Apis
     /// </summary>
     public class DependencyInjectionTest
     {
-        private readonly IHost _hostUsingConfigureWithoutAClient = 
-            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureCocApi((context, services, options) =>
+        private readonly IHost _hostUsingConfigureWithoutAClient =
+            Host.CreateDefaultBuilder([]).ConfigureCocApi((context, services, options) =>
             {
-                ApiKeyToken apiKeyToken = new ApiKeyToken($"<token>", timeout: TimeSpan.FromSeconds(1));
-                options.AddTokens(apiKeyToken);
-                
+                ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                options.AddTokens(apiKeyToken1);
+
+                ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                options.AddTokens(apiKeyToken2);
             })
             .Build();
 
         private readonly IHost _hostUsingConfigureWithAClient =
-            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureCocApi((context, services, options) =>
+            Host.CreateDefaultBuilder([]).ConfigureCocApi((context, services, options) =>
             {
-                ApiKeyToken apiKeyToken = new ApiKeyToken($"<token>", timeout: TimeSpan.FromSeconds(1));
-                options.AddTokens(apiKeyToken);
-                
+                ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                options.AddTokens(apiKeyToken1);
+
+                ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                options.AddTokens(apiKeyToken2);
                 options.AddCocApiHttpClients(client => client.BaseAddress = new Uri(ClientUtils.BASE_ADDRESS));
             })
             .Build();
 
         private readonly IHost _hostUsingAddWithoutAClient =
-            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureServices((host, services) =>
+            Host.CreateDefaultBuilder([]).ConfigureServices((host, services) =>
             {
                 services.AddCocApi(options =>
                 {
-                    ApiKeyToken apiKeyToken = new ApiKeyToken($"<token>", timeout: TimeSpan.FromSeconds(1));
-                    options.AddTokens(apiKeyToken);
-                    
+                    ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                    options.AddTokens(apiKeyToken1);
+
+                    ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                    options.AddTokens(apiKeyToken2);
                 });
             })
             .Build();
 
         private readonly IHost _hostUsingAddWithAClient =
-            Host.CreateDefaultBuilder(Array.Empty<string>()).ConfigureServices((host, services) =>
+            Host.CreateDefaultBuilder([]).ConfigureServices((host, services) =>
             {
                 services.AddCocApi(options =>
                 {
-                    ApiKeyToken apiKeyToken = new ApiKeyToken($"<token>", timeout: TimeSpan.FromSeconds(1));
-                    options.AddTokens(apiKeyToken);
-                    
+                    ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                    options.AddTokens(apiKeyToken1);
+
+                    ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                    options.AddTokens(apiKeyToken2);
                     options.AddCocApiHttpClients(client => client.BaseAddress = new Uri(ClientUtils.BASE_ADDRESS));
                 });
             })
@@ -76,22 +84,22 @@ namespace CocApi.Rest.Test.Apis
         {
             var clansApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
-            
+
             var developerApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
-            
+
             var goldpassApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
-            
+
             var labelsApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
-            
+
             var leaguesApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
-            
+
             var locationsApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
-            
+
             var playersApi = _hostUsingConfigureWithAClient.Services.GetRequiredService<IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }
@@ -104,22 +112,22 @@ namespace CocApi.Rest.Test.Apis
         {
             var clansApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
-            
+
             var developerApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
-            
+
             var goldpassApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
-            
+
             var labelsApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
-            
+
             var leaguesApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
-            
+
             var locationsApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
-            
+
             var playersApi = _hostUsingConfigureWithoutAClient.Services.GetRequiredService<IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }
@@ -160,22 +168,22 @@ namespace CocApi.Rest.Test.Apis
         {
             var clansApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IClansApi>();
             Assert.True(clansApi.HttpClient.BaseAddress != null);
-            
+
             var developerApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IDeveloperApi>();
             Assert.True(developerApi.HttpClient.BaseAddress != null);
-            
+
             var goldpassApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IGoldpassApi>();
             Assert.True(goldpassApi.HttpClient.BaseAddress != null);
-            
+
             var labelsApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<ILabelsApi>();
             Assert.True(labelsApi.HttpClient.BaseAddress != null);
-            
+
             var leaguesApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<ILeaguesApi>();
             Assert.True(leaguesApi.HttpClient.BaseAddress != null);
-            
+
             var locationsApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<ILocationsApi>();
             Assert.True(locationsApi.HttpClient.BaseAddress != null);
-            
+
             var playersApi = _hostUsingAddWithoutAClient.Services.GetRequiredService<IPlayersApi>();
             Assert.True(playersApi.HttpClient.BaseAddress != null);
         }

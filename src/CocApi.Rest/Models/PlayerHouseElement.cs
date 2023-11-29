@@ -337,10 +337,7 @@ namespace CocApi.Rest.Models
             writer.WriteNumber("id", playerHouseElement.Id);
 
             var typeRawValue = PlayerHouseElement.TypeEnumToJsonValue(playerHouseElement.Type);
-            if (typeRawValue != null)
-                writer.WriteString("type", typeRawValue);
-            else
-                writer.WriteNull("type");
+            writer.WriteString("type", typeRawValue);
         }
     }
 }

@@ -90,15 +90,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'ExpEarned'
-        /// </summary>
-        [Fact]
-        public void ExpEarnedTest()
-        {
-            // TODO unit test for the property 'ExpEarned'
-        }
-
-        /// <summary>
         /// Test the property 'Members'
         /// </summary>
         [Fact]
@@ -132,6 +123,15 @@ namespace CocApi.Rest.Test.Model
         public void TagTest()
         {
             // TODO unit test for the property 'Tag'
+        }
+
+        /// <summary>
+        /// Test the property 'ExpEarned'
+        /// </summary>
+        [Fact]
+        public void ExpEarnedTest()
+        {
+            // TODO unit test for the property 'ExpEarned'
         }
     }
 }

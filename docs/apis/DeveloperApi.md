@@ -289,7 +289,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **200** | Successful response |  -  |
+| **200** | Successful response |  * Set-Cookie -  <br>  |
 | **400** | Client provided incorrect parameters for the request. |  -  |
 | **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
 | **404** | Resource was not found. |  -  |

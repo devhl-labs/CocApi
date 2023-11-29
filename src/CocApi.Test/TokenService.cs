@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
@@ -27,34 +24,25 @@ namespace CocApi.Test;
 
 public class TokenService : IHostedService
 {
-    public Rest.Client.CookieContainer CookieContainer { get; }
     public IDeveloperApi DeveloperApi { get; }
     public IOptions<LoginCredentials> Options { get; }
 
     public TokenService(
-        Rest.Client.CookieContainer cookieContainer,
         IDeveloperApi developerApi,
         IOptions<LoginCredentials> options)
     {
-        CookieContainer = cookieContainer;
         DeveloperApi = developerApi;
         Options = options;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        // login and save the cookie to the CookieContainer
         var login = await DeveloperApi.LoginAsync(Options.Value, cancellationToken);
-        var rawValue = login.Headers.GetValues("set-cookie").Single();
-        var encodedValue = System.Web.HttpUtility.UrlEncode(rawValue, Encoding.UTF8);
-        var domain = new System.Uri("https://developer.clashofclans.com/api");
-        var cookie = new System.Net.Cookie("session", encodedValue, null, domain.Host);
-        CookieContainer.Value.Add(domain, cookie);
 
         // Create a testing token
         string ipAddressWithMask = login.Ok()!.IpAddresses()[0];
-        string ipAddress = ipAddressWithMask[..ipAddressWithMask.IndexOf("/")];
-        var token = new CreateTokenRequest(new List<string> { ipAddress }, "test description", "test name");
+        string ipAddress = ipAddressWithMask[..ipAddressWithMask.IndexOf('/')];
+        var token = new CreateTokenRequest([ipAddress], "test description", "test name");
         var createResponse = await DeveloperApi.CreateAsync(token, cancellationToken);
 
         // delete that testing token
