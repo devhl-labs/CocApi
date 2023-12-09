@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.10.1',
+    'packageVersion=2.11.0',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -37,7 +37,7 @@ java -jar "<path>/openapi-generator/modules/openapi-generator-cli/target/openapi
     --git-host "github.com" `
     --git-repo-id "CocApi" `
     --git-user-id "devhl-labs" `
-    --release-note "Upgraded OpenApi with new required/nullable handling"
+    --release-note "Upgraded OpenApi with new token instantiation"
     # -t templates
 ```
 
@@ -134,8 +134,8 @@ Authentication schemes defined for the API:
 
 
 ## Build
-- SDK version: 2.10.1
-- Build date: 2023-12-08T21:58:03.396462500-05:00[America/New_York]
+- SDK version: 2.11.0
+- Build date: 2023-12-09T08:39:56.927342700-05:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
 ## Api Information
@@ -183,8 +183,8 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.10.1
-- releaseNote: Upgraded OpenApi with new required/nullable handling
+- packageVersion: 2.11.0
+- releaseNote: Upgraded OpenApi with new token instantiation
 - returnICollection: false
 - sortParamsByRequiredFlag: 
 - sourceFolder: src

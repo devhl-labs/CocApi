@@ -1,5 +1,5 @@
-$packageVersion = "2.10.1"
-$releaseNote = "Upgraded OpenApi with new required/nullable handling"
+$packageVersion = "2.11.0"
+$releaseNote = "Upgraded OpenApi with new token instantiation"
 
 $properties = @(
     'packageName=CocApi.Rest'
