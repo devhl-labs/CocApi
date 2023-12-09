@@ -27,10 +27,10 @@ namespace CocApi.Rest.Test.Apis
         private readonly IHost _hostUsingConfigureWithoutAClient =
             Host.CreateDefaultBuilder([]).ConfigureCocApi((context, services, options) =>
             {
-                ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                ApiKeyToken apiKeyToken1 = new("<token>", ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken1);
 
-                ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                ApiKeyToken apiKeyToken2 = new("<token>", ClientUtils.ApiKeyHeader.Session, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken2);
             })
             .Build();
@@ -38,10 +38,10 @@ namespace CocApi.Rest.Test.Apis
         private readonly IHost _hostUsingConfigureWithAClient =
             Host.CreateDefaultBuilder([]).ConfigureCocApi((context, services, options) =>
             {
-                ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                ApiKeyToken apiKeyToken1 = new("<token>", ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken1);
 
-                ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                ApiKeyToken apiKeyToken2 = new("<token>", ClientUtils.ApiKeyHeader.Session, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken2);
                 options.AddCocApiHttpClients(client => client.BaseAddress = new Uri(ClientUtils.BASE_ADDRESS));
             })
@@ -52,10 +52,10 @@ namespace CocApi.Rest.Test.Apis
             {
                 services.AddCocApi(options =>
                 {
-                    ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                    ApiKeyToken apiKeyToken1 = new("<token>", ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));
                     options.AddTokens(apiKeyToken1);
 
-                    ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                    ApiKeyToken apiKeyToken2 = new("<token>", ClientUtils.ApiKeyHeader.Session, timeout: TimeSpan.FromSeconds(1));
                     options.AddTokens(apiKeyToken2);
                 });
             })
@@ -66,10 +66,10 @@ namespace CocApi.Rest.Test.Apis
             {
                 services.AddCocApi(options =>
                 {
-                    ApiKeyToken apiKeyToken1 = new($"<token>", "JWT", timeout: TimeSpan.FromSeconds(1));
+                    ApiKeyToken apiKeyToken1 = new("<token>", ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));
                     options.AddTokens(apiKeyToken1);
 
-                    ApiKeyToken apiKeyToken2 = new($"<token>", "cookieAuth", timeout: TimeSpan.FromSeconds(1));
+                    ApiKeyToken apiKeyToken2 = new("<token>", ClientUtils.ApiKeyHeader.Session, timeout: TimeSpan.FromSeconds(1));
                     options.AddTokens(apiKeyToken2);
                     options.AddCocApiHttpClients(client => client.BaseAddress = new Uri(ClientUtils.BASE_ADDRESS));
                 });

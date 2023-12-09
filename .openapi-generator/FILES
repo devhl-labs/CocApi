@@ -89,6 +89,7 @@ docs/models/WarLeagueList.md
 docs/models/WarPreference.md
 docs/models/WarState.md
 docs/models/WarType.md
+src/CocApi.Rest.Test/Apis/ApiTestsBase.cs
 src/CocApi.Rest.Test/Apis/DependencyInjectionTests.cs
 src/CocApi.Rest.Test/CocApi.Rest.Test.csproj
 src/CocApi.Rest.Test/README.md

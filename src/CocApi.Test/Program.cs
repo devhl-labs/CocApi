@@ -49,12 +49,11 @@ class Program
                     .Enrich.With<UtcTimestampEnricher>();
             })
 
-
             .ConfigureCocApi((context, services, options) =>
             {
                 List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>();
 
-                ApiKeyToken[] tokens = tokenValues.Select(t => new ApiKeyToken(t, "authorization", timeout: TimeSpan.FromSeconds(1))).ToArray();
+                ApiKeyToken[] tokens = tokenValues.Select(t => new ApiKeyToken(t, ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1))).ToArray();
 
                 options.AddTokens(tokens);
 

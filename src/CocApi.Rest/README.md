@@ -69,14 +69,7 @@ namespace YourProject
           .ConfigureCocApi((context, options) =>
           {
               // the type of token here depends on the api security specifications
-              ApiKeyToken token = new("<your token>");
-              options.AddTokens(token);
-
-              // optionally choose the method the tokens will be provided with, default is RateLimitProvider
-              options.UseProvider<RateLimitProvider<ApiKeyToken>, ApiKeyToken>();
-
-              // the type of token here depends on the api security specifications
-              ApiKeyToken token = new("<your token>");
+              ApiKeyToken token = new("<your token>", ClientUtils.ApiKeyHeader.Authorization);
               options.AddTokens(token);
 
               // optionally choose the method the tokens will be provided with, default is RateLimitProvider
@@ -142,7 +135,7 @@ Authentication schemes defined for the API:
 
 ## Build
 - SDK version: 2.10.1
-- Build date: 2023-11-28T20:39:45.145609800-05:00[America/New_York]
+- Build date: 2023-12-08T21:58:03.396462500-05:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
 ## Api Information
