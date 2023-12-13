@@ -41,13 +41,13 @@ namespace CocApi.Rest.Models
         /// <param name="name">name</param>
         /// <param name="previousClanRank">previousClanRank</param>
         /// <param name="tag">tag</param>
-        /// <param name="townHallLevel">townHallLevel</param>
         /// <param name="trophies">trophies</param>
         /// <param name="builderBaseLeague">builderBaseLeague</param>
         /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
+        /// <param name="townHallLevel">townHallLevel</param>
         [JsonConstructor]
-        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int townHallLevel, int trophies, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default)
+        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallLevel = default)
         {
             BuilderBaseTrophies = builderBaseTrophies;
             ClanRank = clanRank;
@@ -58,11 +58,11 @@ namespace CocApi.Rest.Models
             Name = name;
             PreviousClanRank = previousClanRank;
             Tag = tag;
-            TownHallLevel = townHallLevel;
             Trophies = trophies;
             BuilderBaseLeagueOption = builderBaseLeague;
             PlayerHouseOption = playerHouse;
             RoleOption = role;
+            TownHallLevelOption = townHallLevel;
             OnCreated();
         }
 
@@ -136,12 +136,6 @@ namespace CocApi.Rest.Models
         public string Tag { get; }
 
         /// <summary>
-        /// Gets or Sets TownHallLevel
-        /// </summary>
-        [JsonPropertyName("townHallLevel")]
-        public int TownHallLevel { get; }
-
-        /// <summary>
         /// Gets or Sets Trophies
         /// </summary>
         [JsonPropertyName("trophies")]
@@ -174,6 +168,19 @@ namespace CocApi.Rest.Models
         public PlayerHouse? PlayerHouse { get { return this. PlayerHouseOption; } }
 
         /// <summary>
+        /// Used to track the state of TownHallLevel
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> TownHallLevelOption { get; }
+
+        /// <summary>
+        /// Gets or Sets TownHallLevel
+        /// </summary>
+        [JsonPropertyName("townHallLevel")]
+        public int? TownHallLevel { get { return this. TownHallLevelOption; } }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -190,11 +197,11 @@ namespace CocApi.Rest.Models
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  PreviousClanRank: ").Append(PreviousClanRank).Append("\n");
             sb.Append("  Tag: ").Append(Tag).Append("\n");
-            sb.Append("  TownHallLevel: ").Append(TownHallLevel).Append("\n");
             sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("  BuilderBaseLeague: ").Append(BuilderBaseLeague).Append("\n");
             sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
+            sb.Append("  TownHallLevel: ").Append(TownHallLevel).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -260,10 +267,6 @@ namespace CocApi.Rest.Models
                     Tag.Equals(input.Tag))
                 ) && 
                 (
-                    TownHallLevel == input.TownHallLevel ||
-                    TownHallLevel.Equals(input.TownHallLevel)
-                ) && 
-                (
                     Trophies == input.Trophies ||
                     Trophies.Equals(input.Trophies)
                 ) && 
@@ -280,6 +283,10 @@ namespace CocApi.Rest.Models
                 (
                     Role == input.Role ||
                     Role.Equals(input.Role)
+                ) && 
+                (
+                    TownHallLevel == input.TownHallLevel ||
+                    TownHallLevel.Equals(input.TownHallLevel)
                 );
         }
 
@@ -301,7 +308,6 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Name.GetHashCode();
                 hashCode = (hashCode * 59) + PreviousClanRank.GetHashCode();
                 hashCode = (hashCode * 59) + Tag.GetHashCode();
-                hashCode = (hashCode * 59) + TownHallLevel.GetHashCode();
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
                 if (BuilderBaseLeague != null)
                     hashCode = (hashCode * 59) + BuilderBaseLeague.GetHashCode();
@@ -311,6 +317,9 @@ namespace CocApi.Rest.Models
 
                 if (Role != null)
                     hashCode = (hashCode * 59) + Role.GetHashCode();
+
+                if (TownHallLevel != null)
+                    hashCode = (hashCode * 59) + TownHallLevel.GetHashCode();
 
 
                 return hashCode;
@@ -349,11 +358,11 @@ namespace CocApi.Rest.Models
             Option<string?> name = default;
             Option<int?> previousClanRank = default;
             Option<string?> tag = default;
-            Option<int?> townHallLevel = default;
             Option<int?> trophies = default;
             Option<BuilderBaseLeague?> builderBaseLeague = default;
             Option<PlayerHouse?> playerHouse = default;
             Option<Role?> role = default;
+            Option<int?> townHallLevel = default;
 
             while (utf8JsonReader.Read())
             {
@@ -405,10 +414,6 @@ namespace CocApi.Rest.Models
                         case "tag":
                             tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
-                        case "townHallLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
-                            break;
                         case "trophies":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 trophies = new Option<int?>(utf8JsonReader.GetInt32());
@@ -425,6 +430,10 @@ namespace CocApi.Rest.Models
                             string? roleRawValue = utf8JsonReader.GetString();
                             if (roleRawValue != null)
                                 role = new Option<Role?>(RoleValueConverter.FromStringOrDefault(roleRawValue));
+                            break;
+                        case "townHallLevel":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                townHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -459,9 +468,6 @@ namespace CocApi.Rest.Models
             if (!tag.IsSet)
                 throw new ArgumentException("Property is required for class ClanMember.", nameof(tag));
 
-            if (!townHallLevel.IsSet)
-                throw new ArgumentException("Property is required for class ClanMember.", nameof(townHallLevel));
-
             if (!trophies.IsSet)
                 throw new ArgumentException("Property is required for class ClanMember.", nameof(trophies));
 
@@ -492,9 +498,6 @@ namespace CocApi.Rest.Models
             if (tag.IsSet && tag.Value == null)
                 throw new ArgumentNullException(nameof(tag), "Property is not nullable for class ClanMember.");
 
-            if (townHallLevel.IsSet && townHallLevel.Value == null)
-                throw new ArgumentNullException(nameof(townHallLevel), "Property is not nullable for class ClanMember.");
-
             if (trophies.IsSet && trophies.Value == null)
                 throw new ArgumentNullException(nameof(trophies), "Property is not nullable for class ClanMember.");
 
@@ -507,7 +510,10 @@ namespace CocApi.Rest.Models
             if (role.IsSet && role.Value == null)
                 throw new ArgumentNullException(nameof(role), "Property is not nullable for class ClanMember.");
 
-            return new ClanMember(builderBaseTrophies.Value!.Value!, clanRank.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousClanRank.Value!.Value!, tag.Value!, townHallLevel.Value!.Value!, trophies.Value!.Value!, builderBaseLeague, playerHouse, role);
+            if (townHallLevel.IsSet && townHallLevel.Value == null)
+                throw new ArgumentNullException(nameof(townHallLevel), "Property is not nullable for class ClanMember.");
+
+            return new ClanMember(builderBaseTrophies.Value!.Value!, clanRank.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousClanRank.Value!.Value!, tag.Value!, trophies.Value!.Value!, builderBaseLeague, playerHouse, role, townHallLevel);
         }
 
         /// <summary>
@@ -567,8 +573,6 @@ namespace CocApi.Rest.Models
 
             writer.WriteString("tag", clanMember.Tag);
 
-            writer.WriteNumber("townHallLevel", clanMember.TownHallLevel);
-
             writer.WriteNumber("trophies", clanMember.Trophies);
 
             if (clanMember.BuilderBaseLeagueOption.IsSet)
@@ -586,6 +590,8 @@ namespace CocApi.Rest.Models
                 var roleRawValue = RoleValueConverter.ToJsonValue(clanMember.Role!.Value);
                 writer.WriteString("role", roleRawValue);
             }
+            if (clanMember.TownHallLevelOption.IsSet)
+                writer.WriteNumber("townHallLevel", clanMember.TownHallLevelOption.Value!.Value);
         }
     }
 }
