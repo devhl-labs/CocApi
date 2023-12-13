@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using CocApi.Rest.Apis;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
@@ -86,7 +85,7 @@ public class TimeToLiveProvider
 
             if (!Clash.IsCwlEnabled ||
                 (model?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == model.Season.Month) ||
-                (model == null && DateTime.UtcNow.Day >= 3))
+                (model == null && DateTime.UtcNow.Day >= 4))
                 return new ValueTask<TimeSpan>(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
                         .AddMonths(1)
