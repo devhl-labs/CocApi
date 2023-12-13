@@ -1,4 +1,4 @@
-$packageVersion = "2.11.1"
+$packageVersion = "2.11.2"
 $releaseNote = "Upgraded OpenApi with new token instantiation"
 
 $properties = @(
