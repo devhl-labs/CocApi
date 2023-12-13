@@ -4,21 +4,21 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 
 | Method | HTTP request | Description |
 |--------|--------------|-------------|
-| [**GetClanBuilderBaseRanking**](LocationsApi.md#getclanbuilderbaseranking) | **GET** /locations/{locationId}/rankings/clans-builder-base | Get clan versus rankings for a specific location |
+| [**GetClanBuilderBaseRanking**](LocationsApi.md#getclanbuilderbaseranking) | **GET** /locations/{locationId}/rankings/clans-builder-base | Get clan Builder Base rankings for a specific location |
 | [**GetClanCapitalRanking**](LocationsApi.md#getclancapitalranking) | **GET** /locations/{locationId}/rankings/capitals | Get capital rankings for a specific location |
 | [**GetClanRanking**](LocationsApi.md#getclanranking) | **GET** /locations/{locationId}/rankings/clans | Get clan rankings for a specific location |
 | [**GetLocation**](LocationsApi.md#getlocation) | **GET** /locations/{locationId} | Get location information |
 | [**GetLocations**](LocationsApi.md#getlocations) | **GET** /locations | List locations |
-| [**GetPlayerBuilderBaseRanking**](LocationsApi.md#getplayerbuilderbaseranking) | **GET** /locations/{locationId}/rankings/players-builder-base | Get player versus rankings for a specific location |
+| [**GetPlayerBuilderBaseRanking**](LocationsApi.md#getplayerbuilderbaseranking) | **GET** /locations/{locationId}/rankings/players-builder-base | Get player Builder Base rankings for a specific location |
 | [**GetPlayerRanking**](LocationsApi.md#getplayerranking) | **GET** /locations/{locationId}/rankings/players | Get player rankings for a specific location |
 
 <a id="getclanbuilderbaseranking"></a>
 # **GetClanBuilderBaseRanking**
 > ClanBuilderBaseRankingList GetClanBuilderBaseRanking (string locationId, int limit = null, string after = null, string before = null)
 
-Get clan versus rankings for a specific location
+Get clan Builder Base rankings for a specific location
 
-Get clan versus rankings for a specific location
+Get clan Builder Base rankings for a specific location
 
 ### Example
 ```csharp
@@ -49,7 +49,7 @@ namespace Example
 
             try
             {
-                // Get clan versus rankings for a specific location
+                // Get clan Builder Base rankings for a specific location
                 ClanBuilderBaseRankingList result = apiInstance.GetClanBuilderBaseRanking(locationId, limit, after, before);
                 Debug.WriteLine(result);
             }
@@ -70,7 +70,7 @@ This returns an ApiResponse object which contains the response data, status code
 ```csharp
 try
 {
-    // Get clan versus rankings for a specific location
+    // Get clan Builder Base rankings for a specific location
     ApiResponse<ClanBuilderBaseRankingList> response = apiInstance.GetClanBuilderBaseRankingWithHttpInfo(locationId, limit, after, before);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);
@@ -548,9 +548,9 @@ catch (ApiException e)
 # **GetPlayerBuilderBaseRanking**
 > PlayerBuilderBaseRankingList GetPlayerBuilderBaseRanking (string locationId, int limit = null, string after = null, string before = null)
 
-Get player versus rankings for a specific location
+Get player Builder Base rankings for a specific location
 
-Get player versus rankings for a specific location
+Get player Builder Base rankings for a specific location
 
 ### Example
 ```csharp
@@ -581,7 +581,7 @@ namespace Example
 
             try
             {
-                // Get player versus rankings for a specific location
+                // Get player Builder Base rankings for a specific location
                 PlayerBuilderBaseRankingList result = apiInstance.GetPlayerBuilderBaseRanking(locationId, limit, after, before);
                 Debug.WriteLine(result);
             }
@@ -602,7 +602,7 @@ This returns an ApiResponse object which contains the response data, status code
 ```csharp
 try
 {
-    // Get player versus rankings for a specific location
+    // Get player Builder Base rankings for a specific location
     ApiResponse<PlayerBuilderBaseRankingList> response = apiInstance.GetPlayerBuilderBaseRankingWithHttpInfo(locationId, limit, after, before);
     Debug.Write("Status Code: " + response.StatusCode);
     Debug.Write("Response Headers: " + response.Headers);

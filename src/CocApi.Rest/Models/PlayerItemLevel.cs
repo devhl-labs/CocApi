@@ -36,14 +36,16 @@ namespace CocApi.Rest.Models
         /// <param name="maxLevel">maxLevel</param>
         /// <param name="name">name</param>
         /// <param name="village">village</param>
+        /// <param name="equipment">equipment</param>
         /// <param name="superTroopIsActive">superTroopIsActive</param>
         [JsonConstructor]
-        internal PlayerItemLevel(int level, int maxLevel, string name, VillageType village, Option<bool?> superTroopIsActive = default)
+        public PlayerItemLevel(int level, int maxLevel, string name, VillageType village, Option<List<PlayerItemLevel>?> equipment = default, Option<bool?> superTroopIsActive = default)
         {
             Level = level;
             MaxLevel = maxLevel;
             Name = name;
             Village = village;
+            EquipmentOption = equipment;
             SuperTroopIsActiveOption = superTroopIsActive;
             OnCreated();
         }
@@ -75,6 +77,19 @@ namespace CocApi.Rest.Models
         public string Name { get; }
 
         /// <summary>
+        /// Used to track the state of Equipment
+        /// </summary>
+        [JsonIgnore]
+        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<List<PlayerItemLevel>?> EquipmentOption { get; private set; }
+
+        /// <summary>
+        /// Gets or Sets Equipment
+        /// </summary>
+        [JsonPropertyName("equipment")]
+        public List<PlayerItemLevel>? Equipment { get { return this. EquipmentOption; } set { this.EquipmentOption = new(value); } }
+
+        /// <summary>
         /// Used to track the state of SuperTroopIsActive
         /// </summary>
         [JsonIgnore]
@@ -99,6 +114,7 @@ namespace CocApi.Rest.Models
             sb.Append("  MaxLevel: ").Append(MaxLevel).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  Village: ").Append(Village).Append("\n");
+            sb.Append("  Equipment: ").Append(Equipment).Append("\n");
             sb.Append("  SuperTroopIsActive: ").Append(SuperTroopIsActive).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -196,6 +212,7 @@ namespace CocApi.Rest.Models
             Option<int?> maxLevel = default;
             Option<string?> name = default;
             Option<VillageType?> village = default;
+            Option<List<PlayerItemLevel>?> equipment = default;
             Option<bool?> superTroopIsActive = default;
 
             while (utf8JsonReader.Read())
@@ -228,6 +245,10 @@ namespace CocApi.Rest.Models
                             string? villageRawValue = utf8JsonReader.GetString();
                             if (villageRawValue != null)
                                 village = new Option<VillageType?>(VillageTypeValueConverter.FromStringOrDefault(villageRawValue));
+                            break;
+                        case "equipment":
+                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
+                                equipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "superTroopIsActive":
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
@@ -263,10 +284,13 @@ namespace CocApi.Rest.Models
             if (village.IsSet && village.Value == null)
                 throw new ArgumentNullException(nameof(village), "Property is not nullable for class PlayerItemLevel.");
 
+            if (equipment.IsSet && equipment.Value == null)
+                throw new ArgumentNullException(nameof(equipment), "Property is not nullable for class PlayerItemLevel.");
+
             if (superTroopIsActive.IsSet && superTroopIsActive.Value == null)
                 throw new ArgumentNullException(nameof(superTroopIsActive), "Property is not nullable for class PlayerItemLevel.");
 
-            return new PlayerItemLevel(level.Value!.Value!, maxLevel.Value!.Value!, name.Value!, village.Value!.Value!, superTroopIsActive);
+            return new PlayerItemLevel(level.Value!.Value!, maxLevel.Value!.Value!, name.Value!, village.Value!.Value!, equipment, superTroopIsActive);
         }
 
         /// <summary>
@@ -296,6 +320,9 @@ namespace CocApi.Rest.Models
             if (playerItemLevel.Name == null)
                 throw new ArgumentNullException(nameof(playerItemLevel.Name), "Property is required for class PlayerItemLevel.");
 
+            if (playerItemLevel.EquipmentOption.IsSet && playerItemLevel.Equipment == null)
+                throw new ArgumentNullException(nameof(playerItemLevel.Equipment), "Property is required for class PlayerItemLevel.");
+
             writer.WriteNumber("level", playerItemLevel.Level);
 
             writer.WriteNumber("maxLevel", playerItemLevel.MaxLevel);
@@ -305,6 +332,11 @@ namespace CocApi.Rest.Models
             var villageRawValue = VillageTypeValueConverter.ToJsonValue(playerItemLevel.Village);
             writer.WriteString("village", villageRawValue);
 
+            if (playerItemLevel.EquipmentOption.IsSet)
+            {
+                writer.WritePropertyName("equipment");
+                JsonSerializer.Serialize(writer, playerItemLevel.Equipment, jsonSerializerOptions);
+            }
             if (playerItemLevel.SuperTroopIsActiveOption.IsSet)
                 writer.WriteBoolean("superTroopIsActive", playerItemLevel.SuperTroopIsActiveOption.Value!.Value);
         }

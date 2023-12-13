@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **Name** | **string** |  | [readonly] 
 **PreviousClanRank** | **int** |  | [readonly] 
 **Tag** | **string** |  | [readonly] 
+**TownHallLevel** | **int** |  | [readonly] 
 **Trophies** | **int** |  | [readonly] 
 **BuilderBaseLeague** | [**BuilderBaseLeague**](BuilderBaseLeague.md) |  | [optional] [readonly] 
 **PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 

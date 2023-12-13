@@ -36,10 +36,10 @@ namespace CocApi.Rest.Apis
         LocationsApiEvents Events { get; }
 
         /// <summary>
-        /// Get clan versus rankings for a specific location
+        /// Get clan Builder Base rankings for a specific location
         /// </summary>
         /// <remarks>
-        /// Get clan versus rankings for a specific location
+        /// Get clan Builder Base rankings for a specific location
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
@@ -51,10 +51,10 @@ namespace CocApi.Rest.Apis
         Task<IFetchClanBuilderBaseRankingApiResponse> FetchClanBuilderBaseRankingAsync(string locationId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Get clan versus rankings for a specific location
+        /// Get clan Builder Base rankings for a specific location
         /// </summary>
         /// <remarks>
-        /// Get clan versus rankings for a specific location
+        /// Get clan Builder Base rankings for a specific location
         /// </remarks>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
@@ -173,10 +173,10 @@ namespace CocApi.Rest.Apis
         Task<IFetchLocationsApiResponse?> FetchLocationsOrDefaultAsync(Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Get player versus rankings for a specific location
+        /// Get player Builder Base rankings for a specific location
         /// </summary>
         /// <remarks>
-        /// Get player versus rankings for a specific location
+        /// Get player Builder Base rankings for a specific location
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
@@ -188,10 +188,10 @@ namespace CocApi.Rest.Apis
         Task<IFetchPlayerBuilderBaseRankingApiResponse> FetchPlayerBuilderBaseRankingAsync(string locationId, Option<int> limit = default, Option<string> after = default, Option<string> before = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Get player versus rankings for a specific location
+        /// Get player Builder Base rankings for a specific location
         /// </summary>
         /// <remarks>
-        /// Get player versus rankings for a specific location
+        /// Get player Builder Base rankings for a specific location
         /// </remarks>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
@@ -840,7 +840,7 @@ namespace CocApi.Rest.Apis
         partial void OnErrorFetchClanBuilderBaseRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
-        /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
+        /// Get clan Builder Base rankings for a specific location Get clan Builder Base rankings for a specific location
         /// </summary>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
@@ -861,7 +861,7 @@ namespace CocApi.Rest.Apis
         }
 
         /// <summary>
-        /// Get clan versus rankings for a specific location Get clan versus rankings for a specific location
+        /// Get clan Builder Base rankings for a specific location Get clan Builder Base rankings for a specific location
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
@@ -3365,7 +3365,7 @@ namespace CocApi.Rest.Apis
         partial void OnErrorFetchPlayerBuilderBaseRanking(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string locationId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
-        /// Get player versus rankings for a specific location Get player versus rankings for a specific location
+        /// Get player Builder Base rankings for a specific location Get player Builder Base rankings for a specific location
         /// </summary>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
         /// <param name="limit">Limit the number of items returned in the response. (optional)</param>
@@ -3386,7 +3386,7 @@ namespace CocApi.Rest.Apis
         }
 
         /// <summary>
-        /// Get player versus rankings for a specific location Get player versus rankings for a specific location
+        /// Get player Builder Base rankings for a specific location Get player Builder Base rankings for a specific location
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="locationId">Identifier of the location to retrieve.</param>
