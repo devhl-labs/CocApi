@@ -10,7 +10,7 @@ $properties = @(
     'validatable=false',
     'nullableReferenceTypes=true',
     'hideGenerationTimestamp=false',
-    'packageVersion=2.11.0',
+    'packageVersion=2.11.1',
     'packageAuthors=devhl',
     'packageCompany=devhl',
     'packageCopyright=No Copyright',
@@ -134,8 +134,8 @@ Authentication schemes defined for the API:
 
 
 ## Build
-- SDK version: 2.11.0
-- Build date: 2023-12-12T19:13:15.435378200-05:00[America/New_York]
+- SDK version: 2.11.1
+- Build date: 2023-12-12T20:18:51.222829200-05:00[America/New_York]
 - Build package: org.openapitools.codegen.languages.CSharpClientCodegen
 
 ## Api Information
@@ -183,7 +183,7 @@ Authentication schemes defined for the API:
 - packageName: CocApi.Rest
 - packageTags: ClashOfClans SuperCell devhl
 - packageTitle: CocApi.Rest
-- packageVersion: 2.11.0
+- packageVersion: 2.11.1
 - releaseNote: Upgraded OpenApi with new token instantiation
 - returnICollection: false
 - sortParamsByRequiredFlag: 
