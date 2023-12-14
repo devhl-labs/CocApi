@@ -357,7 +357,7 @@ namespace CocApi.Rest.Models
             }
 
             if (!attacksPerMember.IsSet)
-                throw new ArgumentException("Property is required for class ClanWar.", nameof(attacksPerMember));
+                attacksPerMember = 1; // cwl war
 
             if (!clan.IsSet)
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(clan));
@@ -372,7 +372,7 @@ namespace CocApi.Rest.Models
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(preparationStartTime));
 
             if (!serverExpiration.IsSet)
-                throw new ArgumentException("Property is required for class ClanWar.", nameof(serverExpiration));
+                serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);
 
             if (!startTime.IsSet)
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(startTime));
