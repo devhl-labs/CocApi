@@ -266,7 +266,6 @@ namespace CocApi.Rest.Models
                                 builderBaseLeague = new Option<BuilderBaseLeague?>(JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "builderBaseTrophies":
-                        case "versusTrophies": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 builderBaseTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;

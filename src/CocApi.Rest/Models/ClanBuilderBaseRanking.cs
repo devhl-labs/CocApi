@@ -144,7 +144,6 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "clanBuilderBasePoints":
-                        case "clanVersusPoints": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanBuilderBasePoints = new Option<int?>(utf8JsonReader.GetInt32());
                             break;

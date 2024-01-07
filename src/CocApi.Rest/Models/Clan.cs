@@ -557,7 +557,6 @@ namespace CocApi.Rest.Models
                                 capitalLeague = new Option<CapitalLeague?>(JsonSerializer.Deserialize<CapitalLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanBuilderBasePoints":
-                        case "clanVersusPoints": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 clanBuilderBasePoints = new Option<int?>(utf8JsonReader.GetInt32());
                             break;
@@ -600,7 +599,6 @@ namespace CocApi.Rest.Models
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "requiredBuilderBaseTrophies":
-                        case "requiredVersusTrophies": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 requiredBuilderBaseTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;

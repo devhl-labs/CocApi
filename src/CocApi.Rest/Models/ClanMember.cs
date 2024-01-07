@@ -380,7 +380,6 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "builderBaseTrophies":
-                        case "versusTrophies": // legacy property
                             if (utf8JsonReader.TokenType != JsonTokenType.Null)
                                 builderBaseTrophies = new Option<int?>(utf8JsonReader.GetInt32());
                             break;

@@ -336,31 +336,8 @@ foreach ($file in $allCodeFiles)
 
         $content = $content.Replace("if (members == null)", "if (memberList == null)")
         $content = $content.Replace("ArgumentNullException(nameof(members)", "ArgumentNullException(nameof(memberList)")
-        $content = $content.Replace("case `"clanBuilderBasePoints`":", "case `"clanBuilderBasePoints`":`r`n                        case `"clanVersusPoints`": // legacy property")
-        $content = $content.Replace("case `"requiredBuilderBaseTrophies`":", "case `"requiredBuilderBaseTrophies`":`r`n                        case `"requiredVersusTrophies`": // legacy property")
         $content = $content.Replace($membersNullCheck, $membersNullCheckReplacement)
         $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);", "writer.WriteNumber(`"members`", clan.Members.Count);")
-    }
-
-    if ($file.name -eq "ClanMember.cs"){
-        $content = $content.Replace("case `"builderBaseTrophies`":", "case `"builderBaseTrophies`":`r`n                        case `"versusTrophies`": // legacy property")
-    }
-
-    if ($file.name -eq "ClanBuilderBaseRanking.cs"){
-        $content = $content.Replace("case `"clanBuilderBasePoints`":", "case `"clanBuilderBasePoints`":`r`n                        case `"clanVersusPoints`": // legacy property")
-    }
-
-    if ($file.name -eq "Player.cs"){
-        $content = $content.Replace("case `"builderBaseTrophies`":", "case `"builderBaseTrophies`":`r`n                        case `"versusTrophies`": // legacy property")
-    }
-
-    if ($file.name -eq "PlayerLegendStatistics.cs"){
-        $content = $content.Replace("case `"previousBuilderBaseSeason`":", "case `"previousBuilderBaseSeason`":`r`n                        case `"previousVersusSeason`": // legacy property")
-        $content = $content.Replace("case `"bestBuilderBaseSeason`":", "case `"bestBuilderBaseSeason`":`r`n                        case `"bestVersusSeason`": // legacy property")
-    }
-
-    if ($file.name -eq "PlayerBuilderBaseRanking.cs"){
-        $content = $content.Replace("case `"builderBaseTrophies`":", "case `"builderBaseTrophies`":`r`n                        case `"versusTrophies`": // legacy property")
     }
 
     if ($file.name -eq "Role.cs"){
