@@ -21,17 +21,12 @@ public class CacheDbContext : DbContext
         // Clans
         var clan = builder.Entity<CachedClan>().ToTable(Library.TableNames.Clans);
         clan.HasIndex(p => p.Id).IsUnique();
-        clan.HasIndex(p => p.KeepUntil);
-        clan.HasIndex(p => p.ExpiresAt);
         clan.HasIndex(p => p.Tag).IsUnique();
 
         // Current War
         builder.Entity<CachedClan>().OwnsOne(p => p.CurrentWar, war =>
         {
             war.ToTable(Library.TableNames.CurrentWar);
-            war.HasIndex(w => w.KeepUntil);
-            war.HasIndex(w => w.ExpiresAt);
-            war.HasIndex(w => w.EnemyTag);
             war.HasIndex(w => new { w.CachedClanId, w.Download });
             war.HasIndex(w => new { w.Added, w.CachedClanId, w.State });
         });
