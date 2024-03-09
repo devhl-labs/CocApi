@@ -14,7 +14,7 @@ namespace CocApi.Rest.DelegatingHandlers
 
             if (realTimeEligible.Any(word => request.RequestUri?.ToString().Contains(word) == true))
             {
-                HttpResponseMessage result = await base.SendAsync(request, cancellationToken);
+                HttpResponseMessage result = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
                 result.Headers.CacheControl ??= new System.Net.Http.Headers.CacheControlHeaderValue();
 
@@ -23,7 +23,7 @@ namespace CocApi.Rest.DelegatingHandlers
                 return result;
             }
 
-            return await base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
     }
 }

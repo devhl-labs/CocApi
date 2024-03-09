@@ -51,7 +51,8 @@ public sealed class StalePlayerService : ServiceBase
                 (p.ExpiresAt ?? min) < DateTime.UtcNow.AddMinutes(-10) &&
                 (p.ClanTag == null || (c2 == null || c2.DownloadMembers == false))
             select p
-        ).ToListAsync(cancellationToken).ConfigureAwait(false);
+        ).ToListAsync(cancellationToken)
+        .ConfigureAwait(false);
 
         dbContext.RemoveRange(cachedPlayers);
 

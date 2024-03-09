@@ -163,10 +163,10 @@ public sealed class WarService : ServiceBase
             CachedWar.HasUpdated(cachedWar, clan.CurrentWar) &&
             ClanWarUpdated != null)
             await ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(
-                    cachedWar.Content, 
-                    clan.CurrentWar.Content, 
-                    cachedClan?.Content, 
-                    cachedOpponent?.Content, 
+                    cachedWar.Content,
+                    clan.CurrentWar.Content,
+                    cachedClan?.Content,
+                    cachedOpponent?.Content,
                     cancellationToken))
                 .ConfigureAwait(false);
 

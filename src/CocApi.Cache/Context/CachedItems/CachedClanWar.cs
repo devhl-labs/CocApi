@@ -14,7 +14,7 @@ public class CachedClanWar : CachedItem<ClanWar>
     {
         try
         {
-            IOk<ClanWar?> apiResponse = await clansApi.FetchCurrentWarAsync(tag, realtime, cancellationToken);
+            IOk<ClanWar?> apiResponse = await clansApi.FetchCurrentWarAsync(tag, realtime, cancellationToken).ConfigureAwait(false);
 
             return new CachedClanWar(tag, apiResponse, await ttl.TimeToLiveOrDefaultAsync(apiResponse).ConfigureAwait(false));
         }

@@ -50,7 +50,8 @@ public sealed class MemberService : ServiceBase
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
         CachedClan? cachedClan = await dbContext.Clans
-            .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, cancellationToken).ConfigureAwait(false);
+            .FirstOrDefaultAsync(c => c.DownloadMembers && c.Id > _id, cancellationToken)
+            .ConfigureAwait(false);
 
         _id = cachedClan != null
             ? cachedClan.Id

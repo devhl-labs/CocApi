@@ -42,7 +42,7 @@ public class PlayersClient : ClientBase<PlayersClient>
 
     public IPlayersApi PlayersApi { get; }
 
-    public async Task AddOrUpdateAsync(string tag, bool download = true) => await AddOrUpdateAsync(new string[] { tag }, download);
+    public async Task AddOrUpdateAsync(string tag, bool download = true) => await AddOrUpdateAsync(new string[] { tag }, download).ConfigureAwait(false);
 
     public async Task AddOrUpdateAsync(IEnumerable<string> tags, bool download = true)
     {
@@ -83,16 +83,16 @@ public class PlayersClient : ClientBase<PlayersClient>
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
         while (!Synchronizer.UpdatingVillage.TryAdd(formattedTag, null))
-            await Task.Delay(250);
+            await Task.Delay(250).ConfigureAwait(false);
 
         try
         {
-            CachedPlayer cachedPlayer = await dbContext.Players.FirstOrDefaultAsync(c => c.Tag == formattedTag);
+            CachedPlayer cachedPlayer = await dbContext.Players.FirstOrDefaultAsync(c => c.Tag == formattedTag).ConfigureAwait(false);
 
             if (cachedPlayer != null)
                 dbContext.Players.Remove(cachedPlayer);
 
-            await dbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
         finally
         {
@@ -175,7 +175,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         {
             await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },
-        eventArgs.CancellationToken);
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     internal async Task OnMemberUpdatedAsync(object sender, MemberUpdatedEventArgs eventArgs)
@@ -187,6 +187,6 @@ public class PlayersClient : ClientBase<PlayersClient>
         {
             await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },
-        eventArgs.CancellationToken);
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 }

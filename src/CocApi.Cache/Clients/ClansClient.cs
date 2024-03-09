@@ -336,7 +336,7 @@ public class ClansClient : ClientBase<ClansClient>
         {
             await ClanUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         }, 
-        eventArgs.CancellationToken);
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarAddedAsync(object sender, WarAddedEventArgs eventArgs)
@@ -348,7 +348,7 @@ public class ClansClient : ClientBase<ClansClient>
         {
             await ClanWarAdded.Invoke(this, eventArgs).ConfigureAwait(false);
         },
-        eventArgs.CancellationToken);
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarEndingSoonAsync(object sender, WarEventArgs eventArgs)
@@ -357,10 +357,10 @@ public class ClansClient : ClientBase<ClansClient>
             return;
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndingSoonAsync), async () => 
-        { 
-            await ClanWarEndingSoon.Invoke(this, eventArgs).ConfigureAwait(false); 
-        }, 
-        eventArgs.CancellationToken);
+        {
+            await ClanWarEndingSoon.Invoke(this, eventArgs).ConfigureAwait(false);
+        },
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarEndNotSeenAsync(object sender, WarEventArgs eventArgs)
@@ -370,9 +370,9 @@ public class ClansClient : ClientBase<ClansClient>
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndNotSeenAsync), async () => 
         { 
-            await ClanWarEndNotSeen.Invoke(this, eventArgs).ConfigureAwait(false); 
-        }, 
-        eventArgs.CancellationToken);
+            await ClanWarEndNotSeen.Invoke(this, eventArgs).ConfigureAwait(false);
+        },
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarEndedAsync(object sender, WarEventArgs eventArgs)
@@ -382,9 +382,9 @@ public class ClansClient : ClientBase<ClansClient>
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndedAsync), async () =>
         { 
-            await ClanWarEnded.Invoke(this, eventArgs).ConfigureAwait(false); 
+            await ClanWarEnded.Invoke(this, eventArgs).ConfigureAwait(false);
         },
-        eventArgs.CancellationToken);
+        eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarLeagueGroupUpdatedAsync(object sender, ClanWarLeagueGroupUpdatedEventArgs eventArgs)
@@ -392,11 +392,11 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarLeagueGroupUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLeagueGroupUpdatedAsync), async () => 
-        {                 
-            await ClanWarLeagueGroupUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
-        }, 
-            eventArgs.CancellationToken);
+        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLeagueGroupUpdatedAsync), async () =>
+        {
+            await ClanWarLeagueGroupUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
+        },
+            eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarLogUpdatedAsync(object sender, ClanWarLogUpdatedEventArgs eventArgs)
@@ -405,10 +405,10 @@ public class ClansClient : ClientBase<ClansClient>
             return;
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLogUpdatedAsync), async () => 
-        { 
-            await ClanWarLogUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
-        }, 
-            eventArgs.CancellationToken);
+        {
+            await ClanWarLogUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
+        },
+            eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarStartingSoonAsync(object sender, WarEventArgs eventArgs)
@@ -417,10 +417,10 @@ public class ClansClient : ClientBase<ClansClient>
             return;
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarStartingSoonAsync), async () => 
-        { 
-            await ClanWarStartingSoon.Invoke(this, eventArgs).ConfigureAwait(false); 
-        }, 
-            eventArgs.CancellationToken);
+        {
+            await ClanWarStartingSoon.Invoke(this, eventArgs).ConfigureAwait(false);
+        },
+            eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
     private async Task OnClanWarUpdatedAsync(object sender, ClanWarUpdatedEventArgs eventArgs)
@@ -429,9 +429,9 @@ public class ClansClient : ClientBase<ClansClient>
             return;
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarUpdatedAsync), async () => 
-        { 
-            await ClanWarUpdated.Invoke(this, eventArgs).ConfigureAwait(false); 
-        }, 
-            eventArgs.CancellationToken);
+        {
+            await ClanWarUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
+        },
+            eventArgs.CancellationToken).ConfigureAwait(false);
     }
 }

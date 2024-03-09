@@ -82,7 +82,8 @@ public sealed class NewWarService : ServiceBase
             List<CachedWar> cachedWars = await dbContext.Wars
                 .AsNoTracking()
                 .Where(w => cachedClans.Select(c => c.CurrentWar.PreparationStartTime).Contains(w.PreparationStartTime))
-                .ToListAsync(cancellationToken).ConfigureAwait(false);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
 
             foreach (CachedClan cachedClan in cachedClans)
             {
