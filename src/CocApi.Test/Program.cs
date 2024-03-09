@@ -22,7 +22,6 @@ class Program
     {
         try
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             await CreateHostBuilder(args).Build().RunAsync();
         }
         catch (Exception e)
@@ -62,23 +61,17 @@ class Program
                 options.AddCocApiHttpClients(
                     builder: builder =>
                     {
-                        builder.ConfigurePrimaryHttpMessageHandler(services =>
+                        builder.ConfigurePrimaryHttpMessageHandler(services => new HttpClientHandler
                         {
-                            return new HttpClientHandler()
-                            {
-                                CookieContainer = services.GetRequiredService<CookieContainer>().Value
-                            };
+                            CookieContainer = services.GetRequiredService<CookieContainer>().Value,
+                            // this property is important if you query the api very fast
+                            MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
                         })
                         .AddRetryPolicy(section.GetValue<int>("Retries"))
                         .AddTimeoutPolicy(TimeSpan.FromMilliseconds(section.GetValue<long>("Timeout")))
                         .AddCircuitBreakerPolicy(
                             section.GetValue<int>("DurationOfBreak"),
-                            TimeSpan.FromSeconds(section.GetValue<int>("HandledEventsAllowedBeforeBreaking")))
-                        .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler
-                        {
-                            // this property is important if you query the api very fast
-                            MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
-                        });
+                            TimeSpan.FromSeconds(section.GetValue<int>("HandledEventsAllowedBeforeBreaking")));
 
                         // this is important if you use real time responses
                         // when using the real time option, the response headers will still contain max-age header
