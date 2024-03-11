@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using CocApi.Cache.Services.Options;
 using CocApi.Rest.Apis;
+using System.Collections.Concurrent;
 
 namespace CocApi.Cache;
 
@@ -339,10 +340,23 @@ public class ClansClient : ClientBase<ClansClient>
         eventArgs.CancellationToken).ConfigureAwait(false);
     }
 
+    private readonly ConcurrentDictionary<string, DateTime> _announcedWars = new();
+
     private async Task OnClanWarAddedAsync(object sender, WarAddedEventArgs eventArgs)
     {
-        if (ClanWarAdded == null)
+        if (ClanWarAdded == null || !_announcedWars.TryAdd($"{eventArgs.War.PreparationStartTime}{eventArgs.War.Clans.First().Key}", eventArgs.War.PreparationStartTime))
             return;
+
+        var keys = _announcedWars.Keys.ToArray();
+
+        foreach (string key in keys)
+        {
+            DateTime preparationStartTime = _announcedWars.GetValueOrDefault(key);
+
+            if (DateTime.UtcNow.AddDays(-1) > preparationStartTime)
+                // prevent memory leak
+                _announcedWars.TryRemove(key, out DateTime _);
+        }
 
         await Library.SendConcurrentEvent(Logger, nameof(OnClanWarAddedAsync), async () =>
         {
