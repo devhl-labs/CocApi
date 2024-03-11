@@ -53,13 +53,19 @@ public sealed class WarService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
+        Logger.LogInformation("Executing war service");
+
         SetDateVariables();
+
+        Logger.LogInformation("Setting variables");
 
         WarServiceOptions options = Options.Value.Wars;
 
         using var scope = ScopeFactory.CreateScope();
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+
+        Logger.LogInformation("Querying wars");
 
         List<CachedWar> cachedWars = await dbContext.Wars
             .Where(w =>
@@ -85,6 +91,8 @@ public sealed class WarService : ServiceBase
             tags.Add(cachedWar.OpponentTag);
         }
 
+        Logger.LogInformation("Querying clans");
+
         List<CachedClan> allCachedClans = await dbContext.Clans
             .Where(c => tags.Contains(c.Tag))
             .AsNoTracking()
@@ -96,6 +104,8 @@ public sealed class WarService : ServiceBase
         HashSet<string> updatingWar = new();
 
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
+        Logger.LogInformation("Iterating wars");
 
         try
         {
@@ -117,7 +127,11 @@ public sealed class WarService : ServiceBase
                 tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
             }
 
+            Logger.LogInformation("Waiting for tasks to complete");
+
             await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            Logger.LogInformation("Tasks are complete");
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
@@ -139,6 +153,8 @@ public sealed class WarService : ServiceBase
         CachedClan? cachedOpponent,
         CancellationToken cancellationToken)
     {
+        Logger.LogInformation("Creating cached clans");
+
         if (cachedClan == null && cachedOpponent?.CurrentWar.IsExpired == true)
             cachedClan = await CreateCachedClan(clansApi, cachedWar.ClanTag, dbContext, cancellationToken).ConfigureAwait(false);
 
@@ -158,10 +174,13 @@ public sealed class WarService : ServiceBase
             .OrderByDescending(c => c?.CurrentWar.ExpiresAt)
             .FirstOrDefault(c => c?.CurrentWar.PreparationStartTime == cachedWar.PreparationStartTime);
 
-        if (cachedWar.Content != null && 
-            clan?.CurrentWar.Content != null && 
+        if (cachedWar.Content != null &&
+            clan?.CurrentWar.Content != null &&
             CachedWar.HasUpdated(cachedWar, clan.CurrentWar) &&
             ClanWarUpdated != null)
+        {
+            Logger.LogInformation("sending the war updated event");
+
             await ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(
                     cachedWar.Content,
                     clan.CurrentWar.Content,
@@ -169,6 +188,7 @@ public sealed class WarService : ServiceBase
                     cachedOpponent?.Content,
                     cancellationToken))
                 .ConfigureAwait(false);
+        }
 
         if (clan != null)
         {
@@ -183,6 +203,9 @@ public sealed class WarService : ServiceBase
                     c.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime
                 )))
             cachedWar.IsFinal = true;
+
+
+        Logger.LogInformation("Done sending war updated event");
     }
 
     private async Task<CachedClan?> CreateCachedClan(IClansApi clansApi, string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
@@ -193,6 +216,8 @@ public sealed class WarService : ServiceBase
         try
         {
             _unmonitoredClans.Add(tag);
+
+            Logger.LogInformation("Creating cached clan war from current war");
 
             CachedClanWar cachedClanWar = await CachedClanWar
                 .FromCurrentWarResponseAsync(tag, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), TimeToLiveProvider, clansApi, cancellationToken)
@@ -240,7 +265,11 @@ public sealed class WarService : ServiceBase
                 cachedWar.Announcements |= Announcements.WarStartingSoon;
 
                 if (ClanWarStartingSoon != null)
+                {
+                    Logger.LogInformation("Clan war starting soon");
+
                     await ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
+                }
             }
 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
@@ -250,7 +279,10 @@ public sealed class WarService : ServiceBase
                 cachedWar.Announcements |= Announcements.WarEndingSoon;
 
                 if (ClanWarEndingSoon != null)
+                {
+                    Logger.LogInformation("Clan war ending soon");
                     await ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
+                }
             }
 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
@@ -264,7 +296,11 @@ public sealed class WarService : ServiceBase
                 cachedWar.Announcements |= Announcements.WarEndNotSeen;
 
                 if (ClanWarEndNotSeen != null)
+                {
+                    Logger.LogInformation("Clan war end not seen");
+
                     await ClanWarEndNotSeen.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
+                }
             }
 
             if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
@@ -274,8 +310,14 @@ public sealed class WarService : ServiceBase
                 cachedWar.Announcements |= Announcements.WarEnded;
 
                 if (ClanWarEnded != null)
+                {
+                    Logger.LogInformation("Clan war ended");
+
                     await ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
+                }
             }
+
+            Logger.LogInformation("done sending war announcement");
         }
         catch (Exception e)
         {
