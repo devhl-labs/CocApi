@@ -1499,23 +1499,9 @@ namespace CocApi.Rest.Apis
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
-                    Stopwatch requestedAt = new();
-
-                    requestedAt.Start();
-
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        requestedAt.Stop();
-
-                        Logger.LogInformation("request: {0}", requestedAt);
-
-                        requestedAt.Restart();
-
                         string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-
-                        requestedAt.Stop();
-
-                        Logger.LogInformation("content: {0}", requestedAt);
 
                         ILogger<GetClanApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetClanApiResponse>();
 
