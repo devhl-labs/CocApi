@@ -51,7 +51,7 @@ namespace CocApi.Cache
         internal static async Task SendConcurrentEvent<T>(ILogger<T> logger, string methodName, Func<Task> action, CancellationToken cancellationToken)
         {
             if (Interlocked.Read(ref _currentSemaphoreUsage) >= _maxCount)
-                logger.LogTrace("Max concurrent events reached.");
+                logger.LogWarning("Max concurrent events reached.");
 
             await _concurrentEventsSemaphore.WaitAsync(cancellationToken);
 
