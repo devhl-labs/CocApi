@@ -28,7 +28,7 @@ public class CacheOptions
     /// Download the clan, current war, war log, and CWL group.
     /// </summary>
     public ClanServiceOptions Clans { get; } = new ClanServiceOptions { ConcurrentUpdates = 200, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
-    
+
     /// <summary>
     /// This will keep any already downloaded CWL war up to date.
     /// </summary>
