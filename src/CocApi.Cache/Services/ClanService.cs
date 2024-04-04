@@ -20,6 +20,7 @@ public sealed class ClanService : ServiceBase
     internal event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
     internal event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
 
+    public ILogger<ClanService> Logger { get; }
 
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
@@ -38,6 +39,7 @@ public sealed class ClanService : ServiceBase
         : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Clans))
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
+        Logger = logger;
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
@@ -117,6 +119,9 @@ public sealed class ClanService : ServiceBase
             if (options.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
                 tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
+            if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
+                Logger.LogWarning("Updating clan #2PJJPGJ9U");
+
             if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, realTime, cancellationToken));
 
@@ -147,13 +152,27 @@ public sealed class ClanService : ServiceBase
 
     private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, Option<bool> realtime, CancellationToken cancellationToken)
     {
+        if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
+            Logger.LogWarning("Checking for war update #2PJJPGJ9U");
+
         CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
+
+        if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
+            Logger.LogWarning("Here is the war\npreparation:{prep}\n{war}", fetched.PreparationStartTime, fetched.Content);
 
         if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
         {
+            if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
+                Logger.LogWarning("it is new");
+
             cachedClan.CurrentWar.Type = fetched.Content.GetWarType();
 
             cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
+        }
+        else
+        {
+            if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
+                Logger.LogWarning("it is not new");
         }
 
         cachedClan.CurrentWar.UpdateFrom(fetched);
