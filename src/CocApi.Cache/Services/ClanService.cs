@@ -120,7 +120,18 @@ public sealed class ClanService : ServiceBase
                 tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
             if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
+            {
                 Logger.LogWarning("Updating clan #2PJJPGJ9U");
+                Logger.LogWarning("a: {value}", options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download));
+                Logger.LogWarning("b: {value}", options.DownloadCurrentWar);
+                Logger.LogWarning("c: {value}", cachedClan.CurrentWar.Download);
+                Logger.LogWarning("d: {value}", cachedClan.CurrentWar.IsExpired);
+                Logger.LogWarning("e: {value}", (cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download);
+                Logger.LogWarning("f: {value}", cachedClan.Download);
+                Logger.LogWarning("g: {value}", cachedClan.IsWarLogPublic == true);
+                Logger.LogWarning("e: {value}", !cachedClan.Download);
+            }
+
 
             if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, realTime, cancellationToken));
