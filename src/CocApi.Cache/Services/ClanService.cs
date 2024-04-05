@@ -20,7 +20,6 @@ public sealed class ClanService : ServiceBase
     internal event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
     internal event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
 
-    public ILogger<ClanService> Logger { get; }
 
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
@@ -39,7 +38,6 @@ public sealed class ClanService : ServiceBase
         : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Clans))
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
-        Logger = logger;
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
@@ -119,28 +117,6 @@ public sealed class ClanService : ServiceBase
             if (options.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
                 tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
-            if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
-            {
-                Logger.LogWarning("Updating clan #2PJJPGJ9U");
-                Logger.LogWarning("a: {value}", options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download));
-                Logger.LogWarning("b: {value}", options.DownloadCurrentWar);
-                Logger.LogWarning("c: {value}", cachedClan.CurrentWar.Download);
-
-                Logger.LogWarning("d: {value}", cachedClan.CurrentWar.IsExpired);
-                Logger.LogWarning("d1: {value}", DateTime.UtcNow > (cachedClan.CurrentWar.ExpiresAt ?? DateTime.MinValue).AddSeconds(3));
-                Logger.LogWarning("d2: {value}", DateTime.UtcNow > (cachedClan.CurrentWar.KeepUntil ?? DateTime.MinValue));
-                Logger.LogWarning("d3: {value}", DateTime.UtcNow);
-                Logger.LogWarning("d4: {value}", (cachedClan.CurrentWar.ExpiresAt ?? DateTime.MinValue).AddSeconds(3));
-                Logger.LogWarning("d5: {value}", cachedClan.CurrentWar.KeepUntil ?? DateTime.MinValue);
-
-
-                Logger.LogWarning("e: {value}", (cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download);
-                Logger.LogWarning("f: {value}", cachedClan.Download);
-                Logger.LogWarning("g: {value}", cachedClan.IsWarLogPublic == true);
-                Logger.LogWarning("e: {value}", !cachedClan.Download);
-            }
-
-
             if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, realTime, cancellationToken));
 
@@ -171,27 +147,13 @@ public sealed class ClanService : ServiceBase
 
     private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, Option<bool> realtime, CancellationToken cancellationToken)
     {
-        if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
-            Logger.LogWarning("Checking for war update #2PJJPGJ9U");
-
         CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
-
-        if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
-            Logger.LogWarning("Here is the war\npreparation:{prep}\n{war}", fetched.PreparationStartTime, fetched.Content);
 
         if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
         {
-            if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
-                Logger.LogWarning("it is new");
-
             cachedClan.CurrentWar.Type = fetched.Content.GetWarType();
 
             cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
-        }
-        else
-        {
-            if (cachedClan.Tag.Equals("#2PJJPGJ9U"))
-                Logger.LogWarning("it is not new");
         }
 
         cachedClan.CurrentWar.UpdateFrom(fetched);
@@ -236,7 +198,8 @@ public sealed class ClanService : ServiceBase
             cachedClan.CurrentWar.Content?.State == Rest.Models.WarState.Preparation ||
             cachedClan.Group.Content == null ||
             cachedClan.Group.Content.State == Rest.Models.GroupState.Ended ||
-            (cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month || cachedClan.Group.Content.Season.Year < DateTime.UtcNow.Year) ||
+            cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month ||
+            cachedClan.Group.Content.Season.Year < DateTime.UtcNow.Year ||
             (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month))
             return;
 
