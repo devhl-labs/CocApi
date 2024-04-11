@@ -200,7 +200,8 @@ public sealed class ClanService : ServiceBase
             cachedClan.Group.Content.State == Rest.Models.GroupState.Ended ||
             cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month ||
             cachedClan.Group.Content.Season.Year < DateTime.UtcNow.Year ||
-            (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month))
+            (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month) ||
+            cachedClan.Group.StatusCode != System.Net.HttpStatusCode.OK)
             return;
 
         // keep currentwar around an arbitrary amount of time since we are in cwl
