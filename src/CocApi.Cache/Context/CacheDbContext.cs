@@ -35,22 +35,16 @@ public class CacheDbContext : DbContext
         builder.Entity<CachedClan>().OwnsOne(p => p.WarLog, log =>
         {
             log.ToTable(Library.TableNames.WarLog);
-            log.HasIndex(w => w.KeepUntil);
-            log.HasIndex(w => w.ExpiresAt);
         });
 
         // Group
         builder.Entity<CachedClan>().OwnsOne(p => p.Group, group => {
             group.ToTable(Library.TableNames.Group);
-            group.HasIndex(w => w.KeepUntil);
-            group.HasIndex(w => w.ExpiresAt);
         });
 
         // Player
         var player = builder.Entity<CachedPlayer>().ToTable(Library.TableNames.Player);
         player.HasIndex(p => p.Id).IsUnique();
-        player.HasIndex(p => p.KeepUntil);
-        player.HasIndex(p => p.ExpiresAt);
         player.HasIndex(p => p.Tag).IsUnique();
         player.HasIndex(p => p.ClanTag);
 
@@ -58,12 +52,8 @@ public class CacheDbContext : DbContext
         var war = builder.Entity<CachedWar>().ToTable(Library.TableNames.War);
         war.HasIndex(p => p.Id).IsUnique();
         war.HasIndex(p => new { p.PreparationStartTime, p.ClanTag, p.OpponentTag }).IsUnique();
-        war.HasIndex(p => p.KeepUntil);
-        war.HasIndex(p => p.ExpiresAt);
         war.HasIndex(p => p.ClanTag);
         war.HasIndex(p => p.OpponentTag);
         war.HasIndex(p => p.IsFinal);
-        war.HasIndex(p => p.WarTag);
-        war.HasIndex(p => p.Season);
     }
 }

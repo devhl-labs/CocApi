@@ -2,4 +2,5 @@ $count=(Get-ChildItem -File -Path $PSScriptRoot/../../src/CocApi.Test/Migrations
 
 dotnet ef migrations add Migration$count `
     --project $PSScriptRoot/../../src/CocApi.Test `
-    --context CocApi.Cache.CacheDbContext
+    --context CocApi.Cache.CacheDbContext `
+    --verbose
