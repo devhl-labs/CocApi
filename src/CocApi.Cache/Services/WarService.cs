@@ -256,7 +256,7 @@ public sealed class WarService : ServiceBase
             if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
                 cachedWar.State != Rest.Models.WarState.WarEnded &&
                 now > cachedWar.EndTime &&
-                now < cachedWar.EndTime.AddHours(24) &&
+                now < cachedWar.EndTime.AddHours(1) &&
                 cachedWar.Content.AllAttacksAreUsed() == false &&
                 cachedClanWars != null &&
                 cachedClanWars.All(w => w.Content != null && w.Content.PreparationStartTime != cachedWar.Content.PreparationStartTime))

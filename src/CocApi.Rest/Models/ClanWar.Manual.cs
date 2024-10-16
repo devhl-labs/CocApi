@@ -126,84 +126,110 @@ namespace CocApi.Rest.Models
 
         partial void OnCreated()
         {
-           if (State == WarState.NotInWar)
-                return;
+            string debug = "a";
 
-            WarClan clan = Clan;
-            WarClan opponent = Opponent;
-            SortedList<string, WarClan> sorted = new SortedList<string, WarClan>
+            try
+            {
+                if (State == WarState.NotInWar)
+                    return;
+
+                WarClan clan = Clan;
+                WarClan opponent = Opponent;
+                SortedList<string, WarClan> sorted = new SortedList<string, WarClan>
             {
                 { clan.Tag, clan },
                 { opponent.Tag, opponent }
             };
 
-            Clan = sorted.Values.First();
-            Opponent = sorted.Values.Skip(1).First();
+                debug = "b";
 
-            foreach (WarClan warClan in Clans.Values)
-            {
-                if (AllAttacksAreUsedOrWarIsOver())
+                Clan = sorted.Values.First();
+                debug = "c";
+                Opponent = sorted.Values.Skip(1).First();
+
+                debug = "d";
+                foreach (WarClan warClan in Clans.Values)
                 {
-                    WarClan enemy = Clans.First(c => c.Key != warClan.Tag).Value;
-
-                    if (warClan.Stars > enemy.Stars)
-                        warClan.Result = Result.Win;
-                    else if (warClan.Stars < enemy.Stars)
-                        warClan.Result = Result.Lose;
-                    else if (warClan.Stars == enemy.Stars && warClan.DestructionPercentage > enemy.DestructionPercentage)
-                        warClan.Result = Result.Win;
-                    else if (warClan.Stars == enemy.Stars && warClan.DestructionPercentage < enemy.DestructionPercentage)
-                        warClan.Result = Result.Lose;
-                    else
-                        warClan.Result = Result.Tie;
-                }
-
-                int mapPosition = 1;
-
-                foreach (ClanWarMember member in warClan.Members.OrderBy(m => m.RosterPosition))
-                {
-                    member.MapPosition = mapPosition;
-                    mapPosition++;
-
-                    foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                    if (AllAttacksAreUsedOrWarIsOver())
                     {
-                        WarClan defendingClan = Clans.First(c => c.Key != warClan.Tag).Value;
+                        debug = "e";
+                        WarClan enemy = Clans.First(c => c.Key != warClan.Tag).Value;
 
-                        ClanWarMember defending = defendingClan.Members.First(m => m.Tag == attack.DefenderTag);
+                        debug = "f";
+                        if (warClan.Stars > enemy.Stars)
+                            warClan.Result = Result.Win;
+                        else if (warClan.Stars < enemy.Stars)
+                            warClan.Result = Result.Lose;
+                        else if (warClan.Stars == enemy.Stars && warClan.DestructionPercentage > enemy.DestructionPercentage)
+                            warClan.Result = Result.Win;
+                        else if (warClan.Stars == enemy.Stars && warClan.DestructionPercentage < enemy.DestructionPercentage)
+                            warClan.Result = Result.Lose;
+                        else
+                            warClan.Result = Result.Tie;
+                    }
 
-                        attack.AttackerClanTag = warClan.Tag;
-                        attack.DefenderClanTag = defendingClan.Tag;
-                        attack.AttackerTownHall = member.TownhallLevel;
-                        attack.DefenderTownHall = defending.TownhallLevel;
-                        attack.AttackerMapPosition = member.RosterPosition;
-                        attack.DefenderMapPosition = defending.RosterPosition;
+                    debug = "g";
+                    int mapPosition = 1;
+
+                    foreach (ClanWarMember member in warClan.Members.OrderBy(m => m.RosterPosition))
+                    {
+                        member.MapPosition = mapPosition;
+                        mapPosition++;
+
+                        foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                        {
+
+                            debug = "h";
+                            WarClan defendingClan = Clans.First(c => c.Key != warClan.Tag).Value;
+
+                            debug = "i";
+                            ClanWarMember defending = defendingClan.Members.First(m => m.Tag == attack.DefenderTag);
+
+                            debug = "j";
+                            attack.AttackerClanTag = warClan.Tag;
+                            attack.DefenderClanTag = defendingClan.Tag;
+                            attack.AttackerTownHall = member.TownhallLevel;
+                            attack.DefenderTownHall = defending.TownhallLevel;
+                            attack.AttackerMapPosition = member.RosterPosition;
+                            attack.DefenderMapPosition = defending.RosterPosition;
+                        }
                     }
                 }
-            }
+                debug = "k";
 
-            foreach (var wc in Clans.Values)
-            {
-                var grouped = Attacks.Where(a => a.AttackerClanTag == wc.Tag).GroupBy(a => a.DefenderMapPosition);
-                foreach (var group in grouped)
+                foreach (var wc in Clans.Values)
                 {
-                    bool fresh = true;
-                    int maxStars = 0;
-                    foreach (var attack in group.OrderBy(g => g.Order))
+                    var grouped = Attacks.Where(a => a.AttackerClanTag == wc.Tag).GroupBy(a => a.DefenderMapPosition);
+                    foreach (var group in grouped)
                     {
-                        attack.Fresh = fresh;
-                        fresh = false;
-                        attack.StarsGained = attack.Stars - maxStars;
-                        if (attack.StarsGained < 0)
-                            attack.StarsGained = 0;
-                        if (attack.Stars > maxStars)
-                            maxStars = attack.Stars;
+                        bool fresh = true;
+                        int maxStars = 0;
+                        foreach (var attack in group.OrderBy(g => g.Order))
+                        {
+                            attack.Fresh = fresh;
+                            fresh = false;
+                            attack.StarsGained = attack.Stars - maxStars;
+                            if (attack.StarsGained < 0)
+                                attack.StarsGained = 0;
+                            if (attack.Stars > maxStars)
+                                maxStars = attack.Stars;
+                        }
                     }
                 }
-            }
 
-            // cwl does not include this property
-            if (AttacksPerMember == 0)
-                AttacksPerMember = 1;
+                debug = "l";
+                // cwl does not include this property
+                if (AttacksPerMember == 0)
+                    AttacksPerMember = 1;
+
+                debug = "m";
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Error creating clan: {clan} prep: {prep} debug: {debug}", Clan.Tag, PreparationStartTime, debug);
+
+                throw;
+            }
         }
 
         public WarType GetWarType()
