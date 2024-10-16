@@ -139,50 +139,60 @@ public sealed class WarService : ServiceBase
         CachedClan? cachedOpponent,
         CancellationToken cancellationToken)
     {
-        if (cachedClan == null && cachedOpponent?.CurrentWar.IsExpired == true)
-            cachedClan = await CreateCachedClan(clansApi, cachedWar.ClanTag, dbContext, cancellationToken).ConfigureAwait(false);
-
-        if (cachedOpponent == null && cachedClan?.CurrentWar.IsExpired == true)
-            cachedOpponent = await CreateCachedClan(clansApi, cachedWar.OpponentTag, dbContext, cancellationToken).ConfigureAwait(false);
-
-        List<CachedClan?> cachedClans = new() { cachedClan, cachedOpponent };
-
-        if (cachedClans.All(c => c?.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime) || cachedWar.EndTime.AddDays(8) < now)
+        try
         {
-            cachedWar.IsFinal = true;
+            if (cachedClan == null && cachedOpponent?.CurrentWar.IsExpired == true)
+                cachedClan = await CreateCachedClan(clansApi, cachedWar.ClanTag, dbContext, cancellationToken).ConfigureAwait(false);
 
-            return;
+            if (cachedOpponent == null && cachedClan?.CurrentWar.IsExpired == true)
+                cachedOpponent = await CreateCachedClan(clansApi, cachedWar.OpponentTag, dbContext, cancellationToken).ConfigureAwait(false);
+
+            List<CachedClan?> cachedClans = new() { cachedClan, cachedOpponent };
+
+            if (cachedClans.All(c => c?.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime) || cachedWar.EndTime.AddDays(8) < now)
+            {
+                cachedWar.IsFinal = true;
+
+                return;
+            }
+
+            CachedClan? clan = cachedClans
+                .OrderByDescending(c => c?.CurrentWar.ExpiresAt)
+                .FirstOrDefault(c => c?.CurrentWar.PreparationStartTime == cachedWar.PreparationStartTime);
+
+            if (cachedWar.Content != null &&
+                clan?.CurrentWar.Content != null &&
+                CachedWar.HasUpdated(cachedWar, clan.CurrentWar) &&
+                ClanWarUpdated != null)
+                await ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(
+                        cachedWar.Content,
+                        clan.CurrentWar.Content,
+                        cachedClan?.Content,
+                        cachedOpponent?.Content,
+                        cancellationToken))
+                    .ConfigureAwait(false);
+
+            if (clan != null)
+            {
+                cachedWar.UpdateFrom(clan.CurrentWar);
+
+                cachedWar.IsFinal = clan.CurrentWar.State == Rest.Models.WarState.WarEnded;
+            }
+            else if (cachedClans.All(c =>
+                    c != null &&
+                    (
+                        c.CurrentWar.PreparationStartTime == DateTime.MinValue ||
+                        c.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime
+                    )))
+                cachedWar.IsFinal = true;
         }
-
-        CachedClan? clan = cachedClans
-            .OrderByDescending(c => c?.CurrentWar.ExpiresAt)
-            .FirstOrDefault(c => c?.CurrentWar.PreparationStartTime == cachedWar.PreparationStartTime);
-
-        if (cachedWar.Content != null &&
-            clan?.CurrentWar.Content != null &&
-            CachedWar.HasUpdated(cachedWar, clan.CurrentWar) &&
-            ClanWarUpdated != null)
-            await ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(
-                    cachedWar.Content,
-                    clan.CurrentWar.Content,
-                    cachedClan?.Content,
-                    cachedOpponent?.Content,
-                    cancellationToken))
-                .ConfigureAwait(false);
-
-        if (clan != null)
+        catch (Exception e)
         {
-            cachedWar.UpdateFrom(clan.CurrentWar);
 
-            cachedWar.IsFinal = clan.CurrentWar.State == Rest.Models.WarState.WarEnded;
+            Logger.LogError(e, "UpdateWarAsync war: {} clan: {}", cachedWar.PreparationStartTime, cachedClan?.Tag ?? cachedOpponent?.Tag);
+
+            throw;
         }
-        else if (cachedClans.All(c =>
-                c != null &&
-                (
-                    c.CurrentWar.PreparationStartTime == DateTime.MinValue ||
-                    c.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime
-                )))
-            cachedWar.IsFinal = true;
     }
 
     private async Task<CachedClan?> CreateCachedClan(IClansApi clansApi, string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
@@ -219,6 +229,12 @@ public sealed class WarService : ServiceBase
             }
 
             return cachedClan;
+        }
+        catch(Exception e)
+        {
+            Logger.LogError(e, "CreateCachedClan: {tag}", tag);
+
+            throw;
         }
         finally
         {
