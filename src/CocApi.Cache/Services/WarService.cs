@@ -85,9 +85,7 @@ public sealed class WarService : ServiceBase
 
             debug = "d";
 
-            _min = cachedWars.Count == options.ConcurrentUpdates
-                ? cachedWars.Min(c => c.Id)
-                : int.MinValue;
+            _min = cachedWars.Min(c => c.Id);
 
             _id = cachedWars.Count == options.ConcurrentUpdates
                 ? cachedWars.Max(c => c.Id)
