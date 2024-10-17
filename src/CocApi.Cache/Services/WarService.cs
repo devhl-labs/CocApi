@@ -53,81 +53,114 @@ public sealed class WarService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
-        SetDateVariables();
-
-        WarServiceOptions options = Options.Value.Wars;
-
-        using var scope = ScopeFactory.CreateScope();
-
-        CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
-
-        List<CachedWar> cachedWars = await dbContext.Wars
-            .Where(w =>
-                string.IsNullOrWhiteSpace(w.WarTag) &&
-                (w.ExpiresAt ?? min) < expires &&
-                (w.KeepUntil ?? min) < now &&
-                !w.IsFinal &&
-                w.Id > _id)
-            .OrderBy(c => c.Id)
-            .Take(options.ConcurrentUpdates)
-            .ToListAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        _id = cachedWars.Count == options.ConcurrentUpdates
-            ? cachedWars.Max(c => c.Id)
-            : int.MinValue;
-
-        HashSet<string> tags = new();
-
-        foreach (CachedWar cachedWar in cachedWars)
-        {
-            tags.Add(cachedWar.ClanTag);
-            tags.Add(cachedWar.OpponentTag);
-        }
-
-        List<CachedClan> allCachedClans = await dbContext.Clans
-            .Where(c => tags.Contains(c.Tag))
-            .AsNoTracking()
-            .ToListAsync(cancellationToken)
-            .ConfigureAwait(false);
-
-        List<Task> tasks = new();
-
-        HashSet<string> updatingWar = new();
-
-        IClansApi clansApi = ApiFactory.Create<IClansApi>();
+        string debug = "a";
 
         try
         {
+            SetDateVariables();
+
+            debug = "b";
+
+            WarServiceOptions options = Options.Value.Wars;
+
+            using var scope = ScopeFactory.CreateScope();
+
+            CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+
+            debug = "c";
+
+            List<CachedWar> cachedWars = await dbContext.Wars
+                .Where(w =>
+                    string.IsNullOrWhiteSpace(w.WarTag) &&
+                    (w.ExpiresAt ?? min) < expires &&
+                    (w.KeepUntil ?? min) < now &&
+                    !w.IsFinal &&
+                    w.Id > _id)
+                .OrderBy(c => c.Id)
+                .Take(options.ConcurrentUpdates)
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            debug = "d";
+
+            _id = cachedWars.Count == options.ConcurrentUpdates
+                ? cachedWars.Max(c => c.Id)
+                : int.MinValue;
+
+            debug = "e";
+            HashSet<string> tags = new();
+
             foreach (CachedWar cachedWar in cachedWars)
             {
-                List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
-
-                updatingWar.Add(cachedWar.Key);
-
-                tasks.Add(
-                    UpdateWarAsync(
-                        clansApi,
-                        dbContext,
-                        cachedWar,
-                        cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag),
-                        cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag),
-                        cancellationToken));
-
-                tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
+                tags.Add(cachedWar.ClanTag);
+                tags.Add(cachedWar.OpponentTag);
             }
+            debug = "f";
 
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            List<CachedClan> allCachedClans = await dbContext.Clans
+                .Where(c => tags.Contains(c.Tag))
+                .AsNoTracking()
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            debug = "g";
+            List<Task> tasks = new();
+
+            HashSet<string> updatingWar = new();
+
+            debug = "h";
+            IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
+            try
+            {
+                foreach (CachedWar cachedWar in cachedWars)
+                {
+                    debug = "i";
+                    List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
+
+                    debug = "j";
+                    updatingWar.Add(cachedWar.Key);
+
+                    debug = "k";
+                    tasks.Add(
+                        UpdateWarAsync(
+                            clansApi,
+                            dbContext,
+                            cachedWar,
+                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag),
+                            cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag),
+                            cancellationToken));
+                    debug = "l";
+
+                    tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
+                    debug = "m";
+                }
+
+                debug = "n";
+                await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                debug = "o";
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                debug = "p";
+            }
+            finally
+            {
+                debug = "q";
+                foreach (string tag in updatingWar)
+                    Synchronizer.UpdatingWar.TryRemove(tag, out _);
+
+                debug = "r";
+                foreach (string tag in _unmonitoredClans)
+                    Synchronizer.UpdatingClan.TryRemove(tag, out _);
+
+                debug = "s";
+            }
         }
-        finally
+        catch (Exception e)
         {
-            foreach (string tag in updatingWar)
-                Synchronizer.UpdatingWar.TryRemove(tag, out _);
+            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {} _id: {}", debug, _id);
 
-            foreach (string tag in _unmonitoredClans)
-                Synchronizer.UpdatingClan.TryRemove(tag, out _);
+            throw;
         }
     }
 
