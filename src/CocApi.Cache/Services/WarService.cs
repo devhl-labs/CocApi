@@ -158,7 +158,7 @@ public sealed class WarService : ServiceBase
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {} _id: {}", debug, _id);
+            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} _id: {_id}", debug, _id);
 
             throw;
         }
