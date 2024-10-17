@@ -51,7 +51,7 @@ public sealed class WarService : ServiceBase
         Options = options;
     }
 
-    private int _min = int.MinValue;
+    private int _min = 0;
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
@@ -149,20 +149,16 @@ public sealed class WarService : ServiceBase
             }
             finally
             {
-                debug = "q";
                 foreach (string tag in updatingWar)
                     Synchronizer.UpdatingWar.TryRemove(tag, out _);
 
-                debug = "r";
                 foreach (string tag in _unmonitoredClans)
                     Synchronizer.UpdatingClan.TryRemove(tag, out _);
-
-                debug = "s";
             }
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} min: {min} _id: {_id}", debug, min, _id);
+            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} min: {min} _id: {_id}", debug, _min, _id);
 
             throw;
         }
