@@ -51,6 +51,8 @@ public sealed class WarService : ServiceBase
         Options = options;
     }
 
+    private int _min = int.MinValue;
+
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
         string debug = "a";
@@ -82,6 +84,10 @@ public sealed class WarService : ServiceBase
                 .ConfigureAwait(false);
 
             debug = "d";
+
+            _min = cachedWars.Count == options.ConcurrentUpdates
+                ? cachedWars.Min(c => c.Id)
+                : int.MinValue;
 
             _id = cachedWars.Count == options.ConcurrentUpdates
                 ? cachedWars.Max(c => c.Id)
@@ -158,7 +164,7 @@ public sealed class WarService : ServiceBase
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} _id: {_id}", debug, _id);
+            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} min: {min} _id: {_id}", debug, min, _id);
 
             throw;
         }
