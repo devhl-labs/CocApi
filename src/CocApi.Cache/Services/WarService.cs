@@ -57,6 +57,8 @@ public sealed class WarService : ServiceBase
     {
         string debug = "a";
 
+        int erroredWarId = 0;
+
         try
         {
             SetDateVariables();
@@ -123,7 +125,15 @@ public sealed class WarService : ServiceBase
                     List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
 
                     debug = "j";
-                    updatingWar.Add(cachedWar.Key);
+                    try
+                    {
+                        updatingWar.Add(cachedWar.Key);
+                    }
+                    catch (Exception)
+                    {
+                        erroredWarId = cachedWar.Id;
+                        throw;
+                    }
 
                     debug = "k";
                     tasks.Add(
@@ -158,7 +168,7 @@ public sealed class WarService : ServiceBase
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} min: {min} _id: {_id}", debug, _min, _id);
+            Logger.LogError(e, "ExecuteScheduledTaskAsync debug: {debug} min: {min} _id: {_id} warId: {warId}", debug, _min, _id, erroredWarId);
 
             throw;
         }
