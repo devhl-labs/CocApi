@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using System.Net.Mime;
 
 namespace CocApi.Cache.Services;
 
@@ -51,7 +52,7 @@ public sealed class WarService : ServiceBase
         Options = options;
     }
 
-    private int _min = 0;
+    private int _min = int.MinValue;
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
@@ -87,7 +88,7 @@ public sealed class WarService : ServiceBase
 
             debug = "d";
 
-            _min = cachedWars.Min(c => c.Id);
+            _min = cachedWars.Count > 0 ? cachedWars.Min(c => c.Id) : int.MinValue;
 
             _id = cachedWars.Count == options.ConcurrentUpdates
                 ? cachedWars.Max(c => c.Id)
@@ -129,10 +130,13 @@ public sealed class WarService : ServiceBase
                     {
                         updatingWar.Add(cachedWar.Key);
                     }
-                    catch (Exception)
+                    catch (Exception err)
                     {
                         erroredWarId = cachedWar.Id;
-                        throw;
+
+                        Logger.LogError(err, "Could not handle war id {warId}", erroredWarId);
+
+                        continue;
                     }
 
                     debug = "k";
