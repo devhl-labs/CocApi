@@ -90,6 +90,8 @@ public sealed class WarService : ServiceBase
 
             _min = cachedWars.Count > 0 ? cachedWars.Min(c => c.Id) : int.MinValue;
 
+            debug = "d1";
+
             _id = cachedWars.Count == options.ConcurrentUpdates
                 ? cachedWars.Max(c => c.Id)
                 : int.MinValue;
@@ -135,6 +137,8 @@ public sealed class WarService : ServiceBase
                         erroredWarId = cachedWar.Id;
 
                         Logger.LogError(err, "Could not handle war id {warId}", erroredWarId);
+
+                        cachedWar.IsFinal = true;
 
                         continue;
                     }
