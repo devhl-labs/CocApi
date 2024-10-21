@@ -138,7 +138,7 @@ public sealed class WarService : ServiceBase
 
                         Logger.LogError(err, "Could not handle war id {warId}", erroredWarId);
 
-                        cachedWar.IsFinal = true;
+                        //cachedWar.IsFinal = true;
 
                         continue;
                     }
