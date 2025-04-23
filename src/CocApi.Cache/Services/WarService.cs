@@ -189,7 +189,7 @@ public sealed class WarService : ServiceBase
         catch (Exception e)
         {
             Logger.LogError(e, "Failed to update war clanTag: {cachedWar}", cachedWar.Id);
-            cachedWar.KeepUntil = DateTime.UtcNow.AddHours(4);
+            cachedWar.KeepUntil = DateTime.UtcNow.AddHours(1);
             throw;
         }
     }
