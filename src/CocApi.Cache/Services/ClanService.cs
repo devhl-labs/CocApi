@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using System.Diagnostics;
 
 namespace CocApi.Cache.Services;
 
@@ -59,6 +60,8 @@ public sealed class ClanService : ServiceBase
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
+        DateTime queryStart = DateTime.UtcNow;
+
         List<CachedClan> cachedClans = await dbContext.Clans
             .Where(c =>
                 c.Id > _id &&
@@ -72,6 +75,11 @@ public sealed class ClanService : ServiceBase
             .Take(options.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
+
+        _logger.LogInformation("Clan query completed in {elapsed}", DateTime.UtcNow - queryStart);
+
+        if (cachedClans.Any(c => c.Tag == "92L22G9V"))
+            _logger.LogInformation("gazgaz clan is in the resultsa");
 
         _id = cachedClans.Count == options.ConcurrentUpdates
             ? cachedClans.Max(c => c.Id)
