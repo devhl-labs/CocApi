@@ -34,13 +34,13 @@ public partial class PlayersApi
     partial void AfterFetchPlayer(ref bool suppressDefaultLog, IFetchPlayerApiResponse apiResponseLocalVar, string playerTag)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
     }
 
     partial void AfterVerifyToken(ref bool suppressDefaultLog, IVerifyTokenApiResponse apiResponseLocalVar, VerifyTokenRequest body, string playerTag)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{playerTag}", playerTag));
     }
 }
 

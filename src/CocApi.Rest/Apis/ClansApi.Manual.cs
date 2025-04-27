@@ -102,49 +102,49 @@ public partial class ClansApi
     partial void AfterFetchClan(ref bool suppressDefaultLog, IFetchClanApiResponse apiResponseLocalVar, string clanTag)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
     }
 
     partial void AfterFetchCapitalRaidSeasons(ref bool suppressDefaultLog, IFetchCapitalRaidSeasonsApiResponse apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
     }
 
     partial void AfterFetchClanMembers(ref bool suppressDefaultLog, IFetchClanMembersApiResponse apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
     }
 
     partial void AfterFetchClanWarLeagueGroup(ref bool suppressDefaultLog, IFetchClanWarLeagueGroupApiResponse apiResponseLocalVar, string clanTag, Option<bool> realtime)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
     }
 
     partial void AfterFetchClanWarLeagueWar(ref bool suppressDefaultLog, IFetchClanWarLeagueWarApiResponse apiResponseLocalVar, string warTag, Option<bool> realtime)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{warTag}", warTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{warTag}", warTag));
     }
 
     partial void AfterFetchClanWarLog(ref bool suppressDefaultLog, IFetchClanWarLogApiResponse apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
     }
 
     partial void AfterFetchCurrentWar(ref bool suppressDefaultLog, IFetchCurrentWarApiResponse apiResponseLocalVar, string clanTag, Option<bool> realtime)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
     }
 
     partial void AfterSearchClans(ref bool suppressDefaultLog, ISearchClansApiResponse apiResponseLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
     {
         suppressDefaultLog = true;
-        Logger.LogInformation("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        Logger.LogTrace("{elapsed,-9} | {status} | {url}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
     }
 }
 
