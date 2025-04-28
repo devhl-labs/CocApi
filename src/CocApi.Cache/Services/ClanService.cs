@@ -62,6 +62,8 @@ public sealed class ClanService : ServiceBase
 
         DateTime queryStart = DateTime.UtcNow;
 
+        _logger.LogInformation("Querying for clans to update");
+
         List<CachedClan> cachedClans = await dbContext.Clans
             .Where(c =>
                 c.Id > _id &&
