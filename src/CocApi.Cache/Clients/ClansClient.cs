@@ -61,7 +61,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (!(options.Value.ActiveWars.Enabled ==
                 options.Value.Wars.Enabled ==
                 options.Value.Clans.Enabled ==
-                options.Value.Clans.DownloadCurrentWar ==
+                options.Value.ClanWars.DownloadCurrentWar ==
                 options.Value.NewWars.Enabled))
             logger.LogWarning("Your cache control options has current wars partially enabled.");
 

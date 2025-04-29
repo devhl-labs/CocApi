@@ -92,6 +92,7 @@ public static class IServiceCollectionExtensions
 
         services.AddHostedSingleton<ActiveWarService>();
         services.AddHostedSingleton<ClanService>();
+        services.AddHostedSingleton<ClanWarService>();
         services.AddHostedSingleton<CwlWarService>();
         services.AddHostedSingleton<MemberService>();
         services.AddHostedSingleton<NewCwlWarService>();

@@ -7,7 +7,7 @@ public sealed class CachingService
 {
     private readonly ServiceBase[] _perpetualServices;
 
-    public CachingService(ActiveWarService activeWarService, ClanService clanService, CwlWarService cwlWarService, MemberService memberService,
+    public CachingService(ActiveWarService activeWarService, ClanService clanService, ClanWarService clanWarService, CwlWarService cwlWarService, MemberService memberService,
         NewCwlWarService newCwlWarService, NewWarService newWarService, PlayerService playerService, StalePlayerService stalePlayerService, 
         WarService warService)
     {
@@ -15,6 +15,7 @@ public sealed class CachingService
         {
             activeWarService,
             clanService,
+            clanWarService,
             cwlWarService,
             memberService,
             newCwlWarService,
