@@ -76,11 +76,6 @@ public sealed class ClanWarService : ServiceBase
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        _logger.LogDebug("Clan war query retrieved {clans} clans in {elapsed}", cachedClans.Count, DateTime.UtcNow - queryStart);
-
-        if (cachedClans.Any(c => c.Tag == "92L22G9V"))
-            _logger.LogDebug("gazgaz clan war is in the results");
-
         _id = cachedClans.Count == options.ConcurrentUpdates
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
