@@ -130,9 +130,6 @@ public sealed class ClanService : ServiceBase
             if (options.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
                 tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
 
-            // if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
-            //     tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, realTime, cancellationToken));
-
             if (options.DownloadWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 tasks.Add(MonitorWarLogAsync(clansApi, cachedClan, cancellationToken));
 
@@ -166,28 +163,6 @@ public sealed class ClanService : ServiceBase
             throw;
         }
     }
-
-    // private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, Option<bool> realtime, CancellationToken cancellationToken)
-    // {
-    //     try
-    //     {
-    //         CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
-
-    //         if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
-    //         {
-    //             cachedClan.CurrentWar.Type = fetched.Content.GetWarType();
-
-    //             cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
-    //         }
-
-    //         cachedClan.CurrentWar.UpdateFrom(fetched);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         _logger.LogError(e, "An exception occured while updating the war for clan {tag}", cachedClan.Tag);
-    //         throw;
-    //     }
-    // }
 
     private async Task MonitorWarLogAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
     {

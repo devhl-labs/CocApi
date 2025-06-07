@@ -16,13 +16,7 @@ namespace CocApi.Cache.Services;
 
 public sealed class ClanWarService : ServiceBase
 {
-
     private readonly ILogger<ClanWarService> _logger;
-
-
-    //internal event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
-    //internal event AsyncEventHandler<ClanWarLeagueGroupUpdatedEventArgs>? ClanWarLeagueGroupUpdated;
-    //internal event AsyncEventHandler<ClanWarLogUpdatedEventArgs>? ClanWarLogUpdated;
 
 
     internal IApiFactory ApiFactory { get; }
@@ -64,10 +58,7 @@ public sealed class ClanWarService : ServiceBase
         List<CachedClan> cachedClans = await dbContext.Clans
             .Where(c =>
                 c.Id > _id &&
-                    // (options.DownloadClan && (c.ExpiresAt ?? min) < expires && (c.KeepUntil ?? min) < now && c.Download) ||
-                    // (options.DownloadGroup && (c.Group.ExpiresAt ?? min) < expires && (c.Group.KeepUntil ?? min) < now && c.Group.Download) ||
                     options.DownloadCurrentWar && (c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false
-                    // (options.DownloadWarLog && (c.WarLog.ExpiresAt ?? min) < expires && (c.WarLog.KeepUntil ?? min) < now && c.WarLog.Download && c.IsWarLogPublic != false)
                 )
             .OrderBy(c => c.Id)
             .Take(options.ConcurrentUpdates)
@@ -126,17 +117,8 @@ public sealed class ClanWarService : ServiceBase
 
             Option<bool> realTime = Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value);
 
-            // if (options.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
-            //     tasks.Add(MonitorClanAsync(clansApi, cachedClan, cancellationToken));
-
             if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, realTime, cancellationToken));
-
-            // if (options.DownloadWarLog && cachedClan.WarLog.Download && cachedClan.WarLog.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
-            //     tasks.Add(MonitorWarLogAsync(clansApi, cachedClan, cancellationToken));
-
-            // if (options.DownloadGroup && cachedClan.Group.Download && cachedClan.Group.IsExpired)
-            //     tasks.Add(MonitorGroupAsync(clansApi, realTime, cachedClan, cancellationToken));
 
             await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
         }
@@ -145,26 +127,6 @@ public sealed class ClanWarService : ServiceBase
             _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
         }
     }
-
-    // private async Task MonitorClanAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
-    // {
-    //     try
-    //     {
-    //         CachedClan fetched = await CachedClan.FromClanResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
-
-    //         if (fetched.Content != null && ClanUpdated != null && CachedClan.HasUpdated(cachedClan, fetched))
-    //             await ClanUpdated
-    //                 .Invoke(this, new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content, cancellationToken))
-    //                 .ConfigureAwait(false);
-
-    //         cachedClan.UpdateFrom(fetched);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
-    //         throw;
-    //     }
-    // }
 
     private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, Option<bool> realtime, CancellationToken cancellationToken)
     {
@@ -187,53 +149,6 @@ public sealed class ClanWarService : ServiceBase
             throw;
         }
     }
-
-    // private async Task MonitorWarLogAsync(IClansApi clansApi, CachedClan cachedClan, CancellationToken cancellationToken)
-    // {
-    //     try
-    //     {
-    //         CachedClanWarLog fetched = await CachedClanWarLog.FromClanWarLogResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
-
-    //         if (fetched.Content != null && CachedClanWarLog.HasUpdated(cachedClan.WarLog, fetched) && ClanWarLogUpdated != null)
-    //             await ClanWarLogUpdated
-    //                 .Invoke(this, new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content, cancellationToken))
-    //                 .ConfigureAwait(false);
-
-    //         cachedClan.WarLog.UpdateFrom(fetched);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         _logger.LogError(e, "An exception occured while updating the war log for clan {tag}", cachedClan.Tag);
-    //         throw;
-    //     }
-    // }
-
-    // private async Task MonitorGroupAsync(IClansApi clansApi, Option<bool> realtime, CachedClan cachedClan, CancellationToken cancellationToken)
-    // {
-    //     try
-    //     {
-    //         CachedClanWarLeagueGroup fetched = await CachedClanWarLeagueGroup
-    //     .FromClanWarLeagueGroupResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken)
-    //     .ConfigureAwait(false);
-
-    //         if (fetched.Content != null && CachedClanWarLeagueGroup.HasUpdated(cachedClan.Group, fetched))
-    //         {
-    //             if (ClanWarLeagueGroupUpdated != null)
-    //                 await ClanWarLeagueGroupUpdated
-    //                     .Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content, cancellationToken))
-    //                     .ConfigureAwait(false);
-
-    //             cachedClan.Group.Added = false;
-    //         }
-
-    //         cachedClan.Group.UpdateFrom(fetched);
-    //     }
-    //     catch (Exception e)
-    //     {
-    //         _logger.LogError(e, "An exception occured while updating the group for clan {tag}", cachedClan.Tag);
-    //         throw;
-    //     }
-    // }
 
     private void ExtendWarTTLWhileInCwl(CachedClan cachedClan)
     {
