@@ -1,10 +1,10 @@
 # CocApi
-A wrapper for [developer.clashofclans.com](https://developer.clashofclans.com/#/) written in .Net 6.0. 
-CocApi is used to fetch results from the clash API. 
+A wrapper for [developer.clashofclans.com](https://developer.clashofclans.com/#/) written in .Net 8.0.
+CocApi is used to fetch results from the clash API.
 CocApi.Cache will cache responses in a database of your choice.
 To keep objects up to date and receive events when the data changes, add the tag to the ClansClient or PlayersClient.
- 
-## Help  
+
+## Help
 [![Clash API Developers](https://discordapp.com/api/guilds/566451504332931073/widget.png?style=banner4)](https://discord.gg/clashapi)
 
 ## Using the library
@@ -87,7 +87,10 @@ This requires CocApi to already be added to the service provider as shown above.
 Downloads the current war for a clan which is warring one of your tracked clans, but otherwise would not be downloaded. This ensures the most recent data is available. It may help if a tracked clan's war log is private. It also helps get the final war stats in the event the clan searches for a new war immediately.
 
 ### ClanService
-Downloads the clan, current war, war log, and league group for a given clan.
+Downloads the clan, war log, and league group for a given clan.
+
+### ClanWarService
+Downloads the current war.
 
 ### ClanMemberService
 Iterates the Clan cache table searching for any clan with DownloadMembers enabled. Every player present in the clan will be downloaded. Players added to the Players table by this service will have Download set to **false**. When the village leaves the tracked clan, it will no longer update and will eventually be removed from the cache. If you wish to continue tracking these villages, on the OnClanUpdated event check for new members using `Clan.ClanMembersJoined(e.Stored, e.Fetched)` and add them to the PlayersClient with Download set to true.
@@ -106,9 +109,6 @@ Iterates the Players cache table searching for players with Download set to true
 
 ### WarService
 Iterates over the Wars cache table. Queries the CurrentWar cache table for both clans in the war. Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
-
-## Migrating from version 1
-Internally version 1 used SQLite. If you wish to import the cache from SQLite to your database, utilize the ImportDataToVersion2 method in either the ClansClient or PlayersClient. You only need to do this once. You must use verson 2.0.0 to migrate. Later versions have removed all traces of SQLite.
 
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).
