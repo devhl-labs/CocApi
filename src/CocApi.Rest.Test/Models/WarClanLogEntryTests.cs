@@ -54,6 +54,15 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'DestructionPercentage'
+        /// </summary>
+        [Fact]
+        public void DestructionPercentageTest()
+        {
+            // TODO unit test for the property 'DestructionPercentage'
+        }
+
+        /// <summary>
         /// Test the property 'BadgeUrls'
         /// </summary>
         [Fact]
@@ -72,21 +81,30 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'DestructionPercentage'
-        /// </summary>
-        [Fact]
-        public void DestructionPercentageTest()
-        {
-            // TODO unit test for the property 'DestructionPercentage'
-        }
-
-        /// <summary>
         /// Test the property 'Stars'
         /// </summary>
         [Fact]
         public void StarsTest()
         {
             // TODO unit test for the property 'Stars'
+        }
+
+        /// <summary>
+        /// Test the property 'Tag'
+        /// </summary>
+        [Fact]
+        public void TagTest()
+        {
+            // TODO unit test for the property 'Tag'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
         }
 
         /// <summary>
@@ -105,24 +123,6 @@ namespace CocApi.Rest.Test.Model
         public void ExpEarnedTest()
         {
             // TODO unit test for the property 'ExpEarned'
-        }
-
-        /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
-        /// Test the property 'Tag'
-        /// </summary>
-        [Fact]
-        public void TagTest()
-        {
-            // TODO unit test for the property 'Tag'
         }
     }
 }

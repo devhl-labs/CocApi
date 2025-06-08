@@ -54,21 +54,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'AttackCount'
-        /// </summary>
-        [Fact]
-        public void AttackCountTest()
-        {
-            // TODO unit test for the property 'AttackCount'
-        }
-
-        /// <summary>
         /// Test the property 'Defender'
         /// </summary>
         [Fact]
         public void DefenderTest()
         {
             // TODO unit test for the property 'Defender'
+        }
+
+        /// <summary>
+        /// Test the property 'AttackCount'
+        /// </summary>
+        [Fact]
+        public void AttackCountTest()
+        {
+            // TODO unit test for the property 'AttackCount'
         }
 
         /// <summary>
@@ -81,21 +81,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Districts'
-        /// </summary>
-        [Fact]
-        public void DistrictsTest()
-        {
-            // TODO unit test for the property 'Districts'
-        }
-
-        /// <summary>
         /// Test the property 'DistrictsDestroyed'
         /// </summary>
         [Fact]
         public void DistrictsDestroyedTest()
         {
             // TODO unit test for the property 'DistrictsDestroyed'
+        }
+
+        /// <summary>
+        /// Test the property 'Districts'
+        /// </summary>
+        [Fact]
+        public void DistrictsTest()
+        {
+            // TODO unit test for the property 'Districts'
         }
     }
 }

@@ -82,27 +82,27 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Attacks
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<ClanWarAttack>?> AttacksOption { get; }
 
         /// <summary>
         /// Gets or Sets Attacks
         /// </summary>
         [JsonPropertyName("attacks")]
-        public List<ClanWarAttack>? Attacks { get { return this. AttacksOption; } }
+        public List<ClanWarAttack>? Attacks { get { return this.AttacksOption; } }
 
         /// <summary>
         /// Used to track the state of BestOpponentAttack
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<ClanWarAttack?> BestOpponentAttackOption { get; }
 
         /// <summary>
         /// Gets or Sets BestOpponentAttack
         /// </summary>
         [JsonPropertyName("bestOpponentAttack")]
-        public ClanWarAttack? BestOpponentAttack { get { return this. BestOpponentAttackOption; } }
+        public ClanWarAttack? BestOpponentAttack { get { return this.BestOpponentAttackOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -251,30 +251,25 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "mapPosition":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapPosition = new Option<int?>(utf8JsonReader.GetInt32());
+                            mapPosition = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "opponentAttacks":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                opponentAttacks = new Option<int?>(utf8JsonReader.GetInt32());
+                            opponentAttacks = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "tag":
                             tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "townhallLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townhallLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            townhallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "attacks":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = new Option<List<ClanWarAttack>?>(JsonSerializer.Deserialize<List<ClanWarAttack>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            attacks = new Option<List<ClanWarAttack>?>(JsonSerializer.Deserialize<List<ClanWarAttack>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "bestOpponentAttack":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestOpponentAttack = new Option<ClanWarAttack?>(JsonSerializer.Deserialize<ClanWarAttack>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            bestOpponentAttack = new Option<ClanWarAttack?>(JsonSerializer.Deserialize<ClanWarAttack>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -332,7 +327,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanWarMember, jsonSerializerOptions);
+            WriteProperties(writer, clanWarMember, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -343,7 +338,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanWarMember"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarMember clanWarMember, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanWarMember clanWarMember, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanWarMember.Name == null)
                 throw new ArgumentNullException(nameof(clanWarMember.Name), "Property is required for class ClanWarMember.");

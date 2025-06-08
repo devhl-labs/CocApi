@@ -54,12 +54,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'AttackLimit'
+        /// Test the property 'Tag'
         /// </summary>
         [Fact]
-        public void AttackLimitTest()
+        public void TagTest()
         {
-            // TODO unit test for the property 'AttackLimit'
+            // TODO unit test for the property 'Tag'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
         }
 
         /// <summary>
@@ -69,6 +78,15 @@ namespace CocApi.Rest.Test.Model
         public void AttacksTest()
         {
             // TODO unit test for the property 'Attacks'
+        }
+
+        /// <summary>
+        /// Test the property 'AttackLimit'
+        /// </summary>
+        [Fact]
+        public void AttackLimitTest()
+        {
+            // TODO unit test for the property 'AttackLimit'
         }
 
         /// <summary>
@@ -87,24 +105,6 @@ namespace CocApi.Rest.Test.Model
         public void CapitalResourcesLootedTest()
         {
             // TODO unit test for the property 'CapitalResourcesLooted'
-        }
-
-        /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
-        /// Test the property 'Tag'
-        /// </summary>
-        [Fact]
-        public void TagTest()
-        {
-            // TODO unit test for the property 'Tag'
         }
     }
 }

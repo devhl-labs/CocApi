@@ -58,40 +58,40 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Detail
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object?> DetailOption { get; }
 
         /// <summary>
         /// Gets or Sets Detail
         /// </summary>
         [JsonPropertyName("detail")]
-        public Object? Detail { get { return this. DetailOption; } }
+        public Object? Detail { get { return this.DetailOption; } }
 
         /// <summary>
         /// Used to track the state of Message
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> MessageOption { get; }
 
         /// <summary>
         /// Gets or Sets Message
         /// </summary>
         [JsonPropertyName("message")]
-        public string? Message { get { return this. MessageOption; } }
+        public string? Message { get { return this.MessageOption; } }
 
         /// <summary>
         /// Used to track the state of Type
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> TypeOption { get; }
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public string? Type { get { return this. TypeOption; } }
+        public string? Type { get { return this.TypeOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -223,8 +223,7 @@ namespace CocApi.Rest.Models
                             reason = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "detail":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                detail = new Option<Object?>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            detail = new Option<Object?>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "message":
                             message = new Option<string?>(utf8JsonReader.GetString()!);
@@ -267,7 +266,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clientError, jsonSerializerOptions);
+            WriteProperties(writer, clientError, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -278,7 +277,7 @@ namespace CocApi.Rest.Models
         /// <param name="clientError"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClientError clientError, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClientError clientError, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clientError.Reason == null)
                 throw new ArgumentNullException(nameof(clientError.Reason), "Property is required for class ClientError.");

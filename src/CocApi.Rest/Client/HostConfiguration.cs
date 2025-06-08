@@ -174,7 +174,7 @@ namespace CocApi.Rest.Client
             builders.Add(_services.AddHttpClient<ILeaguesApi, LeaguesApi>(client));
             builders.Add(_services.AddHttpClient<ILocationsApi, LocationsApi>(client));
             builders.Add(_services.AddHttpClient<IPlayersApi, PlayersApi>(client));
-
+            
             if (builder != null)
                 foreach (IHttpClientBuilder instance in builders)
                     builder(instance);

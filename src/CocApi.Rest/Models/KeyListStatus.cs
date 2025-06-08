@@ -62,14 +62,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Detail
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> DetailOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Detail
         /// </summary>
         [JsonPropertyName("detail")]
-        public string? Detail { get { return this. DetailOption; } set { this.DetailOption = new(value); } }
+        public string? Detail { get { return this.DetailOption; } set { this.DetailOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -129,8 +129,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "code":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                code = new Option<int?>(utf8JsonReader.GetInt32());
+                            code = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "message":
                             message = new Option<string?>(utf8JsonReader.GetString()!);
@@ -173,7 +172,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, keyListStatus, jsonSerializerOptions);
+            WriteProperties(writer, keyListStatus, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -184,7 +183,7 @@ namespace CocApi.Rest.Models
         /// <param name="keyListStatus"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, KeyListStatus keyListStatus, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, KeyListStatus keyListStatus, JsonSerializerOptions jsonSerializerOptions)
         {
             if (keyListStatus.Message == null)
                 throw new ArgumentNullException(nameof(keyListStatus.Message), "Property is required for class KeyListStatus.");

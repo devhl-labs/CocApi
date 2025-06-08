@@ -9,16 +9,16 @@ namespace CocApi.Rest.Apis;
 
 public partial class PlayersApi
 {
-    partial void OnErrorFetchPlayer(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string playerTag)
+    partial void OnErrorFetchPlayer(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string playerTag)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the player for playerTag: {playerTag}", playerTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the player for playerTag: {playerTag}", playerTag);
     }
 
-    partial void OnErrorVerifyToken(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
+    partial void OnErrorVerifyToken(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, VerifyTokenRequest body, string playerTag)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the token for playerTag: {playerTag}", playerTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the token for playerTag: {playerTag}", playerTag);
     }
 
     partial void FormatGetPlayer(ref string playerTag)

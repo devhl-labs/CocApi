@@ -68,53 +68,53 @@ namespace CocApi.Rest.Models
         /// Used to track the state of BestBuilderBaseSeason
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<LegendLeagueTournamentSeasonResult?> BestBuilderBaseSeasonOption { get; }
 
         /// <summary>
         /// Gets or Sets BestBuilderBaseSeason
         /// </summary>
         [JsonPropertyName("bestBuilderBaseSeason")]
-        public LegendLeagueTournamentSeasonResult? BestBuilderBaseSeason { get { return this. BestBuilderBaseSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? BestBuilderBaseSeason { get { return this.BestBuilderBaseSeasonOption; } }
 
         /// <summary>
         /// Used to track the state of BestSeason
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<LegendLeagueTournamentSeasonResult?> BestSeasonOption { get; }
 
         /// <summary>
         /// Gets or Sets BestSeason
         /// </summary>
         [JsonPropertyName("bestSeason")]
-        public LegendLeagueTournamentSeasonResult? BestSeason { get { return this. BestSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? BestSeason { get { return this.BestSeasonOption; } }
 
         /// <summary>
         /// Used to track the state of PreviousBuilderBaseSeason
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<LegendLeagueTournamentSeasonResult?> PreviousBuilderBaseSeasonOption { get; }
 
         /// <summary>
         /// Gets or Sets PreviousBuilderBaseSeason
         /// </summary>
         [JsonPropertyName("previousBuilderBaseSeason")]
-        public LegendLeagueTournamentSeasonResult? PreviousBuilderBaseSeason { get { return this. PreviousBuilderBaseSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? PreviousBuilderBaseSeason { get { return this.PreviousBuilderBaseSeasonOption; } }
 
         /// <summary>
         /// Used to track the state of PreviousSeason
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<LegendLeagueTournamentSeasonResult?> PreviousSeasonOption { get; }
 
         /// <summary>
         /// Gets or Sets PreviousSeason
         /// </summary>
         [JsonPropertyName("previousSeason")]
-        public LegendLeagueTournamentSeasonResult? PreviousSeason { get { return this. PreviousSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? PreviousSeason { get { return this.PreviousSeasonOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -260,28 +260,22 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "currentSeason":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                currentSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            currentSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "legendTrophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                legendTrophies = new Option<int?>(utf8JsonReader.GetInt32());
+                            legendTrophies = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "bestBuilderBaseSeason":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestBuilderBaseSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            bestBuilderBaseSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "bestSeason":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            bestSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "previousBuilderBaseSeason":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                previousBuilderBaseSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            previousBuilderBaseSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "previousSeason":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                previousSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            previousSeason = new Option<LegendLeagueTournamentSeasonResult?>(JsonSerializer.Deserialize<LegendLeagueTournamentSeasonResult>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -327,7 +321,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerLegendStatistics, jsonSerializerOptions);
+            WriteProperties(writer, playerLegendStatistics, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -338,7 +332,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerLegendStatistics"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerLegendStatistics playerLegendStatistics, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerLegendStatistics playerLegendStatistics, JsonSerializerOptions jsonSerializerOptions)
         {
             if (playerLegendStatistics.CurrentSeason == null)
                 throw new ArgumentNullException(nameof(playerLegendStatistics.CurrentSeason), "Property is required for class PlayerLegendStatistics.");

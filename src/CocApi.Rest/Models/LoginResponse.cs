@@ -112,8 +112,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "sessionExpiresInSeconds":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.GetInt32());
+                            sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "temporaryAPIToken":
                             temporaryAPIToken = new Option<string?>(utf8JsonReader.GetString()!);
@@ -150,7 +149,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, loginResponse, jsonSerializerOptions);
+            WriteProperties(writer, loginResponse, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -161,7 +160,7 @@ namespace CocApi.Rest.Models
         /// <param name="loginResponse"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, LoginResponse loginResponse, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, LoginResponse loginResponse, JsonSerializerOptions jsonSerializerOptions)
         {
             if (loginResponse.TemporaryAPIToken == null)
                 throw new ArgumentNullException(nameof(loginResponse.TemporaryAPIToken), "Property is required for class LoginResponse.");

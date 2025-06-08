@@ -54,39 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'AttackCount'
+        /// Test the property 'Stars'
         /// </summary>
         [Fact]
-        public void AttackCountTest()
+        public void StarsTest()
         {
-            // TODO unit test for the property 'AttackCount'
-        }
-
-        /// <summary>
-        /// Test the property 'DestructionPercent'
-        /// </summary>
-        [Fact]
-        public void DestructionPercentTest()
-        {
-            // TODO unit test for the property 'DestructionPercent'
-        }
-
-        /// <summary>
-        /// Test the property 'DistrictHallLevel'
-        /// </summary>
-        [Fact]
-        public void DistrictHallLevelTest()
-        {
-            // TODO unit test for the property 'DistrictHallLevel'
-        }
-
-        /// <summary>
-        /// Test the property 'Id'
-        /// </summary>
-        [Fact]
-        public void IdTest()
-        {
-            // TODO unit test for the property 'Id'
+            // TODO unit test for the property 'Stars'
         }
 
         /// <summary>
@@ -99,12 +72,30 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Stars'
+        /// Test the property 'Id'
         /// </summary>
         [Fact]
-        public void StarsTest()
+        public void IdTest()
         {
-            // TODO unit test for the property 'Stars'
+            // TODO unit test for the property 'Id'
+        }
+
+        /// <summary>
+        /// Test the property 'DestructionPercent'
+        /// </summary>
+        [Fact]
+        public void DestructionPercentTest()
+        {
+            // TODO unit test for the property 'DestructionPercent'
+        }
+
+        /// <summary>
+        /// Test the property 'AttackCount'
+        /// </summary>
+        [Fact]
+        public void AttackCountTest()
+        {
+            // TODO unit test for the property 'AttackCount'
         }
 
         /// <summary>
@@ -114,6 +105,15 @@ namespace CocApi.Rest.Test.Model
         public void TotalLootedTest()
         {
             // TODO unit test for the property 'TotalLooted'
+        }
+
+        /// <summary>
+        /// Test the property 'DistrictHallLevel'
+        /// </summary>
+        [Fact]
+        public void DistrictHallLevelTest()
+        {
+            // TODO unit test for the property 'DistrictHallLevel'
         }
 
         /// <summary>

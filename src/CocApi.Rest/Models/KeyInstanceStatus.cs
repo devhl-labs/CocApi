@@ -50,40 +50,40 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Code
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> CodeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Code
         /// </summary>
         [JsonPropertyName("code")]
-        public int? Code { get { return this. CodeOption; } set { this.CodeOption = new(value); } }
+        public int? Code { get { return this.CodeOption; } set { this.CodeOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of Detail
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> DetailOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Detail
         /// </summary>
         [JsonPropertyName("detail")]
-        public string? Detail { get { return this. DetailOption; } set { this.DetailOption = new(value); } }
+        public string? Detail { get { return this.DetailOption; } set { this.DetailOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of Message
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> MessageOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Message
         /// </summary>
         [JsonPropertyName("message")]
-        public string? Message { get { return this. MessageOption; } set { this.MessageOption = new(value); } }
+        public string? Message { get { return this.MessageOption; } set { this.MessageOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -143,8 +143,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "code":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                code = new Option<int?>(utf8JsonReader.GetInt32());
+                            code = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "detail":
                             detail = new Option<string?>(utf8JsonReader.GetString());
@@ -178,7 +177,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, keyInstanceStatus, jsonSerializerOptions);
+            WriteProperties(writer, keyInstanceStatus, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -189,7 +188,7 @@ namespace CocApi.Rest.Models
         /// <param name="keyInstanceStatus"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, KeyInstanceStatus keyInstanceStatus, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, KeyInstanceStatus keyInstanceStatus, JsonSerializerOptions jsonSerializerOptions)
         {
             if (keyInstanceStatus.MessageOption.IsSet && keyInstanceStatus.Message == null)
                 throw new ArgumentNullException(nameof(keyInstanceStatus.Message), "Property is required for class KeyInstanceStatus.");

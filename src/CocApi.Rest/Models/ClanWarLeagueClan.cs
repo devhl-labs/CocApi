@@ -209,16 +209,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "badgeUrls":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            clanLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "members":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = new Option<List<ClanWarLeagueClanMember>?>(JsonSerializer.Deserialize<List<ClanWarLeagueClanMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            members = new Option<List<ClanWarLeagueClanMember>?>(JsonSerializer.Deserialize<List<ClanWarLeagueClanMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -276,7 +273,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanWarLeagueClan, jsonSerializerOptions);
+            WriteProperties(writer, clanWarLeagueClan, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -287,7 +284,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanWarLeagueClan"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueClan clanWarLeagueClan, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanWarLeagueClan clanWarLeagueClan, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanWarLeagueClan.BadgeUrls == null)
                 throw new ArgumentNullException(nameof(clanWarLeagueClan.BadgeUrls), "Property is required for class ClanWarLeagueClan.");

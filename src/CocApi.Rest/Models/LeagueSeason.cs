@@ -173,7 +173,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, leagueSeason, jsonSerializerOptions);
+            WriteProperties(writer, leagueSeason, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -184,7 +184,7 @@ namespace CocApi.Rest.Models
         /// <param name="leagueSeason"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, LeagueSeason leagueSeason, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, LeagueSeason leagueSeason, JsonSerializerOptions jsonSerializerOptions)
         {
             if (leagueSeason.Id == null)
                 throw new ArgumentNullException(nameof(leagueSeason.Id), "Property is required for class LeagueSeason.");

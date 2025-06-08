@@ -62,14 +62,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Key
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Key?> KeyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Key
         /// </summary>
         [JsonPropertyName("key")]
-        public Key? Key { get { return this. KeyOption; } set { this.KeyOption = new(value); } }
+        public Key? Key { get { return this.KeyOption; } set { this.KeyOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -129,16 +129,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "sessionExpiresInSeconds":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.GetInt32());
+                            sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "status":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                status = new Option<KeyInstanceStatus?>(JsonSerializer.Deserialize<KeyInstanceStatus>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            status = new Option<KeyInstanceStatus?>(JsonSerializer.Deserialize<KeyInstanceStatus>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "key":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                key = new Option<Key?>(JsonSerializer.Deserialize<Key>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            key = new Option<Key?>(JsonSerializer.Deserialize<Key>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -175,7 +172,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, keyInstance, jsonSerializerOptions);
+            WriteProperties(writer, keyInstance, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -186,7 +183,7 @@ namespace CocApi.Rest.Models
         /// <param name="keyInstance"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, KeyInstance keyInstance, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, KeyInstance keyInstance, JsonSerializerOptions jsonSerializerOptions)
         {
             if (keyInstance.Status == null)
                 throw new ArgumentNullException(nameof(keyInstance.Status), "Property is required for class KeyInstance.");

@@ -214,14 +214,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Members
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<ClanCapitalRaidSeasonMember>?> MembersOption { get; }
 
         /// <summary>
         /// Gets or Sets Members
         /// </summary>
         [JsonPropertyName("members")]
-        public List<ClanCapitalRaidSeasonMember>? Members { get { return this. MembersOption; } }
+        public List<ClanCapitalRaidSeasonMember>? Members { get { return this.MembersOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -414,40 +414,31 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "attackLog":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackLog = new Option<List<ClanCapitalRaidSeasonAttackLogEntry>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttackLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            attackLog = new Option<List<ClanCapitalRaidSeasonAttackLogEntry>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonAttackLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "capitalTotalLoot":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                capitalTotalLoot = new Option<int?>(utf8JsonReader.GetInt32());
+                            capitalTotalLoot = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "defenseLog":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defenseLog = new Option<List<ClanCapitalRaidSeasonDefenseLogEntry>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDefenseLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            defenseLog = new Option<List<ClanCapitalRaidSeasonDefenseLogEntry>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonDefenseLogEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "defensiveReward":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defensiveReward = new Option<int?>(utf8JsonReader.GetInt32());
+                            defensiveReward = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "endTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "enemyDistrictsDestroyed":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                enemyDistrictsDestroyed = new Option<int?>(utf8JsonReader.GetInt32());
+                            enemyDistrictsDestroyed = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "offensiveReward":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                offensiveReward = new Option<int?>(utf8JsonReader.GetInt32());
+                            offensiveReward = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "raidsCompleted":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                raidsCompleted = new Option<int?>(utf8JsonReader.GetInt32());
+                            raidsCompleted = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "startTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                startTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            startTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
@@ -455,12 +446,10 @@ namespace CocApi.Rest.Models
                                 state = new Option<ClanCapitalRaidSeason.StateEnum?>(ClanCapitalRaidSeason.StateEnumFromStringOrDefault(stateRawValue));
                             break;
                         case "totalAttacks":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                totalAttacks = new Option<int?>(utf8JsonReader.GetInt32());
+                            totalAttacks = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "members":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = new Option<List<ClanCapitalRaidSeasonMember>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            members = new Option<List<ClanCapitalRaidSeasonMember>?>(JsonSerializer.Deserialize<List<ClanCapitalRaidSeasonMember>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -551,7 +540,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanCapitalRaidSeason, jsonSerializerOptions);
+            WriteProperties(writer, clanCapitalRaidSeason, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -562,7 +551,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapitalRaidSeason"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeason clanCapitalRaidSeason, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanCapitalRaidSeason clanCapitalRaidSeason, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanCapitalRaidSeason.AttackLog == null)
                 throw new ArgumentNullException(nameof(clanCapitalRaidSeason.AttackLog), "Property is required for class ClanCapitalRaidSeason.");

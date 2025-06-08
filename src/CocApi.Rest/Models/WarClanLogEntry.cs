@@ -84,53 +84,53 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Attacks
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> AttacksOption { get; }
 
         /// <summary>
         /// Gets or Sets Attacks
         /// </summary>
         [JsonPropertyName("attacks")]
-        public int? Attacks { get { return this. AttacksOption; } }
+        public int? Attacks { get { return this.AttacksOption; } }
 
         /// <summary>
         /// Used to track the state of ExpEarned
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> ExpEarnedOption { get; }
 
         /// <summary>
         /// Gets or Sets ExpEarned
         /// </summary>
         [JsonPropertyName("expEarned")]
-        public int? ExpEarned { get { return this. ExpEarnedOption; } }
+        public int? ExpEarned { get { return this.ExpEarnedOption; } }
 
         /// <summary>
         /// Used to track the state of Name
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> NameOption { get; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonPropertyName("name")]
-        public string? Name { get { return this. NameOption; } }
+        public string? Name { get { return this.NameOption; } }
 
         /// <summary>
         /// Used to track the state of Tag
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> TagOption { get; }
 
         /// <summary>
         /// Gets or Sets Tag
         /// </summary>
         [JsonPropertyName("tag")]
-        public string? Tag { get { return this. TagOption; } }
+        public string? Tag { get { return this.TagOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -288,28 +288,22 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "badgeUrls":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            clanLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "destructionPercentage":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                destructionPercentage = new Option<float?>((float)utf8JsonReader.GetDouble());
+                            destructionPercentage = new Option<float?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (float?)null : (float)utf8JsonReader.GetDouble());
                             break;
                         case "stars":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = new Option<int?>(utf8JsonReader.GetInt32());
+                            stars = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "attacks":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = new Option<int?>(utf8JsonReader.GetInt32());
+                            attacks = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "expEarned":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expEarned = new Option<int?>(utf8JsonReader.GetInt32());
+                            expEarned = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -373,7 +367,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, warClanLogEntry, jsonSerializerOptions);
+            WriteProperties(writer, warClanLogEntry, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -384,7 +378,7 @@ namespace CocApi.Rest.Models
         /// <param name="warClanLogEntry"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, WarClanLogEntry warClanLogEntry, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, WarClanLogEntry warClanLogEntry, JsonSerializerOptions jsonSerializerOptions)
         {
             if (warClanLogEntry.BadgeUrls == null)
                 throw new ArgumentNullException(nameof(warClanLogEntry.BadgeUrls), "Property is required for class WarClanLogEntry.");

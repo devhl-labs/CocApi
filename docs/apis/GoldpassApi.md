@@ -14,65 +14,6 @@ Get information about the current gold pass season.
 
 Get information about the current gold pass season.
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetCurrentGoldPassSeasonExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new GoldpassApi(config);
-
-            try
-            {
-                // Get information about the current gold pass season.
-                GoldPassSeason result = apiInstance.GetCurrentGoldPassSeason();
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling GoldpassApi.GetCurrentGoldPassSeason: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetCurrentGoldPassSeasonWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get information about the current gold pass season.
-    ApiResponse<GoldPassSeason> response = apiInstance.GetCurrentGoldPassSeasonWithHttpInfo();
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling GoldpassApi.GetCurrentGoldPassSeasonWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 This endpoint does not need any parameter.

@@ -63,15 +63,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'IsCountry'
-        /// </summary>
-        [Fact]
-        public void IsCountryTest()
-        {
-            // TODO unit test for the property 'IsCountry'
-        }
-
-        /// <summary>
         /// Test the property 'Name'
         /// </summary>
         [Fact]
@@ -81,12 +72,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'CountryCode'
+        /// Test the property 'IsCountry'
         /// </summary>
         [Fact]
-        public void CountryCodeTest()
+        public void IsCountryTest()
         {
-            // TODO unit test for the property 'CountryCode'
+            // TODO unit test for the property 'IsCountry'
         }
 
         /// <summary>
@@ -96,6 +87,15 @@ namespace CocApi.Rest.Test.Model
         public void LocalizedNameTest()
         {
             // TODO unit test for the property 'LocalizedName'
+        }
+
+        /// <summary>
+        /// Test the property 'CountryCode'
+        /// </summary>
+        [Fact]
+        public void CountryCodeTest()
+        {
+            // TODO unit test for the property 'CountryCode'
         }
     }
 }

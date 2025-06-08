@@ -177,8 +177,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "badgeUrls":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -224,7 +223,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerRankingClan, jsonSerializerOptions);
+            WriteProperties(writer, playerRankingClan, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -235,7 +234,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerRankingClan"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerRankingClan playerRankingClan, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerRankingClan playerRankingClan, JsonSerializerOptions jsonSerializerOptions)
         {
             if (playerRankingClan.BadgeUrls == null)
                 throw new ArgumentNullException(nameof(playerRankingClan.BadgeUrls), "Property is required for class PlayerRankingClan.");

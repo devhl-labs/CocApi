@@ -44,9 +44,10 @@ public class TokenService : IHostedService
         string ipAddress = ipAddressWithMask[..ipAddressWithMask.IndexOf('/')];
         var token = new CreateTokenRequest([ipAddress], "test description", "test name");
         var createResponse = await DeveloperApi.CreateAsync(token, cancellationToken);
+        var key = createResponse.Ok()!.Key!;
 
         // delete that testing token
-        var deleteResponse = await DeveloperApi.RevokeAsync(createResponse.Ok()!.Key!, cancellationToken);
+        var deleteResponse = await DeveloperApi.RevokeAsync(key, cancellationToken);
 
         // query all keys
         var keys = await DeveloperApi.KeysAsync(cancellationToken);

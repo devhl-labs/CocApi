@@ -146,8 +146,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "items":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = new Option<List<ClanListEntry>?>(JsonSerializer.Deserialize<List<ClanListEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            items = new Option<List<ClanListEntry>?>(JsonSerializer.Deserialize<List<ClanListEntry>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -175,7 +174,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanList, jsonSerializerOptions);
+            WriteProperties(writer, clanList, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -186,7 +185,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanList"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanList clanList, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanList clanList, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanList.Items == null)
                 throw new ArgumentNullException(nameof(clanList.Items), "Property is required for class ClanList.");

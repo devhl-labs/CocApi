@@ -23,66 +23,6 @@ Get Builder Base league information
 
 Get Builder Base league information
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetBuilderBaseLeagueExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var leagueId = "leagueId_example";  // string | Identifier of the league.
-
-            try
-            {
-                // Get Builder Base league information
-                BuilderBaseLeague result = apiInstance.GetBuilderBaseLeague(leagueId);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeague: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetBuilderBaseLeagueWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get Builder Base league information
-    ApiResponse<BuilderBaseLeague> response = apiInstance.GetBuilderBaseLeagueWithHttpInfo(leagueId);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeagueWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -125,68 +65,6 @@ List Builder Base leagues
 
 List Builder Base leagues
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetBuilderBaseLeaguesExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List Builder Base leagues
-                BuilderBaseLeagueList result = apiInstance.GetBuilderBaseLeagues(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeagues: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetBuilderBaseLeaguesWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List Builder Base leagues
-    ApiResponse<BuilderBaseLeagueList> response = apiInstance.GetBuilderBaseLeaguesWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetBuilderBaseLeaguesWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -231,66 +109,6 @@ Get capital league information
 
 Get capital league information
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetCapitalLeagueExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var leagueId = "leagueId_example";  // string | Identifier of the league.
-
-            try
-            {
-                // Get capital league information
-                CapitalLeague result = apiInstance.GetCapitalLeague(leagueId);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetCapitalLeague: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetCapitalLeagueWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get capital league information
-    ApiResponse<CapitalLeague> response = apiInstance.GetCapitalLeagueWithHttpInfo(leagueId);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetCapitalLeagueWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -333,68 +151,6 @@ List capital leagues
 
 List capital leagues
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetCapitalLeaguesExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List capital leagues
-                CapitalLeagueObject result = apiInstance.GetCapitalLeagues(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetCapitalLeagues: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetCapitalLeaguesWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List capital leagues
-    ApiResponse<CapitalLeagueObject> response = apiInstance.GetCapitalLeaguesWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetCapitalLeaguesWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -439,66 +195,6 @@ Get league information
 
 Get league information
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetLeagueExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var leagueId = "leagueId_example";  // string | Identifier of the league.
-
-            try
-            {
-                // Get league information
-                League result = apiInstance.GetLeague(leagueId);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetLeague: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetLeagueWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get league information
-    ApiResponse<League> response = apiInstance.GetLeagueWithHttpInfo(leagueId);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetLeagueWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -541,70 +237,6 @@ Get league season rankings
 
 Get league season rankings. Note that league season information is available only for Legend League. 
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetLeagueSeasonRankingsExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var leagueId = "leagueId_example";  // string | Identifier of the league.
-            var seasonId = "seasonId_example";  // string | Identifier of the season.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get league season rankings
-                PlayerRankingList result = apiInstance.GetLeagueSeasonRankings(leagueId, seasonId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonRankings: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetLeagueSeasonRankingsWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get league season rankings
-    ApiResponse<PlayerRankingList> response = apiInstance.GetLeagueSeasonRankingsWithHttpInfo(leagueId, seasonId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonRankingsWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -651,69 +283,6 @@ Get league seasons
 
 Get league seasons. Note that league season information is available only for Legend League. 
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetLeagueSeasonsExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var leagueId = "leagueId_example";  // string | Identifier of the league.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get league seasons
-                LeagueSeasonList result = apiInstance.GetLeagueSeasons(leagueId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasons: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetLeagueSeasonsWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get league seasons
-    ApiResponse<LeagueSeasonList> response = apiInstance.GetLeagueSeasonsWithHttpInfo(leagueId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetLeagueSeasonsWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -759,68 +328,6 @@ List leagues
 
 List leagues
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetLeaguesExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List leagues
-                LeagueList result = apiInstance.GetLeagues(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetLeagues: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetLeaguesWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List leagues
-    ApiResponse<LeagueList> response = apiInstance.GetLeaguesWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetLeaguesWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -865,66 +372,6 @@ Get war league information
 
 Get war league information
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetWarLeagueExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var leagueId = "leagueId_example";  // string | Identifier of the league.
-
-            try
-            {
-                // Get war league information
-                WarLeague result = apiInstance.GetWarLeague(leagueId);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetWarLeague: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetWarLeagueWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get war league information
-    ApiResponse<WarLeague> response = apiInstance.GetWarLeagueWithHttpInfo(leagueId);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetWarLeagueWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -967,68 +414,6 @@ List war leagues
 
 List war leagues
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetWarLeaguesExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LeaguesApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List war leagues
-                WarLeagueList result = apiInstance.GetWarLeagues(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LeaguesApi.GetWarLeagues: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetWarLeaguesWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List war leagues
-    ApiResponse<WarLeagueList> response = apiInstance.GetWarLeaguesWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LeaguesApi.GetWarLeaguesWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 

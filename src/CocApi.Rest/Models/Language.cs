@@ -176,8 +176,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<int?>(utf8JsonReader.GetInt32());
+                            id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "languageCode":
                             languageCode = new Option<string?>(utf8JsonReader.GetString()!);
@@ -223,7 +222,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, language, jsonSerializerOptions);
+            WriteProperties(writer, language, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -234,7 +233,7 @@ namespace CocApi.Rest.Models
         /// <param name="language"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, Language language, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, Language language, JsonSerializerOptions jsonSerializerOptions)
         {
             if (language.LanguageCode == null)
                 throw new ArgumentNullException(nameof(language.LanguageCode), "Property is required for class Language.");

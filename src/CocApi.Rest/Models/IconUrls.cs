@@ -50,40 +50,40 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Medium
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> MediumOption { get; }
 
         /// <summary>
         /// Gets or Sets Medium
         /// </summary>
         [JsonPropertyName("medium")]
-        public string? Medium { get { return this. MediumOption; } }
+        public string? Medium { get { return this.MediumOption; } }
 
         /// <summary>
         /// Used to track the state of Small
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> SmallOption { get; }
 
         /// <summary>
         /// Gets or Sets Small
         /// </summary>
         [JsonPropertyName("small")]
-        public string? Small { get { return this. SmallOption; } }
+        public string? Small { get { return this.SmallOption; } }
 
         /// <summary>
         /// Used to track the state of Tiny
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> TinyOption { get; }
 
         /// <summary>
         /// Gets or Sets Tiny
         /// </summary>
         [JsonPropertyName("tiny")]
-        public string? Tiny { get { return this. TinyOption; } }
+        public string? Tiny { get { return this.TinyOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -241,7 +241,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, iconUrls, jsonSerializerOptions);
+            WriteProperties(writer, iconUrls, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -252,7 +252,7 @@ namespace CocApi.Rest.Models
         /// <param name="iconUrls"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, IconUrls iconUrls, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, IconUrls iconUrls, JsonSerializerOptions jsonSerializerOptions)
         {
             if (iconUrls.MediumOption.IsSet && iconUrls.Medium == null)
                 throw new ArgumentNullException(nameof(iconUrls.Medium), "Property is required for class IconUrls.");

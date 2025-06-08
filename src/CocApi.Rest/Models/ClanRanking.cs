@@ -110,14 +110,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Location
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Location?> LocationOption { get; }
 
         /// <summary>
         /// Gets or Sets Location
         /// </summary>
         [JsonPropertyName("location")]
-        public Location? Location { get { return this. LocationOption; } }
+        public Location? Location { get { return this.LocationOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -277,38 +277,31 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "badgeUrls":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            clanLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "clanPoints":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanPoints = new Option<int?>(utf8JsonReader.GetInt32());
+                            clanPoints = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "members":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = new Option<int?>(utf8JsonReader.GetInt32());
+                            members = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "previousRank":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                previousRank = new Option<int?>(utf8JsonReader.GetInt32());
+                            previousRank = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "rank":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rank = new Option<int?>(utf8JsonReader.GetInt32());
+                            rank = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "tag":
                             tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "location":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                location = new Option<Location?>(JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            location = new Option<Location?>(JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -381,7 +374,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanRanking, jsonSerializerOptions);
+            WriteProperties(writer, clanRanking, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -392,7 +385,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanRanking"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanRanking clanRanking, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanRanking clanRanking, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanRanking.BadgeUrls == null)
                 throw new ArgumentNullException(nameof(clanRanking.BadgeUrls), "Property is required for class ClanRanking.");

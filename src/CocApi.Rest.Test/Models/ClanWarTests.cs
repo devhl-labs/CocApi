@@ -54,12 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'AttacksPerMember'
+        /// Test the property 'ServerExpiration'
         /// </summary>
         [Fact]
-        public void AttacksPerMemberTest()
+        public void ServerExpirationTest()
         {
-            // TODO unit test for the property 'AttacksPerMember'
+            // TODO unit test for the property 'ServerExpiration'
         }
 
         /// <summary>
@@ -72,12 +72,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'EndTime'
+        /// Test the property 'TeamSize'
         /// </summary>
         [Fact]
-        public void EndTimeTest()
+        public void TeamSizeTest()
         {
-            // TODO unit test for the property 'EndTime'
+            // TODO unit test for the property 'TeamSize'
+        }
+
+        /// <summary>
+        /// Test the property 'AttacksPerMember'
+        /// </summary>
+        [Fact]
+        public void AttacksPerMemberTest()
+        {
+            // TODO unit test for the property 'AttacksPerMember'
         }
 
         /// <summary>
@@ -90,24 +99,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'PreparationStartTime'
-        /// </summary>
-        [Fact]
-        public void PreparationStartTimeTest()
-        {
-            // TODO unit test for the property 'PreparationStartTime'
-        }
-
-        /// <summary>
-        /// Test the property 'ServerExpiration'
-        /// </summary>
-        [Fact]
-        public void ServerExpirationTest()
-        {
-            // TODO unit test for the property 'ServerExpiration'
-        }
-
-        /// <summary>
         /// Test the property 'StartTime'
         /// </summary>
         [Fact]
@@ -117,21 +108,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'TeamSize'
+        /// Test the property 'EndTime'
         /// </summary>
         [Fact]
-        public void TeamSizeTest()
+        public void EndTimeTest()
         {
-            // TODO unit test for the property 'TeamSize'
+            // TODO unit test for the property 'EndTime'
         }
 
         /// <summary>
-        /// Test the property 'State'
+        /// Test the property 'PreparationStartTime'
         /// </summary>
         [Fact]
-        public void StateTest()
+        public void PreparationStartTimeTest()
         {
-            // TODO unit test for the property 'State'
+            // TODO unit test for the property 'PreparationStartTime'
         }
 
         /// <summary>
@@ -141,6 +132,15 @@ namespace CocApi.Rest.Test.Model
         public void WarTagTest()
         {
             // TODO unit test for the property 'WarTag'
+        }
+
+        /// <summary>
+        /// Test the property 'State'
+        /// </summary>
+        [Fact]
+        public void StateTest()
+        {
+            // TODO unit test for the property 'State'
         }
     }
 }

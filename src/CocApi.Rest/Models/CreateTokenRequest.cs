@@ -122,8 +122,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "cidrRanges":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                cidrRanges = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            cidrRanges = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "description":
                             description = new Option<string?>(utf8JsonReader.GetString()!);
@@ -169,7 +168,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, createTokenRequest, jsonSerializerOptions);
+            WriteProperties(writer, createTokenRequest, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -180,7 +179,7 @@ namespace CocApi.Rest.Models
         /// <param name="createTokenRequest"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, CreateTokenRequest createTokenRequest, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, CreateTokenRequest createTokenRequest, JsonSerializerOptions jsonSerializerOptions)
         {
             if (createTokenRequest.CidrRanges == null)
                 throw new ArgumentNullException(nameof(createTokenRequest.CidrRanges), "Property is required for class CreateTokenRequest.");

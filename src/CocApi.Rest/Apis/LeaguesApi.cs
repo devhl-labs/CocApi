@@ -1066,27 +1066,27 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void OnErrorFetchBuilderBaseLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchBuilderBaseLeagueDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchBuilderBaseLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchBuilderBaseLeague(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, leagueId);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchBuilderBaseLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchBuilderBaseLeague(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId);
 
         /// <summary>
         /// Get Builder Base league information Get Builder Base league information
@@ -1128,7 +1128,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/builderbaseleagues/{leagueId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/builderbaseleagues/{leagueId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/builderbaseleagues/{leagueId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -1205,7 +1207,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -1550,31 +1552,31 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchBuilderBaseLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchBuilderBaseLeaguesDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchBuilderBaseLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchBuilderBaseLeagues(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchBuilderBaseLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchBuilderBaseLeagues(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List Builder Base leagues List Builder Base leagues
@@ -1620,18 +1622,20 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/builderbaseleagues";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/builderbaseleagues"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/builderbaseleagues");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1709,7 +1713,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -2046,27 +2050,27 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void OnErrorFetchCapitalLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchCapitalLeagueDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchCapitalLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchCapitalLeague(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, leagueId);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchCapitalLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchCapitalLeague(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId);
 
         /// <summary>
         /// Get capital league information Get capital league information
@@ -2108,7 +2112,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues/{leagueId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/capitalleagues/{leagueId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/capitalleagues/{leagueId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -2185,7 +2191,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest
@@ -2530,31 +2536,31 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchCapitalLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchCapitalLeaguesDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchCapitalLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchCapitalLeagues(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchCapitalLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchCapitalLeagues(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List capital leagues List capital leagues
@@ -2600,18 +2606,20 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/capitalleagues";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/capitalleagues"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/capitalleagues");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -2689,7 +2697,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest
@@ -3026,27 +3034,27 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void OnErrorFetchLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchLeagueDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchLeague(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, leagueId);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchLeague(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId);
 
         /// <summary>
         /// Get league information Get league information
@@ -3088,7 +3096,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/leagues/{leagueId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/leagues/{leagueId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -3165,7 +3175,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -3522,35 +3532,35 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchLeagueSeasonRankingsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchLeagueSeasonRankingsDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchLeagueSeasonRankings(ref suppressDefaultLog, exception, pathFormat, path, leagueId, seasonId, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchLeagueSeasonRankings(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, leagueId, seasonId, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="seasonId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagueSeasonRankings(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLeagueSeasonRankings(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId, string seasonId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get league season rankings Get league season rankings. Note that league season information is available only for Legend League. 
@@ -3600,20 +3610,22 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons/{seasonId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/leagues/{leagueId}/seasons/{seasonId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/leagues/{leagueId}/seasons/{seasonId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BseasonId%7D", Uri.EscapeDataString(seasonId.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -3691,7 +3703,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -4042,33 +4054,33 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchLeagueSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchLeagueSeasonsDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchLeagueSeasons(ref suppressDefaultLog, exception, pathFormat, path, leagueId, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchLeagueSeasons(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, leagueId, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagueSeasons(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLeagueSeasons(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Get league seasons Get league seasons. Note that league season information is available only for Legend League. 
@@ -4116,19 +4128,21 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues/{leagueId}/seasons";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/leagues/{leagueId}/seasons"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/leagues/{leagueId}/seasons");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -4206,7 +4220,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -4551,31 +4565,31 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchLeaguesDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchLeagues(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchLeagues(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List leagues List leagues
@@ -4621,18 +4635,20 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/leagues";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/leagues"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/leagues");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -4710,7 +4726,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -5047,27 +5063,27 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        private void OnErrorFetchWarLeagueDefaultImplementation(Exception exception, string pathFormat, string path, string leagueId)
+        private void OnErrorFetchWarLeagueDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchWarLeague(ref suppressDefaultLog, exception, pathFormat, path, leagueId);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchWarLeague(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, leagueId);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="leagueId"></param>
-        partial void OnErrorFetchWarLeague(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string leagueId);
+        partial void OnErrorFetchWarLeague(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string leagueId);
 
         /// <summary>
         /// Get war league information Get war league information
@@ -5109,7 +5125,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/warleagues/{leagueId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/warleagues/{leagueId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/warleagues/{leagueId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BleagueId%7D", Uri.EscapeDataString(leagueId.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -5186,7 +5204,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -5531,31 +5549,31 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchWarLeaguesDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchWarLeaguesDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchWarLeagues(ref suppressDefaultLog, exception, pathFormat, path, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchWarLeagues(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchWarLeagues(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchWarLeagues(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List war leagues List war leagues
@@ -5601,18 +5619,20 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/warleagues";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/warleagues"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/warleagues");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -5690,7 +5710,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok

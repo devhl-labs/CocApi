@@ -54,12 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'DistrictHallLevel'
+        /// Test the property 'Name'
         /// </summary>
         [Fact]
-        public void DistrictHallLevelTest()
+        public void NameTest()
         {
-            // TODO unit test for the property 'DistrictHallLevel'
+            // TODO unit test for the property 'Name'
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Name'
+        /// Test the property 'DistrictHallLevel'
         /// </summary>
         [Fact]
-        public void NameTest()
+        public void DistrictHallLevelTest()
         {
-            // TODO unit test for the property 'Name'
+            // TODO unit test for the property 'DistrictHallLevel'
         }
     }
 }

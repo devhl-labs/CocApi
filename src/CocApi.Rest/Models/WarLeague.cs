@@ -160,8 +160,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<int?>(utf8JsonReader.GetInt32());
+                            id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -198,7 +197,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, warLeague, jsonSerializerOptions);
+            WriteProperties(writer, warLeague, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -209,7 +208,7 @@ namespace CocApi.Rest.Models
         /// <param name="warLeague"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, WarLeague warLeague, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, WarLeague warLeague, JsonSerializerOptions jsonSerializerOptions)
         {
             if (warLeague.Name == null)
                 throw new ArgumentNullException(nameof(warLeague.Name), "Property is required for class WarLeague.");

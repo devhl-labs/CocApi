@@ -27,7 +27,7 @@ namespace CocApi.Rest.Client
     /// <summary>
     /// Utility functions providing some benefit to API client consumers.
     /// </summary>
-    public static class ClientUtils
+    public static partial class ClientUtils
     {
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace CocApi.Rest.Client
         /// <param name="options"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static bool TryDeserialize<T>(string json, JsonSerializerOptions options, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? result)
+        public static bool TryDeserialize<T>(string json, JsonSerializerOptions options, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? result)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace CocApi.Rest.Client
         /// <param name="options"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static bool TryDeserialize<T>(ref Utf8JsonReader reader, JsonSerializerOptions options, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? result)
+        public static bool TryDeserialize<T>(ref Utf8JsonReader reader, JsonSerializerOptions options, [global::System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out T? result)
         {
             try
             {
@@ -115,17 +115,6 @@ namespace CocApi.Rest.Client
         }
 
         /// <summary>
-        /// Sanitize filename by removing the path
-        /// </summary>
-        /// <param name="filename">Filename</param>
-        /// <returns>Filename</returns>
-        public static string SanitizeFilename(string filename)
-        {
-            Match match = Regex.Match(filename, @".*[/\\](.*)$");
-            return match.Success ? match.Groups[1].Value : filename;
-        }
-
-        /// <summary>
         /// If parameter is DateTime, output in a formatted string (default ISO 8601), customizable with Configuration.DateTime.
         /// If parameter is a list, join the list with ",".
         /// Otherwise just return the string.
@@ -133,7 +122,7 @@ namespace CocApi.Rest.Client
         /// <param name="obj">The parameter (header, path, query, form).</param>
         /// <param name="format">The DateTime serialization format.</param>
         /// <returns>Formatted string.</returns>
-        public static string? ParameterToString(object obj, string? format = ISO8601_DATETIME_FORMAT)
+        public static string? ParameterToString(object? obj, string? format = ISO8601_DATETIME_FORMAT)
         {
             if (obj is DateTime dateTime)
                 // Return a formatted date string - Can be customized with Configuration.DateTimeFormat
@@ -147,6 +136,8 @@ namespace CocApi.Rest.Client
                 // https://msdn.microsoft.com/en-us/library/az4se3k1(v=vs.110).aspx#Anchor_8
                 // For example: 2009-06-15T13:45:30.0000000
                 return dateTimeOffset.ToString(format);
+            if (obj is DateOnly dateOnly)
+                return dateOnly.ToString(format);
             if (obj is bool boolean)
                 return boolean
                     ? "true"
@@ -226,7 +217,7 @@ namespace CocApi.Rest.Client
         /// <returns>Encoded string.</returns>
         public static string Base64Encode(string text)
         {
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
+            return Convert.ToBase64String(global::System.Text.Encoding.UTF8.GetBytes(text));
         }
 
         /// <summary>
@@ -285,7 +276,8 @@ namespace CocApi.Rest.Client
         /// <summary>
         /// Provides a case-insensitive check that a provided content type is a known JSON-like content type.
         /// </summary>
-        public static readonly Regex JsonRegex = new Regex("(?i)^(application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(;.*)?$");
+        [GeneratedRegex("(?i)^(application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(;.*)?$")]
+        private static partial Regex JsonRegex();
 
         /// <summary>
         /// Check if the given MIME is a JSON MIME.
@@ -301,7 +293,44 @@ namespace CocApi.Rest.Client
         {
             if (string.IsNullOrWhiteSpace(mime)) return false;
 
-            return JsonRegex.IsMatch(mime) || mime.Equals("application/json-patch+json");
+            return JsonRegex().IsMatch(mime) || mime.Equals("application/json-patch+json");
+        }
+
+        /// <summary>
+        /// Get the discriminator
+        /// </summary>
+        /// <param name="utf8JsonReader"></param>
+        /// <param name="discriminator"></param>
+        /// <returns></returns>
+        /// <exception cref="JsonException"></exception>
+        public static string? GetDiscriminator(Utf8JsonReader utf8JsonReader, string discriminator)
+        {
+            int currentDepth = utf8JsonReader.CurrentDepth;
+
+            if (utf8JsonReader.TokenType != JsonTokenType.StartObject && utf8JsonReader.TokenType != JsonTokenType.StartArray)
+                throw new JsonException();
+
+            JsonTokenType startingTokenType = utf8JsonReader.TokenType;
+
+            while (utf8JsonReader.Read())
+            {
+                if (startingTokenType == JsonTokenType.StartObject && utf8JsonReader.TokenType == JsonTokenType.EndObject && currentDepth == utf8JsonReader.CurrentDepth)
+                    break;
+
+                if (startingTokenType == JsonTokenType.StartArray && utf8JsonReader.TokenType == JsonTokenType.EndArray && currentDepth == utf8JsonReader.CurrentDepth)
+                    break;
+
+                if (utf8JsonReader.TokenType == JsonTokenType.PropertyName && currentDepth == utf8JsonReader.CurrentDepth - 1)
+                {
+                    string? localVarJsonPropertyName = utf8JsonReader.GetString();
+                    utf8JsonReader.Read();
+
+                    if (localVarJsonPropertyName != null && localVarJsonPropertyName.Equals(discriminator))
+                        return utf8JsonReader.GetString();
+                }
+            }
+
+            throw new JsonException("The specified discriminator was not found.");
         }
 
         /// <summary>

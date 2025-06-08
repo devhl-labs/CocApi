@@ -56,27 +56,27 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Id
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<DateTime?> IdOption { get; }
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonPropertyName("id")]
-        public DateTime? Id { get { return this. IdOption; } }
+        public DateTime? Id { get { return this.IdOption; } }
 
         /// <summary>
         /// Used to track the state of Rank
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> RankOption { get; }
 
         /// <summary>
         /// Gets or Sets Rank
         /// </summary>
         [JsonPropertyName("rank")]
-        public int? Rank { get { return this. RankOption; } }
+        public int? Rank { get { return this.RankOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -197,16 +197,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "trophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = new Option<int?>(utf8JsonReader.GetInt32());
+                            trophies = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            id = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "rank":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rank = new Option<int?>(utf8JsonReader.GetInt32());
+                            rank = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -240,7 +237,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, legendLeagueTournamentSeasonResult, jsonSerializerOptions);
+            WriteProperties(writer, legendLeagueTournamentSeasonResult, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -251,7 +248,7 @@ namespace CocApi.Rest.Models
         /// <param name="legendLeagueTournamentSeasonResult"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, LegendLeagueTournamentSeasonResult legendLeagueTournamentSeasonResult, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, LegendLeagueTournamentSeasonResult legendLeagueTournamentSeasonResult, JsonSerializerOptions jsonSerializerOptions)
         {
             writer.WriteNumber("trophies", legendLeagueTournamentSeasonResult.Trophies);
 

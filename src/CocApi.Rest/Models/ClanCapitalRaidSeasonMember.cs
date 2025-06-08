@@ -221,20 +221,16 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "attackLimit":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackLimit = new Option<int?>(utf8JsonReader.GetInt32());
+                            attackLimit = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "attacks":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacks = new Option<int?>(utf8JsonReader.GetInt32());
+                            attacks = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "bonusAttackLimit":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bonusAttackLimit = new Option<int?>(utf8JsonReader.GetInt32());
+                            bonusAttackLimit = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "capitalResourcesLooted":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                capitalResourcesLooted = new Option<int?>(utf8JsonReader.GetInt32());
+                            capitalResourcesLooted = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -298,7 +294,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanCapitalRaidSeasonMember, jsonSerializerOptions);
+            WriteProperties(writer, clanCapitalRaidSeasonMember, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -309,7 +305,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapitalRaidSeasonMember"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonMember clanCapitalRaidSeasonMember, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanCapitalRaidSeasonMember clanCapitalRaidSeasonMember, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanCapitalRaidSeasonMember.Name == null)
                 throw new ArgumentNullException(nameof(clanCapitalRaidSeasonMember.Name), "Property is required for class ClanCapitalRaidSeasonMember.");

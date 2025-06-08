@@ -63,7 +63,7 @@ public class TestService : IHostedService
         IOk<Clan?> devhlsLabResponse = await ClansApi.FetchClanAsync("#28RUGUYJU");
         Clan? devhlsLab = devhlsLabResponse.Ok();
 
-        IOk<PlayerRankingList> playerGlobalRankingsResponse = await LocationsApi.FetchPlayerRankingAsync("global");
+        IOk<PlayerRankingList?> playerGlobalRankingsResponse = await LocationsApi.FetchPlayerRankingAsync("global");
         PlayerRankingList? playerGlobalRankings = playerGlobalRankingsResponse.Ok();
 
         // ApiResponse<PlayerBuilderBaseRankingList> playerVersusGlobalRankingsResponse = await LocationsApi.FetchPlayerBuilderBaseRankingAsync("global"); // this endpoint is broken

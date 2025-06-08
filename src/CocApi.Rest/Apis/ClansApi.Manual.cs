@@ -10,52 +10,52 @@ namespace CocApi.Rest.Apis;
 
 public partial class ClansApi
 {
-    partial void OnErrorFetchClan(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag)
+    partial void OnErrorFetchClan(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);
     }
 
-    partial void OnErrorFetchClanMembers(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
+    partial void OnErrorFetchClanMembers(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the clan members for clanTag: {clanTag}", clanTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan members for clanTag: {clanTag}", clanTag);
     }
 
-    partial void OnErrorFetchClanWarLeagueGroup(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
+    partial void OnErrorFetchClanWarLeagueGroup(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the clan war league group for clanTag: {clanTag}", clanTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan war league group for clanTag: {clanTag}", clanTag);
     }
 
-    partial void OnErrorFetchClanWarLeagueWar(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime)
+    partial void OnErrorFetchClanWarLeagueWar(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string warTag, Option<bool> realtime)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the clan war league war for warTag: {warTag}", warTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan war league war for warTag: {warTag}", warTag);
     }
 
-    partial void OnErrorFetchClanWarLog(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
+    partial void OnErrorFetchClanWarLog(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the clan war log for clanTag: {clanTag}", clanTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan war log for clanTag: {clanTag}", clanTag);
     }
 
-    partial void OnErrorFetchCurrentWar(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
+    partial void OnErrorFetchCurrentWar(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the current war for clanTag: {clanTag}", clanTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the current war for clanTag: {clanTag}", clanTag);
     }
 
-    partial void OnErrorFetchCapitalRaidSeasons(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
+    partial void OnErrorFetchCapitalRaidSeasons(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error fetching the capital raid season for clanTag: {clanTag}", clanTag);
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error fetching the capital raid season for clanTag: {clanTag}", clanTag);
     }
 
-    partial void OnErrorSearchClans(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
+    partial void OnErrorSearchClans(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
     {
-        suppressDefaultLog = true;
-        Logger.LogError(exception, "There was an error searching for clans");
+        suppressDefaultLogLocalVar = true;
+        Logger.LogError(exceptionLocalVar, "There was an error searching for clans");
     }
 
     partial void FormatGetClan(ref string clanTag)

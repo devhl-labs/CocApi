@@ -122,16 +122,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "keys":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                keys = new Option<List<Key>?>(JsonSerializer.Deserialize<List<Key>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            keys = new Option<List<Key>?>(JsonSerializer.Deserialize<List<Key>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "sessionExpiresInSeconds":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.GetInt32());
+                            sessionExpiresInSeconds = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "status":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                status = new Option<KeyListStatus?>(JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            status = new Option<KeyListStatus?>(JsonSerializer.Deserialize<KeyListStatus>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -171,7 +168,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, keyList, jsonSerializerOptions);
+            WriteProperties(writer, keyList, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -182,7 +179,7 @@ namespace CocApi.Rest.Models
         /// <param name="keyList"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, KeyList keyList, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, KeyList keyList, JsonSerializerOptions jsonSerializerOptions)
         {
             if (keyList.Keys == null)
                 throw new ArgumentNullException(nameof(keyList.Keys), "Property is required for class KeyList.");

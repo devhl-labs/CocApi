@@ -1,5 +1,5 @@
-$packageVersion = "2.11.4"
-$releaseNote = "Upgraded OpenApi with new token instantiation"
+$packageVersion = "2.13.0-rc1"
+$releaseNote = "Move to .net 9. Add ClanWarService"
 
 $properties = @(
     'packageName=CocApi.Rest'
@@ -18,6 +18,9 @@ $properties = @(
     "dateTimeFormat=yyyyMMdd'T'HHmmss.fff'Z'"
     "dateFormat=yyyy'-'MM"
     "equatable=true"
+    "useDateTimeForDate=true"
+    "modelPropertySorting=legacy"
+    "operationParameterSorting=legacy"
 ) -join ","
 
 $global = @(

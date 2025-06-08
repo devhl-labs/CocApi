@@ -54,21 +54,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'SessionExpiresInSeconds'
-        /// </summary>
-        [Fact]
-        public void SessionExpiresInSecondsTest()
-        {
-            // TODO unit test for the property 'SessionExpiresInSeconds'
-        }
-
-        /// <summary>
         /// Test the property 'Status'
         /// </summary>
         [Fact]
         public void StatusTest()
         {
             // TODO unit test for the property 'Status'
+        }
+
+        /// <summary>
+        /// Test the property 'SessionExpiresInSeconds'
+        /// </summary>
+        [Fact]
+        public void SessionExpiresInSecondsTest()
+        {
+            // TODO unit test for the property 'SessionExpiresInSeconds'
         }
 
         /// <summary>

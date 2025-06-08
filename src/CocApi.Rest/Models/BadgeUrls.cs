@@ -223,7 +223,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, badgeUrls, jsonSerializerOptions);
+            WriteProperties(writer, badgeUrls, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -234,7 +234,7 @@ namespace CocApi.Rest.Models
         /// <param name="badgeUrls"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, BadgeUrls badgeUrls, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, BadgeUrls badgeUrls, JsonSerializerOptions jsonSerializerOptions)
         {
             if (badgeUrls.Large == null)
                 throw new ArgumentNullException(nameof(badgeUrls.Large), "Property is required for class BadgeUrls.");

@@ -310,27 +310,27 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="playerTag"></param>
-        private void OnErrorFetchPlayerDefaultImplementation(Exception exception, string pathFormat, string path, string playerTag)
+        private void OnErrorFetchPlayerDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string playerTag)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchPlayer(ref suppressDefaultLog, exception, pathFormat, path, playerTag);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchPlayer(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, playerTag);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="playerTag"></param>
-        partial void OnErrorFetchPlayer(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string playerTag);
+        partial void OnErrorFetchPlayer(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string playerTag);
 
         /// <summary>
         /// Get player information Get information about a single player by player tag. Player tags can be found either in game or by from clan member lists. Note that player tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example player tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
@@ -372,7 +372,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/players/{playerTag}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/players/{playerTag}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -449,7 +451,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -792,29 +794,29 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        private void OnErrorVerifyTokenDefaultImplementation(Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag)
+        private void OnErrorVerifyTokenDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, VerifyTokenRequest body, string playerTag)
         {
-            bool suppressDefaultLog = false;
-            OnErrorVerifyToken(ref suppressDefaultLog, exception, pathFormat, path, body, playerTag);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorVerifyToken(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, body, playerTag);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="body"></param>
         /// <param name="playerTag"></param>
-        partial void OnErrorVerifyToken(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, VerifyTokenRequest body, string playerTag);
+        partial void OnErrorVerifyToken(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, VerifyTokenRequest body, string playerTag);
 
         /// <summary>
         /// Verify player API token that can be found from the game settings. Verify player API token that can be found from the game settings. This API call can be used to check that players own the game accounts they claim to own as they need to provide the one-time use API token that exists inside the game. 
@@ -858,7 +860,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/players/{playerTag}/verifytoken";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/players/{playerTag}/verifytoken"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/players/{playerTag}/verifytoken");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
                     httpRequestMessageLocalVar.Content = (body as object) is System.IO.Stream stream
@@ -948,7 +952,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok

@@ -56,7 +56,7 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Result
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Result?> ResultOption { get; }
 
         /// <summary>
@@ -93,14 +93,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of AttacksPerMember
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> AttacksPerMemberOption { get; }
 
         /// <summary>
         /// Gets or Sets AttacksPerMember
         /// </summary>
         [JsonPropertyName("attacksPerMember")]
-        public int? AttacksPerMember { get { return this. AttacksPerMemberOption; } }
+        public int? AttacksPerMember { get { return this.AttacksPerMemberOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -244,24 +244,19 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "clan":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clan = new Option<WarClanLogEntry?>(JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            clan = new Option<WarClanLogEntry?>(JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "endTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "opponent":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                opponent = new Option<WarClanLogEntry?>(JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            opponent = new Option<WarClanLogEntry?>(JsonSerializer.Deserialize<WarClanLogEntry>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "teamSize":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                teamSize = new Option<int?>(utf8JsonReader.GetInt32());
+                            teamSize = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "attacksPerMember":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacksPerMember = new Option<int?>(utf8JsonReader.GetInt32());
+                            attacksPerMember = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "result":
                             string? resultRawValue = utf8JsonReader.GetString();
@@ -318,7 +313,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanWarLogEntry, jsonSerializerOptions);
+            WriteProperties(writer, clanWarLogEntry, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -329,7 +324,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanWarLogEntry"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLogEntry clanWarLogEntry, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanWarLogEntry clanWarLogEntry, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanWarLogEntry.Clan == null)
                 throw new ArgumentNullException(nameof(clanWarLogEntry.Clan), "Property is required for class ClanWarLogEntry.");

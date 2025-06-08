@@ -20,69 +20,6 @@ Get clan Builder Base rankings for a specific location
 
 Get clan Builder Base rankings for a specific location
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetClanBuilderBaseRankingExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get clan Builder Base rankings for a specific location
-                ClanBuilderBaseRankingList result = apiInstance.GetClanBuilderBaseRanking(locationId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetClanBuilderBaseRanking: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetClanBuilderBaseRankingWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get clan Builder Base rankings for a specific location
-    ApiResponse<ClanBuilderBaseRankingList> response = apiInstance.GetClanBuilderBaseRankingWithHttpInfo(locationId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetClanBuilderBaseRankingWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -128,69 +65,6 @@ Get capital rankings for a specific location
 
 Get capital rankings for a specific location
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetClanCapitalRankingExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get capital rankings for a specific location
-                ClanCapitalRankingObject result = apiInstance.GetClanCapitalRanking(locationId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetClanCapitalRanking: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetClanCapitalRankingWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get capital rankings for a specific location
-    ApiResponse<ClanCapitalRankingObject> response = apiInstance.GetClanCapitalRankingWithHttpInfo(locationId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetClanCapitalRankingWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -236,69 +110,6 @@ Get clan rankings for a specific location
 
 Get clan rankings for a specific location
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetClanRankingExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get clan rankings for a specific location
-                ClanRankingList result = apiInstance.GetClanRanking(locationId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetClanRanking: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetClanRankingWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get clan rankings for a specific location
-    ApiResponse<ClanRankingList> response = apiInstance.GetClanRankingWithHttpInfo(locationId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetClanRankingWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -344,66 +155,6 @@ Get location information
 
 Get information about specific location
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetLocationExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-
-            try
-            {
-                // Get location information
-                Location result = apiInstance.GetLocation(locationId);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetLocation: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetLocationWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get location information
-    ApiResponse<Location> response = apiInstance.GetLocationWithHttpInfo(locationId);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetLocationWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -446,68 +197,6 @@ List locations
 
 List locations
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetLocationsExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List locations
-                LocationList result = apiInstance.GetLocations(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetLocations: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetLocationsWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List locations
-    ApiResponse<LocationList> response = apiInstance.GetLocationsWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetLocationsWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -552,69 +241,6 @@ Get player Builder Base rankings for a specific location
 
 Get player Builder Base rankings for a specific location
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetPlayerBuilderBaseRankingExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get player Builder Base rankings for a specific location
-                PlayerBuilderBaseRankingList result = apiInstance.GetPlayerBuilderBaseRanking(locationId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetPlayerBuilderBaseRanking: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetPlayerBuilderBaseRankingWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get player Builder Base rankings for a specific location
-    ApiResponse<PlayerBuilderBaseRankingList> response = apiInstance.GetPlayerBuilderBaseRankingWithHttpInfo(locationId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetPlayerBuilderBaseRankingWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -660,69 +286,6 @@ Get player rankings for a specific location
 
 Get player rankings for a specific location
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetPlayerRankingExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LocationsApi(config);
-            var locationId = "locationId_example";  // string | Identifier of the location to retrieve.
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // Get player rankings for a specific location
-                PlayerRankingList result = apiInstance.GetPlayerRanking(locationId, limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LocationsApi.GetPlayerRanking: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetPlayerRankingWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // Get player rankings for a specific location
-    ApiResponse<PlayerRankingList> response = apiInstance.GetPlayerRankingWithHttpInfo(locationId, limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LocationsApi.GetPlayerRankingWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 

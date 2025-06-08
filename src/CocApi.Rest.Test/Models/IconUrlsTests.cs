@@ -54,21 +54,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Medium'
-        /// </summary>
-        [Fact]
-        public void MediumTest()
-        {
-            // TODO unit test for the property 'Medium'
-        }
-
-        /// <summary>
         /// Test the property 'Small'
         /// </summary>
         [Fact]
         public void SmallTest()
         {
             // TODO unit test for the property 'Small'
+        }
+
+        /// <summary>
+        /// Test the property 'Medium'
+        /// </summary>
+        [Fact]
+        public void MediumTest()
+        {
+            // TODO unit test for the property 'Medium'
         }
 
         /// <summary>

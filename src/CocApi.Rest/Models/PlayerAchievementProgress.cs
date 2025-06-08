@@ -245,16 +245,13 @@ namespace CocApi.Rest.Models
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "stars":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = new Option<int?>(utf8JsonReader.GetInt32());
+                            stars = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "target":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                target = new Option<int?>(utf8JsonReader.GetInt32());
+                            target = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "value":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                value = new Option<int?>(utf8JsonReader.GetInt32());
+                            value = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "village":
                             string? villageRawValue = utf8JsonReader.GetString();
@@ -323,7 +320,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerAchievementProgress, jsonSerializerOptions);
+            WriteProperties(writer, playerAchievementProgress, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -334,7 +331,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerAchievementProgress"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerAchievementProgress playerAchievementProgress, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerAchievementProgress playerAchievementProgress, JsonSerializerOptions jsonSerializerOptions)
         {
             if (playerAchievementProgress.Info == null)
                 throw new ArgumentNullException(nameof(playerAchievementProgress.Info), "Property is required for class PlayerAchievementProgress.");

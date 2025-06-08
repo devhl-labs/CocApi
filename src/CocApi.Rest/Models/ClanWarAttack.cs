@@ -86,14 +86,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Duration
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> DurationOption { get; }
 
         /// <summary>
         /// Gets or Sets Duration
         /// </summary>
         [JsonPropertyName("duration")]
-        public int? Duration { get { return this. DurationOption; } }
+        public int? Duration { get { return this.DurationOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -236,20 +236,16 @@ namespace CocApi.Rest.Models
                             defenderTag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "destructionPercentage":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                destructionPercentage = new Option<int?>(utf8JsonReader.GetInt32());
+                            destructionPercentage = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "order":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                order = new Option<int?>(utf8JsonReader.GetInt32());
+                            order = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "stars":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = new Option<int?>(utf8JsonReader.GetInt32());
+                            stars = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "duration":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                duration = new Option<int?>(utf8JsonReader.GetInt32());
+                            duration = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -304,7 +300,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanWarAttack, jsonSerializerOptions);
+            WriteProperties(writer, clanWarAttack, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -315,7 +311,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanWarAttack"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarAttack clanWarAttack, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanWarAttack clanWarAttack, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanWarAttack.AttackerTag == null)
                 throw new ArgumentNullException(nameof(clanWarAttack.AttackerTag), "Property is required for class ClanWarAttack.");

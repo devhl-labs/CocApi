@@ -176,12 +176,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "iconUrls":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                iconUrls = new Option<IconUrls?>(JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            iconUrls = new Option<IconUrls?>(JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<int?>(utf8JsonReader.GetInt32());
+                            id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -224,7 +222,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, league, jsonSerializerOptions);
+            WriteProperties(writer, league, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -235,7 +233,7 @@ namespace CocApi.Rest.Models
         /// <param name="league"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, League league, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, League league, JsonSerializerOptions jsonSerializerOptions)
         {
             if (league.IconUrls == null)
                 throw new ArgumentNullException(nameof(league.IconUrls), "Property is required for class League.");

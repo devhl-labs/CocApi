@@ -15,68 +15,6 @@ List clan labels
 
 List clan labels
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetClanLabelsExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LabelsApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List clan labels
-                LabelsObject result = apiInstance.GetClanLabels(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LabelsApi.GetClanLabels: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetClanLabelsWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List clan labels
-    ApiResponse<LabelsObject> response = apiInstance.GetClanLabelsWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LabelsApi.GetClanLabelsWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 
@@ -121,68 +59,6 @@ List player labels
 
 List player labels
 
-### Example
-```csharp
-using System.Collections.Generic;
-using System.Diagnostics;
-using CocApi.Rest.Apis;
-using CocApi.Rest.Client;
-using CocApi.Rest.Models;
-
-namespace Example
-{
-    public class GetPlayerLabelsExample
-    {
-        public static void Main()
-        {
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.clashofclans.com/v1";
-            // Configure API key authorization: JWT
-            config.AddApiKey("authorization", "YOUR_API_KEY");
-            // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-            // config.AddApiKeyPrefix("authorization", "Bearer");
-
-            var apiInstance = new LabelsApi(config);
-            var limit = 56;  // int | Limit the number of items returned in the response. (optional) 
-            var after = "after_example";  // string | Return only items that occur after this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-            var before = "before_example";  // string | Return only items that occur before this marker. Before marker can be found from the response, inside the 'paging' property. Note that only after or before can be specified for a request, not both.  (optional) 
-
-            try
-            {
-                // List player labels
-                LabelsObject result = apiInstance.GetPlayerLabels(limit, after, before);
-                Debug.WriteLine(result);
-            }
-            catch (ApiException  e)
-            {
-                Debug.Print("Exception when calling LabelsApi.GetPlayerLabels: " + e.Message);
-                Debug.Print("Status Code: " + e.ErrorCode);
-                Debug.Print(e.StackTrace);
-            }
-        }
-    }
-}
-```
-
-#### Using the GetPlayerLabelsWithHttpInfo variant
-This returns an ApiResponse object which contains the response data, status code and headers.
-
-```csharp
-try
-{
-    // List player labels
-    ApiResponse<LabelsObject> response = apiInstance.GetPlayerLabelsWithHttpInfo(limit, after, before);
-    Debug.Write("Status Code: " + response.StatusCode);
-    Debug.Write("Response Headers: " + response.Headers);
-    Debug.Write("Response Body: " + response.Data);
-}
-catch (ApiException e)
-{
-    Debug.Print("Exception when calling LabelsApi.GetPlayerLabelsWithHttpInfo: " + e.Message);
-    Debug.Print("Status Code: " + e.ErrorCode);
-    Debug.Print(e.StackTrace);
-}
-```
 
 ### Parameters
 

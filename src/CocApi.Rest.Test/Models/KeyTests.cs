@@ -54,48 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'CidrRanges'
-        /// </summary>
-        [Fact]
-        public void CidrRangesTest()
-        {
-            // TODO unit test for the property 'CidrRanges'
-        }
-
-        /// <summary>
-        /// Test the property 'Description'
-        /// </summary>
-        [Fact]
-        public void DescriptionTest()
-        {
-            // TODO unit test for the property 'Description'
-        }
-
-        /// <summary>
-        /// Test the property 'DeveloperId'
-        /// </summary>
-        [Fact]
-        public void DeveloperIdTest()
-        {
-            // TODO unit test for the property 'DeveloperId'
-        }
-
-        /// <summary>
         /// Test the property 'Id'
         /// </summary>
         [Fact]
         public void IdTest()
         {
             // TODO unit test for the property 'Id'
-        }
-
-        /// <summary>
-        /// Test the property 'VarKey'
-        /// </summary>
-        [Fact]
-        public void VarKeyTest()
-        {
-            // TODO unit test for the property 'VarKey'
         }
 
         /// <summary>
@@ -108,12 +72,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Scopes'
+        /// Test the property 'VarKey'
         /// </summary>
         [Fact]
-        public void ScopesTest()
+        public void VarKeyTest()
         {
-            // TODO unit test for the property 'Scopes'
+            // TODO unit test for the property 'VarKey'
+        }
+
+        /// <summary>
+        /// Test the property 'DeveloperId'
+        /// </summary>
+        [Fact]
+        public void DeveloperIdTest()
+        {
+            // TODO unit test for the property 'DeveloperId'
         }
 
         /// <summary>
@@ -123,6 +96,33 @@ namespace CocApi.Rest.Test.Model
         public void TierTest()
         {
             // TODO unit test for the property 'Tier'
+        }
+
+        /// <summary>
+        /// Test the property 'Description'
+        /// </summary>
+        [Fact]
+        public void DescriptionTest()
+        {
+            // TODO unit test for the property 'Description'
+        }
+
+        /// <summary>
+        /// Test the property 'Scopes'
+        /// </summary>
+        [Fact]
+        public void ScopesTest()
+        {
+            // TODO unit test for the property 'Scopes'
+        }
+
+        /// <summary>
+        /// Test the property 'CidrRanges'
+        /// </summary>
+        [Fact]
+        public void CidrRangesTest()
+        {
+            // TODO unit test for the property 'CidrRanges'
         }
 
         /// <summary>

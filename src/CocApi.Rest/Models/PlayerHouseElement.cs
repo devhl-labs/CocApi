@@ -281,8 +281,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<int?>(utf8JsonReader.GetInt32());
+                            id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "type":
                             string? typeRawValue = utf8JsonReader.GetString();
@@ -321,7 +320,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerHouseElement, jsonSerializerOptions);
+            WriteProperties(writer, playerHouseElement, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -332,7 +331,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerHouseElement"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerHouseElement playerHouseElement, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerHouseElement playerHouseElement, JsonSerializerOptions jsonSerializerOptions)
         {
             writer.WriteNumber("id", playerHouseElement.Id);
 

@@ -63,12 +63,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'EndTime'
+        /// Test the property 'TeamSize'
         /// </summary>
         [Fact]
-        public void EndTimeTest()
+        public void TeamSizeTest()
         {
-            // TODO unit test for the property 'EndTime'
+            // TODO unit test for the property 'TeamSize'
         }
 
         /// <summary>
@@ -81,12 +81,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'TeamSize'
+        /// Test the property 'EndTime'
         /// </summary>
         [Fact]
-        public void TeamSizeTest()
+        public void EndTimeTest()
         {
-            // TODO unit test for the property 'TeamSize'
+            // TODO unit test for the property 'EndTime'
         }
 
         /// <summary>

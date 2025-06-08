@@ -100,7 +100,7 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Role
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Role?> RoleOption { get; }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace CocApi.Rest.Models
         /// Used to track the state of WarPreference
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<WarPreference?> WarPreferenceOption { get; }
 
         /// <summary>
@@ -228,118 +228,118 @@ namespace CocApi.Rest.Models
         /// Used to track the state of BuilderBaseLeague
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<BuilderBaseLeague?> BuilderBaseLeagueOption { get; }
 
         /// <summary>
         /// Gets or Sets BuilderBaseLeague
         /// </summary>
         [JsonPropertyName("builderBaseLeague")]
-        public BuilderBaseLeague? BuilderBaseLeague { get { return this. BuilderBaseLeagueOption; } }
+        public BuilderBaseLeague? BuilderBaseLeague { get { return this.BuilderBaseLeagueOption; } }
 
         /// <summary>
         /// Used to track the state of BuilderHallLevel
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> BuilderHallLevelOption { get; }
 
         /// <summary>
         /// Gets or Sets BuilderHallLevel
         /// </summary>
         [JsonPropertyName("builderHallLevel")]
-        public int? BuilderHallLevel { get { return this. BuilderHallLevelOption; } }
+        public int? BuilderHallLevel { get { return this.BuilderHallLevelOption; } }
 
         /// <summary>
         /// Used to track the state of Clan
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<PlayerClan?> ClanOption { get; }
 
         /// <summary>
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public PlayerClan? Clan { get { return this. ClanOption; } }
+        public PlayerClan? Clan { get { return this.ClanOption; } }
 
         /// <summary>
         /// Used to track the state of ClanCapitalContributions
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> ClanCapitalContributionsOption { get; }
 
         /// <summary>
         /// Gets or Sets ClanCapitalContributions
         /// </summary>
         [JsonPropertyName("clanCapitalContributions")]
-        public int? ClanCapitalContributions { get { return this. ClanCapitalContributionsOption; } }
+        public int? ClanCapitalContributions { get { return this.ClanCapitalContributionsOption; } }
 
         /// <summary>
         /// Used to track the state of HeroEquipment
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<PlayerItemLevel>?> HeroEquipmentOption { get; }
 
         /// <summary>
         /// Gets or Sets HeroEquipment
         /// </summary>
         [JsonPropertyName("heroEquipment")]
-        public List<PlayerItemLevel>? HeroEquipment { get { return this. HeroEquipmentOption; } }
+        public List<PlayerItemLevel>? HeroEquipment { get { return this.HeroEquipmentOption; } }
 
         /// <summary>
         /// Used to track the state of League
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<League?> LeagueOption { get; }
 
         /// <summary>
         /// Gets or Sets League
         /// </summary>
         [JsonPropertyName("league")]
-        public League? League { get { return this. LeagueOption; } }
+        public League? League { get { return this.LeagueOption; } }
 
         /// <summary>
         /// Used to track the state of LegendStatistics
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<PlayerLegendStatistics?> LegendStatisticsOption { get; }
 
         /// <summary>
         /// Gets or Sets LegendStatistics
         /// </summary>
         [JsonPropertyName("legendStatistics")]
-        public PlayerLegendStatistics? LegendStatistics { get { return this. LegendStatisticsOption; } }
+        public PlayerLegendStatistics? LegendStatistics { get { return this.LegendStatisticsOption; } }
 
         /// <summary>
         /// Used to track the state of PlayerHouse
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<PlayerHouse?> PlayerHouseOption { get; }
 
         /// <summary>
         /// Gets or Sets PlayerHouse
         /// </summary>
         [JsonPropertyName("playerHouse")]
-        public PlayerHouse? PlayerHouse { get { return this. PlayerHouseOption; } }
+        public PlayerHouse? PlayerHouse { get { return this.PlayerHouseOption; } }
 
         /// <summary>
         /// Used to track the state of TownHallWeaponLevel
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> TownHallWeaponLevelOption { get; }
 
         /// <summary>
         /// Gets or Sets TownHallWeaponLevel
         /// </summary>
         [JsonPropertyName("townHallWeaponLevel")]
-        public int? TownHallWeaponLevel { get { return this. TownHallWeaponLevelOption; } }
+        public int? TownHallWeaponLevel { get { return this.TownHallWeaponLevelOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -667,102 +667,79 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "achievements":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                achievements = new Option<List<PlayerAchievementProgress>?>(JsonSerializer.Deserialize<List<PlayerAchievementProgress>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            achievements = new Option<List<PlayerAchievementProgress>?>(JsonSerializer.Deserialize<List<PlayerAchievementProgress>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "attackWins":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackWins = new Option<int?>(utf8JsonReader.GetInt32());
+                            attackWins = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "bestTrophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                bestTrophies = new Option<int?>(utf8JsonReader.GetInt32());
+                            bestTrophies = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "builderBaseTrophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseTrophies = new Option<int?>(utf8JsonReader.GetInt32());
+                            builderBaseTrophies = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "defenseWins":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defenseWins = new Option<int?>(utf8JsonReader.GetInt32());
+                            defenseWins = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "donations":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                donations = new Option<int?>(utf8JsonReader.GetInt32());
+                            donations = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "donationsReceived":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                donationsReceived = new Option<int?>(utf8JsonReader.GetInt32());
+                            donationsReceived = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "expLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            expLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "heroes":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                heroes = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            heroes = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "labels":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                labels = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            labels = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "spells":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                spells = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            spells = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "tag":
                             tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "townHallLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            townHallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "troops":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                troops = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            troops = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "trophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = new Option<int?>(utf8JsonReader.GetInt32());
+                            trophies = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "warStars":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                warStars = new Option<int?>(utf8JsonReader.GetInt32());
+                            warStars = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "builderBaseLeague":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderBaseLeague = new Option<BuilderBaseLeague?>(JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            builderBaseLeague = new Option<BuilderBaseLeague?>(JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "builderHallLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                builderHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            builderHallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "clan":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clan = new Option<PlayerClan?>(JsonSerializer.Deserialize<PlayerClan>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            clan = new Option<PlayerClan?>(JsonSerializer.Deserialize<PlayerClan>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "clanCapitalContributions":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clanCapitalContributions = new Option<int?>(utf8JsonReader.GetInt32());
+                            clanCapitalContributions = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "heroEquipment":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                heroEquipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            heroEquipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "league":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "legendStatistics":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                legendStatistics = new Option<PlayerLegendStatistics?>(JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            legendStatistics = new Option<PlayerLegendStatistics?>(JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "playerHouse":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "role":
                             string? roleRawValue = utf8JsonReader.GetString();
@@ -770,8 +747,7 @@ namespace CocApi.Rest.Models
                                 role = new Option<Role?>(RoleValueConverter.FromStringOrDefault(roleRawValue));
                             break;
                         case "townHallWeaponLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                townHallWeaponLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            townHallWeaponLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "warPreference":
                             string? warPreferenceRawValue = utf8JsonReader.GetString();
@@ -933,7 +909,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, player, jsonSerializerOptions);
+            WriteProperties(writer, player, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -944,7 +920,7 @@ namespace CocApi.Rest.Models
         /// <param name="player"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, Player player, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, Player player, JsonSerializerOptions jsonSerializerOptions)
         {
             if (player.Achievements == null)
                 throw new ArgumentNullException(nameof(player.Achievements), "Property is required for class Player.");

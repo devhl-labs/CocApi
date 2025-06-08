@@ -198,7 +198,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanCapitalRaidSeasonAttacker, jsonSerializerOptions);
+            WriteProperties(writer, clanCapitalRaidSeasonAttacker, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -209,7 +209,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapitalRaidSeasonAttacker"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonAttacker clanCapitalRaidSeasonAttacker, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanCapitalRaidSeasonAttacker clanCapitalRaidSeasonAttacker, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanCapitalRaidSeasonAttacker.Name == null)
                 throw new ArgumentNullException(nameof(clanCapitalRaidSeasonAttacker.Name), "Property is required for class ClanCapitalRaidSeasonAttacker.");

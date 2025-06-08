@@ -54,12 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Keys'
+        /// Test the property 'Status'
         /// </summary>
         [Fact]
-        public void KeysTest()
+        public void StatusTest()
         {
-            // TODO unit test for the property 'Keys'
+            // TODO unit test for the property 'Status'
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Status'
+        /// Test the property 'Keys'
         /// </summary>
         [Fact]
-        public void StatusTest()
+        public void KeysTest()
         {
-            // TODO unit test for the property 'Status'
+            // TODO unit test for the property 'Keys'
         }
     }
 }

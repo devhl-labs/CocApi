@@ -146,8 +146,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "items":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = new Option<List<LeagueSeason>?>(JsonSerializer.Deserialize<List<LeagueSeason>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            items = new Option<List<LeagueSeason>?>(JsonSerializer.Deserialize<List<LeagueSeason>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -175,7 +174,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, leagueSeasonList, jsonSerializerOptions);
+            WriteProperties(writer, leagueSeasonList, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -186,7 +185,7 @@ namespace CocApi.Rest.Models
         /// <param name="leagueSeasonList"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, LeagueSeasonList leagueSeasonList, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, LeagueSeasonList leagueSeasonList, JsonSerializerOptions jsonSerializerOptions)
         {
             if (leagueSeasonList.Items == null)
                 throw new ArgumentNullException(nameof(leagueSeasonList.Items), "Property is required for class LeagueSeasonList.");

@@ -54,12 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'IconUrls'
+        /// Test the property 'Name'
         /// </summary>
         [Fact]
-        public void IconUrlsTest()
+        public void NameTest()
         {
-            // TODO unit test for the property 'IconUrls'
+            // TODO unit test for the property 'Name'
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Name'
+        /// Test the property 'IconUrls'
         /// </summary>
         [Fact]
-        public void NameTest()
+        public void IconUrlsTest()
         {
-            // TODO unit test for the property 'Name'
+            // TODO unit test for the property 'IconUrls'
         }
     }
 }

@@ -54,6 +54,15 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'Season'
+        /// </summary>
+        [Fact]
+        public void SeasonTest()
+        {
+            // TODO unit test for the property 'Season'
+        }
+
+        /// <summary>
         /// Test the property 'Clans'
         /// </summary>
         [Fact]
@@ -69,15 +78,6 @@ namespace CocApi.Rest.Test.Model
         public void RoundsTest()
         {
             // TODO unit test for the property 'Rounds'
-        }
-
-        /// <summary>
-        /// Test the property 'Season'
-        /// </summary>
-        [Fact]
-        public void SeasonTest()
-        {
-            // TODO unit test for the property 'Season'
         }
 
         /// <summary>

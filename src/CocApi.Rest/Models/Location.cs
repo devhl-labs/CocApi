@@ -72,27 +72,27 @@ namespace CocApi.Rest.Models
         /// Used to track the state of CountryCode
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> CountryCodeOption { get; }
 
         /// <summary>
         /// Gets or Sets CountryCode
         /// </summary>
         [JsonPropertyName("countryCode")]
-        public string? CountryCode { get { return this. CountryCodeOption; } }
+        public string? CountryCode { get { return this.CountryCodeOption; } }
 
         /// <summary>
         /// Used to track the state of LocalizedName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> LocalizedNameOption { get; }
 
         /// <summary>
         /// Gets or Sets LocalizedName
         /// </summary>
         [JsonPropertyName("localizedName")]
-        public string? LocalizedName { get { return this. LocalizedNameOption; } }
+        public string? LocalizedName { get { return this.LocalizedNameOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -225,12 +225,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<int?>(utf8JsonReader.GetInt32());
+                            id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "isCountry":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                isCountry = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            isCountry = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -285,7 +283,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, location, jsonSerializerOptions);
+            WriteProperties(writer, location, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -296,7 +294,7 @@ namespace CocApi.Rest.Models
         /// <param name="location"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, Location location, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, Location location, JsonSerializerOptions jsonSerializerOptions)
         {
             if (location.Name == null)
                 throw new ArgumentNullException(nameof(location.Name), "Property is required for class Location.");

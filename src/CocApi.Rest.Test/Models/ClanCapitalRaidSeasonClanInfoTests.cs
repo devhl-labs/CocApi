@@ -54,21 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'BadgeUrls'
+        /// Test the property 'Tag'
         /// </summary>
         [Fact]
-        public void BadgeUrlsTest()
+        public void TagTest()
         {
-            // TODO unit test for the property 'BadgeUrls'
-        }
-
-        /// <summary>
-        /// Test the property 'Level'
-        /// </summary>
-        [Fact]
-        public void LevelTest()
-        {
-            // TODO unit test for the property 'Level'
+            // TODO unit test for the property 'Tag'
         }
 
         /// <summary>
@@ -81,12 +72,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Tag'
+        /// Test the property 'Level'
         /// </summary>
         [Fact]
-        public void TagTest()
+        public void LevelTest()
         {
-            // TODO unit test for the property 'Tag'
+            // TODO unit test for the property 'Level'
+        }
+
+        /// <summary>
+        /// Test the property 'BadgeUrls'
+        /// </summary>
+        [Fact]
+        public void BadgeUrlsTest()
+        {
+            // TODO unit test for the property 'BadgeUrls'
         }
     }
 }

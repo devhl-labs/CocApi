@@ -54,12 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Large'
+        /// Test the property 'Small'
         /// </summary>
         [Fact]
-        public void LargeTest()
+        public void SmallTest()
         {
-            // TODO unit test for the property 'Large'
+            // TODO unit test for the property 'Small'
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Small'
+        /// Test the property 'Large'
         /// </summary>
         [Fact]
-        public void SmallTest()
+        public void LargeTest()
         {
-            // TODO unit test for the property 'Small'
+            // TODO unit test for the property 'Large'
         }
     }
 }

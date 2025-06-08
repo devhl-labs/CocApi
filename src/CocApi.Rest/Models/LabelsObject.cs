@@ -146,8 +146,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "items":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                items = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            items = new Option<List<Label>?>(JsonSerializer.Deserialize<List<Label>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -175,7 +174,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, labelsObject, jsonSerializerOptions);
+            WriteProperties(writer, labelsObject, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -186,7 +185,7 @@ namespace CocApi.Rest.Models
         /// <param name="labelsObject"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, LabelsObject labelsObject, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, LabelsObject labelsObject, JsonSerializerOptions jsonSerializerOptions)
         {
             if (labelsObject.Items == null)
                 throw new ArgumentNullException(nameof(labelsObject.Items), "Property is required for class LabelsObject.");

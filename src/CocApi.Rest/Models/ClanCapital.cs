@@ -48,27 +48,27 @@ namespace CocApi.Rest.Models
         /// Used to track the state of CapitalHallLevel
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> CapitalHallLevelOption { get; }
 
         /// <summary>
         /// Gets or Sets CapitalHallLevel
         /// </summary>
         [JsonPropertyName("capitalHallLevel")]
-        public int? CapitalHallLevel { get { return this. CapitalHallLevelOption; } }
+        public int? CapitalHallLevel { get { return this.CapitalHallLevelOption; } }
 
         /// <summary>
         /// Used to track the state of Districts
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<ClanDistrictData>?> DistrictsOption { get; }
 
         /// <summary>
         /// Gets or Sets Districts
         /// </summary>
         [JsonPropertyName("districts")]
-        public List<ClanDistrictData>? Districts { get { return this. DistrictsOption; } }
+        public List<ClanDistrictData>? Districts { get { return this.DistrictsOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -179,12 +179,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "capitalHallLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                capitalHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            capitalHallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "districts":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                districts = new Option<List<ClanDistrictData>?>(JsonSerializer.Deserialize<List<ClanDistrictData>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            districts = new Option<List<ClanDistrictData>?>(JsonSerializer.Deserialize<List<ClanDistrictData>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -212,7 +210,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanCapital, jsonSerializerOptions);
+            WriteProperties(writer, clanCapital, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -223,7 +221,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapital"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapital clanCapital, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanCapital clanCapital, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanCapital.DistrictsOption.IsSet && clanCapital.Districts == null)
                 throw new ArgumentNullException(nameof(clanCapital.Districts), "Property is required for class ClanCapital.");

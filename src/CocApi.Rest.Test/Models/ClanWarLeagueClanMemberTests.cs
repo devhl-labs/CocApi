@@ -54,15 +54,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
         /// Test the property 'Tag'
         /// </summary>
         [Fact]
@@ -78,6 +69,15 @@ namespace CocApi.Rest.Test.Model
         public void TownHallLevelTest()
         {
             // TODO unit test for the property 'TownHallLevel'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
         }
     }
 }

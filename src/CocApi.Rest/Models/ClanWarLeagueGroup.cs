@@ -52,7 +52,7 @@ namespace CocApi.Rest.Models
         /// Used to track the state of State
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<GroupState?> StateOption { get; }
 
         /// <summary>
@@ -207,16 +207,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "clans":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clans = new Option<List<ClanWarLeagueClan>?>(JsonSerializer.Deserialize<List<ClanWarLeagueClan>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            clans = new Option<List<ClanWarLeagueClan>?>(JsonSerializer.Deserialize<List<ClanWarLeagueClan>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "rounds":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rounds = new Option<List<ClanWarLeagueRound>?>(JsonSerializer.Deserialize<List<ClanWarLeagueRound>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            rounds = new Option<List<ClanWarLeagueRound>?>(JsonSerializer.Deserialize<List<ClanWarLeagueRound>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "season":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                season = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            season = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
@@ -264,7 +261,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanWarLeagueGroup, jsonSerializerOptions);
+            WriteProperties(writer, clanWarLeagueGroup, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -275,7 +272,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanWarLeagueGroup"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanWarLeagueGroup clanWarLeagueGroup, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanWarLeagueGroup clanWarLeagueGroup, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanWarLeagueGroup.Clans == null)
                 throw new ArgumentNullException(nameof(clanWarLeagueGroup.Clans), "Property is required for class ClanWarLeagueGroup.");

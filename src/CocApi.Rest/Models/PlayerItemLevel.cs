@@ -80,27 +80,27 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Equipment
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<PlayerItemLevel>?> EquipmentOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Equipment
         /// </summary>
         [JsonPropertyName("equipment")]
-        public List<PlayerItemLevel>? Equipment { get { return this. EquipmentOption; } set { this.EquipmentOption = new(value); } }
+        public List<PlayerItemLevel>? Equipment { get { return this.EquipmentOption; } set { this.EquipmentOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of SuperTroopIsActive
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<bool?> SuperTroopIsActiveOption { get; }
 
         /// <summary>
         /// Gets or Sets SuperTroopIsActive
         /// </summary>
         [JsonPropertyName("superTroopIsActive")]
-        public bool? SuperTroopIsActive { get { return this. SuperTroopIsActiveOption; } }
+        public bool? SuperTroopIsActive { get { return this.SuperTroopIsActiveOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -231,12 +231,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "level":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                level = new Option<int?>(utf8JsonReader.GetInt32());
+                            level = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "maxLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                maxLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            maxLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -247,12 +245,10 @@ namespace CocApi.Rest.Models
                                 village = new Option<VillageType?>(VillageTypeValueConverter.FromStringOrDefault(villageRawValue));
                             break;
                         case "equipment":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                equipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            equipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "superTroopIsActive":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                superTroopIsActive = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            superTroopIsActive = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         default:
                             break;
@@ -304,7 +300,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerItemLevel, jsonSerializerOptions);
+            WriteProperties(writer, playerItemLevel, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -315,7 +311,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerItemLevel"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerItemLevel playerItemLevel, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerItemLevel playerItemLevel, JsonSerializerOptions jsonSerializerOptions)
         {
             if (playerItemLevel.Name == null)
                 throw new ArgumentNullException(nameof(playerItemLevel.Name), "Property is required for class PlayerItemLevel.");

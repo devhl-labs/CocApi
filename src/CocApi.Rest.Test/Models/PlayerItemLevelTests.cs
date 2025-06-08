@@ -63,21 +63,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'MaxLevel'
-        /// </summary>
-        [Fact]
-        public void MaxLevelTest()
-        {
-            // TODO unit test for the property 'MaxLevel'
-        }
-
-        /// <summary>
         /// Test the property 'Name'
         /// </summary>
         [Fact]
         public void NameTest()
         {
             // TODO unit test for the property 'Name'
+        }
+
+        /// <summary>
+        /// Test the property 'MaxLevel'
+        /// </summary>
+        [Fact]
+        public void MaxLevelTest()
+        {
+            // TODO unit test for the property 'MaxLevel'
         }
 
         /// <summary>
@@ -96,6 +96,15 @@ namespace CocApi.Rest.Test.Model
         public void SuperTroopIsActiveTest()
         {
             // TODO unit test for the property 'SuperTroopIsActive'
+        }
+
+        /// <summary>
+        /// Test the property 'Equipment'
+        /// </summary>
+        [Fact]
+        public void EquipmentTest()
+        {
+            // TODO unit test for the property 'Equipment'
         }
     }
 }

@@ -63,21 +63,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'BuilderBaseTrophies'
+        /// Test the property 'Tag'
         /// </summary>
         [Fact]
-        public void BuilderBaseTrophiesTest()
+        public void TagTest()
         {
-            // TODO unit test for the property 'BuilderBaseTrophies'
-        }
-
-        /// <summary>
-        /// Test the property 'ExpLevel'
-        /// </summary>
-        [Fact]
-        public void ExpLevelTest()
-        {
-            // TODO unit test for the property 'ExpLevel'
+            // TODO unit test for the property 'Tag'
         }
 
         /// <summary>
@@ -90,12 +81,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'PreviousRank'
+        /// Test the property 'ExpLevel'
         /// </summary>
         [Fact]
-        public void PreviousRankTest()
+        public void ExpLevelTest()
         {
-            // TODO unit test for the property 'PreviousRank'
+            // TODO unit test for the property 'ExpLevel'
         }
 
         /// <summary>
@@ -108,12 +99,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Tag'
+        /// Test the property 'PreviousRank'
         /// </summary>
         [Fact]
-        public void TagTest()
+        public void PreviousRankTest()
         {
-            // TODO unit test for the property 'Tag'
+            // TODO unit test for the property 'PreviousRank'
+        }
+
+        /// <summary>
+        /// Test the property 'BuilderBaseTrophies'
+        /// </summary>
+        [Fact]
+        public void BuilderBaseTrophiesTest()
+        {
+            // TODO unit test for the property 'BuilderBaseTrophies'
         }
 
         /// <summary>

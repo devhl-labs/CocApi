@@ -175,16 +175,13 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "attacker":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacker = new Option<ClanCapitalRaidSeasonAttacker?>(JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            attacker = new Option<ClanCapitalRaidSeasonAttacker?>(JsonSerializer.Deserialize<ClanCapitalRaidSeasonAttacker>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "destructionPercent":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                destructionPercent = new Option<int?>(utf8JsonReader.GetInt32());
+                            destructionPercent = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "stars":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                stars = new Option<int?>(utf8JsonReader.GetInt32());
+                            stars = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;
@@ -224,7 +221,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanCapitalRaidSeasonAttack, jsonSerializerOptions);
+            WriteProperties(writer, clanCapitalRaidSeasonAttack, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -235,7 +232,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapitalRaidSeasonAttack"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonAttack clanCapitalRaidSeasonAttack, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanCapitalRaidSeasonAttack clanCapitalRaidSeasonAttack, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanCapitalRaidSeasonAttack.Attacker == null)
                 throw new ArgumentNullException(nameof(clanCapitalRaidSeasonAttack.Attacker), "Property is required for class ClanCapitalRaidSeasonAttack.");

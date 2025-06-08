@@ -118,14 +118,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Clan
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<PlayerRankingClan?> ClanOption { get; }
 
         /// <summary>
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public PlayerRankingClan? Clan { get { return this. ClanOption; } }
+        public PlayerRankingClan? Clan { get { return this.ClanOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -292,42 +292,34 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "attackWins":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attackWins = new Option<int?>(utf8JsonReader.GetInt32());
+                            attackWins = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "defenseWins":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                defenseWins = new Option<int?>(utf8JsonReader.GetInt32());
+                            defenseWins = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "expLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                expLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            expLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "league":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "previousRank":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                previousRank = new Option<int?>(utf8JsonReader.GetInt32());
+                            previousRank = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "rank":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                rank = new Option<int?>(utf8JsonReader.GetInt32());
+                            rank = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "tag":
                             tag = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "trophies":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                trophies = new Option<int?>(utf8JsonReader.GetInt32());
+                            trophies = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "clan":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clan = new Option<PlayerRankingClan?>(JsonSerializer.Deserialize<PlayerRankingClan>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            clan = new Option<PlayerRankingClan?>(JsonSerializer.Deserialize<PlayerRankingClan>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -406,7 +398,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerRanking, jsonSerializerOptions);
+            WriteProperties(writer, playerRanking, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -417,7 +409,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerRanking"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerRanking playerRanking, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerRanking playerRanking, JsonSerializerOptions jsonSerializerOptions)
         {
             if (playerRanking.League == null)
                 throw new ArgumentNullException(nameof(playerRanking.League), "Property is required for class PlayerRanking.");

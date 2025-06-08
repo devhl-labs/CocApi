@@ -54,21 +54,39 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'BadgeUrls'
-        /// </summary>
-        [Fact]
-        public void BadgeUrlsTest()
-        {
-            // TODO unit test for the property 'BadgeUrls'
-        }
-
-        /// <summary>
         /// Test the property 'ClanCapitalPoints'
         /// </summary>
         [Fact]
         public void ClanCapitalPointsTest()
         {
             // TODO unit test for the property 'ClanCapitalPoints'
+        }
+
+        /// <summary>
+        /// Test the property 'Tag'
+        /// </summary>
+        [Fact]
+        public void TagTest()
+        {
+            // TODO unit test for the property 'Tag'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
+        }
+
+        /// <summary>
+        /// Test the property 'BadgeUrls'
+        /// </summary>
+        [Fact]
+        public void BadgeUrlsTest()
+        {
+            // TODO unit test for the property 'BadgeUrls'
         }
 
         /// <summary>
@@ -90,24 +108,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
-        /// Test the property 'PreviousRank'
-        /// </summary>
-        [Fact]
-        public void PreviousRankTest()
-        {
-            // TODO unit test for the property 'PreviousRank'
-        }
-
-        /// <summary>
         /// Test the property 'Rank'
         /// </summary>
         [Fact]
@@ -117,12 +117,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Tag'
+        /// Test the property 'PreviousRank'
         /// </summary>
         [Fact]
-        public void TagTest()
+        public void PreviousRankTest()
         {
-            // TODO unit test for the property 'Tag'
+            // TODO unit test for the property 'PreviousRank'
         }
 
         /// <summary>

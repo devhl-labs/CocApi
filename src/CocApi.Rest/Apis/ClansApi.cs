@@ -21,7 +21,6 @@ using System.Text.Json;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using System.Diagnostics.CodeAnalysis;
-using System.Diagnostics;
 
 namespace CocApi.Rest.Apis
 {
@@ -913,33 +912,33 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchCapitalRaidSeasonsDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchCapitalRaidSeasonsDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchCapitalRaidSeasons(ref suppressDefaultLog, exception, pathFormat, path, clanTag, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchCapitalRaidSeasons(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, clanTag, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchCapitalRaidSeasons(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchCapitalRaidSeasons(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Retrieve clan&#39;s capital raid seasons Retrieve clan&#39;s capital raid seasons
@@ -987,19 +986,21 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/capitalraidseasons";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans/{clanTag}/capitalraidseasons"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans/{clanTag}/capitalraidseasons");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -1077,7 +1078,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -1414,27 +1415,27 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
-        private void OnErrorFetchClanDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag)
+        private void OnErrorFetchClanDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchClan(ref suppressDefaultLog, exception, pathFormat, path, clanTag);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchClan(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, clanTag);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
-        partial void OnErrorFetchClan(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag);
+        partial void OnErrorFetchClan(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag);
 
         /// <summary>
         /// Get clan information Get information about a single clan by clan tag. Clan tags can be found using clan search operation. Note that clan tags start with hash character &#39;#&#39; and that needs to be URL-encoded properly to work in URL, so for example clan tag &#39;#2ABC&#39; would become &#39;%232ABC&#39; in the URL. 
@@ -1476,7 +1477,9 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans/{clanTag}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans/{clanTag}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -1553,7 +1556,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -1904,33 +1907,33 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchClanMembersDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchClanMembersDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchClanMembers(ref suppressDefaultLog, exception, pathFormat, path, clanTag, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchClanMembers(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, clanTag, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanMembers(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanMembers(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// List clan members List clan members.
@@ -1978,19 +1981,21 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/members";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans/{clanTag}/members"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans/{clanTag}/members");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -2068,7 +2073,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -2407,29 +2412,29 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        private void OnErrorFetchClanWarLeagueGroupDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
+        private void OnErrorFetchClanWarLeagueGroupDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchClanWarLeagueGroup(ref suppressDefaultLog, exception, pathFormat, path, clanTag, realtime);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchClanWarLeagueGroup(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, clanTag, realtime);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchClanWarLeagueGroup(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
+        partial void OnErrorFetchClanWarLeagueGroup(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war league group Retrieve information about clan&#39;s current clan war league group
@@ -2473,13 +2478,15 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar/leaguegroup";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans/{clanTag}/currentwar/leaguegroup"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans/{clanTag}/currentwar/leaguegroup");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (realtime.IsSet)
-                        parseQueryStringLocalVar["realtime"] = realtime.Value.ToString();
+                        parseQueryStringLocalVar["realtime"] = ClientUtils.ParameterToString(realtime.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -2557,7 +2564,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -2896,29 +2903,29 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        private void OnErrorFetchClanWarLeagueWarDefaultImplementation(Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime)
+        private void OnErrorFetchClanWarLeagueWarDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string warTag, Option<bool> realtime)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchClanWarLeagueWar(ref suppressDefaultLog, exception, pathFormat, path, warTag, realtime);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchClanWarLeagueWar(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, warTag, realtime);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="warTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchClanWarLeagueWar(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string warTag, Option<bool> realtime);
+        partial void OnErrorFetchClanWarLeagueWar(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string warTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about individual clan war league war Retrieve information about individual clan war league war
@@ -2962,13 +2969,15 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clanwarleagues/wars/{warTag}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clanwarleagues/wars/{warTag}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clanwarleagues/wars/{warTag}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BwarTag%7D", Uri.EscapeDataString(warTag.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (realtime.IsSet)
-                        parseQueryStringLocalVar["realtime"] = realtime.Value.ToString();
+                        parseQueryStringLocalVar["realtime"] = ClientUtils.ParameterToString(realtime.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -3046,7 +3055,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -3397,33 +3406,33 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        private void OnErrorFetchClanWarLogDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
+        private void OnErrorFetchClanWarLogDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchClanWarLog(ref suppressDefaultLog, exception, pathFormat, path, clanTag, limit, after, before);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchClanWarLog(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, clanTag, limit, after, before);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="limit"></param>
         /// <param name="after"></param>
         /// <param name="before"></param>
-        partial void OnErrorFetchClanWarLog(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
+        partial void OnErrorFetchClanWarLog(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before);
 
         /// <summary>
         /// Retrieve clan&#39;s clan war log Retrieve clan&#39;s clan war log
@@ -3471,19 +3480,21 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/warlog";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans/{clanTag}/warlog"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans/{clanTag}/warlog");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -3561,7 +3572,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -3900,29 +3911,29 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        private void OnErrorFetchCurrentWarDefaultImplementation(Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime)
+        private void OnErrorFetchCurrentWarDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFetchCurrentWar(ref suppressDefaultLog, exception, pathFormat, path, clanTag, realtime);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFetchCurrentWar(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, clanTag, realtime);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="clanTag"></param>
         /// <param name="realtime"></param>
-        partial void OnErrorFetchCurrentWar(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, string clanTag, Option<bool> realtime);
+        partial void OnErrorFetchCurrentWar(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime);
 
         /// <summary>
         /// Retrieve information about clan&#39;s current clan war Retrieve information about clan&#39;s current clan war
@@ -3966,13 +3977,15 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans/{clanTag}/currentwar";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans/{clanTag}/currentwar"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans/{clanTag}/currentwar");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BclanTag%7D", Uri.EscapeDataString(clanTag.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (realtime.IsSet)
-                        parseQueryStringLocalVar["realtime"] = realtime.Value.ToString();
+                        parseQueryStringLocalVar["realtime"] = ClientUtils.ParameterToString(realtime.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -4050,7 +4063,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -4423,9 +4436,9 @@ namespace CocApi.Rest.Apis
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="minMembers"></param>
         /// <param name="maxMembers"></param>
@@ -4437,21 +4450,21 @@ namespace CocApi.Rest.Apis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        private void OnErrorSearchClansDefaultImplementation(Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
+        private void OnErrorSearchClansDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
         {
-            bool suppressDefaultLog = false;
-            OnErrorSearchClans(ref suppressDefaultLog, exception, pathFormat, path, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorSearchClans(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="locationId"></param>
         /// <param name="minMembers"></param>
         /// <param name="maxMembers"></param>
@@ -4463,7 +4476,7 @@ namespace CocApi.Rest.Apis
         /// <param name="after"></param>
         /// <param name="before"></param>
         /// <param name="labelIds"></param>
-        partial void OnErrorSearchClans(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds);
+        partial void OnErrorSearchClans(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds);
 
         /// <summary>
         /// Search clans Search all clans by name and/or filtering the results using various criteria. At least one filtering criteria must be defined and if name is used as part of search, it is required to be at least three characters long. It is not possible to specify ordering for results so clients should not rely on any specific ordering as that may change in the future releases of the API. 
@@ -4525,42 +4538,44 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress!.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/clans";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/clans"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath, "/clans");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     if (locationId.IsSet)
-                        parseQueryStringLocalVar["locationId"] = locationId.Value.ToString();
+                        parseQueryStringLocalVar["locationId"] = ClientUtils.ParameterToString(locationId.Value);
 
                     if (minMembers.IsSet)
-                        parseQueryStringLocalVar["minMembers"] = minMembers.Value.ToString();
+                        parseQueryStringLocalVar["minMembers"] = ClientUtils.ParameterToString(minMembers.Value);
 
                     if (maxMembers.IsSet)
-                        parseQueryStringLocalVar["maxMembers"] = maxMembers.Value.ToString();
+                        parseQueryStringLocalVar["maxMembers"] = ClientUtils.ParameterToString(maxMembers.Value);
 
                     if (minClanPoints.IsSet)
-                        parseQueryStringLocalVar["minClanPoints"] = minClanPoints.Value.ToString();
+                        parseQueryStringLocalVar["minClanPoints"] = ClientUtils.ParameterToString(minClanPoints.Value);
 
                     if (minClanLevel.IsSet)
-                        parseQueryStringLocalVar["minClanLevel"] = minClanLevel.Value.ToString();
+                        parseQueryStringLocalVar["minClanLevel"] = ClientUtils.ParameterToString(minClanLevel.Value);
 
                     if (limit.IsSet)
-                        parseQueryStringLocalVar["limit"] = limit.Value.ToString();
+                        parseQueryStringLocalVar["limit"] = ClientUtils.ParameterToString(limit.Value);
 
                     if (name.IsSet)
-                        parseQueryStringLocalVar["name"] = name.Value.ToString();
+                        parseQueryStringLocalVar["name"] = ClientUtils.ParameterToString(name.Value);
 
                     if (warFrequency.IsSet)
-                        parseQueryStringLocalVar["warFrequency"] = warFrequency.Value.ToString();
+                        parseQueryStringLocalVar["warFrequency"] = ClientUtils.ParameterToString(warFrequency.Value);
 
                     if (after.IsSet)
-                        parseQueryStringLocalVar["after"] = after.Value.ToString();
+                        parseQueryStringLocalVar["after"] = ClientUtils.ParameterToString(after.Value);
 
                     if (before.IsSet)
-                        parseQueryStringLocalVar["before"] = before.Value.ToString();
+                        parseQueryStringLocalVar["before"] = ClientUtils.ParameterToString(before.Value);
 
                     if (labelIds.IsSet)
-                        parseQueryStringLocalVar["labelIds"] = labelIds.Value.ToString();
+                        parseQueryStringLocalVar["labelIds"] = ClientUtils.ParameterToString(labelIds.Value);
 
                     uriBuilderLocalVar.Query = parseQueryStringLocalVar.ToString();
 
@@ -4638,7 +4653,7 @@ namespace CocApi.Rest.Apis
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok

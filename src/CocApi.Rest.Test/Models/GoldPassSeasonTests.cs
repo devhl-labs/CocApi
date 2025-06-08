@@ -54,21 +54,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'EndTime'
-        /// </summary>
-        [Fact]
-        public void EndTimeTest()
-        {
-            // TODO unit test for the property 'EndTime'
-        }
-
-        /// <summary>
         /// Test the property 'StartTime'
         /// </summary>
         [Fact]
         public void StartTimeTest()
         {
             // TODO unit test for the property 'StartTime'
+        }
+
+        /// <summary>
+        /// Test the property 'EndTime'
+        /// </summary>
+        [Fact]
+        public void EndTimeTest()
+        {
+            // TODO unit test for the property 'EndTime'
         }
     }
 }

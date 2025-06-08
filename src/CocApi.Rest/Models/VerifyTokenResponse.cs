@@ -223,7 +223,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, verifyTokenResponse, jsonSerializerOptions);
+            WriteProperties(writer, verifyTokenResponse, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -234,7 +234,7 @@ namespace CocApi.Rest.Models
         /// <param name="verifyTokenResponse"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, VerifyTokenResponse verifyTokenResponse, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, VerifyTokenResponse verifyTokenResponse, JsonSerializerOptions jsonSerializerOptions)
         {
             if (verifyTokenResponse.Status == null)
                 throw new ArgumentNullException(nameof(verifyTokenResponse.Status), "Property is required for class VerifyTokenResponse.");

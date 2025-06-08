@@ -146,8 +146,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "elements":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                elements = new Option<List<PlayerHouseElement>?>(JsonSerializer.Deserialize<List<PlayerHouseElement>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            elements = new Option<List<PlayerHouseElement>?>(JsonSerializer.Deserialize<List<PlayerHouseElement>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -175,7 +174,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, playerHouse, jsonSerializerOptions);
+            WriteProperties(writer, playerHouse, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -186,7 +185,7 @@ namespace CocApi.Rest.Models
         /// <param name="playerHouse"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, PlayerHouse playerHouse, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, PlayerHouse playerHouse, JsonSerializerOptions jsonSerializerOptions)
         {
             if (playerHouse.Elements == null)
                 throw new ArgumentNullException(nameof(playerHouse.Elements), "Property is required for class PlayerHouse.");

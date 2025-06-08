@@ -192,12 +192,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "badgeUrls":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            badgeUrls = new Option<BadgeUrls?>(JsonSerializer.Deserialize<BadgeUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "level":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                level = new Option<int?>(utf8JsonReader.GetInt32());
+                            level = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -249,7 +247,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanCapitalRaidSeasonClanInfo, jsonSerializerOptions);
+            WriteProperties(writer, clanCapitalRaidSeasonClanInfo, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -260,7 +258,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapitalRaidSeasonClanInfo"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanCapitalRaidSeasonClanInfo clanCapitalRaidSeasonClanInfo, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanCapitalRaidSeasonClanInfo clanCapitalRaidSeasonClanInfo, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanCapitalRaidSeasonClanInfo.BadgeUrls == null)
                 throw new ArgumentNullException(nameof(clanCapitalRaidSeasonClanInfo.BadgeUrls), "Property is required for class ClanCapitalRaidSeasonClanInfo.");

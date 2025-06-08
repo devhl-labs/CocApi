@@ -175,12 +175,10 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "districtHallLevel":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                districtHallLevel = new Option<int?>(utf8JsonReader.GetInt32());
+                            districtHallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<int?>(utf8JsonReader.GetInt32());
+                            id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
@@ -223,7 +221,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanDistrictData, jsonSerializerOptions);
+            WriteProperties(writer, clanDistrictData, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -234,7 +232,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanDistrictData"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanDistrictData clanDistrictData, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanDistrictData clanDistrictData, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanDistrictData.Name == null)
                 throw new ArgumentNullException(nameof(clanDistrictData.Name), "Property is required for class ClanDistrictData.");

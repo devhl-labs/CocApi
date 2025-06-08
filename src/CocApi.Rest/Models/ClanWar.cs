@@ -64,7 +64,7 @@ namespace CocApi.Rest.Models
         /// Used to track the state of State
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<WarState?> StateOption { get; }
 
         /// <summary>
@@ -125,14 +125,14 @@ namespace CocApi.Rest.Models
         /// Used to track the state of WarTag
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> WarTagOption { get; }
 
         /// <summary>
         /// Gets or Sets WarTag
         /// </summary>
         [JsonPropertyName("warTag")]
-        public string? WarTag { get { return this. WarTagOption; } }
+        public string? WarTag { get { return this.WarTagOption; } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -240,7 +240,6 @@ namespace CocApi.Rest.Models
                 if (WarTag != null)
                     hashCode = (hashCode * 59) + WarTag.GetHashCode();
 
-                
 
                 return hashCode;
             }
@@ -311,36 +310,28 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "attacksPerMember":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                attacksPerMember = new Option<int?>(utf8JsonReader.GetInt32());
+                            attacksPerMember = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "clan":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                clan = new Option<WarClan?>(JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            clan = new Option<WarClan?>(JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "endTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            endTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "opponent":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                opponent = new Option<WarClan?>(JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            opponent = new Option<WarClan?>(JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "preparationStartTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                preparationStartTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            preparationStartTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "serverExpiration":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                serverExpiration = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            serverExpiration = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "startTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                startTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            startTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "teamSize":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                teamSize = new Option<int?>(utf8JsonReader.GetInt32());
+                            teamSize = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
@@ -421,7 +412,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, clanWar, jsonSerializerOptions);
+            WriteProperties(writer, clanWar, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -432,7 +423,7 @@ namespace CocApi.Rest.Models
         /// <param name="clanWar"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, ClanWar clanWar, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, ClanWar clanWar, JsonSerializerOptions jsonSerializerOptions)
         {
             if (clanWar.Clan == null)
                 throw new ArgumentNullException(nameof(clanWar.Clan), "Property is required for class ClanWar.");

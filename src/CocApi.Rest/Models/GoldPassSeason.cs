@@ -198,7 +198,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, goldPassSeason, jsonSerializerOptions);
+            WriteProperties(writer, goldPassSeason, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -209,7 +209,7 @@ namespace CocApi.Rest.Models
         /// <param name="goldPassSeason"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, GoldPassSeason goldPassSeason, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, GoldPassSeason goldPassSeason, JsonSerializerOptions jsonSerializerOptions)
         {
             if (goldPassSeason.EndTime == null)
                 throw new ArgumentNullException(nameof(goldPassSeason.EndTime), "Property is required for class GoldPassSeason.");

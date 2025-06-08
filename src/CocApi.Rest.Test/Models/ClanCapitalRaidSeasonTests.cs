@@ -63,15 +63,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'CapitalTotalLoot'
-        /// </summary>
-        [Fact]
-        public void CapitalTotalLootTest()
-        {
-            // TODO unit test for the property 'CapitalTotalLoot'
-        }
-
-        /// <summary>
         /// Test the property 'DefenseLog'
         /// </summary>
         [Fact]
@@ -81,12 +72,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'DefensiveReward'
+        /// Test the property 'State'
         /// </summary>
         [Fact]
-        public void DefensiveRewardTest()
+        public void StateTest()
         {
-            // TODO unit test for the property 'DefensiveReward'
+            // TODO unit test for the property 'State'
+        }
+
+        /// <summary>
+        /// Test the property 'StartTime'
+        /// </summary>
+        [Fact]
+        public void StartTimeTest()
+        {
+            // TODO unit test for the property 'StartTime'
         }
 
         /// <summary>
@@ -96,6 +96,33 @@ namespace CocApi.Rest.Test.Model
         public void EndTimeTest()
         {
             // TODO unit test for the property 'EndTime'
+        }
+
+        /// <summary>
+        /// Test the property 'CapitalTotalLoot'
+        /// </summary>
+        [Fact]
+        public void CapitalTotalLootTest()
+        {
+            // TODO unit test for the property 'CapitalTotalLoot'
+        }
+
+        /// <summary>
+        /// Test the property 'RaidsCompleted'
+        /// </summary>
+        [Fact]
+        public void RaidsCompletedTest()
+        {
+            // TODO unit test for the property 'RaidsCompleted'
+        }
+
+        /// <summary>
+        /// Test the property 'TotalAttacks'
+        /// </summary>
+        [Fact]
+        public void TotalAttacksTest()
+        {
+            // TODO unit test for the property 'TotalAttacks'
         }
 
         /// <summary>
@@ -117,39 +144,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'RaidsCompleted'
+        /// Test the property 'DefensiveReward'
         /// </summary>
         [Fact]
-        public void RaidsCompletedTest()
+        public void DefensiveRewardTest()
         {
-            // TODO unit test for the property 'RaidsCompleted'
-        }
-
-        /// <summary>
-        /// Test the property 'StartTime'
-        /// </summary>
-        [Fact]
-        public void StartTimeTest()
-        {
-            // TODO unit test for the property 'StartTime'
-        }
-
-        /// <summary>
-        /// Test the property 'State'
-        /// </summary>
-        [Fact]
-        public void StateTest()
-        {
-            // TODO unit test for the property 'State'
-        }
-
-        /// <summary>
-        /// Test the property 'TotalAttacks'
-        /// </summary>
-        [Fact]
-        public void TotalAttacksTest()
-        {
-            // TODO unit test for the property 'TotalAttacks'
+            // TODO unit test for the property 'DefensiveReward'
         }
 
         /// <summary>

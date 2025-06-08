@@ -112,27 +112,27 @@ namespace CocApi.Rest.Models
         /// Used to track the state of Origins
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string?> OriginsOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Origins
         /// </summary>
         [JsonPropertyName("origins")]
-        public string? Origins { get { return this. OriginsOption; } set { this.OriginsOption = new(value); } }
+        public string? Origins { get { return this.OriginsOption; } set { this.OriginsOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of ValidUntil
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<DateTime?> ValidUntilOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ValidUntil
         /// </summary>
         [JsonPropertyName("validUntil")]
-        public DateTime? ValidUntil { get { return this. ValidUntilOption; } set { this.ValidUntilOption = new(value); } }
+        public DateTime? ValidUntil { get { return this.ValidUntilOption; } set { this.ValidUntilOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -211,8 +211,7 @@ namespace CocApi.Rest.Models
                     switch (localVarJsonPropertyName)
                     {
                         case "cidrRanges":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                cidrRanges = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            cidrRanges = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "description":
                             description = new Option<string?>(utf8JsonReader.GetString()!);
@@ -230,8 +229,7 @@ namespace CocApi.Rest.Models
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "scopes":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                scopes = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            scopes = new Option<List<string>?>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "tier":
                             tier = new Option<string?>(utf8JsonReader.GetString()!);
@@ -240,8 +238,7 @@ namespace CocApi.Rest.Models
                             origins = new Option<string?>(utf8JsonReader.GetString());
                             break;
                         case "validUntil":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                validUntil = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            validUntil = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;
@@ -297,9 +294,6 @@ namespace CocApi.Rest.Models
             if (tier.IsSet && tier.Value == null)
                 throw new ArgumentNullException(nameof(tier), "Property is not nullable for class Key.");
 
-            if (validUntil.IsSet && validUntil.Value == null)
-                throw new ArgumentNullException(nameof(validUntil), "Property is not nullable for class Key.");
-
             return new Key(cidrRanges.Value!, description.Value!, developerId.Value!, id.Value!, varKey.Value!, name.Value!, scopes.Value!, tier.Value!, origins, validUntil);
         }
 
@@ -314,7 +308,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, key, jsonSerializerOptions);
+            WriteProperties(writer, key, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -325,7 +319,7 @@ namespace CocApi.Rest.Models
         /// <param name="key"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, Key key, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, Key key, JsonSerializerOptions jsonSerializerOptions)
         {
             if (key.CidrRanges == null)
                 throw new ArgumentNullException(nameof(key.CidrRanges), "Property is required for class Key.");
@@ -374,7 +368,10 @@ namespace CocApi.Rest.Models
                     writer.WriteNull("origins");
 
             if (key.ValidUntilOption.IsSet)
-                writer.WriteString("validUntil", key.ValidUntilOption.Value!.Value.ToString(ValidUntilFormat));
+                if (key.ValidUntilOption.Value != null)
+                    writer.WriteString("validUntil", key.ValidUntilOption.Value!.Value.ToString(ValidUntilFormat));
+                else
+                    writer.WriteNull("validUntil");
         }
     }
 }

@@ -149,7 +149,7 @@ namespace CocApi.Rest.Models
         {
             writer.WriteStartObject();
 
-            WriteProperties(ref writer, loginCredentials, jsonSerializerOptions);
+            WriteProperties(writer, loginCredentials, jsonSerializerOptions);
             writer.WriteEndObject();
         }
 
@@ -160,7 +160,7 @@ namespace CocApi.Rest.Models
         /// <param name="loginCredentials"></param>
         /// <param name="jsonSerializerOptions"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void WriteProperties(ref Utf8JsonWriter writer, LoginCredentials loginCredentials, JsonSerializerOptions jsonSerializerOptions)
+        public void WriteProperties(Utf8JsonWriter writer, LoginCredentials loginCredentials, JsonSerializerOptions jsonSerializerOptions)
         {
             if (loginCredentials.Email == null)
                 throw new ArgumentNullException(nameof(loginCredentials.Email), "Property is required for class LoginCredentials.");
