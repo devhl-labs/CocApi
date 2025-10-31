@@ -63,6 +63,15 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'LeagueTier'
+        /// </summary>
+        [Fact]
+        public void LeagueTierTest()
+        {
+            // TODO unit test for the property 'LeagueTier'
+        }
+
+        /// <summary>
         /// Test the property 'AttackWins'
         /// </summary>
         [Fact]
