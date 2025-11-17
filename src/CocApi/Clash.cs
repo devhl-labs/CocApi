@@ -174,7 +174,7 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 7, 5, "Battle Drill", 92)
         ];
 
-        public const int MAX_TOWN_HALL_LEVEL = 17;
+        public const int MAX_TOWN_HALL_LEVEL = 18;
 
         public const int MAX_BUILD_BASE_LEVEL = 10;
 
