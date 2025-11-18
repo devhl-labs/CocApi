@@ -55,13 +55,14 @@ namespace CocApi.Rest.Models
         /// <param name="clanCapitalContributions">clanCapitalContributions</param>
         /// <param name="heroEquipment">heroEquipment</param>
         /// <param name="league">league</param>
+        /// <param name="leagueTier">leagueTier</param>
         /// <param name="legendStatistics">legendStatistics</param>
         /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
         /// <param name="townHallWeaponLevel">townHallWeaponLevel</param>
         /// <param name="warPreference">warPreference</param>
         [JsonConstructor]
-        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int builderBaseTrophies, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int warStars, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<int?> builderHallLevel = default, Option<PlayerClan?> clan = default, Option<int?> clanCapitalContributions = default, Option<List<PlayerItemLevel>?> heroEquipment = default, Option<League?> league = default, Option<PlayerLegendStatistics?> legendStatistics = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallWeaponLevel = default, Option<WarPreference?> warPreference = default)
+        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int builderBaseTrophies, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int warStars, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<int?> builderHallLevel = default, Option<PlayerClan?> clan = default, Option<int?> clanCapitalContributions = default, Option<List<PlayerItemLevel>?> heroEquipment = default, Option<League?> league = default, Option<LeagueTier?> leagueTier = default, Option<PlayerLegendStatistics?> legendStatistics = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallWeaponLevel = default, Option<WarPreference?> warPreference = default)
         {
             Achievements = achievements;
             AttackWins = attackWins;
@@ -86,6 +87,7 @@ namespace CocApi.Rest.Models
             ClanCapitalContributionsOption = clanCapitalContributions;
             HeroEquipmentOption = heroEquipment;
             LeagueOption = league;
+            LeagueTierOption = leagueTier;
             LegendStatisticsOption = legendStatistics;
             PlayerHouseOption = playerHouse;
             RoleOption = role;
@@ -303,6 +305,19 @@ namespace CocApi.Rest.Models
         public League? League { get { return this.LeagueOption; } }
 
         /// <summary>
+        /// Used to track the state of LeagueTier
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<LeagueTier?> LeagueTierOption { get; }
+
+        /// <summary>
+        /// Gets or Sets LeagueTier
+        /// </summary>
+        [JsonPropertyName("leagueTier")]
+        public LeagueTier? LeagueTier { get { return this.LeagueTierOption; } }
+
+        /// <summary>
         /// Used to track the state of LegendStatistics
         /// </summary>
         [JsonIgnore]
@@ -372,6 +387,7 @@ namespace CocApi.Rest.Models
             sb.Append("  ClanCapitalContributions: ").Append(ClanCapitalContributions).Append("\n");
             sb.Append("  HeroEquipment: ").Append(HeroEquipment).Append("\n");
             sb.Append("  League: ").Append(League).Append("\n");
+            sb.Append("  LeagueTier: ").Append(LeagueTier).Append("\n");
             sb.Append("  LegendStatistics: ").Append(LegendStatistics).Append("\n");
             sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
@@ -512,6 +528,11 @@ namespace CocApi.Rest.Models
                     League.Equals(input.League))
                 ) && 
                 (
+                    LeagueTier == input.LeagueTier ||
+                    (LeagueTier != null &&
+                    LeagueTier.Equals(input.LeagueTier))
+                ) && 
+                (
                     LegendStatistics == input.LegendStatistics ||
                     (LegendStatistics != null &&
                     LegendStatistics.Equals(input.LegendStatistics))
@@ -579,6 +600,9 @@ namespace CocApi.Rest.Models
                 if (League != null)
                     hashCode = (hashCode * 59) + League.GetHashCode();
 
+                if (LeagueTier != null)
+                    hashCode = (hashCode * 59) + LeagueTier.GetHashCode();
+
                 if (LegendStatistics != null)
                     hashCode = (hashCode * 59) + LegendStatistics.GetHashCode();
 
@@ -645,6 +669,7 @@ namespace CocApi.Rest.Models
             Option<int?> clanCapitalContributions = default;
             Option<List<PlayerItemLevel>?> heroEquipment = default;
             Option<League?> league = default;
+            Option<LeagueTier?> leagueTier = default;
             Option<PlayerLegendStatistics?> legendStatistics = default;
             Option<PlayerHouse?> playerHouse = default;
             Option<Role?> role = default;
@@ -734,6 +759,9 @@ namespace CocApi.Rest.Models
                             break;
                         case "league":
                             league = new Option<League?>(JsonSerializer.Deserialize<League>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            break;
+                        case "leagueTier":
+                            leagueTier = new Option<LeagueTier?>(JsonSerializer.Deserialize<LeagueTier>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "legendStatistics":
                             legendStatistics = new Option<PlayerLegendStatistics?>(JsonSerializer.Deserialize<PlayerLegendStatistics>(ref utf8JsonReader, jsonSerializerOptions)!);
@@ -880,6 +908,9 @@ namespace CocApi.Rest.Models
             if (league.IsSet && league.Value == null)
                 throw new ArgumentNullException(nameof(league), "Property is not nullable for class Player.");
 
+            if (leagueTier.IsSet && leagueTier.Value == null)
+                throw new ArgumentNullException(nameof(leagueTier), "Property is not nullable for class Player.");
+
             if (legendStatistics.IsSet && legendStatistics.Value == null)
                 throw new ArgumentNullException(nameof(legendStatistics), "Property is not nullable for class Player.");
 
@@ -895,7 +926,7 @@ namespace CocApi.Rest.Models
             if (warPreference.IsSet && warPreference.Value == null)
                 throw new ArgumentNullException(nameof(warPreference), "Property is not nullable for class Player.");
 
-            return new Player(achievements.Value!, attackWins.Value!.Value!, bestTrophies.Value!.Value!, builderBaseTrophies.Value!.Value!, defenseWins.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, heroes.Value!, labels.Value!, name.Value!, spells.Value!, tag.Value!, townHallLevel.Value!.Value!, troops.Value!, trophies.Value!.Value!, warStars.Value!.Value!, builderBaseLeague, builderHallLevel, clan, clanCapitalContributions, heroEquipment, league, legendStatistics, playerHouse, role, townHallWeaponLevel, warPreference);
+            return new Player(achievements.Value!, attackWins.Value!.Value!, bestTrophies.Value!.Value!, builderBaseTrophies.Value!.Value!, defenseWins.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, heroes.Value!, labels.Value!, name.Value!, spells.Value!, tag.Value!, townHallLevel.Value!.Value!, troops.Value!, trophies.Value!.Value!, warStars.Value!.Value!, builderBaseLeague, builderHallLevel, clan, clanCapitalContributions, heroEquipment, league, leagueTier, legendStatistics, playerHouse, role, townHallWeaponLevel, warPreference);
         }
 
         /// <summary>
@@ -954,6 +985,9 @@ namespace CocApi.Rest.Models
 
             if (player.LeagueOption.IsSet && player.League == null)
                 throw new ArgumentNullException(nameof(player.League), "Property is required for class Player.");
+
+            if (player.LeagueTierOption.IsSet && player.LeagueTier == null)
+                throw new ArgumentNullException(nameof(player.LeagueTier), "Property is required for class Player.");
 
             if (player.LegendStatisticsOption.IsSet && player.LegendStatistics == null)
                 throw new ArgumentNullException(nameof(player.LegendStatistics), "Property is required for class Player.");
@@ -1020,6 +1054,11 @@ namespace CocApi.Rest.Models
             {
                 writer.WritePropertyName("league");
                 JsonSerializer.Serialize(writer, player.League, jsonSerializerOptions);
+            }
+            if (player.LeagueTierOption.IsSet)
+            {
+                writer.WritePropertyName("leagueTier");
+                JsonSerializer.Serialize(writer, player.LeagueTier, jsonSerializerOptions);
             }
             if (player.LegendStatisticsOption.IsSet)
             {
