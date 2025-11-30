@@ -144,7 +144,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, VillageType villageType, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(villageType.ToString());
+            writer.WriteStringValue(VillageTypeValueConverter.ToJsonValue(villageType).ToString());
         }
     }
 
@@ -175,14 +175,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the VillageType to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="villageType"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, VillageType? villageType, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(villageType?.ToString() ?? "null");
+            writer.WriteStringValue(villageType.HasValue ? VillageTypeValueConverter.ToJsonValue(villageType.Value).ToString() : "null");
         }
     }
 }

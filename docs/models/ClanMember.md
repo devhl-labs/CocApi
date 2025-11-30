@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **Tag** | **string** |  | [readonly] 
 **Trophies** | **int** |  | [readonly] 
 **BuilderBaseLeague** | [**BuilderBaseLeague**](BuilderBaseLeague.md) |  | [optional] [readonly] 
+**LeagueTier** | [**LeagueTier**](LeagueTier.md) |  | [optional] [readonly] 
 **PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 
 **Role** | **Role** |  | [optional] [readonly] 
 **TownHallLevel** | **int** |  | [optional] [readonly] 

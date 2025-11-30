@@ -144,7 +144,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, GroupState groupState, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(groupState.ToString());
+            writer.WriteStringValue(GroupStateValueConverter.ToJsonValue(groupState).ToString());
         }
     }
 
@@ -175,14 +175,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the GroupState to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="groupState"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, GroupState? groupState, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(groupState?.ToString() ?? "null");
+            writer.WriteStringValue(groupState.HasValue ? GroupStateValueConverter.ToJsonValue(groupState.Value).ToString() : "null");
         }
     }
 }

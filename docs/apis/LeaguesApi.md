@@ -11,6 +11,8 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetLeague**](LeaguesApi.md#getleague) | **GET** /leagues/{leagueId} | Get league information |
 | [**GetLeagueSeasonRankings**](LeaguesApi.md#getleagueseasonrankings) | **GET** /leagues/{leagueId}/seasons/{seasonId} | Get league season rankings |
 | [**GetLeagueSeasons**](LeaguesApi.md#getleagueseasons) | **GET** /leagues/{leagueId}/seasons | Get league seasons |
+| [**GetLeagueTier**](LeaguesApi.md#getleaguetier) | **GET** /leaguetiers/{leagueTierId} | Get league tier information |
+| [**GetLeagueTiers**](LeaguesApi.md#getleaguetiers) | **GET** /leaguetiers | List league tiers |
 | [**GetLeagues**](LeaguesApi.md#getleagues) | **GET** /leagues | List leagues |
 | [**GetWarLeague**](LeaguesApi.md#getwarleague) | **GET** /warleagues/{leagueId} | Get war league information |
 | [**GetWarLeagues**](LeaguesApi.md#getwarleagues) | **GET** /warleagues | List war leagues |
@@ -317,6 +319,92 @@ Get league seasons. Note that league season information is available only for Le
 | **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
 | **500** | Unknown error happened when handling the request. |  -  |
 | **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+<a id="getleaguetier"></a>
+# **GetLeagueTier**
+> LeagueTier GetLeagueTier (string leagueTierId)
+
+Get league tier information
+
+Get league tier information
+
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueTierId** | **string** | Identifier of the league tier. |  |
+
+### Return type
+
+[**LeagueTier**](LeagueTier.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+| **200** | Successful response |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+<a id="getleaguetiers"></a>
+# **GetLeagueTiers**
+> LeagueTierList GetLeagueTiers (int limit = null, string after = null, string before = null)
+
+List league tiers
+
+List league tiers
+
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **limit** | **int** | Limit the number of items returned in the response. | [optional]  |
+| **after** | **string** | Return only items that occur after this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+| **before** | **string** | Return only items that occur before this marker. Before marker can be found from the response, inside the &#39;paging&#39; property. Note that only after or before can be specified for a request, not both.  | [optional]  |
+
+### Return type
+
+[**LeagueTierList**](LeagueTierList.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+| **200** | Successful response |  -  |
 
 [[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 

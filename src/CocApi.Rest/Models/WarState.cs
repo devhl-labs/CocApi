@@ -158,7 +158,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarState warState, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warState.ToString());
+            writer.WriteStringValue(WarStateValueConverter.ToJsonValue(warState).ToString());
         }
     }
 
@@ -189,14 +189,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the WarState to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="warState"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarState? warState, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warState?.ToString() ?? "null");
+            writer.WriteStringValue(warState.HasValue ? WarStateValueConverter.ToJsonValue(warState.Value).ToString() : "null");
         }
     }
 }

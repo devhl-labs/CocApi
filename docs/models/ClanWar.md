@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **ServerExpiration** | **DateTime** |  | [readonly] 
 **StartTime** | **DateTime** |  | [readonly] 
 **TeamSize** | **int** |  | [readonly] 
+**BattleModifier** | **BattleModifier** |  | [optional] [readonly] 
 **State** | **WarState** |  | [optional] [readonly] 
 **WarTag** | **string** |  | [optional] [readonly] 
 

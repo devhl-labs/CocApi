@@ -43,11 +43,12 @@ namespace CocApi.Rest.Models
         /// <param name="tag">tag</param>
         /// <param name="trophies">trophies</param>
         /// <param name="builderBaseLeague">builderBaseLeague</param>
+        /// <param name="leagueTier">leagueTier</param>
         /// <param name="playerHouse">playerHouse</param>
         /// <param name="role">role</param>
         /// <param name="townHallLevel">townHallLevel</param>
         [JsonConstructor]
-        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallLevel = default)
+        internal ClanMember(int builderBaseTrophies, int clanRank, int donations, int donationsReceived, int expLevel, League league, string name, int previousClanRank, string tag, int trophies, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<LeagueTier?> leagueTier = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallLevel = default)
         {
             BuilderBaseTrophies = builderBaseTrophies;
             ClanRank = clanRank;
@@ -60,6 +61,7 @@ namespace CocApi.Rest.Models
             Tag = tag;
             Trophies = trophies;
             BuilderBaseLeagueOption = builderBaseLeague;
+            LeagueTierOption = leagueTier;
             PlayerHouseOption = playerHouse;
             RoleOption = role;
             TownHallLevelOption = townHallLevel;
@@ -155,6 +157,19 @@ namespace CocApi.Rest.Models
         public BuilderBaseLeague? BuilderBaseLeague { get { return this.BuilderBaseLeagueOption; } }
 
         /// <summary>
+        /// Used to track the state of LeagueTier
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<LeagueTier?> LeagueTierOption { get; }
+
+        /// <summary>
+        /// Gets or Sets LeagueTier
+        /// </summary>
+        [JsonPropertyName("leagueTier")]
+        public LeagueTier? LeagueTier { get { return this.LeagueTierOption; } }
+
+        /// <summary>
         /// Used to track the state of PlayerHouse
         /// </summary>
         [JsonIgnore]
@@ -199,6 +214,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("  BuilderBaseLeague: ").Append(BuilderBaseLeague).Append("\n");
+            sb.Append("  LeagueTier: ").Append(LeagueTier).Append("\n");
             sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
             sb.Append("  TownHallLevel: ").Append(TownHallLevel).Append("\n");
@@ -276,6 +292,11 @@ namespace CocApi.Rest.Models
                     BuilderBaseLeague.Equals(input.BuilderBaseLeague))
                 ) && 
                 (
+                    LeagueTier == input.LeagueTier ||
+                    (LeagueTier != null &&
+                    LeagueTier.Equals(input.LeagueTier))
+                ) && 
+                (
                     PlayerHouse == input.PlayerHouse ||
                     (PlayerHouse != null &&
                     PlayerHouse.Equals(input.PlayerHouse))
@@ -311,6 +332,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
                 if (BuilderBaseLeague != null)
                     hashCode = (hashCode * 59) + BuilderBaseLeague.GetHashCode();
+
+                if (LeagueTier != null)
+                    hashCode = (hashCode * 59) + LeagueTier.GetHashCode();
 
                 if (PlayerHouse != null)
                     hashCode = (hashCode * 59) + PlayerHouse.GetHashCode();
@@ -360,6 +384,7 @@ namespace CocApi.Rest.Models
             Option<string?> tag = default;
             Option<int?> trophies = default;
             Option<BuilderBaseLeague?> builderBaseLeague = default;
+            Option<LeagueTier?> leagueTier = default;
             Option<PlayerHouse?> playerHouse = default;
             Option<Role?> role = default;
             Option<int?> townHallLevel = default;
@@ -411,6 +436,9 @@ namespace CocApi.Rest.Models
                             break;
                         case "builderBaseLeague":
                             builderBaseLeague = new Option<BuilderBaseLeague?>(JsonSerializer.Deserialize<BuilderBaseLeague>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            break;
+                        case "leagueTier":
+                            leagueTier = new Option<LeagueTier?>(JsonSerializer.Deserialize<LeagueTier>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "playerHouse":
                             playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
@@ -492,6 +520,9 @@ namespace CocApi.Rest.Models
             if (builderBaseLeague.IsSet && builderBaseLeague.Value == null)
                 throw new ArgumentNullException(nameof(builderBaseLeague), "Property is not nullable for class ClanMember.");
 
+            if (leagueTier.IsSet && leagueTier.Value == null)
+                throw new ArgumentNullException(nameof(leagueTier), "Property is not nullable for class ClanMember.");
+
             if (playerHouse.IsSet && playerHouse.Value == null)
                 throw new ArgumentNullException(nameof(playerHouse), "Property is not nullable for class ClanMember.");
 
@@ -501,7 +532,7 @@ namespace CocApi.Rest.Models
             if (townHallLevel.IsSet && townHallLevel.Value == null)
                 throw new ArgumentNullException(nameof(townHallLevel), "Property is not nullable for class ClanMember.");
 
-            return new ClanMember(builderBaseTrophies.Value!.Value!, clanRank.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousClanRank.Value!.Value!, tag.Value!, trophies.Value!.Value!, builderBaseLeague, playerHouse, role, townHallLevel);
+            return new ClanMember(builderBaseTrophies.Value!.Value!, clanRank.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousClanRank.Value!.Value!, tag.Value!, trophies.Value!.Value!, builderBaseLeague, leagueTier, playerHouse, role, townHallLevel);
         }
 
         /// <summary>
@@ -540,6 +571,9 @@ namespace CocApi.Rest.Models
             if (clanMember.BuilderBaseLeagueOption.IsSet && clanMember.BuilderBaseLeague == null)
                 throw new ArgumentNullException(nameof(clanMember.BuilderBaseLeague), "Property is required for class ClanMember.");
 
+            if (clanMember.LeagueTierOption.IsSet && clanMember.LeagueTier == null)
+                throw new ArgumentNullException(nameof(clanMember.LeagueTier), "Property is required for class ClanMember.");
+
             if (clanMember.PlayerHouseOption.IsSet && clanMember.PlayerHouse == null)
                 throw new ArgumentNullException(nameof(clanMember.PlayerHouse), "Property is required for class ClanMember.");
 
@@ -567,6 +601,11 @@ namespace CocApi.Rest.Models
             {
                 writer.WritePropertyName("builderBaseLeague");
                 JsonSerializer.Serialize(writer, clanMember.BuilderBaseLeague, jsonSerializerOptions);
+            }
+            if (clanMember.LeagueTierOption.IsSet)
+            {
+                writer.WritePropertyName("leagueTier");
+                JsonSerializer.Serialize(writer, clanMember.LeagueTier, jsonSerializerOptions);
             }
             if (clanMember.PlayerHouseOption.IsSet)
             {

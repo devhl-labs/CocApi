@@ -144,7 +144,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, Result result, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(result.ToString());
+            writer.WriteStringValue(ResultValueConverter.ToJsonValue(result).ToString());
         }
     }
 
@@ -175,14 +175,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the Result to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="result"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, Result? result, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(result?.ToString() ?? "null");
+            writer.WriteStringValue(result.HasValue ? ResultValueConverter.ToJsonValue(result.Value).ToString() : "null");
         }
     }
 }

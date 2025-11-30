@@ -25,109 +25,81 @@ using CocApi.Rest.Client;
 namespace CocApi.Rest.Models
 {
     /// <summary>
-    /// Defines Role
+    /// Defines BattleModifier
     /// </summary>
-    public enum Role
+    public enum BattleModifier
     {
         /// <summary>
-        /// Enum Member for value: member
+        /// Enum None for value: none
         /// </summary>
-        Member = 0,
+        None = 1,
 
         /// <summary>
-        /// Enum Admin for value: admin
+        /// Enum HardMode for value: hardMode
         /// </summary>
-        Elder = 10,
-
-        /// <summary>
-        /// Enum CoLeader for value: coLeader
-        /// </summary>
-        CoLeader = 20,
-
-        /// <summary>
-        /// Enum Leader for value: leader
-        /// </summary>
-        Leader = 30
+        HardMode = 2
     }
 
     /// <summary>
-    /// Converts <see cref="Role"/> to and from the JSON value
+    /// Converts <see cref="BattleModifier"/> to and from the JSON value
     /// </summary>
-    public static class RoleValueConverter
+    public static class BattleModifierValueConverter
     {
         /// <summary>
-        /// Parses a given value to <see cref="Role"/>
+        /// Parses a given value to <see cref="BattleModifier"/>
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Role FromString(string value)
+        public static BattleModifier FromString(string value)
         {
-            if (value.Equals("member"))
-                return Role.Member;
+            if (value.Equals("none"))
+                return BattleModifier.None;
 
-            if (value.Equals("admin"))
-                return Role.Elder;
+            if (value.Equals("hardMode"))
+                return BattleModifier.HardMode;
 
-            if (value.Equals("coLeader"))
-                return Role.CoLeader;
-
-            if (value.Equals("leader"))
-                return Role.Leader;
-
-            throw new NotImplementedException($"Could not convert value to type Role: '{value}'");
+            throw new NotImplementedException($"Could not convert value to type BattleModifier: '{value}'");
         }
 
         /// <summary>
-        /// Parses a given value to <see cref="Role"/>
+        /// Parses a given value to <see cref="BattleModifier"/>
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Role? FromStringOrDefault(string value)
+        public static BattleModifier? FromStringOrDefault(string value)
         {
-            if (value.Equals("member"))
-                return Role.Member;
+            if (value.Equals("none"))
+                return BattleModifier.None;
 
-            if (value.Equals("admin"))
-                return Role.Elder;
-
-            if (value.Equals("coLeader"))
-                return Role.CoLeader;
-
-            if (value.Equals("leader"))
-                return Role.Leader;
+            if (value.Equals("hardMode"))
+                return BattleModifier.HardMode;
 
             return null;
         }
 
         /// <summary>
-        /// Converts the <see cref="Role"/> to the json value
+        /// Converts the <see cref="BattleModifier"/> to the json value
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public static string ToJsonValue(Role value)
+        public static string ToJsonValue(BattleModifier value)
         {
-            if (value == Role.Member)
-                return "member";
+            if (value == BattleModifier.None)
+                return "none";
 
-            if (value == Role.Elder)
-                return "admin";
-
-            if (value == Role.CoLeader)
-                return "coLeader";
-
-            if (value == Role.Leader)
-                return "leader";
+            if (value == BattleModifier.HardMode)
+                return "hardMode";
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="Role"/>
+    /// A Json converter for type <see cref="BattleModifier"/>
     /// </summary>
     /// <exception cref="NotImplementedException"></exception>
-    public class RoleJsonConverter : JsonConverter<Role>
+    public class BattleModifierJsonConverter : JsonConverter<BattleModifier>
     {
         /// <summary>
         /// Returns a  from the Json object
@@ -136,13 +108,13 @@ namespace CocApi.Rest.Models
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public override Role Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override BattleModifier Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string? rawValue = reader.GetString();
 
-            Role? result = rawValue == null
+            BattleModifier? result = rawValue == null
                 ? null
-                : RoleValueConverter.FromStringOrDefault(rawValue);
+                : BattleModifierValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -151,36 +123,36 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the Role to the json writer
+        /// Writes the BattleModifier to the json writer
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="role"></param>
+        /// <param name="battleModifier"></param>
         /// <param name="options"></param>
-        public override void Write(Utf8JsonWriter writer, Role role, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, BattleModifier battleModifier, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(RoleValueConverter.ToJsonValue(role).ToString());
+            writer.WriteStringValue(BattleModifierValueConverter.ToJsonValue(battleModifier).ToString());
         }
     }
 
     /// <summary>
-    /// A Json converter for type <see cref="Role"/>
+    /// A Json converter for type <see cref="BattleModifier"/>
     /// </summary>
-    public class RoleNullableJsonConverter : JsonConverter<Role?>
+    public class BattleModifierNullableJsonConverter : JsonConverter<BattleModifier?>
     {
         /// <summary>
-        /// Returns a Role from the Json object
+        /// Returns a BattleModifier from the Json object
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public override Role? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override BattleModifier? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             string? rawValue = reader.GetString();
 
-            Role? result = rawValue == null
+            BattleModifier? result = rawValue == null
                 ? null
-                : RoleValueConverter.FromStringOrDefault(rawValue);
+                : BattleModifierValueConverter.FromStringOrDefault(rawValue);
 
             if (result != null)
                 return result.Value;
@@ -189,14 +161,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the Role to the json writer
+        /// Writes the BattleModifier to the json writer
         /// </summary>
         /// <param name="writer"></param>
-        /// <param name="role"></param>
+        /// <param name="battleModifier"></param>
         /// <param name="options"></param>
-        public override void Write(Utf8JsonWriter writer, Role? role, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, BattleModifier? battleModifier, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(role.HasValue ? RoleValueConverter.ToJsonValue(role.Value).ToString() : "null");
+            writer.WriteStringValue(battleModifier.HasValue ? BattleModifierValueConverter.ToJsonValue(battleModifier.Value).ToString() : "null");
         }
     }
 }

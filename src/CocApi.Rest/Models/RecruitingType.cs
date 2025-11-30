@@ -144,7 +144,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, RecruitingType recruitingType, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(recruitingType.ToString());
+            writer.WriteStringValue(RecruitingTypeValueConverter.ToJsonValue(recruitingType).ToString());
         }
     }
 
@@ -175,14 +175,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the RecruitingType to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="recruitingType"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, RecruitingType? recruitingType, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(recruitingType?.ToString() ?? "null");
+            writer.WriteStringValue(recruitingType.HasValue ? RecruitingTypeValueConverter.ToJsonValue(recruitingType.Value).ToString() : "null");
         }
     }
 }

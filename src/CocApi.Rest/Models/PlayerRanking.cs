@@ -42,8 +42,9 @@ namespace CocApi.Rest.Models
         /// <param name="tag">tag</param>
         /// <param name="trophies">trophies</param>
         /// <param name="clan">clan</param>
+        /// <param name="leagueTier">leagueTier</param>
         [JsonConstructor]
-        internal PlayerRanking(int attackWins, int defenseWins, int expLevel, League league, string name, int previousRank, int rank, string tag, int trophies, Option<PlayerRankingClan?> clan = default)
+        internal PlayerRanking(int attackWins, int defenseWins, int expLevel, League league, string name, int previousRank, int rank, string tag, int trophies, Option<PlayerRankingClan?> clan = default, Option<LeagueTier?> leagueTier = default)
         {
             AttackWins = attackWins;
             DefenseWins = defenseWins;
@@ -55,6 +56,7 @@ namespace CocApi.Rest.Models
             Tag = tag;
             Trophies = trophies;
             ClanOption = clan;
+            LeagueTierOption = leagueTier;
             OnCreated();
         }
 
@@ -128,6 +130,19 @@ namespace CocApi.Rest.Models
         public PlayerRankingClan? Clan { get { return this.ClanOption; } }
 
         /// <summary>
+        /// Used to track the state of LeagueTier
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<LeagueTier?> LeagueTierOption { get; }
+
+        /// <summary>
+        /// Gets or Sets LeagueTier
+        /// </summary>
+        [JsonPropertyName("leagueTier")]
+        public LeagueTier? LeagueTier { get { return this.LeagueTierOption; } }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -145,6 +160,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Tag: ").Append(Tag).Append("\n");
             sb.Append("  Trophies: ").Append(Trophies).Append("\n");
             sb.Append("  Clan: ").Append(Clan).Append("\n");
+            sb.Append("  LeagueTier: ").Append(LeagueTier).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -213,6 +229,11 @@ namespace CocApi.Rest.Models
                     Clan == input.Clan ||
                     (Clan != null &&
                     Clan.Equals(input.Clan))
+                ) && 
+                (
+                    LeagueTier == input.LeagueTier ||
+                    (LeagueTier != null &&
+                    LeagueTier.Equals(input.LeagueTier))
                 );
         }
 
@@ -236,6 +257,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + Trophies.GetHashCode();
                 if (Clan != null)
                     hashCode = (hashCode * 59) + Clan.GetHashCode();
+
+                if (LeagueTier != null)
+                    hashCode = (hashCode * 59) + LeagueTier.GetHashCode();
 
 
                 return hashCode;
@@ -275,6 +299,7 @@ namespace CocApi.Rest.Models
             Option<string?> tag = default;
             Option<int?> trophies = default;
             Option<PlayerRankingClan?> clan = default;
+            Option<LeagueTier?> leagueTier = default;
 
             while (utf8JsonReader.Read())
             {
@@ -320,6 +345,9 @@ namespace CocApi.Rest.Models
                             break;
                         case "clan":
                             clan = new Option<PlayerRankingClan?>(JsonSerializer.Deserialize<PlayerRankingClan>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            break;
+                        case "leagueTier":
+                            leagueTier = new Option<LeagueTier?>(JsonSerializer.Deserialize<LeagueTier>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -384,7 +412,10 @@ namespace CocApi.Rest.Models
             if (clan.IsSet && clan.Value == null)
                 throw new ArgumentNullException(nameof(clan), "Property is not nullable for class PlayerRanking.");
 
-            return new PlayerRanking(attackWins.Value!.Value!, defenseWins.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousRank.Value!.Value!, rank.Value!.Value!, tag.Value!, trophies.Value!.Value!, clan);
+            if (leagueTier.IsSet && leagueTier.Value == null)
+                throw new ArgumentNullException(nameof(leagueTier), "Property is not nullable for class PlayerRanking.");
+
+            return new PlayerRanking(attackWins.Value!.Value!, defenseWins.Value!.Value!, expLevel.Value!.Value!, league.Value!, name.Value!, previousRank.Value!.Value!, rank.Value!.Value!, tag.Value!, trophies.Value!.Value!, clan, leagueTier);
         }
 
         /// <summary>
@@ -423,6 +454,9 @@ namespace CocApi.Rest.Models
             if (playerRanking.ClanOption.IsSet && playerRanking.Clan == null)
                 throw new ArgumentNullException(nameof(playerRanking.Clan), "Property is required for class PlayerRanking.");
 
+            if (playerRanking.LeagueTierOption.IsSet && playerRanking.LeagueTier == null)
+                throw new ArgumentNullException(nameof(playerRanking.LeagueTier), "Property is required for class PlayerRanking.");
+
             writer.WriteNumber("attackWins", playerRanking.AttackWins);
 
             writer.WriteNumber("defenseWins", playerRanking.DefenseWins);
@@ -445,6 +479,11 @@ namespace CocApi.Rest.Models
             {
                 writer.WritePropertyName("clan");
                 JsonSerializer.Serialize(writer, playerRanking.Clan, jsonSerializerOptions);
+            }
+            if (playerRanking.LeagueTierOption.IsSet)
+            {
+                writer.WritePropertyName("leagueTier");
+                JsonSerializer.Serialize(writer, playerRanking.LeagueTier, jsonSerializerOptions);
             }
         }
     }

@@ -37,20 +37,35 @@ namespace CocApi.Rest.Models
         /// <param name="opponent">opponent</param>
         /// <param name="teamSize">teamSize</param>
         /// <param name="attacksPerMember">attacksPerMember</param>
+        /// <param name="battleModifier">battleModifier</param>
         /// <param name="result">result</param>
         [JsonConstructor]
-        internal ClanWarLogEntry(WarClanLogEntry clan, DateTime endTime, WarClanLogEntry opponent, int teamSize, Option<int?> attacksPerMember = default, Option<Result?> result = default)
+        internal ClanWarLogEntry(WarClanLogEntry clan, DateTime endTime, WarClanLogEntry opponent, int teamSize, Option<int?> attacksPerMember = default, Option<BattleModifier?> battleModifier = default, Option<Result?> result = default)
         {
             Clan = clan;
             EndTime = endTime;
             Opponent = opponent;
             TeamSize = teamSize;
             AttacksPerMemberOption = attacksPerMember;
+            BattleModifierOption = battleModifier;
             ResultOption = result;
             OnCreated();
         }
 
         partial void OnCreated();
+
+        /// <summary>
+        /// Used to track the state of BattleModifier
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<BattleModifier?> BattleModifierOption { get; }
+
+        /// <summary>
+        /// Gets or Sets BattleModifier
+        /// </summary>
+        [JsonPropertyName("battleModifier")]
+        public BattleModifier? BattleModifier { get { return this.BattleModifierOption; } }
 
         /// <summary>
         /// Used to track the state of Result
@@ -115,6 +130,7 @@ namespace CocApi.Rest.Models
             sb.Append("  Opponent: ").Append(Opponent).Append("\n");
             sb.Append("  TeamSize: ").Append(TeamSize).Append("\n");
             sb.Append("  AttacksPerMember: ").Append(AttacksPerMember).Append("\n");
+            sb.Append("  BattleModifier: ").Append(BattleModifier).Append("\n");
             sb.Append("  Result: ").Append(Result).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -164,6 +180,10 @@ namespace CocApi.Rest.Models
                     AttacksPerMember.Equals(input.AttacksPerMember)
                 ) && 
                 (
+                    BattleModifier == input.BattleModifier ||
+                    BattleModifier.Equals(input.BattleModifier)
+                ) && 
+                (
                     Result == input.Result ||
                     Result.Equals(input.Result)
                 );
@@ -184,6 +204,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + TeamSize.GetHashCode();
                 if (AttacksPerMember != null)
                     hashCode = (hashCode * 59) + AttacksPerMember.GetHashCode();
+
+                if (BattleModifier != null)
+                    hashCode = (hashCode * 59) + BattleModifier.GetHashCode();
 
                 if (Result != null)
                     hashCode = (hashCode * 59) + Result.GetHashCode();
@@ -226,6 +249,7 @@ namespace CocApi.Rest.Models
             Option<WarClanLogEntry?> opponent = default;
             Option<int?> teamSize = default;
             Option<int?> attacksPerMember = default;
+            Option<BattleModifier?> battleModifier = default;
             Option<Result?> result = default;
 
             while (utf8JsonReader.Read())
@@ -257,6 +281,11 @@ namespace CocApi.Rest.Models
                             break;
                         case "attacksPerMember":
                             attacksPerMember = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
+                            break;
+                        case "battleModifier":
+                            string? battleModifierRawValue = utf8JsonReader.GetString();
+                            if (battleModifierRawValue != null)
+                                battleModifier = new Option<BattleModifier?>(BattleModifierValueConverter.FromStringOrDefault(battleModifierRawValue));
                             break;
                         case "result":
                             string? resultRawValue = utf8JsonReader.GetString();
@@ -296,10 +325,13 @@ namespace CocApi.Rest.Models
             if (attacksPerMember.IsSet && attacksPerMember.Value == null)
                 throw new ArgumentNullException(nameof(attacksPerMember), "Property is not nullable for class ClanWarLogEntry.");
 
+            if (battleModifier.IsSet && battleModifier.Value == null)
+                throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWarLogEntry.");
+
             if (result.IsSet && result.Value == null)
                 throw new ArgumentNullException(nameof(result), "Property is not nullable for class ClanWarLogEntry.");
 
-            return new ClanWarLogEntry(clan.Value!, endTime.Value!.Value!, opponent.Value!, teamSize.Value!.Value!, attacksPerMember, result);
+            return new ClanWarLogEntry(clan.Value!, endTime.Value!.Value!, opponent.Value!, teamSize.Value!.Value!, attacksPerMember, battleModifier, result);
         }
 
         /// <summary>
@@ -343,6 +375,11 @@ namespace CocApi.Rest.Models
             if (clanWarLogEntry.AttacksPerMemberOption.IsSet)
                 writer.WriteNumber("attacksPerMember", clanWarLogEntry.AttacksPerMemberOption.Value!.Value);
 
+            if (clanWarLogEntry.BattleModifierOption.IsSet)
+            {
+                var battleModifierRawValue = BattleModifierValueConverter.ToJsonValue(clanWarLogEntry.BattleModifier!.Value);
+                writer.WriteString("battleModifier", battleModifierRawValue);
+            }
             if (clanWarLogEntry.ResultOption.IsSet)
             {
                 var resultRawValue = ResultValueConverter.ToJsonValue(clanWarLogEntry.Result!.Value);

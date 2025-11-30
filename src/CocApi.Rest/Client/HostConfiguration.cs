@@ -42,6 +42,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new DateTimeJsonConverter());
             _jsonOptions.Converters.Add(new DateTimeNullableJsonConverter());
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
+            _jsonOptions.Converters.Add(new BattleModifierJsonConverter());
+            _jsonOptions.Converters.Add(new BattleModifierNullableJsonConverter());
             _jsonOptions.Converters.Add(new BuilderBaseLeagueJsonConverter());
             _jsonOptions.Converters.Add(new BuilderBaseLeagueListJsonConverter());
             _jsonOptions.Converters.Add(new CapitalLeagueJsonConverter());
@@ -94,6 +96,8 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new LeagueListJsonConverter());
             _jsonOptions.Converters.Add(new LeagueSeasonJsonConverter());
             _jsonOptions.Converters.Add(new LeagueSeasonListJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueTierJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueTierListJsonConverter());
             _jsonOptions.Converters.Add(new LegendLeagueTournamentSeasonResultJsonConverter());
             _jsonOptions.Converters.Add(new LocationJsonConverter());
             _jsonOptions.Converters.Add(new LocationListJsonConverter());
@@ -137,19 +141,12 @@ namespace CocApi.Rest.Client
             _services.AddSingleton(jsonSerializerOptionsProvider);
             _services.AddSingleton<IApiFactory, ApiFactory>();
             _services.AddSingleton<ClansApiEvents>();
-            // _services.AddTransient<IClansApi, ClansApi>();
             _services.AddSingleton<DeveloperApiEvents>();
-            // _services.AddTransient<IDeveloperApi, DeveloperApi>();
             _services.AddSingleton<GoldpassApiEvents>();
-            // _services.AddTransient<IGoldpassApi, GoldpassApi>();
             _services.AddSingleton<LabelsApiEvents>();
-            // _services.AddTransient<ILabelsApi, LabelsApi>();
             _services.AddSingleton<LeaguesApiEvents>();
-            // _services.AddTransient<ILeaguesApi, LeaguesApi>();
             _services.AddSingleton<LocationsApiEvents>();
-            // _services.AddTransient<ILocationsApi, LocationsApi>();
             _services.AddSingleton<PlayersApiEvents>();
-            // _services.AddTransient<IPlayersApi, PlayersApi>();
         }
 
         /// <summary>

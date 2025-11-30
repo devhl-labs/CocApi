@@ -27,6 +27,7 @@ Name | Type | Description | Notes
 **ClanCapitalContributions** | **int** |  | [optional] [readonly] 
 **HeroEquipment** | [**List&lt;PlayerItemLevel&gt;**](PlayerItemLevel.md) |  | [optional] [readonly] 
 **League** | [**League**](League.md) |  | [optional] [readonly] 
+**LeagueTier** | [**LeagueTier**](LeagueTier.md) |  | [optional] [readonly] 
 **LegendStatistics** | [**PlayerLegendStatistics**](PlayerLegendStatistics.md) |  | [optional] [readonly] 
 **PlayerHouse** | [**PlayerHouse**](PlayerHouse.md) |  | [optional] [readonly] 
 **Role** | **Role** |  | [optional] [readonly] 

@@ -7,6 +7,7 @@ docs/apis/LeaguesApi.md
 docs/apis/LocationsApi.md
 docs/apis/PlayersApi.md
 docs/models/BadgeUrls.md
+docs/models/BattleModifier.md
 docs/models/BuilderBaseLeague.md
 docs/models/BuilderBaseLeagueList.md
 docs/models/CapitalLeague.md
@@ -58,6 +59,8 @@ docs/models/League.md
 docs/models/LeagueList.md
 docs/models/LeagueSeason.md
 docs/models/LeagueSeasonList.md
+docs/models/LeagueTier.md
+docs/models/LeagueTierList.md
 docs/models/LegendLeagueTournamentSeasonResult.md
 docs/models/Location.md
 docs/models/LocationList.md
@@ -89,7 +92,6 @@ docs/models/WarLeagueList.md
 docs/models/WarPreference.md
 docs/models/WarState.md
 docs/models/WarType.md
-src/CocApi.Rest.Test/Apis/ApiTestsBase.cs
 src/CocApi.Rest.Test/Apis/DependencyInjectionTests.cs
 src/CocApi.Rest.Test/CocApi.Rest.Test.csproj
 src/CocApi.Rest.Test/README.md
@@ -123,6 +125,7 @@ src/CocApi.Rest/Extensions/IHostBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IHttpClientBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IServiceCollectionExtensions.cs
 src/CocApi.Rest/Models/BadgeUrls.cs
+src/CocApi.Rest/Models/BattleModifier.cs
 src/CocApi.Rest/Models/BuilderBaseLeague.cs
 src/CocApi.Rest/Models/BuilderBaseLeagueList.cs
 src/CocApi.Rest/Models/CapitalLeague.cs
@@ -174,6 +177,8 @@ src/CocApi.Rest/Models/League.cs
 src/CocApi.Rest/Models/LeagueList.cs
 src/CocApi.Rest/Models/LeagueSeason.cs
 src/CocApi.Rest/Models/LeagueSeasonList.cs
+src/CocApi.Rest/Models/LeagueTier.cs
+src/CocApi.Rest/Models/LeagueTierList.cs
 src/CocApi.Rest/Models/LegendLeagueTournamentSeasonResult.cs
 src/CocApi.Rest/Models/Location.cs
 src/CocApi.Rest/Models/LocationList.cs

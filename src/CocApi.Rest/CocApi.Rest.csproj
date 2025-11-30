@@ -12,11 +12,11 @@
     <Description>A wrapper for the Clash of Clans API</Description>
     <Copyright>No Copyright</Copyright>
     <RootNamespace>CocApi.Rest</RootNamespace>
-    <Version>2.13.0</Version>
+    <Version>2.14.0</Version>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\CocApi.Rest.xml</DocumentationFile>
     <RepositoryUrl>https://github.com/devhl-labs/CocApi.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Support townhall 18</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support for LeagueTier and BattleModifier</PackageReleaseNotes>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags>
     <Nullable>enable</Nullable>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>

@@ -200,7 +200,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarFrequency warFrequency, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warFrequency.ToString());
+            writer.WriteStringValue(WarFrequencyValueConverter.ToJsonValue(warFrequency).ToString());
         }
     }
 
@@ -231,14 +231,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the WarFrequency to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="warFrequency"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarFrequency? warFrequency, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warFrequency?.ToString() ?? "null");
+            writer.WriteStringValue(warFrequency.HasValue ? WarFrequencyValueConverter.ToJsonValue(warFrequency.Value).ToString() : "null");
         }
     }
 }

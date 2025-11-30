@@ -1,5 +1,5 @@
-$packageVersion = "2.13.0-rc1"
-$releaseNote = "Move to .net 9. Add ClanWarService"
+$packageVersion = "2.14.0"
+$releaseNote = "Added support for LeagueTier and BattleModifier"
 
 $properties = @(
     'packageName=CocApi.Rest'

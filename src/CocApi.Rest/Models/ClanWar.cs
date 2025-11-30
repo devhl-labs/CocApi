@@ -40,10 +40,11 @@ namespace CocApi.Rest.Models
         /// <param name="serverExpiration">serverExpiration</param>
         /// <param name="startTime">startTime</param>
         /// <param name="teamSize">teamSize</param>
+        /// <param name="battleModifier">battleModifier</param>
         /// <param name="state">state</param>
         /// <param name="warTag">warTag</param>
         [JsonConstructor]
-        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime serverExpiration, DateTime startTime, int teamSize, Option<WarState?> state = default, Option<string?> warTag = default)
+        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime serverExpiration, DateTime startTime, int teamSize, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default, Option<string?> warTag = default)
         {
             AttacksPerMember = attacksPerMember;
             Clan = clan;
@@ -53,12 +54,26 @@ namespace CocApi.Rest.Models
             ServerExpiration = serverExpiration;
             StartTime = startTime;
             TeamSize = teamSize;
+            BattleModifierOption = battleModifier;
             StateOption = state;
             WarTagOption = warTag;
             OnCreated();
         }
 
         partial void OnCreated();
+
+        /// <summary>
+        /// Used to track the state of BattleModifier
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<BattleModifier?> BattleModifierOption { get; }
+
+        /// <summary>
+        /// Gets or Sets BattleModifier
+        /// </summary>
+        [JsonPropertyName("battleModifier")]
+        public BattleModifier? BattleModifier { get { return this.BattleModifierOption; } }
 
         /// <summary>
         /// Used to track the state of State
@@ -150,6 +165,7 @@ namespace CocApi.Rest.Models
             sb.Append("  ServerExpiration: ").Append(ServerExpiration).Append("\n");
             sb.Append("  StartTime: ").Append(StartTime).Append("\n");
             sb.Append("  TeamSize: ").Append(TeamSize).Append("\n");
+            sb.Append("  BattleModifier: ").Append(BattleModifier).Append("\n");
             sb.Append("  State: ").Append(State).Append("\n");
             sb.Append("  WarTag: ").Append(WarTag).Append("\n");
             sb.Append("}\n");
@@ -208,6 +224,10 @@ namespace CocApi.Rest.Models
                     TeamSize.Equals(input.TeamSize)
                 ) && 
                 (
+                    BattleModifier == input.BattleModifier ||
+                    BattleModifier.Equals(input.BattleModifier)
+                ) && 
+                (
                     State == input.State ||
                     State.Equals(input.State)
                 ) && 
@@ -234,6 +254,9 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + PreparationStartTime.GetHashCode();
                 hashCode = (hashCode * 59) + StartTime.GetHashCode();
                 hashCode = (hashCode * 59) + TeamSize.GetHashCode();
+                if (BattleModifier != null)
+                    hashCode = (hashCode * 59) + BattleModifier.GetHashCode();
+
                 if (State != null)
                     hashCode = (hashCode * 59) + State.GetHashCode();
 
@@ -291,6 +314,7 @@ namespace CocApi.Rest.Models
             Option<DateTime?> serverExpiration = default;
             Option<DateTime?> startTime = default;
             Option<int?> teamSize = default;
+            Option<BattleModifier?> battleModifier = default;
             Option<WarState?> state = default;
             Option<string?> warTag = default;
 
@@ -332,6 +356,11 @@ namespace CocApi.Rest.Models
                             break;
                         case "teamSize":
                             teamSize = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
+                            break;
+                        case "battleModifier":
+                            string? battleModifierRawValue = utf8JsonReader.GetString();
+                            if (battleModifierRawValue != null)
+                                battleModifier = new Option<BattleModifier?>(BattleModifierValueConverter.FromStringOrDefault(battleModifierRawValue));
                             break;
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
@@ -395,10 +424,13 @@ namespace CocApi.Rest.Models
             if (teamSize.IsSet && teamSize.Value == null)
                 throw new ArgumentNullException(nameof(teamSize), "Property is not nullable for class ClanWar.");
 
+            if (battleModifier.IsSet && battleModifier.Value == null)
+                throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWar.");
+
             if (state.IsSet && state.Value == null)
                 throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanWar.");
 
-            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, serverExpiration.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, state, warTag);
+            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, serverExpiration.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state, warTag);
         }
 
         /// <summary>
@@ -447,6 +479,11 @@ namespace CocApi.Rest.Models
 
             writer.WriteNumber("teamSize", clanWar.TeamSize);
 
+            if (clanWar.BattleModifierOption.IsSet)
+            {
+                var battleModifierRawValue = BattleModifierValueConverter.ToJsonValue(clanWar.BattleModifier!.Value);
+                writer.WriteString("battleModifier", battleModifierRawValue);
+            }
             if (clanWar.StateOption.IsSet)
             {
                 var stateRawValue = WarStateValueConverter.ToJsonValue(clanWar.State!.Value);

@@ -142,6 +142,8 @@ namespace CocApi.Rest.Client
                 return boolean
                     ? "true"
                     : "false";
+            if (obj is BattleModifier battleModifier)
+                return BattleModifierValueConverter.ToJsonValue(battleModifier);
             if (obj is ClanCapitalRaidSeason.StateEnum clanCapitalRaidSeasonStateEnum)
                 return ClanCapitalRaidSeason.StateEnumToJsonValue(clanCapitalRaidSeasonStateEnum);
             if (obj is GroupState groupState)

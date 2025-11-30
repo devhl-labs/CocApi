@@ -130,7 +130,7 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarPreference warPreference, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warPreference.ToString());
+            writer.WriteStringValue(WarPreferenceValueConverter.ToJsonValue(warPreference).ToString());
         }
     }
 
@@ -161,14 +161,14 @@ namespace CocApi.Rest.Models
         }
 
         /// <summary>
-        /// Writes the DateTime to the json writer
+        /// Writes the WarPreference to the json writer
         /// </summary>
         /// <param name="writer"></param>
         /// <param name="warPreference"></param>
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarPreference? warPreference, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warPreference?.ToString() ?? "null");
+            writer.WriteStringValue(warPreference.HasValue ? WarPreferenceValueConverter.ToJsonValue(warPreference.Value).ToString() : "null");
         }
     }
 }
