@@ -1,5 +1,5 @@
-$packageVersion = "2.14.0"
-$releaseNote = "Added support for LeagueTier and BattleModifier"
+$packageVersion = "2.14.1"
+$releaseNote = "Fixed DateTime deserialization"
 
 $properties = @(
     'packageName=CocApi.Rest'
