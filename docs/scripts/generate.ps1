@@ -1,4 +1,4 @@
-$packageVersion = "2.14.1"
+$packageVersion = "2.14.2"
 $releaseNote = "Fixed DateTime deserialization"
 
 $properties = @(
@@ -21,6 +21,7 @@ $properties = @(
     "useDateTimeForDate=true"
     "modelPropertySorting=legacy"
     "operationParameterSorting=legacy"
+    "targetFramework=net9.0"
 ) -join ","
 
 $global = @(

@@ -80,6 +80,9 @@ public class TestService : IHostedService
         IOk<VerifyTokenResponse?> playerTokenResponse = await PlayersApi.VerifyTokenAsync(new VerifyTokenRequest("a"), "#29GPU9CUJ");
         VerifyTokenResponse? playerToken = playerTokenResponse.Ok();
 
+        IOk<Player?> playerResponse = await PlayersApi.FetchPlayerAsync("#R22GV80Q");
+        Player? player = playerResponse.Ok();
+
         IOk<ClanWarLog?> warLogResponse = await ClansApi.FetchClanWarLogAsync("#29Y8PRCJR");
         ClanWarLog? warLog = warLogResponse.Ok();
 
