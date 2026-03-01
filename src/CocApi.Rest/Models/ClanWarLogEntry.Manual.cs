@@ -5,32 +5,7 @@ namespace CocApi.Rest.Models
 {
     public partial class ClanWarLogEntry
     {
-        private volatile SortedDictionary<string, WarClanLogEntry>? _clans;
-        private readonly object _clansLock = new();
-        public SortedDictionary<string, WarClanLogEntry> Clans
-        {
-            get
-            {
-                if (_clans != null) // avoid the lock if we can
-                    return _clans;
-
-                lock (_clansLock)
-                {
-                    if (_clans != null)
-                        return _clans;
-
-                    _clans = (Clan?.Tag == null || Opponent?.Tag == null)
-                        ? new SortedDictionary<string, WarClanLogEntry>()
-                        : new SortedDictionary<string, WarClanLogEntry>
-                        {
-                            { Clan.Tag, Clan },
-                            { Opponent.Tag, Opponent }
-                        };
-
-                    return _clans;
-                }
-            }
-        }
+        public SortedDictionary<string, WarClanLogEntry> Clans { get; private set; } = new SortedDictionary<string, WarClanLogEntry>();
 
         public WarType WarType
         {
@@ -42,6 +17,16 @@ namespace CocApi.Rest.Models
                     return WarType.Friendly;
                 return WarType.Random;
             }
+        }
+
+        partial void OnCreated()
+        {
+            if (Clan?.Tag != null && Opponent?.Tag != null)
+                Clans = new SortedDictionary<string, WarClanLogEntry>
+                {
+                    { Clan.Tag, Clan },
+                    { Opponent.Tag, Opponent }
+                };
         }
     }
 }

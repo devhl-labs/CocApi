@@ -37,61 +37,9 @@ namespace CocApi.Rest.Models
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
-        private volatile SortedDictionary<string, WarClan>? _clans;
+        public SortedDictionary<string, WarClan> Clans { get; private set; } = new SortedDictionary<string, WarClan>();
 
-        private readonly object _clansLock = new();
-
-        public SortedDictionary<string, WarClan> Clans
-        {
-            get
-            {
-                if (_clans != null) // avoid the lock if we can
-                    return _clans;
-
-                lock (_clansLock)
-                {
-                    if (_clans != null)
-                        return _clans;
-
-                    _clans = (Clan?.Tag == null || Opponent?.Tag == null)
-                        ? new SortedDictionary<string, WarClan>()
-                        : new SortedDictionary<string, WarClan>
-                            {
-                                { Clan.Tag, Clan },
-                                { Opponent.Tag, Opponent }
-                            };
-
-                    return _clans;
-                }
-            }
-        }
-
-        private volatile List<ClanWarAttack>? _attacks;
-        private readonly object _attacksLock = new();
-
-        public List<ClanWarAttack> Attacks
-        {
-            get
-            {
-                if (_attacks != null) // avoid the lock if we can
-                    return _attacks;
-
-                lock (_attacksLock)
-                {
-                    if (_attacks != null)
-                        return _attacks;
-
-                    _attacks = new List<ClanWarAttack>();
-
-                    foreach (WarClan warClan in Clans.Values)
-                        foreach (ClanWarMember member in warClan.Members)
-                            foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
-                                _attacks.Add(attack);
-
-                    return _attacks;
-                }
-            }
-        }
+        public List<ClanWarAttack> Attacks { get; private set; } = new List<ClanWarAttack>();
 
         public static List<ClanWarAttack> NewAttacks(ClanWar stored, ClanWar fetched)
         {
@@ -146,6 +94,19 @@ namespace CocApi.Rest.Models
                 debug = "c";
                 Opponent = sorted.Values.Skip(1).First();
                 debug = "d";
+
+                if (Clan?.Tag != null && Opponent?.Tag != null)
+                    Clans = new SortedDictionary<string, WarClan>
+                        {
+                            { Clan.Tag, Clan },
+                            { Opponent.Tag, Opponent }
+                        };
+
+                foreach (WarClan warClan in Clans.Values)
+                    foreach (ClanWarMember member in warClan.Members)
+                        foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
+                            Attacks.Add(attack);
+
                 foreach (WarClan warClan in Clans.Values)
                 {
                     debug = "e";
