@@ -103,32 +103,7 @@ public class CachedWar : CachedItem<ClanWar>
 
     public Rest.Models.WarType Type { get; internal set; }
 
-    private volatile SortedSet<string>? _clanTags;
-
-    private readonly object _clanTagsLock = new();
-
-    public SortedSet<string> ClanTags
-    {
-        get
-        {
-            if (_clanTags != null) // avoid the lock if we can
-                return _clanTags;
-
-            lock (_clanTagsLock)
-            {
-                if (_clanTags != null)
-                    return _clanTags;
-
-                _clanTags = new SortedSet<string>
-                {
-                    ClanTag,
-                    OpponentTag
-                };
-
-                return _clanTags;
-            }
-        }
-    }
+    public SortedSet<string> ClanTags { get; } = new();
 
     public CachedWar(CachedClanWar cachedClanWar)
     {
@@ -138,6 +113,9 @@ public class CachedWar : CachedItem<ClanWar>
         ClanTag = cachedClanWar.Content.Clans.First().Value.Tag;
 
         OpponentTag = cachedClanWar.Content.Clans.Skip(1).First().Value.Tag;
+
+        ClanTags.Add(ClanTag);
+        ClanTags.Add(OpponentTag);
 
         State = cachedClanWar.Content.State;
 
@@ -159,6 +137,9 @@ public class CachedWar : CachedItem<ClanWar>
         ClanTag = model.Clans.First().Value.Tag;
 
         OpponentTag = model.Clans.Skip(1).First().Value.Tag;
+
+        ClanTags.Add(ClanTag);
+        ClanTags.Add(OpponentTag);
 
         State = model.State;
 

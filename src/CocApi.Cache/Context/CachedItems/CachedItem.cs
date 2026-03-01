@@ -19,47 +19,54 @@ public class CachedItem<T> where T : class
 
     public bool Download { get; set; } = true;
 
-    private volatile T? _content;
-
-    private readonly object _contentLock = new();
+    private T? _content;
 
     [NotMapped]
     public T? Content
     {
         get
         {
-            if (_content == null && !string.IsNullOrWhiteSpace(RawContent)) // avoid the lock if we can
+            if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
             {
-                lock (_contentLock)
-                {
-                    if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
-                    {
-                        if ((this is CachedClanWarLeagueGroup || this is CachedWar || this is CachedClanWar) && !RawContent.Contains("notInWar"))
-                        {
-                            RawContent = RawContent[..^1];
-                            if (!RawContent.Contains("serverExpiration"))
-                            {
-                                string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ExpiresAt ?? DateTime.UtcNow, Library.JsonSerializerOptions);
-                                RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
-                            }
-
-                            if (this is CachedWar cachedWar && cachedWar.WarTag != null && !RawContent.Contains("warTag"))
-                                RawContent = $"{RawContent}, \"warTag\": \"{cachedWar.WarTag}\"";
-
-                            RawContent = $"{RawContent}}}";
-                        }
-
-                        // when the clan is not in cwl war, all the properties will be empty except state: notInWar so we cant deserialize this
-                        if ((this is not CachedClanWarLeagueGroup && this is not CachedClanWar && this is not CachedWar) || !RawContent.Contains("notInWar"))
-                            _content = System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
-                    }
-                }
+                PreprocessRawContent();
+                _content = DeserializeContent();
             }
-
             return _content;
         }
-
         internal set { _content = value; }
+    }
+
+    private void PreprocessRawContent()
+    {
+        if (string.IsNullOrWhiteSpace(RawContent))
+            return;
+
+        if ((this is CachedClanWarLeagueGroup || this is CachedWar || this is CachedClanWar) && !RawContent.Contains("notInWar"))
+        {
+            RawContent = RawContent[..^1];
+            if (!RawContent.Contains("serverExpiration"))
+            {
+                string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ExpiresAt ?? DateTime.UtcNow, Library.JsonSerializerOptions);
+                RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
+            }
+
+            if (this is CachedWar cachedWar && cachedWar.WarTag != null && !RawContent.Contains("warTag"))
+                RawContent = $"{RawContent}, \"warTag\": \"{cachedWar.WarTag}\"";
+
+            RawContent = $"{RawContent}}}";
+        }
+    }
+
+    private T? DeserializeContent()
+    {
+        if (string.IsNullOrWhiteSpace(RawContent))
+            return null;
+
+        // when the clan is not in cwl war, all the properties will be empty except state: notInWar so we cant deserialize this
+        if ((this is not CachedClanWarLeagueGroup && this is not CachedClanWar && this is not CachedWar) || !RawContent.Contains("notInWar"))
+            return System.Text.Json.JsonSerializer.Deserialize<T>(RawContent, Library.JsonSerializerOptions);
+        
+        return null;
     }
 
     public CachedItem()
@@ -105,8 +112,11 @@ public class CachedItem<T> where T : class
         ExpiresAt = fetched.ExpiresAt;
         KeepUntil = fetched.KeepUntil;
 
-        Content = fetched.Content ?? _content;
-        RawContent = !string.IsNullOrWhiteSpace(fetched.RawContent) ? fetched.RawContent : RawContent;
+        if (!string.IsNullOrWhiteSpace(fetched.RawContent))
+            RawContent = fetched.RawContent;
+
+        if (fetched.Content != null)
+            Content = fetched.Content;
     }
 
     private bool IsServerExpired
