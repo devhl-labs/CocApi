@@ -10,11 +10,12 @@ namespace CocApi
     {
         public static Unit BarbarianKing { get; } = new(Village.Home, Resource.DarkElixir, 1, 105, "Barbarian King");
         public static Unit ArcherQueen { get; } = new(Village.Home, Resource.DarkElixir, 2, 105, "Archer Queen");
-        public static Unit GrandWarden { get; } = new(Village.Home, Resource.Elixir, 3, 80, "Grand Warden");
-        public static Unit RoyalChampion { get; } = new(Village.Home, Resource.DarkElixir, 4, 55, "Royal Champion");
-        public static Unit MinionPrince { get; } = new(Village.Home, Resource.DarkElixir, 5, 95, "Minion Prince");
-        public static Unit BattleMachine { get; } = new(Village.BuilderBase, Resource.Elixir, 6, 35, "Battle Machine");
-        public static Unit BattleCopter { get; } = new(Village.BuilderBase, Resource.Elixir, 7, 35, "Battle Copter");
+        public static Unit MinionPrince { get; } = new(Village.Home, Resource.DarkElixir, 3, 95, "Minion Prince");
+        public static Unit GrandWarden { get; } = new(Village.Home, Resource.Elixir, 4, 80, "Grand Warden");
+        public static Unit RoyalChampion { get; } = new(Village.Home, Resource.DarkElixir, 5, 55, "Royal Champion");
+        public static Unit DragonDuke { get; } = new(Village.Home, Resource.DarkElixir, 6, 25, "Dragon Duke");
+        public static Unit BattleMachine { get; } = new(Village.BuilderBase, Resource.Elixir, 7, 35, "Battle Machine");
+        public static Unit BattleCopter { get; } = new(Village.BuilderBase, Resource.Elixir, 8, 35, "Battle Copter");
 
         public static Unit[] Heroes { get; } =
         [
@@ -23,6 +24,7 @@ namespace CocApi
             GrandWarden,
             RoyalChampion,
             MinionPrince,
+            DragonDuke,
             BattleMachine,
             BattleCopter
         ];
@@ -42,35 +44,38 @@ namespace CocApi
 
         public static Unit[] Pets { get; } =
         [
-            new Unit(Village.Home, Resource.DarkElixir, 1, 10, "L.A.S.S.I"),
-            new Unit(Village.Home, Resource.DarkElixir, 2, 10, "Electro Owl"),
-            new Unit(Village.Home, Resource.DarkElixir, 3, 10, "Mighty Yak"),
-            new Unit(Village.Home, Resource.DarkElixir, 4, 10, "Unicorn"),
-            new Unit(Village.Home, Resource.DarkElixir, 5, 10, "Frosty"),
+            new Unit(Village.Home, Resource.DarkElixir, 1, 15, "L.A.S.S.I"),
+            new Unit(Village.Home, Resource.DarkElixir, 2, 15, "Electro Owl"),
+            new Unit(Village.Home, Resource.DarkElixir, 3, 15, "Mighty Yak"),
+            new Unit(Village.Home, Resource.DarkElixir, 4, 15, "Unicorn"),
+            new Unit(Village.Home, Resource.DarkElixir, 5, 15, "Frosty"),
             new Unit(Village.Home, Resource.DarkElixir, 6, 10, "Diggy"),
-            new Unit(Village.Home, Resource.DarkElixir, 7, 10, "Poison Lizard"),
+            new Unit(Village.Home, Resource.DarkElixir, 7, 15, "Poison Lizard"),
             new Unit(Village.Home, Resource.DarkElixir, 8, 10, "Phoenix"),
-            new Unit(Village.Home, Resource.DarkElixir, 9, 10, "Spirit Fox")
+            new Unit(Village.Home, Resource.DarkElixir, 9, 10, "Spirit Fox"),
+            new Unit(Village.Home, Resource.DarkElixir, 10, 10, "Angry Jelly"),
+            new Unit(Village.Home, Resource.DarkElixir, 11, 10, "Sneezy"),
+            new Unit(Village.Home, Resource.DarkElixir, 12, 10, "Greedy Raven")
         ];
 
         private static readonly Unit _barbarian    = new(Village.Home, Resource.Elixir, 101, 12, "Barbarian", 0);
-        private static readonly Unit _archer       = new(Village.Home, Resource.Elixir, 102, 13, "Archer", 1);
+        private static readonly Unit _archer       = new(Village.Home, Resource.Elixir, 102, 14, "Archer", 1);
         private static readonly Unit _giant        = new(Village.Home, Resource.Elixir, 103, 14, "Giant", 3);
         private static readonly Unit _goblin       = new(Village.Home, Resource.Elixir, 104, 9, "Goblin", 2);
         private static readonly Unit _wallBreaker  = new(Village.Home, Resource.Elixir, 105, 14, "Wall Breaker", 4);
         private static readonly Unit _balloon      = new(Village.Home, Resource.Elixir, 106, 12, "Balloon", 5);
         private static readonly Unit _wizard       = new(Village.Home, Resource.Elixir, 107, 14, "Wizard", 6);
         private static readonly Unit _dragon       = new(Village.Home, Resource.Elixir, 109, 12, "Dragon", 8);
-        private static readonly Unit _babyDragon   = new(Village.Home, Resource.Elixir, 111, 11, "Baby Dragon", 23);
+        private static readonly Unit _babyDragon   = new(Village.Home, Resource.Elixir, 111, 12, "Baby Dragon", 23);
         private static readonly Unit _miner        = new(Village.Home, Resource.Elixir, 112, 12, "Miner", 24);
         private static readonly Unit _yeti         = new(Village.Home, Resource.Elixir, 114, 7, "Yeti", 53);
-        private static readonly Unit _electroTitan = new(Village.Home, Resource.Elixir, 116, 4, "Electro Titan", 95);
+        private static readonly Unit _electroTitan = new(Village.Home, Resource.Elixir, 116, 5, "Electro Titan", 95);
 
         private static readonly Unit _minion      = new(Village.Home, Resource.DarkElixir, 201, 14, "Minion", 10);
-        private static readonly Unit _hogRider    = new(Village.Home, Resource.DarkElixir, 202, 14, "Hog Rider", 11);
+        private static readonly Unit _hogRider    = new(Village.Home, Resource.DarkElixir, 202, 15, "Hog Rider", 11);
         private static readonly Unit _valkyrie    = new(Village.Home, Resource.DarkElixir, 203, 11, "Valkyrie", 12);
-        private static readonly Unit _witch       = new(Village.Home, Resource.DarkElixir, 205, 7, "Witch", 14);
-        private static readonly Unit _lavaHound   = new(Village.Home, Resource.DarkElixir, 206, 7, "Lava Hound", 17);
+        private static readonly Unit _witch       = new(Village.Home, Resource.DarkElixir, 205, 8, "Witch", 14);
+        private static readonly Unit _lavaHound   = new(Village.Home, Resource.DarkElixir, 206, 8, "Lava Hound", 17);
         private static readonly Unit _bowler      = new(Village.Home, Resource.DarkElixir, 207, 8, "Bowler", 22);
 
         public static Unit[] ElixerTroops { get; } = [
@@ -172,25 +177,28 @@ namespace CocApi
             new Unit(Village.Home, Resource.Elixir, 108, 1, "Santa's Surprise", 4, true),
             new Unit(Village.Home, Resource.Elixir, 109, 1, "Birthday Boom", 22, true),
             new Unit(Village.Home, Resource.Elixir, 110, 5, "Recall Spell", 53),
-            new Unit(Village.Home, Resource.Elixir, 111, 4, "Revive Spell", 98),
+            new Unit(Village.Home, Resource.Elixir, 111, 5, "Revive Spell", 98),
 
             new Unit(Village.Home, Resource.DarkElixir, 201, 10, "Poison Spell", 9),
-            new Unit(Village.Home, Resource.DarkElixir, 202, 5, "Earthquake Spell", 10),
+            new Unit(Village.Home, Resource.DarkElixir, 202, 8, "Earthquake Spell", 10),
             new Unit(Village.Home, Resource.DarkElixir, 203, 5, "Haste Spell", 11),
             new Unit(Village.Home, Resource.DarkElixir, 204, 8, "Skeleton Spell", 17),
             new Unit(Village.Home, Resource.DarkElixir, 205, 6, "Bat Spell", 28),
-            new Unit(Village.Home, Resource.DarkElixir, 206, 4, "Overgrowth Spell", 70)
+            new Unit(Village.Home, Resource.DarkElixir, 213, 4, "Overgrowth Spell", 70),
+            new Unit(Village.Home, Resource.DarkElixir, 214, 5, "Ice Block Spell", 71),
+            new Unit(Village.Home, Resource.Elixir, 215, 5, "Totem Spell", 72),
         ];
 
         public static Unit[] SiegeMachines { get; } =
         [
             new Unit(Village.Home, Resource.Elixir, 1, 5, "Wall Wrecker", 51),
             new Unit(Village.Home, Resource.Elixir, 2, 4, "Battle Blimp", 52),
-            new Unit(Village.Home, Resource.Elixir, 3, 5, "Stone Slammer", 62),
+            new Unit(Village.Home, Resource.Elixir, 3, 6, "Stone Slammer", 62),
             new Unit(Village.Home, Resource.Elixir, 4, 5, "Siege Barracks", 75),
             new Unit(Village.Home, Resource.Elixir, 5, 5, "Log Launcher", 87),
             new Unit(Village.Home, Resource.Elixir, 6, 5, "Flame Flinger", 91),
-            new Unit(Village.Home, Resource.Elixir, 7, 5, "Battle Drill", 92)
+            new Unit(Village.Home, Resource.Elixir, 7, 5, "Battle Drill", 92),
+            new Unit(Village.Home, Resource.Elixir, 8, 4, "Troop Launcher", 93)
         ];
 
         public const int MAX_TOWN_HALL_LEVEL = 18;
