@@ -77,7 +77,7 @@ public sealed class ClanWarService : ServiceBase
         {
             foreach (CachedClan cachedClan in cachedClans)
             {
-                if (!Synchronizer.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
+                if (!Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
                     continue;
 
                 updatingTags.Add(cachedClan.Tag);
@@ -99,7 +99,7 @@ public sealed class ClanWarService : ServiceBase
         finally
         {
             foreach (string tag in updatingTags)
-                Synchronizer.UpdatingClan.TryRemove(tag, out _);
+                Synchronizer.ClanLock.Release(tag);
         }
     }
 

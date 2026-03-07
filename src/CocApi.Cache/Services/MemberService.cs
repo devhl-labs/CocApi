@@ -63,7 +63,7 @@ public sealed class MemberService : ServiceBase
         HashSet<string> updatingTags = new();
 
         foreach (var member in cachedClan.Content.Members)
-            if (Synchronizer.UpdatingVillage.TryAdd(member.Tag, null))
+            if (Synchronizer.VillageLock.TryAcquire(member.Tag))
                 updatingTags.Add(member.Tag);
 
         try
@@ -103,7 +103,7 @@ public sealed class MemberService : ServiceBase
         finally
         {
             foreach (string tag in updatingTags)
-                Synchronizer.UpdatingVillage.TryRemove(tag, out _);
+                Synchronizer.VillageLock.Release(tag);
         }
     }
 

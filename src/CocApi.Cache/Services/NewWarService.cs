@@ -63,14 +63,14 @@ public sealed class NewWarService : ServiceBase
         HashSet<string> updatingClans = new();
 
         foreach (CachedClan cachedClan in cachedClans)
-            if (Synchronizer.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
+            if (Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
             {
                 updatingClans.Add(cachedClan.Tag);
 
-                if (!Synchronizer.UpdatingWar.TryAdd(cachedClan.CurrentWar.Key, null))
+                if (!Synchronizer.WarLock.TryAcquire(cachedClan.CurrentWar.Key))
                 {
                     updatingClans.Remove(cachedClan.Tag);
-                    Synchronizer.UpdatingClan.TryRemove(cachedClan.Tag, out _);
+                    Synchronizer.ClanLock.Release(cachedClan.Tag);
                 }
             }
 
@@ -130,8 +130,8 @@ public sealed class NewWarService : ServiceBase
         {
             foreach (string tag in updatingClans)
             {
-                Synchronizer.UpdatingClan.TryRemove(tag, out _);
-                Synchronizer.UpdatingWar.TryRemove(cachedClans.Single(c => c.Tag == tag).CurrentWar.Key, out _);
+                Synchronizer.ClanLock.Release(tag);
+                Synchronizer.WarLock.Release(cachedClans.Single(c => c.Tag == tag).CurrentWar.Key);
             }
         }
     }
