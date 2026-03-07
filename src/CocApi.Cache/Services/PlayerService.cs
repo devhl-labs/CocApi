@@ -77,7 +77,7 @@ public sealed class PlayerService : ServiceBase
         {
             foreach (CachedPlayer trackedPlayer in trackedPlayers)
             {
-                if (!Synchronizer.UpdatingVillage.TryAdd(trackedPlayer.Tag, trackedPlayer))
+                if (!Synchronizer.VillageLock.TryAcquire(trackedPlayer.Tag))
                     continue;
 
                 updatingTags.Add(trackedPlayer.Tag);
@@ -93,7 +93,7 @@ public sealed class PlayerService : ServiceBase
         finally
         {
             foreach (string tag in updatingTags)
-                Synchronizer.UpdatingVillage.TryRemove(tag, out _);
+                Synchronizer.VillageLock.Release(tag);
         }
     }
 

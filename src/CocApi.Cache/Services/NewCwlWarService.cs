@@ -92,7 +92,7 @@ public sealed class NewCwlWarService : ServiceBase
         {
             foreach (CachedClan cachedClan in cachedClans.Where(c => c.Group.Content != null)) // content will be null if the RawContent contains notInWar
             {
-                if (!Synchronizer.UpdatingClan.TryAdd(cachedClan.Tag, cachedClan))
+                if (!Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
                     continue;
 
                 updatingTags.Add(cachedClan.Tag);
@@ -161,7 +161,7 @@ public sealed class NewCwlWarService : ServiceBase
         finally
         {
             foreach (string tag in updatingTags)
-                Synchronizer.UpdatingClan.TryRemove(tag, out _);
+                Synchronizer.ClanLock.Release(tag);
         }
     }
 

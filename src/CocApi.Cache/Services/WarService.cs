@@ -30,7 +30,6 @@ public sealed class WarService : ServiceBase
     internal TimeToLiveProvider TimeToLiveProvider { get; }
     public IOptions<CacheOptions> Options { get; }
 
-    private readonly HashSet<string> _unmonitoredClans = new();
     private readonly SemaphoreSlim _semaphore = new(1, 1);
 
 
@@ -93,7 +92,7 @@ public sealed class WarService : ServiceBase
 
         List<Task> tasks = new();
 
-        HashSet<string> updatingWar = new();
+        HashSet<string> acquiredWars = new();
 
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
@@ -101,9 +100,12 @@ public sealed class WarService : ServiceBase
         {
             foreach (CachedWar cachedWar in cachedWars)
             {
-                List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
+                if (!Synchronizer.WarLock.TryAcquire(cachedWar.Key))
+                    continue;
 
-                updatingWar.Add(cachedWar.Key);
+                acquiredWars.Add(cachedWar.Key);
+
+                List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
 
                 tasks.Add(
                     UpdateWarAsync(
@@ -123,11 +125,8 @@ public sealed class WarService : ServiceBase
         }
         finally
         {
-            foreach (string tag in updatingWar)
-                Synchronizer.UpdatingWar.TryRemove(tag, out _);
-
-            foreach (string tag in _unmonitoredClans)
-                Synchronizer.UpdatingClan.TryRemove(tag, out _);
+            foreach (string key in acquiredWars)
+                Synchronizer.WarLock.Release(key);
         }
     }
 
@@ -196,13 +195,11 @@ public sealed class WarService : ServiceBase
 
     private async Task<CachedClan?> CreateCachedClan(IClansApi clansApi, string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
     {
-        if (!Synchronizer.UpdatingClan.TryAdd(tag, null))
+        if (!Synchronizer.ClanLock.TryAcquire(tag))
             return null;
 
         try
         {
-            _unmonitoredClans.Add(tag);
-
             CachedClanWar cachedClanWar = await CachedClanWar
                 .FromCurrentWarResponseAsync(tag, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), TimeToLiveProvider, clansApi, cancellationToken)
                 .ConfigureAwait(false);
@@ -231,7 +228,7 @@ public sealed class WarService : ServiceBase
         }
         finally
         {
-            Synchronizer.UpdatingClan.TryRemove(tag, out _);
+            Synchronizer.ClanLock.Release(tag);
         }
     }
 

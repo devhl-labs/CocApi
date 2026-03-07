@@ -84,7 +84,7 @@ public sealed class CwlWarService : ServiceBase
 
             foreach (CachedWar cachedWar in cachedWars)
             {
-                if (Synchronizer.UpdatingCwlWar.TryAdd(cachedWar.WarTag, cachedWar.Content))
+                if (Synchronizer.CwlWarLock.TryAcquire(cachedWar.WarTag))
                 {
                     updatingCwlWar.Add(cachedWar.WarTag);
 
@@ -101,7 +101,7 @@ public sealed class CwlWarService : ServiceBase
         finally
         {
             foreach (string tag in updatingCwlWar)
-                Synchronizer.UpdatingCwlWar.TryRemove(tag, out _);
+                Synchronizer.CwlWarLock.Release(tag);
         }
     }
 

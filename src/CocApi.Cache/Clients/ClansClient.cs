@@ -96,8 +96,7 @@ public class ClansClient : ClientBase<ClansClient>
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
-        while (!Synchronizer.UpdatingClan.TryAdd(formattedTag, null))
-            await Task.Delay(250).ConfigureAwait(false);
+        await Synchronizer.ClanLock.AcquireAsync(formattedTag).ConfigureAwait(false);
 
         try
         {
@@ -110,7 +109,7 @@ public class ClansClient : ClientBase<ClansClient>
         }
         finally
         {
-            Synchronizer.UpdatingClan.TryRemove(formattedTag, out _);
+            Synchronizer.ClanLock.Release(formattedTag);
         }
     }
 

@@ -82,8 +82,7 @@ public class PlayersClient : ClientBase<PlayersClient>
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
-        while (!Synchronizer.UpdatingVillage.TryAdd(formattedTag, null))
-            await Task.Delay(250).ConfigureAwait(false);
+        await Synchronizer.VillageLock.AcquireAsync(formattedTag).ConfigureAwait(false);
 
         try
         {
@@ -96,7 +95,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         }
         finally
         {
-            Synchronizer.UpdatingVillage.TryRemove(formattedTag, out _);
+            Synchronizer.VillageLock.Release(formattedTag);
         }
     }
 
