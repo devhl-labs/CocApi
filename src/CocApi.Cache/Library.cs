@@ -36,8 +36,6 @@ namespace CocApi.Cache
             return true;
         }
 
-        private static long _currentSemaphoreUsage = 0;
-
         private static int _maxCount = 25;
 
         private static SemaphoreSlim _concurrentEventsSemaphore = new(_maxCount, _maxCount);
@@ -50,15 +48,13 @@ namespace CocApi.Cache
 
         internal static async Task SendConcurrentEvent<T>(ILogger<T> logger, string methodName, Func<Task> action, CancellationToken cancellationToken)
         {
-            if (Interlocked.Read(ref _currentSemaphoreUsage) >= _maxCount)
+            if (_concurrentEventsSemaphore.CurrentCount == 0)
                 logger.LogWarning("Max concurrent events reached.");
 
             await _concurrentEventsSemaphore.WaitAsync(cancellationToken);
 
             try
             {
-                Interlocked.Increment(ref _currentSemaphoreUsage);
-
                 await action().ConfigureAwait(false);
             }
             catch (Exception e)
@@ -68,8 +64,6 @@ namespace CocApi.Cache
             finally
             {
                 _concurrentEventsSemaphore.Release();
-
-                Interlocked.Decrement(ref _currentSemaphoreUsage);
             }
         }
 
