@@ -89,7 +89,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Attacks
         /// </summary>
         [JsonPropertyName("attacks")]
-        public List<ClanWarAttack>? Attacks { get { return this.AttacksOption; } }
+        public List<ClanWarAttack>? Attacks { get { return this.AttacksOption.Value; } }
 
         /// <summary>
         /// Used to track the state of BestOpponentAttack
@@ -102,7 +102,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BestOpponentAttack
         /// </summary>
         [JsonPropertyName("bestOpponentAttack")]
-        public ClanWarAttack? BestOpponentAttack { get { return this.BestOpponentAttackOption; } }
+        public ClanWarAttack? BestOpponentAttack { get { return this.BestOpponentAttackOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

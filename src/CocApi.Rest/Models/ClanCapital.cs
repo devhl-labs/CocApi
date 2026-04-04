@@ -55,7 +55,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets CapitalHallLevel
         /// </summary>
         [JsonPropertyName("capitalHallLevel")]
-        public int? CapitalHallLevel { get { return this.CapitalHallLevelOption; } }
+        public int? CapitalHallLevel { get { return this.CapitalHallLevelOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Districts
@@ -68,7 +68,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Districts
         /// </summary>
         [JsonPropertyName("districts")]
-        public List<ClanDistrictData>? Districts { get { return this.DistrictsOption; } }
+        public List<ClanDistrictData>? Districts { get { return this.DistrictsOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

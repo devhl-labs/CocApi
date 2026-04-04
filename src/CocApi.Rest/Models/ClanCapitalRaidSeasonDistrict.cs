@@ -109,7 +109,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Attacks
         /// </summary>
         [JsonPropertyName("attacks")]
-        public List<ClanCapitalRaidSeasonAttack>? Attacks { get { return this.AttacksOption; } }
+        public List<ClanCapitalRaidSeasonAttack>? Attacks { get { return this.AttacksOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

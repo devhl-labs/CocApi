@@ -127,7 +127,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public PlayerRankingClan? Clan { get { return this.ClanOption; } }
+        public PlayerRankingClan? Clan { get { return this.ClanOption.Value; } }
 
         /// <summary>
         /// Used to track the state of LeagueTier
@@ -140,7 +140,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets LeagueTier
         /// </summary>
         [JsonPropertyName("leagueTier")]
-        public LeagueTier? LeagueTier { get { return this.LeagueTierOption; } }
+        public LeagueTier? LeagueTier { get { return this.LeagueTierOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

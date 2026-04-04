@@ -164,13 +164,13 @@ namespace CocApi.Rest.Client
 
             List<IHttpClientBuilder> builders = new List<IHttpClientBuilder>();
 
-            builders.Add(_services.AddHttpClient<IClansApi, ClansApi>(client));
-            builders.Add(_services.AddHttpClient<IDeveloperApi, DeveloperApi>(client));
-            builders.Add(_services.AddHttpClient<IGoldpassApi, GoldpassApi>(client));
-            builders.Add(_services.AddHttpClient<ILabelsApi, LabelsApi>(client));
-            builders.Add(_services.AddHttpClient<ILeaguesApi, LeaguesApi>(client));
-            builders.Add(_services.AddHttpClient<ILocationsApi, LocationsApi>(client));
-            builders.Add(_services.AddHttpClient<IPlayersApi, PlayersApi>(client));
+            builders.Add(_services.AddHttpClient<IClansApi, ClansApi>("CocApi.Rest.Apis.IClansApi", client));
+            builders.Add(_services.AddHttpClient<IDeveloperApi, DeveloperApi>("CocApi.Rest.Apis.IDeveloperApi", client));
+            builders.Add(_services.AddHttpClient<IGoldpassApi, GoldpassApi>("CocApi.Rest.Apis.IGoldpassApi", client));
+            builders.Add(_services.AddHttpClient<ILabelsApi, LabelsApi>("CocApi.Rest.Apis.ILabelsApi", client));
+            builders.Add(_services.AddHttpClient<ILeaguesApi, LeaguesApi>("CocApi.Rest.Apis.ILeaguesApi", client));
+            builders.Add(_services.AddHttpClient<ILocationsApi, LocationsApi>("CocApi.Rest.Apis.ILocationsApi", client));
+            builders.Add(_services.AddHttpClient<IPlayersApi, PlayersApi>("CocApi.Rest.Apis.IPlayersApi", client));
             
             if (builder != null)
                 foreach (IHttpClientBuilder instance in builders)

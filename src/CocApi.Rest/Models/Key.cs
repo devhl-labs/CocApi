@@ -119,7 +119,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Origins
         /// </summary>
         [JsonPropertyName("origins")]
-        public string? Origins { get { return this.OriginsOption; } set { this.OriginsOption = new(value); } }
+        public string? Origins { get { return this.OriginsOption.Value; } set { this.OriginsOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of ValidUntil
@@ -132,7 +132,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets ValidUntil
         /// </summary>
         [JsonPropertyName("validUntil")]
-        public DateTime? ValidUntil { get { return this.ValidUntilOption; } set { this.ValidUntilOption = new(value); } }
+        public DateTime? ValidUntil { get { return this.ValidUntilOption.Value; } set { this.ValidUntilOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object

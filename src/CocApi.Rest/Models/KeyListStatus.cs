@@ -69,7 +69,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Detail
         /// </summary>
         [JsonPropertyName("detail")]
-        public string? Detail { get { return this.DetailOption; } set { this.DetailOption = new(value); } }
+        public string? Detail { get { return this.DetailOption.Value; } set { this.DetailOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object

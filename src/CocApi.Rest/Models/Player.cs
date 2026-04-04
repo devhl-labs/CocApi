@@ -109,7 +109,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Role
         /// </summary>
         [JsonPropertyName("role")]
-        public Role? Role { get { return this.RoleOption; } }
+        public Role? Role { get { return this.RoleOption.Value; } }
 
         /// <summary>
         /// Used to track the state of WarPreference
@@ -122,7 +122,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets WarPreference
         /// </summary>
         [JsonPropertyName("warPreference")]
-        public WarPreference? WarPreference { get { return this.WarPreferenceOption; } }
+        public WarPreference? WarPreference { get { return this.WarPreferenceOption.Value; } }
 
         /// <summary>
         /// Gets or Sets Achievements
@@ -237,7 +237,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BuilderBaseLeague
         /// </summary>
         [JsonPropertyName("builderBaseLeague")]
-        public BuilderBaseLeague? BuilderBaseLeague { get { return this.BuilderBaseLeagueOption; } }
+        public BuilderBaseLeague? BuilderBaseLeague { get { return this.BuilderBaseLeagueOption.Value; } }
 
         /// <summary>
         /// Used to track the state of BuilderHallLevel
@@ -250,7 +250,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BuilderHallLevel
         /// </summary>
         [JsonPropertyName("builderHallLevel")]
-        public int? BuilderHallLevel { get { return this.BuilderHallLevelOption; } }
+        public int? BuilderHallLevel { get { return this.BuilderHallLevelOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Clan
@@ -263,7 +263,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public PlayerClan? Clan { get { return this.ClanOption; } }
+        public PlayerClan? Clan { get { return this.ClanOption.Value; } }
 
         /// <summary>
         /// Used to track the state of ClanCapitalContributions
@@ -276,7 +276,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets ClanCapitalContributions
         /// </summary>
         [JsonPropertyName("clanCapitalContributions")]
-        public int? ClanCapitalContributions { get { return this.ClanCapitalContributionsOption; } }
+        public int? ClanCapitalContributions { get { return this.ClanCapitalContributionsOption.Value; } }
 
         /// <summary>
         /// Used to track the state of HeroEquipment
@@ -289,7 +289,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets HeroEquipment
         /// </summary>
         [JsonPropertyName("heroEquipment")]
-        public List<PlayerItemLevel>? HeroEquipment { get { return this.HeroEquipmentOption; } }
+        public List<PlayerItemLevel>? HeroEquipment { get { return this.HeroEquipmentOption.Value; } }
 
         /// <summary>
         /// Used to track the state of League
@@ -302,7 +302,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets League
         /// </summary>
         [JsonPropertyName("league")]
-        public League? League { get { return this.LeagueOption; } }
+        public League? League { get { return this.LeagueOption.Value; } }
 
         /// <summary>
         /// Used to track the state of LeagueTier
@@ -315,7 +315,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets LeagueTier
         /// </summary>
         [JsonPropertyName("leagueTier")]
-        public LeagueTier? LeagueTier { get { return this.LeagueTierOption; } }
+        public LeagueTier? LeagueTier { get { return this.LeagueTierOption.Value; } }
 
         /// <summary>
         /// Used to track the state of LegendStatistics
@@ -328,7 +328,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets LegendStatistics
         /// </summary>
         [JsonPropertyName("legendStatistics")]
-        public PlayerLegendStatistics? LegendStatistics { get { return this.LegendStatisticsOption; } }
+        public PlayerLegendStatistics? LegendStatistics { get { return this.LegendStatisticsOption.Value; } }
 
         /// <summary>
         /// Used to track the state of PlayerHouse
@@ -341,7 +341,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets PlayerHouse
         /// </summary>
         [JsonPropertyName("playerHouse")]
-        public PlayerHouse? PlayerHouse { get { return this.PlayerHouseOption; } }
+        public PlayerHouse? PlayerHouse { get { return this.PlayerHouseOption.Value; } }
 
         /// <summary>
         /// Used to track the state of TownHallWeaponLevel
@@ -354,7 +354,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets TownHallWeaponLevel
         /// </summary>
         [JsonPropertyName("townHallWeaponLevel")]
-        public int? TownHallWeaponLevel { get { return this.TownHallWeaponLevelOption; } }
+        public int? TownHallWeaponLevel { get { return this.TownHallWeaponLevelOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

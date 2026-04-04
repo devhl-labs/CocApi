@@ -69,7 +69,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Key
         /// </summary>
         [JsonPropertyName("key")]
-        public Key? Key { get { return this.KeyOption; } set { this.KeyOption = new(value); } }
+        public Key? Key { get { return this.KeyOption.Value; } set { this.KeyOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object

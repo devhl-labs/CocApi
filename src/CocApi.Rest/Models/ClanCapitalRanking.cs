@@ -117,7 +117,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Location
         /// </summary>
         [JsonPropertyName("location")]
-        public Location? Location { get { return this.LocationOption; } }
+        public Location? Location { get { return this.LocationOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

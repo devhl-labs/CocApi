@@ -87,7 +87,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Equipment
         /// </summary>
         [JsonPropertyName("equipment")]
-        public List<PlayerItemLevel>? Equipment { get { return this.EquipmentOption; } set { this.EquipmentOption = new(value); } }
+        public List<PlayerItemLevel>? Equipment { get { return this.EquipmentOption.Value; } set { this.EquipmentOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of SuperTroopIsActive
@@ -100,7 +100,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets SuperTroopIsActive
         /// </summary>
         [JsonPropertyName("superTroopIsActive")]
-        public bool? SuperTroopIsActive { get { return this.SuperTroopIsActiveOption; } }
+        public bool? SuperTroopIsActive { get { return this.SuperTroopIsActiveOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -109,7 +109,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public PlayerRankingClan? Clan { get { return this.ClanOption; } }
+        public PlayerRankingClan? Clan { get { return this.ClanOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

@@ -117,7 +117,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets ExpEarned
         /// </summary>
         [JsonPropertyName("expEarned")]
-        public int? ExpEarned { get { return this.ExpEarnedOption; } }
+        public int? ExpEarned { get { return this.ExpEarnedOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

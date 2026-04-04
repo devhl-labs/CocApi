@@ -81,7 +81,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Role
         /// </summary>
         [JsonPropertyName("role")]
-        public Role? Role { get { return this.RoleOption; } }
+        public Role? Role { get { return this.RoleOption.Value; } }
 
         /// <summary>
         /// Gets or Sets BuilderBaseTrophies
@@ -154,7 +154,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BuilderBaseLeague
         /// </summary>
         [JsonPropertyName("builderBaseLeague")]
-        public BuilderBaseLeague? BuilderBaseLeague { get { return this.BuilderBaseLeagueOption; } }
+        public BuilderBaseLeague? BuilderBaseLeague { get { return this.BuilderBaseLeagueOption.Value; } }
 
         /// <summary>
         /// Used to track the state of LeagueTier
@@ -167,7 +167,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets LeagueTier
         /// </summary>
         [JsonPropertyName("leagueTier")]
-        public LeagueTier? LeagueTier { get { return this.LeagueTierOption; } }
+        public LeagueTier? LeagueTier { get { return this.LeagueTierOption.Value; } }
 
         /// <summary>
         /// Used to track the state of PlayerHouse
@@ -180,7 +180,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets PlayerHouse
         /// </summary>
         [JsonPropertyName("playerHouse")]
-        public PlayerHouse? PlayerHouse { get { return this.PlayerHouseOption; } }
+        public PlayerHouse? PlayerHouse { get { return this.PlayerHouseOption.Value; } }
 
         /// <summary>
         /// Used to track the state of TownHallLevel
@@ -193,7 +193,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets TownHallLevel
         /// </summary>
         [JsonPropertyName("townHallLevel")]
-        public int? TownHallLevel { get { return this.TownHallLevelOption; } }
+        public int? TownHallLevel { get { return this.TownHallLevelOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

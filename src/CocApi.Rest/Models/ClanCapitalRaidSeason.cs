@@ -221,7 +221,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Members
         /// </summary>
         [JsonPropertyName("members")]
-        public List<ClanCapitalRaidSeasonMember>? Members { get { return this.MembersOption; } }
+        public List<ClanCapitalRaidSeasonMember>? Members { get { return this.MembersOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

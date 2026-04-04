@@ -65,7 +65,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BattleModifier
         /// </summary>
         [JsonPropertyName("battleModifier")]
-        public BattleModifier? BattleModifier { get { return this.BattleModifierOption; } }
+        public BattleModifier? BattleModifier { get { return this.BattleModifierOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Result
@@ -78,7 +78,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Result
         /// </summary>
         [JsonPropertyName("result")]
-        public Result? Result { get { return this.ResultOption; } }
+        public Result? Result { get { return this.ResultOption.Value; } }
 
         /// <summary>
         /// Gets or Sets Clan
@@ -115,7 +115,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets AttacksPerMember
         /// </summary>
         [JsonPropertyName("attacksPerMember")]
-        public int? AttacksPerMember { get { return this.AttacksPerMemberOption; } }
+        public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

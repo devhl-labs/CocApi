@@ -1,4 +1,4 @@
-$packageVersion = "2.14.2"
+$packageVersion = "2.15.0"
 $releaseNote = "Fixed DateTime deserialization"
 
 $properties = @(
@@ -21,7 +21,6 @@ $properties = @(
     "useDateTimeForDate=true"
     "modelPropertySorting=legacy"
     "operationParameterSorting=legacy"
-    "targetFramework=net9.0"
 ) -join ","
 
 $global = @(
@@ -296,6 +295,10 @@ foreach ($file in $allCodeFiles)
     $rawContent = $(Get-Content -Path $file.FullName)
     $originalContent = $rawContent -join "`n"
     $content = $rawContent -join "`r`n"
+
+    if ($file.Name -eq "RateLimitProvider``1.cs"){
+        $content=$content.Replace("BoundedChannelFullMode.DropOldest", "BoundedChannelFullMode.DropWrite")
+    }
 
     if ($file.name.EndsWith("Api.cs")){
         $content=$content.Replace('> Get', '> Fetch')

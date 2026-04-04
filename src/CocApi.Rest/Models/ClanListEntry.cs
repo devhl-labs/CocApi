@@ -89,7 +89,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public RecruitingType? Type { get { return this.TypeOption; } }
+        public RecruitingType? Type { get { return this.TypeOption.Value; } }
 
         /// <summary>
         /// Used to track the state of WarFrequency
@@ -102,7 +102,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets WarFrequency
         /// </summary>
         [JsonPropertyName("warFrequency")]
-        public WarFrequency? WarFrequency { get { return this.WarFrequencyOption; } }
+        public WarFrequency? WarFrequency { get { return this.WarFrequencyOption.Value; } }
 
         /// <summary>
         /// Gets or Sets BadgeUrls
@@ -193,7 +193,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets ChatLanguage
         /// </summary>
         [JsonPropertyName("chatLanguage")]
-        public Language? ChatLanguage { get { return this.ChatLanguageOption; } }
+        public Language? ChatLanguage { get { return this.ChatLanguageOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Location
@@ -206,7 +206,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Location
         /// </summary>
         [JsonPropertyName("location")]
-        public Location? Location { get { return this.LocationOption; } }
+        public Location? Location { get { return this.LocationOption.Value; } }
 
         /// <summary>
         /// Used to track the state of WarLosses
@@ -219,7 +219,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets WarLosses
         /// </summary>
         [JsonPropertyName("warLosses")]
-        public int? WarLosses { get { return this.WarLossesOption; } }
+        public int? WarLosses { get { return this.WarLossesOption.Value; } }
 
         /// <summary>
         /// Used to track the state of WarTies
@@ -232,7 +232,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets WarTies
         /// </summary>
         [JsonPropertyName("warTies")]
-        public int? WarTies { get { return this.WarTiesOption; } }
+        public int? WarTies { get { return this.WarTiesOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

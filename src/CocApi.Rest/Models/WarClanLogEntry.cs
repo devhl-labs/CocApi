@@ -91,7 +91,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Attacks
         /// </summary>
         [JsonPropertyName("attacks")]
-        public int? Attacks { get { return this.AttacksOption; } }
+        public int? Attacks { get { return this.AttacksOption.Value; } }
 
         /// <summary>
         /// Used to track the state of ExpEarned
@@ -104,7 +104,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets ExpEarned
         /// </summary>
         [JsonPropertyName("expEarned")]
-        public int? ExpEarned { get { return this.ExpEarnedOption; } }
+        public int? ExpEarned { get { return this.ExpEarnedOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Name
@@ -117,7 +117,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Name
         /// </summary>
         [JsonPropertyName("name")]
-        public string? Name { get { return this.NameOption; } }
+        public string? Name { get { return this.NameOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Tag
@@ -130,7 +130,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Tag
         /// </summary>
         [JsonPropertyName("tag")]
-        public string? Tag { get { return this.TagOption; } }
+        public string? Tag { get { return this.TagOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

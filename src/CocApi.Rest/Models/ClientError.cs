@@ -65,7 +65,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Detail
         /// </summary>
         [JsonPropertyName("detail")]
-        public Object? Detail { get { return this.DetailOption; } }
+        public Object? Detail { get { return this.DetailOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Message
@@ -78,7 +78,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Message
         /// </summary>
         [JsonPropertyName("message")]
-        public string? Message { get { return this.MessageOption; } }
+        public string? Message { get { return this.MessageOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Type
@@ -91,7 +91,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public string? Type { get { return this.TypeOption; } }
+        public string? Type { get { return this.TypeOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

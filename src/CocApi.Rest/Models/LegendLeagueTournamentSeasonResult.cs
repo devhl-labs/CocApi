@@ -63,7 +63,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Id
         /// </summary>
         [JsonPropertyName("id")]
-        public DateTime? Id { get { return this.IdOption; } }
+        public DateTime? Id { get { return this.IdOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Rank
@@ -76,7 +76,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Rank
         /// </summary>
         [JsonPropertyName("rank")]
-        public int? Rank { get { return this.RankOption; } }
+        public int? Rank { get { return this.RankOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

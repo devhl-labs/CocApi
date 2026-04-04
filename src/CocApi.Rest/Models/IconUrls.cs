@@ -57,7 +57,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Medium
         /// </summary>
         [JsonPropertyName("medium")]
-        public string? Medium { get { return this.MediumOption; } }
+        public string? Medium { get { return this.MediumOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Small
@@ -70,7 +70,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Small
         /// </summary>
         [JsonPropertyName("small")]
-        public string? Small { get { return this.SmallOption; } }
+        public string? Small { get { return this.SmallOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Tiny
@@ -83,7 +83,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Tiny
         /// </summary>
         [JsonPropertyName("tiny")]
-        public string? Tiny { get { return this.TinyOption; } }
+        public string? Tiny { get { return this.TinyOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

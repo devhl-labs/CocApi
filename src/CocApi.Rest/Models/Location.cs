@@ -79,7 +79,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets CountryCode
         /// </summary>
         [JsonPropertyName("countryCode")]
-        public string? CountryCode { get { return this.CountryCodeOption; } }
+        public string? CountryCode { get { return this.CountryCodeOption.Value; } }
 
         /// <summary>
         /// Used to track the state of LocalizedName
@@ -92,7 +92,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets LocalizedName
         /// </summary>
         [JsonPropertyName("localizedName")]
-        public string? LocalizedName { get { return this.LocalizedNameOption; } }
+        public string? LocalizedName { get { return this.LocalizedNameOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

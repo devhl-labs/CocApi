@@ -75,7 +75,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BestBuilderBaseSeason
         /// </summary>
         [JsonPropertyName("bestBuilderBaseSeason")]
-        public LegendLeagueTournamentSeasonResult? BestBuilderBaseSeason { get { return this.BestBuilderBaseSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? BestBuilderBaseSeason { get { return this.BestBuilderBaseSeasonOption.Value; } }
 
         /// <summary>
         /// Used to track the state of BestSeason
@@ -88,7 +88,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BestSeason
         /// </summary>
         [JsonPropertyName("bestSeason")]
-        public LegendLeagueTournamentSeasonResult? BestSeason { get { return this.BestSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? BestSeason { get { return this.BestSeasonOption.Value; } }
 
         /// <summary>
         /// Used to track the state of PreviousBuilderBaseSeason
@@ -101,7 +101,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets PreviousBuilderBaseSeason
         /// </summary>
         [JsonPropertyName("previousBuilderBaseSeason")]
-        public LegendLeagueTournamentSeasonResult? PreviousBuilderBaseSeason { get { return this.PreviousBuilderBaseSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? PreviousBuilderBaseSeason { get { return this.PreviousBuilderBaseSeasonOption.Value; } }
 
         /// <summary>
         /// Used to track the state of PreviousSeason
@@ -114,7 +114,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets PreviousSeason
         /// </summary>
         [JsonPropertyName("previousSeason")]
-        public LegendLeagueTournamentSeasonResult? PreviousSeason { get { return this.PreviousSeasonOption; } }
+        public LegendLeagueTournamentSeasonResult? PreviousSeason { get { return this.PreviousSeasonOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

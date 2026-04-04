@@ -59,7 +59,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets State
         /// </summary>
         [JsonPropertyName("state")]
-        public GroupState? State { get { return this.StateOption; } }
+        public GroupState? State { get { return this.StateOption.Value; } }
 
         /// <summary>
         /// Gets or Sets Clans

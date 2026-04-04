@@ -93,7 +93,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Duration
         /// </summary>
         [JsonPropertyName("duration")]
-        public int? Duration { get { return this.DurationOption; } }
+        public int? Duration { get { return this.DurationOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object

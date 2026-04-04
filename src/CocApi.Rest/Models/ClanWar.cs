@@ -73,7 +73,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets BattleModifier
         /// </summary>
         [JsonPropertyName("battleModifier")]
-        public BattleModifier? BattleModifier { get { return this.BattleModifierOption; } }
+        public BattleModifier? BattleModifier { get { return this.BattleModifierOption.Value; } }
 
         /// <summary>
         /// Used to track the state of State
@@ -86,7 +86,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets State
         /// </summary>
         [JsonPropertyName("state")]
-        public WarState? State { get { return this.StateOption; } }
+        public WarState? State { get { return this.StateOption.Value; } }
 
         /// <summary>
         /// Gets or Sets AttacksPerMember
@@ -147,7 +147,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets WarTag
         /// </summary>
         [JsonPropertyName("warTag")]
-        public string? WarTag { get { return this.WarTagOption; } }
+        public string? WarTag { get { return this.WarTagOption.Value; } }
 
         /// <summary>
         /// Returns the string presentation of the object
