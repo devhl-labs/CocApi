@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -360,7 +360,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanUpdatedAsync), async () =>
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanUpdatedAsync), async () =>
         {
             await ClanUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         }, 
@@ -385,7 +385,7 @@ public class ClansClient : ClientBase<ClansClient>
                 _announcedWars.TryRemove(key, out DateTime _);
         }
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarAddedAsync), async () =>
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarAddedAsync), async () =>
         {
             await ClanWarAdded.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -397,7 +397,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarEndingSoon == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndingSoonAsync), async () => 
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarEndingSoonAsync), async () => 
         {
             await ClanWarEndingSoon.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -409,7 +409,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarEndNotSeen == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndNotSeenAsync), async () => 
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarEndNotSeenAsync), async () => 
         { 
             await ClanWarEndNotSeen.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -421,7 +421,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarEnded == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarEndedAsync), async () =>
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarEndedAsync), async () =>
         { 
             await ClanWarEnded.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -433,7 +433,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarLeagueGroupUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLeagueGroupUpdatedAsync), async () =>
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarLeagueGroupUpdatedAsync), async () =>
         {
             await ClanWarLeagueGroupUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -445,7 +445,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarLogUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarLogUpdatedAsync), async () => 
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarLogUpdatedAsync), async () => 
         {
             await ClanWarLogUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -457,7 +457,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarStartingSoon == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarStartingSoonAsync), async () => 
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarStartingSoonAsync), async () => 
         {
             await ClanWarStartingSoon.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -469,7 +469,7 @@ public class ClansClient : ClientBase<ClansClient>
         if (ClanWarUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnClanWarUpdatedAsync), async () => 
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnClanWarUpdatedAsync), async () => 
         {
             await ClanWarUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },

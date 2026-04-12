@@ -36,38 +36,7 @@ namespace CocApi.Cache
             return true;
         }
 
-        private static int _maxCount = 25;
 
-        private static SemaphoreSlim _concurrentEventsSemaphore = new(_maxCount, _maxCount);
-
-        internal static void SetMaxConcurrentEvents(int max)
-        {
-            if (_maxCount == max)
-                return;
-            _maxCount = max;
-            _concurrentEventsSemaphore = new SemaphoreSlim(max, max);
-        }
-
-        internal static async Task SendConcurrentEvent<T>(ILogger<T> logger, string methodName, Func<Task> action, CancellationToken cancellationToken)
-        {
-            if (_concurrentEventsSemaphore.CurrentCount == 0)
-                logger.LogWarning("Max concurrent events reached.");
-
-            await _concurrentEventsSemaphore.WaitAsync(cancellationToken);
-
-            try
-            {
-                await action().ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", typeof(T).Name, methodName);
-            }
-            finally
-            {
-                _concurrentEventsSemaphore.Release();
-            }
-        }
 
         public static class TableNames
         {

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -170,7 +170,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         if (PlayerUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnPlayerUpdatedAsync), async () =>
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnPlayerUpdatedAsync), async () =>
         {
             await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },
@@ -182,7 +182,7 @@ public class PlayersClient : ClientBase<PlayersClient>
         if (PlayerUpdated == null)
             return;
 
-        await Library.SendConcurrentEvent(Logger, nameof(OnMemberUpdatedAsync), async () =>
+        await Synchronizer.SendConcurrentEventAsync(Logger, nameof(OnMemberUpdatedAsync), async () =>
         {
             await PlayerUpdated.Invoke(this, eventArgs).ConfigureAwait(false);
         },

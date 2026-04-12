@@ -49,7 +49,7 @@ public class CacheOptions
     /// Maximum number of clan/war update tasks that may run concurrently across all cache services.
     /// Limits thread-pool pressure without reducing the DB page size (ConcurrentUpdates).
     /// </summary>
-    public int MaxConcurrency { get; set; } = 50;
+    public int MaxConcurrentUpdates { get; set; } = 50;
 
     /// <summary>
     /// Queries the clan's league group from the cache to obtain the war tags.

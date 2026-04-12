@@ -19,7 +19,6 @@ public class ClientBase<T>
         Synchronizer synchronizer,
         IOptions<CacheOptions> options)
     {
-        Library.SetMaxConcurrentEvents(options.Value.MaxConcurrentEvents);
         Logger = logger;
         ScopeFactory = scopeFactory;
         EnsureMigrated();
