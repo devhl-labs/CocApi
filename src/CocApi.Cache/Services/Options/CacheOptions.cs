@@ -32,7 +32,7 @@ public class CacheOptions
     /// <summary>
     /// Download the clan, current war, war log, and CWL group.
     /// </summary>
-    public ClanWarServiceOptions ClanWars { get; } = new ClanWarServiceOptions { ConcurrentUpdates = 200, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
+    public ClanWarServiceOptions ClanWars { get; } = new ClanWarServiceOptions { ConcurrentUpdates = 200, DelayBeforeExecution = TimeSpan.FromSeconds(15), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
 
     /// <summary>
     /// This will keep any already downloaded CWL war up to date.
@@ -78,7 +78,7 @@ public class CacheOptions
     /// Queries the CurrentWar cached table for both clans in the war.
     /// Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
     /// </summary>
-    public WarServiceOptions Wars { get; } = new WarServiceOptions { ConcurrentUpdates = 500, DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
+    public WarServiceOptions Wars { get; } = new WarServiceOptions { ConcurrentUpdates = 500, DelayBeforeExecution = TimeSpan.FromSeconds(25), DelayBetweenExecutions = TimeSpan.FromSeconds(5), Enabled = true };
 
     /// <summary>
     /// Used to bypass cache. Only SuperCell approved users may use this operation.
