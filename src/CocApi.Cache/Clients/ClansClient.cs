@@ -315,16 +315,44 @@ public class ClansClient : ClientBase<ClansClient>
 
     public async Task<Clan> GetOrFetchClanAsync(string tag, CancellationToken cancellationToken = default)
     {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
         Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+        sw.Stop();
 
-        return result ?? (await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false)).Ok()!;
+        if (result != null)
+        {
+            if (sw.ElapsedMilliseconds > 500)
+                Logger.LogWarning("GetOrFetchClanAsync cache read slow | Tag={Tag} | ElapsedMs={ElapsedMs}", tag, sw.ElapsedMilliseconds);
+            return result;
+        }
+
+        Logger.LogDebug("GetOrFetchClanAsync cache miss, fetching live | Tag={Tag} | CacheReadMs={CacheReadMs}", tag, sw.ElapsedMilliseconds);
+        var fetchSw = System.Diagnostics.Stopwatch.StartNew();
+        var fetched = (await ClansApi.FetchClanAsync(tag, cancellationToken).ConfigureAwait(false)).Ok()!;
+        fetchSw.Stop();
+        Logger.LogDebug("GetOrFetchClanAsync live fetch done | Tag={Tag} | FetchMs={FetchMs}", tag, fetchSw.ElapsedMilliseconds);
+        return fetched;
     }
 
     public async Task<Clan?> GetOrFetchClanOrDefaultAsync(string tag, CancellationToken cancellationToken = default)
     {
+        var sw = System.Diagnostics.Stopwatch.StartNew();
         Clan? result = (await GetCachedClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Content;
+        sw.Stop();
 
-        return result ?? (await ClansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Ok();
+        if (result != null)
+        {
+            if (sw.ElapsedMilliseconds > 500)
+                Logger.LogWarning("GetOrFetchClanOrDefaultAsync cache read slow | Tag={Tag} | ElapsedMs={ElapsedMs}", tag, sw.ElapsedMilliseconds);
+            return result;
+        }
+
+        Logger.LogDebug("GetOrFetchClanOrDefaultAsync cache miss, fetching live | Tag={Tag} | CacheReadMs={CacheReadMs}", tag, sw.ElapsedMilliseconds);
+        var fetchSw = System.Diagnostics.Stopwatch.StartNew();
+        var fetched = (await ClansApi.FetchClanOrDefaultAsync(tag, cancellationToken).ConfigureAwait(false))?.Ok();
+        fetchSw.Stop();
+        Logger.LogDebug("GetOrFetchClanOrDefaultAsync live fetch done | Tag={Tag} | FetchMs={FetchMs}", tag, fetchSw.ElapsedMilliseconds);
+        return fetched;
     }
 
     private async Task OnClanUpdatedAsync(object sender, ClanUpdatedEventArgs eventArgs)
