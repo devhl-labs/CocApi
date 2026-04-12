@@ -90,7 +90,10 @@ public sealed class MemberService : ServiceBase
                 }
 
                 if (cachedPlayer.IsExpired)
-                    tasks.Add(MonitorMemberAsync(cachedPlayer, cachedClan, cancellationToken));
+                {
+                    await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    tasks.Add(Synchronizer.WithSemaphoreAsync(MonitorMemberAsync(cachedPlayer, cachedClan, cancellationToken)));
+                }
             }
 
             foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.Members.Any(m => m.Tag == p.Tag)))

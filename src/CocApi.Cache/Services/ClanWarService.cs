@@ -87,7 +87,8 @@ public sealed class ClanWarService : ServiceBase
 
                 updatingTags.Add(cachedClan.Tag);
 
-                tasks.Add(TryUpdateAsync(cachedClan, cancellationToken));
+                await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                tasks.Add(Synchronizer.WithSemaphoreAsync(TryUpdateAsync(cachedClan, cancellationToken)));
             }
 
             try

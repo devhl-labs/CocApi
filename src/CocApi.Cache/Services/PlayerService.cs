@@ -83,7 +83,10 @@ public sealed class PlayerService : ServiceBase
                 updatingTags.Add(trackedPlayer.Tag);
 
                 if (trackedPlayer.Download && trackedPlayer.IsExpired)
-                    tasks.Add(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken));
+                {
+                    await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    tasks.Add(Synchronizer.WithSemaphoreAsync(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken)));
+                }
             }
 
             await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);

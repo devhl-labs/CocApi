@@ -88,7 +88,8 @@ public sealed class CwlWarService : ServiceBase
                 {
                     updatingCwlWar.Add(cachedWar.WarTag);
 
-                    tasks.Add(UpdateCwlWarAsync(clansApi, cachedWar, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken));
+                    await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    tasks.Add(Synchronizer.WithSemaphoreAsync(UpdateCwlWarAsync(clansApi, cachedWar, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken)));
                 }
 
                 tasks.Add(SendWarAnnouncementsAsync(cachedWar, cancellationToken));

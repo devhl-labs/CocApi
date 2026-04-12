@@ -112,16 +112,13 @@ public sealed class WarService : ServiceBase
 
                 List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
 
-                tasks.Add(
-                    UpdateWarAsync(
-                        clansApi,
-                        dbContext,
-                        cachedWar,
+                await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                tasks.Add(Synchronizer.WithSemaphoreAsync(Task.WhenAll(
+                    UpdateWarAsync(clansApi, dbContext, cachedWar,
                         cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag),
                         cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag),
-                        cancellationToken));
-
-                tasks.Add(SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken));
+                        cancellationToken),
+                    SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken))));
             }
 
             await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);

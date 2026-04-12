@@ -98,7 +98,8 @@ public sealed class ActiveWarService : ServiceBase
 
                 updatingTags.Add(cachedClan.Tag);
 
-                tasks.Add(MonitorClanWarAsync(cachedClan, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken));
+                await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                tasks.Add(Synchronizer.WithSemaphoreAsync(MonitorClanWarAsync(cachedClan, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken)));
             }
 
             await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);

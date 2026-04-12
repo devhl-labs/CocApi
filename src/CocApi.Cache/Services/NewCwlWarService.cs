@@ -139,7 +139,8 @@ public sealed class NewCwlWarService : ServiceBase
                 foreach (var warTags in season.Value)
                 {
                     Option<bool> realTime = Options.Value.RealTime != null ? new Option<bool>(Options.Value.RealTime.Value) : default;
-                    processRequests.Add(ProcessRequest(clansApi, realTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken));
+                    await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+                    processRequests.Add(Synchronizer.WithSemaphoreAsync(ProcessRequest(clansApi, realTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken)));
                 }
 
             try
