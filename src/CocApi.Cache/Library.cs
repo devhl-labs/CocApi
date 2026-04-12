@@ -42,6 +42,8 @@ namespace CocApi.Cache
 
         internal static void SetMaxConcurrentEvents(int max)
         {
+            if (_maxCount == max)
+                return;
             _maxCount = max;
             _concurrentEventsSemaphore = new SemaphoreSlim(max, max);
         }
