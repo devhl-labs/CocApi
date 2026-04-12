@@ -52,6 +52,7 @@ public sealed class WarService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
+        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
         SetDateVariables();
 
         WarServiceOptions options = Options.Value.Wars;
@@ -93,6 +94,7 @@ public sealed class WarService : ServiceBase
         List<Task> tasks = new();
 
         HashSet<string> acquiredWars = new();
+        int lockSkips = 0;
 
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
@@ -101,7 +103,10 @@ public sealed class WarService : ServiceBase
             foreach (CachedWar cachedWar in cachedWars)
             {
                 if (!Synchronizer.WarLock.TryAcquire(cachedWar.Key))
+                {
+                    lockSkips++;
                     continue;
+                }
 
                 acquiredWars.Add(cachedWar.Key);
 
@@ -121,7 +126,13 @@ public sealed class WarService : ServiceBase
 
             await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
 
+            var saveSw = System.Diagnostics.Stopwatch.StartNew();
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            saveSw.Stop();
+
+            cycleSw.Stop();
+            Logger.LogDebug("WarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
+                cachedWars.Count, acquiredWars.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
         }
         finally
         {

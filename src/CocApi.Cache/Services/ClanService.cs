@@ -51,6 +51,7 @@ public sealed class ClanService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
+        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
         SetDateVariables();
 
         ClanServiceOptions options = Options.Value.Clans;
@@ -82,13 +83,17 @@ public sealed class ClanService : ServiceBase
         List<Task> tasks = new();
 
         HashSet<string> updatingTags = new();
+        int lockSkips = 0;
 
         try
         {
             foreach (CachedClan cachedClan in cachedClans)
             {
                 if (!Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
+                {
+                    lockSkips++;
                     continue;
+                }
 
                 updatingTags.Add(cachedClan.Tag);
 
@@ -104,7 +109,13 @@ public sealed class ClanService : ServiceBase
                 _logger.LogError(e, "An exception occured while updating clans.");
             }
 
+            var saveSw = System.Diagnostics.Stopwatch.StartNew();
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            saveSw.Stop();
+
+            cycleSw.Stop();
+            _logger.LogDebug("ClanService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
+                cachedClans.Count, updatingTags.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
         }
         finally
         {
