@@ -116,6 +116,9 @@ public sealed class ClanService : ServiceBase
             cycleSw.Stop();
             _logger.LogDebug("ClanService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
                 cachedClans.Count, updatingTags.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
+            if (cycleSw.ElapsedMilliseconds > 5000)
+                _logger.LogWarning("ClanService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
+                    cachedClans.Count, updatingTags.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
         }
         finally
         {

@@ -133,6 +133,9 @@ public sealed class WarService : ServiceBase
             cycleSw.Stop();
             Logger.LogDebug("WarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
                 cachedWars.Count, acquiredWars.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
+            if (cycleSw.ElapsedMilliseconds > 5000)
+                Logger.LogWarning("WarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
+                    cachedWars.Count, acquiredWars.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
         }
         finally
         {
