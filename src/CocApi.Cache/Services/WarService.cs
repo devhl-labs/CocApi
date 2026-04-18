@@ -235,10 +235,10 @@ public sealed class WarService : ServiceBase
         try
         {
             if (cachedClan == null && cachedOpponent?.CurrentWar.IsExpired == true)
-                cachedClan = await CreateCachedClan(clansApi, cachedWar.ClanTag, dbContext, cancellationToken).ConfigureAwait(false);
+                cachedClan = await CreateCachedClan(clansApi, cachedWar.ClanTag, cancellationToken).ConfigureAwait(false);
 
             if (cachedOpponent == null && cachedClan?.CurrentWar.IsExpired == true)
-                cachedOpponent = await CreateCachedClan(clansApi, cachedWar.OpponentTag, dbContext, cancellationToken).ConfigureAwait(false);
+                cachedOpponent = await CreateCachedClan(clansApi, cachedWar.OpponentTag, cancellationToken).ConfigureAwait(false);
 
             List<CachedClan?> cachedClans = new() { cachedClan, cachedOpponent };
 
@@ -285,7 +285,7 @@ public sealed class WarService : ServiceBase
         }
     }
 
-    private async Task<CachedClan?> CreateCachedClan(IClansApi clansApi, string tag, CacheDbContext dbContext, CancellationToken cancellationToken)
+    private async Task<CachedClan?> CreateCachedClan(IClansApi clansApi, string tag, CancellationToken cancellationToken)
     {
         if (!Synchronizer.ClanLock.TryAcquire(tag))
             return null;
@@ -305,16 +305,10 @@ public sealed class WarService : ServiceBase
                 CurrentWar = cachedClanWar
             };
 
-            await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-            try
-            {
-                dbContext.Clans.Add(cachedClan);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
+            using var scope = ScopeFactory.CreateScope();
+            CacheDbContext ownedContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+            ownedContext.Clans.Add(cachedClan);
+            await ownedContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             return cachedClan;
         }
