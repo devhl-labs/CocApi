@@ -53,6 +53,13 @@ public class CacheOptions
     public int MaxConcurrentUpdates { get; set; } = 20;
 
     /// <summary>
+    /// Number of completed API fetches to accumulate before applying entity mutations and calling SaveChangesAsync.
+    /// Smaller values reduce peak DB write latency; larger values reduce save frequency.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public int SaveBatchSize { get; set; } = 50;
+
+    /// <summary>
     /// Queries the clan's league group from the cache to obtain the war tags.
     /// The API is then queried for each war tag. 
     /// If the resulting war does not contain the desired clan, the war will be stored in memory.

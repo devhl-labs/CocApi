@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
@@ -15,6 +17,8 @@ namespace CocApi.Cache.Services;
 
 public sealed class MemberService : ServiceBase
 {
+    private readonly ILogger<MemberService> _logger;
+
     internal event AsyncEventHandler<MemberUpdatedEventArgs>? MemberUpdated;
 
 
@@ -35,6 +39,7 @@ public sealed class MemberService : ServiceBase
         : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ClanMembers))
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
+        _logger = logger;
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
@@ -73,7 +78,9 @@ public sealed class MemberService : ServiceBase
                 .ToListAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            List<Task> tasks = new();
+            var channel = Channel.CreateUnbounded<(CachedPlayer Player, CachedPlayer? Fetched)>(new UnboundedChannelOptions { SingleReader = true });
+
+            List<Task> allFetchTasks = new();
 
             foreach (var member in cachedClan.Content.Members)
             {
@@ -92,14 +99,18 @@ public sealed class MemberService : ServiceBase
                 if (cachedPlayer.IsExpired)
                 {
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    tasks.Add(Synchronizer.WithSemaphoreAsync(MonitorMemberAsync(cachedPlayer, cachedClan, cancellationToken)));
+                    allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedPlayer, cachedClan, channel.Writer, cancellationToken)));
                 }
             }
 
             foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.Members.Any(m => m.Tag == p.Tag)))
                 player.ClanTag = null;
 
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
+
+            await foreach (var (cachedPlayer, fetched) in channel.Reader.ReadAllAsync(CancellationToken.None))
+                if (fetched != null)
+                    cachedPlayer.UpdateFrom(fetched);
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
@@ -110,15 +121,25 @@ public sealed class MemberService : ServiceBase
         }
     }
 
-    private async Task MonitorMemberAsync(CachedPlayer cachedPlayer, CachedClan cachedClan, CancellationToken cancellationToken)
+    private async Task TryFetchAsync(CachedPlayer cachedPlayer, CachedClan cachedClan, ChannelWriter<(CachedPlayer, CachedPlayer?)> writer, CancellationToken cancellationToken)
     {
-        IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
+        CachedPlayer? fetched = null;
+        try
+        {
+            IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
 
-        CachedPlayer fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, Ttl, playersApi, cancellationToken).ConfigureAwait(false);
+            fetched = await CachedPlayer.FromPlayerResponseAsync(cachedPlayer.Tag, Ttl, playersApi, cancellationToken).ConfigureAwait(false);
 
-        if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && MemberUpdated != null)
-            await MemberUpdated(this, new(cachedClan, cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
-
-        cachedPlayer.UpdateFrom(fetched);
+            if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && MemberUpdated != null)
+                await MemberUpdated(this, new(cachedClan, cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception occured while updating member {tag}", cachedPlayer.Tag);
+        }
+        finally
+        {
+            writer.TryWrite((cachedPlayer, fetched));
+        }
     }
 }

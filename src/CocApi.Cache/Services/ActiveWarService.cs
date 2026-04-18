@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
@@ -15,6 +17,8 @@ namespace CocApi.Cache.Services;
 
 public sealed class ActiveWarService : ServiceBase
 {
+    private readonly ILogger<ActiveWarService> _logger;
+
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
@@ -32,6 +36,7 @@ public sealed class ActiveWarService : ServiceBase
         : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ActiveWars))
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
+        _logger = logger;
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
@@ -85,9 +90,12 @@ public sealed class ActiveWarService : ServiceBase
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
 
-        List<Task> tasks = new();
-
         HashSet<string> updatingTags = new();
+        long totalSaveMs = 0;
+
+        var channel = Channel.CreateUnbounded<(CachedClan Clan, ActiveWarFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
+
+        List<Task> allFetchTasks = new();
 
         try
         {
@@ -99,12 +107,35 @@ public sealed class ActiveWarService : ServiceBase
                 updatingTags.Add(cachedClan.Tag);
 
                 await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                tasks.Add(Synchronizer.WithSemaphoreAsync(MonitorClanWarAsync(cachedClan, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken)));
+                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), channel.Writer, cancellationToken)));
             }
 
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            int batchSize = Options.Value.SaveBatchSize;
+            var batch = new List<(CachedClan Clan, ActiveWarFetch Result)>(batchSize);
+
+            await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
+            {
+                batch.Add(item);
+
+                if (batch.Count >= batchSize)
+                {
+                    ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                    await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
+                    batch.Clear();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
+            }
         }
         finally
         {
@@ -113,19 +144,54 @@ public sealed class ActiveWarService : ServiceBase
         }
     }
 
-    private async Task MonitorClanWarAsync(CachedClan cachedClan, Option<bool> realtime, CancellationToken cancellationToken)
+    private sealed class ActiveWarFetch
     {
-        IClansApi clansApi = ApiFactory.Create<IClansApi>();
+        public CachedClanWar? CurrentWar { get; set; }
+        public bool IsNewWar { get; set; }
+        public Rest.Models.WarType? NewWarType { get; set; }
+    }
 
-        CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
-
-        if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
+    private static void ApplyBatch(List<(CachedClan Clan, ActiveWarFetch Result)> batch)
+    {
+        foreach (var (cachedClan, result) in batch)
         {
-            cachedClan.CurrentWar.Type = fetched.Content.GetWarType();
+            if (result.CurrentWar != null)
+            {
+                if (result.IsNewWar)
+                {
+                    cachedClan.CurrentWar.Type = result.NewWarType;
+                    cachedClan.CurrentWar.Added = false;
+                }
 
-            cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
+                cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+            }
         }
+    }
 
-        cachedClan.CurrentWar.UpdateFrom(fetched);
+    private async Task TryFetchAsync(CachedClan cachedClan, Option<bool> realtime, ChannelWriter<(CachedClan, ActiveWarFetch)> writer, CancellationToken cancellationToken)
+    {
+        var result = new ActiveWarFetch();
+        try
+        {
+            IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
+            CachedClanWar fetched = await CachedClanWar.FromCurrentWarResponseAsync(cachedClan.Tag, realtime, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
+
+            if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
+            {
+                result.IsNewWar = true;
+                result.NewWarType = fetched.Content.GetWarType();
+            }
+
+            result.CurrentWar = fetched;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
+        }
+        finally
+        {
+            writer.TryWrite((cachedClan, result));
+        }
     }
 }

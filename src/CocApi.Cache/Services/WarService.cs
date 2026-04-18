@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
@@ -91,12 +92,15 @@ public sealed class WarService : ServiceBase
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        List<Task> tasks = new();
-
         HashSet<string> acquiredWars = new();
         int lockSkips = 0;
+        long totalSaveMs = 0;
 
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
+
+        var channel = Channel.CreateUnbounded<(CachedWar War, WarFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
+
+        List<Task> allFetchTasks = new();
 
         try
         {
@@ -113,26 +117,48 @@ public sealed class WarService : ServiceBase
                 List<CachedClan> cachedClans = allCachedClans.Where(c => c.Tag == cachedWar.ClanTag || c.Tag == cachedWar.OpponentTag).ToList();
 
                 await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                tasks.Add(Synchronizer.WithSemaphoreAsync(Task.WhenAll(
-                    UpdateWarAsync(clansApi, dbContext, cachedWar,
+                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(
+                    TryFetchAsync(clansApi, dbContext, cachedWar,
                         cachedClans.FirstOrDefault(c => c.Tag == cachedWar.ClanTag),
                         cachedClans.FirstOrDefault(c => c.Tag == cachedWar.OpponentTag),
-                        cancellationToken),
-                    SendWarAnnouncementsAsync(cachedWar, cachedClans.Select(c => c.CurrentWar).ToArray(), cancellationToken))));
+                        cachedClans.Select(c => c.CurrentWar).ToArray(),
+                        channel.Writer,
+                        cancellationToken)));
             }
 
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            var saveSw = System.Diagnostics.Stopwatch.StartNew();
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-            saveSw.Stop();
+            int batchSize = Options.Value.SaveBatchSize;
+            var batch = new List<(CachedWar War, WarFetch Result)>(batchSize);
+
+            await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
+            {
+                batch.Add(item);
+
+                if (batch.Count >= batchSize)
+                {
+                    ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                    await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
+                    batch.Clear();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
+            }
 
             cycleSw.Stop();
             Logger.LogDebug("WarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                cachedWars.Count, acquiredWars.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
+                cachedWars.Count, acquiredWars.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
             if (cycleSw.ElapsedMilliseconds > 5000)
                 Logger.LogWarning("WarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                    cachedWars.Count, acquiredWars.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
+                    cachedWars.Count, acquiredWars.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
         }
         finally
         {
@@ -141,12 +167,69 @@ public sealed class WarService : ServiceBase
         }
     }
 
-    private async Task UpdateWarAsync(
+    private sealed class WarFetch
+    {
+        public CachedClanWar? Source { get; set; }
+        public bool IsFinal { get; set; }
+        public bool SetFinal { get; set; }
+        public DateTime? KeepUntil { get; set; }
+        public Announcements NewAnnouncements { get; set; }
+    }
+
+    private static void ApplyBatch(List<(CachedWar War, WarFetch Result)> batch)
+    {
+        foreach (var (cachedWar, result) in batch)
+        {
+            cachedWar.Announcements |= result.NewAnnouncements;
+
+            if (result.KeepUntil.HasValue)
+                cachedWar.KeepUntil = result.KeepUntil.Value;
+
+            if (result.SetFinal)
+                cachedWar.IsFinal = true;
+            else if (result.Source != null)
+            {
+                cachedWar.UpdateFrom(result.Source);
+                cachedWar.IsFinal = result.IsFinal;
+            }
+        }
+    }
+
+    private async Task TryFetchAsync(
         IClansApi clansApi,
         CacheDbContext dbContext,
         CachedWar cachedWar,
         CachedClan? cachedClan,
         CachedClan? cachedOpponent,
+        CachedClanWar[] cachedClanWars,
+        ChannelWriter<(CachedWar, WarFetch)> writer,
+        CancellationToken cancellationToken)
+    {
+        var result = new WarFetch();
+        try
+        {
+            await Task.WhenAll(
+                ComputeWarAsync(clansApi, dbContext, cachedWar, cachedClan, cachedOpponent, result, cancellationToken),
+                GatherAnnouncementsAsync(cachedWar, cachedClanWars, result, cancellationToken))
+                .ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "An exception occured while updating war {id}", cachedWar.Id);
+        }
+        finally
+        {
+            writer.TryWrite((cachedWar, result));
+        }
+    }
+
+    private async Task ComputeWarAsync(
+        IClansApi clansApi,
+        CacheDbContext dbContext,
+        CachedWar cachedWar,
+        CachedClan? cachedClan,
+        CachedClan? cachedOpponent,
+        WarFetch result,
         CancellationToken cancellationToken)
     {
         try
@@ -161,8 +244,7 @@ public sealed class WarService : ServiceBase
 
             if (cachedClans.All(c => c?.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime) || cachedWar.EndTime.AddDays(8) < now)
             {
-                cachedWar.IsFinal = true;
-
+                result.SetFinal = true;
                 return;
             }
 
@@ -184,9 +266,8 @@ public sealed class WarService : ServiceBase
 
             if (clan != null)
             {
-                cachedWar.UpdateFrom(clan.CurrentWar);
-
-                cachedWar.IsFinal = clan.CurrentWar.State == Rest.Models.WarState.WarEnded;
+                result.Source = clan.CurrentWar;
+                result.IsFinal = clan.CurrentWar.State == Rest.Models.WarState.WarEnded;
             }
             else if (cachedClans.All(c =>
                     c != null &&
@@ -194,12 +275,12 @@ public sealed class WarService : ServiceBase
                         c.CurrentWar.PreparationStartTime == DateTime.MinValue ||
                         c.CurrentWar.PreparationStartTime > cachedWar.PreparationStartTime
                     )))
-                cachedWar.IsFinal = true;
+                result.SetFinal = true;
         }
         catch (Exception e)
         {
             Logger.LogError(e, "Failed to update war clanTag: {cachedWar}", cachedWar.Id);
-            cachedWar.KeepUntil = DateTime.UtcNow.AddHours(1);
+            result.KeepUntil = DateTime.UtcNow.AddHours(1);
             throw;
         }
     }
@@ -243,7 +324,7 @@ public sealed class WarService : ServiceBase
         }
     }
 
-    private async Task SendWarAnnouncementsAsync(CachedWar cachedWar, CachedClanWar[] cachedClanWars, CancellationToken cancellationToken)
+    private async Task GatherAnnouncementsAsync(CachedWar cachedWar, CachedClanWar[] cachedClanWars, WarFetch result, CancellationToken cancellationToken)
     {
         try
         {
@@ -254,7 +335,7 @@ public sealed class WarService : ServiceBase
                 now > cachedWar.Content.StartTime.AddHours(-1) &&
                 now < cachedWar.Content.StartTime)
             {
-                cachedWar.Announcements |= Announcements.WarStartingSoon;
+                result.NewAnnouncements |= Announcements.WarStartingSoon;
 
                 if (ClanWarStartingSoon != null)
                     await ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
@@ -264,7 +345,7 @@ public sealed class WarService : ServiceBase
                 now > cachedWar.Content.EndTime.AddHours(-1) &&
                 now < cachedWar.Content.EndTime)
             {
-                cachedWar.Announcements |= Announcements.WarEndingSoon;
+                result.NewAnnouncements |= Announcements.WarEndingSoon;
 
                 if (ClanWarEndingSoon != null)
                     await ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
@@ -278,7 +359,7 @@ public sealed class WarService : ServiceBase
                 cachedClanWars != null &&
                 cachedClanWars.All(w => w.Content != null && w.Content.PreparationStartTime != cachedWar.Content.PreparationStartTime))
             {
-                cachedWar.Announcements |= Announcements.WarEndNotSeen;
+                result.NewAnnouncements |= Announcements.WarEndNotSeen;
 
                 if (ClanWarEndNotSeen != null)
                     await ClanWarEndNotSeen.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
@@ -288,7 +369,7 @@ public sealed class WarService : ServiceBase
                 cachedWar.EndTime < now &&
                 cachedWar.EndTime.Day <= (now.Day + 1))
             {
-                cachedWar.Announcements |= Announcements.WarEnded;
+                result.NewAnnouncements |= Announcements.WarEnded;
 
                 if (ClanWarEnded != null)
                     await ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)).ConfigureAwait(false);
@@ -297,7 +378,7 @@ public sealed class WarService : ServiceBase
         catch (Exception e)
         {
             if (!cancellationToken.IsCancellationRequested)
-                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
+                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(GatherAnnouncementsAsync));
         }
     }
 }

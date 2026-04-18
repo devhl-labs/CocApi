@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
@@ -74,9 +75,12 @@ public sealed class CwlWarService : ServiceBase
             ? cachedWars.Max(c => c.Id)
             : int.MinValue;
 
-        List<Task> tasks = new();
-
         HashSet<string> updatingCwlWar = new();
+        long totalSaveMs = 0;
+
+        var channel = Channel.CreateUnbounded<(CachedWar War, CwlWarFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
+
+        List<Task> allFetchTasks = new();
 
         try
         {
@@ -89,15 +93,41 @@ public sealed class CwlWarService : ServiceBase
                     updatingCwlWar.Add(cachedWar.WarTag);
 
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    tasks.Add(Synchronizer.WithSemaphoreAsync(UpdateCwlWarAsync(clansApi, cachedWar, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), cancellationToken)));
+                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), channel.Writer, cancellationToken));
                 }
-
-                tasks.Add(SendWarAnnouncementsAsync(cachedWar, cancellationToken));
+                else
+                {
+                    // No lock acquired — still process announcements only (no HTTP).
+                    allFetchTasks.Add(TryFetchAnnouncementsOnlyAsync(cachedWar, channel.Writer, cancellationToken));
+                }
             }
 
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            int batchSize = Options.Value.SaveBatchSize;
+            var batch = new List<(CachedWar War, CwlWarFetch Result)>(batchSize);
+
+            await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
+            {
+                batch.Add(item);
+
+                if (batch.Count >= batchSize)
+                {
+                    ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                    await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
+                    batch.Clear();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
+            }
         }
         finally
         {
@@ -106,7 +136,68 @@ public sealed class CwlWarService : ServiceBase
         }
     }
 
-    private async Task UpdateCwlWarAsync(IClansApi clansApi, CachedWar cachedWar, Option<bool> realtime, CancellationToken cancellationToken)
+    private sealed class CwlWarFetch
+    {
+        public CachedWar? Source { get; set; }
+        public bool IsFinal { get; set; }
+        public Announcements NewAnnouncements { get; set; }
+    }
+
+    private static void ApplyBatch(List<(CachedWar War, CwlWarFetch Result)> batch)
+    {
+        foreach (var (cachedWar, result) in batch)
+        {
+            cachedWar.Announcements |= result.NewAnnouncements;
+
+            if (result.Source != null)
+            {
+                cachedWar.IsFinal = result.IsFinal;
+                cachedWar.UpdateFrom(result.Source);
+            }
+        }
+    }
+
+    private async Task TryFetchAsync(IClansApi clansApi, CachedWar cachedWar, Option<bool> realtime, ChannelWriter<(CachedWar, CwlWarFetch)> writer, CancellationToken cancellationToken)
+    {
+        var result = new CwlWarFetch();
+        try
+        {
+            try
+            {
+                await FetchCwlWarAsync(clansApi, cachedWar, realtime, result, cancellationToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                // Release the semaphore immediately after HTTP — same scope as master's UpdateCwlWarAsync.
+                Synchronizer.UpdateSemaphore.Release();
+            }
+
+            await GatherAnnouncementsAsync(cachedWar, result, cancellationToken).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e, "An exception occured while updating cwl war {warTag}", cachedWar.WarTag);
+        }
+        finally
+        {
+            writer.TryWrite((cachedWar, result));
+        }
+    }
+
+    private async Task TryFetchAnnouncementsOnlyAsync(CachedWar cachedWar, ChannelWriter<(CachedWar, CwlWarFetch)> writer, CancellationToken cancellationToken)
+    {
+        var result = new CwlWarFetch();
+        try
+        {
+            await GatherAnnouncementsAsync(cachedWar, result, cancellationToken).ConfigureAwait(false);
+        }
+        finally
+        {
+            writer.TryWrite((cachedWar, result));
+        }
+    }
+
+    private async Task FetchCwlWarAsync(IClansApi clansApi, CachedWar cachedWar, Option<bool> realtime, CwlWarFetch result, CancellationToken cancellationToken)
     {
         CachedWar fetched = await CachedWar
                 .FromClanWarLeagueWarResponseAsync(cachedWar.WarTag, cachedWar.Season.Value, realtime, Ttl, clansApi, cancellationToken)
@@ -121,12 +212,11 @@ public sealed class CwlWarService : ServiceBase
                 .Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken))
                 .ConfigureAwait(false);
 
-        cachedWar.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
-
-        cachedWar.UpdateFrom(fetched);
+        result.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
+        result.Source = fetched;
     }
 
-    private async Task SendWarAnnouncementsAsync(CachedWar cachedWar, CancellationToken cancellationToken)
+    private async Task GatherAnnouncementsAsync(CachedWar cachedWar, CwlWarFetch result, CancellationToken cancellationToken)
     {
         try
         {
@@ -137,7 +227,7 @@ public sealed class CwlWarService : ServiceBase
                 now > cachedWar.Content.StartTime.AddHours(-1) &&
                 now < cachedWar.Content.StartTime)
             {
-                cachedWar.Announcements |= Announcements.WarStartingSoon;
+                result.NewAnnouncements |= Announcements.WarStartingSoon;
 
                 if (ClanWarStartingSoon != null)
                     await ClanWarStartingSoon
@@ -149,7 +239,7 @@ public sealed class CwlWarService : ServiceBase
                 now > cachedWar.Content.EndTime.AddHours(-1) &&
                 now < cachedWar.Content.EndTime)
             {
-                cachedWar.Announcements |= Announcements.WarEndingSoon;
+                result.NewAnnouncements |= Announcements.WarEndingSoon;
 
                 if (ClanWarEndingSoon != null)
                     await ClanWarEndingSoon
@@ -161,7 +251,7 @@ public sealed class CwlWarService : ServiceBase
                 cachedWar.EndTime < now &&
                 cachedWar.EndTime.Day <= (now.Day + 1))
             {
-                cachedWar.Announcements |= Announcements.WarEnded;
+                result.NewAnnouncements |= Announcements.WarEnded;
 
                 if (ClanWarEnded != null)
                     await ClanWarEnded
@@ -172,9 +262,7 @@ public sealed class CwlWarService : ServiceBase
         catch (Exception e)
         {
             if (!cancellationToken.IsCancellationRequested)
-                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(SendWarAnnouncementsAsync));
-
-            //throw;
+                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(GatherAnnouncementsAsync));
         }
     }
 }

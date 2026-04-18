@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
@@ -15,6 +17,8 @@ namespace CocApi.Cache.Services;
 
 public sealed class PlayerService : ServiceBase
 {
+    private readonly ILogger<PlayerService> _logger;
+
     internal event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
 
@@ -35,6 +39,7 @@ public sealed class PlayerService : ServiceBase
     : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Players))
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
+        _logger = logger;
         TimeToLiveProvider = timeToLiveProvider;
         Synchronizer = synchronizer;
         ApiFactory = apiFactory;
@@ -67,11 +72,14 @@ public sealed class PlayerService : ServiceBase
             ? trackedPlayers.Max(c => c.Id)
             : int.MinValue;
 
-        List<Task> tasks = new();
-
         HashSet<string> updatingTags = new();
+        long totalSaveMs = 0;
 
         IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
+
+        var channel = Channel.CreateUnbounded<(CachedPlayer Player, CachedPlayer? Fetched)>(new UnboundedChannelOptions { SingleReader = true });
+
+        List<Task> allFetchTasks = new();
 
         try
         {
@@ -85,13 +93,36 @@ public sealed class PlayerService : ServiceBase
                 if (trackedPlayer.Download && trackedPlayer.IsExpired)
                 {
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    tasks.Add(Synchronizer.WithSemaphoreAsync(MonitorPlayerAsync(playersApi, trackedPlayer, cancellationToken)));
+                    allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(playersApi, trackedPlayer, channel.Writer, cancellationToken)));
                 }
             }
 
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+            _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            int batchSize = Options.Value.SaveBatchSize;
+            var batch = new List<(CachedPlayer Player, CachedPlayer? Fetched)>(batchSize);
+
+            await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
+            {
+                batch.Add(item);
+
+                if (batch.Count >= batchSize)
+                {
+                    ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                    await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
+                    batch.Clear();
+                }
+            }
+
+            if (batch.Count > 0)
+            {
+                ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
+            }
         }
         finally
         {
@@ -100,15 +131,32 @@ public sealed class PlayerService : ServiceBase
         }
     }
 
-    private async Task MonitorPlayerAsync(IPlayersApi playersApi, CachedPlayer cachedPlayer, CancellationToken cancellationToken)
+    private static void ApplyBatch(List<(CachedPlayer Player, CachedPlayer? Fetched)> batch)
     {
-        CachedPlayer fetched = await CachedPlayer
-            .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, playersApi, cancellationToken)
-            .ConfigureAwait(false);
+        foreach (var (player, fetched) in batch)
+            if (fetched != null)
+                player.UpdateFrom(fetched);
+    }
 
-        if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && PlayerUpdated != null)
-            await PlayerUpdated(this, new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
+    private async Task TryFetchAsync(IPlayersApi playersApi, CachedPlayer cachedPlayer, ChannelWriter<(CachedPlayer, CachedPlayer?)> writer, CancellationToken cancellationToken)
+    {
+        CachedPlayer? fetched = null;
+        try
+        {
+            fetched = await CachedPlayer
+                .FromPlayerResponseAsync(cachedPlayer.Tag, TimeToLiveProvider, playersApi, cancellationToken)
+                .ConfigureAwait(false);
 
-        cachedPlayer.UpdateFrom(fetched);
+            if (fetched.Content != null && CachedPlayer.HasUpdated(cachedPlayer, fetched) && PlayerUpdated != null)
+                await PlayerUpdated(this, new PlayerUpdatedEventArgs(cachedPlayer.Content, fetched.Content, cancellationToken)).ConfigureAwait(false);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An exception occured while updating player {tag}", cachedPlayer.Tag);
+        }
+        finally
+        {
+            writer.TryWrite((cachedPlayer, fetched));
+        }
     }
 }

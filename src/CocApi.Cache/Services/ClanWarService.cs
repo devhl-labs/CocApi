@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
@@ -54,8 +55,6 @@ public sealed class ClanWarService : ServiceBase
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
 
-        DateTime queryStart = DateTime.UtcNow;
-
         List<CachedClan> cachedClans = await dbContext.Clans
             .Where(c =>
                 c.Id > _id &&
@@ -70,10 +69,13 @@ public sealed class ClanWarService : ServiceBase
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
 
-        List<Task> tasks = new();
-
         HashSet<string> updatingTags = new();
         int lockSkips = 0;
+        long totalSaveMs = 0;
+
+        var channel = Channel.CreateUnbounded<(CachedClan Clan, ClanWarFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
+
+        List<Task> allFetchTasks = new();
 
         try
         {
@@ -88,28 +90,42 @@ public sealed class ClanWarService : ServiceBase
                 updatingTags.Add(cachedClan.Tag);
 
                 await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                tasks.Add(Synchronizer.WithSemaphoreAsync(TryUpdateAsync(cachedClan, cancellationToken)));
+                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, channel.Writer, cancellationToken)));
             }
 
-            try
+            _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
+
+            int batchSize = Options.Value.SaveBatchSize;
+            var batch = new List<(CachedClan Clan, ClanWarFetch Result)>(batchSize);
+
+            await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
             {
-                await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "An exception occured while updating clans.");
+                batch.Add(item);
+
+                if (batch.Count >= batchSize)
+                {
+                    ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                    await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
+                    batch.Clear();
+                }
             }
 
-            var saveSw = System.Diagnostics.Stopwatch.StartNew();
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-            saveSw.Stop();
+            if (batch.Count > 0)
+            {
+                ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
+                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
+            }
 
             cycleSw.Stop();
             _logger.LogDebug("ClanWarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                cachedClans.Count, updatingTags.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
+                cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
             if (cycleSw.ElapsedMilliseconds > 5000)
                 _logger.LogWarning("ClanWarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                    cachedClans.Count, updatingTags.Count, lockSkips, saveSw.ElapsedMilliseconds, cycleSw.ElapsedMilliseconds);
+                    cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
         }
         finally
         {
@@ -118,13 +134,40 @@ public sealed class ClanWarService : ServiceBase
         }
     }
 
-    private async Task TryUpdateAsync(CachedClan cachedClan, CancellationToken cancellationToken)
+    private sealed class ClanWarFetch
     {
+        public CachedClanWar? CurrentWar { get; set; }
+        public bool IsNewWar { get; set; }
+        public Rest.Models.WarType? NewWarType { get; set; }
+        public DateTime? ExtendedWarKeepUntil { get; set; }
+    }
+
+    private static void ApplyBatch(List<(CachedClan Clan, ClanWarFetch Result)> batch)
+    {
+        foreach (var (cachedClan, result) in batch)
+        {
+            if (result.ExtendedWarKeepUntil.HasValue)
+                cachedClan.CurrentWar.KeepUntil = result.ExtendedWarKeepUntil.Value;
+
+            if (result.CurrentWar != null)
+            {
+                if (result.IsNewWar)
+                {
+                    cachedClan.CurrentWar.Type = result.NewWarType;
+                    cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
+                }
+
+                cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+            }
+        }
+    }
+
+    private async Task TryFetchAsync(CachedClan cachedClan, ChannelWriter<(CachedClan, ClanWarFetch)> writer, CancellationToken cancellationToken)
+    {
+        var result = new ClanWarFetch();
         try
         {
-            ExtendWarTTLWhileInCwl(cachedClan);
-
-            List<Task> tasks = new();
+            result.ExtendedWarKeepUntil = GetExtendedWarKeepUntil(cachedClan);
 
             IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
@@ -133,17 +176,19 @@ public sealed class ClanWarService : ServiceBase
             Option<bool> realTime = Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value);
 
             if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
-                tasks.Add(MonitorClanWarAsync(clansApi, cachedClan, realTime, cancellationToken));
-
-            await Task.WhenAll(tasks).WaitAsync(cancellationToken).ConfigureAwait(false);
+                await FetchClanWarAsync(clansApi, cachedClan, result, realTime, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception e)
         {
             _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
         }
+        finally
+        {
+            writer.TryWrite((cachedClan, result));
+        }
     }
 
-    private async Task MonitorClanWarAsync(IClansApi clansApi, CachedClan cachedClan, Option<bool> realtime, CancellationToken cancellationToken)
+    private async Task FetchClanWarAsync(IClansApi clansApi, CachedClan cachedClan, ClanWarFetch result, Option<bool> realtime, CancellationToken cancellationToken)
     {
         try
         {
@@ -151,12 +196,11 @@ public sealed class ClanWarService : ServiceBase
 
             if (fetched.Content != null && CachedClanWar.IsNewWar(cachedClan.CurrentWar, fetched))
             {
-                cachedClan.CurrentWar.Type = fetched.Content.GetWarType();
-
-                cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
+                result.IsNewWar = true;
+                result.NewWarType = fetched.Content.GetWarType();
             }
 
-            cachedClan.CurrentWar.UpdateFrom(fetched);
+            result.CurrentWar = fetched;
         }
         catch (Exception e)
         {
@@ -165,7 +209,7 @@ public sealed class ClanWarService : ServiceBase
         }
     }
 
-    private void ExtendWarTTLWhileInCwl(CachedClan cachedClan)
+    private DateTime? GetExtendedWarKeepUntil(CachedClan cachedClan)
     {
         if (!Clash.IsCwlEnabled ||
             !Options.Value.CwlWars.Enabled ||
@@ -177,9 +221,9 @@ public sealed class ClanWarService : ServiceBase
             cachedClan.Group.Content.Season.Year < DateTime.UtcNow.Year ||
             (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month) ||
             cachedClan.Group.StatusCode != System.Net.HttpStatusCode.OK)
-            return;
+            return null;
 
         // keep currentwar around an arbitrary amount of time since we are in cwl
-        cachedClan.CurrentWar.KeepUntil = DateTime.UtcNow.AddMinutes(20);
+        return DateTime.UtcNow.AddMinutes(20);
     }
 }
