@@ -53,9 +53,6 @@ public sealed class Synchronizer : IDisposable
 
     internal async Task SendConcurrentEventAsync<T>(ILogger<T> logger, string methodName, Func<Task> action, CancellationToken cancellationToken)
     {
-        if (EventSemaphore.CurrentCount == 0)
-            logger.LogWarning("Max concurrent events reached.");
-
         await EventSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
         try
