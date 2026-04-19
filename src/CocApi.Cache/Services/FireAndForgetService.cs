@@ -36,7 +36,10 @@ public sealed class FireAndForgetService : RecurringService
         if (batch.Count == 0)
             return;
 
-        await Task.WhenAll(batch.Select(SafeRunAsync)).ConfigureAwait(false);
+        // Process in chunks to avoid saturating the thread pool when many events fire at once.
+        const int chunkSize = 25;
+        for (int i = 0; i < batch.Count; i += chunkSize)
+            await Task.WhenAll(batch.Skip(i).Take(chunkSize).Select(SafeRunAsync)).ConfigureAwait(false);
     }
 
     private async Task SafeRunAsync(Task task)
