@@ -125,6 +125,7 @@ public sealed class ActiveWarService : ServiceBase
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
+                    dbContext.ChangeTracker.Clear();
                     batch.Clear();
                 }
             }
@@ -135,6 +136,7 @@ public sealed class ActiveWarService : ServiceBase
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
+                dbContext.ChangeTracker.Clear();
             }
         }
         finally

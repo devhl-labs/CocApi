@@ -17,6 +17,8 @@ namespace CocApi.Cache.Services;
 
 public sealed class CwlWarService : ServiceBase
 {
+    private readonly FireAndForgetService _fireAndForget;
+
     internal event AsyncEventHandler<WarEventArgs>? ClanWarEndingSoon;
     internal event AsyncEventHandler<WarEventArgs>? ClanWarEnded;
     internal event AsyncEventHandler<WarEventArgs>? ClanWarStartingSoon;
@@ -37,9 +39,11 @@ public sealed class CwlWarService : ServiceBase
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options)
+        IOptions<CacheOptions> options,
+        FireAndForgetService fireAndForget)
     : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.CwlWars))
     {
+        _fireAndForget = fireAndForget;
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         Logger = logger;
         ApiFactory = apiFactory;
@@ -117,6 +121,7 @@ public sealed class CwlWarService : ServiceBase
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
+                    dbContext.ChangeTracker.Clear();
                     batch.Clear();
                 }
             }
@@ -127,6 +132,7 @@ public sealed class CwlWarService : ServiceBase
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
+                dbContext.ChangeTracker.Clear();
             }
         }
         finally
@@ -208,61 +214,49 @@ public sealed class CwlWarService : ServiceBase
             cachedWar.Season == fetched.Season &&
             CachedWar.HasUpdated(cachedWar, fetched) &&
             ClanWarUpdated != null)
-            await ClanWarUpdated
-                .Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken))
-                .ConfigureAwait(false);
+        {
+            _fireAndForget.Append(ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken)));
+        }
 
         result.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
         result.Source = fetched;
     }
 
-    private async Task GatherAnnouncementsAsync(CachedWar cachedWar, CwlWarFetch result, CancellationToken cancellationToken)
+    private Task GatherAnnouncementsAsync(CachedWar cachedWar, CwlWarFetch result, CancellationToken cancellationToken)
     {
-        try
+        if (cachedWar.Content == null)
+            return Task.CompletedTask;
+
+        if (cachedWar.Announcements.HasFlag(Announcements.WarStartingSoon) == false &&
+            now > cachedWar.Content.StartTime.AddHours(-1) &&
+            now < cachedWar.Content.StartTime)
         {
-            if (cachedWar.Content == null)
-                return;
+            result.NewAnnouncements |= Announcements.WarStartingSoon;
 
-            if (cachedWar.Announcements.HasFlag(Announcements.WarStartingSoon) == false &&
-                now > cachedWar.Content.StartTime.AddHours(-1) &&
-                now < cachedWar.Content.StartTime)
-            {
-                result.NewAnnouncements |= Announcements.WarStartingSoon;
-
-                if (ClanWarStartingSoon != null)
-                    await ClanWarStartingSoon
-                        .Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken))
-                        .ConfigureAwait(false);
-            }
-
-            if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
-                now > cachedWar.Content.EndTime.AddHours(-1) &&
-                now < cachedWar.Content.EndTime)
-            {
-                result.NewAnnouncements |= Announcements.WarEndingSoon;
-
-                if (ClanWarEndingSoon != null)
-                    await ClanWarEndingSoon
-                        .Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken))
-                        .ConfigureAwait(false);
-            }
-
-            if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
-                cachedWar.EndTime < now &&
-                cachedWar.EndTime.Day <= (now.Day + 1))
-            {
-                result.NewAnnouncements |= Announcements.WarEnded;
-
-                if (ClanWarEnded != null)
-                    await ClanWarEnded
-                        .Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken))
-                        .ConfigureAwait(false);
-            }
+            if (ClanWarStartingSoon != null)
+                _fireAndForget.Append(ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
-        catch (Exception e)
+
+        if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
+            now > cachedWar.Content.EndTime.AddHours(-1) &&
+            now < cachedWar.Content.EndTime)
         {
-            if (!cancellationToken.IsCancellationRequested)
-                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(GatherAnnouncementsAsync));
+            result.NewAnnouncements |= Announcements.WarEndingSoon;
+
+            if (ClanWarEndingSoon != null)
+                _fireAndForget.Append(ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
+
+        if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
+            cachedWar.EndTime < now &&
+            cachedWar.EndTime.Day <= (now.Day + 1))
+        {
+            result.NewAnnouncements |= Announcements.WarEnded;
+
+            if (ClanWarEnded != null)
+                _fireAndForget.Append(ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+        }
+
+        return Task.CompletedTask;
     }
 }

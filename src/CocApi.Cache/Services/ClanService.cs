@@ -19,6 +19,7 @@ public sealed class ClanService : ServiceBase
 {
 
     private readonly ILogger<ClanService> _logger;
+    private readonly FireAndForgetService _fireAndForget;
 
 
     internal event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
@@ -38,7 +39,8 @@ public sealed class ClanService : ServiceBase
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options)
+        IOptions<CacheOptions> options,
+        FireAndForgetService fireAndForget)
         : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Clans))
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
@@ -47,6 +49,7 @@ public sealed class ClanService : ServiceBase
         Ttl = ttl;
         Options = options;
         _logger = logger;
+        _fireAndForget = fireAndForget;
     }
 
 
@@ -122,6 +125,7 @@ public sealed class ClanService : ServiceBase
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
+                    dbContext.ChangeTracker.Clear();
                     batch.Clear();
                 }
             }
@@ -132,6 +136,7 @@ public sealed class ClanService : ServiceBase
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
+                dbContext.ChangeTracker.Clear();
             }
 
             cycleSw.Stop();
@@ -222,9 +227,7 @@ public sealed class ClanService : ServiceBase
             CachedClan fetched = await CachedClan.FromClanResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && ClanUpdated != null && CachedClan.HasUpdated(cachedClan, fetched))
-                await ClanUpdated
-                    .Invoke(this, new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content, cancellationToken))
-                    .ConfigureAwait(false);
+                _fireAndForget.Append(ClanUpdated.Invoke(this, new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content, cancellationToken)));
 
             result.Clan = fetched;
         }
@@ -242,9 +245,7 @@ public sealed class ClanService : ServiceBase
             CachedClanWarLog fetched = await CachedClanWarLog.FromClanWarLogResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWarLog.HasUpdated(cachedClan.WarLog, fetched) && ClanWarLogUpdated != null)
-                await ClanWarLogUpdated
-                    .Invoke(this, new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content, cancellationToken))
-                    .ConfigureAwait(false);
+                _fireAndForget.Append(ClanWarLogUpdated.Invoke(this, new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content, cancellationToken)));
 
             result.WarLog = fetched;
         }
@@ -266,9 +267,7 @@ public sealed class ClanService : ServiceBase
             if (fetched.Content != null && CachedClanWarLeagueGroup.HasUpdated(cachedClan.Group, fetched))
             {
                 if (ClanWarLeagueGroupUpdated != null)
-                    await ClanWarLeagueGroupUpdated
-                        .Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content, cancellationToken))
-                        .ConfigureAwait(false);
+                    _fireAndForget.Append(ClanWarLeagueGroupUpdated.Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content, cancellationToken)));
 
                 result.ClearGroupAdded = true;
             }

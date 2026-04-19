@@ -90,6 +90,7 @@ public static class IServiceCollectionExtensions
         services.AddPlayersClient<TPlayersClient>();
         services.AddClansClient<TClansClient>();
 
+        services.AddHostedSingleton<FireAndForgetService>();
         services.AddHostedSingleton<ActiveWarService>();
         services.AddHostedSingleton<ClanService>();
         services.AddHostedSingleton<ClanWarService>();
