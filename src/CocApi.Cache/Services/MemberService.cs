@@ -112,9 +112,7 @@ public sealed class MemberService : ServiceBase
                 if (fetched != null)
                     cachedPlayer.UpdateFrom(fetched);
 
-            await Synchronizer.SaveSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
-            try { await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false); }
-            finally { Synchronizer.SaveSemaphore.Release(); }
+            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }
         finally
         {
