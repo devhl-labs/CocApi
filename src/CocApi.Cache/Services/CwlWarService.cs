@@ -215,7 +215,7 @@ public sealed class CwlWarService : ServiceBase
             CachedWar.HasUpdated(cachedWar, fetched) &&
             ClanWarUpdated != null)
         {
-            _fireAndForget.Append(ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken)));
+            _fireAndForget.Append(() => ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken)));
         }
 
         result.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
@@ -234,7 +234,7 @@ public sealed class CwlWarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarStartingSoon;
 
             if (ClanWarStartingSoon != null)
-                _fireAndForget.Append(ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
@@ -244,7 +244,7 @@ public sealed class CwlWarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarEndingSoon;
 
             if (ClanWarEndingSoon != null)
-                _fireAndForget.Append(ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
@@ -254,7 +254,7 @@ public sealed class CwlWarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarEnded;
 
             if (ClanWarEnded != null)
-                _fireAndForget.Append(ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         return Task.CompletedTask;

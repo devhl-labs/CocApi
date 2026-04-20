@@ -13,7 +13,7 @@ namespace CocApi.Cache.Services;
 public sealed class FireAndForgetService : RecurringService
 {
     private readonly ILogger<FireAndForgetService> _logger;
-    private readonly ConcurrentQueue<Task> _tasks = new();
+    private readonly ConcurrentQueue<Func<Task>> _tasks = new();
 
     public FireAndForgetService(ILogger<FireAndForgetService> logger)
         : base(logger, Microsoft.Extensions.Options.Options.Create(new RecurringServiceOptions
@@ -28,18 +28,18 @@ public sealed class FireAndForgetService : RecurringService
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
-        List<Task> batch = new();
+        List<Func<Task>> batch = new();
 
-        while (_tasks.TryDequeue(out Task? task))
-            batch.Add(task);
+        while (_tasks.TryDequeue(out Func<Task>? factory))
+            batch.Add(factory);
 
         if (batch.Count == 0)
             return;
 
-        // Process in chunks to avoid saturating the thread pool when many events fire at once.
+        // Start tasks lazily in chunks to limit concurrent Discord API calls.
         const int chunkSize = 25;
         for (int i = 0; i < batch.Count; i += chunkSize)
-            await Task.WhenAll(batch.Skip(i).Take(chunkSize).Select(SafeRunAsync)).ConfigureAwait(false);
+            await Task.WhenAll(batch.Skip(i).Take(chunkSize).Select(f => SafeRunAsync(f()))).ConfigureAwait(false);
     }
 
     private async Task SafeRunAsync(Task task)
@@ -54,5 +54,5 @@ public sealed class FireAndForgetService : RecurringService
         }
     }
 
-    public void Append(Task task) => _tasks.Enqueue(task);
+    public void Append(Func<Task> taskFactory) => _tasks.Enqueue(taskFactory);
 }

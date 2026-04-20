@@ -227,7 +227,7 @@ public sealed class ClanService : ServiceBase
             CachedClan fetched = await CachedClan.FromClanResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && ClanUpdated != null && CachedClan.HasUpdated(cachedClan, fetched))
-                _fireAndForget.Append(ClanUpdated.Invoke(this, new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanUpdated.Invoke(this, new ClanUpdatedEventArgs(cachedClan.Content, fetched.Content, cancellationToken)));
 
             result.Clan = fetched;
         }
@@ -245,7 +245,7 @@ public sealed class ClanService : ServiceBase
             CachedClanWarLog fetched = await CachedClanWarLog.FromClanWarLogResponseAsync(cachedClan.Tag, Ttl, clansApi, cancellationToken).ConfigureAwait(false);
 
             if (fetched.Content != null && CachedClanWarLog.HasUpdated(cachedClan.WarLog, fetched) && ClanWarLogUpdated != null)
-                _fireAndForget.Append(ClanWarLogUpdated.Invoke(this, new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarLogUpdated.Invoke(this, new ClanWarLogUpdatedEventArgs(cachedClan.WarLog.Content, fetched.Content, cachedClan.Content, cancellationToken)));
 
             result.WarLog = fetched;
         }
@@ -267,7 +267,7 @@ public sealed class ClanService : ServiceBase
             if (fetched.Content != null && CachedClanWarLeagueGroup.HasUpdated(cachedClan.Group, fetched))
             {
                 if (ClanWarLeagueGroupUpdated != null)
-                    _fireAndForget.Append(ClanWarLeagueGroupUpdated.Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content, cancellationToken)));
+                    _fireAndForget.Append(() => ClanWarLeagueGroupUpdated.Invoke(this, new ClanWarLeagueGroupUpdatedEventArgs(cachedClan.Group.Content, fetched.Content, cachedClan.Content, cancellationToken)));
 
                 result.ClearGroupAdded = true;
             }

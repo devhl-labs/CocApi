@@ -262,7 +262,7 @@ public sealed class WarService : ServiceBase
                 clan?.CurrentWar.Content != null &&
                 CachedWar.HasUpdated(cachedWar, clan.CurrentWar) &&
                 ClanWarUpdated != null)
-                _fireAndForget.Append(ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(
+                _fireAndForget.Append(() => ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(
                     cachedWar.Content, clan.CurrentWar.Content, cachedClan?.Content, cachedOpponent?.Content, cancellationToken)));
 
             if (clan != null)
@@ -331,7 +331,7 @@ public sealed class WarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarStartingSoon;
 
             if (ClanWarStartingSoon != null)
-                _fireAndForget.Append(ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarStartingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         if (cachedWar.Announcements.HasFlag(Announcements.WarEndingSoon) == false &&
@@ -341,7 +341,7 @@ public sealed class WarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarEndingSoon;
 
             if (ClanWarEndingSoon != null)
-                _fireAndForget.Append(ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarEndingSoon.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         if (cachedWar.Announcements.HasFlag(Announcements.WarEndNotSeen) == false &&
@@ -355,7 +355,7 @@ public sealed class WarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarEndNotSeen;
 
             if (ClanWarEndNotSeen != null)
-                _fireAndForget.Append(ClanWarEndNotSeen.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarEndNotSeen.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         if (cachedWar.Announcements.HasFlag(Announcements.WarEnded) == false &&
@@ -365,7 +365,7 @@ public sealed class WarService : ServiceBase
             result.NewAnnouncements |= Announcements.WarEnded;
 
             if (ClanWarEnded != null)
-                _fireAndForget.Append(ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
+                _fireAndForget.Append(() => ClanWarEnded.Invoke(this, new WarEventArgs(cachedWar.Content, cancellationToken)));
         }
 
         return Task.CompletedTask;
