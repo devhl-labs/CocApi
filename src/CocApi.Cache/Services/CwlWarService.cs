@@ -123,7 +123,6 @@ public sealed class CwlWarService : ServiceBase
                     try { await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false); }
                     finally { Synchronizer.SaveSemaphore.Release(); }
                     totalSaveMs += saveSw.ElapsedMilliseconds;
-                    dbContext.ChangeTracker.Clear();
                     batch.Clear();
                 }
             }
@@ -136,7 +135,6 @@ public sealed class CwlWarService : ServiceBase
                 try { await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false); }
                 finally { Synchronizer.SaveSemaphore.Release(); }
                 totalSaveMs += saveSw.ElapsedMilliseconds;
-                dbContext.ChangeTracker.Clear();
             }
         }
         finally
