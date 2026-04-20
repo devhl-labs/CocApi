@@ -1,45 +1,39 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ScheduledServices;
-using ScheduledServices.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class FireAndForgetService : RecurringService
+public sealed class FireAndForgetService : BackgroundService
 {
     private readonly ILogger<FireAndForgetService> _logger;
-    private readonly ConcurrentQueue<Func<Task>> _tasks = new();
+    private readonly Channel<Func<Task>> _channel = Channel.CreateUnbounded<Func<Task>>();
+    private readonly SemaphoreSlim _limit = new(25);
 
     public FireAndForgetService(ILogger<FireAndForgetService> logger)
-        : base(logger, Microsoft.Extensions.Options.Options.Create(new RecurringServiceOptions
-        {
-            DelayBeforeExecution = TimeSpan.FromSeconds(1),
-            DelayBetweenExecutions = TimeSpan.FromMilliseconds(250),
-            Enabled = true
-        }))
     {
         _logger = logger;
     }
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        List<Func<Task>> batch = new();
+        List<Task> inflight = new();
 
-        while (_tasks.TryDequeue(out Func<Task>? factory))
-            batch.Add(factory);
+        await foreach (Func<Task> factory in _channel.Reader.ReadAllAsync(cancellationToken))
+            inflight.Add(RunWithLimitAsync(factory));
 
-        if (batch.Count == 0)
-            return;
+        await Task.WhenAll(inflight).ConfigureAwait(false);
+    }
 
-        // Start tasks lazily in chunks to limit concurrent Discord API calls.
-        const int chunkSize = 25;
-        for (int i = 0; i < batch.Count; i += chunkSize)
-            await Task.WhenAll(batch.Skip(i).Take(chunkSize).Select(f => SafeRunAsync(f()))).ConfigureAwait(false);
+    private async Task RunWithLimitAsync(Func<Task> factory)
+    {
+        await _limit.WaitAsync();
+        try { await SafeRunAsync(factory()).ConfigureAwait(false); }
+        finally { _limit.Release(); }
     }
 
     private async Task SafeRunAsync(Task task)
@@ -54,5 +48,7 @@ public sealed class FireAndForgetService : RecurringService
         }
     }
 
-    public void Append(Func<Task> taskFactory) => _tasks.Enqueue(taskFactory);
+    public void Append(Func<Task> taskFactory) => _channel.Writer.TryWrite(taskFactory);
+
+    public void Append(Task task) => _channel.Writer.TryWrite(() => task);
 }
