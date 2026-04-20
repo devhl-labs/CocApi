@@ -143,7 +143,9 @@ public sealed class WarService : ServiceBase
                 {
                     ApplyBatch(batch);
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
-                    await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    await Synchronizer.SaveSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+                    try { await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false); }
+                    finally { Synchronizer.SaveSemaphore.Release(); }
                     totalSaveMs += saveSw.ElapsedMilliseconds;
                     dbContext.ChangeTracker.Clear();
                     batch.Clear();
@@ -154,7 +156,9 @@ public sealed class WarService : ServiceBase
             {
                 ApplyBatch(batch);
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
-                await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                await Synchronizer.SaveSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+                try { await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false); }
+                finally { Synchronizer.SaveSemaphore.Release(); }
                 totalSaveMs += saveSw.ElapsedMilliseconds;
                 dbContext.ChangeTracker.Clear();
             }

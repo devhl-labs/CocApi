@@ -18,6 +18,7 @@ public sealed class Synchronizer : IDisposable
     internal TagLock CwlWarLock { get; } = new();
     internal SemaphoreSlim UpdateSemaphore { get; }
     internal SemaphoreSlim EventSemaphore { get; }
+    internal SemaphoreSlim SaveSemaphore { get; } = new SemaphoreSlim(1, 1);
 
     public Synchronizer(ILogger<Synchronizer> logger, IOptions<CacheOptions> options)
     {
@@ -38,6 +39,7 @@ public sealed class Synchronizer : IDisposable
         CwlWarLock.Dispose();
         UpdateSemaphore.Dispose();
         EventSemaphore.Dispose();
+        SaveSemaphore.Dispose();
     }
 
     internal async Task WithSemaphoreAsync(Task task)

@@ -124,7 +124,9 @@ public sealed class NewWarService : ServiceBase
                 }
             }
 
-            await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            await Synchronizer.SaveSemaphore.WaitAsync(CancellationToken.None).ConfigureAwait(false);
+            try { await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false); }
+            finally { Synchronizer.SaveSemaphore.Release(); }
         }
         finally
         {
