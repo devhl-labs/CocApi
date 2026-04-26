@@ -165,6 +165,9 @@ public sealed class ClanWarService : ServiceBase
                     if (activity != CachedClan.ClanActivityLevel.Active)
                     {
                         var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
+                        var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
+                        if (DateTime.UtcNow < cutoff)
+                            cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(60);
                         cachedClan.CurrentWar.Backoff(cap);
                     }
                 }

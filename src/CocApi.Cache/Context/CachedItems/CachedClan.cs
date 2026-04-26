@@ -55,6 +55,15 @@ public class CachedClan : CachedItem<Clan>
 
         var age = DateTime.UtcNow - mostRecent;
 
+        // Accelerated detection window for first run
+        var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
+        if (DateTime.UtcNow < cutoff)
+        {
+            if (age < TimeSpan.FromHours(2)) return ClanActivityLevel.Active;
+            if (age < TimeSpan.FromHours(8)) return ClanActivityLevel.Inactive;
+            return ClanActivityLevel.Dead;
+        }
+
         if (age < TimeSpan.FromHours(24)) return ClanActivityLevel.Active;
         if (age < TimeSpan.FromDays(7)) return ClanActivityLevel.Inactive;
         return ClanActivityLevel.Dead;
