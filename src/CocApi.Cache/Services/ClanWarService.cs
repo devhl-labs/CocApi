@@ -155,9 +155,20 @@ public sealed class ClanWarService : ServiceBase
                 {
                     cachedClan.CurrentWar.Type = result.NewWarType;
                     cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
+                    cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
                 }
-
-                cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+                else if (CachedClanWar.HasUpdated(cachedClan.CurrentWar, result.CurrentWar))
+                    cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+                else if ((result.CurrentWar.Content?.State == Rest.Models.WarState.NotInWar) || (result.CurrentWar.Content?.State == null))
+                {
+                    var activity = CachedClan.GetActivityLevel(cachedClan);
+                    if (activity != CachedClan.ClanActivityLevel.Active)
+                    {
+                        var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
+                        cachedClan.CurrentWar.Backoff(cap);
+                    }
+                }
+                // InWar/Preparation, or Active clan: no KeepUntil change
             }
         }
     }

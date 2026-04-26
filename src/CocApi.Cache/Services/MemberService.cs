@@ -108,9 +108,20 @@ public sealed class MemberService : ServiceBase
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
+            var activity = CachedClan.GetActivityLevel(cachedClan);
             await foreach (var (cachedPlayer, fetched) in channel.Reader.ReadAllAsync(CancellationToken.None))
+            {
                 if (fetched != null)
-                    cachedPlayer.UpdateFrom(fetched);
+                {
+                    if (CachedPlayer.HasUpdated(cachedPlayer, fetched))
+                        cachedPlayer.UpdateFrom(fetched);
+                    else if (activity != CachedClan.ClanActivityLevel.Active)
+                    {
+                        var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
+                        cachedPlayer.Backoff(cap);
+                    }
+                }
+            }
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
         }

@@ -4,6 +4,7 @@ using CocApi.Rest.Client;
 using System.Threading.Tasks;
 using System.Threading;
 using CocApi.Rest.Apis;
+using System.Linq;
 
 namespace CocApi.Cache.Context;
 
@@ -34,6 +35,29 @@ public class CachedClan : CachedItem<Clan>
             return false;
         
         return !fetched.Content.Equals(stored.Content);
+    }
+
+    internal enum ClanActivityLevel { Active, Inactive, Dead }
+
+    internal static ClanActivityLevel GetActivityLevel(CachedClan clan)
+    {
+        var mostRecent = new[]
+        {
+            clan.DownloadedAt,
+            clan.WarLog.DownloadedAt,
+            clan.Group.DownloadedAt,
+            clan.CurrentWar.DownloadedAt
+        }
+        .Where(d => d.HasValue)
+        .Select(d => d!.Value)
+        .DefaultIfEmpty(DateTime.UtcNow)
+        .Max();
+
+        var age = DateTime.UtcNow - mostRecent;
+
+        if (age < TimeSpan.FromHours(24)) return ClanActivityLevel.Active;
+        if (age < TimeSpan.FromDays(7)) return ClanActivityLevel.Inactive;
+        return ClanActivityLevel.Dead;
     }
 
     private CachedClan(string tag, IOk<Clan> response, TimeSpan localExpiration) : base (response, localExpiration)

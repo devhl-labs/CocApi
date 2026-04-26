@@ -41,6 +41,20 @@ public class CachedClanWar : CachedItem<ClanWar>
         return stored.Content.PreparationStartTime != fetched.Content.PreparationStartTime;
     }
 
+    internal static bool HasUpdated(CachedClanWar stored, CachedClanWar fetched)
+    {
+        if (stored.ExpiresAt > fetched.ExpiresAt)
+            return false;
+
+        if (fetched.Content == null || fetched.Content.State == Rest.Models.WarState.NotInWar)
+            return false;
+
+        if (stored.Content == null || stored.Content.State == Rest.Models.WarState.NotInWar)
+            return true;
+
+        return !fetched.Content.Equals(stored.Content);
+    }
+
     private string? _enemyTag;
 
     public string? EnemyTag { get { return _enemyTag; } internal set { _enemyTag = value == null ? null : Clash.FormatTag(value); } }

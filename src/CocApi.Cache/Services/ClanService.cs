@@ -167,17 +167,39 @@ public sealed class ClanService : ServiceBase
             if (result.ExtendedWarKeepUntil.HasValue)
                 cachedClan.CurrentWar.KeepUntil = result.ExtendedWarKeepUntil.Value;
 
+            var activity = CachedClan.GetActivityLevel(cachedClan);
+
             if (result.Clan != null)
-                cachedClan.UpdateFrom(result.Clan);
+            {
+                if (CachedClan.HasUpdated(cachedClan, result.Clan))
+                    cachedClan.UpdateFrom(result.Clan);
+                else if (activity != CachedClan.ClanActivityLevel.Active)
+                {
+                    var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
+                    cachedClan.Backoff(cap);
+                }
+            }
 
             if (result.WarLog != null)
-                cachedClan.WarLog.UpdateFrom(result.WarLog);
+            {
+                if (CachedClanWarLog.HasUpdated(cachedClan.WarLog, result.WarLog))
+                    cachedClan.WarLog.UpdateFrom(result.WarLog);
+                else if (activity != CachedClan.ClanActivityLevel.Active)
+                {
+                    var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
+                    cachedClan.WarLog.Backoff(cap);
+                }
+            }
 
             if (result.Group != null)
             {
-                if (result.ClearGroupAdded)
-                    cachedClan.Group.Added = false;
-                cachedClan.Group.UpdateFrom(result.Group);
+                if (CachedClanWarLeagueGroup.HasUpdated(cachedClan.Group, result.Group))
+                {
+                    if (result.ClearGroupAdded)
+                        cachedClan.Group.Added = false;
+                    cachedClan.Group.UpdateFrom(result.Group);
+                }
+                // No backoff for Group — KeepUntil is managed by GetExtendedWarKeepUntil
             }
         }
     }
