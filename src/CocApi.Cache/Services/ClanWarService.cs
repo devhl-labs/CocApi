@@ -155,23 +155,22 @@ public sealed class ClanWarService : ServiceBase
                 {
                     cachedClan.CurrentWar.Type = result.NewWarType;
                     cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
-                    cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
                 }
-                else if (CachedClanWar.HasUpdated(cachedClan.CurrentWar, result.CurrentWar))
-                    cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
-                else if ((result.CurrentWar.Content?.State == Rest.Models.WarState.NotInWar) || (result.CurrentWar.Content?.State == null))
+
+                cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+            }
+
+            if ((result.CurrentWar?.Content?.State == Rest.Models.WarState.NotInWar) || (result.CurrentWar?.Content?.State == null))
+            {
+                var activity = CachedClan.GetActivityLevel(cachedClan);
+                if (activity != CachedClan.ClanActivityLevel.Active)
                 {
-                    var activity = CachedClan.GetActivityLevel(cachedClan);
-                    if (activity != CachedClan.ClanActivityLevel.Active)
-                    {
-                        var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
-                        var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
-                        if (DateTime.UtcNow < cutoff)
-                            cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(60);
-                        cachedClan.CurrentWar.Backoff(cap);
-                    }
+                    var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
+                    var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
+                    if (DateTime.UtcNow < cutoff)
+                        cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(60);
+                    cachedClan.CurrentWar.Backoff(cap);
                 }
-                // InWar/Preparation, or Active clan: no KeepUntil change
             }
         }
     }
