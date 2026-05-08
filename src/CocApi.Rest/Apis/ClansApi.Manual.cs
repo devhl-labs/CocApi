@@ -5,6 +5,7 @@ using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace CocApi.Rest.Apis;
 
@@ -99,18 +100,22 @@ public partial class ClansApi
 
 
 
-    private void LogAfterFetch(IApiResponse apiResponse, string url)
+    /// <param name="warnOn403">
+    /// <c>true</c>  → 403 is unexpected (bad token / IP mismatch): log Warning with TokenSuffix.<br/>
+    /// <c>false</c> → 403 may be legitimate (e.g. private war log)
+    /// </param>
+    private void LogAfterFetch(IApiResponse apiResponse, string url, bool warnOn403 = true)
     {
         Logger.LogTrace("{elapsed,-9} | {status} | {url}",
             (apiResponse.DownloadedAt - apiResponse.RequestedAt).TotalSeconds,
             apiResponse.StatusCode,
             url);
 
-        if (apiResponse.StatusCode == System.Net.HttpStatusCode.Forbidden)
+        if (warnOn403 && apiResponse.StatusCode == HttpStatusCode.Forbidden)
         {
-            var tokenSuffix = (apiResponse as Client.ApiResponse)?.RequestTokenSuffix ?? "unknown";
+            var tokenSuffix = (apiResponse as ApiResponse)?.RequestTokenSuffix ?? "unknown";
             Logger.LogWarning(
-                "### 403 Forbidden | Url={Url} | TokenSuffix={TokenSuffix} | Check: all API tokens must have the server IP in their allowlist at developer.clashofclans.com",
+                "403 Forbidden | Url={Url} | TokenSuffix={TokenSuffix} | Check: all API tokens must have the server IP in their allowlist at developer.clashofclans.com",
                 url,
                 tokenSuffix);
         }
@@ -149,13 +154,15 @@ public partial class ClansApi
     partial void AfterFetchClanWarLog(ref bool suppressDefaultLog, IFetchClanWarLogApiResponse apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLog = true;
-        LogAfterFetch(apiResponseLocalVar, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        // 403 here typically means the war log is private — not a token issue
+        LogAfterFetch(apiResponseLocalVar, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag), warnOn403: false);
     }
 
     partial void AfterFetchCurrentWar(ref bool suppressDefaultLog, IFetchCurrentWarApiResponse apiResponseLocalVar, string clanTag, Option<bool> realtime)
     {
         suppressDefaultLog = true;
-        LogAfterFetch(apiResponseLocalVar, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag));
+        // 403 here typically means the war log is private — not a token issue
+        LogAfterFetch(apiResponseLocalVar, apiResponseLocalVar.Path.Replace("{clanTag}", clanTag), warnOn403: false);
     }
 
     partial void AfterSearchClans(ref bool suppressDefaultLog, ISearchClansApiResponse apiResponseLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
