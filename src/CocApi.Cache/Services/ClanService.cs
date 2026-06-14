@@ -55,7 +55,6 @@ public sealed class ClanService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
-        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
         SetDateVariables();
 
         ClanServiceOptions options = Options.Value.Clans;
@@ -83,8 +82,6 @@ public sealed class ClanService : ServiceBase
             : int.MinValue;
 
         HashSet<string> updatingTags = new();
-        int lockSkips = 0;
-        long totalSaveMs = 0;
 
         // Unbounded channel: fetch tasks write results as they complete; consumer drains in SaveBatchSize batches.
         var channel = Channel.CreateUnbounded<(CachedClan Clan, ClanFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
@@ -97,10 +94,7 @@ public sealed class ClanService : ServiceBase
             foreach (CachedClan cachedClan in cachedClans)
             {
                 if (!Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
-                {
-                    lockSkips++;
                     continue;
-                }
 
                 updatingTags.Add(cachedClan.Tag);
 
@@ -122,9 +116,7 @@ public sealed class ClanService : ServiceBase
                 if (batch.Count >= batchSize)
                 {
                     ApplyBatch(batch);
-                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-                    totalSaveMs += saveSw.ElapsedMilliseconds;
                     batch.Clear();
                 }
             }
@@ -132,17 +124,8 @@ public sealed class ClanService : ServiceBase
             if (batch.Count > 0)
             {
                 ApplyBatch(batch);
-                var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-                totalSaveMs += saveSw.ElapsedMilliseconds;
             }
-
-            cycleSw.Stop();
-            _logger.LogDebug("ClanService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
-            if (cycleSw.ElapsedMilliseconds > 5000)
-                _logger.LogWarning("ClanService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                    cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
         }
         finally
         {

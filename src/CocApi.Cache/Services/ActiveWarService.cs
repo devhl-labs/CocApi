@@ -91,7 +91,6 @@ public sealed class ActiveWarService : ServiceBase
             : int.MinValue;
 
         HashSet<string> updatingTags = new();
-        long totalSaveMs = 0;
 
         var channel = Channel.CreateUnbounded<(CachedClan Clan, ActiveWarFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
 
@@ -122,9 +121,7 @@ public sealed class ActiveWarService : ServiceBase
                 if (batch.Count >= batchSize)
                 {
                     ApplyBatch(batch);
-                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-                    totalSaveMs += saveSw.ElapsedMilliseconds;
                     batch.Clear();
                 }
             }
@@ -132,9 +129,7 @@ public sealed class ActiveWarService : ServiceBase
             if (batch.Count > 0)
             {
                 ApplyBatch(batch);
-                var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-                totalSaveMs += saveSw.ElapsedMilliseconds;
             }
         }
         finally

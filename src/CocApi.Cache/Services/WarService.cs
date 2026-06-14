@@ -57,7 +57,6 @@ public sealed class WarService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
-        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
         SetDateVariables();
 
         WarServiceOptions options = Options.Value.Wars;
@@ -97,8 +96,6 @@ public sealed class WarService : ServiceBase
             .ConfigureAwait(false);
 
         HashSet<string> acquiredWars = new();
-        int lockSkips = 0;
-        long totalSaveMs = 0;
 
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
@@ -111,10 +108,7 @@ public sealed class WarService : ServiceBase
             foreach (CachedWar cachedWar in cachedWars)
             {
                 if (!Synchronizer.WarLock.TryAcquire(cachedWar.Key))
-                {
-                    lockSkips++;
                     continue;
-                }
 
                 acquiredWars.Add(cachedWar.Key);
 
@@ -142,9 +136,7 @@ public sealed class WarService : ServiceBase
                 if (batch.Count >= batchSize)
                 {
                     ApplyBatch(batch);
-                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-                    totalSaveMs += saveSw.ElapsedMilliseconds;
                     batch.Clear();
                 }
             }
@@ -152,17 +144,8 @@ public sealed class WarService : ServiceBase
             if (batch.Count > 0)
             {
                 ApplyBatch(batch);
-                var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
-                totalSaveMs += saveSw.ElapsedMilliseconds;
             }
-
-            cycleSw.Stop();
-            Logger.LogDebug("WarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                cachedWars.Count, acquiredWars.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
-            if (cycleSw.ElapsedMilliseconds > 5000)
-                Logger.LogWarning("WarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                    cachedWars.Count, acquiredWars.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
         }
         finally
         {
