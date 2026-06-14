@@ -15,6 +15,13 @@ namespace CocApi.Rest.Client
 
     public partial class ApiResponse
     {
+        /// <summary>
+        /// The last 8 characters of the API token (Bearer value) used in the request.
+        /// Useful for diagnosing 403 Forbidden errors caused by token/IP allowlist mismatches.
+        /// The full token is never stored — only the suffix is kept for log identification.
+        /// </summary>
+        public string? RequestTokenSuffix { get; private set; }
+
         public DateTime Downloaded
         {
             get
@@ -44,6 +51,13 @@ namespace CocApi.Rest.Client
 
         partial void OnCreated(HttpRequestMessage httpRequestMessage, HttpResponseMessage httpResponseMessage)
         {
+            if (httpRequestMessage.Headers.TryGetValues("authorization", out var authValues))
+            {
+                var raw = authValues.FirstOrDefault();
+                if (raw != null)
+                    RequestTokenSuffix = raw.Length > 8 ? "..." + raw[^8..] : raw;
+            }
+
             string? url = httpRequestMessage.RequestUri?.LocalPath;
 
             if (this is IOk<ClanWar>)
