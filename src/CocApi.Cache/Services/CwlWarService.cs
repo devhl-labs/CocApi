@@ -211,7 +211,7 @@ public sealed class CwlWarService : ServiceBase
             _fireAndForget.Append(() => ClanWarUpdated.Invoke(this, new ClanWarUpdatedEventArgs(cachedWar.Content, fetched.Content, null, null, cancellationToken)));
         }
 
-        result.IsFinal = (fetched.Content == null && !Clash.IsCwlEnabled) || fetched.State == Rest.Models.WarState.WarEnded;
+        result.IsFinal = (fetched.Content == null && cachedWar.EndTime.AddDays(30) < DateTime.UtcNow) || fetched.State == Rest.Models.WarState.WarEnded;
         result.Source = fetched;
     }
 

@@ -52,12 +52,7 @@ public class TimeToLiveProvider
         }
     }
 
-    private ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLive() => Clash.IsCwlEnabled
-        ? new ValueTask<TimeSpan>(TimeSpan.FromMinutes(20))
-        : new ValueTask<TimeSpan>(
-            new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
-                .AddMonths(1)
-                .Subtract(DateTime.UtcNow));
+    private ValueTask<TimeSpan> ClanWarLeagueGroupTimeToLive() => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(60));
 
     protected virtual ValueTask<TimeSpan> TimeToLiveAsync<T>(Exception exception) where T : class =>
         typeof(T) == typeof(ClanWarLeagueGroup)
@@ -80,17 +75,7 @@ public class TimeToLiveProvider
                 : new ValueTask<TimeSpan>(TimeSpan.FromSeconds(0));
 
         if (apiResponse is IOk<ClanWarLeagueGroup> group)
-        {
-            ClanWarLeagueGroup? model = group.Ok();
-
-            if (!Clash.IsCwlEnabled ||
-                (model?.State == Rest.Models.GroupState.Ended && DateTime.UtcNow.Month == model.Season.Month) ||
-                (model == null && DateTime.UtcNow.Day >= 4))
-                return new ValueTask<TimeSpan>(
-                    new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1)
-                        .AddMonths(1)
-                        .Subtract(DateTime.UtcNow));
-        }
+            return new ValueTask<TimeSpan>(TimeSpan.FromMinutes(60));
 
         if (apiResponse is IOk<ClanWar> war)
         {

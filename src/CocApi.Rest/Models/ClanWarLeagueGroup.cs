@@ -162,12 +162,19 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanWarLeagueGroup" />
     /// </summary>
-    public class ClanWarLeagueGroupJsonConverter : JsonConverter<ClanWarLeagueGroup>
+    public partial class ClanWarLeagueGroupJsonConverter : JsonConverter<ClanWarLeagueGroup>
     {
+        partial void OnCreated();
+
+        public ClanWarLeagueGroupJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize Season
         /// </summary>
-        public static string SeasonFormat { get; set; } = "yyyy'-'MM";
+        public string SeasonFormat { get; private set; } = "yyyy'-'MM";
 
         /// <summary>
         /// Deserializes json to <see cref="ClanWarLeagueGroup" />

@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace CocApi.Rest.Models
 {
@@ -16,6 +17,14 @@ namespace CocApi.Rest.Models
         {
             url = url.Replace("clans/", "").Replace("/currentwar/leaguegroup", "");
             return Uri.UnescapeDataString(url);
+        }
+    }
+
+    public partial class ClanWarLeagueGroupJsonConverter : JsonConverter<ClanWarLeagueGroup>
+    {
+        partial void OnCreated()
+        {
+            SeasonFormat = "yyyy'-'MM'-'dd";
         }
     }
 }

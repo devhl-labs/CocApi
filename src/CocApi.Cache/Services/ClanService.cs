@@ -289,19 +289,14 @@ public sealed class ClanService : ServiceBase
 
     private DateTime? GetExtendedWarKeepUntil(CachedClan cachedClan)
     {
-        if (!Clash.IsCwlEnabled ||
-            !Options.Value.CwlWars.Enabled ||
-            cachedClan.CurrentWar.Content?.State == Rest.Models.WarState.InWar ||
-            cachedClan.CurrentWar.Content?.State == Rest.Models.WarState.Preparation ||
-            cachedClan.Group.Content == null ||
-            cachedClan.Group.Content.State == Rest.Models.GroupState.Ended ||
-            cachedClan.Group.Content.Season.Month < DateTime.UtcNow.Month ||
-            cachedClan.Group.Content.Season.Year < DateTime.UtcNow.Year ||
-            (cachedClan.Group.KeepUntil.HasValue && cachedClan.Group.KeepUntil.Value.Month > DateTime.UtcNow.Month) ||
-            cachedClan.Group.StatusCode != System.Net.HttpStatusCode.OK)
-            return null;
+        if (Options.Value.CwlWars.Enabled &&
+            (cachedClan.CurrentWar.Content == null || cachedClan.CurrentWar.Content.State == Rest.Models.WarState.WarEnded) &&
+            cachedClan.Group.Content?.State != Rest.Models.GroupState.Ended &&
+            cachedClan.Group.Content?.Season.Year == DateTime.UtcNow.Year &&
+            cachedClan.Group.Content?.Season.Month == DateTime.UtcNow.Month)
+            // keep currentwar around an arbitrary amount of time since we are in cwl
+            return DateTime.UtcNow.AddMinutes(20);
 
-        // keep currentwar around an arbitrary amount of time since we are in cwl
-        return DateTime.UtcNow.AddMinutes(20);
+        return null;
     }
 }

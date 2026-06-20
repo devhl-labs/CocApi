@@ -280,23 +280,6 @@ namespace CocApi
             return value;
         }
 
-        public static bool IsCwlEnabled
-        {
-            get
-            {
-                int day = DateTime.UtcNow.Day;
-
-                if (day > 0 && day < 11)
-                    return true;
-
-                //add three hours to the end to ensure we get everything
-                if (day == 11 && DateTime.UtcNow.Hour < 3)
-                    return true;
-
-                return false;
-            }
-        }
-
         public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T>? source) => source ?? Enumerable.Empty<T>();
 
         public static string PlayerProfileUrl(string tag) => $"https://link.clashofclans.com/?action=OpenPlayerProfile&tag={tag[1..]}";
