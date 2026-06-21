@@ -198,7 +198,7 @@ public sealed class NewCwlWarService : ServiceBase
             .AsNoTracking()
             .Where(w =>
                 !string.IsNullOrWhiteSpace(w.WarTag) &&
-                !string.IsNullOrWhiteSpace(w.RawContent) &&
+                // !string.IsNullOrWhiteSpace(w.RawContent) &&
                 w.PreparationStartTime > since
                 )
             .ToListAsync(cancellationToken)
