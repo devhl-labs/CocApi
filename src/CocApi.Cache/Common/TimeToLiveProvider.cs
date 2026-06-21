@@ -30,7 +30,7 @@ public class TimeToLiveProvider
         {
             Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
 
-            return TimeSpan.FromMinutes(0);
+            return TimeSpan.FromMinutes(2);
         }
     }
 
@@ -48,7 +48,7 @@ public class TimeToLiveProvider
         {
             Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
 
-            return TimeSpan.FromMinutes(0);
+            return TimeSpan.FromMinutes(2);
         }
     }
 
