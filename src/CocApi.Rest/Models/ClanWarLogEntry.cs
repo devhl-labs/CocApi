@@ -325,8 +325,8 @@ namespace CocApi.Rest.Models
             if (attacksPerMember.IsSet && attacksPerMember.Value == null)
                 throw new ArgumentNullException(nameof(attacksPerMember), "Property is not nullable for class ClanWarLogEntry.");
 
-            if (battleModifier.IsSet && battleModifier.Value == null)
-                throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWarLogEntry.");
+            // if (battleModifier.IsSet && battleModifier.Value == null)
+            //     throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWarLogEntry.");
 
             if (result.IsSet && result.Value == null)
                 throw new ArgumentNullException(nameof(result), "Property is not nullable for class ClanWarLogEntry.");
