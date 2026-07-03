@@ -55,6 +55,7 @@ public sealed class CwlWarService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
+        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
         SetDateVariables();
 
         CwlWarServiceOptions options = Options.Value.CwlWars;
@@ -80,6 +81,8 @@ public sealed class CwlWarService : ServiceBase
             : int.MinValue;
 
         HashSet<string> updatingCwlWar = new();
+        int lockSkips = 0;
+        long totalSaveMs = 0;
 
         var channel = Channel.CreateUnbounded<(CachedWar War, CwlWarFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
 
@@ -100,6 +103,7 @@ public sealed class CwlWarService : ServiceBase
                 }
                 else
                 {
+                    lockSkips++;
                     // No lock acquired — still process announcements only (no HTTP).
                     allFetchTasks.Add(TryFetchAnnouncementsOnlyAsync(cachedWar, channel.Writer, cancellationToken));
                 }
@@ -117,7 +121,9 @@ public sealed class CwlWarService : ServiceBase
                 if (batch.Count >= batchSize)
                 {
                     ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
                     batch.Clear();
                 }
             }
@@ -125,8 +131,36 @@ public sealed class CwlWarService : ServiceBase
             if (batch.Count > 0)
             {
                 ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            cycleSw.Stop();
+            ThreadPool.GetMinThreads(out int minWorker, out int minIocp);
+            ThreadPool.GetMaxThreads(out int maxWorker, out int maxIocp);
+            ThreadPool.GetAvailableThreads(out int availWorker, out int availIocp);
+            int usedWorker = maxWorker - availWorker;
+            int usedIocp = maxIocp - availIocp;
+            int threadCount = ThreadPool.ThreadCount;
+            long pendingItems = ThreadPool.PendingWorkItemCount;
+
+            Logger.LogDebug(
+                "CwlWarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs} | TP Worker={UsedWorker}/{MinWorker}/{MaxWorker} avail={AvailWorker} | TP IOCP={UsedIocp}/{MinIocp}/{MaxIocp} avail={AvailIocp} | TP Threads={ThreadCount} | TP Pending={Pending}",
+                cachedWars.Count, updatingCwlWar.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds,
+                usedWorker, minWorker, maxWorker, availWorker,
+                usedIocp, minIocp, maxIocp, availIocp,
+                threadCount, pendingItems);
+
+            if (cycleSw.ElapsedMilliseconds > 5000)
+                Logger.LogInformation(
+                    "CwlWarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
+                    cachedWars.Count, updatingCwlWar.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
+
+            if (availWorker < 10 || pendingItems > 100)
+                Logger.LogWarning(
+                    "CwlWarService thread pool pressure | AvailWorker={AvailWorker} | Pending={Pending} | ThreadCount={ThreadCount}",
+                    availWorker, pendingItems, threadCount);
         }
         finally
         {

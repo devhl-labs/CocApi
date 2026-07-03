@@ -55,6 +55,7 @@ public sealed class ClanService : ServiceBase
 
     protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
+        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
         SetDateVariables();
 
         ClanServiceOptions options = Options.Value.Clans;
@@ -82,6 +83,8 @@ public sealed class ClanService : ServiceBase
             : int.MinValue;
 
         HashSet<string> updatingTags = new();
+        int lockSkips = 0;
+        long totalSaveMs = 0;
 
         // Unbounded channel: fetch tasks write results as they complete; consumer drains in SaveBatchSize batches.
         var channel = Channel.CreateUnbounded<(CachedClan Clan, ClanFetch Result)>(new UnboundedChannelOptions { SingleReader = true });
@@ -94,7 +97,10 @@ public sealed class ClanService : ServiceBase
             foreach (CachedClan cachedClan in cachedClans)
             {
                 if (!Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
+                {
+                    lockSkips++;
                     continue;
+                }
 
                 updatingTags.Add(cachedClan.Tag);
 
@@ -116,7 +122,9 @@ public sealed class ClanService : ServiceBase
                 if (batch.Count >= batchSize)
                 {
                     ApplyBatch(batch);
+                    var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                    totalSaveMs += saveSw.ElapsedMilliseconds;
                     batch.Clear();
                 }
             }
@@ -124,8 +132,36 @@ public sealed class ClanService : ServiceBase
             if (batch.Count > 0)
             {
                 ApplyBatch(batch);
+                var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+                totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            cycleSw.Stop();
+            ThreadPool.GetMinThreads(out int minWorker, out int minIocp);
+            ThreadPool.GetMaxThreads(out int maxWorker, out int maxIocp);
+            ThreadPool.GetAvailableThreads(out int availWorker, out int availIocp);
+            int usedWorker = maxWorker - availWorker;
+            int usedIocp = maxIocp - availIocp;
+            int threadCount = ThreadPool.ThreadCount;
+            long pendingItems = ThreadPool.PendingWorkItemCount;
+
+            _logger.LogDebug(
+                "ClanService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs} | TP Worker={UsedWorker}/{MinWorker}/{MaxWorker} avail={AvailWorker} | TP IOCP={UsedIocp}/{MinIocp}/{MaxIocp} avail={AvailIocp} | TP Threads={ThreadCount} | TP Pending={Pending}",
+                cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds,
+                usedWorker, minWorker, maxWorker, availWorker,
+                usedIocp, minIocp, maxIocp, availIocp,
+                threadCount, pendingItems);
+
+            if (cycleSw.ElapsedMilliseconds > 5000)
+                _logger.LogInformation(
+                    "ClanService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
+                    cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
+
+            if (availWorker < 10 || pendingItems > 100)
+                _logger.LogWarning(
+                    "ClanService thread pool pressure | AvailWorker={AvailWorker} | Pending={Pending} | ThreadCount={ThreadCount}",
+                    availWorker, pendingItems, threadCount);
         }
         finally
         {
