@@ -106,12 +106,6 @@ public sealed class NewCwlWarService : ServiceBase
 
                 var group = _downloadedSeasons.Single(w => w.Key == cachedClan.Group.Season);
 
-                Logger.LogInformation("NewCwlWarService processing clan {tag}, group season {season}, state {state}, downloadedSeasons keys: [{keys}]",
-                    cachedClan.Tag,
-                    cachedClan.Group.Content.Season,
-                    cachedClan.Group.Content.State,
-                    string.Join(", ", _downloadedSeasons.Keys));
-
                 foreach (var round in cachedClan.Group.Content.Rounds)
                     foreach (var warTag in round.WarTags.Where(w => w != "#0"))
                         if (group.Value.TryGetValue(warTag, out SeenCwlWar? seenCwlWar))
@@ -134,9 +128,6 @@ public sealed class NewCwlWarService : ServiceBase
                         }
                         else
                         {
-                            Logger.LogInformation("NewCwlWarService war tag {warTag} not in _downloadedSeasons for season {season} (ticks={ticks}), queuing fetch.",
-                                warTag, group.Key, group.Key.Ticks);
-
                             seasons.TryAdd(group.Key, new Dictionary<string, Rest.Models.ClanWarLeagueGroup>());
 
                             Dictionary<string, Rest.Models.ClanWarLeagueGroup> season = seasons.Single(w => w.Key == group.Key).Value;
@@ -167,10 +158,6 @@ public sealed class NewCwlWarService : ServiceBase
             }
 
             var warsToAdd = announceNewWarTasks.Where(t => t.IsCompletedSuccessfully).Select(t => t.Result).ToList();
-
-            Logger.LogInformation("NewCwlWarService attempting to add {count} war(s): [{wars}]",
-                warsToAdd.Count,
-                string.Join(", ", warsToAdd.Select(w => $"{w.WarTag} ({w.PreparationStartTime:u}, {w.ClanTag} vs {w.OpponentTag})")));
 
             foreach (var war in warsToAdd)
                 dbContext.Wars.Add(war);
@@ -215,13 +202,8 @@ public sealed class NewCwlWarService : ServiceBase
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        Logger.LogInformation("NewCwlWarService FillDownloadedWars loaded {count} war(s) from DB since {since:u}.", cachedWars.Count, since);
-
         foreach (CachedWar cachedWar in cachedWars)
         {
-            Logger.LogInformation("NewCwlWarService loaded war from DB: warTag={warTag}, season={season} (ticks={ticks}), {clanTag} vs {opponentTag}",
-                cachedWar.WarTag, cachedWar.Season, cachedWar.Season?.Ticks, cachedWar.ClanTag, cachedWar.OpponentTag);
-
             result.TryAdd(cachedWar.Season.Value, new ConcurrentDictionary<string, SeenCwlWar>());
 
             var downloadedWars = result.Single(w => w.Key == cachedWar.Season.Value);
@@ -263,11 +245,7 @@ public sealed class NewCwlWarService : ServiceBase
             SeenCwlWar seenCwlWar = new(warTags.Key, model.Clan.Tag, model.Opponent.Tag, kvp.Key, apiResponse);
 
             var group = _downloadedSeasons.Single(w => w.Key == warTags.Key).Value;
-
-            bool addedToSeen = group.TryAdd(kvp.Key, seenCwlWar);
-
-            Logger.LogInformation("NewCwlWarService ProcessRequest warTag={warTag}, season={season}, {clanTag} vs {opponentTag}, addedToSeen={addedToSeen}",
-                kvp.Key, warTags.Key, model.Clan.Tag, model.Opponent.Tag, addedToSeen);
+            group.TryAdd(kvp.Key, seenCwlWar);
 
             CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == model.Clan.Tag);
 
