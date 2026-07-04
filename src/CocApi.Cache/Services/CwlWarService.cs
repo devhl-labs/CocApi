@@ -53,11 +53,8 @@ public sealed class CwlWarService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
-        SetDateVariables();
-
         CwlWarServiceOptions options = Options.Value.CwlWars;
 
         using var scope = ScopeFactory.CreateScope();
@@ -136,31 +133,11 @@ public sealed class CwlWarService : ServiceBase
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
 
-            cycleSw.Stop();
-            ThreadPool.GetMinThreads(out int minWorker, out int minIocp);
-            ThreadPool.GetMaxThreads(out int maxWorker, out int maxIocp);
-            ThreadPool.GetAvailableThreads(out int availWorker, out int availIocp);
-            int usedWorker = maxWorker - availWorker;
-            int usedIocp = maxIocp - availIocp;
-            int threadCount = ThreadPool.ThreadCount;
-            long pendingItems = ThreadPool.PendingWorkItemCount;
-
-            Logger.LogDebug(
-                "CwlWarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs} | TP Worker={UsedWorker}/{MinWorker}/{MaxWorker} avail={AvailWorker} | TP IOCP={UsedIocp}/{MinIocp}/{MaxIocp} avail={AvailIocp} | TP Threads={ThreadCount} | TP Pending={Pending}",
-                cachedWars.Count, updatingCwlWar.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds,
-                usedWorker, minWorker, maxWorker, availWorker,
-                usedIocp, minIocp, maxIocp, availIocp,
-                threadCount, pendingItems);
-
-            if (cycleSw.ElapsedMilliseconds > 5000)
-                Logger.LogInformation(
-                    "CwlWarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                    cachedWars.Count, updatingCwlWar.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
-
-            if (availWorker < 10 || pendingItems > 100)
-                Logger.LogWarning(
-                    "CwlWarService thread pool pressure | AvailWorker={AvailWorker} | Pending={Pending} | ThreadCount={ThreadCount}",
-                    availWorker, pendingItems, threadCount);
+            return new CycleCounters(
+                cachedWars.Count,
+                updatingCwlWar.Count,
+                lockSkips,
+                totalSaveMs);
         }
         finally
         {

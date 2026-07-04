@@ -49,10 +49,8 @@ public sealed class NewCwlWarService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        SetDateVariables();
-
         _downloadedSeasons = await FillDownloadedWarsAsync(cancellationToken).ConfigureAwait(false);
 
         RemoveOldWars();
@@ -85,6 +83,8 @@ public sealed class NewCwlWarService : ServiceBase
         ConcurrentDictionary<string, byte?> announcedWarTags = new();
 
         HashSet<string> updatingTags = new();
+        int lockSkips = 0;
+        long totalSaveMs = 0;
 
         IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
@@ -93,7 +93,10 @@ public sealed class NewCwlWarService : ServiceBase
             foreach (CachedClan cachedClan in cachedClans.Where(c => c.Group.Content != null)) // content will be null if the RawContent contains notInWar
             {
                 if (!Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
+                {
+                    lockSkips++;
                     continue;
+                }
 
                 updatingTags.Add(cachedClan.Tag);
 
@@ -172,7 +175,15 @@ public sealed class NewCwlWarService : ServiceBase
             foreach (var war in warsToAdd)
                 dbContext.Wars.Add(war);
 
+            var saveSw = System.Diagnostics.Stopwatch.StartNew();
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            totalSaveMs += saveSw.ElapsedMilliseconds;
+
+            return new CycleCounters(
+                cachedClans.Count,
+                warsToAdd.Count,
+                lockSkips,
+                totalSaveMs);
         }
         finally
         {

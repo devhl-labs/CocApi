@@ -47,10 +47,8 @@ public sealed class PlayerService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        SetDateVariables();
-
         PlayerServiceOptions options = Options.Value.Players;
 
         using var scope = ScopeFactory.CreateScope();
@@ -73,6 +71,7 @@ public sealed class PlayerService : ServiceBase
             : int.MinValue;
 
         HashSet<string> updatingTags = new();
+        int lockSkips = 0;
         long totalSaveMs = 0;
 
         IPlayersApi playersApi = ApiFactory.Create<IPlayersApi>();
@@ -86,7 +85,10 @@ public sealed class PlayerService : ServiceBase
             foreach (CachedPlayer trackedPlayer in trackedPlayers)
             {
                 if (!Synchronizer.VillageLock.TryAcquire(trackedPlayer.Tag))
+                {
+                    lockSkips++;
                     continue;
+                }
 
                 updatingTags.Add(trackedPlayer.Tag);
 
@@ -123,6 +125,12 @@ public sealed class PlayerService : ServiceBase
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            return new CycleCounters(
+                trackedPlayers.Count,
+                updatingTags.Count,
+                lockSkips,
+                totalSaveMs);
         }
         finally
         {

@@ -44,11 +44,8 @@ public sealed class ClanWarService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        var cycleSw = System.Diagnostics.Stopwatch.StartNew();
-        SetDateVariables();
-
         ClanWarServiceOptions options = Options.Value.ClanWars;
 
         using var scope = ScopeFactory.CreateScope();
@@ -120,31 +117,12 @@ public sealed class ClanWarService : ServiceBase
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
 
-            cycleSw.Stop();
-            ThreadPool.GetMinThreads(out int minWorker, out int minIocp);
-            ThreadPool.GetMaxThreads(out int maxWorker, out int maxIocp);
-            ThreadPool.GetAvailableThreads(out int availWorker, out int availIocp);
-            int usedWorker = maxWorker - availWorker;
-            int usedIocp = maxIocp - availIocp;
-            int threadCount = ThreadPool.ThreadCount;
-            long pendingItems = ThreadPool.PendingWorkItemCount;
+            return new CycleCounters(
+                cachedClans.Count,
+                updatingTags.Count,
+                lockSkips,
+                totalSaveMs);
 
-            _logger.LogDebug(
-                "ClanWarService cycle | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs} | TP Worker={UsedWorker}/{MinWorker}/{MaxWorker} avail={AvailWorker} | TP IOCP={UsedIocp}/{MinIocp}/{MaxIocp} avail={AvailIocp} | TP Threads={ThreadCount} | TP Pending={Pending}",
-                cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds,
-                usedWorker, minWorker, maxWorker, availWorker,
-                usedIocp, minIocp, maxIocp, availIocp,
-                threadCount, pendingItems);
-
-            if (cycleSw.ElapsedMilliseconds > 5000)
-                _logger.LogInformation(
-                    "ClanWarService cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
-                    cachedClans.Count, updatingTags.Count, lockSkips, totalSaveMs, cycleSw.ElapsedMilliseconds);
-
-            if (availWorker < 10 || pendingItems > 100)
-                _logger.LogWarning(
-                    "ClanWarService thread pool pressure | AvailWorker={AvailWorker} | Pending={Pending} | ThreadCount={ThreadCount}",
-                    availWorker, pendingItems, threadCount);
         }
         finally
         {

@@ -60,6 +60,12 @@ public class CacheOptions
     public int SaveBatchSize { get; set; } = 50;
 
     /// <summary>
+    /// Monitors process-wide .NET thread pool pressure. Warnings are emitted only after sustained pressure.
+    /// </summary>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public ThreadPoolMonitorServiceOptions ThreadPoolMonitor { get; } = new ThreadPoolMonitorServiceOptions { DelayBeforeExecution = TimeSpan.FromSeconds(5), DelayBetweenExecutions = TimeSpan.FromSeconds(10), Enabled = false };
+
+    /// <summary>
     /// Queries the clan's league group from the cache to obtain the war tags.
     /// The API is then queried for each war tag. 
     /// If the resulting war does not contain the desired clan, the war will be stored in memory.

@@ -46,10 +46,8 @@ public sealed class MemberService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        SetDateVariables();
-
         using var scope = ScopeFactory.CreateScope();
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
@@ -63,7 +61,7 @@ public sealed class MemberService : ServiceBase
             : int.MinValue;
 
         if (cachedClan?.Content == null)
-            return;
+            return new CycleCounters(0, 0, 0, 0);
 
         HashSet<string> updatingTags = new();
 
@@ -127,6 +125,12 @@ public sealed class MemberService : ServiceBase
             }
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+
+            return new CycleCounters(
+                cachedClan.Content.Members.Count,
+                updatingTags.Count,
+                0,
+                0);
         }
         finally
         {

@@ -35,10 +35,8 @@ public sealed class NewWarService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        SetDateVariables();
-
         NewWarServiceOptions options = Options.Value.NewWars;
 
         using var scope = ScopeFactory.CreateScope();
@@ -61,6 +59,8 @@ public sealed class NewWarService : ServiceBase
             : int.MinValue;
 
         HashSet<string> updatingClans = new();
+        int lockSkips = 0;
+        long totalSaveMs = 0;
 
         foreach (CachedClan cachedClan in cachedClans)
             if (Synchronizer.ClanLock.TryAcquire(cachedClan.Tag))
@@ -69,6 +69,7 @@ public sealed class NewWarService : ServiceBase
 
                 if (!Synchronizer.WarLock.TryAcquire(cachedClan.CurrentWar.Key))
                 {
+                    lockSkips++;
                     updatingClans.Remove(cachedClan.Tag);
                     Synchronizer.ClanLock.Release(cachedClan.Tag);
                 }
@@ -77,7 +78,7 @@ public sealed class NewWarService : ServiceBase
         try
         {
             if (updatingClans.Count == 0)
-                return;
+                return new CycleCounters(cachedClans.Count, 0, lockSkips, totalSaveMs);
 
             List<CachedWar> cachedWars = await dbContext.Wars
                 .AsNoTracking()
@@ -124,7 +125,15 @@ public sealed class NewWarService : ServiceBase
                 }
             }
 
+            var saveSw = System.Diagnostics.Stopwatch.StartNew();
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+            totalSaveMs += saveSw.ElapsedMilliseconds;
+
+            return new CycleCounters(
+                cachedClans.Count,
+                updatingClans.Count,
+                lockSkips,
+                totalSaveMs);
         }
         finally
         {

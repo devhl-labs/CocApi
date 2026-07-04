@@ -33,10 +33,8 @@ public sealed class StalePlayerService : ServiceBase
     }
 
 
-    protected override async Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
+    protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        SetDateVariables();
-
         using var scope = ScopeFactory.CreateScope();
 
         CacheDbContext dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
@@ -56,6 +54,13 @@ public sealed class StalePlayerService : ServiceBase
 
         dbContext.RemoveRange(cachedPlayers);
 
+        var saveSw = System.Diagnostics.Stopwatch.StartNew();
         await dbContext.SaveChangesAsync(cancellationToken);
+
+        return new CycleCounters(
+            cachedPlayers.Count,
+            cachedPlayers.Count,
+            0,
+            saveSw.ElapsedMilliseconds);
     }
 }

@@ -91,6 +91,7 @@ public static class IServiceCollectionExtensions
         services.AddClansClient<TClansClient>();
 
         services.AddHostedSingleton<FireAndForgetService>();
+        services.AddHostedSingleton<ThreadPoolMonitorService>();
         services.AddHostedSingleton<ActiveWarService>();
         services.AddHostedSingleton<ClanService>();
         services.AddHostedSingleton<ClanWarService>();
