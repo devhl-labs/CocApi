@@ -153,12 +153,22 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="LegendLeagueTournamentSeasonResult" />
     /// </summary>
-    public class LegendLeagueTournamentSeasonResultJsonConverter : JsonConverter<LegendLeagueTournamentSeasonResult>
+    public partial class LegendLeagueTournamentSeasonResultJsonConverter : JsonConverter<LegendLeagueTournamentSeasonResult>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LegendLeagueTournamentSeasonResultJsonConverter" /> class.
+        /// </summary>
+        public LegendLeagueTournamentSeasonResultJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize Id
         /// </summary>
-        public static string IdFormat { get; set; } = "yyyy'-'MM";
+        public string IdFormat { get; private set; } = "yyyy'-'MM";
 
         /// <summary>
         /// Deserializes json to <see cref="LegendLeagueTournamentSeasonResult" />

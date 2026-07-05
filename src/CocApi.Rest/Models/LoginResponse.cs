@@ -74,8 +74,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="LoginResponse" />
     /// </summary>
-    public class LoginResponseJsonConverter : JsonConverter<LoginResponse>
+    public partial class LoginResponseJsonConverter : JsonConverter<LoginResponse>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoginResponseJsonConverter" /> class.
+        /// </summary>
+        public LoginResponseJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="LoginResponse" />
         /// </summary>

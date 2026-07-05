@@ -166,8 +166,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanCapitalRaidSeasonAttackLogEntry" />
     /// </summary>
-    public class ClanCapitalRaidSeasonAttackLogEntryJsonConverter : JsonConverter<ClanCapitalRaidSeasonAttackLogEntry>
+    public partial class ClanCapitalRaidSeasonAttackLogEntryJsonConverter : JsonConverter<ClanCapitalRaidSeasonAttackLogEntry>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanCapitalRaidSeasonAttackLogEntryJsonConverter" /> class.
+        /// </summary>
+        public ClanCapitalRaidSeasonAttackLogEntryJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="ClanCapitalRaidSeasonAttackLogEntry" />
         /// </summary>

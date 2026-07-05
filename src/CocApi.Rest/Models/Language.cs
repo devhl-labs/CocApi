@@ -137,8 +137,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="Language" />
     /// </summary>
-    public class LanguageJsonConverter : JsonConverter<Language>
+    public partial class LanguageJsonConverter : JsonConverter<Language>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LanguageJsonConverter" /> class.
+        /// </summary>
+        public LanguageJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="Language" />
         /// </summary>

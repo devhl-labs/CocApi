@@ -108,8 +108,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="LeagueSeason" />
     /// </summary>
-    public class LeagueSeasonJsonConverter : JsonConverter<LeagueSeason>
+    public partial class LeagueSeasonJsonConverter : JsonConverter<LeagueSeason>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LeagueSeasonJsonConverter" /> class.
+        /// </summary>
+        public LeagueSeasonJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="LeagueSeason" />
         /// </summary>

@@ -83,8 +83,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="CreateTokenRequest" />
     /// </summary>
-    public class CreateTokenRequestJsonConverter : JsonConverter<CreateTokenRequest>
+    public partial class CreateTokenRequestJsonConverter : JsonConverter<CreateTokenRequest>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateTokenRequestJsonConverter" /> class.
+        /// </summary>
+        public CreateTokenRequestJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="CreateTokenRequest" />
         /// </summary>

@@ -74,8 +74,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="LoginCredentials" />
     /// </summary>
-    public class LoginCredentialsJsonConverter : JsonConverter<LoginCredentials>
+    public partial class LoginCredentialsJsonConverter : JsonConverter<LoginCredentials>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoginCredentialsJsonConverter" /> class.
+        /// </summary>
+        public LoginCredentialsJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="LoginCredentials" />
         /// </summary>

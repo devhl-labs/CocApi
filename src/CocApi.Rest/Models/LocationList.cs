@@ -109,8 +109,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="LocationList" />
     /// </summary>
-    public class LocationListJsonConverter : JsonConverter<LocationList>
+    public partial class LocationListJsonConverter : JsonConverter<LocationList>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocationListJsonConverter" /> class.
+        /// </summary>
+        public LocationListJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="LocationList" />
         /// </summary>

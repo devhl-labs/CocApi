@@ -165,8 +165,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="IconUrls" />
     /// </summary>
-    public class IconUrlsJsonConverter : JsonConverter<IconUrls>
+    public partial class IconUrlsJsonConverter : JsonConverter<IconUrls>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IconUrlsJsonConverter" /> class.
+        /// </summary>
+        public IconUrlsJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="IconUrls" />
         /// </summary>

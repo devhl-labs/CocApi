@@ -232,8 +232,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanCapitalRanking" />
     /// </summary>
-    public class ClanCapitalRankingJsonConverter : JsonConverter<ClanCapitalRanking>
+    public partial class ClanCapitalRankingJsonConverter : JsonConverter<ClanCapitalRanking>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanCapitalRankingJsonConverter" /> class.
+        /// </summary>
+        public ClanCapitalRankingJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="ClanCapitalRanking" />
         /// </summary>

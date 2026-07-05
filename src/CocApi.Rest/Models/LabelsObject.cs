@@ -109,8 +109,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="LabelsObject" />
     /// </summary>
-    public class LabelsObjectJsonConverter : JsonConverter<LabelsObject>
+    public partial class LabelsObjectJsonConverter : JsonConverter<LabelsObject>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LabelsObjectJsonConverter" /> class.
+        /// </summary>
+        public LabelsObjectJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="LabelsObject" />
         /// </summary>

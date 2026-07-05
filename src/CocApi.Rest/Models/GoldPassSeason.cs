@@ -123,8 +123,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="GoldPassSeason" />
     /// </summary>
-    public class GoldPassSeasonJsonConverter : JsonConverter<GoldPassSeason>
+    public partial class GoldPassSeasonJsonConverter : JsonConverter<GoldPassSeason>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GoldPassSeasonJsonConverter" /> class.
+        /// </summary>
+        public GoldPassSeasonJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="GoldPassSeason" />
         /// </summary>

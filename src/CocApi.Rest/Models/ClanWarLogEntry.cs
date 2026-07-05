@@ -220,12 +220,22 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanWarLogEntry" />
     /// </summary>
-    public class ClanWarLogEntryJsonConverter : JsonConverter<ClanWarLogEntry>
+    public partial class ClanWarLogEntryJsonConverter : JsonConverter<ClanWarLogEntry>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWarLogEntryJsonConverter" /> class.
+        /// </summary>
+        public ClanWarLogEntryJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize EndTime
         /// </summary>
-        public static string EndTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string EndTimeFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// Deserializes json to <see cref="ClanWarLogEntry" />

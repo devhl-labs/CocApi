@@ -243,8 +243,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="PlayerHouseElement" />
     /// </summary>
-    public class PlayerHouseElementJsonConverter : JsonConverter<PlayerHouseElement>
+    public partial class PlayerHouseElementJsonConverter : JsonConverter<PlayerHouseElement>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerHouseElementJsonConverter" /> class.
+        /// </summary>
+        public PlayerHouseElementJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="PlayerHouseElement" />
         /// </summary>

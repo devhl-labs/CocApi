@@ -889,8 +889,8 @@ namespace CocApi.Rest.Apis
                         : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/players/{playerTag}/verifytoken");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BplayerTag%7D", Uri.EscapeDataString(playerTag.ToString()));
 
-                    httpRequestMessageLocalVar.Content = (body as object) is System.IO.Stream stream
-                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                    httpRequestMessageLocalVar.Content = (body as object) is CocApi.Rest.Client.FileParameter fileParameterLocalVar
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(fileParameterLocalVar.Content)
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(body, _jsonSerializerOptions));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();

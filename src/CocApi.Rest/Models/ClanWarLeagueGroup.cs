@@ -166,6 +166,9 @@ namespace CocApi.Rest.Models
     {
         partial void OnCreated();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWarLeagueGroupJsonConverter" /> class.
+        /// </summary>
         public ClanWarLeagueGroupJsonConverter()
         {
             OnCreated();

@@ -180,8 +180,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClientError" />
     /// </summary>
-    public class ClientErrorJsonConverter : JsonConverter<ClientError>
+    public partial class ClientErrorJsonConverter : JsonConverter<ClientError>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientErrorJsonConverter" /> class.
+        /// </summary>
+        public ClientErrorJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="ClientError" />
         /// </summary>

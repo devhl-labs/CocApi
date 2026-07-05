@@ -109,8 +109,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="PlayerRankingList" />
     /// </summary>
-    public class PlayerRankingListJsonConverter : JsonConverter<PlayerRankingList>
+    public partial class PlayerRankingListJsonConverter : JsonConverter<PlayerRankingList>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerRankingListJsonConverter" /> class.
+        /// </summary>
+        public PlayerRankingListJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="PlayerRankingList" />
         /// </summary>

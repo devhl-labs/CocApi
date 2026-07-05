@@ -189,8 +189,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="PlayerItemLevel" />
     /// </summary>
-    public class PlayerItemLevelJsonConverter : JsonConverter<PlayerItemLevel>
+    public partial class PlayerItemLevelJsonConverter : JsonConverter<PlayerItemLevel>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerItemLevelJsonConverter" /> class.
+        /// </summary>
+        public PlayerItemLevelJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="PlayerItemLevel" />
         /// </summary>

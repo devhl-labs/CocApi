@@ -160,12 +160,22 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="Key" />
     /// </summary>
-    public class KeyJsonConverter : JsonConverter<Key>
+    public partial class KeyJsonConverter : JsonConverter<Key>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyJsonConverter" /> class.
+        /// </summary>
+        public KeyJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize ValidUntil
         /// </summary>
-        public static string ValidUntilFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string ValidUntilFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// Deserializes json to <see cref="Key" />

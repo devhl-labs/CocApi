@@ -90,8 +90,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="KeyInstance" />
     /// </summary>
-    public class KeyInstanceJsonConverter : JsonConverter<KeyInstance>
+    public partial class KeyInstanceJsonConverter : JsonConverter<KeyInstance>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="KeyInstanceJsonConverter" /> class.
+        /// </summary>
+        public KeyInstanceJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="KeyInstance" />
         /// </summary>

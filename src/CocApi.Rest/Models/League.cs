@@ -137,8 +137,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="League" />
     /// </summary>
-    public class LeagueJsonConverter : JsonConverter<League>
+    public partial class LeagueJsonConverter : JsonConverter<League>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LeagueJsonConverter" /> class.
+        /// </summary>
+        public LeagueJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="League" />
         /// </summary>

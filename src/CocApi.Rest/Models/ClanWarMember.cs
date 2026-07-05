@@ -208,8 +208,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanWarMember" />
     /// </summary>
-    public class ClanWarMemberJsonConverter : JsonConverter<ClanWarMember>
+    public partial class ClanWarMemberJsonConverter : JsonConverter<ClanWarMember>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWarMemberJsonConverter" /> class.
+        /// </summary>
+        public ClanWarMemberJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="ClanWarMember" />
         /// </summary>

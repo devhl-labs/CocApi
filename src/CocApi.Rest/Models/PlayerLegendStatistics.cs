@@ -218,8 +218,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="PlayerLegendStatistics" />
     /// </summary>
-    public class PlayerLegendStatisticsJsonConverter : JsonConverter<PlayerLegendStatistics>
+    public partial class PlayerLegendStatisticsJsonConverter : JsonConverter<PlayerLegendStatistics>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerLegendStatisticsJsonConverter" /> class.
+        /// </summary>
+        public PlayerLegendStatisticsJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="PlayerLegendStatistics" />
         /// </summary>

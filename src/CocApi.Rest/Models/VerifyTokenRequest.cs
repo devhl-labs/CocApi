@@ -65,8 +65,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="VerifyTokenRequest" />
     /// </summary>
-    public class VerifyTokenRequestJsonConverter : JsonConverter<VerifyTokenRequest>
+    public partial class VerifyTokenRequestJsonConverter : JsonConverter<VerifyTokenRequest>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VerifyTokenRequestJsonConverter" /> class.
+        /// </summary>
+        public VerifyTokenRequestJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="VerifyTokenRequest" />
         /// </summary>

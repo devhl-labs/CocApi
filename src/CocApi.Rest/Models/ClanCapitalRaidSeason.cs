@@ -356,17 +356,27 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanCapitalRaidSeason" />
     /// </summary>
-    public class ClanCapitalRaidSeasonJsonConverter : JsonConverter<ClanCapitalRaidSeason>
+    public partial class ClanCapitalRaidSeasonJsonConverter : JsonConverter<ClanCapitalRaidSeason>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanCapitalRaidSeasonJsonConverter" /> class.
+        /// </summary>
+        public ClanCapitalRaidSeasonJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize EndTime
         /// </summary>
-        public static string EndTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string EndTimeFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// The format to use to serialize StartTime
         /// </summary>
-        public static string StartTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string StartTimeFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// Deserializes json to <see cref="ClanCapitalRaidSeason" />

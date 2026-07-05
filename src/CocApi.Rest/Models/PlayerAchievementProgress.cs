@@ -196,8 +196,18 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="PlayerAchievementProgress" />
     /// </summary>
-    public class PlayerAchievementProgressJsonConverter : JsonConverter<PlayerAchievementProgress>
+    public partial class PlayerAchievementProgressJsonConverter : JsonConverter<PlayerAchievementProgress>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PlayerAchievementProgressJsonConverter" /> class.
+        /// </summary>
+        public PlayerAchievementProgressJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="PlayerAchievementProgress" />
         /// </summary>

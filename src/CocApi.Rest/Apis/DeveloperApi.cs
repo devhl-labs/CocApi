@@ -562,8 +562,8 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
                     uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    httpRequestMessageLocalVar.Content = (createTokenRequest as object) is System.IO.Stream stream
-                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                    httpRequestMessageLocalVar.Content = (createTokenRequest as object) is CocApi.Rest.Client.FileParameter fileParameterLocalVar
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(fileParameterLocalVar.Content)
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(createTokenRequest, _jsonSerializerOptions));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
@@ -1538,8 +1538,8 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
                     uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    httpRequestMessageLocalVar.Content = (loginCredentials as object) is System.IO.Stream stream
-                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                    httpRequestMessageLocalVar.Content = (loginCredentials as object) is CocApi.Rest.Client.FileParameter fileParameterLocalVar
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(fileParameterLocalVar.Content)
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(loginCredentials, _jsonSerializerOptions));
 
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2066,8 +2066,8 @@ namespace CocApi.Rest.Apis
                     uriBuilderLocalVar.Scheme = urlLocalVar.Scheme;
                     uriBuilderLocalVar.Path = urlLocalVar.AbsolutePath;
 
-                    httpRequestMessageLocalVar.Content = (key as object) is System.IO.Stream stream
-                        ? httpRequestMessageLocalVar.Content = new StreamContent(stream)
+                    httpRequestMessageLocalVar.Content = (key as object) is CocApi.Rest.Client.FileParameter fileParameterLocalVar
+                        ? httpRequestMessageLocalVar.Content = new StreamContent(fileParameterLocalVar.Content)
                         : httpRequestMessageLocalVar.Content = new StringContent(JsonSerializer.Serialize(key, _jsonSerializerOptions));
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();

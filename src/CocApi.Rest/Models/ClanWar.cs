@@ -272,22 +272,32 @@ namespace CocApi.Rest.Models
     /// <summary>
     /// A Json converter for type <see cref="ClanWar" />
     /// </summary>
-    public class ClanWarJsonConverter : JsonConverter<ClanWar>
+    public partial class ClanWarJsonConverter : JsonConverter<ClanWar>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClanWarJsonConverter" /> class.
+        /// </summary>
+        public ClanWarJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize EndTime
         /// </summary>
-        public static string EndTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string EndTimeFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// The format to use to serialize PreparationStartTime
         /// </summary>
-        public static string PreparationStartTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string PreparationStartTimeFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// The format to use to serialize StartTime
         /// </summary>
-        public static string StartTimeFormat { get; set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
+        public string StartTimeFormat { get; private set; } = "yyyyMMdd'T'HHmmss.fff'Z'";
 
         /// <summary>
         /// Deserializes json to <see cref="ClanWar" />

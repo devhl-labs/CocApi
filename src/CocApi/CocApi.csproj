@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>CocApi</AssemblyName>
     <PackageId>CocApi</PackageId>
     <OutputType>Library</OutputType>
@@ -19,7 +19,7 @@
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags> 
     <Nullable>enable</Nullable>
     <PackageIcon>Barbarian King.png</PackageIcon>
-    <Version>2.16.0-alpha9003</Version>
+    <Version>2.16.0-alpha9009</Version>
     <AssemblyVersion>1.14.6.0</AssemblyVersion>
     <FileVersion>1.14.6.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
