@@ -25,9 +25,8 @@ public class PlayersClient : ClientBase<PlayersClient>
         IServiceScopeFactory scopeFactory,
         Synchronizer synchronizer,
         PlayerService playerService,
-        MemberService memberService,
-        IOptions<CacheOptions> options) 
-    : base (logger, scopeFactory, synchronizer, options)
+        MemberService memberService)
+    : base (logger, scopeFactory, synchronizer)
     {
         PlayersApi = playersApi;
 

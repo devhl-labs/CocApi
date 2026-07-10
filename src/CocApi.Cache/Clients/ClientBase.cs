@@ -16,8 +16,7 @@ public class ClientBase<T>
     public ClientBase(
         ILogger<T> logger,
         IServiceScopeFactory scopeFactory,
-        Synchronizer synchronizer,
-        IOptions<CacheOptions> options)
+        Synchronizer synchronizer)
     {
         Logger = logger;
         ScopeFactory = scopeFactory;

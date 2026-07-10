@@ -44,7 +44,7 @@ public class ClansClient : ClientBase<ClansClient>
         CwlWarService cwlWarService,
         IOptions<CacheOptions> options
         )
-    : base(logger, scopeFactory, synchronizer, options)
+    : base(logger, scopeFactory, synchronizer)
     {
         if (!(options.Value.CwlWars.Enabled == 
                 options.Value.Clans.DownloadGroup == 
