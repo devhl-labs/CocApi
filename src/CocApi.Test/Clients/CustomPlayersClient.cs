@@ -17,9 +17,8 @@ public class CustomPlayersClient : Cache.PlayersClient
         IPlayersApi playersApi,
         Synchronizer synchronizer,
         PlayerService playerService,
-        MemberService memberService,
-        IOptions<CacheOptions> options)
-    : base(logger, playersApi, scopeFactory, synchronizer, playerService, memberService, options)
+        MemberService memberService)
+    : base(logger, playersApi, scopeFactory, synchronizer, playerService, memberService)
     {
         PlayerUpdated += OnPlayerUpdated;
     }
