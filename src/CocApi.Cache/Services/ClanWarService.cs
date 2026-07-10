@@ -23,7 +23,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    internal IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<ClanWarServiceOptions> ClanWarOptions { get; }
     internal IOptionsMonitor<CwlWarServiceOptions> CwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
@@ -34,7 +34,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<ClanWarServiceOptions> clanWarOptions,
         IOptionsMonitor<CwlWarServiceOptions> cwlWarOptions,
         ILoggerFactory loggerFactory)
@@ -99,7 +99,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = CacheOptions.Value.SaveBatchSize;
+            int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedClan Clan, ClanWarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
@@ -190,7 +190,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
 
             ClanWarServiceOptions clanWarOptions = ClanWarOptions.CurrentValue;
 
-            Option<bool> realTime = CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value);
+            Option<bool> realTime = CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value);
 
             if (clanWarOptions.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 await FetchClanWarAsync(clansApi, cachedClan, result, realTime, cancellationToken).ConfigureAwait(false);

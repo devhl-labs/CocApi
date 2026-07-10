@@ -31,7 +31,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
     internal static bool Instantiated { get; private set; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider TimeToLiveProvider { get; }
-    public IOptions<CacheOptions> CacheOptions { get; }
+    public IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<WarServiceOptions> WarOptions { get; }
 
     private readonly SemaphoreSlim _semaphore = new(1, 1);
@@ -43,7 +43,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider timeToLiveProvider,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<WarServiceOptions> warOptions,
         ILoggerFactory loggerFactory,
         FireAndForgetService fireAndForget)
@@ -133,7 +133,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = CacheOptions.Value.SaveBatchSize;
+            int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedWar War, WarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
@@ -292,7 +292,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         try
         {
             CachedClanWar cachedClanWar = await CachedClanWar
-                .FromCurrentWarResponseAsync(tag, CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value), TimeToLiveProvider, clansApi, cancellationToken)
+                .FromCurrentWarResponseAsync(tag, CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value), TimeToLiveProvider, clansApi, cancellationToken)
                 .ConfigureAwait(false);
 
             cachedClanWar.Added = true;

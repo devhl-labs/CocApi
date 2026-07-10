@@ -22,7 +22,7 @@ public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    internal IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<ActiveWarServiceOptions> ActiveWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
@@ -33,7 +33,7 @@ public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<ActiveWarServiceOptions> activeWarOptions,
         ILoggerFactory loggerFactory)
         : base(logger, scopeFactory, activeWarOptions, loggerFactory)
@@ -113,12 +113,12 @@ public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
                 updatingTags.Add(cachedClan.Tag);
 
                 await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value), channel.Writer, cancellationToken)));
+                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value), channel.Writer, cancellationToken)));
             }
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = CacheOptions.Value.SaveBatchSize;
+            int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedClan Clan, ActiveWarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))

@@ -30,7 +30,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    internal IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<ClanServiceOptions> ClanOptions { get; }
     internal IOptionsMonitor<CwlWarServiceOptions> CwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
@@ -41,7 +41,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<ClanServiceOptions> clanOptions,
         IOptionsMonitor<CwlWarServiceOptions> cwlWarOptions,
         ILoggerFactory loggerFactory,
@@ -116,7 +116,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
             // Phase 2: consume completed fetches in SaveBatchSize batches, applying mutations and saving each batch.
-            int batchSize = CacheOptions.Value.SaveBatchSize;
+            int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedClan Clan, ClanFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
@@ -223,7 +223,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
 
             ClanServiceOptions clanOptions = ClanOptions.CurrentValue;
 
-            Option<bool> realTime = CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value);
+            Option<bool> realTime = CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value);
 
             if (clanOptions.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
                 tasks.Add(FetchClanAsync(clansApi, cachedClan, result, cancellationToken));

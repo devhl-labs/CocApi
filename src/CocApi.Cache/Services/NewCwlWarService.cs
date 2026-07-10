@@ -24,7 +24,7 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    public IOptions<CacheOptions> CacheOptions { get; }
+    public IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<NewCwlWarServiceOptions> NewCwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
@@ -38,7 +38,7 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
         IApiFactory apiFactory, 
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<NewCwlWarServiceOptions> newCwlWarOptions,
         ILoggerFactory loggerFactory)
     : base(logger, scopeFactory, newCwlWarOptions, loggerFactory)
@@ -145,7 +145,7 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
             foreach (KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> season in seasons)
                 foreach (var warTags in season.Value)
                 {
-                    Option<bool> realTime = CacheOptions.Value.RealTime != null ? new Option<bool>(CacheOptions.Value.RealTime.Value) : default;
+                    Option<bool> realTime = CacheOptions.CurrentValue.RealTime != null ? new Option<bool>(CacheOptions.CurrentValue.RealTime.Value) : default;
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
                     processRequests.Add(Synchronizer.WithSemaphoreAsync(ProcessRequest(clansApi, realTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken)));
                 }

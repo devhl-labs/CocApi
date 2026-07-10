@@ -29,7 +29,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    public IOptions<CacheOptions> CacheOptions { get; }
+    public IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<CwlWarServiceOptions> CwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
@@ -40,7 +40,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<CwlWarServiceOptions> cwlWarOptions,
         ILoggerFactory loggerFactory,
         FireAndForgetService fireAndForget)
@@ -100,7 +100,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
                     updatingCwlWar.Add(cachedWar.WarTag);
 
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value), channel.Writer, cancellationToken));
+                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value), channel.Writer, cancellationToken));
                 }
                 else
                 {
@@ -112,7 +112,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = CacheOptions.Value.SaveBatchSize;
+            int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedWar War, CwlWarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))

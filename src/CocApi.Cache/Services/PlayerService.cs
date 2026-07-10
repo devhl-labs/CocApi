@@ -24,7 +24,7 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
 
     internal Synchronizer Synchronizer { get; }
     internal IApiFactory ApiFactory { get; }
-    public IOptions<CacheOptions> CacheOptions { get; }
+    public IOptionsMonitor<CacheOptions> CacheOptions { get; }
     internal IOptionsMonitor<PlayerServiceOptions> PlayerOptions { get; }
     internal static bool Instantiated { get; private set; }
     internal TimeToLiveProvider TimeToLiveProvider { get; }
@@ -36,7 +36,7 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
         TimeToLiveProvider timeToLiveProvider,
         Synchronizer synchronizer,
         IApiFactory apiFactory,
-        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CacheOptions> cacheOptions,
         IOptionsMonitor<PlayerServiceOptions> playerOptions,
         ILoggerFactory loggerFactory)
     : base(logger, scopeFactory, playerOptions, loggerFactory)
@@ -105,7 +105,7 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = CacheOptions.Value.SaveBatchSize;
+            int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedPlayer Player, CachedPlayer? Fetched)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
