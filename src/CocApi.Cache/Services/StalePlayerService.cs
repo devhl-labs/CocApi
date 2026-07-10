@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class StalePlayerService : ServiceBase
+public sealed class StalePlayerService : ServiceBase<StalePlayerServiceOptions>
 {
     internal Synchronizer Synchronizer { get; }
     internal static bool Instantiated { get; private set; }
@@ -24,8 +24,9 @@ public sealed class StalePlayerService : ServiceBase
         IServiceScopeFactory scopeFactory,
         TimeToLiveProvider timeToLiveProvider,
         Synchronizer synchronizer,
-        IOptions<CacheOptions> options)
-    : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.DeleteStalePlayers))
+        IOptionsMonitor<StalePlayerServiceOptions> stalePlayerOptions,
+        ILoggerFactory loggerFactory)
+    : base(logger, scopeFactory, stalePlayerOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         TimeToLiveProvider = timeToLiveProvider;

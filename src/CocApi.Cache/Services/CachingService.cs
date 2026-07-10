@@ -1,17 +1,18 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Cache.Services;
 
 public sealed class CachingService
 {
-    private readonly ServiceBase[] _perpetualServices;
+    private readonly IHostedService[] _perpetualServices;
 
     public CachingService(ActiveWarService activeWarService, ClanService clanService, ClanWarService clanWarService, CwlWarService cwlWarService, MemberService memberService,
         NewCwlWarService newCwlWarService, NewWarService newWarService, PlayerService playerService, StalePlayerService stalePlayerService, 
         WarService warService)
     {
-        _perpetualServices = new ServiceBase[]
+        _perpetualServices = new IHostedService[]
         {
             activeWarService,
             clanService,

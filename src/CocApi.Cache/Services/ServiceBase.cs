@@ -9,7 +9,8 @@ using ScheduledServices;
 
 namespace CocApi.Cache.Services;
 
-public abstract class ServiceBase : RecurringService
+public abstract class ServiceBase<TRecurringOptions> : RecurringService<TRecurringOptions>
+    where TRecurringOptions : class, IRecurringServiceOptions
 {
     private const long _slowCycleThresholdMs = 5000;
 
@@ -32,11 +33,11 @@ public abstract class ServiceBase : RecurringService
     public ServiceBase(
         ILogger logger,
         IServiceScopeFactory scopeFactory,
-        IOptions<IRecurringServiceOptions> options // TODO: allow this to change during runtime
-        ) : base(logger, options)
+        IOptionsMonitor<TRecurringOptions> options,
+        ILoggerFactory loggerFactory
+        ) : base(loggerFactory, options)
     {
         using IServiceScope scope = scopeFactory.CreateScope();
-        ILoggerFactory loggerFactory = scope.ServiceProvider.GetRequiredService<ILoggerFactory>();
         _lifecycleLogger = loggerFactory.CreateLogger("CocApi.Cache.Services.ServiceBase");
         ScopeFactory = scopeFactory;
     }

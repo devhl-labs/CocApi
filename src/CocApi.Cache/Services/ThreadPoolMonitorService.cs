@@ -7,27 +7,28 @@ using System.Threading.Tasks;
 
 namespace CocApi.Cache.Services;
 
-public sealed class ThreadPoolMonitorService : RecurringService
+public sealed class ThreadPoolMonitorService : RecurringService<ThreadPoolMonitorServiceOptions>
 {
     private readonly ILogger<ThreadPoolMonitorService> _logger;
-    private readonly IOptionsMonitor<CacheOptions> _cacheOptions;
+    private readonly IOptionsMonitor<ThreadPoolMonitorServiceOptions> _options;
     private int _pressureStreak;
 
     internal static bool Instantiated { get; private set; }
 
     public ThreadPoolMonitorService(
         ILogger<ThreadPoolMonitorService> logger,
-        IOptionsMonitor<CacheOptions> cacheOptions)
-        : base(logger, Microsoft.Extensions.Options.Options.Create(cacheOptions.CurrentValue.ThreadPoolMonitor))
+        IOptionsMonitor<ThreadPoolMonitorServiceOptions> options,
+        ILoggerFactory loggerFactory)
+        : base(loggerFactory, options)
     {
         _logger = logger;
-        _cacheOptions = cacheOptions;
+        _options = options;
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
     }
 
     protected override Task ExecuteScheduledTaskAsync(CancellationToken cancellationToken)
     {
-        ThreadPoolMonitorServiceOptions options = _cacheOptions.CurrentValue.ThreadPoolMonitor;
+        ThreadPoolMonitorServiceOptions options = _options.CurrentValue;
 
         ThreadPool.GetMinThreads(out int minWorker, out int minIocp);
         ThreadPool.GetMaxThreads(out int maxWorker, out int maxIocp);

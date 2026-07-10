@@ -15,7 +15,7 @@ using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class PlayerService : ServiceBase
+public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
 {
     private readonly ILogger<PlayerService> _logger;
 
@@ -24,7 +24,8 @@ public sealed class PlayerService : ServiceBase
 
     internal Synchronizer Synchronizer { get; }
     internal IApiFactory ApiFactory { get; }
-    public IOptions<CacheOptions> Options { get; }
+    public IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<PlayerServiceOptions> PlayerOptions { get; }
     internal static bool Instantiated { get; private set; }
     internal TimeToLiveProvider TimeToLiveProvider { get; }
 
@@ -35,21 +36,24 @@ public sealed class PlayerService : ServiceBase
         TimeToLiveProvider timeToLiveProvider,
         Synchronizer synchronizer,
         IApiFactory apiFactory,
-        IOptions<CacheOptions> options)
-    : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Players))
+        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<PlayerServiceOptions> playerOptions,
+        ILoggerFactory loggerFactory)
+    : base(logger, scopeFactory, playerOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         _logger = logger;
         TimeToLiveProvider = timeToLiveProvider;
         Synchronizer = synchronizer;
         ApiFactory = apiFactory;
-        Options = options;
+        CacheOptions = cacheOptions;
+        PlayerOptions = playerOptions;
     }
 
 
     protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        PlayerServiceOptions options = Options.Value.Players;
+        PlayerServiceOptions playerOptions = PlayerOptions.CurrentValue;
 
         using var scope = ScopeFactory.CreateScope();
 
@@ -62,11 +66,11 @@ public sealed class PlayerService : ServiceBase
                 p.Download &&
                 p.Id > _id)
             .OrderBy(p => p.Id)
-            .Take(options.ConcurrentUpdates)
+            .Take(playerOptions.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        _id = trackedPlayers.Count == options.ConcurrentUpdates
+        _id = trackedPlayers.Count == playerOptions.ConcurrentUpdates
             ? trackedPlayers.Max(c => c.Id)
             : int.MinValue;
 
@@ -101,7 +105,7 @@ public sealed class PlayerService : ServiceBase
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = Options.Value.SaveBatchSize;
+            int batchSize = CacheOptions.Value.SaveBatchSize;
             var batch = new List<(CachedPlayer Player, CachedPlayer? Fetched)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))

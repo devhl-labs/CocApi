@@ -23,11 +23,12 @@ public static class IHostBuilderExtensions
         where TTimeToLiveProvider : TimeToLiveProvider
     {
         builder.ConfigureServices((context, services) => {
-
-            if (cacheOptions != null)
-                 services.AddOptions<CacheOptions>().Configure<HostBuilderContext>((instance, context) => cacheOptions(instance, context));
-
-            IServiceCollectionExtensions.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(services, null, dbContextOptions, null);
+            IServiceCollectionExtensions.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+                services,
+                context.Configuration,
+                null,
+                dbContextOptions,
+                cacheOptions == null ? null : options => cacheOptions(options, context));
         });
 
         return builder;

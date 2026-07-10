@@ -1,10 +1,18 @@
-﻿using ScheduledServices.Services.Options;
+﻿using System;
+using ScheduledServices.Services.Options;
 using System.ComponentModel;
 
 namespace CocApi.Cache.Services.Options;
 
 public class ClanServiceOptions : RecurringServiceOptions
 {
+    public ClanServiceOptions()
+    {
+        DelayBeforeExecution = TimeSpan.FromSeconds(5);
+        DelayBetweenExecutions = TimeSpan.FromSeconds(5);
+        Enabled = true;
+    }
+
     /// <summary>
     /// Default value is true.
     /// </summary>
@@ -21,5 +29,5 @@ public class ClanServiceOptions : RecurringServiceOptions
     public bool DownloadWarLog { get; set; } = true;
 
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public int ConcurrentUpdates { get; set; } = 50;
+    public int ConcurrentUpdates { get; set; } = 200;
 }

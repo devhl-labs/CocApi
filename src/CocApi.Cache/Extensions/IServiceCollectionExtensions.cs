@@ -1,9 +1,11 @@
 ﻿using CocApi.Cache.Services;
 using CocApi.Cache.Services.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using ScheduledServices.Extensions;
 using System;
 using System.Linq;
@@ -12,6 +14,18 @@ namespace CocApi.Cache.Extensions;
 
 public static class IServiceCollectionExtensions
 {
+    private static void ConfigureIfSectionExists<TOptions>(
+        this IServiceCollection services,
+        IConfigurationSection parent,
+        string childSectionName)
+        where TOptions : class
+    {
+        IConfigurationSection section = parent.GetSection(childSectionName);
+
+        if (section.Exists())
+            services.Configure<TOptions>(section);
+    }
+
     private static void AddPlayersClient<TPlayersClient>(this IServiceCollection services)
         where TPlayersClient : PlayersClient
     {
@@ -50,6 +64,23 @@ public static class IServiceCollectionExtensions
             Action<DbContextOptionsBuilder> dbContextOptions,
             Action<CacheOptions>? cacheOptions = null)
         => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, dbContextOptions, null, cacheOptions);
+
+    public static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Action<DbContextOptionsBuilder> dbContextOptions,
+            Action<CacheOptions>? cacheOptions = null)
+            where TClansClient : ClansClient
+            where TPlayersClient : PlayersClient
+            where TTimeToLiveProvider : TimeToLiveProvider
+        => services.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(configuration, dbContextOptions, null, cacheOptions);
+
+    public static void AddCocApiCache(
+            this IServiceCollection services,
+            IConfiguration configuration,
+            Action<DbContextOptionsBuilder> dbContextOptions,
+            Action<CacheOptions>? cacheOptions = null)
+        => AddCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(services, configuration, dbContextOptions, null, cacheOptions);
 
     internal static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
         this IServiceCollection services,
@@ -102,5 +133,42 @@ public static class IServiceCollectionExtensions
         services.AddHostedSingleton<PlayerService>();
         services.AddHostedSingleton<WarService>();
         services.AddHostedSingleton<StalePlayerService>();
+    }
+
+    internal static void AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+        this IServiceCollection services,
+        IConfiguration configuration,
+        Action<DbContextOptionsBuilder>? dbContextOptions,
+        Action<IServiceProvider, DbContextOptionsBuilder>? dbContextOptionsBuilderWithServiceCollection,
+        Action<CacheOptions>? cacheOptions)
+        where TClansClient : ClansClient
+        where TPlayersClient : PlayersClient
+        where TTimeToLiveProvider : TimeToLiveProvider
+    {
+        IConfigurationSection cacheSection = configuration.GetSection("CocApi:Cache");
+
+        if (cacheSection.Exists())
+            services.Configure<CacheOptions>(cacheSection);
+
+        if (cacheOptions != null)
+            services.Configure<CacheOptions>(instance => cacheOptions(instance));
+
+        services.ConfigureIfSectionExists<ThreadPoolMonitorServiceOptions>(cacheSection, nameof(CacheOptions.ThreadPoolMonitor));
+        services.ConfigureIfSectionExists<ActiveWarServiceOptions>(cacheSection, nameof(CacheOptions.ActiveWars));
+        services.ConfigureIfSectionExists<ClanServiceOptions>(cacheSection, nameof(CacheOptions.Clans));
+        services.ConfigureIfSectionExists<ClanWarServiceOptions>(cacheSection, nameof(CacheOptions.ClanWars));
+        services.ConfigureIfSectionExists<CwlWarServiceOptions>(cacheSection, nameof(CacheOptions.CwlWars));
+        services.ConfigureIfSectionExists<MemberServiceOptions>(cacheSection, nameof(CacheOptions.ClanMembers));
+        services.ConfigureIfSectionExists<NewCwlWarServiceOptions>(cacheSection, nameof(CacheOptions.NewCwlWars));
+        services.ConfigureIfSectionExists<NewWarServiceOptions>(cacheSection, nameof(CacheOptions.NewWars));
+        services.ConfigureIfSectionExists<PlayerServiceOptions>(cacheSection, nameof(CacheOptions.Players));
+        services.ConfigureIfSectionExists<WarServiceOptions>(cacheSection, nameof(CacheOptions.Wars));
+        services.ConfigureIfSectionExists<StalePlayerServiceOptions>(cacheSection, nameof(CacheOptions.DeleteStalePlayers));
+
+        AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
+            services,
+            dbContextOptions,
+            dbContextOptionsBuilderWithServiceCollection,
+            null);
     }
 }

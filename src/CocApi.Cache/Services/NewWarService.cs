@@ -12,13 +12,13 @@ using Microsoft.Extensions.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class NewWarService : ServiceBase
+public sealed class NewWarService : ServiceBase<NewWarServiceOptions>
 {
     internal event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
 
 
     internal Synchronizer Synchronizer { get; }
-    public IOptions<CacheOptions> Options { get; }
+    internal IOptionsMonitor<NewWarServiceOptions> NewWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
 
@@ -26,18 +26,19 @@ public sealed class NewWarService : ServiceBase
         ILogger<NewWarService> logger,
         IServiceScopeFactory scopeFactory,
         Synchronizer synchronizer,
-        IOptions<CacheOptions> options)
-    : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.NewWars))
+        IOptionsMonitor<NewWarServiceOptions> newWarOptions,
+        ILoggerFactory loggerFactory)
+    : base(logger, scopeFactory, newWarOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         Synchronizer = synchronizer;
-        Options = options;
+        NewWarOptions = newWarOptions;
     }
 
 
     protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        NewWarServiceOptions options = Options.Value.NewWars;
+        NewWarServiceOptions newWarOptions = NewWarOptions.CurrentValue;
 
         using var scope = ScopeFactory.CreateScope();
 
@@ -50,11 +51,11 @@ public sealed class NewWarService : ServiceBase
                 c.CurrentWar.State != Rest.Models.WarState.NotInWar &&
                 c.Id > _id)
             .OrderBy(c => c.Id)
-            .Take(options.ConcurrentUpdates)
+            .Take(newWarOptions.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        _id = cachedClans.Count == options.ConcurrentUpdates
+        _id = cachedClans.Count == newWarOptions.ConcurrentUpdates
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
 

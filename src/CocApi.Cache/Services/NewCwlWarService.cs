@@ -15,7 +15,7 @@ using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class NewCwlWarService : ServiceBase
+public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
 {
     internal event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
 
@@ -24,7 +24,8 @@ public sealed class NewCwlWarService : ServiceBase
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    public IOptions<CacheOptions> Options { get; }
+    public IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<NewCwlWarServiceOptions> NewCwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
 
@@ -37,15 +38,18 @@ public sealed class NewCwlWarService : ServiceBase
         IApiFactory apiFactory, 
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options)
-    : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.NewCwlWars))
+        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<NewCwlWarServiceOptions> newCwlWarOptions,
+        ILoggerFactory loggerFactory)
+    : base(logger, scopeFactory, newCwlWarOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         Logger = logger;
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
-        Options = options;
+        CacheOptions = cacheOptions;
+        NewCwlWarOptions = newCwlWarOptions;
     }
 
 
@@ -55,7 +59,7 @@ public sealed class NewCwlWarService : ServiceBase
 
         RemoveOldWars();
 
-        NewCwlWarServiceOptions options = Options.Value.NewCwlWars;
+        NewCwlWarServiceOptions newCwlWarOptions = NewCwlWarOptions.CurrentValue;
 
         using var scope = ScopeFactory.CreateScope();
 
@@ -68,11 +72,11 @@ public sealed class NewCwlWarService : ServiceBase
                 !string.IsNullOrWhiteSpace(c.Group.RawContent) &&
                 c.Id > _id)
             .OrderBy(c => c.Id)
-            .Take(options.ConcurrentUpdates)
+            .Take(newCwlWarOptions.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
         .ConfigureAwait(false);
 
-        _id = cachedClans.Count == options.ConcurrentUpdates
+        _id = cachedClans.Count == newCwlWarOptions.ConcurrentUpdates
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
 
@@ -141,7 +145,7 @@ public sealed class NewCwlWarService : ServiceBase
             foreach (KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> season in seasons)
                 foreach (var warTags in season.Value)
                 {
-                    Option<bool> realTime = Options.Value.RealTime != null ? new Option<bool>(Options.Value.RealTime.Value) : default;
+                    Option<bool> realTime = CacheOptions.Value.RealTime != null ? new Option<bool>(CacheOptions.Value.RealTime.Value) : default;
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
                     processRequests.Add(Synchronizer.WithSemaphoreAsync(ProcessRequest(clansApi, realTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken)));
                 }

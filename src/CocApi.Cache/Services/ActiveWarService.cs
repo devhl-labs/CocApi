@@ -15,14 +15,15 @@ using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class ActiveWarService : ServiceBase
+public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
 {
     private readonly ILogger<ActiveWarService> _logger;
 
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    internal IOptions<CacheOptions> Options { get; }
+    internal IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<ActiveWarServiceOptions> ActiveWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
 
@@ -32,21 +33,24 @@ public sealed class ActiveWarService : ServiceBase
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options)
-        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ActiveWars))
+        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<ActiveWarServiceOptions> activeWarOptions,
+        ILoggerFactory loggerFactory)
+        : base(logger, scopeFactory, activeWarOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         _logger = logger;
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
-        Options = options;
+        CacheOptions = cacheOptions;
+        ActiveWarOptions = activeWarOptions;
     }
 
 
     protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        ActiveWarServiceOptions options = Options.Value.ActiveWars;
+        ActiveWarServiceOptions activeWarOptions = ActiveWarOptions.CurrentValue;
 
         using var scope = ScopeFactory.CreateScope();
 
@@ -80,11 +84,11 @@ public sealed class ActiveWarService : ServiceBase
             )
             .Distinct()
             .OrderBy(w => w.Id)
-            .Take(options.ConcurrentUpdates)
+            .Take(activeWarOptions.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        _id = cachedClans.Count == options.ConcurrentUpdates
+        _id = cachedClans.Count == activeWarOptions.ConcurrentUpdates
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
 
@@ -109,12 +113,12 @@ public sealed class ActiveWarService : ServiceBase
                 updatingTags.Add(cachedClan.Tag);
 
                 await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), channel.Writer, cancellationToken)));
+                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value), channel.Writer, cancellationToken)));
             }
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = Options.Value.SaveBatchSize;
+            int batchSize = CacheOptions.Value.SaveBatchSize;
             var batch = new List<(CachedClan Clan, ActiveWarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))

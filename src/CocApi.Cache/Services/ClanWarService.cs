@@ -15,7 +15,7 @@ using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class ClanWarService : ServiceBase
+public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
 {
     private readonly ILogger<ClanWarService> _logger;
 
@@ -23,7 +23,9 @@ public sealed class ClanWarService : ServiceBase
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    internal IOptions<CacheOptions> Options { get; }
+    internal IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<ClanWarServiceOptions> ClanWarOptions { get; }
+    internal IOptionsMonitor<CwlWarServiceOptions> CwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
     public ClanWarService(
@@ -32,21 +34,26 @@ public sealed class ClanWarService : ServiceBase
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options)
-        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.Clans))
+        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<ClanWarServiceOptions> clanWarOptions,
+        IOptionsMonitor<CwlWarServiceOptions> cwlWarOptions,
+        ILoggerFactory loggerFactory)
+        : base(logger, scopeFactory, clanWarOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
-        Options = options;
+        CacheOptions = cacheOptions;
+        ClanWarOptions = clanWarOptions;
+        CwlWarOptions = cwlWarOptions;
         _logger = logger;
     }
 
 
     protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        ClanWarServiceOptions options = Options.Value.ClanWars;
+        ClanWarServiceOptions clanWarOptions = ClanWarOptions.CurrentValue;
 
         using var scope = ScopeFactory.CreateScope();
 
@@ -55,14 +62,14 @@ public sealed class ClanWarService : ServiceBase
         List<CachedClan> cachedClans = await dbContext.Clans
             .Where(c =>
                 c.Id > _id &&
-                    options.DownloadCurrentWar && (c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false
+                    clanWarOptions.DownloadCurrentWar && (c.CurrentWar.ExpiresAt ?? min) < expires && (c.CurrentWar.KeepUntil ?? min) < now && c.CurrentWar.Download && c.IsWarLogPublic != false
                 )
             .OrderBy(c => c.Id)
-            .Take(options.ConcurrentUpdates)
+            .Take(clanWarOptions.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        _id = cachedClans.Count == options.ConcurrentUpdates
+        _id = cachedClans.Count == clanWarOptions.ConcurrentUpdates
             ? cachedClans.Max(c => c.Id)
             : int.MinValue;
 
@@ -92,7 +99,7 @@ public sealed class ClanWarService : ServiceBase
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = Options.Value.SaveBatchSize;
+            int batchSize = CacheOptions.Value.SaveBatchSize;
             var batch = new List<(CachedClan Clan, ClanWarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
@@ -181,11 +188,11 @@ public sealed class ClanWarService : ServiceBase
 
             IClansApi clansApi = ApiFactory.Create<IClansApi>();
 
-            ClanWarServiceOptions options = Options.Value.ClanWars;
+            ClanWarServiceOptions clanWarOptions = ClanWarOptions.CurrentValue;
 
-            Option<bool> realTime = Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value);
+            Option<bool> realTime = CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value);
 
-            if (options.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
+            if (clanWarOptions.DownloadCurrentWar && cachedClan.CurrentWar.Download && cachedClan.CurrentWar.IsExpired && ((cachedClan.Download && cachedClan.IsWarLogPublic == true) || !cachedClan.Download))
                 await FetchClanWarAsync(clansApi, cachedClan, result, realTime, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception e)
@@ -221,7 +228,7 @@ public sealed class ClanWarService : ServiceBase
 
     private DateTime? GetExtendedWarKeepUntil(CachedClan cachedClan)
     {
-        if (Options.Value.CwlWars.Enabled &&
+        if (CwlWarOptions.CurrentValue.Enabled &&
             (cachedClan.CurrentWar.Content == null || cachedClan.CurrentWar.Content.State == Rest.Models.WarState.WarEnded) &&
             cachedClan.Group.Content?.State != Rest.Models.GroupState.Ended &&
             cachedClan.Group.Content?.Season.Year == DateTime.UtcNow.Year &&

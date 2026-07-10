@@ -93,8 +93,6 @@ class Program
             })
 
             .ConfigureServices((context, services) => {
-                // configure the library to use your appsettings
-                services.Configure<CacheOptions>(context.Configuration.GetRequiredSection("CocApi:Cache"));
                 services.Configure<Rest.Models.LoginCredentials>(context.Configuration.GetRequiredSection("CocApi.Test:Rest"));
 
                 services.AddHostedService<TokenService>();

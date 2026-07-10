@@ -15,7 +15,7 @@ using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class CwlWarService : ServiceBase
+public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
 {
     private readonly FireAndForgetService _fireAndForget;
 
@@ -29,7 +29,8 @@ public sealed class CwlWarService : ServiceBase
     internal IApiFactory ApiFactory { get; }
     internal Synchronizer Synchronizer { get; }
     internal TimeToLiveProvider Ttl { get; }
-    public IOptions<CacheOptions> Options { get; }
+    public IOptions<CacheOptions> CacheOptions { get; }
+    internal IOptionsMonitor<CwlWarServiceOptions> CwlWarOptions { get; }
     internal static bool Instantiated { get; private set; }
 
 
@@ -39,9 +40,11 @@ public sealed class CwlWarService : ServiceBase
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options,
+        IOptions<CacheOptions> cacheOptions,
+        IOptionsMonitor<CwlWarServiceOptions> cwlWarOptions,
+        ILoggerFactory loggerFactory,
         FireAndForgetService fireAndForget)
-    : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.CwlWars))
+    : base(logger, scopeFactory, cwlWarOptions, loggerFactory)
     {
         _fireAndForget = fireAndForget;
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
@@ -49,13 +52,14 @@ public sealed class CwlWarService : ServiceBase
         ApiFactory = apiFactory;
         Synchronizer = synchronizer;
         Ttl = ttl;
-        Options = options;
+        CacheOptions = cacheOptions;
+        CwlWarOptions = cwlWarOptions;
     }
 
 
     protected override async Task<CycleCounters> ExecuteCycleAsync(CancellationToken cancellationToken)
     {
-        CwlWarServiceOptions options = Options.Value.CwlWars;
+        CwlWarServiceOptions cwlWarOptions = CwlWarOptions.CurrentValue;
 
         using var scope = ScopeFactory.CreateScope();
 
@@ -69,11 +73,11 @@ public sealed class CwlWarService : ServiceBase
                 !w.IsFinal &&
                 w.Id > _id)
             .OrderBy(c => c.Id)
-            .Take(options.ConcurrentUpdates)
+            .Take(cwlWarOptions.ConcurrentUpdates)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
 
-        _id = cachedWars.Count == options.ConcurrentUpdates
+        _id = cachedWars.Count == cwlWarOptions.ConcurrentUpdates
             ? cachedWars.Max(c => c.Id)
             : int.MinValue;
 
@@ -96,7 +100,7 @@ public sealed class CwlWarService : ServiceBase
                     updatingCwlWar.Add(cachedWar.WarTag);
 
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, Options.Value.RealTime == null ? default : new(Options.Value.RealTime.Value), channel.Writer, cancellationToken));
+                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, CacheOptions.Value.RealTime == null ? default : new(CacheOptions.Value.RealTime.Value), channel.Writer, cancellationToken));
                 }
                 else
                 {
@@ -108,7 +112,7 @@ public sealed class CwlWarService : ServiceBase
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            int batchSize = Options.Value.SaveBatchSize;
+            int batchSize = CacheOptions.Value.SaveBatchSize;
             var batch = new List<(CachedWar War, CwlWarFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))

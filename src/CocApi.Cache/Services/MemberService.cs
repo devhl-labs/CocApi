@@ -15,7 +15,7 @@ using CocApi.Cache.Services.Options;
 
 namespace CocApi.Cache.Services;
 
-public sealed class MemberService : ServiceBase
+public sealed class MemberService : ServiceBase<MemberServiceOptions>
 {
     private readonly ILogger<MemberService> _logger;
 
@@ -34,9 +34,10 @@ public sealed class MemberService : ServiceBase
         IApiFactory apiFactory,
         Synchronizer synchronizer,
         TimeToLiveProvider ttl,
-        IOptions<CacheOptions> options
+        IOptionsMonitor<MemberServiceOptions> memberOptions,
+        ILoggerFactory loggerFactory
         )
-        : base(logger, scopeFactory, Microsoft.Extensions.Options.Options.Create(options.Value.ClanMembers))
+        : base(logger, scopeFactory, memberOptions, loggerFactory)
     {
         Instantiated = Library.WarnOnSubsequentInstantiations(logger, Instantiated);
         _logger = logger;
