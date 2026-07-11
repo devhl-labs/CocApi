@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
+using Serilog.Templates;
+using Serilog.Templates.Themes;
 using Microsoft.EntityFrameworkCore;
 using CocApi.Rest.Client;
 using System.Collections.Generic;
@@ -43,9 +45,11 @@ class Program
             .UseSerilog((context, services, config) =>
             {
                 config.ReadFrom
-                    .Configuration(context.Configuration, Serilog.Settings.Configuration.ConfigurationAssemblySource.AlwaysScanDllFiles)
+                    .Configuration(context.Configuration)
                     .Enrich.FromLogContext()
-                    .Enrich.With<UtcTimestampEnricher>();
+                    .WriteTo.Console(new ExpressionTemplate(
+                        "[{@l:u4}] {UtcDateTime(@t):HH:mm} | {@m} <s:{SourceContext}>{#if EventId is not null} [{EventId.Name}]{#end}\n{#if @x is not null}{@x}\n{#end}",
+                        theme: TemplateTheme.Literate));
             })
 
             .ConfigureCocApi((context, services, options) =>
