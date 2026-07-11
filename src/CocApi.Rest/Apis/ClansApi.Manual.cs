@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using CocApi.Rest.Logging;
 
 namespace CocApi.Rest.Apis;
 
@@ -14,49 +15,49 @@ public partial class ClansApi
     partial void OnErrorFetchClan(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the clan for clanTag: {clanTag}", clanTag);
     }
 
     partial void OnErrorFetchClanMembers(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan members for clanTag: {clanTag}", clanTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the clan members for clanTag: {clanTag}", clanTag);
     }
 
     partial void OnErrorFetchClanWarLeagueGroup(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan war league group for clanTag: {clanTag}", clanTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the clan war league group for clanTag: {clanTag}", clanTag);
     }
 
     partial void OnErrorFetchClanWarLeagueWar(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string warTag, Option<bool> realtime)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan war league war for warTag: {warTag}", warTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the clan war league war for warTag: {warTag}", warTag);
     }
 
     partial void OnErrorFetchClanWarLog(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the clan war log for clanTag: {clanTag}", clanTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the clan war log for clanTag: {clanTag}", clanTag);
     }
 
     partial void OnErrorFetchCurrentWar(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<bool> realtime)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the current war for clanTag: {clanTag}", clanTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the current war for clanTag: {clanTag}", clanTag);
     }
 
     partial void OnErrorFetchCapitalRaidSeasons(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error fetching the capital raid season for clanTag: {clanTag}", clanTag);
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error fetching the capital raid season for clanTag: {clanTag}", clanTag);
     }
 
     partial void OnErrorSearchClans(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Option<int> locationId, Option<int> minMembers, Option<int> maxMembers, Option<int> minClanPoints, Option<int> minClanLevel, Option<int> limit, Option<string> name, Option<string> warFrequency, Option<string> after, Option<string> before, Option<string> labelIds)
     {
         suppressDefaultLogLocalVar = true;
-        Logger.LogError(exceptionLocalVar, "There was an error searching for clans");
+        Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "There was an error searching for clans");
     }
 
     partial void FormatGetClan(ref string clanTag)
@@ -106,7 +107,7 @@ public partial class ClansApi
     /// </param>
     private void LogAfterFetch(IApiResponse apiResponse, string url, bool warnOn403 = true)
     {
-        Logger.LogTrace("{elapsed,-9} | {status} | {url}",
+        Logger.LogTrace(RestLogEvents.ApiRequestCompleted, "{elapsed,-9} | {status} | {url}",
             (apiResponse.DownloadedAt - apiResponse.RequestedAt).TotalSeconds,
             apiResponse.StatusCode,
             url);
@@ -115,6 +116,7 @@ public partial class ClansApi
         {
             var tokenSuffix = (apiResponse as ApiResponse)?.RequestTokenSuffix ?? "unknown";
             Logger.LogWarning(
+                RestLogEvents.ApiForbiddenWarning,
                 "403 Forbidden | Url={Url} | TokenSuffix={TokenSuffix} | Check: all API tokens must have the server IP in their allowlist at developer.clashofclans.com",
                 url,
                 tokenSuffix);
