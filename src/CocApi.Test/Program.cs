@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
-using CocApi.Cache.Services.Options;
 using CocApi.Rest.DelegatingHandlers;
 
 namespace CocApi.Test;
@@ -54,7 +53,7 @@ class Program
 
             .ConfigureCocApi((context, services, options) =>
             {
-                List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>();
+                List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>() ?? throw new InvalidOperationException("CocApi.Test:Rest:Tokens is missing from configuration.");
 
                 ApiKeyToken[] tokens = tokenValues.Select(t => new ApiKeyToken(t, ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1))).ToArray();
 
@@ -91,7 +90,7 @@ class Program
             {
                 IConfiguration configuration = services.GetRequiredService<IConfiguration>();
 
-                string connection = configuration.GetConnectionString("CocApi.Test");
+                string connection = configuration.GetConnectionString("CocApi.Test") ?? throw new InvalidOperationException("Connection string 'CocApi.Test' is missing from configuration.");
 
                 dbContextOptions.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
             })
