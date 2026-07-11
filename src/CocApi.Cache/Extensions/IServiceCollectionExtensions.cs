@@ -121,6 +121,7 @@ public static class IServiceCollectionExtensions
         services.AddPlayersClient<TPlayersClient>();
         services.AddClansClient<TClansClient>();
 
+        services.AddHostedSingleton<DatabaseValidationService>();
         services.AddHostedSingleton<FireAndForgetService>();
         services.AddHostedSingleton<CacheOptionsMonitorService>();
         services.AddHostedSingleton<ThreadPoolMonitorService>();
