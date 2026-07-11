@@ -8,7 +8,6 @@ using CocApi.Rest.Apis;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace CocApi.Test;
 
@@ -23,9 +22,8 @@ public class CustomClansClient : ClansClient
         NewWarService newWarService,
         NewCwlWarService newCwlWarService,
         CwlWarService cwlWarService,
-        WarService warService,
-        IOptions<CacheOptions> options)
-        : base(logger, clansApi, scopeFactory, synchronizer, clanService, newWarService, newCwlWarService, warService, cwlWarService, options)
+        WarService warService)
+        : base(logger, clansApi, scopeFactory, synchronizer, clanService, newWarService, newCwlWarService, warService, cwlWarService)
     {
         ClanUpdated += OnClanUpdated;
         ClanWarAdded += OnClanWarAdded;

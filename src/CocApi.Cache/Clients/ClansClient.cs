@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using CocApi.Cache.Context;
 using CocApi.Rest.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using CocApi.Cache.Services;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,30 +40,10 @@ public class ClansClient : ClientBase<ClansClient>
         NewWarService newWarService,
         NewCwlWarService newCwlWarService,
         WarService warService,
-        CwlWarService cwlWarService,
-        IOptions<CacheOptions> options
+        CwlWarService cwlWarService
         )
     : base(logger, scopeFactory, synchronizer)
     {
-        if (!(options.Value.CwlWars.Enabled == 
-                options.Value.Clans.DownloadGroup == 
-                options.Value.NewCwlWars.Enabled == 
-                options.Value.Clans.Enabled))
-        {
-            logger.LogWarning("Your cache control options has CWL partially enabled.");
-            // TODO: then why do all these booleans exist?
-        }
-
-        if (!(options.Value.ClanMembers.Enabled == options.Value.DeleteStalePlayers.Enabled))
-            logger.LogWarning("You are downloading clan members but not deleting stale players. This will cause departed clan members to stay in cache forever.");
-
-        if (!(options.Value.ActiveWars.Enabled ==
-                options.Value.Wars.Enabled ==
-                options.Value.Clans.Enabled ==
-                options.Value.ClanWars.DownloadCurrentWar ==
-                options.Value.NewWars.Enabled))
-            logger.LogWarning("Your cache control options has current wars partially enabled.");
-
         ClansApi = clansApi;
 
         clanService.ClanUpdated += OnClanUpdatedAsync;
