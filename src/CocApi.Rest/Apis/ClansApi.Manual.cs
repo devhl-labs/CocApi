@@ -107,7 +107,7 @@ public partial class ClansApi
     /// </param>
     private void LogAfterFetch(IApiResponse apiResponse, string url, bool warnOn403 = true)
     {
-        Logger.LogTrace(RestLogEvents.ApiRequestCompleted, "{elapsed,-9} | {status} | {url}",
+        Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{elapsed,-9} | {status} | {url}",
             (apiResponse.DownloadedAt - apiResponse.RequestedAt).TotalSeconds,
             apiResponse.StatusCode,
             url);
