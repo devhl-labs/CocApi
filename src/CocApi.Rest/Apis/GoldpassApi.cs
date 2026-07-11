@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using CocApi.Rest.Client;
+using CocApi.Rest.Logging;
 using CocApi.Rest.Models;
 using System.Diagnostics.CodeAnalysis;
 
@@ -141,11 +142,6 @@ namespace CocApi.Rest.Apis
         private JsonSerializerOptions _jsonSerializerOptions;
 
         /// <summary>
-        /// The logger factory
-        /// </summary>
-        public ILoggerFactory LoggerFactory { get; }
-
-        /// <summary>
         /// The logger
         /// </summary>
         public ILogger<GoldpassApi> Logger { get; }
@@ -169,12 +165,11 @@ namespace CocApi.Rest.Apis
         /// Initializes a new instance of the <see cref="GoldpassApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public GoldpassApi(ILogger<GoldpassApi> logger, ILoggerFactory loggerFactory, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, GoldpassApiEvents goldpassApiEvents,
+        public GoldpassApi(ILogger<GoldpassApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, GoldpassApiEvents goldpassApiEvents,
             TokenProvider<ApiKeyToken> apiKeyProvider)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
-            LoggerFactory = loggerFactory;
-            Logger = LoggerFactory.CreateLogger<GoldpassApi>();
+            Logger = logger;
             HttpClient = httpClient;
             Events = goldpassApiEvents;
             ApiKeyProvider = apiKeyProvider;
@@ -189,7 +184,7 @@ namespace CocApi.Rest.Apis
             bool suppressDefaultLog = false;
             AfterFetchCurrentGoldPassSeason(ref suppressDefaultLog, apiResponseLocalVar);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -210,7 +205,7 @@ namespace CocApi.Rest.Apis
             bool suppressDefaultLogLocalVar = false;
             OnErrorFetchCurrentGoldPassSeason(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -282,13 +277,12 @@ namespace CocApi.Rest.Apis
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetCurrentGoldPassSeasonApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetCurrentGoldPassSeasonApiResponse>();
                         GetCurrentGoldPassSeasonApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/goldpass/seasons/current", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/goldpass/seasons/current", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -322,7 +316,7 @@ namespace CocApi.Rest.Apis
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetCurrentGoldPassSeasonApiResponse> Logger { get; }
+            public ILogger<GoldpassApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetCurrentGoldPassSeasonApiResponse"/>
@@ -334,7 +328,7 @@ namespace CocApi.Rest.Apis
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetCurrentGoldPassSeasonApiResponse(ILogger<GetCurrentGoldPassSeasonApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetCurrentGoldPassSeasonApiResponse(ILogger<GoldpassApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -350,7 +344,7 @@ namespace CocApi.Rest.Apis
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetCurrentGoldPassSeasonApiResponse(ILogger<GetCurrentGoldPassSeasonApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetCurrentGoldPassSeasonApiResponse(ILogger<GoldpassApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -650,7 +644,7 @@ namespace CocApi.Rest.Apis
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);

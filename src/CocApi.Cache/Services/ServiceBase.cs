@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using CocApi.Cache.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -63,12 +64,13 @@ public abstract class ServiceBase<TRecurringOptions> : RecurringService<TRecurri
 
     private protected void LogCycleStarted()
     {
-        _lifecycleLogger.LogTrace("{ServiceName} cycle started", GetType().Name);
+        _lifecycleLogger.LogTrace(CacheLogEvents.ServiceCycleStarted, "{ServiceName} cycle started", GetType().Name);
     }
 
     private protected void LogCycleEnded(CycleCounters counters, long totalMs)
     {
         _lifecycleLogger.LogTrace(
+            CacheLogEvents.ServiceCycleEnded,
             "{ServiceName} cycle ended | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
             GetType().Name, counters.Fetched, counters.Updated, counters.LockSkips, counters.SaveMs, totalMs);
     }
@@ -76,6 +78,7 @@ public abstract class ServiceBase<TRecurringOptions> : RecurringService<TRecurri
     private void LogCycleSlow(CycleCounters counters, long totalMs)
     {
         _lifecycleLogger.LogDebug(
+            CacheLogEvents.ServiceCycleSlow,
             "{ServiceName} cycle slow | Fetched={Fetched} | Updated={Updated} | LockSkips={LockSkips} | SaveMs={SaveMs} | TotalMs={TotalMs}",
             GetType().Name, counters.Fetched, counters.Updated, counters.LockSkips, counters.SaveMs, totalMs);
     }

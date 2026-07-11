@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using CocApi.Cache.Logging;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -44,7 +45,7 @@ public sealed class FireAndForgetService : BackgroundService
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "{exceptionMessage}", e.Message);
+            _logger.LogError(CacheLogEvents.FireAndForgetExecutionFailed, e, "{exceptionMessage}", e.Message);
         }
     }
 

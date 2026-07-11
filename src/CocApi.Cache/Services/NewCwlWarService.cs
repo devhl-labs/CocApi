@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.Logging;
 
 namespace CocApi.Cache.Services;
 
@@ -158,7 +159,7 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
             }
             catch (Exception e)
             {
-                Logger.LogError(e, "An exception occured while processing new cwl wars.");
+                Logger.LogError(CacheLogEvents.NewCwlWarProcessingFailed, e, "An exception occured while processing new cwl wars.");
             }
 
             var warsToAdd = announceNewWarTasks.Where(t => t.IsCompletedSuccessfully).Select(t => t.Result).ToList();
@@ -266,7 +267,7 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
         catch (Exception e)
         {
             if (!cancellationToken.IsCancellationRequested)
-                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(ProcessRequest));
+                Logger.LogError(CacheLogEvents.NewCwlWarMethodFailed, e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(ProcessRequest));
 
             throw;
         }
@@ -295,7 +296,7 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
         catch (Exception e)
         {
             if (!cancellationToken.IsCancellationRequested)
-                Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(NewWarFoundAsync));
+                Logger.LogError(CacheLogEvents.NewCwlWarMethodFailed, e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(NewWarFoundAsync));
 
             throw;
         }

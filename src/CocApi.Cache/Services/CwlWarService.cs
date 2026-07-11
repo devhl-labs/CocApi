@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.Logging;
 
 namespace CocApi.Cache.Services;
 
@@ -190,7 +191,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "An exception occured while updating cwl war {warTag}", cachedWar.WarTag);
+            Logger.LogError(CacheLogEvents.CwlWarUpdateFailed, e, "An exception occured while updating cwl war {warTag}", cachedWar.WarTag);
         }
         finally
         {

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.Logging;
 
 namespace CocApi.Cache.Services;
 
@@ -200,7 +201,7 @@ public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
+            _logger.LogError(CacheLogEvents.ActiveWarUpdateFailed, e, "An exception occured while updating clan {tag}", cachedClan.Tag);
         }
         finally
         {

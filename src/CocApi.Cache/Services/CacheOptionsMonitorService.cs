@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using CocApi.Cache.Logging;
 using CocApi.Cache.Services.Options;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -67,7 +68,7 @@ internal sealed class CacheOptionsMonitorService : IHostedService, IDisposable
     {
         foreach (string warning in GetWarnings(options))
         {
-            _logger.LogWarning("Cache options warning ({Source}): {Warning}", source, warning);
+            _logger.LogWarning(CacheLogEvents.CacheOptionsWarning, "Cache options warning ({Source}): {Warning}", source, warning);
         }
     }
 
@@ -79,6 +80,7 @@ internal sealed class CacheOptionsMonitorService : IHostedService, IDisposable
         {
             hasChanges = true;
             _logger.LogInformation(
+                CacheLogEvents.CacheOptionsChanged,
                 "Cache option changed ({Source}): {Option} {PreviousValue} -> {CurrentValue}",
                 source,
                 path,

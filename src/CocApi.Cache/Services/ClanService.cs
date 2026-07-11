@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.Logging;
 
 namespace CocApi.Cache.Services;
 
@@ -238,7 +239,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
+            _logger.LogError(CacheLogEvents.ClanServiceUpdateFailed, e, "An exception occured while updating clan {tag}", cachedClan.Tag);
         }
         finally
         {
@@ -259,7 +260,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An exception occured while updating clan {tag}", cachedClan.Tag);
+            _logger.LogError(CacheLogEvents.ClanServiceUpdateFailed, e, "An exception occured while updating clan {tag}", cachedClan.Tag);
             throw;
         }
     }
@@ -277,7 +278,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An exception occured while updating the war log for clan {tag}", cachedClan.Tag);
+            _logger.LogError(CacheLogEvents.ClanServiceWarLogUpdateFailed, e, "An exception occured while updating the war log for clan {tag}", cachedClan.Tag);
             throw;
         }
     }
@@ -302,7 +303,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An exception occured while updating the group for clan {tag}", cachedClan.Tag);
+            _logger.LogError(CacheLogEvents.ClanServiceGroupUpdateFailed, e, "An exception occured while updating the group for clan {tag}", cachedClan.Tag);
             throw;
         }
     }

@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.Logging;
 
 namespace CocApi.Cache.Services;
 
@@ -154,7 +155,7 @@ public sealed class MemberService : ServiceBase<MemberServiceOptions>
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "An exception occured while updating member {tag}", cachedPlayer.Tag);
+            _logger.LogError(CacheLogEvents.MemberUpdateFailed, e, "An exception occured while updating member {tag}", cachedPlayer.Tag);
         }
         finally
         {

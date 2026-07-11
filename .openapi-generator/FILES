@@ -125,6 +125,7 @@ src/CocApi.Rest/CocApi.Rest.csproj
 src/CocApi.Rest/Extensions/IHostBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IHttpClientBuilderExtensions.cs
 src/CocApi.Rest/Extensions/IServiceCollectionExtensions.cs
+src/CocApi.Rest/Logging/RestLogEvents.cs
 src/CocApi.Rest/Models/BadgeUrls.cs
 src/CocApi.Rest/Models/BattleModifier.cs
 src/CocApi.Rest/Models/BuilderBaseLeague.cs

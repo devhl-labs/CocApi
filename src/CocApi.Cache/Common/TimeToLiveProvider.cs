@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using CocApi.Cache.Logging;
 using CocApi.Rest.Client;
 using CocApi.Rest.Models;
 using Microsoft.Extensions.Logging;
@@ -28,7 +29,7 @@ public class TimeToLiveProvider
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
+            Logger.LogError(CacheLogEvents.TimeToLiveComputationFailed, e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
 
             return TimeSpan.FromMinutes(2);
         }
@@ -46,7 +47,7 @@ public class TimeToLiveProvider
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
+            Logger.LogError(CacheLogEvents.TimeToLiveComputationFailed, e, "An exception occured while executing {typeName}.{methodName}().", GetType().Name, nameof(TimeToLiveAsync));
 
             return TimeSpan.FromMinutes(2);
         }

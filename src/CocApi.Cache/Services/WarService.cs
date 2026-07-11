@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using CocApi.Rest.Client;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.Logging;
 
 namespace CocApi.Cache.Services;
 
@@ -219,7 +220,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "An exception occured while updating war {id}", cachedWar.Id);
+            Logger.LogError(CacheLogEvents.WarUpdateFailed, e, "An exception occured while updating war {id}", cachedWar.Id);
         }
         finally
         {
@@ -278,7 +279,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         }
         catch (Exception e)
         {
-            Logger.LogError(e, "Failed to update war clanTag: {cachedWar}", cachedWar.Id);
+            Logger.LogError(CacheLogEvents.WarComputeFailed, e, "Failed to update war clanTag: {cachedWar}", cachedWar.Id);
             result.KeepUntil = DateTime.UtcNow.AddHours(1);
             throw;
         }

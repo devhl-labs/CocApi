@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using CocApi.Cache.Logging;
 using CocApi.Cache.Services.Options;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -61,7 +62,7 @@ public sealed class Synchronizer : IDisposable
         }
         catch (Exception e)
         {
-            logger.LogError(e, "An exception occured while executing {typeName}.{methodName}().", typeof(T).Name, methodName);
+            logger.LogError(CacheLogEvents.SynchronizerConcurrentEventFailed, e, "An exception occured while executing {typeName}.{methodName}().", typeof(T).Name, methodName);
         }
         finally
         {
