@@ -15,7 +15,7 @@ using System.Collections.Concurrent;
 
 namespace CocApi.Cache;
 
-public class ClansClient : ClientBase<ClansClient>
+public class ClansClient
 {
     public event AsyncEventHandler<ClanUpdatedEventArgs>? ClanUpdated;
     public event AsyncEventHandler<WarAddedEventArgs>? ClanWarAdded;
@@ -29,6 +29,9 @@ public class ClansClient : ClientBase<ClansClient>
 
 
     public IClansApi ClansApi { get; }
+    public ILogger<ClansClient> Logger { get; }
+    public IServiceScopeFactory ScopeFactory { get; }
+    internal Synchronizer Synchronizer { get; }
 
 
     public ClansClient(
@@ -42,9 +45,11 @@ public class ClansClient : ClientBase<ClansClient>
         WarService warService,
         CwlWarService cwlWarService
         )
-    : base(logger, scopeFactory, synchronizer)
     {
+        Logger = logger;
         ClansApi = clansApi;
+        ScopeFactory = scopeFactory;
+        Synchronizer = synchronizer;
 
         clanService.ClanUpdated += OnClanUpdatedAsync;
         clanService.ClanWarLeagueGroupUpdated += OnClanWarLeagueGroupUpdatedAsync;

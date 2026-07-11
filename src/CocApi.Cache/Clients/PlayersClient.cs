@@ -14,8 +14,12 @@ using CocApi.Rest.Apis;
 
 namespace CocApi.Cache;
 
-public class PlayersClient : ClientBase<PlayersClient>
+public class PlayersClient
 {
+    public ILogger<PlayersClient> Logger { get; }
+    public IServiceScopeFactory ScopeFactory { get; }
+    internal Synchronizer Synchronizer { get; }
+
     public event AsyncEventHandler<PlayerUpdatedEventArgs>? PlayerUpdated;
 
 
@@ -26,9 +30,11 @@ public class PlayersClient : ClientBase<PlayersClient>
         Synchronizer synchronizer,
         PlayerService playerService,
         MemberService memberService)
-    : base (logger, scopeFactory, synchronizer)
     {
+        Logger = logger;
         PlayersApi = playersApi;
+        ScopeFactory = scopeFactory;
+        Synchronizer = synchronizer;
 
         //PlayerService playerService = (PlayerService) perpetualServices.Single(p => p.GetType() == typeof(PlayerService));
         playerService.PlayerUpdated += OnPlayerUpdatedAsync;
