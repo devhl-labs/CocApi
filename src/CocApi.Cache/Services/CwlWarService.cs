@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using CocApi;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
@@ -101,7 +102,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
                     updatingCwlWar.Add(cachedWar.WarTag);
 
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value), channel.Writer, cancellationToken));
+                    allFetchTasks.Add(TryFetchAsync(clansApi, cachedWar, cachedWar.ClanTags.Any(t => CacheOptions.CurrentValue.RealTime.Contains(Clash.NormalizeTag(t))) ? new(true) : default, channel.Writer, cancellationToken));
                 }
                 else
                 {

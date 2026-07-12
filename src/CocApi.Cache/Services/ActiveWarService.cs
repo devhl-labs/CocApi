@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using CocApi;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
@@ -114,7 +115,7 @@ public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
                 updatingTags.Add(cachedClan.Tag);
 
                 await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
-                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value), channel.Writer, cancellationToken)));
+                allFetchTasks.Add(Synchronizer.WithSemaphoreAsync(TryFetchAsync(cachedClan, CacheOptions.CurrentValue.RealTime.Contains(Clash.NormalizeTag(cachedClan.Tag)) ? new(true) : default, channel.Writer, cancellationToken)));
             }
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);

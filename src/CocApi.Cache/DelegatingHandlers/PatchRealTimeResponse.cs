@@ -1,18 +1,25 @@
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
-namespace CocApi.Rest.DelegatingHandlers
+namespace CocApi.Cache.DelegatingHandlers
 {
     public class PatchRealTimeResponse : DelegatingHandler
     {
+        private readonly ILogger<PatchRealTimeResponse> _logger;
+
+        public PatchRealTimeResponse(ILogger<PatchRealTimeResponse> logger)
+        {
+            _logger = logger;
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            string[] realTimeEligible = new string[] { "currentwar", "warTag" };
+            bool realTime = request.RequestUri?.Query.Contains("realtime=true", StringComparison.OrdinalIgnoreCase) == true;
 
-            if (realTimeEligible.Any(word => request.RequestUri?.ToString().Contains(word) == true))
+            if (realTime)
             {
                 HttpResponseMessage result = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 

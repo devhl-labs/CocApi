@@ -1,5 +1,6 @@
 ﻿using CocApi.Cache.Services;
 using CocApi.Cache.Services.Options;
+using CocApi.Cache.DelegatingHandlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -98,6 +99,9 @@ public static class IServiceCollectionExtensions
             throw new InvalidOperationException("PlayersApi was not found in the service collection. Add it using AddCocApi");
 
         Library.AddStaticJsonOptions(services);
+
+        services.AddTransient<PatchRealTimeResponse>();
+        services.AddHttpClient("CocApi.Rest.Apis.IClansApi").AddHttpMessageHandler<PatchRealTimeResponse>();
 
         if (cacheOptions != null)
             services.Configure<CacheOptions>(instance => cacheOptions(instance));

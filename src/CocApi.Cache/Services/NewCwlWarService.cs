@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CocApi;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using CocApi.Rest.Client;
@@ -146,7 +147,8 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
             foreach (KeyValuePair<DateTime, Dictionary<string, Rest.Models.ClanWarLeagueGroup>> season in seasons)
                 foreach (var warTags in season.Value)
                 {
-                    Option<bool> realTime = CacheOptions.CurrentValue.RealTime != null ? new Option<bool>(CacheOptions.CurrentValue.RealTime.Value) : default;
+                    bool isRealTime = warTags.Value?.Clans?.Any(c => CacheOptions.CurrentValue.RealTime.Contains(Clash.NormalizeTag(c.Tag))) == true;
+                    Option<bool> realTime = isRealTime ? new Option<bool>(true) : default;
                     await Synchronizer.UpdateSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
                     processRequests.Add(Synchronizer.WithSemaphoreAsync(ProcessRequest(clansApi, realTime, announcedWarTags, warTags, cachedClans, announceNewWarTasks, season, cancellationToken)));
                 }

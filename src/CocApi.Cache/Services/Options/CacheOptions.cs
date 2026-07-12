@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace CocApi.Cache.Services.Options;
 
@@ -94,7 +96,8 @@ public class CacheOptions
     public WarServiceOptions Wars { get; } = new();
 
     /// <summary>
-    /// Used to bypass cache. Only SuperCell approved users may use this operation.
+    /// Clan tags for which the cache bypass (real-time) headers will be sent.
+    /// Only SuperCell approved users may use this feature.
     /// </summary>
-    public bool? RealTime { get; set; }
+    public HashSet<string> RealTime { get; set; } = new(StringComparer.OrdinalIgnoreCase);
 }

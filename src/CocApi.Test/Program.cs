@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
-using CocApi.Rest.DelegatingHandlers;
 
 namespace CocApi.Test;
 
@@ -75,12 +74,6 @@ class Program
                         .AddCircuitBreakerPolicy(
                             section.GetValue<int>("DurationOfBreak"),
                             TimeSpan.FromSeconds(section.GetValue<int>("HandledEventsAllowedBeforeBreaking")));
-
-                        // this is important if you use real time responses
-                        // when using the real time option, the response headers will still contain max-age header
-                        // this message handler will remove the max-age header since it will prevent us from querying in real time
-                        if (context.Configuration.GetValue<bool?>("CocApi:Cache:RealTime") == true)
-                            builder.AddHttpMessageHandler(() => new PatchRealTimeResponse());
                     }
                 );
             })

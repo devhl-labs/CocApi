@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using CocApi;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
@@ -224,7 +225,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
 
             ClanServiceOptions clanOptions = ClanOptions.CurrentValue;
 
-            Option<bool> realTime = CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value);
+            Option<bool> realTime = CacheOptions.CurrentValue.RealTime.Contains(Clash.NormalizeTag(cachedClan.Tag)) ? new(true) : default;
 
             if (clanOptions.DownloadClan && cachedClan.Download && cachedClan.IsExpired)
                 tasks.Add(FetchClanAsync(clansApi, cachedClan, result, cancellationToken));

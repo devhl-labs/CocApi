@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
+using CocApi;
 using CocApi.Rest.Apis;
 using CocApi.Cache.Context;
 using Microsoft.EntityFrameworkCore;
@@ -293,7 +294,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         try
         {
             CachedClanWar cachedClanWar = await CachedClanWar
-                .FromCurrentWarResponseAsync(tag, CacheOptions.CurrentValue.RealTime == null ? default : new(CacheOptions.CurrentValue.RealTime.Value), TimeToLiveProvider, clansApi, cancellationToken)
+                .FromCurrentWarResponseAsync(tag, CacheOptions.CurrentValue.RealTime.Contains(Clash.NormalizeTag(tag)) ? new(true) : default, TimeToLiveProvider, clansApi, cancellationToken)
                 .ConfigureAwait(false);
 
             cachedClanWar.Added = true;
