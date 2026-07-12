@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
@@ -139,6 +140,17 @@ internal sealed class CacheOptionsMonitorService : IHostedService, IDisposable
                 continue;
             }
 
+            if (IsCollectionType(underlyingType))
+            {
+                string oldFormatted = FormatCollection(oldValue);
+                string newFormatted = FormatCollection(newValue);
+
+                if (oldFormatted != newFormatted)
+                    yield return (path, oldFormatted, newFormatted);
+
+                continue;
+            }
+
             foreach ((string nestedPath, object? nestedOldValue, object? nestedNewValue) in GetDifferencesRecursive(oldValue, newValue, path))
                 yield return (nestedPath, nestedOldValue, nestedNewValue);
         }
@@ -154,6 +166,21 @@ internal sealed class CacheOptionsMonitorService : IHostedService, IDisposable
             type == typeof(DateTimeOffset) ||
             type == typeof(Guid) ||
             type == typeof(TimeSpan);
+    }
+
+    private static bool IsCollectionType(Type type)
+        => type != typeof(string) && typeof(IEnumerable).IsAssignableFrom(type);
+
+    private static string FormatCollection(object? value)
+    {
+        if (value is not IEnumerable enumerable)
+            return "null";
+
+        var items = new List<string>();
+        foreach (object? item in enumerable)
+            items.Add(item?.ToString() ?? "null");
+
+        return "[" + string.Join(", ", items) + "]";
     }
 
     private static string FormatValue(object? value) => value?.ToString() ?? "null";
