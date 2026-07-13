@@ -108,6 +108,7 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
 
             int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedPlayer Player, CachedPlayer? Fetched)>(batchSize);
+            var noChangeItems = new List<(int Id, CachedPlayer Fetched, DateTime? LastChangedAt)>();
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
             {
@@ -115,7 +116,7 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
 
                 if (batch.Count >= batchSize)
                 {
-                    ApplyBatch(batch);
+                    ApplyBatch(batch, noChangeItems);
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
@@ -125,11 +126,13 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
 
             if (batch.Count > 0)
             {
-                ApplyBatch(batch);
+                ApplyBatch(batch, noChangeItems);
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            await BulkUpdatePlayerKeepUntilAsync(dbContext, noChangeItems, CancellationToken.None).ConfigureAwait(false);
 
             return new CycleCounters(
                 trackedPlayers.Count,
@@ -144,11 +147,41 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
         }
     }
 
-    private static void ApplyBatch(List<(CachedPlayer Player, CachedPlayer? Fetched)> batch)
+    private static void ApplyBatch(List<(CachedPlayer Player, CachedPlayer? Fetched)> batch, List<(int Id, CachedPlayer Fetched, DateTime? LastChangedAt)> noChangeItems)
     {
         foreach (var (player, fetched) in batch)
-            if (fetched != null)
+        {
+            if (fetched == null) continue;
+            if (fetched.Content == null || CachedPlayer.HasUpdated(player, fetched))
                 player.UpdateFrom(fetched);
+            else
+                noChangeItems.Add((player.Id, fetched, player.DownloadedAt));
+        }
+    }
+
+    private async Task BulkUpdatePlayerKeepUntilAsync(CacheDbContext dbContext, List<(int Id, CachedPlayer Fetched, DateTime? LastChangedAt)> noChangeItems, CancellationToken ct)
+    {
+        if (noChangeItems.Count == 0) return;
+        var groups = new Dictionary<TimeSpan, List<int>>();
+        foreach (var (id, fetched, lastChangedAt) in noChangeItems)
+        {
+            TimeSpan ttl = await TimeToLiveProvider.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.Player>(fetched, lastChangedAt).ConfigureAwait(false);
+            if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                groups[ttl] = groupIds = new();
+            groupIds.Add(id);
+        }
+        foreach (var (ttl, groupIds) in groups)
+        {
+            DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+            foreach (int[] chunk in groupIds.Chunk(100))
+            {
+                int[] ids = chunk;
+                await dbContext.Players
+                    .Where(p => ids.Contains(p.Id))
+                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.KeepUntil, keepUntil), ct)
+                    .ConfigureAwait(false);
+            }
+        }
     }
 
     private async Task TryFetchAsync(IPlayersApi playersApi, CachedPlayer cachedPlayer, ChannelWriter<(CachedPlayer, CachedPlayer?)> writer, CancellationToken cancellationToken)

@@ -108,25 +108,44 @@ public sealed class MemberService : ServiceBase<MemberServiceOptions>
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
 
-            var activity = CachedClan.GetActivityLevel(cachedClan);
+            var noChangeItems = new List<(int Id, CachedPlayer Fetched, DateTime? LastChangedAt)>();
+
             await foreach (var (cachedPlayer, fetched) in channel.Reader.ReadAllAsync(CancellationToken.None))
             {
                 if (fetched != null)
                 {
                     if (CachedPlayer.HasUpdated(cachedPlayer, fetched))
                         cachedPlayer.UpdateFrom(fetched);
-                    else if (activity != CachedClan.ClanActivityLevel.Active)
-                    {
-                        var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
-                        var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
-                        if (DateTime.UtcNow < cutoff)
-                            cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(60);
-                        cachedPlayer.Backoff(cap);
-                    }
+                    else
+                        noChangeItems.Add((cachedPlayer.Id, fetched, cachedPlayer.DownloadedAt));
                 }
             }
 
             await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
+
+            if (noChangeItems.Count > 0)
+            {
+                var groups = new Dictionary<TimeSpan, List<int>>();
+                foreach (var (id, fetchedItem, lastChangedAt) in noChangeItems)
+                {
+                    TimeSpan ttl = await Ttl.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.Player>(fetchedItem, lastChangedAt).ConfigureAwait(false);
+                    if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                        groups[ttl] = groupIds = new();
+                    groupIds.Add(id);
+                }
+                foreach (var (ttl, groupIds) in groups)
+                {
+                    DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+                    foreach (int[] chunk in groupIds.Chunk(100))
+                    {
+                        int[] ids = chunk;
+                        await dbContext.Players
+                            .Where(p => ids.Contains(p.Id))
+                            .ExecuteUpdateAsync(s => s.SetProperty(p => p.KeepUntil, keepUntil), CancellationToken.None)
+                            .ConfigureAwait(false);
+                    }
+                }
+            }
 
             return new CycleCounters(
                 cachedClan.Content.Members.Count,

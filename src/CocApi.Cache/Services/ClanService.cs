@@ -119,6 +119,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
 
             // Phase 2: consume completed fetches in SaveBatchSize batches, applying mutations and saving each batch.
             int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
+            var noChange = new ClanNoChange();
             var batch = new List<(CachedClan Clan, ClanFetch Result)>(batchSize);
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
@@ -127,7 +128,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
 
                 if (batch.Count >= batchSize)
                 {
-                    ApplyBatch(batch);
+                    ApplyBatch(batch, noChange);
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
@@ -137,11 +138,13 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
 
             if (batch.Count > 0)
             {
-                ApplyBatch(batch);
+                ApplyBatch(batch, noChange);
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            await BulkUpdateClanKeepUntilAsync(dbContext, noChange, CancellationToken.None).ConfigureAwait(false);
 
             return new CycleCounters(
                 cachedClans.Count,
@@ -156,6 +159,88 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         }
     }
 
+    private sealed class ClanNoChange
+    {
+        public List<(int Id, CachedClan Fetched, DateTime? LastChangedAt)> ClanItems { get; } = new();
+        public List<(int Id, CachedClanWarLog Fetched, DateTime? LastChangedAt)> WarLogItems { get; } = new();
+        public List<(int Id, CachedClanWarLeagueGroup Fetched, DateTime? LastChangedAt)> GroupItems { get; } = new();
+    }
+
+    private async Task BulkUpdateClanKeepUntilAsync(CacheDbContext dbContext, ClanNoChange noChange, CancellationToken ct)
+    {
+        if (noChange.ClanItems.Count > 0)
+        {
+            var groups = new Dictionary<TimeSpan, List<int>>();
+            foreach (var (id, fetched, lastChangedAt) in noChange.ClanItems)
+            {
+                TimeSpan ttl = await Ttl.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.Clan>(fetched, lastChangedAt).ConfigureAwait(false);
+                if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                    groups[ttl] = groupIds = new();
+                groupIds.Add(id);
+            }
+            foreach (var (ttl, groupIds) in groups)
+            {
+                DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+                foreach (int[] chunk in groupIds.Chunk(100))
+                {
+                    int[] ids = chunk;
+                    await dbContext.Clans
+                        .Where(c => ids.Contains(c.Id))
+                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.KeepUntil, keepUntil), ct)
+                        .ConfigureAwait(false);
+                }
+            }
+        }
+
+        if (noChange.WarLogItems.Count > 0)
+        {
+            var groups = new Dictionary<TimeSpan, List<int>>();
+            foreach (var (id, fetched, lastChangedAt) in noChange.WarLogItems)
+            {
+                TimeSpan ttl = await Ttl.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.ClanWarLog>(fetched, lastChangedAt).ConfigureAwait(false);
+                if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                    groups[ttl] = groupIds = new();
+                groupIds.Add(id);
+            }
+            foreach (var (ttl, groupIds) in groups)
+            {
+                DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+                foreach (int[] chunk in groupIds.Chunk(100))
+                {
+                    int[] ids = chunk;
+                    await dbContext.Clans
+                        .Where(c => ids.Contains(c.Id))
+                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.WarLog.KeepUntil, keepUntil), ct)
+                        .ConfigureAwait(false);
+                }
+            }
+        }
+
+        if (noChange.GroupItems.Count > 0)
+        {
+            var groups = new Dictionary<TimeSpan, List<int>>();
+            foreach (var (id, fetched, lastChangedAt) in noChange.GroupItems)
+            {
+                TimeSpan ttl = await Ttl.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.ClanWarLeagueGroup>(fetched, lastChangedAt).ConfigureAwait(false);
+                if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                    groups[ttl] = groupIds = new();
+                groupIds.Add(id);
+            }
+            foreach (var (ttl, groupIds) in groups)
+            {
+                DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+                foreach (int[] chunk in groupIds.Chunk(100))
+                {
+                    int[] ids = chunk;
+                    await dbContext.Clans
+                        .Where(c => ids.Contains(c.Id))
+                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.Group.KeepUntil, keepUntil), ct)
+                        .ConfigureAwait(false);
+                }
+            }
+        }
+    }
+
     private sealed class ClanFetch
     {
         public CachedClan? Clan { get; set; }
@@ -165,38 +250,27 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
         public DateTime? ExtendedWarKeepUntil { get; set; }
     }
 
-    private static void ApplyBatch(List<(CachedClan Clan, ClanFetch Result)> batch)
+    private static void ApplyBatch(List<(CachedClan Clan, ClanFetch Result)> batch, ClanNoChange noChange)
     {
         foreach (var (cachedClan, result) in batch)
         {
             if (result.ExtendedWarKeepUntil.HasValue)
                 cachedClan.CurrentWar.KeepUntil = result.ExtendedWarKeepUntil.Value;
 
-            var activity = CachedClan.GetActivityLevel(cachedClan);
-
             if (result.Clan != null)
             {
                 if (CachedClan.HasUpdated(cachedClan, result.Clan))
                     cachedClan.UpdateFrom(result.Clan);
-                else if (activity != CachedClan.ClanActivityLevel.Active)
-                {
-                    var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
-                    var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
-                    if (DateTime.UtcNow < cutoff)
-                        cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(60);
-                    cachedClan.Backoff(cap);
-                }
+                else
+                    noChange.ClanItems.Add((cachedClan.Id, result.Clan, cachedClan.DownloadedAt));
             }
 
             if (result.WarLog != null)
             {
                 if (CachedClanWarLog.HasUpdated(cachedClan.WarLog, result.WarLog))
                     cachedClan.WarLog.UpdateFrom(result.WarLog);
-                else if (activity != CachedClan.ClanActivityLevel.Active)
-                {
-                    var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
-                    cachedClan.WarLog.Backoff(cap);
-                }
+                else
+                    noChange.WarLogItems.Add((cachedClan.Id, result.WarLog, cachedClan.WarLog.DownloadedAt));
             }
 
             if (result.Group != null)
@@ -207,7 +281,8 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                         cachedClan.Group.Added = false;
                     cachedClan.Group.UpdateFrom(result.Group);
                 }
-                // No backoff for Group — KeepUntil is managed by GetExtendedWarKeepUntil
+                else
+                    noChange.GroupItems.Add((cachedClan.Id, result.Group, cachedClan.Group.DownloadedAt));
             }
         }
     }

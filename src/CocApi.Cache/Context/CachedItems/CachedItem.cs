@@ -119,14 +119,6 @@ public class CachedItem<T> where T : class
             Content = fetched.Content;
     }
 
-    internal void Backoff(TimeSpan max)
-    {
-        var stableFor = DateTime.UtcNow - (DownloadedAt ?? DateTime.UtcNow);
-        var capped = stableFor > max ? max : stableFor;
-        var jitter = capped * (Random.Shared.NextDouble() * 0.2 - 0.1); // ±10%
-        KeepUntil = DateTime.UtcNow + capped + jitter;
-    }
-
     private bool IsServerExpired
     {
         get

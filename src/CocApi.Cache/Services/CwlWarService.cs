@@ -116,6 +116,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
 
             int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedWar War, CwlWarFetch Result)>(batchSize);
+            var noChangeItems = new List<(int Id, CachedWar Fetched, DateTime? LastChangedAt)>();
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
             {
@@ -123,7 +124,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
 
                 if (batch.Count >= batchSize)
                 {
-                    ApplyBatch(batch);
+                    ApplyBatch(batch, noChangeItems);
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
@@ -133,11 +134,13 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
 
             if (batch.Count > 0)
             {
-                ApplyBatch(batch);
+                ApplyBatch(batch, noChangeItems);
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            await BulkUpdateCwlWarKeepUntilAsync(dbContext, noChangeItems, CancellationToken.None).ConfigureAwait(false);
 
             return new CycleCounters(
                 cachedWars.Count,
@@ -159,7 +162,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
         public Announcements NewAnnouncements { get; set; }
     }
 
-    private static void ApplyBatch(List<(CachedWar War, CwlWarFetch Result)> batch)
+    private static void ApplyBatch(List<(CachedWar War, CwlWarFetch Result)> batch, List<(int Id, CachedWar Fetched, DateTime? LastChangedAt)> noChangeItems)
     {
         foreach (var (cachedWar, result) in batch)
         {
@@ -168,7 +171,35 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
             if (result.Source != null)
             {
                 cachedWar.IsFinal = result.IsFinal;
-                cachedWar.UpdateFrom(result.Source);
+                if (result.Source.Content == null || cachedWar.Content == null || CachedWar.HasUpdated(cachedWar, result.Source))
+                    cachedWar.UpdateFrom(result.Source);
+                else
+                    noChangeItems.Add((cachedWar.Id, result.Source, cachedWar.DownloadedAt));
+            }
+        }
+    }
+
+    private async Task BulkUpdateCwlWarKeepUntilAsync(CacheDbContext dbContext, List<(int Id, CachedWar Fetched, DateTime? LastChangedAt)> noChangeItems, CancellationToken ct)
+    {
+        if (noChangeItems.Count == 0) return;
+        var groups = new Dictionary<TimeSpan, List<int>>();
+        foreach (var (id, fetched, lastChangedAt) in noChangeItems)
+        {
+            TimeSpan ttl = await Ttl.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.ClanWar>(fetched, lastChangedAt).ConfigureAwait(false);
+            if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                groups[ttl] = groupIds = new();
+            groupIds.Add(id);
+        }
+        foreach (var (ttl, groupIds) in groups)
+        {
+            DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+            foreach (int[] chunk in groupIds.Chunk(100))
+            {
+                int[] ids = chunk;
+                await dbContext.Wars
+                    .Where(w => ids.Contains(w.Id))
+                    .ExecuteUpdateAsync(s => s.SetProperty(w => w.KeepUntil, keepUntil), ct)
+                    .ConfigureAwait(false);
             }
         }
     }

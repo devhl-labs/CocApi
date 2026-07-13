@@ -103,6 +103,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
 
             int batchSize = CacheOptions.CurrentValue.SaveBatchSize;
             var batch = new List<(CachedClan Clan, ClanWarFetch Result)>(batchSize);
+            var noChangeItems = new List<(int Id, CachedClanWar Fetched, DateTime? LastChangedAt)>();
 
             await foreach (var item in channel.Reader.ReadAllAsync(CancellationToken.None))
             {
@@ -110,7 +111,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
 
                 if (batch.Count >= batchSize)
                 {
-                    ApplyBatch(batch);
+                    ApplyBatch(batch, noChangeItems);
                     var saveSw = System.Diagnostics.Stopwatch.StartNew();
                     await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                     totalSaveMs += saveSw.ElapsedMilliseconds;
@@ -120,11 +121,13 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
 
             if (batch.Count > 0)
             {
-                ApplyBatch(batch);
+                ApplyBatch(batch, noChangeItems);
                 var saveSw = System.Diagnostics.Stopwatch.StartNew();
                 await dbContext.SaveChangesAsync(CancellationToken.None).ConfigureAwait(false);
                 totalSaveMs += saveSw.ElapsedMilliseconds;
             }
+
+            await BulkUpdateCurrentWarKeepUntilAsync(dbContext, noChangeItems, CancellationToken.None).ConfigureAwait(false);
 
             return new CycleCounters(
                 cachedClans.Count,
@@ -148,7 +151,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
         public DateTime? ExtendedWarKeepUntil { get; set; }
     }
 
-    private static void ApplyBatch(List<(CachedClan Clan, ClanWarFetch Result)> batch)
+    private static void ApplyBatch(List<(CachedClan Clan, ClanWarFetch Result)> batch, List<(int Id, CachedClanWar Fetched, DateTime? LastChangedAt)> noChangeItems)
     {
         foreach (var (cachedClan, result) in batch)
         {
@@ -163,20 +166,35 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
                     cachedClan.CurrentWar.Added = false; // flags this war to be added by NewWarMonitor
                 }
 
-                cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+                if (result.CurrentWar.Content == null || result.IsNewWar || CachedClanWar.HasUpdated(cachedClan.CurrentWar, result.CurrentWar))
+                    cachedClan.CurrentWar.UpdateFrom(result.CurrentWar);
+                else if (!result.ExtendedWarKeepUntil.HasValue)
+                    noChangeItems.Add((cachedClan.Id, result.CurrentWar, cachedClan.CurrentWar.DownloadedAt));
             }
+        }
+    }
 
-            if ((result.CurrentWar?.Content?.State == Rest.Models.WarState.NotInWar) || (result.CurrentWar?.Content?.State == null))
+    private async Task BulkUpdateCurrentWarKeepUntilAsync(CacheDbContext dbContext, List<(int Id, CachedClanWar Fetched, DateTime? LastChangedAt)> noChangeItems, CancellationToken ct)
+    {
+        if (noChangeItems.Count == 0) return;
+        var groups = new Dictionary<TimeSpan, List<int>>();
+        foreach (var (id, fetched, lastChangedAt) in noChangeItems)
+        {
+            TimeSpan ttl = await Ttl.NoChangeTimeToLiveOrDefaultAsync<Rest.Models.ClanWar>(fetched, lastChangedAt).ConfigureAwait(false);
+            if (!groups.TryGetValue(ttl, out List<int>? groupIds))
+                groups[ttl] = groupIds = new();
+            groupIds.Add(id);
+        }
+        foreach (var (ttl, groupIds) in groups)
+        {
+            DateTime keepUntil = DateTime.UtcNow.Add(ttl);
+            foreach (int[] chunk in groupIds.Chunk(100))
             {
-                var activity = CachedClan.GetActivityLevel(cachedClan);
-                if (activity != CachedClan.ClanActivityLevel.Active)
-                {
-                    var cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(24) : TimeSpan.FromHours(4);
-                    var cutoff = new DateTime(2026, 4, 28, 0, 0, 0, DateTimeKind.Utc);
-                    if (DateTime.UtcNow < cutoff)
-                        cap = activity == CachedClan.ClanActivityLevel.Dead ? TimeSpan.FromHours(4) : TimeSpan.FromMinutes(60);
-                    cachedClan.CurrentWar.Backoff(cap);
-                }
+                int[] ids = chunk;
+                await dbContext.Clans
+                    .Where(c => ids.Contains(c.Id))
+                    .ExecuteUpdateAsync(s => s.SetProperty(c => c.CurrentWar.KeepUntil, keepUntil), ct)
+                    .ConfigureAwait(false);
             }
         }
     }
