@@ -28,7 +28,7 @@ internal sealed class DatabaseValidationService : IHostedService
         {
             using var scope = _scopeFactory.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
-            await dbContext.Clans.Select(c => c.Id).FirstOrDefaultAsync(cancellationToken);
+            await dbContext.Clans.AnyAsync(cancellationToken);
         }
         catch (Exception e)
         {
