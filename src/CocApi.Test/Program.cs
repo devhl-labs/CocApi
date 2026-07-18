@@ -24,15 +24,9 @@ class Program
         {
             await CreateHostBuilder(args).Build().RunAsync();
         }
-        catch (Exception e)
-        {
-            Serilog.Log.Logger.Error(e, "Program crashed!");
-
-            throw;
-        }
         finally
         {
-            Serilog.Log.CloseAndFlush();
+            await Log.CloseAndFlushAsync();
         }
     }
 
