@@ -8,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace CocApi.Test;
 
-public class TestService : IHostedService
+public class SanityTestService : IHostedService
 {
     public CustomClansClient ClansClient { get; }
     public CustomPlayersClient PlayersClient { get; }
@@ -17,7 +17,7 @@ public class TestService : IHostedService
     public ILeaguesApi LeaguesApi { get; }
     public IClansApi ClansApi { get; }
 
-    public TestService(
+    public SanityTestService(
         CustomClansClient clansClient,
         CustomPlayersClient playersClient,
         IPlayersApi playersApi,

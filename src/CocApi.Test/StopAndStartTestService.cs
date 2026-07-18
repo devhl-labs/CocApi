@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CocApi.Test;
 
-public class CachingServiceTest : BackgroundService
+public class StopAndStartTestService : BackgroundService
 {
-    public CachingServiceTest(ILogger<CachingService> logger, CachingService cachingService)
+    public StopAndStartTestService(ILogger<CachingService> logger, CachingService cachingService)
     {
         Logger = logger;
         CachingService = cachingService;

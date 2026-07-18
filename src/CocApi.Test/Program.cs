@@ -90,10 +90,9 @@ class Program
 
             .ConfigureServices((context, services) => {
                 services.Configure<Rest.Models.LoginCredentials>(context.Configuration.GetRequiredSection("CocApi.Test:Rest"));
-
                 services.AddHostedService<TokenService>();
-                services.AddHostedService<TestService>();
-                services.AddHostedService<CachingServiceTest>();
+                services.AddHostedService<SanityTestService>();
+                services.AddHostedService<StopAndStartTestService>();
             });
     }
 }
