@@ -115,5 +115,44 @@ Iterates the Players cache table searching for players with Download set to true
 ### WarService
 Iterates over the Wars cache table. Queries the CurrentWar cache table for both clans in the war. Takes the most recent of the two, checks if any changes have been downloaded, and fires the appropriate events.
 
+## Migrating from v2 to v3
+
+### Target framework
+v3 targets **.NET 10**. Update your project's `TargetFramework` to `net10.0`.
+
+### Token registration
+Tokens are now loaded automatically from `IConfiguration`. Remove any code that explicitly registered tokens and add them to your configuration source instead:
+```json
+{
+  "CocApi": {
+    "Rest": {
+      "Tokens": [ "your-token-here" ]
+    }
+  }
+}
+```
+If you prefer to keep tokens in code, pass them through the options callback:
+```csharp
+.ConfigureCocApi((context, options) =>
+{
+    options.AddTokens(new ApiKeyToken("your-token", ClientUtils.ApiKeyHeader.Authorization));
+})
+```
+
+### `ConfigureCocApi` callback signature
+The callback signature changed from `(HostBuilderContext, IServiceCollection, HostConfiguration)` to `(HostBuilderContext, HostConfiguration)`. Remove the `IServiceCollection` parameter and use a separate `ConfigureServices` call for any service registrations you were doing inside the callback.
+
+### `AddCocApiHttpClients` and the default pipeline
+v3 ships a default HTTP client pipeline (retry, timeout, circuit breaker, connection limit) that is applied automatically when you do not call `AddCocApiHttpClients`. If you were calling it in v2 with a partial set of policies, your existing call will continue to work — it still sets exactly what you specify. The only new behaviour is that omitting the call now gives you a sensible pipeline instead of a bare `HttpClient`.
+
+### Custom `TimeToLiveProvider`
+`NoChangeTimeToLiveAsync<T>(T item, DateTime? lastChangedAt)` is a new optional override on `TimeToLiveProvider`. Implement it to back off polling for stale objects — return a longer TTL when `lastChangedAt` indicates the object has not changed for an extended period. Return values from a fixed set of `TimeSpan`s (e.g. 5 min, 15 min, 1 hr) rather than a unique value per object.
+
+### `CacheOptions` and live monitoring
+`CacheOptions` is now monitored via `IOptionsMonitor`, so polling intervals and concurrency limits update at runtime without a restart. If you were mutating options objects directly after startup, switch to updating configuration instead.
+
+### Logging categories and event IDs
+All background services now log under structured categories matching the class name (e.g. `CocApi.Cache.Services.ClanService`) and include `EventId`s starting at 1000. You can use these in your logging configuration to filter or sink specific services or event types — for example, to alert only on slow cycles (`EventId` 1002) or to suppress verbose output from a single service.
+
 ## Disclaimer
 This content is not affiliated with, endorsed, sponsored, or specifically approved by Supercell and Supercell is not responsible for it. For more information see [Supercell's Fan Content Policy](https://supercell.com/en/fan-content-policy/).
