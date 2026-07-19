@@ -46,7 +46,7 @@ class Program
             {
                 IConfiguration configuration = services.GetRequiredService<IConfiguration>();
 
-                string connection = configuration.GetConnectionString("CocApi.Test") ?? throw new InvalidOperationException("Connection string 'CocApi.Test' is missing from configuration.");
+                string connection = configuration["CocApi.Test:ConnectionString"] ?? throw new InvalidOperationException("'CocApi.Test:ConnectionString' is missing from configuration.");
 
                 dbContextOptions.UseNpgsql(connection, b => b.MigrationsAssembly("CocApi.Test"));
             })
