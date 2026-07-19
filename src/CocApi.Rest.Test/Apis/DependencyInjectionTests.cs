@@ -25,7 +25,7 @@ namespace CocApi.Rest.Test.Apis
     public class DependencyInjectionTest
     {
         private readonly IHost _hostUsingConfigureWithoutAClient =
-            Host.CreateDefaultBuilder([]).ConfigureCocApi((context, services, options) =>
+            Host.CreateDefaultBuilder([]).ConfigureCocApi((context, options) =>
             {
                 ApiKeyToken apiKeyToken1 = new("<token>", ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken1);
@@ -36,7 +36,7 @@ namespace CocApi.Rest.Test.Apis
             .Build();
 
         private readonly IHost _hostUsingConfigureWithAClient =
-            Host.CreateDefaultBuilder([]).ConfigureCocApi((context, services, options) =>
+            Host.CreateDefaultBuilder([]).ConfigureCocApi((context, options) =>
             {
                 ApiKeyToken apiKeyToken1 = new("<token>", ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));
                 options.AddTokens(apiKeyToken1);

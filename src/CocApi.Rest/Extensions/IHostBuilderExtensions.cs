@@ -26,13 +26,13 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="options"></param>
-        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, IServiceCollection, HostConfiguration> options)
+        public static IHostBuilder ConfigureCocApi(this IHostBuilder builder, Action<HostBuilderContext, HostConfiguration>? options = null)
         {
             builder.ConfigureServices((context, services) => 
             {
                 HostConfiguration config = new HostConfiguration(services);
 
-                options(context, services, config);
+                options?.Invoke(context, config);
 
                 IServiceCollectionExtensions.AddCocApi(services, config);
             });

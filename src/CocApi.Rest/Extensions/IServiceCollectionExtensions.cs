@@ -58,6 +58,8 @@ namespace CocApi.Rest.Extensions
                         s => s.GetRequiredService(typeof(RateLimitProvider<>).MakeGenericType(tokenType)));
                 }
             }
+
+            host.NotifyServicesAdded(services);
         }
     }
 }

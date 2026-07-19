@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +7,6 @@ using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
 using Microsoft.EntityFrameworkCore;
-using CocApi.Rest.Client;
-using System.Collections.Generic;
-using System.Linq;
 using CocApi.Rest.Extensions;
 using CocApi.Cache.Extensions;
 
@@ -44,34 +40,7 @@ class Program
                         theme: TemplateTheme.Literate));
             })
 
-            .ConfigureCocApi((context, services, options) =>
-            {
-                List<string> tokenValues = context.Configuration.GetRequiredSection("CocApi.Test:Rest:Tokens").Get<List<string>>() ?? throw new InvalidOperationException("CocApi.Test:Rest:Tokens is missing from configuration.");
-
-                ApiKeyToken[] tokens = tokenValues.Select(t => new ApiKeyToken(t, ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1))).ToArray();
-
-                options.AddTokens(tokens);
-
-                var section = context.Configuration.GetRequiredSection("CocApi:Rest:HttpClient");
-
-                options.AddCocApiHttpClients(
-                    builder: builder =>
-                    {
-                        builder.ConfigurePrimaryHttpMessageHandler(services => new HttpClientHandler
-                        {
-                            CookieContainer = services.GetRequiredService<CookieContainer>().Value,
-                            // this property is important if you query the api very fast
-                            MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
-                        })
-                        .AddRetryPolicy(section.GetValue<int>("Retries"))
-                        .AddTimeoutPolicy(TimeSpan.FromMilliseconds(section.GetValue<long>("Timeout")))
-                        .AddCircuitBreakerPolicy(
-                            section.GetValue<int>("DurationOfBreak"),
-                            TimeSpan.FromSeconds(section.GetValue<int>("HandledEventsAllowedBeforeBreaking")));
-                    }
-                );
-            })
-
+            .ConfigureCocApi()
 
             .ConfigureCocApiCache<CustomClansClient, CustomPlayersClient, CustomTimeToLiveProvider>((services, dbContextOptions) =>
             {
