@@ -1,5 +1,5 @@
-$packageVersion = "2.15.0"
-$releaseNote = "Fixed DateTime deserialization"
+$packageVersion = "3.0.0-rc20260719"
+$releaseNote = "Migrate to .net10"
 
 $properties = @(
     'packageName=CocApi.Rest'

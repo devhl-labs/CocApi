@@ -15,11 +15,11 @@
     
     <RepositoryUrl>https://github.com/devhl-labs/CocApi.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Refactored Troops array</PackageReleaseNotes>
+    <PackageReleaseNotes>Migrate to .net10</PackageReleaseNotes>
     <PackageTags>ClashOfClans SuperCell devhl</PackageTags> 
     <Nullable>enable</Nullable>
     <PackageIcon>Barbarian King.png</PackageIcon>
-    <Version>2.16.0-alpha9009</Version>
+    <Version>3.0.0-rc20260719</Version>
     <AssemblyVersion>1.14.6.0</AssemblyVersion>
     <FileVersion>1.14.6.0</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
