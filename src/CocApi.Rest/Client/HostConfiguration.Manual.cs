@@ -35,13 +35,14 @@ public partial class HostConfiguration
     }
 
     /// <summary>
-    /// Applies default resilience policies and handler configuration for Clash of Clans API calls.
-    /// Users can override individual settings by passing a <c>builder</c> action to
-    /// <see cref="AddCocApiHttpClients(System.Action{IHttpClientBuilder}?)"/>,
-    /// which runs after these defaults.
+    /// Applies default resilience policies when the user has not provided their own builder.
+    /// If the user provided a builder, it is invoked directly and these defaults are skipped.
     /// </summary>
-    partial void OnAddCocApiHttpClientBuilder(IHttpClientBuilder builder)
+    partial void OnAddCocApiHttpClientBuilder(IHttpClientBuilder builder, Action<IHttpClientBuilder>? userBuilder, ref bool suppressDefault)
     {
+        if (userBuilder != null)
+            return;
+
         builder
             .ConfigurePrimaryHttpMessageHandler(services =>
             {
