@@ -82,6 +82,20 @@ This requires CocApi to already be added to the service provider as shown above.
 })
 ```
 
+## Configuration
+
+The following keys are read from `appsettings.json` (or any `IConfiguration` source). Tokens are required; all other keys are optional with sensible defaults.
+
+| Key | Default | Description |
+|---|---|---|
+| `CocApi:Rest:Tokens` | *(required)* | Array of Clash of Clans API tokens |
+| `CocApi:Rest:HttpClient:TokenTimeout` | `33` ms | How long a token can be held before being returned to the pool |
+| `CocApi:Rest:HttpClient:Retries` | `1` | Polly retry attempts on transient failures |
+| `CocApi:Rest:HttpClient:Timeout` | `1500` ms | Per-request timeout |
+| `CocApi:Rest:HttpClient:HandledEventsAllowedBeforeBreaking` | `5` | Failures before the circuit breaker opens |
+| `CocApi:Rest:HttpClient:DurationOfBreak` | `30` s | How long the circuit breaker stays open |
+| `CocApi:Rest:HttpClient:MaxConnectionsPerServer` | `100` | Maximum simultaneous TCP connections to the API |
+
 ## Background Services
 ### ActiveWarService
 Downloads the current war for a clan which is warring one of your tracked clans, but otherwise would not be downloaded. This ensures the most recent data is available. It may help if a tracked clan's war log is private. It also helps get the final war stats in the event the clan searches for a new war immediately.
