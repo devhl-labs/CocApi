@@ -20,43 +20,48 @@ Clan clan = await clansClient.GetOrFetchClanAsync("#clanTag");
 Use the static class CocApi.Clash for various helpers including FormatTag, TryFormatTag, an array of all troop information, and parsing army links. The Clan class has static methods Clan.Donations, Clan.ClanMembersLeft, and Clan.ClanMembersJoined. The ClanWar class has static method ClanWar.NewAttacks. These clan and war methods are useful in the update events.
 
 ## Configuring CocApi
-Use the IHostBuilder extension method ConfigureCocApi to add all the API endpoints to your service provider.
-The TokenProvider object provides rate limiting on a per key basis.
-Then you can use dependency injection to inject ClansApi, LabelsApi, LeaguesApi, LocationsApi, and PlayersApi. 
-These classes allow you to query the API using the typed HttpClient provided.
+Use the IHostBuilder extension method `ConfigureCocApi` to add all the API endpoints to your service provider.
+Then inject `IClansApi`, `ILabelsApi`, `ILeaguesApi`, `ILocationsApi`, or `IPlayersApi` where needed.
+
+By default, tokens and HTTP client settings are read from configuration (see [Configuration](#configuration) below).
 ```csharp
-private static IHostBuilder CreateHostBuilder(string[] args) =>
-    Host.CreateDefaultBuilder(args)
-
-        // configure how to query the Clash API
-        .ConfigureCocApi((context, services, options) =>
-        { 
-            options.AddTokens(new TokenBuilder("your token", TimeSpan.FromMilliseconds(33)));
-
-            options.AddCocApiHttpClients(
-                builder: builder => builder
-
-                    // only required if you use the DeveloperApi class to query, create, and delete tokens
-                    .ConfigurePrimaryHttpMessageHandler(services =>
-                    {
-                        return new HttpClientHandler()
-                        {
-                            CookieContainer = services.GetRequiredService<CookieContainer>().Value
-                        };
-                    })
-
-                    // optionally configure how the HttpClient handles Clash API outages
-                    .AddRetryPolicy(3)
-                    .AddTimeoutPolicy(TimeSpan.FromMilliseconds(3000))
-                    .AddCircuitBreakerPolicy(30, TimeSpan.FromSeconds(10))
-
-                    // this property is important if you query the api very fast
-                    .ConfigurePrimaryHttpMessageHandler(sp => new SocketsHttpHandler
-                    {
-                        MaxConnectionsPerServer = section.GetValue<int>("MaxConnectionsPerServer")
-                    })
-        })
+Host.CreateDefaultBuilder(args)
+    .ConfigureCocApi()
 ```
+
+To customize tokens or HTTP client behaviour at registration time:
+```csharp
+Host.CreateDefaultBuilder(args)
+    .ConfigureCocApi((context, options) =>
+    {
+        // Override the config-based token loading
+        options.AddTokens(new ApiKeyToken("your token", ClientUtils.ApiKeyHeader.Authorization));
+
+        // Provide your own builder to fully replace the default pipeline
+        // (retry, timeout, circuit breaker, handler). Omitting this uses the defaults.
+        options.AddCocApiHttpClients(builder =>
+        {
+            builder
+                .AddRetryPolicy(3)
+                .AddTimeoutPolicy(TimeSpan.FromMilliseconds(3000))
+                .AddCircuitBreakerPolicy(30, TimeSpan.FromSeconds(10));
+        });
+    })
+```
+
+## Configuration
+
+The following keys are read from `appsettings.json` (or any `IConfiguration` source). Tokens are required; all other keys are optional with sensible defaults.
+
+| Key | Default | Description |
+|---|---|---|
+| `CocApi:Rest:Tokens` | *(required)* | Array of Clash of Clans API tokens |
+| `CocApi:Rest:HttpClient:TokenTimeout` | `33` ms | How long a token can be held before being returned to the pool |
+| `CocApi:Rest:HttpClient:Retries` | `1` | Polly retry attempts on transient failures |
+| `CocApi:Rest:HttpClient:Timeout` | `1500` ms | Per-request timeout |
+| `CocApi:Rest:HttpClient:HandledEventsAllowedBeforeBreaking` | `5` | Failures before the circuit breaker opens |
+| `CocApi:Rest:HttpClient:DurationOfBreak` | `30` s | How long the circuit breaker stays open |
+| `CocApi:Rest:HttpClient:MaxConnectionsPerServer` | `100` | Maximum simultaneous TCP connections to the API |
 
 ## Configuring CocApi.Cache
 Before running you will need to [create a migration](docs/scripts/cocapi-ef-migration.ps1) 
@@ -81,20 +86,6 @@ This requires CocApi to already be added to the service provider as shown above.
     dbContextOptions.UseNpgsql(connection);
 })
 ```
-
-## Configuration
-
-The following keys are read from `appsettings.json` (or any `IConfiguration` source). Tokens are required; all other keys are optional with sensible defaults.
-
-| Key | Default | Description |
-|---|---|---|
-| `CocApi:Rest:Tokens` | *(required)* | Array of Clash of Clans API tokens |
-| `CocApi:Rest:HttpClient:TokenTimeout` | `33` ms | How long a token can be held before being returned to the pool |
-| `CocApi:Rest:HttpClient:Retries` | `1` | Polly retry attempts on transient failures |
-| `CocApi:Rest:HttpClient:Timeout` | `1500` ms | Per-request timeout |
-| `CocApi:Rest:HttpClient:HandledEventsAllowedBeforeBreaking` | `5` | Failures before the circuit breaker opens |
-| `CocApi:Rest:HttpClient:DurationOfBreak` | `30` s | How long the circuit breaker stays open |
-| `CocApi:Rest:HttpClient:MaxConnectionsPerServer` | `100` | Maximum simultaneous TCP connections to the API |
 
 ## Background Services
 ### ActiveWarService

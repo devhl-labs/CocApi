@@ -202,8 +202,10 @@ namespace CocApi.Rest.Client
 
             foreach (IHttpClientBuilder instance in builders)
             {
-                OnAddCocApiHttpClientBuilder(instance);
-                builder?.Invoke(instance);
+                if (builder == null)
+                    OnAddCocApiHttpClientBuilder(instance);
+                else
+                    builder.Invoke(instance);
             }
 
             HttpClientsAdded = true;
