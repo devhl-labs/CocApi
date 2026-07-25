@@ -56,7 +56,7 @@ The following keys are read from `appsettings.json` (or any `IConfiguration` sou
 | Key | Default | Description |
 |---|---|---|
 | `CocApi:Rest:Tokens` | *(required)* | Array of Clash of Clans API tokens |
-| `CocApi:Rest:TokenTimeout` | `33` ms | How long a token can be held before being returned to the pool |
+| `CocApi:Rest:TokenTimeout` | `33` ms | Minimum interval between successive uses of the same token (controls per-token request rate) |
 | `CocApi:Rest:HttpClient:Retries` | `1` | Polly retry attempts on transient failures |
 | `CocApi:Rest:HttpClient:Timeout` | `1500` ms | Per-request timeout |
 | `CocApi:Rest:HttpClient:HandledEventsAllowedBeforeBreaking` | `5` | Failures before the circuit breaker opens |
