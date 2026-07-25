@@ -27,7 +27,8 @@ public partial class HostConfiguration
                     "No CocApi tokens were registered. Either call options.AddTokens(...) in ConfigureCocApi, " +
                     "or populate 'CocApi:Rest:Tokens' in configuration (e.g. appsettings.json or environment variables).");
 
-            int? timeoutMs = config.GetValue<int?>("CocApi:Rest:HttpClient:TokenTimeout");
+            int? timeoutMs = config.GetValue<int?>("CocApi:Rest:TokenTimeout")
+                ?? config.GetValue<int?>("CocApi:Rest:HttpClient:TokenTimeout");
             TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMs ?? 33);
             return new TokenContainer<ApiKeyToken>(
                 tokenValues.Select(t => new ApiKeyToken(t, ClientUtils.ApiKeyHeader.Authorization, timeout: timeout)));
