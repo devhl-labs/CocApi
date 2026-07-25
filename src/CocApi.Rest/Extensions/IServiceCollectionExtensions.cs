@@ -26,10 +26,10 @@ namespace CocApi.Rest.Extensions
         /// </summary>
         /// <param name="services"></param>
         /// <param name="options"></param>
-        public static void AddCocApi(this IServiceCollection services, Action<HostConfiguration> options)
+        public static void AddCocApi(this IServiceCollection services, Action<HostConfiguration>? options = null)
         {
             HostConfiguration config = new(services);
-            options(config);
+            options?.Invoke(config);
             AddCocApi(services, config);
         }
 
