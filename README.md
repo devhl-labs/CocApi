@@ -142,6 +142,12 @@ If you prefer to keep tokens in code, pass them through the options callback:
 ### `ConfigureCocApi` callback signature
 The callback signature changed from `(HostBuilderContext, IServiceCollection, HostConfiguration)` to `(HostBuilderContext, HostConfiguration)`. Remove the `IServiceCollection` parameter and use a separate `ConfigureServices` call for any service registrations you were doing inside the callback.
 
+### `ConfigureCocApiCache` callback signature
+The `cacheOptions` callback type changed from `Action<CacheOptions, HostBuilderContext>?` to `Action<CacheOptions>?`. Remove the `HostBuilderContext` parameter — any configuration values you were reading from it are now bound automatically from `IConfiguration`.
+
+### `AddCocApiCache` and `IConfiguration`
+The `AddCocApiCache` overloads that accept `IConfiguration` are removed. Configuration is resolved automatically from DI — remove the `IConfiguration` argument.
+
 ### `AddCocApiHttpClients` and the default pipeline
 v3 ships a default HTTP client pipeline (retry, timeout, circuit breaker, connection limit) that is applied automatically when you do not call `AddCocApiHttpClients`. If you were calling it in v2 with a partial set of policies, your existing call will continue to work — it still sets exactly what you specify. The only new behaviour is that omitting the call now gives you a sensible pipeline instead of a bare `HttpClient`.
 
