@@ -11,25 +11,23 @@ public static class IHostBuilderExtensions
     public static IHostBuilder ConfigureCocApiCache(
         this IHostBuilder builder,
         Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-        Action<CacheOptions, HostBuilderContext>? cacheOptions = null)
+        Action<CacheOptions>? cacheOptions = null)
         => ConfigureCocApiCache<ClansClient, PlayersClient, TimeToLiveProvider>(builder, dbContextOptions, cacheOptions);
 
     public static IHostBuilder ConfigureCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
         this IHostBuilder builder,
         Action<IServiceProvider, DbContextOptionsBuilder> dbContextOptions,
-        Action<CacheOptions, HostBuilderContext>? cacheOptions = null)
+        Action<CacheOptions>? cacheOptions = null)
         where TClansClient : ClansClient
         where TPlayersClient : PlayersClient
         where TTimeToLiveProvider : TimeToLiveProvider
     {
-        builder.ConfigureServices((context, services) => {
+        builder.ConfigureServices((_, services) =>
             IServiceCollectionExtensions.AddCocApiCache<TClansClient, TPlayersClient, TTimeToLiveProvider>(
                 services,
-                context.Configuration,
                 null,
                 dbContextOptions,
-                cacheOptions == null ? null : options => cacheOptions(options, context));
-        });
+                cacheOptions));
 
         return builder;
     }
