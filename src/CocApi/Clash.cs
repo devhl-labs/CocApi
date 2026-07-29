@@ -325,5 +325,15 @@ namespace CocApi
 
             return results;
         }
+
+        public static class CacheExpirations
+        {
+            public static TimeSpan Clan { get; } = TimeSpan.FromMinutes(2);
+            public static TimeSpan CurrentWar { get; } = TimeSpan.FromMinutes(2);
+            public static TimeSpan CwlWar { get; } = TimeSpan.FromMinutes(10);
+            public static TimeSpan Player { get; } = TimeSpan.FromMinutes(1);
+            public static TimeSpan WarLog { get; } = TimeSpan.FromMinutes(2);
+            public static TimeSpan Group { get; } = TimeSpan.FromMinutes(2);
+        }
     }
 }

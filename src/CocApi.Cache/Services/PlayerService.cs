@@ -170,6 +170,7 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
                 groups[ttl] = groupIds = new();
             groupIds.Add(id);
         }
+        DateTime expiresAt = DateTime.UtcNow.Add(Clash.CacheExpirations.Player);
         foreach (var (ttl, groupIds) in groups)
         {
             DateTime keepUntil = DateTime.UtcNow.Add(ttl);
@@ -178,7 +179,9 @@ public sealed class PlayerService : ServiceBase<PlayerServiceOptions>
                 int[] ids = chunk;
                 await dbContext.Players
                     .Where(p => ids.Contains(p.Id))
-                    .ExecuteUpdateAsync(s => s.SetProperty(p => p.KeepUntil, keepUntil), ct)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(p => p.KeepUntil, keepUntil)
+                        .SetProperty(p => p.ExpiresAt, expiresAt), ct)
                     .ConfigureAwait(false);
             }
         }

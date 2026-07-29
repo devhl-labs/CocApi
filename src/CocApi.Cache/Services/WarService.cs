@@ -181,7 +181,6 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         public CachedClanWar? Source { get; set; }
         public bool IsFinal { get; set; }
         public bool SetFinal { get; set; }
-        public DateTime? KeepUntil { get; set; }
         public Announcements NewAnnouncements { get; set; }
     }
 
@@ -190,9 +189,6 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         foreach (var (cachedWar, result) in batch)
         {
             cachedWar.Announcements |= result.NewAnnouncements;
-
-            if (result.KeepUntil.HasValue)
-                cachedWar.KeepUntil = result.KeepUntil.Value;
 
             if (result.SetFinal)
                 cachedWar.IsFinal = true;
@@ -203,7 +199,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
                     cachedWar.UpdateFrom(result.Source);
                     cachedWar.IsFinal = result.IsFinal;
                 }
-                else if (!result.KeepUntil.HasValue)
+                else
                     noChangeItems.Add((cachedWar.Id, result.Source, cachedWar.DownloadedAt));
             }
         }
@@ -220,6 +216,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
                 groups[ttl] = groupIds = new();
             groupIds.Add(id);
         }
+        DateTime expiresAt = DateTime.UtcNow.Add(Clash.CacheExpirations.CurrentWar);
         foreach (var (ttl, groupIds) in groups)
         {
             DateTime keepUntil = DateTime.UtcNow.Add(ttl);
@@ -228,7 +225,9 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
                 int[] ids = chunk;
                 await dbContext.Wars
                     .Where(w => ids.Contains(w.Id))
-                    .ExecuteUpdateAsync(s => s.SetProperty(w => w.KeepUntil, keepUntil), ct)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(w => w.KeepUntil, keepUntil)
+                        .SetProperty(w => w.ExpiresAt, expiresAt), ct)
                     .ConfigureAwait(false);
             }
         }
@@ -314,7 +313,7 @@ public sealed class WarService : ServiceBase<WarServiceOptions>
         catch (Exception e)
         {
             Logger.LogError(CacheLogEvents.WarComputeFailed, e, "Failed to update war clanTag: {cachedWar}", cachedWar.Id);
-            result.KeepUntil = DateTime.UtcNow.AddHours(1);
+            cachedWar.KeepUntil = DateTime.UtcNow.AddHours(1);
             throw;
         }
     }

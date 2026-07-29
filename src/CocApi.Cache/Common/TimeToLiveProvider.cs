@@ -116,9 +116,14 @@ public class TimeToLiveProvider
 
             return war?.State switch
             {
-                WarState.InWar       => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(2)),
-                WarState.Preparation => new ValueTask<TimeSpan>(TimeSpan.FromMinutes(10)),
-                _                    => new ValueTask<TimeSpan>(TieredTtl(lastChangedAt, _clanWarTiers)),
+                WarState.InWar       => new ValueTask<TimeSpan>(TimeSpan.Zero),
+                WarState.Preparation => war?.StartTime < DateTime.UtcNow
+                    ? new ValueTask<TimeSpan>(TimeSpan.Zero)
+                    : new ValueTask<TimeSpan>(TimeSpan.FromMinutes(10)),
+                WarState.NotInWar    => new ValueTask<TimeSpan>(TieredTtl(lastChangedAt, _clanWarTiers)),
+                WarState.WarEnded    => new ValueTask<TimeSpan>(TieredTtl(lastChangedAt, _clanWarTiers)),
+                null                 => new ValueTask<TimeSpan>(TieredTtl(lastChangedAt, _clanWarTiers)),
+                _                    => new ValueTask<TimeSpan>(TimeSpan.Zero)
             };
         }
 

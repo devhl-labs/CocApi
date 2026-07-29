@@ -190,6 +190,7 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
                 groups[ttl] = groupIds = new();
             groupIds.Add(id);
         }
+        DateTime expiresAt = DateTime.UtcNow.Add(Clash.CacheExpirations.CwlWar);
         foreach (var (ttl, groupIds) in groups)
         {
             DateTime keepUntil = DateTime.UtcNow.Add(ttl);
@@ -198,7 +199,9 @@ public sealed class CwlWarService : ServiceBase<CwlWarServiceOptions>
                 int[] ids = chunk;
                 await dbContext.Wars
                     .Where(w => ids.Contains(w.Id))
-                    .ExecuteUpdateAsync(s => s.SetProperty(w => w.KeepUntil, keepUntil), ct)
+                    .ExecuteUpdateAsync(s => s
+                        .SetProperty(w => w.KeepUntil, keepUntil)
+                        .SetProperty(w => w.ExpiresAt, expiresAt), ct)
                     .ConfigureAwait(false);
             }
         }

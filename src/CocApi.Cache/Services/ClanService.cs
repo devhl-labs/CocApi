@@ -178,6 +178,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                     groups[ttl] = groupIds = new();
                 groupIds.Add(id);
             }
+            DateTime expiresAt = DateTime.UtcNow.Add(Clash.CacheExpirations.Clan);
             foreach (var (ttl, groupIds) in groups)
             {
                 DateTime keepUntil = DateTime.UtcNow.Add(ttl);
@@ -186,7 +187,9 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                     int[] ids = chunk;
                     await dbContext.Clans
                         .Where(c => ids.Contains(c.Id))
-                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.KeepUntil, keepUntil), ct)
+                        .ExecuteUpdateAsync(s => s
+                            .SetProperty(c => c.KeepUntil, keepUntil)
+                            .SetProperty(c => c.ExpiresAt, expiresAt), ct)
                         .ConfigureAwait(false);
                 }
             }
@@ -202,6 +205,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                     groups[ttl] = groupIds = new();
                 groupIds.Add(id);
             }
+            DateTime expiresAt = DateTime.UtcNow.Add(Clash.CacheExpirations.WarLog);
             foreach (var (ttl, groupIds) in groups)
             {
                 DateTime keepUntil = DateTime.UtcNow.Add(ttl);
@@ -211,6 +215,10 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                     await dbContext.Clans
                         .Where(c => ids.Contains(c.Id))
                         .ExecuteUpdateAsync(s => s.SetProperty(c => c.WarLog.KeepUntil, keepUntil), ct)
+                        .ConfigureAwait(false);
+                    await dbContext.Clans
+                        .Where(c => ids.Contains(c.Id))
+                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.WarLog.ExpiresAt, expiresAt), ct)
                         .ConfigureAwait(false);
                 }
             }
@@ -226,6 +234,7 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                     groups[ttl] = groupIds = new();
                 groupIds.Add(id);
             }
+            DateTime expiresAt = DateTime.UtcNow.Add(Clash.CacheExpirations.Group);
             foreach (var (ttl, groupIds) in groups)
             {
                 DateTime keepUntil = DateTime.UtcNow.Add(ttl);
@@ -235,6 +244,10 @@ public sealed class ClanService : ServiceBase<ClanServiceOptions>
                     await dbContext.Clans
                         .Where(c => ids.Contains(c.Id))
                         .ExecuteUpdateAsync(s => s.SetProperty(c => c.Group.KeepUntil, keepUntil), ct)
+                        .ConfigureAwait(false);
+                    await dbContext.Clans
+                        .Where(c => ids.Contains(c.Id))
+                        .ExecuteUpdateAsync(s => s.SetProperty(c => c.Group.ExpiresAt, expiresAt), ct)
                         .ConfigureAwait(false);
                 }
             }
