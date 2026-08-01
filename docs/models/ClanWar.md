@@ -9,7 +9,6 @@ Name | Type | Description | Notes
 **EndTime** | **DateTime** |  | [readonly] 
 **Opponent** | [**WarClan**](WarClan.md) |  | [readonly] 
 **PreparationStartTime** | **DateTime** |  | [readonly] 
-**ServerExpiration** | **DateTime** |  | [readonly] 
 **StartTime** | **DateTime** |  | [readonly] 
 **TeamSize** | **int** |  | [readonly] 
 **BattleModifier** | **BattleModifier** |  | [optional] [readonly] 
