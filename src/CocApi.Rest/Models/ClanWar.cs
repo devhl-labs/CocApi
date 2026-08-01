@@ -355,14 +355,10 @@ namespace CocApi.Rest.Models
                             teamSize = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "battleModifier":
-                            string? battleModifierRawValue = utf8JsonReader.GetString();
-                            if (battleModifierRawValue != null)
-                                battleModifier = new Option<BattleModifier?>(BattleModifierValueConverter.FromStringOrDefault(battleModifierRawValue));
+                            battleModifier = new Option<BattleModifier?>(JsonSerializer.Deserialize<BattleModifier?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "state":
-                            string? stateRawValue = utf8JsonReader.GetString();
-                            if (stateRawValue != null)
-                                state = new Option<WarState?>(WarStateValueConverter.FromStringOrDefault(stateRawValue));
+                            state = new Option<WarState?>(JsonSerializer.Deserialize<WarState?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "warTag":
                             warTag = new Option<string?>(utf8JsonReader.GetString());
@@ -415,13 +411,13 @@ namespace CocApi.Rest.Models
             if (teamSize.IsSet && teamSize.Value == null)
                 throw new ArgumentNullException(nameof(teamSize), "Property is not nullable for class ClanWar.");
 
-            // if (battleModifier.IsSet && battleModifier.Value == null)
-            //     throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWar.");
+            if (battleModifier.IsSet && battleModifier.Value == null)
+                throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWar.");
 
             if (state.IsSet && state.Value == null)
                 throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanWar.");
 
-            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, serverExpiration.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state, warTag);
+            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state, warTag);
         }
 
         /// <summary>
