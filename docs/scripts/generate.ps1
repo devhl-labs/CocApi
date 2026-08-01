@@ -133,23 +133,6 @@ $membersConverter = @"
 
 "@
 
-$apiKey = @"
-                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-
-                    ApiKeyToken apiKeyTokenLocalVar = (ApiKeyToken) await ApiKeyProvider.GetAsync(cancellationToken).ConfigureAwait(false);
-
-                    tokenBaseLocalVars.Add(apiKey);
-
-
-"@
-
-$tokenRateLimit = @"
-                        else if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
-                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
-                                tokenBaseLocalVar.BeginRateLimit();
-
-"@
-
 $warClanNullChecks = @"
             if (attacks == null)
                 throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
@@ -356,11 +339,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
         $content = $content.Replace("throw new ArgumentException(`"Property is required for class ClanWar.`", nameof(attacksPerMember));", "attacksPerMember = 1; // cwl war")
-    }
-
-    if ($file.name -eq "DeveloperApi.cs"){
-        $content = $content.Replace($apiKey, "")
-        $content = $content.Replace($tokenRateLimit, "")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {
