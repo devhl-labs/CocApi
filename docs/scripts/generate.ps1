@@ -45,6 +45,9 @@ $clanWarPropertiesReplacement = @"
             type: string
             readOnly: true
             nullable: true
+        serverExpiration:
+            type: date-time
+            readOnly: true
 "@
 
 $clanWarRequiredProperies = @"
@@ -54,6 +57,7 @@ required:
 
 $clanWarRequiredProperiesReplacement = @"
 required:
+      - serverExpiration
       - attacksPerMember
 "@
 
@@ -213,6 +217,25 @@ $warClanNullChecksReplacement = @"
 
 "@
 
+
+$clanServerExpirtationEquals = @"
+                (
+                    ServerExpiration == input.ServerExpiration ||
+                    (ServerExpiration != null &&
+                    ServerExpiration.Equals(input.ServerExpiration))
+                ) && 
+
+"@
+
+
+$serverExpirationEquals = @"
+                (
+                    ServerExpiration == input.ServerExpiration ||
+                    ServerExpiration.Equals(input.ServerExpiration)
+                ) && 
+
+"@
+
 $membersNullCheck = @"
             if (clan.MemberList == null)
                 throw new ArgumentNullException(nameof(clan.MemberList), "Property is required for class Clan.");
@@ -355,6 +378,12 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
         $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
+        $content = $content.Replace($clanServerExpirtationEquals, "")
+        $content = $content.Replace("hashCode = (hashCode * 59) + ServerExpiration.GetHashCode();`r`n                ", "")
+        $content = $content.Replace($serverExpirationEquals, "")
+
+        # this can be removed in the next update, just to ensure we can deserialize the old json data which wont have the serverExpiration value
+        $content = $content.Replace("throw new ArgumentException(`"Property is required for class ClanWar.`", nameof(serverExpiration));", "serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);")
         $content = $content.Replace("throw new ArgumentException(`"Property is required for class ClanWar.`", nameof(attacksPerMember));", "attacksPerMember = 1; // cwl war")
     }
 

@@ -37,19 +37,21 @@ namespace CocApi.Rest.Models
         /// <param name="endTime">endTime</param>
         /// <param name="opponent">opponent</param>
         /// <param name="preparationStartTime">preparationStartTime</param>
+        /// <param name="serverExpiration">serverExpiration</param>
         /// <param name="startTime">startTime</param>
         /// <param name="teamSize">teamSize</param>
         /// <param name="battleModifier">battleModifier</param>
         /// <param name="state">state</param>
         /// <param name="warTag">warTag</param>
         [JsonConstructor]
-        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default, Option<string?> warTag = default)
+        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime serverExpiration, DateTime startTime, int teamSize, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default, Option<string?> warTag = default)
         {
             AttacksPerMember = attacksPerMember;
             Clan = clan;
             EndTime = endTime;
             Opponent = opponent;
             PreparationStartTime = preparationStartTime;
+            ServerExpiration = serverExpiration;
             StartTime = startTime;
             TeamSize = teamSize;
             BattleModifierOption = battleModifier;
@@ -117,6 +119,12 @@ namespace CocApi.Rest.Models
         public DateTime PreparationStartTime { get; }
 
         /// <summary>
+        /// Gets or Sets ServerExpiration
+        /// </summary>
+        [JsonPropertyName("serverExpiration")]
+        public DateTime ServerExpiration { get; }
+
+        /// <summary>
         /// Gets or Sets StartTime
         /// </summary>
         [JsonPropertyName("startTime")]
@@ -154,6 +162,7 @@ namespace CocApi.Rest.Models
             sb.Append("  EndTime: ").Append(EndTime).Append("\n");
             sb.Append("  Opponent: ").Append(Opponent).Append("\n");
             sb.Append("  PreparationStartTime: ").Append(PreparationStartTime).Append("\n");
+            sb.Append("  ServerExpiration: ").Append(ServerExpiration).Append("\n");
             sb.Append("  StartTime: ").Append(StartTime).Append("\n");
             sb.Append("  TeamSize: ").Append(TeamSize).Append("\n");
             sb.Append("  BattleModifier: ").Append(BattleModifier).Append("\n");
@@ -312,6 +321,7 @@ namespace CocApi.Rest.Models
             Option<DateTime?> endTime = default;
             Option<WarClan?> opponent = default;
             Option<DateTime?> preparationStartTime = default;
+            Option<DateTime?> serverExpiration = default;
             Option<DateTime?> startTime = default;
             Option<int?> teamSize = default;
             Option<BattleModifier?> battleModifier = default;
@@ -348,6 +358,9 @@ namespace CocApi.Rest.Models
                         case "preparationStartTime":
                             preparationStartTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
+                        case "serverExpiration":
+                            serverExpiration = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            break;
                         case "startTime":
                             startTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
@@ -355,10 +368,14 @@ namespace CocApi.Rest.Models
                             teamSize = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "battleModifier":
-                            battleModifier = new Option<BattleModifier?>(JsonSerializer.Deserialize<BattleModifier?>(ref utf8JsonReader, jsonSerializerOptions));
+                            string? battleModifierRawValue = utf8JsonReader.GetString();
+                            if (battleModifierRawValue != null)
+                                battleModifier = new Option<BattleModifier?>(BattleModifierValueConverter.FromStringOrDefault(battleModifierRawValue));
                             break;
                         case "state":
-                            state = new Option<WarState?>(JsonSerializer.Deserialize<WarState?>(ref utf8JsonReader, jsonSerializerOptions));
+                            string? stateRawValue = utf8JsonReader.GetString();
+                            if (stateRawValue != null)
+                                state = new Option<WarState?>(WarStateValueConverter.FromStringOrDefault(stateRawValue));
                             break;
                         case "warTag":
                             warTag = new Option<string?>(utf8JsonReader.GetString());
@@ -384,6 +401,9 @@ namespace CocApi.Rest.Models
             if (!preparationStartTime.IsSet)
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(preparationStartTime));
 
+            if (!serverExpiration.IsSet)
+                serverExpiration = new DateTime(2023, 05, 01, 1, 1, 1, 1, 1);
+
             if (!startTime.IsSet)
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(startTime));
 
@@ -405,6 +425,9 @@ namespace CocApi.Rest.Models
             if (preparationStartTime.IsSet && preparationStartTime.Value == null)
                 throw new ArgumentNullException(nameof(preparationStartTime), "Property is not nullable for class ClanWar.");
 
+            if (serverExpiration.IsSet && serverExpiration.Value == null)
+                throw new ArgumentNullException(nameof(serverExpiration), "Property is not nullable for class ClanWar.");
+
             if (startTime.IsSet && startTime.Value == null)
                 throw new ArgumentNullException(nameof(startTime), "Property is not nullable for class ClanWar.");
 
@@ -417,7 +440,7 @@ namespace CocApi.Rest.Models
             if (state.IsSet && state.Value == null)
                 throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanWar.");
 
-            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state, warTag);
+            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, serverExpiration.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state, warTag);
         }
 
         /// <summary>
@@ -460,6 +483,8 @@ namespace CocApi.Rest.Models
             JsonSerializer.Serialize(writer, clanWar.Opponent, jsonSerializerOptions);
             writer.WriteString("preparationStartTime", clanWar.PreparationStartTime.ToString(PreparationStartTimeFormat));
 
+            writer.WritePropertyName("serverExpiration");
+            JsonSerializer.Serialize(writer, clanWar.ServerExpiration, jsonSerializerOptions);
             writer.WriteString("startTime", clanWar.StartTime.ToString(StartTimeFormat));
 
             writer.WriteNumber("teamSize", clanWar.TeamSize);
