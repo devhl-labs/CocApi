@@ -99,69 +99,6 @@ $membersConverter = @"
 
 "@
 
-$warClanNullChecks = @"
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClan.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClan.");
-
-            if (destructionPercentage == null)
-                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
-
-            if (expEarned == null)
-                throw new ArgumentNullException(nameof(expEarned), "Property is required for class WarClan.");
-
-            if (members == null)
-                throw new ArgumentNullException(nameof(members), "Property is required for class WarClan.");
-
-            if (name == null)
-                throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
-
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
-
-            if (tag == null)
-                throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
-
-
-"@
-
-
-$warClanNullChecksReplacement = @"
-            if (attacks == null)
-                throw new ArgumentNullException(nameof(attacks), "Property is required for class WarClan.");
-
-            if (badgeUrls == null)
-                throw new ArgumentNullException(nameof(badgeUrls), "Property is required for class WarClan.");
-
-            if (clanLevel == null)
-                throw new ArgumentNullException(nameof(clanLevel), "Property is required for class WarClan.");
-
-            if (destructionPercentage == null)
-                throw new ArgumentNullException(nameof(destructionPercentage), "Property is required for class WarClan.");
-
-            // if (expEarned == null)
-            //     throw new ArgumentNullException(nameof(expEarned), "Property is required for class WarClan.");
-
-            // if (members == null)
-            //     throw new ArgumentNullException(nameof(members), "Property is required for class WarClan.");
-
-            // if (name == null)
-            //     throw new ArgumentNullException(nameof(name), "Property is required for class WarClan.");
-
-            if (stars == null)
-                throw new ArgumentNullException(nameof(stars), "Property is required for class WarClan.");
-
-            // if (tag == null)
-            //     throw new ArgumentNullException(nameof(tag), "Property is required for class WarClan.");
-
-
-"@
-
 $membersNullCheck = @"
             if (clan.MemberList == null)
                 throw new ArgumentNullException(nameof(clan.MemberList), "Property is required for class Clan.");
@@ -248,7 +185,6 @@ foreach ($file in $allCodeFiles)
     }
 
     if ($file.name -eq "WarClan.cs"){
-        $content=$content.Replace($warClanNullChecks, $warClanNullChecksReplacement)
         $content=$content.Replace(", expEarned.Value,", ", expEarned.GetValueOrDefault(),")
     }
 
