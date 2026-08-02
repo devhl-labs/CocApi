@@ -159,10 +159,6 @@ foreach ($file in $allCodeFiles)
     $originalContent = $rawContent -join "`n"
     $content = $rawContent -join "`r`n"
 
-    if ($file.Name -eq "RateLimitProvider``1.cs"){
-        $content=$content.Replace("BoundedChannelFullMode.DropOldest", "BoundedChannelFullMode.DropWrite")
-    }
-
     if ($file.name.EndsWith("Api.cs")){
         $content=$content.Replace('> Get', '> Fetch')
         $content=$content.Replace("await Get", "await Fetch")
