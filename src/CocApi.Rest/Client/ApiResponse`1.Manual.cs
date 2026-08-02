@@ -1,4 +1,3 @@
-using CocApi.Rest.Models;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -56,26 +55,6 @@ namespace CocApi.Rest.Client
                 var raw = authValues.FirstOrDefault();
                 if (raw != null)
                     RequestTokenSuffix = raw.Length > 8 ? "..." + raw[^8..] : raw;
-            }
-
-            string? url = httpRequestMessage.RequestUri?.LocalPath;
-
-            if (this is IOk<ClanWar>)
-            {
-               string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ServerExpiration, _jsonSerializerOptions);
-               RawContent = RawContent[..^1];
-               RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
-
-               if (url?.Contains("clanwarleagues/wars/") == true)
-               {
-                   string[] parts = url.Split("/");
-                   RawContent = $"{RawContent}, \"warTag\": \"{parts.Last()}\"";
-
-                   if (!RawContent.Contains("attacksPerMember"))
-                       RawContent = $"{RawContent}, \"attacksPerMember\": 1";
-               }
-
-               RawContent = $"{RawContent}}}";
             }
         }
     }
