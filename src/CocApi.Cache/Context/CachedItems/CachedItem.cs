@@ -28,30 +28,11 @@ public class CachedItem<T> where T : class
         {
             if (_content == null && !string.IsNullOrWhiteSpace(RawContent))
             {
-                PreprocessRawContent();
                 _content = DeserializeContent();
             }
             return _content;
         }
         internal set { _content = value; }
-    }
-
-    private void PreprocessRawContent()
-    {
-        if (string.IsNullOrWhiteSpace(RawContent))
-            return;
-
-        if ((this is CachedClanWarLeagueGroup || this is CachedWar || this is CachedClanWar) && !RawContent.Contains("notInWar"))
-        {
-            RawContent = RawContent[..^1];
-            if (!RawContent.Contains("serverExpiration"))
-            {
-                string serverExpiration = System.Text.Json.JsonSerializer.Serialize(ExpiresAt ?? DateTime.UtcNow, Library.JsonSerializerOptions);
-                RawContent = $"{RawContent}, \"serverExpiration\": {serverExpiration}";
-            }
-
-            RawContent = $"{RawContent}}}";
-        }
     }
 
     private T? DeserializeContent()
