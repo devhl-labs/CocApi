@@ -180,10 +180,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace(".GetCapitalLeague", ".FetchCapitalLeague")
     }
 
-    if ($file.name -eq "WarClan.cs"){
-        $content=$content.Replace(", expEarned.Value,", ", expEarned.GetValueOrDefault(),")
-    }
-
     if ($file.name -eq "Clan.cs"){
         $content = $content.Replace("/// <param name=`"memberList`">memberList</param>`r`n        ", "")
         $content = $content.Replace("MemberList = memberList;`r`n            ", "")
