@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**AttacksPerMember** | **int** |  | [readonly] 
 **Clan** | [**WarClan**](WarClan.md) |  | [readonly] 
 **EndTime** | **DateTime** |  | [readonly] 
 **Opponent** | [**WarClan**](WarClan.md) |  | [readonly] 
 **PreparationStartTime** | **DateTime** |  | [readonly] 
 **StartTime** | **DateTime** |  | [readonly] 
 **TeamSize** | **int** |  | [readonly] 
+**AttacksPerMember** | **int** |  | [optional] [readonly] 
 **BattleModifier** | **BattleModifier** |  | [optional] [readonly] 
 **State** | **WarState** |  | [optional] [readonly] 
 

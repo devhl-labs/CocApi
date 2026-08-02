@@ -152,7 +152,10 @@ public partial class ClansApi
         suppressDefaultLog = true;
         LogAfterFetch(apiResponseLocalVar, apiResponseLocalVar.Path.Replace("{warTag}", warTag));
         if (apiResponseLocalVar.TryOk(out ClanWar? war))
+        {
             war.WarTag = warTag;
+            war.AttacksPerMember ??= 1;
+        }
     }
 
     partial void AfterFetchClanWarLog(ref bool suppressDefaultLog, IFetchClanWarLogApiResponse apiResponseLocalVar, string clanTag, Option<int> limit, Option<string> after, Option<string> before)

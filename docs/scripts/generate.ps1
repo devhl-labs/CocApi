@@ -30,28 +30,12 @@ $global = @(
     'modelTests=true'
 ) -join ","
 
-$clanWarRequiredProperies = @"
-required:
-      - attacksPerMember
-"@
-
-$clanWarRequiredProperiesReplacement = @"
-required:
-      - attacksPerMember
-"@
-
 
 $generator = Resolve-Path -Path "$PSScriptRoot\..\..\..\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar"
 $yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0.yml"
 $output = Resolve-Path -Path "$PSScriptRoot\..\.."
 $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
-
 $rawYml = $(Get-Content -Path $yml) -join "`r`n"
-$rawYml = $rawYml.Replace($clanWarRequiredProperies, $clanWarRequiredProperiesReplacement)
-
-# TODO: mark attacksPerMember as not required
-# but make it be required in the appended-properties yaml, because we ensure that the property is there
-# but SC does not
 
 Set-Content "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml" $rawYml
 $appendedPropertiesYaml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
@@ -317,10 +301,9 @@ foreach ($file in $allCodeFiles)
     }
 
     if ($file.name -eq "ClanWar.cs"){
+        $content = $content.Replace("public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } }", "public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } internal set; }")
         $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
         $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
-        $content = $content.Replace("public int AttacksPerMember { get; }", "public int AttacksPerMember { get; private set; }")
-        $content = $content.Replace("throw new ArgumentException(`"Property is required for class ClanWar.`", nameof(attacksPerMember));", "attacksPerMember = 1; // cwl war")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {

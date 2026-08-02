@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-// TODO: probably dont need this anymore
 [assembly: InternalsVisibleTo("CocApi.Cache")]
 namespace CocApi.Rest.Models
 {
@@ -184,9 +183,6 @@ namespace CocApi.Rest.Models
                 }
 
                 debug = "r";
-                // cwl does not include this property
-                if (AttacksPerMember == 0)
-                    AttacksPerMember = 1;
             }
             catch (Exception e)
             {

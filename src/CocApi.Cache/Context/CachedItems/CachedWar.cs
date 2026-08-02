@@ -73,13 +73,17 @@ public class CachedWar : CachedItem<ClanWar>
         return !fetched.Content.Equals(stored.Content);
     }
 
+    [System.ComponentModel.DataAnnotations.Schema.NotMapped]
     public new ClanWar? Content
     {
         get
         {
             ClanWar? war = base.Content;
             if (war != null)
+            {
                 war.WarTag ??= WarTag;
+                war.AttacksPerMember ??= 1;
+            }
             return war;
         }
         internal set { base.Content = value; }

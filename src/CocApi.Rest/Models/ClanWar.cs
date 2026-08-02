@@ -32,25 +32,25 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="ClanWar" /> class.
         /// </summary>
-        /// <param name="attacksPerMember">attacksPerMember</param>
         /// <param name="clan">clan</param>
         /// <param name="endTime">endTime</param>
         /// <param name="opponent">opponent</param>
         /// <param name="preparationStartTime">preparationStartTime</param>
         /// <param name="startTime">startTime</param>
         /// <param name="teamSize">teamSize</param>
+        /// <param name="attacksPerMember">attacksPerMember</param>
         /// <param name="battleModifier">battleModifier</param>
         /// <param name="state">state</param>
         [JsonConstructor]
-        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default)
+        internal ClanWar(WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, Option<int?> attacksPerMember = default, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default)
         {
-            AttacksPerMember = attacksPerMember;
             Clan = clan;
             EndTime = endTime;
             Opponent = opponent;
             PreparationStartTime = preparationStartTime;
             StartTime = startTime;
             TeamSize = teamSize;
+            AttacksPerMemberOption = attacksPerMember;
             BattleModifierOption = battleModifier;
             StateOption = state;
             OnCreated();
@@ -83,12 +83,6 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("state")]
         public WarState? State { get { return this.StateOption.Value; } }
-
-        /// <summary>
-        /// Gets or Sets AttacksPerMember
-        /// </summary>
-        [JsonPropertyName("attacksPerMember")]
-        public int AttacksPerMember { get; private set; }
 
         /// <summary>
         /// Gets or Sets Clan
@@ -127,6 +121,19 @@ namespace CocApi.Rest.Models
         public int TeamSize { get; }
 
         /// <summary>
+        /// Used to track the state of AttacksPerMember
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<int?> AttacksPerMemberOption { get; }
+
+        /// <summary>
+        /// Gets or Sets AttacksPerMember
+        /// </summary>
+        [JsonPropertyName("attacksPerMember")]
+        public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } internal set; }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -134,13 +141,13 @@ namespace CocApi.Rest.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class ClanWar {\n");
-            sb.Append("  AttacksPerMember: ").Append(AttacksPerMember).Append("\n");
             sb.Append("  Clan: ").Append(Clan).Append("\n");
             sb.Append("  EndTime: ").Append(EndTime).Append("\n");
             sb.Append("  Opponent: ").Append(Opponent).Append("\n");
             sb.Append("  PreparationStartTime: ").Append(PreparationStartTime).Append("\n");
             sb.Append("  StartTime: ").Append(StartTime).Append("\n");
             sb.Append("  TeamSize: ").Append(TeamSize).Append("\n");
+            sb.Append("  AttacksPerMember: ").Append(AttacksPerMember).Append("\n");
             sb.Append("  BattleModifier: ").Append(BattleModifier).Append("\n");
             sb.Append("  State: ").Append(State).Append("\n");
             sb.Append("}\n");
@@ -169,10 +176,6 @@ namespace CocApi.Rest.Models
 
             return 
                 (
-                    AttacksPerMember == input.AttacksPerMember ||
-                    AttacksPerMember.Equals(input.AttacksPerMember)
-                ) && 
-                (
                     Clan == input.Clan ||
                     (Clan != null &&
                     Clan.Equals(input.Clan))
@@ -199,6 +202,10 @@ namespace CocApi.Rest.Models
                     TeamSize.Equals(input.TeamSize)
                 ) && 
                 (
+                    AttacksPerMember == input.AttacksPerMember ||
+                    AttacksPerMember.Equals(input.AttacksPerMember)
+                ) && 
+                (
                     BattleModifier == input.BattleModifier ||
                     BattleModifier.Equals(input.BattleModifier)
                 ) && 
@@ -217,13 +224,15 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + AttacksPerMember.GetHashCode();
                 hashCode = (hashCode * 59) + Clan.GetHashCode();
                 hashCode = (hashCode * 59) + EndTime.GetHashCode();
                 hashCode = (hashCode * 59) + Opponent.GetHashCode();
                 hashCode = (hashCode * 59) + PreparationStartTime.GetHashCode();
                 hashCode = (hashCode * 59) + StartTime.GetHashCode();
                 hashCode = (hashCode * 59) + TeamSize.GetHashCode();
+                if (AttacksPerMember != null)
+                    hashCode = (hashCode * 59) + AttacksPerMember.GetHashCode();
+
                 if (BattleModifier != null)
                     hashCode = (hashCode * 59) + BattleModifier.GetHashCode();
 
@@ -283,13 +292,13 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            Option<int?> attacksPerMember = default;
             Option<WarClan?> clan = default;
             Option<DateTime?> endTime = default;
             Option<WarClan?> opponent = default;
             Option<DateTime?> preparationStartTime = default;
             Option<DateTime?> startTime = default;
             Option<int?> teamSize = default;
+            Option<int?> attacksPerMember = default;
             Option<BattleModifier?> battleModifier = default;
             Option<WarState?> state = default;
 
@@ -308,9 +317,6 @@ namespace CocApi.Rest.Models
 
                     switch (localVarJsonPropertyName)
                     {
-                        case "attacksPerMember":
-                            attacksPerMember = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
-                            break;
                         case "clan":
                             clan = new Option<WarClan?>(JsonSerializer.Deserialize<WarClan>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
@@ -329,6 +335,9 @@ namespace CocApi.Rest.Models
                         case "teamSize":
                             teamSize = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
+                        case "attacksPerMember":
+                            attacksPerMember = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
+                            break;
                         case "battleModifier":
                             string? battleModifierRawValue = utf8JsonReader.GetString();
                             if (battleModifierRawValue != null)
@@ -344,9 +353,6 @@ namespace CocApi.Rest.Models
                     }
                 }
             }
-
-            if (!attacksPerMember.IsSet)
-                attacksPerMember = 1; // cwl war
 
             if (!clan.IsSet)
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(clan));
@@ -366,9 +372,6 @@ namespace CocApi.Rest.Models
             if (!teamSize.IsSet)
                 throw new ArgumentException("Property is required for class ClanWar.", nameof(teamSize));
 
-            if (attacksPerMember.IsSet && attacksPerMember.Value == null)
-                throw new ArgumentNullException(nameof(attacksPerMember), "Property is not nullable for class ClanWar.");
-
             if (clan.IsSet && clan.Value == null)
                 throw new ArgumentNullException(nameof(clan), "Property is not nullable for class ClanWar.");
 
@@ -387,13 +390,16 @@ namespace CocApi.Rest.Models
             if (teamSize.IsSet && teamSize.Value == null)
                 throw new ArgumentNullException(nameof(teamSize), "Property is not nullable for class ClanWar.");
 
+            if (attacksPerMember.IsSet && attacksPerMember.Value == null)
+                throw new ArgumentNullException(nameof(attacksPerMember), "Property is not nullable for class ClanWar.");
+
             // if (battleModifier.IsSet && battleModifier.Value == null)
             //     throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWar.");
 
             if (state.IsSet && state.Value == null)
                 throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanWar.");
 
-            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state);
+            return new ClanWar(clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, attacksPerMember, battleModifier, state);
         }
 
         /// <summary>
@@ -426,8 +432,6 @@ namespace CocApi.Rest.Models
             if (clanWar.Opponent == null)
                 throw new ArgumentNullException(nameof(clanWar.Opponent), "Property is required for class ClanWar.");
 
-            writer.WriteNumber("attacksPerMember", clanWar.AttacksPerMember);
-
             writer.WritePropertyName("clan");
             JsonSerializer.Serialize(writer, clanWar.Clan, jsonSerializerOptions);
             writer.WriteString("endTime", clanWar.EndTime.ToString(EndTimeFormat));
@@ -439,6 +443,9 @@ namespace CocApi.Rest.Models
             writer.WriteString("startTime", clanWar.StartTime.ToString(StartTimeFormat));
 
             writer.WriteNumber("teamSize", clanWar.TeamSize);
+
+            if (clanWar.AttacksPerMemberOption.IsSet)
+                writer.WriteNumber("attacksPerMember", clanWar.AttacksPerMemberOption.Value!.Value);
 
             if (clanWar.BattleModifierOption.IsSet)
             {
