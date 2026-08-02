@@ -30,23 +30,6 @@ $global = @(
     'modelTests=true'
 ) -join ","
 
-$clanWarProperties = @"
-    ClanWar:
-      type: object
-      properties:
-"@
-
-$clanWarPropertiesReplacement = @"
-    ClanWar:
-      type: object
-      properties:
-        # adding these for legacy reasons
-        warTag:
-            type: string
-            readOnly: true
-            nullable: true
-"@
-
 $clanWarRequiredProperies = @"
 required:
       - attacksPerMember
@@ -64,7 +47,6 @@ $output = Resolve-Path -Path "$PSScriptRoot\..\.."
 $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
 
 $rawYml = $(Get-Content -Path $yml) -join "`r`n"
-$rawYml = $rawYml.Replace($clanWarProperties, $clanWarPropertiesReplacement)
 $rawYml = $rawYml.Replace($clanWarRequiredProperies, $clanWarRequiredProperiesReplacement)
 
 # TODO: mark attacksPerMember as not required

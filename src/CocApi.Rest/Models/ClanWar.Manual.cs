@@ -37,6 +37,8 @@ namespace CocApi.Rest.Models
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
+        public string? WarTag { get; internal set; }
+
         public SortedDictionary<string, WarClan> Clans { get; private set; } = new SortedDictionary<string, WarClan>();
 
         public List<ClanWarAttack> Attacks { get; private set; } = new List<ClanWarAttack>();

@@ -41,9 +41,8 @@ namespace CocApi.Rest.Models
         /// <param name="teamSize">teamSize</param>
         /// <param name="battleModifier">battleModifier</param>
         /// <param name="state">state</param>
-        /// <param name="warTag">warTag</param>
         [JsonConstructor]
-        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default, Option<string?> warTag = default)
+        internal ClanWar(int attacksPerMember, WarClan clan, DateTime endTime, WarClan opponent, DateTime preparationStartTime, DateTime startTime, int teamSize, Option<BattleModifier?> battleModifier = default, Option<WarState?> state = default)
         {
             AttacksPerMember = attacksPerMember;
             Clan = clan;
@@ -54,7 +53,6 @@ namespace CocApi.Rest.Models
             TeamSize = teamSize;
             BattleModifierOption = battleModifier;
             StateOption = state;
-            WarTagOption = warTag;
             OnCreated();
         }
 
@@ -129,19 +127,6 @@ namespace CocApi.Rest.Models
         public int TeamSize { get; }
 
         /// <summary>
-        /// Used to track the state of WarTag
-        /// </summary>
-        [JsonIgnore]
-        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-        public Option<string?> WarTagOption { get; }
-
-        /// <summary>
-        /// Gets or Sets WarTag
-        /// </summary>
-        [JsonPropertyName("warTag")]
-        public string? WarTag { get { return this.WarTagOption.Value; } }
-
-        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -158,7 +143,6 @@ namespace CocApi.Rest.Models
             sb.Append("  TeamSize: ").Append(TeamSize).Append("\n");
             sb.Append("  BattleModifier: ").Append(BattleModifier).Append("\n");
             sb.Append("  State: ").Append(State).Append("\n");
-            sb.Append("  WarTag: ").Append(WarTag).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -221,11 +205,6 @@ namespace CocApi.Rest.Models
                 (
                     State == input.State ||
                     State.Equals(input.State)
-                ) && 
-                (
-                    WarTag == input.WarTag ||
-                    (WarTag != null &&
-                    WarTag.Equals(input.WarTag))
                 );
         }
 
@@ -250,9 +229,6 @@ namespace CocApi.Rest.Models
 
                 if (State != null)
                     hashCode = (hashCode * 59) + State.GetHashCode();
-
-                if (WarTag != null)
-                    hashCode = (hashCode * 59) + WarTag.GetHashCode();
 
 
                 return hashCode;
@@ -316,7 +292,6 @@ namespace CocApi.Rest.Models
             Option<int?> teamSize = default;
             Option<BattleModifier?> battleModifier = default;
             Option<WarState?> state = default;
-            Option<string?> warTag = default;
 
             while (utf8JsonReader.Read())
             {
@@ -363,9 +338,6 @@ namespace CocApi.Rest.Models
                             string? stateRawValue = utf8JsonReader.GetString();
                             if (stateRawValue != null)
                                 state = new Option<WarState?>(WarStateValueConverter.FromStringOrDefault(stateRawValue));
-                            break;
-                        case "warTag":
-                            warTag = new Option<string?>(utf8JsonReader.GetString());
                             break;
                         default:
                             break;
@@ -421,7 +393,7 @@ namespace CocApi.Rest.Models
             if (state.IsSet && state.Value == null)
                 throw new ArgumentNullException(nameof(state), "Property is not nullable for class ClanWar.");
 
-            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state, warTag);
+            return new ClanWar(attacksPerMember.Value!.Value!, clan.Value!, endTime.Value!.Value!, opponent.Value!, preparationStartTime.Value!.Value!, startTime.Value!.Value!, teamSize.Value!.Value!, battleModifier, state);
         }
 
         /// <summary>
@@ -478,11 +450,6 @@ namespace CocApi.Rest.Models
                 var stateRawValue = WarStateValueConverter.ToJsonValue(clanWar.State!.Value);
                 writer.WriteString("state", stateRawValue);
             }
-            if (clanWar.WarTagOption.IsSet)
-                if (clanWar.WarTagOption.Value != null)
-                    writer.WriteString("warTag", clanWar.WarTag);
-                else
-                    writer.WriteNull("warTag");
         }
     }
 }

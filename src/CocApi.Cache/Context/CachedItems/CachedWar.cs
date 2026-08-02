@@ -73,6 +73,18 @@ public class CachedWar : CachedItem<ClanWar>
         return !fetched.Content.Equals(stored.Content);
     }
 
+    public new ClanWar? Content
+    {
+        get
+        {
+            ClanWar? war = base.Content;
+            if (war != null)
+                war.WarTag ??= WarTag;
+            return war;
+        }
+        internal set { base.Content = value; }
+    }
+
     public string Key { get { return $"{Content.PreparationStartTime};{Content.Clan.Tag};{Content.Opponent.Tag}"; } }
 
     public int Id { get; internal set; }
