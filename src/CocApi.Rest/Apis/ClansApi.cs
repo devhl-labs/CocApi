@@ -3171,14 +3171,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClanWar? Ok()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClanWar) == typeof(Models.ClanWar) || typeof(ClanWar) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClanWar>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClanWar? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClanWar? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsOk
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClanWar>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnOk(ref bool suppressDefault, ref CocApi.Rest.Models.ClanWar? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
