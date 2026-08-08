@@ -117,7 +117,7 @@ public class CachedWar : CachedItem<ClanWar>
 
     public Announcements Announcements { get; internal set; }
 
-    public Rest.Models.WarType Type { get; internal set; }
+    public WarType Type { get; internal set; }
 
     public SortedSet<string> ClanTags { get; } = new();
 

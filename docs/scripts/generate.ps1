@@ -222,10 +222,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("Win = 3", "Win = 1,")
     }
 
-    if ($file.name -eq "WarType.cs"){
-        $content = $content.Replace("Sccwl", "SCCWL")
-    }
-
     if ($file.name -eq "ClanWarMember.cs"){
         $content = $content.Replace($mapPosition, "")
         $content = $content.Replace("MapPosition = mapPosition;", "RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#OnCreated")

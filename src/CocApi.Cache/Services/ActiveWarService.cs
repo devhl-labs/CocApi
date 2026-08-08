@@ -163,7 +163,7 @@ public sealed class ActiveWarService : ServiceBase<ActiveWarServiceOptions>
     {
         public CachedClanWar? CurrentWar { get; set; }
         public bool IsNewWar { get; set; }
-        public Rest.Models.WarType? NewWarType { get; set; }
+        public WarType? NewWarType { get; set; }
     }
 
     private static void ApplyBatch(List<(CachedClan Clan, ActiveWarFetch Result)> batch)

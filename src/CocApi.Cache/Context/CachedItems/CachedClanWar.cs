@@ -63,7 +63,7 @@ public class CachedClanWar : CachedItem<ClanWar>
 
     public DateTime? PreparationStartTime { get; internal set; }
 
-    public Rest.Models.WarType? Type { get; internal set; }
+    public WarType? Type { get; internal set; }
 
     public int CachedClanId { get; internal set; }
 

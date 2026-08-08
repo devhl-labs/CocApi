@@ -147,7 +147,7 @@ public sealed class ClanWarService : ServiceBase<ClanWarServiceOptions>
     {
         public CachedClanWar? CurrentWar { get; set; }
         public bool IsNewWar { get; set; }
-        public Rest.Models.WarType? NewWarType { get; set; }
+        public WarType? NewWarType { get; set; }
         public DateTime? ExtendedWarKeepUntil { get; set; }
     }
 

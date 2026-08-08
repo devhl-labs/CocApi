@@ -165,8 +165,6 @@ namespace CocApi.Rest.Client
                 return WarPreferenceValueConverter.ToJsonValue(warPreference);
             if (obj is WarState warState)
                 return WarStateValueConverter.ToJsonValue(warState);
-            if (obj is WarType warType)
-                return WarTypeValueConverter.ToJsonValue(warType);
             if (obj is ICollection collection)
             {
                 List<string?> entries = new();
