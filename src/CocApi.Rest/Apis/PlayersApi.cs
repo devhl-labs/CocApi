@@ -483,14 +483,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.Player? Ok()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(Player) == typeof(Models.ClanWar) || typeof(Player) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<Player>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.Player? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
             }
+
+            private CocApi.Rest.Models.Player? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsOk
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.Player>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnOk(ref bool suppressDefault, ref CocApi.Rest.Models.Player? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -524,14 +533,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? BadRequest()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnBadRequest(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultBadRequest();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultBadRequest()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsBadRequest
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnBadRequest(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest and the deserialized response is not null
@@ -565,14 +583,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? Forbidden()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsForbidden
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnForbidden(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
@@ -606,14 +633,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? NotFound()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnNotFound(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultNotFound();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultNotFound()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsNotFound
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnNotFound(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 404 NotFound and the deserialized response is not null
@@ -647,14 +683,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? TooManyRequests()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnTooManyRequests(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultTooManyRequests();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultTooManyRequests()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsTooManyRequests
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnTooManyRequests(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
@@ -688,14 +733,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? InternalServerError()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnInternalServerError(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultInternalServerError();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultInternalServerError()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsInternalServerError
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnInternalServerError(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
@@ -729,14 +783,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? ServiceUnavailable()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnServiceUnavailable(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultServiceUnavailable();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultServiceUnavailable()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsServiceUnavailable
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnServiceUnavailable(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
@@ -1005,14 +1068,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.VerifyTokenResponse? Ok()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(VerifyTokenResponse) == typeof(Models.ClanWar) || typeof(VerifyTokenResponse) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<VerifyTokenResponse>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.VerifyTokenResponse? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
             }
+
+            private CocApi.Rest.Models.VerifyTokenResponse? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsOk
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.VerifyTokenResponse>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnOk(ref bool suppressDefault, ref CocApi.Rest.Models.VerifyTokenResponse? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -1046,14 +1118,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? BadRequest()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnBadRequest(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultBadRequest();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultBadRequest()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsBadRequest
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnBadRequest(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest and the deserialized response is not null
@@ -1087,14 +1168,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? Forbidden()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsForbidden
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnForbidden(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
@@ -1128,14 +1218,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? NotFound()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnNotFound(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultNotFound();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultNotFound()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsNotFound
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnNotFound(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 404 NotFound and the deserialized response is not null
@@ -1169,14 +1268,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? TooManyRequests()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnTooManyRequests(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultTooManyRequests();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultTooManyRequests()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsTooManyRequests
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnTooManyRequests(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 429 TooManyRequests and the deserialized response is not null
@@ -1210,14 +1318,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? InternalServerError()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnInternalServerError(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultInternalServerError();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultInternalServerError()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsInternalServerError
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnInternalServerError(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 500 InternalServerError and the deserialized response is not null
@@ -1251,14 +1368,23 @@ namespace CocApi.Rest.Apis
             /// <returns></returns>
             public CocApi.Rest.Models.ClientError? ServiceUnavailable()
             {
-                // Modify this logic with the AsModel.mustache template
-                if ((typeof(ClientError) == typeof(Models.ClanWar) || typeof(ClientError) == typeof(Models.ClanWarLeagueGroup)) && RawContent.Contains("notInWar"))
-                    return default;
-
-                return IsSuccessStatusCode
-                    ? System.Text.Json.JsonSerializer.Deserialize<ClientError>(RawContent, _jsonSerializerOptions)
-                    : default;
+                bool suppressDefault = false;
+                CocApi.Rest.Models.ClientError? result = null;
+                OnServiceUnavailable(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultServiceUnavailable();
+                return result;
             }
+
+            private CocApi.Rest.Models.ClientError? DefaultServiceUnavailable()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
+                return IsServiceUnavailable
+                    ? System.Text.Json.JsonSerializer.Deserialize<CocApi.Rest.Models.ClientError>(RawContent, _jsonSerializerOptions)
+                    : null;
+            }
+
+            partial void OnServiceUnavailable(ref bool suppressDefault, ref CocApi.Rest.Models.ClientError? result);
 
             /// <summary>
             /// Returns true if the response is 503 ServiceUnavailable and the deserialized response is not null
