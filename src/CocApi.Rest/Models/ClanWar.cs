@@ -125,13 +125,13 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonIgnore]
         [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-        public Option<int?> AttacksPerMemberOption { get; }
+        public Option<int?> AttacksPerMemberOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets AttacksPerMember
         /// </summary>
         [JsonPropertyName("attacksPerMember")]
-        public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } internal set; }
+        public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } internal set { this.AttacksPerMemberOption = new(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object

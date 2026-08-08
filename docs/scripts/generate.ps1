@@ -51,7 +51,10 @@ java -jar $generator generate `
     --git-repo-id "CocApi" `
     --git-user-id "devhl-labs" `
     -t $templates.Path `
-    --release-note $releaseNote
+    --release-note $releaseNote `
+    --inject-model-vendor-extensions "ClanWar.clan.x-setter-visibility=private" `
+    --inject-model-vendor-extensions "ClanWar.opponent.x-setter-visibility=private" `
+    --inject-model-vendor-extensions "ClanWar.attacksPerMember.x-setter-visibility=internal"
 
 Remove-Item "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
@@ -226,12 +229,6 @@ foreach ($file in $allCodeFiles)
     if ($file.name -eq "ClanWarMember.cs"){
         $content = $content.Replace($mapPosition, "")
         $content = $content.Replace("MapPosition = mapPosition;", "RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#OnCreated")
-    }
-
-    if ($file.name -eq "ClanWar.cs"){
-        $content = $content.Replace("public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } }", "public int? AttacksPerMember { get { return this.AttacksPerMemberOption.Value; } internal set; }")
-        $content = $content.Replace("public WarClan Clan { get; }", "public WarClan Clan { get; private set; }")
-        $content = $content.Replace("public WarClan Opponent { get; }", "public WarClan Opponent { get; private set; }")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {
