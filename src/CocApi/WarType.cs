@@ -1,10 +1,9 @@
-namespace CocApi
+namespace CocApi;
+
+public enum WarType
 {
-    public enum WarType
-    {
-        Unknown,
-        Random,
-        Friendly,
-        SCCWL
-    }
+    Unknown,
+    Random,
+    Friendly,
+    SCCWL
 }
