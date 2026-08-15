@@ -55,55 +55,11 @@ java -jar $generator generate `
     --inject-model-vendor-extensions "ClanWar.clan.x-setter-visibility=private" `
     --inject-model-vendor-extensions "ClanWar.opponent.x-setter-visibility=private" `
     --inject-model-vendor-extensions "ClanWar.attacksPerMember.x-setter-visibility=internal" `
-    --inject-model-vendor-extensions "ClanWarMember.mapPosition.x-property-visibility=internal"
+    --inject-model-vendor-extensions "ClanWarMember.mapPosition.x-property-visibility=internal" `
+    --inject-model-vendor-extensions "Clan.memberList.x-property-visibility=internal" `
+    --inject-model-vendor-extensions "Clan.members.x-property-visibility=internal"
 
 Remove-Item "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
-
-$membersProperty = @"
-        /// <summary>
-        /// Gets or Sets MemberList
-        /// </summary>
-        [JsonPropertyName("memberList")]
-        public List<ClanMember> MemberList { get; }
-
-        /// <summary>
-        /// Gets or Sets Members
-        /// </summary>
-        [JsonPropertyName("members")]
-        public int Members { get; }
-
-
-"@
-
-$membersEquals = @"
-                (
-                    MemberList == input.MemberList ||
-                    MemberList != null &&
-                    input.MemberList != null &&
-                    MemberList.SequenceEqual(input.MemberList)
-                ) && 
-
-"@
-
-$membersConverter = @"
-                        case "members":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                members = utf8JsonReader.GetInt32();
-                            break;
-
-"@
-
-$membersNullCheck = @"
-            if (clan.MemberList == null)
-                throw new ArgumentNullException(nameof(clan.MemberList), "Property is required for class Clan.");
-
-"@
-
-$membersNullCheckReplacement = @"
-            if (clan.Members == null)
-                throw new ArgumentNullException(nameof(clan.Members), "Property is required for class Clan.");
-
-"@
 
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
@@ -172,27 +128,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace(".GetCapitalRaidSeasonsAsync", ".FetchCapitalRaidSeasonsAsync")
         $content = $content.Replace(".GetBuilderBaseLeague", ".FetchBuilderBaseLeague")
         $content = $content.Replace(".GetCapitalLeague", ".FetchCapitalLeague")
-    }
-
-    if ($file.name -eq "Clan.cs"){
-        $content = $content.Replace("/// <param name=`"memberList`">memberList</param>`r`n        ", "")
-        $content = $content.Replace("MemberList = memberList;`r`n            ", "")
-        $content = $content.Replace("List<ClanMember> memberList, int members", "List<ClanMember> members")
-        $content = $content.Replace($membersProperty, "")
-        $content = $content.Replace("hashCode = (hashCode * 59) + MemberList.GetHashCode();`r`n                ", "")
-        $content = $content.Replace($membersEquals, "")
-        $content = $content.Replace("sb.Append(`"  MemberList: `").Append(MemberList).Append(`"\n`");`r`n            ", '')
-        $content = $content.Replace($membersConverter, "")
-        $content = $content.Replace("int members = default;`r`n            ", '')
-        $content = $content.Replace("memberList.Value!, members.Value!.Value!,", "memberList,")
-
-        $content = $content.Replace("JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);", "JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);")
-        $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);`r`n            ", "")
-
-        $content = $content.Replace("if (members == null)", "if (memberList == null)")
-        $content = $content.Replace("ArgumentNullException(nameof(members)", "ArgumentNullException(nameof(memberList)")
-        $content = $content.Replace($membersNullCheck, $membersNullCheckReplacement)
-        $content = $content.Replace("writer.WriteNumber(`"members`", clan.Members);", "writer.WriteNumber(`"members`", clan.Members.Count);")
     }
 
     if ($file.name -eq "Role.cs"){

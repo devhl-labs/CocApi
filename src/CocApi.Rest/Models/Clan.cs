@@ -42,6 +42,7 @@ namespace CocApi.Rest.Models
         /// <param name="isFamilyFriendly">isFamilyFriendly</param>
         /// <param name="isWarLogPublic">isWarLogPublic</param>
         /// <param name="labels">labels</param>
+        /// <param name="memberList">memberList</param>
         /// <param name="members">members</param>
         /// <param name="name">name</param>
         /// <param name="requiredBuilderBaseTrophies">requiredBuilderBaseTrophies</param>
@@ -57,7 +58,7 @@ namespace CocApi.Rest.Models
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, int clanBuilderBasePoints, ClanCapital clanCapital, int clanLevel, int clanPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> members, string name, int requiredBuilderBaseTrophies, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Option<Language?> chatLanguage = default, Option<Location?> location = default, Option<RecruitingType?> type = default, Option<WarFrequency?> warFrequency = default, Option<int?> warLosses = default, Option<int?> warTies = default)
+        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, int clanBuilderBasePoints, ClanCapital clanCapital, int clanLevel, int clanPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredBuilderBaseTrophies, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Option<Language?> chatLanguage = default, Option<Location?> location = default, Option<RecruitingType?> type = default, Option<WarFrequency?> warFrequency = default, Option<int?> warLosses = default, Option<int?> warTies = default)
         {
             BadgeUrls = badgeUrls;
             CapitalLeague = capitalLeague;
@@ -69,6 +70,7 @@ namespace CocApi.Rest.Models
             IsFamilyFriendly = isFamilyFriendly;
             IsWarLogPublic = isWarLogPublic;
             Labels = labels;
+            MemberList = memberList;
             Members = members;
             Name = name;
             RequiredBuilderBaseTrophies = requiredBuilderBaseTrophies;
@@ -173,6 +175,18 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("labels")]
         public List<Label> Labels { get; }
+
+        /// <summary>
+        /// Gets or Sets MemberList
+        /// </summary>
+        [JsonPropertyName("memberList")]
+        internal List<ClanMember> MemberList { get; }
+
+        /// <summary>
+        /// Gets or Sets Members
+        /// </summary>
+        [JsonPropertyName("members")]
+        internal int Members { get; }
 
         /// <summary>
         /// Gets or Sets Name
@@ -286,6 +300,7 @@ namespace CocApi.Rest.Models
             sb.Append("  IsFamilyFriendly: ").Append(IsFamilyFriendly).Append("\n");
             sb.Append("  IsWarLogPublic: ").Append(IsWarLogPublic).Append("\n");
             sb.Append("  Labels: ").Append(Labels).Append("\n");
+            sb.Append("  MemberList: ").Append(MemberList).Append("\n");
             sb.Append("  Members: ").Append(Members).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
             sb.Append("  RequiredBuilderBaseTrophies: ").Append(RequiredBuilderBaseTrophies).Append("\n");
@@ -372,6 +387,12 @@ namespace CocApi.Rest.Models
                     Labels.SequenceEqual(input.Labels)
                 ) && 
                 (
+                    MemberList == input.MemberList ||
+                    MemberList != null &&
+                    input.MemberList != null &&
+                    MemberList.SequenceEqual(input.MemberList)
+                ) && 
+                (
                     Members == input.Members ||
                     Members.Equals(input.Members)
                 ) && 
@@ -453,6 +474,7 @@ namespace CocApi.Rest.Models
                 hashCode = (hashCode * 59) + IsFamilyFriendly.GetHashCode();
                 hashCode = (hashCode * 59) + IsWarLogPublic.GetHashCode();
                 hashCode = (hashCode * 59) + Labels.GetHashCode();
+                hashCode = (hashCode * 59) + MemberList.GetHashCode();
                 hashCode = (hashCode * 59) + Members.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
                 hashCode = (hashCode * 59) + RequiredBuilderBaseTrophies.GetHashCode();
@@ -734,7 +756,7 @@ namespace CocApi.Rest.Models
                 throw new ArgumentNullException(nameof(memberList), "Property is not nullable for class Clan.");
 
             if (members.IsSet && members.Value == null)
-                throw new ArgumentNullException(nameof(memberList), "Property is not nullable for class Clan.");
+                throw new ArgumentNullException(nameof(members), "Property is not nullable for class Clan.");
 
             if (name.IsSet && name.Value == null)
                 throw new ArgumentNullException(nameof(name), "Property is not nullable for class Clan.");
@@ -775,7 +797,7 @@ namespace CocApi.Rest.Models
             if (warTies.IsSet && warTies.Value == null)
                 throw new ArgumentNullException(nameof(warTies), "Property is not nullable for class Clan.");
 
-            return new Clan(badgeUrls.Value!, capitalLeague.Value!, clanBuilderBasePoints.Value!.Value!, clanCapital.Value!, clanLevel.Value!.Value!, clanPoints.Value!.Value!, description.Value!, isFamilyFriendly.Value!.Value!, isWarLogPublic.Value!.Value!, labels.Value!, memberList, name.Value!, requiredBuilderBaseTrophies.Value!.Value!, requiredTrophies.Value!.Value!, tag.Value!, warLeague.Value!, warWinStreak.Value!.Value!, warWins.Value!.Value!, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            return new Clan(badgeUrls.Value!, capitalLeague.Value!, clanBuilderBasePoints.Value!.Value!, clanCapital.Value!, clanLevel.Value!.Value!, clanPoints.Value!.Value!, description.Value!, isFamilyFriendly.Value!.Value!, isWarLogPublic.Value!.Value!, labels.Value!, memberList.Value!, members.Value!.Value!, name.Value!, requiredBuilderBaseTrophies.Value!.Value!, requiredTrophies.Value!.Value!, tag.Value!, warLeague.Value!, warWinStreak.Value!.Value!, warWins.Value!.Value!, chatLanguage, location, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>
@@ -817,8 +839,8 @@ namespace CocApi.Rest.Models
             if (clan.Labels == null)
                 throw new ArgumentNullException(nameof(clan.Labels), "Property is required for class Clan.");
 
-            if (clan.Members == null)
-                throw new ArgumentNullException(nameof(clan.Members), "Property is required for class Clan.");
+            if (clan.MemberList == null)
+                throw new ArgumentNullException(nameof(clan.MemberList), "Property is required for class Clan.");
 
             if (clan.Name == null)
                 throw new ArgumentNullException(nameof(clan.Name), "Property is required for class Clan.");
@@ -856,8 +878,8 @@ namespace CocApi.Rest.Models
             writer.WritePropertyName("labels");
             JsonSerializer.Serialize(writer, clan.Labels, jsonSerializerOptions);
             writer.WritePropertyName("memberList");
-            JsonSerializer.Serialize(writer, clan.Members, jsonSerializerOptions);
-            writer.WriteNumber("members", clan.Members.Count);
+            JsonSerializer.Serialize(writer, clan.MemberList, jsonSerializerOptions);
+            writer.WriteNumber("members", clan.Members);
 
             writer.WriteString("name", clan.Name);
 

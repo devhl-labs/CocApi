@@ -67,7 +67,7 @@ public sealed class MemberService : ServiceBase<MemberServiceOptions>
 
         HashSet<string> updatingTags = new();
 
-        foreach (var member in cachedClan.Content.Members)
+        foreach (var member in cachedClan.Content.ClanMembers)
             if (Synchronizer.VillageLock.TryAcquire(member.Tag))
                 updatingTags.Add(member.Tag);
 
@@ -82,7 +82,7 @@ public sealed class MemberService : ServiceBase<MemberServiceOptions>
 
             List<Task> allFetchTasks = new();
 
-            foreach (var member in cachedClan.Content.Members)
+            foreach (var member in cachedClan.Content.ClanMembers)
             {
                 CachedPlayer? cachedPlayer = cachedPlayers.FirstOrDefault(p => p.Tag == member.Tag);
 
@@ -103,7 +103,7 @@ public sealed class MemberService : ServiceBase<MemberServiceOptions>
                 }
             }
 
-            foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.Members.Any(m => m.Tag == p.Tag)))
+            foreach (var player in cachedPlayers.Where(p => p.ClanTag == cachedClan.Tag && !cachedClan.Content.ClanMembers.Any(m => m.Tag == p.Tag)))
                 player.ClanTag = null;
 
             _ = Task.WhenAll(allFetchTasks).ContinueWith(_ => channel.Writer.Complete(), TaskScheduler.Default);
@@ -148,7 +148,7 @@ public sealed class MemberService : ServiceBase<MemberServiceOptions>
             }
 
             return new CycleCounters(
-                cachedClan.Content.Members.Count,
+                cachedClan.Content.ClanMembers.Count,
                 updatingTags.Count,
                 0,
                 0);

@@ -10,6 +10,9 @@ namespace CocApi.Rest.Models
         [JsonIgnore]
         public string ClanProfileUrl => Clash.ClanProfileUrl(Tag);
 
+        [JsonIgnore]
+        public List<ClanMember> ClanMembers => MemberList;
+
         public static string Url(string clanTag)
         {
             if (Clash.TryFormatTag(clanTag, out string? formattedTag) == false)
@@ -22,9 +25,9 @@ namespace CocApi.Rest.Models
         {
             List<Donation> results = new();
 
-            foreach (ClanMember storedMember in stored.Members)
+            foreach (ClanMember storedMember in stored.ClanMembers)
             {
-                ClanMember? fetchedMember = fetched.Members.FirstOrDefault(m => m.Tag == storedMember.Tag);
+                ClanMember? fetchedMember = fetched.ClanMembers.FirstOrDefault(m => m.Tag == storedMember.Tag);
 
                 if (fetchedMember == null)
                     continue;
@@ -41,9 +44,9 @@ namespace CocApi.Rest.Models
         {
             List<Donation> results = new();
 
-            foreach (ClanMember storedMember in stored.Members)
+            foreach (ClanMember storedMember in stored.ClanMembers)
             {
-                ClanMember? fetchedMember = fetched.Members.FirstOrDefault(m => m.Tag == storedMember.Tag);
+                ClanMember? fetchedMember = fetched.ClanMembers.FirstOrDefault(m => m.Tag == storedMember.Tag);
 
                 if (fetchedMember == null)
                     continue;
@@ -60,9 +63,9 @@ namespace CocApi.Rest.Models
         {
             List<ClanMember> results = new();
 
-            foreach (ClanMember storedMember in stored.Members.EmptyIfNull())
+            foreach (ClanMember storedMember in stored.ClanMembers.EmptyIfNull())
             {
-                ClanMember? fetchedMember = fetched.Members.FirstOrDefault(m => m.Tag == storedMember.Tag);
+                ClanMember? fetchedMember = fetched.ClanMembers.FirstOrDefault(m => m.Tag == storedMember.Tag);
 
                 if (fetchedMember == null)
                     results.Add(storedMember);
@@ -77,9 +80,9 @@ namespace CocApi.Rest.Models
         {
             List<ClanMember> results = new();
 
-            foreach (ClanMember fetchedMember in fetched.Members.EmptyIfNull())
+            foreach (ClanMember fetchedMember in fetched.ClanMembers.EmptyIfNull())
             {
-                ClanMember? storedMember = stored.Members.FirstOrDefault(m => m.Tag == fetchedMember.Tag);
+                ClanMember? storedMember = stored.ClanMembers.FirstOrDefault(m => m.Tag == fetchedMember.Tag);
 
                 if (storedMember == null)
                     results.Add(fetchedMember);
@@ -90,10 +93,5 @@ namespace CocApi.Rest.Models
 
         public List<ClanMember> ClanMembersJoined(Clan fetched) => ClanMembersJoined(this, fetched);
 
-        /// <summary>
-        /// Gets or Sets MemberList
-        /// </summary>
-        [JsonPropertyName("memberList")]
-        public List<ClanMember> Members { get; }
     }
 }
