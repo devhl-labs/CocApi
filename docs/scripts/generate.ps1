@@ -54,7 +54,8 @@ java -jar $generator generate `
     --release-note $releaseNote `
     --inject-model-vendor-extensions "ClanWar.clan.x-setter-visibility=private" `
     --inject-model-vendor-extensions "ClanWar.opponent.x-setter-visibility=private" `
-    --inject-model-vendor-extensions "ClanWar.attacksPerMember.x-setter-visibility=internal"
+    --inject-model-vendor-extensions "ClanWar.attacksPerMember.x-setter-visibility=internal" `
+    --inject-model-vendor-extensions "ClanWarMember.mapPosition.x-property-visibility=internal"
 
 Remove-Item "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
@@ -81,16 +82,6 @@ $membersEquals = @"
                     input.MemberList != null &&
                     MemberList.SequenceEqual(input.MemberList)
                 ) && 
-
-"@
-
-$mapPosition = @"
-        /// <summary>
-        /// Gets or Sets MapPosition
-        /// </summary>
-        [JsonPropertyName("mapPosition")]
-        public int MapPosition { get; }
-
 
 "@
 
@@ -220,11 +211,6 @@ foreach ($file in $allCodeFiles)
         $content = $content.Replace("Lose = 1,", "Lose = -1,")
         $content = $content.Replace("Tie = 2,", "Tie = 0,")
         $content = $content.Replace("Win = 3", "Win = 1,")
-    }
-
-    if ($file.name -eq "ClanWarMember.cs"){
-        $content = $content.Replace($mapPosition, "")
-        $content = $content.Replace("MapPosition = mapPosition;", "RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#OnCreated")
     }
 
     if (-Not([string]::IsNullOrWhiteSpace($content)) -and ($originalContent -cne $content)) {

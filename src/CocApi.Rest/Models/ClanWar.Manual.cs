@@ -130,13 +130,13 @@ namespace CocApi.Rest.Models
                     }
 
                     debug = "h";
-                    int mapPosition = 1;
+                    int warPosition = 1;
 
                     foreach (ClanWarMember member in warClan.Members.OrderBy(m => m.RosterPosition))
                     {
                         debug = "i";
-                        member.MapPosition = mapPosition;
-                        mapPosition++;
+                        member.WarPosition = warPosition;
+                        warPosition++;
 
                         foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
                         {

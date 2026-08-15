@@ -42,7 +42,7 @@ namespace CocApi.Rest.Models
         [JsonConstructor]
         internal ClanWarMember(int mapPosition, string name, int opponentAttacks, string tag, int townhallLevel, Option<List<ClanWarAttack>?> attacks = default, Option<ClanWarAttack?> bestOpponentAttack = default)
         {
-            RosterPosition = mapPosition; // this is intentional. The MapPosition will be caculated in ClanWar#OnCreated
+            MapPosition = mapPosition;
             Name = name;
             OpponentAttacks = opponentAttacks;
             Tag = tag;
@@ -53,6 +53,12 @@ namespace CocApi.Rest.Models
         }
 
         partial void OnCreated();
+
+        /// <summary>
+        /// Gets or Sets MapPosition
+        /// </summary>
+        [JsonPropertyName("mapPosition")]
+        internal int MapPosition { get; }
 
         /// <summary>
         /// Gets or Sets Name
