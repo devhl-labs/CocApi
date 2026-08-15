@@ -7,6 +7,7 @@ namespace CocApi.Rest.Models
 {
     public partial class Clan
     {
+        [JsonIgnore]
         public string ClanProfileUrl => Clash.ClanProfileUrl(Tag);
 
         public static string Url(string clanTag)

@@ -6,6 +6,7 @@ namespace CocApi.Rest.Models
     public partial class Player
     {
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public string PlayerProfileUrl => Clash.PlayerProfileUrl(Tag);
 
         public static string Url(string villageTag)

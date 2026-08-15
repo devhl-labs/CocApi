@@ -38,8 +38,10 @@ namespace CocApi.Rest.Models
 
         public string? WarTag { get; internal set; }
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public SortedDictionary<string, WarClan> Clans { get; private set; } = new SortedDictionary<string, WarClan>();
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public List<ClanWarAttack> Attacks { get; private set; } = new List<ClanWarAttack>();
 
         public static List<ClanWarAttack> NewAttacks(ClanWar stored, ClanWar fetched)

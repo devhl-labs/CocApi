@@ -6,8 +6,10 @@ namespace CocApi.Rest.Models
 {
     public partial class ClanWarLogEntry
     {
+        [System.Text.Json.Serialization.JsonIgnore]
         public SortedDictionary<string, WarClanLogEntry> Clans { get; private set; } = new SortedDictionary<string, WarClanLogEntry>();
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public WarType WarType
         {
             get
