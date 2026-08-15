@@ -30,19 +30,14 @@ $global = @(
     'modelTests=true'
 ) -join ","
 
-
 $generator = Resolve-Path -Path "$PSScriptRoot\..\..\..\openapi-generator\modules\openapi-generator-cli\target\openapi-generator-cli.jar"
 $yml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0.yml"
 $output = Resolve-Path -Path "$PSScriptRoot\..\.."
 $templates = Resolve-Path -Path "$PSScriptRoot\..\templates"
-$rawYml = $(Get-Content -Path $yml) -join "`r`n"
-
-Set-Content "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml" $rawYml
-$appendedPropertiesYaml = Resolve-Path -Path "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
 java -jar $generator generate `
     -g csharp `
-    -i $appendedPropertiesYaml `
+    -i $yml `
     -o $($output.Path) `
     --library generichost `
     --additional-properties $properties `
@@ -58,8 +53,6 @@ java -jar $generator generate `
     --inject-model-vendor-extensions "ClanWarMember.mapPosition.x-property-visibility=internal" `
     --inject-model-vendor-extensions "Clan.memberList.x-property-visibility=internal" `
     --inject-model-vendor-extensions "Clan.members.x-property-visibility=internal"
-
-Remove-Item "$PSScriptRoot\..\..\..\Clash-of-Clans-Swagger\swagger-3.0-appended-properties.yml"
 
 $restPath = Resolve-Path -Path "$output\src\CocApi.Rest"
 $testPath = Resolve-Path -Path "$output\src\CocApi.Rest.Test"
