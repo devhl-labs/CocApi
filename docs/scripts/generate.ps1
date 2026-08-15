@@ -64,39 +64,17 @@ $testFiles = $(Get-ChildItem -Path $testPath -Recurse)
 $apiDocFiles = $(Get-ChildItem -Path $apiDocPath -Recurse)
 $modelDocfiles = $(Get-ChildItem -Path $modelDocPath -Recurse)
 
-$allDocFiles = $($apiDocFiles + $modelDocFiles) |
-    Where-Object {
-        -Not($_.PSIsContainer) -and (
-            $_.FullName -match ".md" -or
-            $_.FullName -match "")}
-
-$allCodeFiles = $($restFiles + $testFiles) |
-    Where-Object {
+$allFiles = @(
+    ($apiDocFiles + $modelDocFiles) | Where-Object { -Not($_.PSIsContainer) }
+    ($restFiles + $testFiles) | Where-Object {
         -Not($_.PSIsContainer) -and (
             $_.FullName.EndsWith(".cs") -or
             $_.FullName.EndsWith(".json") -or
             $_.FullName.EndsWith(".txt") -or
             $_.FullName.EndsWith(".csproj"))}
+)
 
-foreach ($file in $allDocFiles)
-{
-    $rawContent = $(Get-Content -Path $file.FullName)
-    $originalContent = $rawContent -join "`n"
-    $content = $rawContent -join "`r`n"
-
-    if ($originalContent -cne $content){
-        try {
-            Set-Content $file.FullName $content -ErrorAction Stop
-        }
-        catch {
-            Write-Warning "Failed saving file $($file.FullName). Trying again in two seconds."
-            Start-Sleep -Seconds 2
-            Set-Content $file.FullName $content
-        }
-    }
-}
-
-foreach ($file in $allCodeFiles)
+foreach ($file in $allFiles)
 {
     $rawContent = $(Get-Content -Path $file.FullName)
     $originalContent = $rawContent -join "`n"
