@@ -1,4 +1,4 @@
-$packageVersion = "3.0.0-rc20260719"
+$packageVersion = "3.0.0-rc20260815"
 $releaseNote = "Migrate to .net10"
 
 $properties = @(
