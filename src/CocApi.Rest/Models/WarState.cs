@@ -176,6 +176,9 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public override WarState? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
             string? rawValue = reader.GetString();
 
             WarState? result = rawValue == null
@@ -196,7 +199,10 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarState? warState, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warState.HasValue ? WarStateValueConverter.ToJsonValue(warState.Value).ToString() : "null");
+            if (warState.HasValue)
+                writer.WriteStringValue(WarStateValueConverter.ToJsonValue(warState.Value).ToString());
+            else
+                writer.WriteNullValue();
         }
     }
 }

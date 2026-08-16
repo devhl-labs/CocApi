@@ -226,9 +226,7 @@ namespace CocApi.Rest.Models
                             season = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "state":
-                            string? stateRawValue = utf8JsonReader.GetString();
-                            if (stateRawValue != null)
-                                state = new Option<GroupState?>(GroupStateValueConverter.FromStringOrDefault(stateRawValue));
+                            state = new Option<GroupState?>(JsonSerializer.Deserialize<GroupState?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

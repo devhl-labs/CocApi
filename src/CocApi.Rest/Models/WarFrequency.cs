@@ -218,6 +218,9 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public override WarFrequency? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
             string? rawValue = reader.GetString();
 
             WarFrequency? result = rawValue == null
@@ -238,7 +241,10 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, WarFrequency? warFrequency, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(warFrequency.HasValue ? WarFrequencyValueConverter.ToJsonValue(warFrequency.Value).ToString() : "null");
+            if (warFrequency.HasValue)
+                writer.WriteStringValue(WarFrequencyValueConverter.ToJsonValue(warFrequency.Value).ToString());
+            else
+                writer.WriteNullValue();
         }
     }
 }

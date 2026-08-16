@@ -454,9 +454,7 @@ namespace CocApi.Rest.Models
                             playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "role":
-                            string? roleRawValue = utf8JsonReader.GetString();
-                            if (roleRawValue != null)
-                                role = new Option<Role?>(RoleValueConverter.FromStringOrDefault(roleRawValue));
+                            role = new Option<Role?>(JsonSerializer.Deserialize<Role?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "townHallLevel":
                             townHallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());

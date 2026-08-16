@@ -162,6 +162,9 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public override VillageType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
             string? rawValue = reader.GetString();
 
             VillageType? result = rawValue == null
@@ -182,7 +185,10 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, VillageType? villageType, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(villageType.HasValue ? VillageTypeValueConverter.ToJsonValue(villageType.Value).ToString() : "null");
+            if (villageType.HasValue)
+                writer.WriteStringValue(VillageTypeValueConverter.ToJsonValue(villageType.Value).ToString());
+            else
+                writer.WriteNullValue();
         }
     }
 }

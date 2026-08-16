@@ -250,9 +250,7 @@ namespace CocApi.Rest.Models
                             name = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "village":
-                            string? villageRawValue = utf8JsonReader.GetString();
-                            if (villageRawValue != null)
-                                village = new Option<VillageType?>(VillageTypeValueConverter.FromStringOrDefault(villageRawValue));
+                            village = new Option<VillageType?>(JsonSerializer.Deserialize<VillageType?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "equipment":
                             equipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);

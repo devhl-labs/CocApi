@@ -162,6 +162,9 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public override RecruitingType? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
             string? rawValue = reader.GetString();
 
             RecruitingType? result = rawValue == null
@@ -182,7 +185,10 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, RecruitingType? recruitingType, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(recruitingType.HasValue ? RecruitingTypeValueConverter.ToJsonValue(recruitingType.Value).ToString() : "null");
+            if (recruitingType.HasValue)
+                writer.WriteStringValue(RecruitingTypeValueConverter.ToJsonValue(recruitingType.Value).ToString());
+            else
+                writer.WriteNullValue();
         }
     }
 }

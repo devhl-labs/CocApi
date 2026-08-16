@@ -293,14 +293,10 @@ namespace CocApi.Rest.Models
                             attacksPerMember = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "battleModifier":
-                            string? battleModifierRawValue = utf8JsonReader.GetString();
-                            if (battleModifierRawValue != null)
-                                battleModifier = new Option<BattleModifier?>(BattleModifierValueConverter.FromStringOrDefault(battleModifierRawValue));
+                            battleModifier = new Option<BattleModifier?>(JsonSerializer.Deserialize<BattleModifier?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "result":
-                            string? resultRawValue = utf8JsonReader.GetString();
-                            if (resultRawValue != null)
-                                result = new Option<Result?>(ResultValueConverter.FromStringOrDefault(resultRawValue));
+                            result = new Option<Result?>(JsonSerializer.Deserialize<Result?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;
@@ -334,12 +330,6 @@ namespace CocApi.Rest.Models
 
             if (attacksPerMember.IsSet && attacksPerMember.Value == null)
                 throw new ArgumentNullException(nameof(attacksPerMember), "Property is not nullable for class ClanWarLogEntry.");
-
-            // if (battleModifier.IsSet && battleModifier.Value == null)
-            //     throw new ArgumentNullException(nameof(battleModifier), "Property is not nullable for class ClanWarLogEntry.");
-
-            if (result.IsSet && result.Value == null)
-                throw new ArgumentNullException(nameof(result), "Property is not nullable for class ClanWarLogEntry.");
 
             return new ClanWarLogEntry(clan.Value!, endTime.Value!.Value!, opponent.Value!, teamSize.Value!.Value!, attacksPerMember, battleModifier, result);
         }
@@ -386,15 +376,21 @@ namespace CocApi.Rest.Models
                 writer.WriteNumber("attacksPerMember", clanWarLogEntry.AttacksPerMemberOption.Value!.Value);
 
             if (clanWarLogEntry.BattleModifierOption.IsSet)
-            {
-                var battleModifierRawValue = BattleModifierValueConverter.ToJsonValue(clanWarLogEntry.BattleModifier!.Value);
-                writer.WriteString("battleModifier", battleModifierRawValue);
-            }
+                if (clanWarLogEntry.BattleModifierOption!.Value != null)
+                {
+                    var battleModifierRawValue = BattleModifierValueConverter.ToJsonValue(clanWarLogEntry.BattleModifierOption.Value!.Value);
+                    writer.WriteString("battleModifier", battleModifierRawValue);
+                }
+                else
+                    writer.WriteNull("battleModifier");
             if (clanWarLogEntry.ResultOption.IsSet)
-            {
-                var resultRawValue = ResultValueConverter.ToJsonValue(clanWarLogEntry.Result!.Value);
-                writer.WriteString("result", resultRawValue);
-            }
+                if (clanWarLogEntry.ResultOption!.Value != null)
+                {
+                    var resultRawValue = ResultValueConverter.ToJsonValue(clanWarLogEntry.ResultOption.Value!.Value);
+                    writer.WriteString("result", resultRawValue);
+                }
+                else
+                    writer.WriteNull("result");
         }
     }
 }

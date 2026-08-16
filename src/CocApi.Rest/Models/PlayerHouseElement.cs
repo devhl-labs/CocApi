@@ -296,7 +296,12 @@ namespace CocApi.Rest.Models
                         case "type":
                             string? typeRawValue = utf8JsonReader.GetString();
                             if (typeRawValue != null)
-                                type = new Option<PlayerHouseElement.TypeEnum?>(PlayerHouseElement.TypeEnumFromStringOrDefault(typeRawValue));
+                            {
+                                PlayerHouseElement.TypeEnum? typeValue = PlayerHouseElement.TypeEnumFromStringOrDefault(typeRawValue);
+                                if (typeValue == null)
+                                    throw new JsonException();
+                                type = new Option<PlayerHouseElement.TypeEnum?>(typeValue);
+                            }
                             break;
                         default:
                             break;

@@ -453,7 +453,12 @@ namespace CocApi.Rest.Models
                         case "state":
                             string? stateRawValue = utf8JsonReader.GetString();
                             if (stateRawValue != null)
-                                state = new Option<ClanCapitalRaidSeason.StateEnum?>(ClanCapitalRaidSeason.StateEnumFromStringOrDefault(stateRawValue));
+                            {
+                                ClanCapitalRaidSeason.StateEnum? stateValue = ClanCapitalRaidSeason.StateEnumFromStringOrDefault(stateRawValue);
+                                if (stateValue == null)
+                                    throw new JsonException();
+                                state = new Option<ClanCapitalRaidSeason.StateEnum?>(stateValue);
+                            }
                             break;
                         case "totalAttacks":
                             totalAttacks = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());

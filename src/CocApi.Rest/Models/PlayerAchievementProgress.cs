@@ -264,9 +264,7 @@ namespace CocApi.Rest.Models
                             value = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "village":
-                            string? villageRawValue = utf8JsonReader.GetString();
-                            if (villageRawValue != null)
-                                village = new Option<VillageType?>(VillageTypeValueConverter.FromStringOrDefault(villageRawValue));
+                            village = new Option<VillageType?>(JsonSerializer.Deserialize<VillageType?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "completionInfo":
                             completionInfo = new Option<string?>(utf8JsonReader.GetString());

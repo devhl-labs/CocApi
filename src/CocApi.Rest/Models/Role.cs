@@ -176,6 +176,9 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public override Role? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
             string? rawValue = reader.GetString();
 
             Role? result = rawValue == null
@@ -196,7 +199,10 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, Role? role, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(role.HasValue ? RoleValueConverter.ToJsonValue(role.Value).ToString() : "null");
+            if (role.HasValue)
+                writer.WriteStringValue(RoleValueConverter.ToJsonValue(role.Value).ToString());
+            else
+                writer.WriteNullValue();
         }
     }
 }

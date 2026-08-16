@@ -780,17 +780,13 @@ namespace CocApi.Rest.Models
                             playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "role":
-                            string? roleRawValue = utf8JsonReader.GetString();
-                            if (roleRawValue != null)
-                                role = new Option<Role?>(RoleValueConverter.FromStringOrDefault(roleRawValue));
+                            role = new Option<Role?>(JsonSerializer.Deserialize<Role?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "townHallWeaponLevel":
                             townHallWeaponLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "warPreference":
-                            string? warPreferenceRawValue = utf8JsonReader.GetString();
-                            if (warPreferenceRawValue != null)
-                                warPreference = new Option<WarPreference?>(WarPreferenceValueConverter.FromStringOrDefault(warPreferenceRawValue));
+                            warPreference = new Option<WarPreference?>(JsonSerializer.Deserialize<WarPreference?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

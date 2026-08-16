@@ -162,6 +162,9 @@ namespace CocApi.Rest.Models
         /// <returns></returns>
         public override GroupState? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.Null)
+                return null;
+
             string? rawValue = reader.GetString();
 
             GroupState? result = rawValue == null
@@ -182,7 +185,10 @@ namespace CocApi.Rest.Models
         /// <param name="options"></param>
         public override void Write(Utf8JsonWriter writer, GroupState? groupState, JsonSerializerOptions options)
         {
-            writer.WriteStringValue(groupState.HasValue ? GroupStateValueConverter.ToJsonValue(groupState.Value).ToString() : "null");
+            if (groupState.HasValue)
+                writer.WriteStringValue(GroupStateValueConverter.ToJsonValue(groupState.Value).ToString());
+            else
+                writer.WriteNullValue();
         }
     }
 }

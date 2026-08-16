@@ -531,14 +531,10 @@ namespace CocApi.Rest.Models
                             location = new Option<Location?>(JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "type":
-                            string? typeRawValue = utf8JsonReader.GetString();
-                            if (typeRawValue != null)
-                                type = new Option<RecruitingType?>(RecruitingTypeValueConverter.FromStringOrDefault(typeRawValue));
+                            type = new Option<RecruitingType?>(JsonSerializer.Deserialize<RecruitingType?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "warFrequency":
-                            string? warFrequencyRawValue = utf8JsonReader.GetString();
-                            if (warFrequencyRawValue != null)
-                                warFrequency = new Option<WarFrequency?>(WarFrequencyValueConverter.FromStringOrDefault(warFrequencyRawValue));
+                            warFrequency = new Option<WarFrequency?>(JsonSerializer.Deserialize<WarFrequency?>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "warLosses":
                             warLosses = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
