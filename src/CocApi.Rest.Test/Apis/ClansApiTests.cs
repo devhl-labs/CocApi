@@ -62,7 +62,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchCapitalRaidSeasonsAsync(clanTag, limit, after, before);
             var model = response.Ok();
-            Assert.IsType<ClanCapitalRaidSeasons>(model);
+            Assert.IsType<CocApi.Rest.Models.ClanCapitalRaidSeasons>(model);
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace CocApi.Rest.Test.Apis
             string clanTag = default!;
             var response = await _instance.FetchClanAsync(clanTag);
             var model = response.Ok();
-            Assert.IsType<Clan>(model);
+            Assert.IsType<CocApi.Rest.Models.Clan>(model);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<bool> realtime = default!;
             var response = await _instance.FetchClanWarLeagueGroupAsync(clanTag, realtime);
             var model = response.Ok();
-            Assert.IsType<ClanWarLeagueGroup>(model);
+            Assert.IsType<CocApi.Rest.Models.ClanWarLeagueGroup>(model);
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<bool> realtime = default!;
             var response = await _instance.FetchClanWarLeagueWarAsync(warTag, realtime);
             var model = response.Ok();
-            Assert.IsType<ClanWar>(model);
+            Assert.IsType<CocApi.Rest.Models.ClanWar>(model);
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchClanWarLogAsync(clanTag, limit, after, before);
             var model = response.Ok();
-            Assert.IsType<ClanWarLog>(model);
+            Assert.IsType<CocApi.Rest.Models.ClanWarLog>(model);
         }
 
         /// <summary>
@@ -143,7 +143,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<bool> realtime = default!;
             var response = await _instance.FetchCurrentWarAsync(clanTag, realtime);
             var model = response.Ok();
-            Assert.IsType<ClanWar>(model);
+            Assert.IsType<CocApi.Rest.Models.ClanWar>(model);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> labelIds = default!;
             var response = await _instance.SearchClansAsync(locationId, minMembers, maxMembers, minClanPoints, minClanLevel, limit, name, warFrequency, after, before, labelIds);
             var model = response.Ok();
-            Assert.IsType<ClanList>(model);
+            Assert.IsType<CocApi.Rest.Models.ClanList>(model);
         }
     }
 }

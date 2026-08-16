@@ -54,15 +54,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Order'
-        /// </summary>
-        [Fact]
-        public void OrderTest()
-        {
-            // TODO unit test for the property 'Order'
-        }
-
-        /// <summary>
         /// Test the property 'AttackerTag'
         /// </summary>
         [Fact]
@@ -81,21 +72,30 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Stars'
-        /// </summary>
-        [Fact]
-        public void StarsTest()
-        {
-            // TODO unit test for the property 'Stars'
-        }
-
-        /// <summary>
         /// Test the property 'DestructionPercentage'
         /// </summary>
         [Fact]
         public void DestructionPercentageTest()
         {
             // TODO unit test for the property 'DestructionPercentage'
+        }
+
+        /// <summary>
+        /// Test the property 'Order'
+        /// </summary>
+        [Fact]
+        public void OrderTest()
+        {
+            // TODO unit test for the property 'Order'
+        }
+
+        /// <summary>
+        /// Test the property 'Stars'
+        /// </summary>
+        [Fact]
+        public void StarsTest()
+        {
+            // TODO unit test for the property 'Stars'
         }
 
         /// <summary>

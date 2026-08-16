@@ -59,7 +59,7 @@ namespace CocApi.Rest.Test.Apis
             string playerTag = default!;
             var response = await _instance.FetchPlayerAsync(playerTag);
             var model = response.Ok();
-            Assert.IsType<Player>(model);
+            Assert.IsType<CocApi.Rest.Models.Player>(model);
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace CocApi.Rest.Test.Apis
             string playerTag = default!;
             var response = await _instance.VerifyTokenAsync(body, playerTag);
             var model = response.Ok();
-            Assert.IsType<VerifyTokenResponse>(model);
+            Assert.IsType<CocApi.Rest.Models.VerifyTokenResponse>(model);
         }
     }
 }

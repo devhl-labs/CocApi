@@ -54,30 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'DestructionPercentage'
+        /// Test the property 'Attacks'
         /// </summary>
         [Fact]
-        public void DestructionPercentageTest()
+        public void AttacksTest()
         {
-            // TODO unit test for the property 'DestructionPercentage'
-        }
-
-        /// <summary>
-        /// Test the property 'Tag'
-        /// </summary>
-        [Fact]
-        public void TagTest()
-        {
-            // TODO unit test for the property 'Tag'
-        }
-
-        /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
+            // TODO unit test for the property 'Attacks'
         }
 
         /// <summary>
@@ -99,12 +81,30 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Attacks'
+        /// Test the property 'DestructionPercentage'
         /// </summary>
         [Fact]
-        public void AttacksTest()
+        public void DestructionPercentageTest()
         {
-            // TODO unit test for the property 'Attacks'
+            // TODO unit test for the property 'DestructionPercentage'
+        }
+
+        /// <summary>
+        /// Test the property 'Members'
+        /// </summary>
+        [Fact]
+        public void MembersTest()
+        {
+            // TODO unit test for the property 'Members'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
         }
 
         /// <summary>
@@ -117,12 +117,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Members'
+        /// Test the property 'Tag'
         /// </summary>
         [Fact]
-        public void MembersTest()
+        public void TagTest()
         {
-            // TODO unit test for the property 'Members'
+            // TODO unit test for the property 'Tag'
         }
 
         /// <summary>

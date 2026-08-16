@@ -54,48 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Id'
+        /// Test the property 'CidrRanges'
         /// </summary>
         [Fact]
-        public void IdTest()
+        public void CidrRangesTest()
         {
-            // TODO unit test for the property 'Id'
-        }
-
-        /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
-        /// Test the property 'VarKey'
-        /// </summary>
-        [Fact]
-        public void VarKeyTest()
-        {
-            // TODO unit test for the property 'VarKey'
-        }
-
-        /// <summary>
-        /// Test the property 'DeveloperId'
-        /// </summary>
-        [Fact]
-        public void DeveloperIdTest()
-        {
-            // TODO unit test for the property 'DeveloperId'
-        }
-
-        /// <summary>
-        /// Test the property 'Tier'
-        /// </summary>
-        [Fact]
-        public void TierTest()
-        {
-            // TODO unit test for the property 'Tier'
+            // TODO unit test for the property 'CidrRanges'
         }
 
         /// <summary>
@@ -108,6 +72,42 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'DeveloperId'
+        /// </summary>
+        [Fact]
+        public void DeveloperIdTest()
+        {
+            // TODO unit test for the property 'DeveloperId'
+        }
+
+        /// <summary>
+        /// Test the property 'Id'
+        /// </summary>
+        [Fact]
+        public void IdTest()
+        {
+            // TODO unit test for the property 'Id'
+        }
+
+        /// <summary>
+        /// Test the property 'VarKey'
+        /// </summary>
+        [Fact]
+        public void VarKeyTest()
+        {
+            // TODO unit test for the property 'VarKey'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
+        }
+
+        /// <summary>
         /// Test the property 'Scopes'
         /// </summary>
         [Fact]
@@ -117,12 +117,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'CidrRanges'
+        /// Test the property 'Tier'
         /// </summary>
         [Fact]
-        public void CidrRangesTest()
+        public void TierTest()
         {
-            // TODO unit test for the property 'CidrRanges'
+            // TODO unit test for the property 'Tier'
         }
 
         /// <summary>

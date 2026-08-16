@@ -54,6 +54,15 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'Achievements'
+        /// </summary>
+        [Fact]
+        public void AchievementsTest()
+        {
+            // TODO unit test for the property 'Achievements'
+        }
+
+        /// <summary>
         /// Test the property 'AttackWins'
         /// </summary>
         [Fact]
@@ -63,102 +72,30 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'DefenseWins'
-        /// </summary>
-        [Fact]
-        public void DefenseWinsTest()
-        {
-            // TODO unit test for the property 'DefenseWins'
-        }
-
-        /// <summary>
-        /// Test the property 'TownHallLevel'
-        /// </summary>
-        [Fact]
-        public void TownHallLevelTest()
-        {
-            // TODO unit test for the property 'TownHallLevel'
-        }
-
-        /// <summary>
-        /// Test the property 'Troops'
-        /// </summary>
-        [Fact]
-        public void TroopsTest()
-        {
-            // TODO unit test for the property 'Troops'
-        }
-
-        /// <summary>
-        /// Test the property 'Heroes'
-        /// </summary>
-        [Fact]
-        public void HeroesTest()
-        {
-            // TODO unit test for the property 'Heroes'
-        }
-
-        /// <summary>
-        /// Test the property 'Spells'
-        /// </summary>
-        [Fact]
-        public void SpellsTest()
-        {
-            // TODO unit test for the property 'Spells'
-        }
-
-        /// <summary>
-        /// Test the property 'Labels'
-        /// </summary>
-        [Fact]
-        public void LabelsTest()
-        {
-            // TODO unit test for the property 'Labels'
-        }
-
-        /// <summary>
-        /// Test the property 'Tag'
-        /// </summary>
-        [Fact]
-        public void TagTest()
-        {
-            // TODO unit test for the property 'Tag'
-        }
-
-        /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
-        /// Test the property 'ExpLevel'
-        /// </summary>
-        [Fact]
-        public void ExpLevelTest()
-        {
-            // TODO unit test for the property 'ExpLevel'
-        }
-
-        /// <summary>
-        /// Test the property 'Trophies'
-        /// </summary>
-        [Fact]
-        public void TrophiesTest()
-        {
-            // TODO unit test for the property 'Trophies'
-        }
-
-        /// <summary>
         /// Test the property 'BestTrophies'
         /// </summary>
         [Fact]
         public void BestTrophiesTest()
         {
             // TODO unit test for the property 'BestTrophies'
+        }
+
+        /// <summary>
+        /// Test the property 'BuilderBaseTrophies'
+        /// </summary>
+        [Fact]
+        public void BuilderBaseTrophiesTest()
+        {
+            // TODO unit test for the property 'BuilderBaseTrophies'
+        }
+
+        /// <summary>
+        /// Test the property 'DefenseWins'
+        /// </summary>
+        [Fact]
+        public void DefenseWinsTest()
+        {
+            // TODO unit test for the property 'DefenseWins'
         }
 
         /// <summary>
@@ -180,12 +117,84 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'BuilderBaseTrophies'
+        /// Test the property 'ExpLevel'
         /// </summary>
         [Fact]
-        public void BuilderBaseTrophiesTest()
+        public void ExpLevelTest()
         {
-            // TODO unit test for the property 'BuilderBaseTrophies'
+            // TODO unit test for the property 'ExpLevel'
+        }
+
+        /// <summary>
+        /// Test the property 'Heroes'
+        /// </summary>
+        [Fact]
+        public void HeroesTest()
+        {
+            // TODO unit test for the property 'Heroes'
+        }
+
+        /// <summary>
+        /// Test the property 'Labels'
+        /// </summary>
+        [Fact]
+        public void LabelsTest()
+        {
+            // TODO unit test for the property 'Labels'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
+        }
+
+        /// <summary>
+        /// Test the property 'Spells'
+        /// </summary>
+        [Fact]
+        public void SpellsTest()
+        {
+            // TODO unit test for the property 'Spells'
+        }
+
+        /// <summary>
+        /// Test the property 'Tag'
+        /// </summary>
+        [Fact]
+        public void TagTest()
+        {
+            // TODO unit test for the property 'Tag'
+        }
+
+        /// <summary>
+        /// Test the property 'TownHallLevel'
+        /// </summary>
+        [Fact]
+        public void TownHallLevelTest()
+        {
+            // TODO unit test for the property 'TownHallLevel'
+        }
+
+        /// <summary>
+        /// Test the property 'Troops'
+        /// </summary>
+        [Fact]
+        public void TroopsTest()
+        {
+            // TODO unit test for the property 'Troops'
+        }
+
+        /// <summary>
+        /// Test the property 'Trophies'
+        /// </summary>
+        [Fact]
+        public void TrophiesTest()
+        {
+            // TODO unit test for the property 'Trophies'
         }
 
         /// <summary>
@@ -198,84 +207,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Achievements'
-        /// </summary>
-        [Fact]
-        public void AchievementsTest()
-        {
-            // TODO unit test for the property 'Achievements'
-        }
-
-        /// <summary>
-        /// Test the property 'Clan'
-        /// </summary>
-        [Fact]
-        public void ClanTest()
-        {
-            // TODO unit test for the property 'Clan'
-        }
-
-        /// <summary>
-        /// Test the property 'League'
-        /// </summary>
-        [Fact]
-        public void LeagueTest()
-        {
-            // TODO unit test for the property 'League'
-        }
-
-        /// <summary>
         /// Test the property 'BuilderBaseLeague'
         /// </summary>
         [Fact]
         public void BuilderBaseLeagueTest()
         {
             // TODO unit test for the property 'BuilderBaseLeague'
-        }
-
-        /// <summary>
-        /// Test the property 'Role'
-        /// </summary>
-        [Fact]
-        public void RoleTest()
-        {
-            // TODO unit test for the property 'Role'
-        }
-
-        /// <summary>
-        /// Test the property 'WarPreference'
-        /// </summary>
-        [Fact]
-        public void WarPreferenceTest()
-        {
-            // TODO unit test for the property 'WarPreference'
-        }
-
-        /// <summary>
-        /// Test the property 'TownHallWeaponLevel'
-        /// </summary>
-        [Fact]
-        public void TownHallWeaponLevelTest()
-        {
-            // TODO unit test for the property 'TownHallWeaponLevel'
-        }
-
-        /// <summary>
-        /// Test the property 'LegendStatistics'
-        /// </summary>
-        [Fact]
-        public void LegendStatisticsTest()
-        {
-            // TODO unit test for the property 'LegendStatistics'
-        }
-
-        /// <summary>
-        /// Test the property 'HeroEquipment'
-        /// </summary>
-        [Fact]
-        public void HeroEquipmentTest()
-        {
-            // TODO unit test for the property 'HeroEquipment'
         }
 
         /// <summary>
@@ -288,6 +225,15 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'Clan'
+        /// </summary>
+        [Fact]
+        public void ClanTest()
+        {
+            // TODO unit test for the property 'Clan'
+        }
+
+        /// <summary>
         /// Test the property 'ClanCapitalContributions'
         /// </summary>
         [Fact]
@@ -297,12 +243,75 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'HeroEquipment'
+        /// </summary>
+        [Fact]
+        public void HeroEquipmentTest()
+        {
+            // TODO unit test for the property 'HeroEquipment'
+        }
+
+        /// <summary>
+        /// Test the property 'League'
+        /// </summary>
+        [Fact]
+        public void LeagueTest()
+        {
+            // TODO unit test for the property 'League'
+        }
+
+        /// <summary>
+        /// Test the property 'LeagueTier'
+        /// </summary>
+        [Fact]
+        public void LeagueTierTest()
+        {
+            // TODO unit test for the property 'LeagueTier'
+        }
+
+        /// <summary>
+        /// Test the property 'LegendStatistics'
+        /// </summary>
+        [Fact]
+        public void LegendStatisticsTest()
+        {
+            // TODO unit test for the property 'LegendStatistics'
+        }
+
+        /// <summary>
         /// Test the property 'PlayerHouse'
         /// </summary>
         [Fact]
         public void PlayerHouseTest()
         {
             // TODO unit test for the property 'PlayerHouse'
+        }
+
+        /// <summary>
+        /// Test the property 'Role'
+        /// </summary>
+        [Fact]
+        public void RoleTest()
+        {
+            // TODO unit test for the property 'Role'
+        }
+
+        /// <summary>
+        /// Test the property 'TownHallWeaponLevel'
+        /// </summary>
+        [Fact]
+        public void TownHallWeaponLevelTest()
+        {
+            // TODO unit test for the property 'TownHallWeaponLevel'
+        }
+
+        /// <summary>
+        /// Test the property 'WarPreference'
+        /// </summary>
+        [Fact]
+        public void WarPreferenceTest()
+        {
+            // TODO unit test for the property 'WarPreference'
         }
     }
 }

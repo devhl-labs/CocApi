@@ -58,7 +58,7 @@ namespace CocApi.Rest.Test.Apis
         {
             var response = await _instance.FetchCurrentGoldPassSeasonAsync();
             var model = response.Ok();
-            Assert.IsType<GoldPassSeason>(model);
+            Assert.IsType<CocApi.Rest.Models.GoldPassSeason>(model);
         }
     }
 }

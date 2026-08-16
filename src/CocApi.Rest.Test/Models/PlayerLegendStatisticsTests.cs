@@ -72,15 +72,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'PreviousBuilderBaseSeason'
-        /// </summary>
-        [Fact]
-        public void PreviousBuilderBaseSeasonTest()
-        {
-            // TODO unit test for the property 'PreviousBuilderBaseSeason'
-        }
-
-        /// <summary>
         /// Test the property 'BestBuilderBaseSeason'
         /// </summary>
         [Fact]
@@ -90,21 +81,30 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'PreviousSeason'
-        /// </summary>
-        [Fact]
-        public void PreviousSeasonTest()
-        {
-            // TODO unit test for the property 'PreviousSeason'
-        }
-
-        /// <summary>
         /// Test the property 'BestSeason'
         /// </summary>
         [Fact]
         public void BestSeasonTest()
         {
             // TODO unit test for the property 'BestSeason'
+        }
+
+        /// <summary>
+        /// Test the property 'PreviousBuilderBaseSeason'
+        /// </summary>
+        [Fact]
+        public void PreviousBuilderBaseSeasonTest()
+        {
+            // TODO unit test for the property 'PreviousBuilderBaseSeason'
+        }
+
+        /// <summary>
+        /// Test the property 'PreviousSeason'
+        /// </summary>
+        [Fact]
+        public void PreviousSeasonTest()
+        {
+            // TODO unit test for the property 'PreviousSeason'
         }
     }
 }

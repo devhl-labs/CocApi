@@ -54,15 +54,6 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'League'
-        /// </summary>
-        [Fact]
-        public void LeagueTest()
-        {
-            // TODO unit test for the property 'League'
-        }
-
-        /// <summary>
         /// Test the property 'AttackWins'
         /// </summary>
         [Fact]
@@ -81,12 +72,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Tag'
+        /// Test the property 'ExpLevel'
         /// </summary>
         [Fact]
-        public void TagTest()
+        public void ExpLevelTest()
         {
-            // TODO unit test for the property 'Tag'
+            // TODO unit test for the property 'ExpLevel'
+        }
+
+        /// <summary>
+        /// Test the property 'League'
+        /// </summary>
+        [Fact]
+        public void LeagueTest()
+        {
+            // TODO unit test for the property 'League'
         }
 
         /// <summary>
@@ -99,12 +99,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'ExpLevel'
+        /// Test the property 'PreviousRank'
         /// </summary>
         [Fact]
-        public void ExpLevelTest()
+        public void PreviousRankTest()
         {
-            // TODO unit test for the property 'ExpLevel'
+            // TODO unit test for the property 'PreviousRank'
         }
 
         /// <summary>
@@ -117,12 +117,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'PreviousRank'
+        /// Test the property 'Tag'
         /// </summary>
         [Fact]
-        public void PreviousRankTest()
+        public void TagTest()
         {
-            // TODO unit test for the property 'PreviousRank'
+            // TODO unit test for the property 'Tag'
         }
 
         /// <summary>
@@ -141,6 +141,15 @@ namespace CocApi.Rest.Test.Model
         public void ClanTest()
         {
             // TODO unit test for the property 'Clan'
+        }
+
+        /// <summary>
+        /// Test the property 'LeagueTier'
+        /// </summary>
+        [Fact]
+        public void LeagueTierTest()
+        {
+            // TODO unit test for the property 'LeagueTier'
         }
     }
 }

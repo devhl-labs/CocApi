@@ -54,21 +54,48 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'ServerExpiration'
-        /// </summary>
-        [Fact]
-        public void ServerExpirationTest()
-        {
-            // TODO unit test for the property 'ServerExpiration'
-        }
-
-        /// <summary>
         /// Test the property 'Clan'
         /// </summary>
         [Fact]
         public void ClanTest()
         {
             // TODO unit test for the property 'Clan'
+        }
+
+        /// <summary>
+        /// Test the property 'EndTime'
+        /// </summary>
+        [Fact]
+        public void EndTimeTest()
+        {
+            // TODO unit test for the property 'EndTime'
+        }
+
+        /// <summary>
+        /// Test the property 'Opponent'
+        /// </summary>
+        [Fact]
+        public void OpponentTest()
+        {
+            // TODO unit test for the property 'Opponent'
+        }
+
+        /// <summary>
+        /// Test the property 'PreparationStartTime'
+        /// </summary>
+        [Fact]
+        public void PreparationStartTimeTest()
+        {
+            // TODO unit test for the property 'PreparationStartTime'
+        }
+
+        /// <summary>
+        /// Test the property 'StartTime'
+        /// </summary>
+        [Fact]
+        public void StartTimeTest()
+        {
+            // TODO unit test for the property 'StartTime'
         }
 
         /// <summary>
@@ -90,48 +117,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Opponent'
+        /// Test the property 'BattleModifier'
         /// </summary>
         [Fact]
-        public void OpponentTest()
+        public void BattleModifierTest()
         {
-            // TODO unit test for the property 'Opponent'
-        }
-
-        /// <summary>
-        /// Test the property 'StartTime'
-        /// </summary>
-        [Fact]
-        public void StartTimeTest()
-        {
-            // TODO unit test for the property 'StartTime'
-        }
-
-        /// <summary>
-        /// Test the property 'EndTime'
-        /// </summary>
-        [Fact]
-        public void EndTimeTest()
-        {
-            // TODO unit test for the property 'EndTime'
-        }
-
-        /// <summary>
-        /// Test the property 'PreparationStartTime'
-        /// </summary>
-        [Fact]
-        public void PreparationStartTimeTest()
-        {
-            // TODO unit test for the property 'PreparationStartTime'
-        }
-
-        /// <summary>
-        /// Test the property 'WarTag'
-        /// </summary>
-        [Fact]
-        public void WarTagTest()
-        {
-            // TODO unit test for the property 'WarTag'
+            // TODO unit test for the property 'BattleModifier'
         }
 
         /// <summary>

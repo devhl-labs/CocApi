@@ -54,12 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Tag'
+        /// Test the property 'MapPosition'
         /// </summary>
         [Fact]
-        public void TagTest()
+        public void MapPositionTest()
         {
-            // TODO unit test for the property 'Tag'
+            // TODO unit test for the property 'MapPosition'
         }
 
         /// <summary>
@@ -72,12 +72,21 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'MapPosition'
+        /// Test the property 'OpponentAttacks'
         /// </summary>
         [Fact]
-        public void MapPositionTest()
+        public void OpponentAttacksTest()
         {
-            // TODO unit test for the property 'MapPosition'
+            // TODO unit test for the property 'OpponentAttacks'
+        }
+
+        /// <summary>
+        /// Test the property 'Tag'
+        /// </summary>
+        [Fact]
+        public void TagTest()
+        {
+            // TODO unit test for the property 'Tag'
         }
 
         /// <summary>
@@ -90,12 +99,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'OpponentAttacks'
+        /// Test the property 'Attacks'
         /// </summary>
         [Fact]
-        public void OpponentAttacksTest()
+        public void AttacksTest()
         {
-            // TODO unit test for the property 'OpponentAttacks'
+            // TODO unit test for the property 'Attacks'
         }
 
         /// <summary>
@@ -105,15 +114,6 @@ namespace CocApi.Rest.Test.Model
         public void BestOpponentAttackTest()
         {
             // TODO unit test for the property 'BestOpponentAttack'
-        }
-
-        /// <summary>
-        /// Test the property 'Attacks'
-        /// </summary>
-        [Fact]
-        public void AttacksTest()
-        {
-            // TODO unit test for the property 'Attacks'
         }
     }
 }

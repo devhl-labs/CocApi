@@ -59,7 +59,7 @@ namespace CocApi.Rest.Test.Apis
             string leagueId = default!;
             var response = await _instance.FetchBuilderBaseLeagueAsync(leagueId);
             var model = response.Ok();
-            Assert.IsType<BuilderBaseLeague>(model);
+            Assert.IsType<CocApi.Rest.Models.BuilderBaseLeague>(model);
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchBuilderBaseLeaguesAsync(limit, after, before);
             var model = response.Ok();
-            Assert.IsType<BuilderBaseLeagueList>(model);
+            Assert.IsType<CocApi.Rest.Models.BuilderBaseLeagueList>(model);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace CocApi.Rest.Test.Apis
             string leagueId = default!;
             var response = await _instance.FetchCapitalLeagueAsync(leagueId);
             var model = response.BadRequest();
-            Assert.IsType<CapitalLeague>(model);
+            Assert.IsType<CocApi.Rest.Models.ClientError>(model);
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchCapitalLeaguesAsync(limit, after, before);
             var model = response.BadRequest();
-            Assert.IsType<CapitalLeagueObject>(model);
+            Assert.IsType<CocApi.Rest.Models.ClientError>(model);
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace CocApi.Rest.Test.Apis
             string leagueId = default!;
             var response = await _instance.FetchLeagueAsync(leagueId);
             var model = response.Ok();
-            Assert.IsType<League>(model);
+            Assert.IsType<CocApi.Rest.Models.League>(model);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchLeagueSeasonRankingsAsync(leagueId, seasonId, limit, after, before);
             var model = response.Ok();
-            Assert.IsType<PlayerRankingList>(model);
+            Assert.IsType<CocApi.Rest.Models.PlayerRankingList>(model);
         }
 
         /// <summary>
@@ -142,7 +142,33 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchLeagueSeasonsAsync(leagueId, limit, after, before);
             var model = response.Ok();
-            Assert.IsType<LeagueSeasonList>(model);
+            Assert.IsType<CocApi.Rest.Models.LeagueSeasonList>(model);
+        }
+
+        /// <summary>
+        /// Test GetLeagueTier
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetLeagueTierAsyncTest()
+        {
+            string leagueTierId = default!;
+            var response = await _instance.FetchLeagueTierAsync(leagueTierId);
+            var model = response.BadRequest();
+            Assert.IsType<CocApi.Rest.Models.ClientError>(model);
+        }
+
+        /// <summary>
+        /// Test GetLeagueTiers
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task GetLeagueTiersAsyncTest()
+        {
+            Client.Option<int> limit = default!;
+            Client.Option<string> after = default!;
+            Client.Option<string> before = default!;
+            var response = await _instance.FetchLeagueTiersAsync(limit, after, before);
+            var model = response.BadRequest();
+            Assert.IsType<CocApi.Rest.Models.ClientError>(model);
         }
 
         /// <summary>
@@ -156,7 +182,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchLeaguesAsync(limit, after, before);
             var model = response.Ok();
-            Assert.IsType<LeagueList>(model);
+            Assert.IsType<CocApi.Rest.Models.LeagueList>(model);
         }
 
         /// <summary>
@@ -168,7 +194,7 @@ namespace CocApi.Rest.Test.Apis
             string leagueId = default!;
             var response = await _instance.FetchWarLeagueAsync(leagueId);
             var model = response.Ok();
-            Assert.IsType<WarLeague>(model);
+            Assert.IsType<CocApi.Rest.Models.WarLeague>(model);
         }
 
         /// <summary>
@@ -182,7 +208,7 @@ namespace CocApi.Rest.Test.Apis
             Client.Option<string> before = default!;
             var response = await _instance.FetchWarLeaguesAsync(limit, after, before);
             var model = response.Ok();
-            Assert.IsType<WarLeagueList>(model);
+            Assert.IsType<CocApi.Rest.Models.WarLeagueList>(model);
         }
     }
 }

@@ -54,39 +54,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'League'
+        /// Test the property 'BuilderBaseTrophies'
         /// </summary>
         [Fact]
-        public void LeagueTest()
+        public void BuilderBaseTrophiesTest()
         {
-            // TODO unit test for the property 'League'
-        }
-
-        /// <summary>
-        /// Test the property 'Tag'
-        /// </summary>
-        [Fact]
-        public void TagTest()
-        {
-            // TODO unit test for the property 'Tag'
-        }
-
-        /// <summary>
-        /// Test the property 'Name'
-        /// </summary>
-        [Fact]
-        public void NameTest()
-        {
-            // TODO unit test for the property 'Name'
-        }
-
-        /// <summary>
-        /// Test the property 'ExpLevel'
-        /// </summary>
-        [Fact]
-        public void ExpLevelTest()
-        {
-            // TODO unit test for the property 'ExpLevel'
+            // TODO unit test for the property 'BuilderBaseTrophies'
         }
 
         /// <summary>
@@ -96,15 +69,6 @@ namespace CocApi.Rest.Test.Model
         public void ClanRankTest()
         {
             // TODO unit test for the property 'ClanRank'
-        }
-
-        /// <summary>
-        /// Test the property 'PreviousClanRank'
-        /// </summary>
-        [Fact]
-        public void PreviousClanRankTest()
-        {
-            // TODO unit test for the property 'PreviousClanRank'
         }
 
         /// <summary>
@@ -126,21 +90,57 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'ExpLevel'
+        /// </summary>
+        [Fact]
+        public void ExpLevelTest()
+        {
+            // TODO unit test for the property 'ExpLevel'
+        }
+
+        /// <summary>
+        /// Test the property 'League'
+        /// </summary>
+        [Fact]
+        public void LeagueTest()
+        {
+            // TODO unit test for the property 'League'
+        }
+
+        /// <summary>
+        /// Test the property 'Name'
+        /// </summary>
+        [Fact]
+        public void NameTest()
+        {
+            // TODO unit test for the property 'Name'
+        }
+
+        /// <summary>
+        /// Test the property 'PreviousClanRank'
+        /// </summary>
+        [Fact]
+        public void PreviousClanRankTest()
+        {
+            // TODO unit test for the property 'PreviousClanRank'
+        }
+
+        /// <summary>
+        /// Test the property 'Tag'
+        /// </summary>
+        [Fact]
+        public void TagTest()
+        {
+            // TODO unit test for the property 'Tag'
+        }
+
+        /// <summary>
         /// Test the property 'Trophies'
         /// </summary>
         [Fact]
         public void TrophiesTest()
         {
             // TODO unit test for the property 'Trophies'
-        }
-
-        /// <summary>
-        /// Test the property 'BuilderBaseTrophies'
-        /// </summary>
-        [Fact]
-        public void BuilderBaseTrophiesTest()
-        {
-            // TODO unit test for the property 'BuilderBaseTrophies'
         }
 
         /// <summary>
@@ -153,12 +153,12 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
-        /// Test the property 'Role'
+        /// Test the property 'LeagueTier'
         /// </summary>
         [Fact]
-        public void RoleTest()
+        public void LeagueTierTest()
         {
-            // TODO unit test for the property 'Role'
+            // TODO unit test for the property 'LeagueTier'
         }
 
         /// <summary>
@@ -168,6 +168,15 @@ namespace CocApi.Rest.Test.Model
         public void PlayerHouseTest()
         {
             // TODO unit test for the property 'PlayerHouse'
+        }
+
+        /// <summary>
+        /// Test the property 'Role'
+        /// </summary>
+        [Fact]
+        public void RoleTest()
+        {
+            // TODO unit test for the property 'Role'
         }
 
         /// <summary>

@@ -50,7 +50,7 @@ namespace CocApi.Rest.Test.Apis
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
-            .ConfigureCocApi((context, services, options) =>
+            .ConfigureCocApi((context, options) =>
             {
                 string apiKeyTokenValue1 = context.Configuration["<token>"] ?? throw new Exception("Token not found.");
                 ApiKeyToken apiKeyToken1 = new(apiKeyTokenValue1, ClientUtils.ApiKeyHeader.Authorization, timeout: TimeSpan.FromSeconds(1));

@@ -54,6 +54,15 @@ namespace CocApi.Rest.Test.Model
         }
 
         /// <summary>
+        /// Test the property 'Status'
+        /// </summary>
+        [Fact]
+        public void StatusTest()
+        {
+            // TODO unit test for the property 'Status'
+        }
+
+        /// <summary>
         /// Test the property 'Tag'
         /// </summary>
         [Fact]
@@ -69,15 +78,6 @@ namespace CocApi.Rest.Test.Model
         public void TokenTest()
         {
             // TODO unit test for the property 'Token'
-        }
-
-        /// <summary>
-        /// Test the property 'Status'
-        /// </summary>
-        [Fact]
-        public void StatusTest()
-        {
-            // TODO unit test for the property 'Status'
         }
     }
 }
