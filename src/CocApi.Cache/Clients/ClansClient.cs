@@ -333,7 +333,7 @@ public class ClansClient
 
     private async Task OnClanWarAddedAsync(object sender, WarAddedEventArgs eventArgs)
     {
-        if (ClanWarAdded == null || !_announcedWars.TryAdd($"{eventArgs.War.PreparationStartTime}{eventArgs.War.Clans.First().Key}", eventArgs.War.PreparationStartTime))
+        if (ClanWarAdded == null || !_announcedWars.TryAdd($"{eventArgs.War.PreparationStartTime}{eventArgs.War.WarClan.Tag}", eventArgs.War.PreparationStartTime))
             return;
 
         var keys = _announcedWars.Keys.ToArray();

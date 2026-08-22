@@ -88,7 +88,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Clan
         /// </summary>
         [JsonPropertyName("clan")]
-        public WarClan Clan { get; private set; }
+        internal WarClan Clan { get; }
 
         /// <summary>
         /// Gets or Sets EndTime
@@ -100,7 +100,7 @@ namespace CocApi.Rest.Models
         /// Gets or Sets Opponent
         /// </summary>
         [JsonPropertyName("opponent")]
-        public WarClan Opponent { get; private set; }
+        internal WarClan Opponent { get; }
 
         /// <summary>
         /// Gets or Sets PreparationStartTime

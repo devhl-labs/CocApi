@@ -126,9 +126,9 @@ public class CachedWar : CachedItem<ClanWar>
         if (cachedClanWar.Content == null)
             throw new InvalidOperationException("Data should not be null");
 
-        ClanTag = cachedClanWar.Content.Clans.First().Value.Tag;
+        ClanTag = cachedClanWar.Content.WarClan.Tag;
 
-        OpponentTag = cachedClanWar.Content.Clans.Skip(1).First().Value.Tag;
+        OpponentTag = cachedClanWar.Content.WarOpponent.Tag;
 
         ClanTags.Add(ClanTag);
         ClanTags.Add(OpponentTag);
@@ -150,9 +150,9 @@ public class CachedWar : CachedItem<ClanWar>
 
         ClanWar model = apiResponse.Ok();
 
-        ClanTag = model.Clans.First().Value.Tag;
+        ClanTag = model.WarClan.Tag;
 
-        OpponentTag = model.Clans.Skip(1).First().Value.Tag;
+        OpponentTag = model.WarOpponent.Tag;
 
         ClanTags.Add(ClanTag);
         ClanTags.Add(OpponentTag);

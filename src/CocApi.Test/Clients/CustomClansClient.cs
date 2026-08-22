@@ -51,14 +51,14 @@ public class CustomClansClient : ClansClient
 
     private Task OnClanWarUpdated(object sender, ClanWarUpdatedEventArgs e)
     {
-        Logger.LogInformation("{newAttackCount} new attacks between {clanTag} vs {opponentTag}.", ClanWar.NewAttacks(e.Stored, e.Fetched).Count, e.Fetched.Clan.Tag, e.Fetched.Opponent.Tag);
+        Logger.LogInformation("{newAttackCount} new attacks between {clanTag} vs {opponentTag}.", ClanWar.NewAttacks(e.Stored, e.Fetched).Count, e.Fetched.WarClan.Tag, e.Fetched.WarOpponent.Tag);
 
         return Task.CompletedTask;
     }
 
     private Task OnClanWarAdded(object sender, WarAddedEventArgs e)
     {
-        Logger.LogInformation("New war between {clanTag} and {opponentTag}.", e.War.Clan.Tag, e.War.Opponent.Tag);
+        Logger.LogInformation("New war between {clanTag} and {opponentTag}.", e.War.WarClan.Tag, e.War.WarOpponent.Tag);
 
         return Task.CompletedTask;
     }

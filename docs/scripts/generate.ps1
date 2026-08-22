@@ -47,8 +47,8 @@ java -jar $generator generate `
     --git-user-id "devhl-labs" `
     -t $templates.Path `
     --release-note $releaseNote `
-    --inject-model-vendor-extensions "ClanWar.clan.x-setter-visibility=private" `
-    --inject-model-vendor-extensions "ClanWar.opponent.x-setter-visibility=private" `
+    --inject-model-vendor-extensions "ClanWar.clan.x-property-visibility=internal" `
+    --inject-model-vendor-extensions "ClanWar.opponent.x-property-visibility=internal" `
     --inject-model-vendor-extensions "ClanWar.attacksPerMember.x-setter-visibility=internal" `
     --inject-model-vendor-extensions "ClanWarMember.mapPosition.x-property-visibility=internal" `
     --inject-model-vendor-extensions "Clan.memberList.x-property-visibility=internal" `

@@ -38,8 +38,29 @@ namespace CocApi.Rest.Models
 
         public string? WarTag { get; internal set; }
 
+        /// <summary>
+        /// Gets both clans in the war, sorted by tag in ascending order.
+        /// </summary>
         [System.Text.Json.Serialization.JsonIgnore]
-        public SortedDictionary<string, WarClan> Clans { get; private set; } = new SortedDictionary<string, WarClan>();
+        public WarClan[] WarClans => Clan?.Tag != null && Opponent?.Tag != null
+            ? new[] { Clan, Opponent }.OrderBy(c => c.Tag).ToArray()
+            : [];
+
+        /// <summary>
+        /// Gets the clan with the lower tag (first in sorted order).
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public WarClan WarClan => Clan.Tag != null && Opponent.Tag != null
+            ? (string.Compare(Clan.Tag, Opponent.Tag) < 0 ? Clan : Opponent)
+            : Clan;
+
+        /// <summary>
+        /// Gets the clan with the higher tag (second in sorted order).
+        /// </summary>
+        [System.Text.Json.Serialization.JsonIgnore]
+        public WarClan WarOpponent => Clan.Tag != null && Opponent.Tag != null
+            ? (string.Compare(Clan.Tag, Opponent.Tag) < 0 ? Opponent : Clan)
+            : Opponent;
 
         [System.Text.Json.Serialization.JsonIgnore]
         public List<ClanWarAttack> Attacks { get; private set; } = new List<ClanWarAttack>();
@@ -83,40 +104,18 @@ namespace CocApi.Rest.Models
                 if (State == WarState.NotInWar)
                     return;
 
-                WarClan clan = Clan;
-                WarClan opponent = Opponent;
-                SortedList<string, WarClan> sorted = new SortedList<string, WarClan>
-                {
-                    { clan.Tag, clan },
-                    { opponent.Tag, opponent }
-                };
-
-                debug = "b";
-
-                Clan = sorted.Values.First();
-                debug = "c";
-                Opponent = sorted.Values.Skip(1).First();
-                debug = "d";
-
-                if (Clan?.Tag != null && Opponent?.Tag != null)
-                    Clans = new SortedDictionary<string, WarClan>
-                        {
-                            { Clan.Tag, Clan },
-                            { Opponent.Tag, Opponent }
-                        };
-
-                foreach (WarClan warClan in Clans.Values)
+                foreach (WarClan warClan in WarClans)
                     foreach (ClanWarMember member in warClan.Members)
                         foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
                             Attacks.Add(attack);
 
-                foreach (WarClan warClan in Clans.Values)
+                foreach (WarClan warClan in WarClans)
                 {
                     debug = "e";
                     if (AllAttacksAreUsedOrWarIsOver())
                     {
                         debug = "f";
-                        WarClan enemy = Clans.First(c => c.Key != warClan.Tag).Value;
+                        WarClan enemy = WarClans.First(c => c.Tag != warClan.Tag);
 
                         debug = "g";
                         if (warClan.Stars > enemy.Stars)
@@ -143,7 +142,7 @@ namespace CocApi.Rest.Models
                         foreach (ClanWarAttack attack in member.Attacks.EmptyIfNull())
                         {
                             debug = "j";
-                            WarClan defendingClan = Clans.First(c => c.Key != warClan.Tag).Value;
+                            WarClan defendingClan = WarClans.First(c => c.Tag != warClan.Tag);
 
                             debug = "k";
                             ClanWarMember defending = defendingClan.Members.First(m => m.Tag == attack.DefenderTag);
@@ -160,7 +159,7 @@ namespace CocApi.Rest.Models
                 }
 
                 debug = "m";
-                foreach (var wc in Clans.Values)
+                foreach (var wc in WarClans)
                 {
                     debug = "n";
                     var grouped = Attacks.Where(a => a.AttackerClanTag == wc.Tag).GroupBy(a => a.DefenderMapPosition);

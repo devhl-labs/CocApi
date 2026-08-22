@@ -73,7 +73,7 @@ public class CachedClanWar : CachedItem<ClanWar>
 
         if (apiResponse.TryOk(out ClanWar? model) && model.State != Rest.Models.WarState.NotInWar)
         {
-            EnemyTag = model.Clans.Keys.FirstOrDefault(k => k != tag);
+            EnemyTag = model.WarClans.FirstOrDefault(c => c.Tag != tag).Tag;
 
             State = model.State;
 
