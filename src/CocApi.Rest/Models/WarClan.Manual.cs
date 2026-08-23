@@ -8,7 +8,7 @@ namespace CocApi.Rest.Models
         public string ClanProfileUrl => Clash.ClanProfileUrl(Tag);
 
 
-        [JsonPropertyName("result")]
+        [JsonIgnore]
         public Result? Result { get; internal set; }
     }
 }

@@ -36,6 +36,7 @@ namespace CocApi.Rest.Models
             return $"clans/{Uri.EscapeDataString(formattedTag)}/currentwar";
         }
 
+        [System.Text.Json.Serialization.JsonIgnore]
         public string? WarTag { get; internal set; }
 
         /// <summary>
