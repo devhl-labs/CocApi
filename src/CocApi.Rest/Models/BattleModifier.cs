@@ -37,7 +37,22 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Enum HardMode for value: hardMode
         /// </summary>
-        HardMode = 2
+        HardMode = 2,
+
+        /// <summary>
+        /// Enum MinusOne for value: minusOne
+        /// </summary>
+        MinusOne = 3,
+
+        /// <summary>
+        /// Enum MinusTwo for value: minusTwo
+        /// </summary>
+        MinusTwo = 4,
+
+        /// <summary>
+        /// Enum MinusThree for value: minusThree
+        /// </summary>
+        MinusThree = 5
     }
 
     /// <summary>
@@ -58,6 +73,15 @@ namespace CocApi.Rest.Models
             if (value.Equals("hardMode"))
                 return BattleModifier.HardMode;
 
+            if (value.Equals("minusOne"))
+                return BattleModifier.MinusOne;
+
+            if (value.Equals("minusTwo"))
+                return BattleModifier.MinusTwo;
+
+            if (value.Equals("minusThree"))
+                return BattleModifier.MinusThree;
+
             throw new NotImplementedException($"Could not convert value to type BattleModifier: '{value}'");
         }
 
@@ -73,6 +97,15 @@ namespace CocApi.Rest.Models
 
             if (value.Equals("hardMode"))
                 return BattleModifier.HardMode;
+
+            if (value.Equals("minusOne"))
+                return BattleModifier.MinusOne;
+
+            if (value.Equals("minusTwo"))
+                return BattleModifier.MinusTwo;
+
+            if (value.Equals("minusThree"))
+                return BattleModifier.MinusThree;
 
             return null;
         }
@@ -90,6 +123,15 @@ namespace CocApi.Rest.Models
 
             if (value == BattleModifier.HardMode)
                 return "hardMode";
+
+            if (value == BattleModifier.MinusOne)
+                return "minusOne";
+
+            if (value == BattleModifier.MinusTwo)
+                return "minusTwo";
+
+            if (value == BattleModifier.MinusThree)
+                return "minusThree";
 
             throw new NotImplementedException($"Value could not be handled: '{value}'");
         }
