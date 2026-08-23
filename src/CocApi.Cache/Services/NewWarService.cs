@@ -112,11 +112,11 @@ public sealed class NewWarService : ServiceBase<NewWarServiceOptions>
 
                 if (ClanWarAdded != null)
                 {
-                    Rest.Models.Clan? clan = cachedClan.CurrentWar.Content.Clan.Tag == cachedClan.Tag
+                    Rest.Models.Clan? clan = cachedClan.CurrentWar.Content.WarClan.Tag == cachedClan.Tag
                         ? cachedClan.Content
                         : null;
 
-                    Rest.Models.Clan? opponent = cachedClan.CurrentWar.Content.Opponent.Tag == cachedClan.Tag
+                    Rest.Models.Clan? opponent = cachedClan.CurrentWar.Content.WarOpponent.Tag == cachedClan.Tag
                         ? cachedClan.Content
                         : null;
 

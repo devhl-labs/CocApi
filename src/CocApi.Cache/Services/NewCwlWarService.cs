@@ -122,9 +122,9 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
                             if (seenCwlWar.ApiResponse == null || !seenCwlWar.ApiResponse.TryOk(out Rest.Models.ClanWar? model) || (seenCwlWar.ClanTag != cachedClan.Tag && seenCwlWar.OpponentTag != cachedClan.Tag))
                                 continue; // if null we already announced it
 
-                            CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == model.Clan.Tag);
+                            CachedClan? clan = cachedClans.SingleOrDefault(c => c.Tag == model.WarClan.Tag);
 
-                            CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == model.Opponent.Tag);
+                            CachedClan? opponent = cachedClans.SingleOrDefault(c => c.Tag == model.WarOpponent.Tag);
 
                             announceNewWarTasks.Add(
                                 NewWarFoundAsync(
@@ -249,14 +249,14 @@ public sealed class NewCwlWarService : ServiceBase<NewCwlWarServiceOptions>
             if (cancellationToken.IsCancellationRequested || !apiResponse.IsSuccessStatusCode || !apiResponse.TryOk(out Rest.Models.ClanWar? model))
                 return;
 
-            SeenCwlWar seenCwlWar = new(warTags.Key, model.Clan.Tag, model.Opponent.Tag, kvp.Key, apiResponse);
+            SeenCwlWar seenCwlWar = new(warTags.Key, model.WarClan.Tag, model.WarOpponent.Tag, kvp.Key, apiResponse);
 
             var group = _downloadedSeasons.Single(w => w.Key == warTags.Key).Value;
             group.TryAdd(kvp.Key, seenCwlWar);
 
-            CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == model.Clan.Tag);
+            CachedClan? cachedClan = cachedClans.SingleOrDefault(c => c.Tag == model.WarClan.Tag);
 
-            CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == model.Opponent.Tag);
+            CachedClan? cachedOpponent = cachedClans.SingleOrDefault(c => c.Tag == model.WarOpponent.Tag);
 
             if ((cachedClan != null || cachedOpponent != null) && announcedWars.TryAdd(kvp.Key, null))
             {

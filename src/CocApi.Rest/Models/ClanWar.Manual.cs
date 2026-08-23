@@ -19,13 +19,7 @@ namespace CocApi.Rest.Models
             if (stored.PreparationStartTime != fetched.PreparationStartTime)
                 return false;
 
-            if (stored.Clan.Tag == fetched.Clan.Tag)
-                return true;
-
-            if (stored.Clan.Tag == fetched.Opponent.Tag)
-                return true;
-
-            return false;
+            return stored.WarClan.Tag == fetched.WarClan.Tag;
         }
 
         public static string Url(string clanTag)
