@@ -100,8 +100,8 @@ public sealed class NewWarService : ServiceBase<NewWarServiceOptions>
 
                 CachedWar? cachedWar = cachedWars.SingleOrDefault(w =>
                     w.PreparationStartTime == cachedClan.CurrentWar.PreparationStartTime &&
-                    w.ClanTag == cachedClan.CurrentWar.Content.Clan.Tag &&
-                    w.OpponentTag == cachedClan.CurrentWar.Content.Opponent.Tag);
+                    w.ClanTag == cachedClan.CurrentWar.Content.WarClan.Tag &&
+                    w.OpponentTag == cachedClan.CurrentWar.Content.WarOpponent.Tag);
 
                 if (cachedWar != null)
                     continue;

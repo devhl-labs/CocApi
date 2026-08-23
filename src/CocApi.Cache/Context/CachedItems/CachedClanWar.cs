@@ -28,7 +28,7 @@ public class CachedClanWar : CachedItem<ClanWar>
 
     public bool Added { get; internal set; }
 
-    public string Key { get { return $"{Content.PreparationStartTime};{Content.Clan.Tag};{Content.Opponent.Tag}"; } }
+    public string Key { get { return $"{Content.PreparationStartTime};{Content.WarClan.Tag};{Content.WarOpponent.Tag}"; } }
 
     internal static bool IsNewWar(CachedClanWar stored, CachedClanWar fetched)
     {

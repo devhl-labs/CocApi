@@ -89,7 +89,7 @@ public class CachedWar : CachedItem<ClanWar>
         internal set { base.Content = value; }
     }
 
-    public string Key { get { return $"{Content.PreparationStartTime};{Content.Clan.Tag};{Content.Opponent.Tag}"; } }
+    public string Key { get { return $"{Content.PreparationStartTime};{Content.WarClan.Tag};{Content.WarOpponent.Tag}"; } }
 
     public int Id { get; internal set; }
 
