@@ -1,5 +1,5 @@
-$packageVersion = "3.0.0"
-$releaseNote = "Migrate to .net10"
+$packageVersion = "3.1.0"
+$releaseNote = "Add new player and league group endpoints"
 
 $properties = @(
     'packageName=CocApi.Rest'

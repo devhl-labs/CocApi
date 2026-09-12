@@ -25,6 +25,7 @@ namespace CocApi.Rest.Client
         /// </summary>
         public static string[] Formats { get; } = {
             "yyyyMMdd'T'HHmmss.fff'Z'",
+            "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'",
             "yyyy'-'MM'-'dd",
             "yyyy'-'MM"
         };

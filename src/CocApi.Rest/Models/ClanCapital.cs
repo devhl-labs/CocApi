@@ -33,11 +33,13 @@ namespace CocApi.Rest.Models
         /// Initializes a new instance of the <see cref="ClanCapital" /> class.
         /// </summary>
         /// <param name="capitalHallLevel">capitalHallLevel</param>
+        /// <param name="clanGoldSinkTotal">clanGoldSinkTotal</param>
         /// <param name="districts">districts</param>
         [JsonConstructor]
-        internal ClanCapital(Option<int?> capitalHallLevel = default, Option<List<ClanDistrictData>?> districts = default)
+        internal ClanCapital(Option<int?> capitalHallLevel = default, Option<long?> clanGoldSinkTotal = default, Option<List<ClanDistrictData>?> districts = default)
         {
             CapitalHallLevelOption = capitalHallLevel;
+            ClanGoldSinkTotalOption = clanGoldSinkTotal;
             DistrictsOption = districts;
             OnCreated();
         }
@@ -56,6 +58,19 @@ namespace CocApi.Rest.Models
         /// </summary>
         [JsonPropertyName("capitalHallLevel")]
         public int? CapitalHallLevel { get { return this.CapitalHallLevelOption.Value; } }
+
+        /// <summary>
+        /// Used to track the state of ClanGoldSinkTotal
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<long?> ClanGoldSinkTotalOption { get; }
+
+        /// <summary>
+        /// Gets or Sets ClanGoldSinkTotal
+        /// </summary>
+        [JsonPropertyName("clanGoldSinkTotal")]
+        public long? ClanGoldSinkTotal { get { return this.ClanGoldSinkTotalOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Districts
@@ -79,6 +94,7 @@ namespace CocApi.Rest.Models
             StringBuilder sb = new StringBuilder();
             sb.Append("class ClanCapital {\n");
             sb.Append("  CapitalHallLevel: ").Append(CapitalHallLevel).Append("\n");
+            sb.Append("  ClanGoldSinkTotal: ").Append(ClanGoldSinkTotal).Append("\n");
             sb.Append("  Districts: ").Append(Districts).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
@@ -110,6 +126,10 @@ namespace CocApi.Rest.Models
                     CapitalHallLevel.Equals(input.CapitalHallLevel)
                 ) && 
                 (
+                    ClanGoldSinkTotal == input.ClanGoldSinkTotal ||
+                    ClanGoldSinkTotal.Equals(input.ClanGoldSinkTotal)
+                ) && 
+                (
                     Districts == input.Districts ||
                     Districts != null &&
                     input.Districts != null &&
@@ -128,6 +148,9 @@ namespace CocApi.Rest.Models
                 int hashCode = 41;
                 if (CapitalHallLevel != null)
                     hashCode = (hashCode * 59) + CapitalHallLevel.GetHashCode();
+
+                if (ClanGoldSinkTotal != null)
+                    hashCode = (hashCode * 59) + ClanGoldSinkTotal.GetHashCode();
 
                 if (Districts != null)
                     hashCode = (hashCode * 59) + Districts.GetHashCode();
@@ -171,6 +194,7 @@ namespace CocApi.Rest.Models
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
             Option<int?> capitalHallLevel = default;
+            Option<long?> clanGoldSinkTotal = default;
             Option<List<ClanDistrictData>?> districts = default;
 
             while (utf8JsonReader.Read())
@@ -191,6 +215,9 @@ namespace CocApi.Rest.Models
                         case "capitalHallLevel":
                             capitalHallLevel = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
+                        case "clanGoldSinkTotal":
+                            clanGoldSinkTotal = new Option<long?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (long?)null : utf8JsonReader.GetInt64());
+                            break;
                         case "districts":
                             districts = new Option<List<ClanDistrictData>?>(JsonSerializer.Deserialize<List<ClanDistrictData>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
@@ -203,10 +230,13 @@ namespace CocApi.Rest.Models
             if (capitalHallLevel.IsSet && capitalHallLevel.Value == null)
                 throw new ArgumentNullException(nameof(capitalHallLevel), "Property is not nullable for class ClanCapital.");
 
+            if (clanGoldSinkTotal.IsSet && clanGoldSinkTotal.Value == null)
+                throw new ArgumentNullException(nameof(clanGoldSinkTotal), "Property is not nullable for class ClanCapital.");
+
             if (districts.IsSet && districts.Value == null)
                 throw new ArgumentNullException(nameof(districts), "Property is not nullable for class ClanCapital.");
 
-            return new ClanCapital(capitalHallLevel, districts);
+            return new ClanCapital(capitalHallLevel, clanGoldSinkTotal, districts);
         }
 
         /// <summary>
@@ -238,6 +268,9 @@ namespace CocApi.Rest.Models
 
             if (clanCapital.CapitalHallLevelOption.IsSet)
                 writer.WriteNumber("capitalHallLevel", clanCapital.CapitalHallLevelOption.Value!.Value);
+
+            if (clanCapital.ClanGoldSinkTotalOption.IsSet)
+                writer.WriteNumber("clanGoldSinkTotal", clanCapital.ClanGoldSinkTotalOption.Value!.Value);
 
             if (clanCapital.DistrictsOption.IsSet)
             {

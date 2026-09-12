@@ -53,16 +53,20 @@ namespace CocApi.Rest.Models
         /// <param name="builderHallLevel">builderHallLevel</param>
         /// <param name="clan">clan</param>
         /// <param name="clanCapitalContributions">clanCapitalContributions</param>
+        /// <param name="currentLeagueGroupTag">currentLeagueGroupTag</param>
+        /// <param name="currentLeagueSeasonId">currentLeagueSeasonId</param>
         /// <param name="heroEquipment">heroEquipment</param>
         /// <param name="league">league</param>
         /// <param name="leagueTier">leagueTier</param>
         /// <param name="legendStatistics">legendStatistics</param>
         /// <param name="playerHouse">playerHouse</param>
+        /// <param name="previousLeagueGroupTag">previousLeagueGroupTag</param>
+        /// <param name="previousLeagueSeasonId">previousLeagueSeasonId</param>
         /// <param name="role">role</param>
         /// <param name="townHallWeaponLevel">townHallWeaponLevel</param>
         /// <param name="warPreference">warPreference</param>
         [JsonConstructor]
-        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int builderBaseTrophies, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int warStars, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<int?> builderHallLevel = default, Option<PlayerClan?> clan = default, Option<int?> clanCapitalContributions = default, Option<List<PlayerItemLevel>?> heroEquipment = default, Option<League?> league = default, Option<LeagueTier?> leagueTier = default, Option<PlayerLegendStatistics?> legendStatistics = default, Option<PlayerHouse?> playerHouse = default, Option<Role?> role = default, Option<int?> townHallWeaponLevel = default, Option<WarPreference?> warPreference = default)
+        internal Player(List<PlayerAchievementProgress> achievements, int attackWins, int bestTrophies, int builderBaseTrophies, int defenseWins, int donations, int donationsReceived, int expLevel, List<PlayerItemLevel> heroes, List<Label> labels, string name, List<PlayerItemLevel> spells, string tag, int townHallLevel, List<PlayerItemLevel> troops, int trophies, int warStars, Option<BuilderBaseLeague?> builderBaseLeague = default, Option<int?> builderHallLevel = default, Option<PlayerClan?> clan = default, Option<int?> clanCapitalContributions = default, Option<string?> currentLeagueGroupTag = default, Option<long?> currentLeagueSeasonId = default, Option<List<PlayerItemLevel>?> heroEquipment = default, Option<League?> league = default, Option<LeagueTier?> leagueTier = default, Option<PlayerLegendStatistics?> legendStatistics = default, Option<PlayerHouse?> playerHouse = default, Option<string?> previousLeagueGroupTag = default, Option<long?> previousLeagueSeasonId = default, Option<Role?> role = default, Option<int?> townHallWeaponLevel = default, Option<WarPreference?> warPreference = default)
         {
             Achievements = achievements;
             AttackWins = attackWins;
@@ -85,11 +89,15 @@ namespace CocApi.Rest.Models
             BuilderHallLevelOption = builderHallLevel;
             ClanOption = clan;
             ClanCapitalContributionsOption = clanCapitalContributions;
+            CurrentLeagueGroupTagOption = currentLeagueGroupTag;
+            CurrentLeagueSeasonIdOption = currentLeagueSeasonId;
             HeroEquipmentOption = heroEquipment;
             LeagueOption = league;
             LeagueTierOption = leagueTier;
             LegendStatisticsOption = legendStatistics;
             PlayerHouseOption = playerHouse;
+            PreviousLeagueGroupTagOption = previousLeagueGroupTag;
+            PreviousLeagueSeasonIdOption = previousLeagueSeasonId;
             RoleOption = role;
             TownHallWeaponLevelOption = townHallWeaponLevel;
             WarPreferenceOption = warPreference;
@@ -279,6 +287,32 @@ namespace CocApi.Rest.Models
         public int? ClanCapitalContributions { get { return this.ClanCapitalContributionsOption.Value; } }
 
         /// <summary>
+        /// Used to track the state of CurrentLeagueGroupTag
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> CurrentLeagueGroupTagOption { get; }
+
+        /// <summary>
+        /// Gets or Sets CurrentLeagueGroupTag
+        /// </summary>
+        [JsonPropertyName("currentLeagueGroupTag")]
+        public string? CurrentLeagueGroupTag { get { return this.CurrentLeagueGroupTagOption.Value; } }
+
+        /// <summary>
+        /// Used to track the state of CurrentLeagueSeasonId
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<long?> CurrentLeagueSeasonIdOption { get; }
+
+        /// <summary>
+        /// Gets or Sets CurrentLeagueSeasonId
+        /// </summary>
+        [JsonPropertyName("currentLeagueSeasonId")]
+        public long? CurrentLeagueSeasonId { get { return this.CurrentLeagueSeasonIdOption.Value; } }
+
+        /// <summary>
         /// Used to track the state of HeroEquipment
         /// </summary>
         [JsonIgnore]
@@ -344,6 +378,32 @@ namespace CocApi.Rest.Models
         public PlayerHouse? PlayerHouse { get { return this.PlayerHouseOption.Value; } }
 
         /// <summary>
+        /// Used to track the state of PreviousLeagueGroupTag
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> PreviousLeagueGroupTagOption { get; }
+
+        /// <summary>
+        /// Gets or Sets PreviousLeagueGroupTag
+        /// </summary>
+        [JsonPropertyName("previousLeagueGroupTag")]
+        public string? PreviousLeagueGroupTag { get { return this.PreviousLeagueGroupTagOption.Value; } }
+
+        /// <summary>
+        /// Used to track the state of PreviousLeagueSeasonId
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<long?> PreviousLeagueSeasonIdOption { get; }
+
+        /// <summary>
+        /// Gets or Sets PreviousLeagueSeasonId
+        /// </summary>
+        [JsonPropertyName("previousLeagueSeasonId")]
+        public long? PreviousLeagueSeasonId { get { return this.PreviousLeagueSeasonIdOption.Value; } }
+
+        /// <summary>
         /// Used to track the state of TownHallWeaponLevel
         /// </summary>
         [JsonIgnore]
@@ -385,11 +445,15 @@ namespace CocApi.Rest.Models
             sb.Append("  BuilderHallLevel: ").Append(BuilderHallLevel).Append("\n");
             sb.Append("  Clan: ").Append(Clan).Append("\n");
             sb.Append("  ClanCapitalContributions: ").Append(ClanCapitalContributions).Append("\n");
+            sb.Append("  CurrentLeagueGroupTag: ").Append(CurrentLeagueGroupTag).Append("\n");
+            sb.Append("  CurrentLeagueSeasonId: ").Append(CurrentLeagueSeasonId).Append("\n");
             sb.Append("  HeroEquipment: ").Append(HeroEquipment).Append("\n");
             sb.Append("  League: ").Append(League).Append("\n");
             sb.Append("  LeagueTier: ").Append(LeagueTier).Append("\n");
             sb.Append("  LegendStatistics: ").Append(LegendStatistics).Append("\n");
             sb.Append("  PlayerHouse: ").Append(PlayerHouse).Append("\n");
+            sb.Append("  PreviousLeagueGroupTag: ").Append(PreviousLeagueGroupTag).Append("\n");
+            sb.Append("  PreviousLeagueSeasonId: ").Append(PreviousLeagueSeasonId).Append("\n");
             sb.Append("  Role: ").Append(Role).Append("\n");
             sb.Append("  TownHallWeaponLevel: ").Append(TownHallWeaponLevel).Append("\n");
             sb.Append("  WarPreference: ").Append(WarPreference).Append("\n");
@@ -517,6 +581,15 @@ namespace CocApi.Rest.Models
                     ClanCapitalContributions.Equals(input.ClanCapitalContributions)
                 ) && 
                 (
+                    CurrentLeagueGroupTag == input.CurrentLeagueGroupTag ||
+                    (CurrentLeagueGroupTag != null &&
+                    CurrentLeagueGroupTag.Equals(input.CurrentLeagueGroupTag))
+                ) && 
+                (
+                    CurrentLeagueSeasonId == input.CurrentLeagueSeasonId ||
+                    CurrentLeagueSeasonId.Equals(input.CurrentLeagueSeasonId)
+                ) && 
+                (
                     HeroEquipment == input.HeroEquipment ||
                     HeroEquipment != null &&
                     input.HeroEquipment != null &&
@@ -541,6 +614,15 @@ namespace CocApi.Rest.Models
                     PlayerHouse == input.PlayerHouse ||
                     (PlayerHouse != null &&
                     PlayerHouse.Equals(input.PlayerHouse))
+                ) && 
+                (
+                    PreviousLeagueGroupTag == input.PreviousLeagueGroupTag ||
+                    (PreviousLeagueGroupTag != null &&
+                    PreviousLeagueGroupTag.Equals(input.PreviousLeagueGroupTag))
+                ) && 
+                (
+                    PreviousLeagueSeasonId == input.PreviousLeagueSeasonId ||
+                    PreviousLeagueSeasonId.Equals(input.PreviousLeagueSeasonId)
                 ) && 
                 (
                     Role == input.Role ||
@@ -594,6 +676,12 @@ namespace CocApi.Rest.Models
                 if (ClanCapitalContributions != null)
                     hashCode = (hashCode * 59) + ClanCapitalContributions.GetHashCode();
 
+                if (CurrentLeagueGroupTag != null)
+                    hashCode = (hashCode * 59) + CurrentLeagueGroupTag.GetHashCode();
+
+                if (CurrentLeagueSeasonId != null)
+                    hashCode = (hashCode * 59) + CurrentLeagueSeasonId.GetHashCode();
+
                 if (HeroEquipment != null)
                     hashCode = (hashCode * 59) + HeroEquipment.GetHashCode();
 
@@ -608,6 +696,12 @@ namespace CocApi.Rest.Models
 
                 if (PlayerHouse != null)
                     hashCode = (hashCode * 59) + PlayerHouse.GetHashCode();
+
+                if (PreviousLeagueGroupTag != null)
+                    hashCode = (hashCode * 59) + PreviousLeagueGroupTag.GetHashCode();
+
+                if (PreviousLeagueSeasonId != null)
+                    hashCode = (hashCode * 59) + PreviousLeagueSeasonId.GetHashCode();
 
                 if (Role != null)
                     hashCode = (hashCode * 59) + Role.GetHashCode();
@@ -677,11 +771,15 @@ namespace CocApi.Rest.Models
             Option<int?> builderHallLevel = default;
             Option<PlayerClan?> clan = default;
             Option<int?> clanCapitalContributions = default;
+            Option<string?> currentLeagueGroupTag = default;
+            Option<long?> currentLeagueSeasonId = default;
             Option<List<PlayerItemLevel>?> heroEquipment = default;
             Option<League?> league = default;
             Option<LeagueTier?> leagueTier = default;
             Option<PlayerLegendStatistics?> legendStatistics = default;
             Option<PlayerHouse?> playerHouse = default;
+            Option<string?> previousLeagueGroupTag = default;
+            Option<long?> previousLeagueSeasonId = default;
             Option<Role?> role = default;
             Option<int?> townHallWeaponLevel = default;
             Option<WarPreference?> warPreference = default;
@@ -764,6 +862,12 @@ namespace CocApi.Rest.Models
                         case "clanCapitalContributions":
                             clanCapitalContributions = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
+                        case "currentLeagueGroupTag":
+                            currentLeagueGroupTag = new Option<string?>(utf8JsonReader.GetString()!);
+                            break;
+                        case "currentLeagueSeasonId":
+                            currentLeagueSeasonId = new Option<long?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (long?)null : utf8JsonReader.GetInt64());
+                            break;
                         case "heroEquipment":
                             heroEquipment = new Option<List<PlayerItemLevel>?>(JsonSerializer.Deserialize<List<PlayerItemLevel>>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
@@ -778,6 +882,12 @@ namespace CocApi.Rest.Models
                             break;
                         case "playerHouse":
                             playerHouse = new Option<PlayerHouse?>(JsonSerializer.Deserialize<PlayerHouse>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            break;
+                        case "previousLeagueGroupTag":
+                            previousLeagueGroupTag = new Option<string?>(utf8JsonReader.GetString()!);
+                            break;
+                        case "previousLeagueSeasonId":
+                            previousLeagueSeasonId = new Option<long?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (long?)null : utf8JsonReader.GetInt64());
                             break;
                         case "role":
                             role = new Option<Role?>(JsonSerializer.Deserialize<Role?>(ref utf8JsonReader, jsonSerializerOptions));
@@ -908,6 +1018,12 @@ namespace CocApi.Rest.Models
             if (clanCapitalContributions.IsSet && clanCapitalContributions.Value == null)
                 throw new ArgumentNullException(nameof(clanCapitalContributions), "Property is not nullable for class Player.");
 
+            if (currentLeagueGroupTag.IsSet && currentLeagueGroupTag.Value == null)
+                throw new ArgumentNullException(nameof(currentLeagueGroupTag), "Property is not nullable for class Player.");
+
+            if (currentLeagueSeasonId.IsSet && currentLeagueSeasonId.Value == null)
+                throw new ArgumentNullException(nameof(currentLeagueSeasonId), "Property is not nullable for class Player.");
+
             if (heroEquipment.IsSet && heroEquipment.Value == null)
                 throw new ArgumentNullException(nameof(heroEquipment), "Property is not nullable for class Player.");
 
@@ -923,6 +1039,12 @@ namespace CocApi.Rest.Models
             if (playerHouse.IsSet && playerHouse.Value == null)
                 throw new ArgumentNullException(nameof(playerHouse), "Property is not nullable for class Player.");
 
+            if (previousLeagueGroupTag.IsSet && previousLeagueGroupTag.Value == null)
+                throw new ArgumentNullException(nameof(previousLeagueGroupTag), "Property is not nullable for class Player.");
+
+            if (previousLeagueSeasonId.IsSet && previousLeagueSeasonId.Value == null)
+                throw new ArgumentNullException(nameof(previousLeagueSeasonId), "Property is not nullable for class Player.");
+
             if (role.IsSet && role.Value == null)
                 throw new ArgumentNullException(nameof(role), "Property is not nullable for class Player.");
 
@@ -932,7 +1054,7 @@ namespace CocApi.Rest.Models
             if (warPreference.IsSet && warPreference.Value == null)
                 throw new ArgumentNullException(nameof(warPreference), "Property is not nullable for class Player.");
 
-            return new Player(achievements.Value!, attackWins.Value!.Value!, bestTrophies.Value!.Value!, builderBaseTrophies.Value!.Value!, defenseWins.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, heroes.Value!, labels.Value!, name.Value!, spells.Value!, tag.Value!, townHallLevel.Value!.Value!, troops.Value!, trophies.Value!.Value!, warStars.Value!.Value!, builderBaseLeague, builderHallLevel, clan, clanCapitalContributions, heroEquipment, league, leagueTier, legendStatistics, playerHouse, role, townHallWeaponLevel, warPreference);
+            return new Player(achievements.Value!, attackWins.Value!.Value!, bestTrophies.Value!.Value!, builderBaseTrophies.Value!.Value!, defenseWins.Value!.Value!, donations.Value!.Value!, donationsReceived.Value!.Value!, expLevel.Value!.Value!, heroes.Value!, labels.Value!, name.Value!, spells.Value!, tag.Value!, townHallLevel.Value!.Value!, troops.Value!, trophies.Value!.Value!, warStars.Value!.Value!, builderBaseLeague, builderHallLevel, clan, clanCapitalContributions, currentLeagueGroupTag, currentLeagueSeasonId, heroEquipment, league, leagueTier, legendStatistics, playerHouse, previousLeagueGroupTag, previousLeagueSeasonId, role, townHallWeaponLevel, warPreference);
         }
 
         /// <summary>
@@ -986,6 +1108,9 @@ namespace CocApi.Rest.Models
             if (player.ClanOption.IsSet && player.Clan == null)
                 throw new ArgumentNullException(nameof(player.Clan), "Property is required for class Player.");
 
+            if (player.CurrentLeagueGroupTagOption.IsSet && player.CurrentLeagueGroupTag == null)
+                throw new ArgumentNullException(nameof(player.CurrentLeagueGroupTag), "Property is required for class Player.");
+
             if (player.HeroEquipmentOption.IsSet && player.HeroEquipment == null)
                 throw new ArgumentNullException(nameof(player.HeroEquipment), "Property is required for class Player.");
 
@@ -1000,6 +1125,9 @@ namespace CocApi.Rest.Models
 
             if (player.PlayerHouseOption.IsSet && player.PlayerHouse == null)
                 throw new ArgumentNullException(nameof(player.PlayerHouse), "Property is required for class Player.");
+
+            if (player.PreviousLeagueGroupTagOption.IsSet && player.PreviousLeagueGroupTag == null)
+                throw new ArgumentNullException(nameof(player.PreviousLeagueGroupTag), "Property is required for class Player.");
 
             writer.WritePropertyName("achievements");
             JsonSerializer.Serialize(writer, player.Achievements, jsonSerializerOptions);
@@ -1051,6 +1179,12 @@ namespace CocApi.Rest.Models
             if (player.ClanCapitalContributionsOption.IsSet)
                 writer.WriteNumber("clanCapitalContributions", player.ClanCapitalContributionsOption.Value!.Value);
 
+            if (player.CurrentLeagueGroupTagOption.IsSet)
+                writer.WriteString("currentLeagueGroupTag", player.CurrentLeagueGroupTag);
+
+            if (player.CurrentLeagueSeasonIdOption.IsSet)
+                writer.WriteNumber("currentLeagueSeasonId", player.CurrentLeagueSeasonIdOption.Value!.Value);
+
             if (player.HeroEquipmentOption.IsSet)
             {
                 writer.WritePropertyName("heroEquipment");
@@ -1076,6 +1210,12 @@ namespace CocApi.Rest.Models
                 writer.WritePropertyName("playerHouse");
                 JsonSerializer.Serialize(writer, player.PlayerHouse, jsonSerializerOptions);
             }
+            if (player.PreviousLeagueGroupTagOption.IsSet)
+                writer.WriteString("previousLeagueGroupTag", player.PreviousLeagueGroupTag);
+
+            if (player.PreviousLeagueSeasonIdOption.IsSet)
+                writer.WriteNumber("previousLeagueSeasonId", player.PreviousLeagueSeasonIdOption.Value!.Value);
+
             if (player.RoleOption.IsSet)
             {
                 var roleRawValue = RoleValueConverter.ToJsonValue(player.Role!.Value);

@@ -25,6 +25,7 @@ Name | Type | Description | Notes
 **WarWins** | **int** |  | [readonly] 
 **ChatLanguage** | [**Language**](Language.md) |  | [optional] [readonly] 
 **Location** | [**Location**](Location.md) |  | [optional] [readonly] 
+**RequiredLeagueTier** | [**LeagueTier**](LeagueTier.md) |  | [optional] [readonly] 
 **Type** | **RecruitingType** |  | [optional] [readonly] 
 **WarFrequency** | **WarFrequency** |  | [optional] [readonly] 
 **WarLosses** | **int** |  | [optional] [readonly] 

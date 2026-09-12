@@ -42,8 +42,12 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new DateTimeJsonConverter());
             _jsonOptions.Converters.Add(new DateTimeNullableJsonConverter());
             _jsonOptions.Converters.Add(new BadgeUrlsJsonConverter());
+            _jsonOptions.Converters.Add(new BattleLogEntryJsonConverter());
+            _jsonOptions.Converters.Add(new BattleLogEntryListJsonConverter());
             _jsonOptions.Converters.Add(new BattleModifierJsonConverter());
             _jsonOptions.Converters.Add(new BattleModifierNullableJsonConverter());
+            _jsonOptions.Converters.Add(new BattleTypeJsonConverter());
+            _jsonOptions.Converters.Add(new BattleTypeNullableJsonConverter());
             _jsonOptions.Converters.Add(new BuilderBaseLeagueJsonConverter());
             _jsonOptions.Converters.Add(new BuilderBaseLeagueListJsonConverter());
             _jsonOptions.Converters.Add(new CapitalLeagueJsonConverter());
@@ -93,9 +97,15 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new LabelsObjectJsonConverter());
             _jsonOptions.Converters.Add(new LanguageJsonConverter());
             _jsonOptions.Converters.Add(new LeagueJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueBattleLogEntryJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueGroupJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueGroupMemberJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueGroupParametersJsonConverter());
             _jsonOptions.Converters.Add(new LeagueListJsonConverter());
             _jsonOptions.Converters.Add(new LeagueSeasonJsonConverter());
             _jsonOptions.Converters.Add(new LeagueSeasonListJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueSeasonResultJsonConverter());
+            _jsonOptions.Converters.Add(new LeagueSeasonResultListJsonConverter());
             _jsonOptions.Converters.Add(new LeagueTierJsonConverter());
             _jsonOptions.Converters.Add(new LeagueTierListJsonConverter());
             _jsonOptions.Converters.Add(new LegendLeagueTournamentSeasonResultJsonConverter());
@@ -117,6 +127,7 @@ namespace CocApi.Rest.Client
             _jsonOptions.Converters.Add(new PlayerRankingListJsonConverter());
             _jsonOptions.Converters.Add(new RecruitingTypeJsonConverter());
             _jsonOptions.Converters.Add(new RecruitingTypeNullableJsonConverter());
+            _jsonOptions.Converters.Add(new ResourceJsonConverter());
             _jsonOptions.Converters.Add(new ResultJsonConverter());
             _jsonOptions.Converters.Add(new ResultNullableJsonConverter());
             _jsonOptions.Converters.Add(new RoleJsonConverter());

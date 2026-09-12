@@ -9,6 +9,7 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 | [**GetCapitalLeague**](LeaguesApi.md#getcapitalleague) | **GET** /capitalleagues/{leagueId} | Get capital league information |
 | [**GetCapitalLeagues**](LeaguesApi.md#getcapitalleagues) | **GET** /capitalleagues | List capital leagues |
 | [**GetLeague**](LeaguesApi.md#getleague) | **GET** /leagues/{leagueId} | Get league information |
+| [**GetLeagueGroup**](LeaguesApi.md#getleaguegroup) | **GET** /leaguegroup/{leagueGroupTag}/{leagueSeasonId} | Get ranked battle league group information for season and player |
 | [**GetLeagueSeasonRankings**](LeaguesApi.md#getleagueseasonrankings) | **GET** /leagues/{leagueId}/seasons/{seasonId} | Get league season rankings |
 | [**GetLeagueSeasons**](LeaguesApi.md#getleagueseasons) | **GET** /leagues/{leagueId}/seasons | Get league seasons |
 | [**GetLeagueTier**](LeaguesApi.md#getleaguetier) | **GET** /leaguetiers/{leagueTierId} | Get league tier information |
@@ -207,6 +208,50 @@ Get league information
 ### Return type
 
 [**League**](League.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful response |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+<a id="getleaguegroup"></a>
+# **GetLeagueGroup**
+> LeagueGroup GetLeagueGroup (string leagueGroupTag, string leagueSeasonId, string playerTag)
+
+Get ranked battle league group information for season and player
+
+Get ranked battle league group information for season and player
+
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **leagueGroupTag** | **string** | Identifier of the league group. |  |
+| **leagueSeasonId** | **string** | Identifier of the league season. |  |
+| **playerTag** | **string** | Tag of the player |  |
+
+### Return type
+
+[**LeagueGroup**](LeagueGroup.md)
 
 ### Authorization
 

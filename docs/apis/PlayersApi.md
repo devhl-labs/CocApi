@@ -4,8 +4,94 @@ All URIs are relative to *https://api.clashofclans.com/v1*
 
 | Method | HTTP request | Description |
 |--------|--------------|-------------|
+| [**GetBattleLog**](PlayersApi.md#getbattlelog) | **GET** /players/{playerTag}/battlelog | Get player battle log |
+| [**GetLeagueHistory**](PlayersApi.md#getleaguehistory) | **GET** /players/{playerTag}/leaguehistory | Get player league history |
 | [**GetPlayer**](PlayersApi.md#getplayer) | **GET** /players/{playerTag} | Get player information |
 | [**VerifyToken**](PlayersApi.md#verifytoken) | **POST** /players/{playerTag}/verifytoken | Verify player API token that can be found from the game settings. |
+
+<a id="getbattlelog"></a>
+# **GetBattleLog**
+> BattleLogEntryList GetBattleLog (string playerTag)
+
+Get player battle log
+
+Get player battle log for recent battles.
+
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **playerTag** | **string** | Tag of the player. |  |
+
+### Return type
+
+[**BattleLogEntryList**](BattleLogEntryList.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful response |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
+
+<a id="getleaguehistory"></a>
+# **GetLeagueHistory**
+> LeagueSeasonResultList GetLeagueHistory (string playerTag)
+
+Get player league history
+
+Get player league history for ranked battles.
+
+
+### Parameters
+
+| Name | Type | Description | Notes |
+|------|------|-------------|-------|
+| **playerTag** | **string** | Tag of the player. |  |
+
+### Return type
+
+[**LeagueSeasonResultList**](LeagueSeasonResultList.md)
+
+### Authorization
+
+[JWT](../README.md#JWT)
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Successful response |  -  |
+| **400** | Client provided incorrect parameters for the request. |  -  |
+| **403** | Access denied, either because of missing/incorrect credentials or used API token does not grant access to the requested resource.  |  -  |
+| **404** | Resource was not found. |  -  |
+| **429** | Request was throttled, because amount of requests was above the threshold defined for the used API token.  |  -  |
+| **500** | Unknown error happened when handling the request. |  -  |
+| **503** | Service is temprorarily unavailable because of maintenance. |  -  |
+
+[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints) [[Back to Model list]](../../README.md#documentation-for-models) [[Back to README]](../../README.md)
 
 <a id="getplayer"></a>
 # **GetPlayer**

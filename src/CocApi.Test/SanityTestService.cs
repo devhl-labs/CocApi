@@ -107,6 +107,15 @@ public class SanityTestService : IHostedService
         IOk<BuilderBaseLeague?> builderBaseLeagueResponse = await LeaguesApi.FetchBuilderBaseLeagueAsync(builderBaseLeaguesResponse.Ok()!.Items.First().Id.ToString());
         BuilderBaseLeague? builderBaseLeague = builderBaseLeagueResponse.Ok();
 
+        IFetchBattleLogApiResponse battleLogResponse = await PlayersApi.FetchBattleLogAsync("#CCC");
+        BattleLogEntryList? battleLog = battleLogResponse.Ok();
+
+        var leagueHistoryResponse = await PlayersApi.FetchLeagueHistoryAsync("#2882VR0GJ");
+        LeagueSeasonResultList? leagueHistory = leagueHistoryResponse.Ok();
+
+        IFetchLeagueGroupApiResponse leagueGroupResponse = await LeaguesApi.FetchLeagueGroupAsync("#8GQQ0L2", "1788152400", "#P9Q9G0JL0");
+        LeagueGroup? leagueGroup = leagueGroupResponse.Ok();
+
         System.Console.WriteLine("Done sanity check.");
     }
 }

@@ -53,12 +53,13 @@ namespace CocApi.Rest.Models
         /// <param name="warWins">warWins</param>
         /// <param name="chatLanguage">chatLanguage</param>
         /// <param name="location">location</param>
+        /// <param name="requiredLeagueTier">requiredLeagueTier</param>
         /// <param name="type">type</param>
         /// <param name="warFrequency">warFrequency</param>
         /// <param name="warLosses">warLosses</param>
         /// <param name="warTies">warTies</param>
         [JsonConstructor]
-        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, int clanBuilderBasePoints, ClanCapital clanCapital, int clanLevel, int clanPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredBuilderBaseTrophies, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Option<Language?> chatLanguage = default, Option<Location?> location = default, Option<RecruitingType?> type = default, Option<WarFrequency?> warFrequency = default, Option<int?> warLosses = default, Option<int?> warTies = default)
+        internal Clan(BadgeUrls badgeUrls, CapitalLeague capitalLeague, int clanBuilderBasePoints, ClanCapital clanCapital, int clanLevel, int clanPoints, string description, bool isFamilyFriendly, bool isWarLogPublic, List<Label> labels, List<ClanMember> memberList, int members, string name, int requiredBuilderBaseTrophies, int requiredTrophies, string tag, WarLeague warLeague, int warWinStreak, int warWins, Option<Language?> chatLanguage = default, Option<Location?> location = default, Option<LeagueTier?> requiredLeagueTier = default, Option<RecruitingType?> type = default, Option<WarFrequency?> warFrequency = default, Option<int?> warLosses = default, Option<int?> warTies = default)
         {
             BadgeUrls = badgeUrls;
             CapitalLeague = capitalLeague;
@@ -81,6 +82,7 @@ namespace CocApi.Rest.Models
             WarWins = warWins;
             ChatLanguageOption = chatLanguage;
             LocationOption = location;
+            RequiredLeagueTierOption = requiredLeagueTier;
             TypeOption = type;
             WarFrequencyOption = warFrequency;
             WarLossesOption = warLosses;
@@ -257,6 +259,19 @@ namespace CocApi.Rest.Models
         public Location? Location { get { return this.LocationOption.Value; } }
 
         /// <summary>
+        /// Used to track the state of RequiredLeagueTier
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<LeagueTier?> RequiredLeagueTierOption { get; }
+
+        /// <summary>
+        /// Gets or Sets RequiredLeagueTier
+        /// </summary>
+        [JsonPropertyName("requiredLeagueTier")]
+        public LeagueTier? RequiredLeagueTier { get { return this.RequiredLeagueTierOption.Value; } }
+
+        /// <summary>
         /// Used to track the state of WarLosses
         /// </summary>
         [JsonIgnore]
@@ -311,6 +326,7 @@ namespace CocApi.Rest.Models
             sb.Append("  WarWins: ").Append(WarWins).Append("\n");
             sb.Append("  ChatLanguage: ").Append(ChatLanguage).Append("\n");
             sb.Append("  Location: ").Append(Location).Append("\n");
+            sb.Append("  RequiredLeagueTier: ").Append(RequiredLeagueTier).Append("\n");
             sb.Append("  Type: ").Append(Type).Append("\n");
             sb.Append("  WarFrequency: ").Append(WarFrequency).Append("\n");
             sb.Append("  WarLosses: ").Append(WarLosses).Append("\n");
@@ -438,6 +454,11 @@ namespace CocApi.Rest.Models
                     Location.Equals(input.Location))
                 ) && 
                 (
+                    RequiredLeagueTier == input.RequiredLeagueTier ||
+                    (RequiredLeagueTier != null &&
+                    RequiredLeagueTier.Equals(input.RequiredLeagueTier))
+                ) && 
+                (
                     Type == input.Type ||
                     Type.Equals(input.Type)
                 ) && 
@@ -488,6 +509,9 @@ namespace CocApi.Rest.Models
 
                 if (Location != null)
                     hashCode = (hashCode * 59) + Location.GetHashCode();
+
+                if (RequiredLeagueTier != null)
+                    hashCode = (hashCode * 59) + RequiredLeagueTier.GetHashCode();
 
                 if (Type != null)
                     hashCode = (hashCode * 59) + Type.GetHashCode();
@@ -560,6 +584,7 @@ namespace CocApi.Rest.Models
             Option<int?> warWins = default;
             Option<Language?> chatLanguage = default;
             Option<Location?> location = default;
+            Option<LeagueTier?> requiredLeagueTier = default;
             Option<RecruitingType?> type = default;
             Option<WarFrequency?> warFrequency = default;
             Option<int?> warLosses = default;
@@ -642,6 +667,9 @@ namespace CocApi.Rest.Models
                             break;
                         case "location":
                             location = new Option<Location?>(JsonSerializer.Deserialize<Location>(ref utf8JsonReader, jsonSerializerOptions)!);
+                            break;
+                        case "requiredLeagueTier":
+                            requiredLeagueTier = new Option<LeagueTier?>(JsonSerializer.Deserialize<LeagueTier>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         case "type":
                             type = new Option<RecruitingType?>(JsonSerializer.Deserialize<RecruitingType?>(ref utf8JsonReader, jsonSerializerOptions));
@@ -781,6 +809,9 @@ namespace CocApi.Rest.Models
             if (location.IsSet && location.Value == null)
                 throw new ArgumentNullException(nameof(location), "Property is not nullable for class Clan.");
 
+            if (requiredLeagueTier.IsSet && requiredLeagueTier.Value == null)
+                throw new ArgumentNullException(nameof(requiredLeagueTier), "Property is not nullable for class Clan.");
+
             if (type.IsSet && type.Value == null)
                 throw new ArgumentNullException(nameof(type), "Property is not nullable for class Clan.");
 
@@ -793,7 +824,7 @@ namespace CocApi.Rest.Models
             if (warTies.IsSet && warTies.Value == null)
                 throw new ArgumentNullException(nameof(warTies), "Property is not nullable for class Clan.");
 
-            return new Clan(badgeUrls.Value!, capitalLeague.Value!, clanBuilderBasePoints.Value!.Value!, clanCapital.Value!, clanLevel.Value!.Value!, clanPoints.Value!.Value!, description.Value!, isFamilyFriendly.Value!.Value!, isWarLogPublic.Value!.Value!, labels.Value!, memberList.Value!, members.Value!.Value!, name.Value!, requiredBuilderBaseTrophies.Value!.Value!, requiredTrophies.Value!.Value!, tag.Value!, warLeague.Value!, warWinStreak.Value!.Value!, warWins.Value!.Value!, chatLanguage, location, type, warFrequency, warLosses, warTies);
+            return new Clan(badgeUrls.Value!, capitalLeague.Value!, clanBuilderBasePoints.Value!.Value!, clanCapital.Value!, clanLevel.Value!.Value!, clanPoints.Value!.Value!, description.Value!, isFamilyFriendly.Value!.Value!, isWarLogPublic.Value!.Value!, labels.Value!, memberList.Value!, members.Value!.Value!, name.Value!, requiredBuilderBaseTrophies.Value!.Value!, requiredTrophies.Value!.Value!, tag.Value!, warLeague.Value!, warWinStreak.Value!.Value!, warWins.Value!.Value!, chatLanguage, location, requiredLeagueTier, type, warFrequency, warLosses, warTies);
         }
 
         /// <summary>
@@ -853,6 +884,9 @@ namespace CocApi.Rest.Models
             if (clan.LocationOption.IsSet && clan.Location == null)
                 throw new ArgumentNullException(nameof(clan.Location), "Property is required for class Clan.");
 
+            if (clan.RequiredLeagueTierOption.IsSet && clan.RequiredLeagueTier == null)
+                throw new ArgumentNullException(nameof(clan.RequiredLeagueTier), "Property is required for class Clan.");
+
             writer.WritePropertyName("badgeUrls");
             JsonSerializer.Serialize(writer, clan.BadgeUrls, jsonSerializerOptions);
             writer.WritePropertyName("capitalLeague");
@@ -900,6 +934,11 @@ namespace CocApi.Rest.Models
             {
                 writer.WritePropertyName("location");
                 JsonSerializer.Serialize(writer, clan.Location, jsonSerializerOptions);
+            }
+            if (clan.RequiredLeagueTierOption.IsSet)
+            {
+                writer.WritePropertyName("requiredLeagueTier");
+                JsonSerializer.Serialize(writer, clan.RequiredLeagueTier, jsonSerializerOptions);
             }
             if (clan.TypeOption.IsSet)
             {
