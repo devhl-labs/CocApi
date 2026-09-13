@@ -32,25 +32,19 @@ namespace CocApi.Rest.Models
         /// <summary>
         /// Initializes a new instance of the <see cref="LeagueTier" /> class.
         /// </summary>
-        /// <param name="iconUrls">iconUrls</param>
         /// <param name="id">id</param>
         /// <param name="name">name</param>
+        /// <param name="iconUrls">iconUrls</param>
         [JsonConstructor]
-        internal LeagueTier(IconUrls iconUrls, int id, string name)
+        internal LeagueTier(int id, string name, Option<IconUrls?> iconUrls = default)
         {
-            IconUrls = iconUrls;
             Id = id;
             Name = name;
+            IconUrlsOption = iconUrls;
             OnCreated();
         }
 
         partial void OnCreated();
-
-        /// <summary>
-        /// Gets or Sets IconUrls
-        /// </summary>
-        [JsonPropertyName("iconUrls")]
-        public IconUrls IconUrls { get; }
 
         /// <summary>
         /// Gets or Sets Id
@@ -65,6 +59,19 @@ namespace CocApi.Rest.Models
         public string Name { get; }
 
         /// <summary>
+        /// Used to track the state of IconUrls
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<IconUrls?> IconUrlsOption { get; }
+
+        /// <summary>
+        /// Gets or Sets IconUrls
+        /// </summary>
+        [JsonPropertyName("iconUrls")]
+        public IconUrls? IconUrls { get { return this.IconUrlsOption.Value; } }
+
+        /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
         /// <returns>String presentation of the object</returns>
@@ -72,9 +79,9 @@ namespace CocApi.Rest.Models
         {
             StringBuilder sb = new StringBuilder();
             sb.Append("class LeagueTier {\n");
-            sb.Append("  IconUrls: ").Append(IconUrls).Append("\n");
             sb.Append("  Id: ").Append(Id).Append("\n");
             sb.Append("  Name: ").Append(Name).Append("\n");
+            sb.Append("  IconUrls: ").Append(IconUrls).Append("\n");
             sb.Append("}\n");
             return sb.ToString();
         }
@@ -101,11 +108,6 @@ namespace CocApi.Rest.Models
 
             return 
                 (
-                    IconUrls == input.IconUrls ||
-                    (IconUrls != null &&
-                    IconUrls.Equals(input.IconUrls))
-                ) && 
-                (
                     Id == input.Id ||
                     Id.Equals(input.Id)
                 ) && 
@@ -113,6 +115,11 @@ namespace CocApi.Rest.Models
                     Name == input.Name ||
                     (Name != null &&
                     Name.Equals(input.Name))
+                ) && 
+                (
+                    IconUrls == input.IconUrls ||
+                    (IconUrls != null &&
+                    IconUrls.Equals(input.IconUrls))
                 );
         }
 
@@ -125,9 +132,11 @@ namespace CocApi.Rest.Models
             unchecked // Overflow is fine, just wrap
             {
                 int hashCode = 41;
-                hashCode = (hashCode * 59) + IconUrls.GetHashCode();
                 hashCode = (hashCode * 59) + Id.GetHashCode();
                 hashCode = (hashCode * 59) + Name.GetHashCode();
+                if (IconUrls != null)
+                    hashCode = (hashCode * 59) + IconUrls.GetHashCode();
+
 
                 return hashCode;
             }
@@ -166,9 +175,9 @@ namespace CocApi.Rest.Models
 
             JsonTokenType startingTokenType = utf8JsonReader.TokenType;
 
-            Option<IconUrls?> iconUrls = default;
             Option<int?> id = default;
             Option<string?> name = default;
+            Option<IconUrls?> iconUrls = default;
 
             while (utf8JsonReader.Read())
             {
@@ -185,14 +194,14 @@ namespace CocApi.Rest.Models
 
                     switch (localVarJsonPropertyName)
                     {
-                        case "iconUrls":
-                            iconUrls = new Option<IconUrls?>(JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
-                            break;
                         case "id":
                             id = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "name":
                             name = new Option<string?>(utf8JsonReader.GetString()!);
+                            break;
+                        case "iconUrls":
+                            iconUrls = new Option<IconUrls?>(JsonSerializer.Deserialize<IconUrls>(ref utf8JsonReader, jsonSerializerOptions)!);
                             break;
                         default:
                             break;
@@ -200,17 +209,11 @@ namespace CocApi.Rest.Models
                 }
             }
 
-            if (!iconUrls.IsSet)
-                throw new ArgumentException("Property is required for class LeagueTier.", nameof(iconUrls));
-
             if (!id.IsSet)
                 throw new ArgumentException("Property is required for class LeagueTier.", nameof(id));
 
             if (!name.IsSet)
                 throw new ArgumentException("Property is required for class LeagueTier.", nameof(name));
-
-            if (iconUrls.IsSet && iconUrls.Value == null)
-                throw new ArgumentNullException(nameof(iconUrls), "Property is not nullable for class LeagueTier.");
 
             if (id.IsSet && id.Value == null)
                 throw new ArgumentNullException(nameof(id), "Property is not nullable for class LeagueTier.");
@@ -218,7 +221,10 @@ namespace CocApi.Rest.Models
             if (name.IsSet && name.Value == null)
                 throw new ArgumentNullException(nameof(name), "Property is not nullable for class LeagueTier.");
 
-            return new LeagueTier(iconUrls.Value!, id.Value!.Value!, name.Value!);
+            if (iconUrls.IsSet && iconUrls.Value == null)
+                throw new ArgumentNullException(nameof(iconUrls), "Property is not nullable for class LeagueTier.");
+
+            return new LeagueTier(id.Value!.Value!, name.Value!, iconUrls);
         }
 
         /// <summary>
@@ -245,17 +251,21 @@ namespace CocApi.Rest.Models
         /// <exception cref="NotImplementedException"></exception>
         public void WriteProperties(Utf8JsonWriter writer, LeagueTier leagueTier, JsonSerializerOptions jsonSerializerOptions)
         {
-            if (leagueTier.IconUrls == null)
-                throw new ArgumentNullException(nameof(leagueTier.IconUrls), "Property is required for class LeagueTier.");
-
             if (leagueTier.Name == null)
                 throw new ArgumentNullException(nameof(leagueTier.Name), "Property is required for class LeagueTier.");
 
-            writer.WritePropertyName("iconUrls");
-            JsonSerializer.Serialize(writer, leagueTier.IconUrls, jsonSerializerOptions);
+            if (leagueTier.IconUrlsOption.IsSet && leagueTier.IconUrls == null)
+                throw new ArgumentNullException(nameof(leagueTier.IconUrls), "Property is required for class LeagueTier.");
+
             writer.WriteNumber("id", leagueTier.Id);
 
             writer.WriteString("name", leagueTier.Name);
+
+            if (leagueTier.IconUrlsOption.IsSet)
+            {
+                writer.WritePropertyName("iconUrls");
+                JsonSerializer.Serialize(writer, leagueTier.IconUrls, jsonSerializerOptions);
+            }
         }
     }
 }

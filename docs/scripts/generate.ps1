@@ -1,4 +1,4 @@
-$packageVersion = "3.1.0"
+$packageVersion = "3.1.1"
 $releaseNote = "Add new player and league group endpoints"
 
 $properties = @(
